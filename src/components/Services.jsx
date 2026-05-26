@@ -255,7 +255,7 @@ export default function Services() {
         {/* ── Grid ── */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-4 md:gap-5">
           {SERVICES.map((s, i) => (
-            <ServiceCard key={s.id} service={s} index={i} sectionVisible={sectionVisible} />
+            <ServiceCard key={s.id} service={s} index={i} />
           ))}
         </div>
 
@@ -286,19 +286,39 @@ export default function Services() {
 
 /* ─────────────────────────────────────────────
    ServiceCard
-   Layer stack:
-   1. Dual-source radial glow (always visible, intensifies on hover)
-   2. Noise grain
-   3. Large background number watermark
-   4. Shine sweep (fires once on hover entry)
-   5. Content z-10
-   No arrow — bottom is a glowing gradient rule only
+   Each card has its own IntersectionObserver so it activates independently
+   as it scrolls into view, mirroring the HowItWorks step-by-step reveal.
+
+   Entrance sequence (triggered once per card):
+     0 ms  — card lifts + fades in
+     80 ms — icon pops in with spring overshoot
+     150 ms — tag slides from right
+     200 ms — title slides from left
+     280 ms — description rises from below
+     360 ms — pills pop in with per-pill stagger (80 ms each)
+     480 ms — bottom rule grows from left → right
+
+   Hover layer stays independent (glow, shine, lift, icon tilt).
 ───────────────────────────────────────────── */
-function ServiceCard({ service, index, sectionVisible }) {
+function ServiceCard({ service, index }) {
   const [hovered, setHovered] = useState(false)
   const [shining, setShining] = useState(false)
+  const [cardVisible, setCardVisible] = useState(false)
+  const cardRef = useRef(null)
   const IconComponent = service.icon
-  const s = service   /* shorthand */
+  const s = service
+
+  /* Per-card scroll observer — fires once then disconnects */
+  useEffect(() => {
+    const el = cardRef.current
+    if (!el) return
+    const obs = new IntersectionObserver(
+      ([e]) => { if (e.isIntersecting) { setCardVisible(true); obs.disconnect() } },
+      { threshold: 0.12 }
+    )
+    obs.observe(el)
+    return () => obs.disconnect()
+  }, [])
 
   function onEnter() {
     setHovered(true)
@@ -307,18 +327,26 @@ function ServiceCard({ service, index, sectionVisible }) {
   }
   function onLeave() { setHovered(false); setShining(false) }
 
-  const t = (ms, prop) => `${prop} 0.5s ${ms}ms cubic-bezier(0.22,1,0.36,1)`
+  /* Icon transform merges entrance scale (0→1 spring) + hover tilt */
+  const iconTransform = !cardVisible
+    ? 'scale(0) rotate(-20deg)'
+    : hovered
+    ? 'scale(1.1) rotate(-5deg)'
+    : 'scale(1) rotate(0deg)'
+
+  /* Helper: produce a transition string with per-property delays */
+  const entryDelay = (ms) => cardVisible ? `${ms}ms` : '0ms'
 
   return (
     <article
+      ref={cardRef}
       onMouseEnter={onEnter}
       onMouseLeave={onLeave}
       className={`${s.colSpan} group relative overflow-hidden rounded-[28px] cursor-default min-h-[280px] flex flex-col`}
       style={{
-        opacity: sectionVisible ? 1 : 0,
-        transform: sectionVisible ? 'translateY(0) scale(1)' : 'translateY(32px) scale(0.96)',
-        transition: `opacity 0.6s ${80 + index * 110}ms cubic-bezier(0.22,1,0.36,1),
-                     transform 0.6s ${80 + index * 110}ms cubic-bezier(0.22,1,0.36,1)`,
+        opacity: cardVisible ? 1 : 0,
+        transform: cardVisible ? 'translateY(0) scale(1)' : 'translateY(44px) scale(0.93)',
+        transition: 'opacity 0.65s cubic-bezier(0.22,1,0.36,1), transform 0.65s cubic-bezier(0.22,1,0.36,1)',
       }}
     >
       <div
@@ -330,45 +358,38 @@ function ServiceCard({ service, index, sectionVisible }) {
           transition: 'box-shadow 0.5s ease, transform 0.4s cubic-bezier(0.22,1,0.36,1)',
         }}
       >
-        {/* ── Layer 1: Dual radial glow — ALWAYS VISIBLE ── */}
-        <div aria-hidden="true" className="pointer-events-none absolute inset-0" style={{ transition: 'background 0.6s ease' }}>
-          {/* Primary source */}
-          <div
-            className="absolute inset-0"
-            style={{
-              background: `radial-gradient(${s.glowA.r} circle at ${s.glowA.pos}, ${hovered ? s.glowA.hover : s.glowA.rest}, transparent 70%)`,
-              transition: 'background 0.6s ease',
-            }}
-          />
-          {/* Secondary source — opposite corner for depth */}
-          <div
-            className="absolute inset-0"
-            style={{
-              background: `radial-gradient(${s.glowB.r} circle at ${s.glowB.pos}, ${hovered ? s.glowB.hover : s.glowB.rest}, transparent 65%)`,
-              transition: 'background 0.6s ease',
-            }}
-          />
+        {/* ── Layer 1: Dual radial glow ── */}
+        <div aria-hidden="true" className="pointer-events-none absolute inset-0">
+          <div className="absolute inset-0" style={{
+            background: `radial-gradient(${s.glowA.r} circle at ${s.glowA.pos}, ${hovered ? s.glowA.hover : s.glowA.rest}, transparent 70%)`,
+            transition: 'background 0.6s ease',
+          }} />
+          <div className="absolute inset-0" style={{
+            background: `radial-gradient(${s.glowB.r} circle at ${s.glowB.pos}, ${hovered ? s.glowB.hover : s.glowB.rest}, transparent 65%)`,
+            transition: 'background 0.6s ease',
+          }} />
         </div>
 
         {/* ── Layer 2: Noise grain ── */}
-        <div aria-hidden="true" className="pointer-events-none absolute inset-0 opacity-[0.032]" style={{ backgroundImage: NOISE_BG, backgroundSize: '150px 150px' }} />
+        <div aria-hidden="true" className="pointer-events-none absolute inset-0 opacity-[0.032]"
+          style={{ backgroundImage: NOISE_BG, backgroundSize: '150px 150px' }} />
 
-        {/* ── Layer 3: Large background number ── */}
+        {/* ── Layer 3: Large background number — fades in with card ── */}
         <span
           aria-hidden="true"
           className="pointer-events-none select-none absolute -bottom-6 -right-2 font-display font-black leading-none"
           style={{
             fontSize: 'clamp(90px, 13vw, 155px)',
             color: s.accent,
-            opacity: hovered ? s.numHover : s.numRest,
-            transition: 'opacity 0.5s ease',
+            opacity: cardVisible ? (hovered ? s.numHover : s.numRest) : 0,
+            transition: `opacity 0.5s ${entryDelay(380)} ease`,
             lineHeight: 1,
           }}
         >
           {s.number}
         </span>
 
-        {/* ── Layer 4: Shine sweep ── */}
+        {/* ── Layer 4: Shine sweep on hover entry ── */}
         <div aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden rounded-[28px]">
           {shining && (
             <div
@@ -378,24 +399,23 @@ function ServiceCard({ service, index, sectionVisible }) {
           )}
         </div>
 
-        {/* ── Content ── */}
+        {/* ── Content z-10 ── */}
         <div className="relative z-10 flex flex-col flex-1 gap-0">
 
           {/* Icon + tag row */}
           <div className="flex items-start justify-between mb-7">
-            {/* Icon with ambient halo */}
+
+            {/* Icon — springs in then responds to hover */}
             <div className="relative">
               <div
                 aria-hidden="true"
                 className={hovered ? 'icon-breathe' : ''}
                 style={{
-                  position: 'absolute',
-                  inset: '-10px',
-                  borderRadius: '50%',
+                  position: 'absolute', inset: '-10px', borderRadius: '50%',
                   background: s.accent,
-                  opacity: hovered ? undefined : s.haloRest,
+                  opacity: hovered ? undefined : (cardVisible ? s.haloRest : 0),
                   filter: 'blur(16px)',
-                  transition: 'opacity 0.4s ease',
+                  transition: `opacity 0.4s ${entryDelay(80)} ease`,
                 }}
               />
               <div
@@ -403,56 +423,65 @@ function ServiceCard({ service, index, sectionVisible }) {
                 style={{
                   background: hovered ? s.iconBgHover : s.iconBgRest,
                   border: `1px solid ${hovered ? s.iconBorderHover : s.iconBorderRest}`,
-                  transform: hovered ? 'scale(1.1) rotate(-5deg)' : 'scale(1) rotate(0deg)',
-                  transition: 'background 0.4s, border 0.4s, transform 0.5s cubic-bezier(0.34,1.56,0.64,1)',
+                  transform: iconTransform,
+                  transition: `background 0.4s ease, border 0.4s ease, transform 0.55s ${entryDelay(80)} cubic-bezier(0.34,1.56,0.64,1)`,
                 }}
               >
-                <IconComponent
-                  color={hovered ? s.accent : s.tagRest}
-                  size={26}
-                />
+                <IconComponent color={hovered ? s.accent : s.tagRest} size={26} />
               </div>
             </div>
 
-            {/* Tag */}
+            {/* Tag — slides in from right */}
             <span
               className="text-[10px] font-bold uppercase tracking-[0.18em] mt-1.5"
               style={{
                 color: hovered ? s.tagHover : s.tagRest,
-                transition: 'color 0.4s ease',
+                opacity: cardVisible ? 1 : 0,
+                transform: cardVisible ? 'translateX(0)' : 'translateX(14px)',
+                transition: `color 0.4s ease,
+                             opacity 0.45s ${entryDelay(150)} ease,
+                             transform 0.45s ${entryDelay(150)} cubic-bezier(0.22,1,0.36,1)`,
               }}
             >
               {s.tag}
             </span>
           </div>
 
-          {/* Title */}
+          {/* Title — slides in from left */}
           <h3
             className="font-display font-bold tracking-display leading-[1.06]"
             style={{
               fontSize: 'clamp(1.45rem, 2.4vw, 1.85rem)',
               color: hovered ? '#ffffff' : '#e4e4e7',
-              transition: 'color 0.3s ease',
+              opacity: cardVisible ? 1 : 0,
+              transform: cardVisible ? 'translateX(0)' : 'translateX(-22px)',
+              transition: `color 0.3s ease,
+                           opacity 0.5s ${entryDelay(200)} ease,
+                           transform 0.5s ${entryDelay(200)} cubic-bezier(0.22,1,0.36,1)`,
             }}
           >
             {s.title}
           </h3>
 
-          {/* Description */}
+          {/* Description — rises from below */}
           <p
             className="mt-3 text-[13.5px] leading-relaxed"
             style={{
               color: hovered ? '#a1a1aa' : '#71717a',
-              transition: 'color 0.3s ease',
               maxWidth: '34ch',
+              opacity: cardVisible ? 1 : 0,
+              transform: cardVisible ? 'translateY(0)' : 'translateY(12px)',
+              transition: `color 0.3s ease,
+                           opacity 0.5s ${entryDelay(280)} ease,
+                           transform 0.5s ${entryDelay(280)} cubic-bezier(0.22,1,0.36,1)`,
             }}
           >
             {s.description}
           </p>
 
-          {/* Pills */}
+          {/* Pills — pop in with per-pill stagger */}
           <div className="flex flex-wrap gap-2 mt-5">
-            {s.pills.map((pill) => (
+            {s.pills.map((pill, pillIdx) => (
               <span
                 key={pill}
                 className="inline-flex items-center rounded-full px-3 py-1 text-[11px] font-medium"
@@ -460,7 +489,11 @@ function ServiceCard({ service, index, sectionVisible }) {
                   background: hovered ? s.pillBgHover : s.pillBgRest,
                   border: `1px solid ${hovered ? s.pillBorderHover : s.pillBorderRest}`,
                   color: hovered ? s.pillTextHover : s.pillTextRest,
-                  transition: 'all 0.4s ease',
+                  opacity: cardVisible ? 1 : 0,
+                  transform: cardVisible ? 'translateY(0) scale(1)' : 'translateY(8px) scale(0.82)',
+                  transition: `background 0.4s ease, border 0.4s ease, color 0.4s ease,
+                               opacity 0.4s ${entryDelay(360 + pillIdx * 75)} ease,
+                               transform 0.4s ${entryDelay(360 + pillIdx * 75)} cubic-bezier(0.34,1.56,0.64,1)`,
                 }}
               >
                 {pill}
@@ -471,12 +504,14 @@ function ServiceCard({ service, index, sectionVisible }) {
           {/* Spacer */}
           <div className="flex-1 min-h-[24px]" />
 
-          {/* Bottom rule only — no arrow */}
+          {/* Bottom rule — grows left → right on activation */}
           <div
-            className="h-px w-full mt-5 rounded-full"
+            className="h-px mt-5 rounded-full"
             style={{
               background: hovered ? s.ruleHover : s.ruleRest,
-              transition: 'background 0.5s ease',
+              width: cardVisible ? '100%' : '0%',
+              transition: `background 0.5s ease,
+                           width 0.85s ${entryDelay(480)} cubic-bezier(0.22,1,0.36,1)`,
             }}
           />
         </div>

@@ -140,7 +140,9 @@ export default function Credibility() {
 
 function LogoMarquee({ logos, direction = 'forward' }) {
   // Duplicate the list so the translateX(-50%) loop is seamless.
-  const doubled = [...logos, ...logos]
+  /* Triple so the strip is always wider than any viewport — pairs with the
+     -33.333% keyframe translation so the loop seam never shows. */
+  const doubled = [...logos, ...logos, ...logos]
   const trackClass = direction === 'reverse' ? 'marquee-track-reverse' : 'marquee-track'
 
   return (

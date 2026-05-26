@@ -78,24 +78,44 @@ export default function Founder() {
 
           {/* ══ LEFT — cinematic founder photo ══ */}
           <div className="lg:col-span-5 xl:col-span-5">
-            <FadeUp inView={inView} delay={80}>
-              <div className="relative">
+            {/*
+              Three-layer reveal triggered by the section IntersectionObserver:
+                1. Outer wrapper  — translateY(36px) scale(1.04) → rest  (lifts + zooms out)
+                2. Glow halo      — opacity 0 → 0.6  (blooms in with 500 ms delay)
+                3. Photo frame    — clip-path inset shrinks from 8% top → 0  (curtain wipe)
+            */}
+            <div
+              className="relative"
+              style={{
+                opacity: inView ? 1 : 0,
+                transform: inView ? 'translateY(0) scale(1)' : 'translateY(36px) scale(1.04)',
+                transition: inView
+                  ? 'opacity 0.9s 0.05s cubic-bezier(0.22,1,0.36,1), transform 1.2s 0.05s cubic-bezier(0.25,1,0.5,1)'
+                  : 'none',
+              }}
+            >
 
-                {/* Outer glow halo */}
-                <div
-                  aria-hidden="true"
-                  className="absolute -inset-4 rounded-[36px] opacity-60 pointer-events-none blur-2xl"
-                  style={{ background: 'radial-gradient(ellipse at 40% 60%, rgba(213,255,64,0.14) 0%, transparent 70%)' }}
-                />
+              {/* Outer glow halo — blooms in after the photo appears */}
+              <div
+                aria-hidden="true"
+                className="absolute -inset-4 rounded-[36px] pointer-events-none blur-2xl"
+                style={{
+                  background: 'radial-gradient(ellipse at 40% 60%, rgba(213,255,64,0.14) 0%, transparent 70%)',
+                  opacity: inView ? 0.60 : 0,
+                  transition: 'opacity 1.6s 0.5s ease',
+                }}
+              />
 
-                {/* Photo frame — matches site's phone/card aesthetic */}
-                <div
-                  className="relative overflow-hidden"
-                  style={{
-                    borderRadius: '28px',
-                    boxShadow: '0 40px 100px -20px rgba(0,0,0,0.75), 0 0 0 1px rgba(255,255,255,0.06) inset',
-                  }}
-                >
+              {/* Photo frame — curtain-wipe via clip-path */}
+              <div
+                className="relative overflow-hidden"
+                style={{
+                  borderRadius: '28px',
+                  boxShadow: '0 40px 100px -20px rgba(0,0,0,0.75), 0 0 0 1px rgba(255,255,255,0.06) inset',
+                  clipPath: inView ? 'inset(0% 0% 0% 0% round 28px)' : 'inset(8% 0% 2% 0% round 28px)',
+                  transition: inView ? 'clip-path 1.1s 0.1s cubic-bezier(0.22,1,0.36,1)' : 'none',
+                }}
+              >
                   <img
                     src="/founder.jpg?v=3"
                     alt="Mohamed — Founder of CONVRT"
@@ -141,8 +161,7 @@ export default function Founder() {
                   />
                 </div>
 
-              </div>
-            </FadeUp>
+            </div>
           </div>
 
           {/* ══ RIGHT — editorial story ══ */}
