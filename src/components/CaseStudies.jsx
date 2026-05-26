@@ -360,7 +360,9 @@ function PhoneUnit({ videoId, pos, phoneOffset, isHovered, onClick, onHover, onH
           <div aria-hidden="true" style={{ position: 'absolute', inset: 0, borderRadius: `${OUTER_RADIUS}px`, boxShadow: 'inset 0 0 0 1px rgba(255,255,255,0.05)', pointerEvents: 'none' }} />
           <div style={{ position: 'relative', height: '100%', width: '100%', overflow: 'hidden', borderRadius: `${INNER_RADIUS}px`, background: '#000' }}>
 
-            <video ref={combinedRef} className="absolute inset-0 w-full h-full object-cover" loop muted playsInline preload="metadata"
+            <video ref={combinedRef} className="absolute inset-0 w-full h-full object-cover"
+              poster={`https://videodelivery.net/${videoId}/thumbnails/thumbnail.jpg?time=0s&height=600`}
+              loop muted playsInline preload="auto"
               onClick={isCenter ? togglePlay : undefined} style={{ cursor: isCenter ? 'pointer' : 'default' }} />
 
             {!loaded && <div className="absolute inset-0 animate-pulse" style={{ background: '#111114', borderRadius: `${INNER_RADIUS}px` }} />}

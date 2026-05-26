@@ -299,6 +299,7 @@ function PhoneMockup() {
         <video
           ref={videoRef}
           className="absolute inset-0 h-full w-full object-cover"
+          poster="https://videodelivery.net/52559a16bde25920724239e737b62373/thumbnails/thumbnail.jpg?time=0s&height=600"
           autoPlay loop muted playsInline preload="auto"
           aria-label="CONVRT performance creative — UGC ad sample"
         />
