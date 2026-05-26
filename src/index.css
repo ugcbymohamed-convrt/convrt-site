@@ -1,0 +1,239 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+html,
+body {
+  background: #0a0a0b;
+  color: #fafafa;
+  font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
+  font-feature-settings: 'cv11', 'cv05', 'cv01', 'ss03';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: #d4ff3f;
+  color: #0a0a0b;
+}
+
+/* Marquee animations for the credibility logo strip — two directions */
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+@keyframes marquee-reverse {
+  0% { transform: translateX(-50%); }
+  100% { transform: translateX(0); }
+}
+
+.marquee-track {
+  animation: marquee 45s linear infinite;
+}
+.marquee-track-reverse {
+  animation: marquee-reverse 45s linear infinite;
+}
+
+/* Hero — emojis fly upward then fade out */
+@keyframes fly-up {
+  0% {
+    opacity: 0;
+    transform: translate(var(--x-drift, 0px), 40px) scale(0.7) rotate(var(--tilt, 0deg));
+  }
+  12% {
+    opacity: 1;
+    transform: translate(var(--x-drift, 0px), 0) scale(1) rotate(var(--tilt, 0deg));
+  }
+  80% {
+    opacity: 1;
+    transform: translate(calc(var(--x-drift, 0px) * 1.5), -260px) scale(1) rotate(calc(var(--tilt, 0deg) + 12deg));
+  }
+  100% {
+    opacity: 0;
+    transform: translate(calc(var(--x-drift, 0px) * 2), -340px) scale(0.7) rotate(calc(var(--tilt, 0deg) + 20deg));
+  }
+}
+.animate-fly-up {
+  animation: fly-up 5.5s ease-out infinite;
+  will-change: transform, opacity;
+}
+
+/* Hero — rotating word slot-in with spring overshoot */
+@keyframes word-in {
+  0% {
+    opacity: 0;
+    transform: translateY(95%) scale(0.88);
+    filter: blur(8px);
+  }
+  35% {
+    opacity: 1;
+    filter: blur(0);
+  }
+  55% {
+    transform: translateY(-9%) scale(1.05);
+    opacity: 1;
+  }
+  78% {
+    transform: translateY(3%) scale(0.98);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+.animate-word-in {
+  animation: word-in 0.75s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Hero — CTA shimmering gradient */
+.cta-gradient {
+  background: linear-gradient(110deg, #d5ff40 0%, #a3e600 50%, #d5ff40 100%);
+  background-size: 220% 100%;
+  background-position: 0% 0%;
+  transition: background-position 0.6s ease, box-shadow 0.3s ease, transform 0.15s ease;
+}
+.cta-gradient:hover {
+  background-position: 100% 0%;
+  box-shadow: 0 10px 30px -10px rgba(213, 255, 64, 0.55);
+}
+.cta-gradient:active {
+  transform: scale(0.98);
+}
+
+/* ── Case Studies micro-interactions ────────────────────────────
+   cs-fade-up  : left-col text (fade + gentle rise)
+   cs-card-in  : each video card (fade + rise + slight scale-up)
+   cs-tab-in   : heading/tabs area on first load
+──────────────────────────────────────────────────────────────── */
+@keyframes cs-fade-up {
+  0%   { opacity: 0; transform: translateY(18px); }
+  100% { opacity: 1; transform: translateY(0);    }
+}
+
+@keyframes cs-card-in {
+  0%   { opacity: 0; transform: translateY(24px) scale(0.96); }
+  60%  { opacity: 1;                                           }
+  100% { opacity: 1; transform: translateY(0)    scale(1);    }
+}
+
+.cs-fade-up {
+  animation: cs-fade-up 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.cs-card-in {
+  animation: cs-card-in 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* ── Case Studies — center phone idle float ── */
+@keyframes phone-float {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-10px); }
+}
+.phone-float {
+  animation: phone-float 4s ease-in-out infinite;
+}
+
+/* ── How It Works — dot pulse when step activates ── */
+@keyframes dot-activate {
+  0%   { transform: scale(0.4); opacity: 0; }
+  60%  { transform: scale(1.25); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+.dot-activate {
+  animation: dot-activate 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+/* ── How It Works — accent line grows from left ── */
+@keyframes line-grow {
+  from { width: 0; }
+  to   { width: 72px; }
+}
+.line-grow {
+  animation: line-grow 0.6s 0.15s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* ── Service card — shine sweep on hover entry ── */
+@keyframes card-shine {
+  0%   { transform: translateX(-140%) skewX(-14deg); }
+  100% { transform: translateX(240%)  skewX(-14deg); }
+}
+.service-card-shine {
+  animation: card-shine 0.75s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* ── Service card — icon glow breathing on hover ── */
+@keyframes icon-breathe {
+  0%, 100% { opacity: 0.18; transform: scale(1.1); }
+  50%       { opacity: 0.32; transform: scale(1.6); }
+}
+.icon-breathe {
+  animation: icon-breathe 2s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track,
+  .marquee-track-reverse,
+  .animate-fly-up,
+  .animate-word-in,
+  .cs-fade-up,
+  .cs-card-in,
+  .phone-float,
+  .service-card-shine,
+  .icon-breathe {
+    animation: none;
+  }
+  .cta-gradient {
+    transition: none;
+  }
+}
+
+/* Volume slider — clean horizontal track with a small white thumb.
+   The track background gradient is set inline in JSX so it reflects current volume. */
+.volume-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 3px;
+  border-radius: 9999px;
+  outline: none;
+}
+
+.volume-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 12px;
+  height: 12px;
+  border-radius: 9999px;
+  background: #ffffff;
+  border: none;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+
+.volume-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+}
+
+.volume-slider::-moz-range-thumb {
+  width: 12px;
+  height: 12px;
+  border-radius: 9999px;
+  background: #ffffff;
+  border: none;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+  cursor: pointer;
+}
+
+.volume-slider::-moz-range-track {
+  background: transparent;
+}

@@ -1,0 +1,6 @@
+node_modules/
+dist/
+public/videos/
+public/hero-ad.mp4
+.DS_Store
+*.local
