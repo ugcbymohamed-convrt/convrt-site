@@ -103,7 +103,7 @@ export default function CaseStudies() {
           className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center"
         >
           {/* LEFT — staggered text block */}
-          <div className="lg:col-span-5 flex flex-col gap-7">
+          <div className="lg:col-span-5 flex flex-col gap-7 items-center lg:items-start text-center lg:text-left">
 
             {/* Brand logo */}
             <div className="cs-fade-up" style={{ animationDelay: '0ms' }}>
@@ -116,7 +116,7 @@ export default function CaseStudies() {
                   maxWidth: '200px',
                   filter: 'brightness(0) invert(1)',
                   objectFit: 'contain',
-                  objectPosition: 'left center',
+                  objectPosition: 'center',
                 }}
                 draggable="false"
               />
@@ -127,7 +127,7 @@ export default function CaseStudies() {
 
             {/* Title */}
             <h3
-              className="cs-fade-up font-display font-bold text-ink tracking-display leading-[1.08] text-[clamp(1.85rem,3vw,2.6rem)] whitespace-pre-line"
+              className="cs-fade-up font-display font-bold text-ink tracking-display leading-[1.08] text-[clamp(1.85rem,3vw,2.6rem)] whitespace-pre-line text-center lg:text-left"
               style={{ animationDelay: '60ms' }}
             >
               {active.title}
@@ -135,7 +135,7 @@ export default function CaseStudies() {
 
             {/* Body */}
             <p
-              className="cs-fade-up text-[15px] text-ink-muted leading-[1.75]"
+              className="cs-fade-up text-[15px] text-ink-muted leading-[1.75] text-center lg:text-left"
               style={{ animationDelay: '120ms' }}
             >
               {active.body}
@@ -285,8 +285,9 @@ function PhoneUnit({ videoId, pos, phoneOffset, isHovered, onClick, onHover, onH
   else { const s = isHovered ? SCALE_SIDE_HOVER : SCALE_SIDE; const r = isHovered ? ROT_Y_HOVER : ROT_Y; transform = `translate(calc(-50% + ${phoneOffset}px), -50%) scale(${s}) rotateY(-${r}deg)` }
 
   const zIndex = isCenter ? 20 : 10
-  const opacity = isCenter ? 1 : isHovered ? 0.90 : 0.62
-  const brightness = isCenter ? 1 : isHovered ? 0.88 : 0.65
+  const isMobile = phoneOffset === 105   /* 105 = xs breakpoint, 148 = sm–md, 185 = lg+ */
+  const opacity    = isCenter ? 1 : isHovered ? 0.90 : (isMobile ? 0.85 : 0.62)
+  const brightness = isCenter ? 1 : isHovered ? 0.88 : (isMobile ? 0.88 : 0.65)
 
   const [playing, setPlaying] = useState(false)
   const [muted, setMuted] = useState(true)

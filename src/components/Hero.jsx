@@ -20,24 +20,24 @@ export default function Hero() {
       <div className="relative mx-auto max-w-7xl px-5 pt-8 pb-14 md:px-8 md:pt-10 md:pb-16 lg:pt-12 lg:pb-20">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-10 items-center">
           {/* Left column — text */}
-          <div className="lg:col-span-6 text-left">
+          <div className="lg:col-span-6 text-center lg:text-left">
             <div className="inline-flex items-center gap-2 rounded-full border border-hairline bg-surface-1/60 px-3 py-1.5 text-xs font-medium text-ink-muted backdrop-blur">
               <span className="h-1.5 w-1.5 rounded-full bg-lime" />
               Paid social + Organic creative studio
             </div>
 
-            <h1 className="mt-5 md:mt-6 font-display font-semibold text-ink tracking-display-xl leading-[1.02] text-[40px] sm:text-[50px] md:text-[54px] lg:text-[60px] xl:text-[70px]">
+            <h1 className="mt-5 md:mt-6 font-display font-semibold text-ink tracking-display-xl leading-[1.02] text-[48px] sm:text-[50px] md:text-[54px] lg:text-[60px] xl:text-[70px]">
               <span className="block">Performance creatives</span>
               <span className="block">
                 engineered to <RotatingWord words={ROTATING_WORDS} />
               </span>
             </h1>
 
-            <p className="mt-5 md:mt-6 max-w-xl text-base md:text-lg text-ink-muted leading-relaxed">
+            <p className="mt-5 md:mt-6 max-w-xl mx-auto lg:mx-0 text-base md:text-lg text-ink-muted leading-relaxed">
               UGC ads, spokesperson videos, and creative strategy for brands that scale on paid social.
             </p>
 
-            <div className="mt-6 md:mt-8 flex flex-wrap items-center gap-5">
+            <div className="mt-6 md:mt-8 flex flex-wrap items-center justify-center lg:justify-start gap-5">
               <a
                 href={BOOKING_URL}
                 className="cta-gradient group inline-flex items-center gap-2 rounded-full px-6 py-3.5 text-sm font-semibold text-canvas"
@@ -91,7 +91,7 @@ function RotatingWord({ words }) {
           underline tracks the word's width and sits flush under it */}
       <span
         key={index}
-        className="animate-word-in absolute inset-0 flex items-baseline justify-start"
+        className="animate-word-in absolute inset-0 flex items-baseline justify-center lg:justify-start"
       >
         <span className="relative text-lime">
           {words[index]}
@@ -116,14 +116,14 @@ function PhonesStage() {
           src="/hero-side-1.png"
           alt="UGC spokesperson video sample 1"
           tilt="-9deg"
-          className="hidden md:block opacity-90 -mr-10 lg:-mr-14 translate-y-4"
+          className="opacity-80 md:opacity-90 -mr-5 md:-mr-10 lg:-mr-14 translate-y-4"
         />
         <PhoneMockup />
         <PhoneStatic
           src="/hero-side-2.png"
           alt="UGC spokesperson video sample 2"
           tilt="9deg"
-          className="hidden md:block opacity-90 -ml-10 lg:-ml-14 translate-y-4"
+          className="opacity-80 md:opacity-90 -ml-5 md:-ml-10 lg:-ml-14 translate-y-4"
         />
       </div>
 
@@ -187,9 +187,9 @@ function PhoneStatic({ src, alt, tilt = '0deg', className = '' }) {
   return (
     <div
       style={{ transform: `rotate(${tilt})` }}
-      className={`relative z-10 w-[160px] md:w-[170px] lg:w-[190px] xl:w-[210px] aspect-[9/19.5] rounded-[36px] md:rounded-[40px] bg-[#0a0a0a] p-[8px] md:p-[10px] shadow-[0_25px_60px_-15px_rgba(0,0,0,0.55),0_0_0_1px_rgba(255,255,255,0.05)_inset,0_0_0_1px_rgba(255,255,255,0.06)] ${className}`}
+      className={`relative z-10 w-[82px] md:w-[160px] lg:w-[190px] xl:w-[210px] aspect-[9/19.5] rounded-[20px] md:rounded-[36px] lg:rounded-[40px] bg-[#0a0a0a] p-[5px] md:p-[8px] lg:p-[10px] shadow-[0_25px_60px_-15px_rgba(0,0,0,0.55),0_0_0_1px_rgba(255,255,255,0.05)_inset,0_0_0_1px_rgba(255,255,255,0.06)] ${className}`}
     >
-      <div className="relative h-full w-full overflow-hidden rounded-[28px] md:rounded-[32px] bg-black">
+      <div className="relative h-full w-full overflow-hidden rounded-[16px] md:rounded-[28px] lg:rounded-[32px] bg-black">
         <img
           src={src}
           alt={alt}
@@ -200,20 +200,20 @@ function PhoneStatic({ src, alt, tilt = '0deg', className = '' }) {
         {/* Dynamic Island */}
         <div
           aria-hidden="true"
-          className="absolute left-1/2 top-1.5 md:top-2 -translate-x-1/2 h-[22px] md:h-[24px] w-[78px] md:w-[88px] rounded-full bg-black z-10"
+          className="absolute left-1/2 top-1 md:top-1.5 lg:top-2 -translate-x-1/2 h-[11px] md:h-[22px] lg:h-[24px] w-[40px] md:w-[78px] lg:w-[88px] rounded-full bg-black z-10"
         />
 
         {/* Glass-edge highlight */}
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute inset-0 rounded-[28px] md:rounded-[32px] ring-1 ring-white/10"
+          className="pointer-events-none absolute inset-0 rounded-[16px] md:rounded-[28px] lg:rounded-[32px] ring-1 ring-white/10"
         />
       </div>
 
       {/* Outer body highlight */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 rounded-[36px] md:rounded-[40px] ring-1 ring-white/5"
+        className="pointer-events-none absolute inset-0 rounded-[20px] md:rounded-[36px] lg:rounded-[40px] ring-1 ring-white/5"
       />
     </div>
   )

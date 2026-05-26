@@ -229,7 +229,7 @@ export default function Services() {
 
         {/* ── Header ── */}
         <div
-          className="mb-14"
+          className="mb-14 text-center lg:text-left"
           style={{
             opacity: sectionVisible ? 1 : 0,
             transform: sectionVisible ? 'none' : 'translateY(28px)',
@@ -245,7 +245,7 @@ export default function Services() {
               Built for modern<br />
               <span className="text-lime">paid social.</span>
             </h2>
-            <p className="text-[15px] text-ink-muted leading-relaxed max-w-sm lg:text-right pb-1">
+            <p className="text-[15px] text-ink-muted leading-relaxed max-w-sm mx-auto lg:mx-0 text-center lg:text-right pb-1">
               We create content engineered for attention,<br className="hidden lg:block" />
               retention, and conversion — from strategy to production.
             </p>

@@ -43,6 +43,12 @@ body {
   animation: marquee-reverse 45s linear infinite;
 }
 
+/* Speed up marquee on small screens — 45 s is too slow at mobile viewport */
+@media (max-width: 639px) {
+  .marquee-track        { animation-duration: 22s; }
+  .marquee-track-reverse { animation-duration: 22s; }
+}
+
 /* Hero — emojis fly upward then fade out */
 @keyframes fly-up {
   0% {

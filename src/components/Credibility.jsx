@@ -145,7 +145,7 @@ function LogoMarquee({ logos, direction = 'forward' }) {
 
   return (
     <div className="relative overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)]">
-      <div className={`flex w-max items-center gap-12 md:gap-16 lg:gap-20 ${trackClass}`}>
+      <div className={`flex w-max items-center gap-8 md:gap-16 lg:gap-20 ${trackClass}`}>
         {doubled.map((logo, i) => (
           <LogoTile key={`${logo.alt}-${i}`} {...logo} />
         ))}

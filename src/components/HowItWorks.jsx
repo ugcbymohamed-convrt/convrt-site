@@ -149,7 +149,7 @@ export default function HowItWorks() {
         {/* ── Header ── */}
         <div
           ref={headerRef}
-          className="mb-20 md:mb-28 max-w-3xl"
+          className="mb-20 md:mb-28 max-w-3xl mx-auto lg:mx-0 text-center lg:text-left"
           style={{
             opacity: headerVisible ? 1 : 0,
             transform: headerVisible ? 'none' : 'translateY(24px)',
@@ -167,7 +167,7 @@ export default function HowItWorks() {
             <span className="text-lime">to final delivery.</span>
           </h2>
 
-          <p className="mt-6 text-base md:text-lg text-ink-muted leading-relaxed max-w-xl">
+          <p className="mt-6 text-base md:text-lg text-ink-muted leading-relaxed max-w-xl mx-auto lg:mx-0">
             Four intentional steps. No bloat. Just great creative — delivered with precision and speed.
           </p>
         </div>

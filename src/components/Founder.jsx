@@ -146,7 +146,7 @@ export default function Founder() {
           </div>
 
           {/* ══ RIGHT — editorial story ══ */}
-          <div className="lg:col-span-7 xl:col-span-7 flex flex-col gap-8 lg:pl-4">
+          <div className="lg:col-span-7 xl:col-span-7 flex flex-col gap-8 lg:pl-4 items-center lg:items-start text-center lg:text-left">
 
             {/* Eyebrow label */}
             <FadeUp inView={inView} delay={120}>
@@ -182,7 +182,7 @@ export default function Founder() {
 
             {/* Founder attribution line */}
             <FadeUp inView={inView} delay={1020}>
-              <div className="flex items-center gap-3 pt-2">
+              <div className="flex items-center justify-center lg:justify-start gap-3 pt-2">
                 <div className="h-px flex-1 bg-hairline max-w-[48px]" />
                 <span className="text-[13px] text-ink-muted font-medium tracking-wide">
                   Mohamed — Founder of CONVRT
@@ -192,7 +192,7 @@ export default function Founder() {
 
             {/* CTA */}
             <FadeUp inView={inView} delay={1100}>
-              <div className="flex flex-wrap items-center gap-5 pt-2">
+              <div className="flex flex-wrap items-center justify-center lg:justify-start gap-5 pt-2">
                 <a
                   href={BOOKING_URL}
                   className="cta-gradient inline-flex items-center gap-2 rounded-full px-7 py-3.5 text-sm font-semibold text-canvas"
