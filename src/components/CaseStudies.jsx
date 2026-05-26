@@ -293,7 +293,7 @@ function PhoneUnit({ youtubeId, pos, phoneOffset, isHovered, onClick, onHover, o
   const opacity    = isCenter ? 1  : isHovered ? 0.90 : 0.62
   const brightness = isCenter ? 1  : isHovered ? 0.88 : 0.65
 
-  const embedUrl = `https://www.youtube-nocookie.com/embed/${youtubeId}?autoplay=1&mute=1&loop=1&playlist=${youtubeId}&controls=0&modestbranding=1&rel=0&playsinline=1`
+  const embedUrl = `https://www.youtube-nocookie.com/embed/${youtubeId}?autoplay=1&mute=1&loop=1&playlist=${youtubeId}&rel=0&playsinline=1`
 
   return (
     <div

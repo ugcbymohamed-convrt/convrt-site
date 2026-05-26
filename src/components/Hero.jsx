@@ -221,7 +221,7 @@ function PhoneStatic({ src, alt, tilt = '0deg', className = '' }) {
 /* ---------- Center phone with looping YouTube video ---------- */
 
 const HERO_YT_ID = 'ViCGTxa0ulo'
-const HERO_EMBED = `https://www.youtube-nocookie.com/embed/${HERO_YT_ID}?autoplay=1&mute=1&loop=1&playlist=${HERO_YT_ID}&controls=0&modestbranding=1&rel=0&playsinline=1`
+const HERO_EMBED = `https://www.youtube-nocookie.com/embed/${HERO_YT_ID}?autoplay=1&mute=1&loop=1&playlist=${HERO_YT_ID}&rel=0&playsinline=1`
 
 function PhoneMockup() {
   return (
