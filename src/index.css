@@ -27,13 +27,17 @@ body {
 }
 
 /* Marquee animations for the credibility logo strip — two directions */
-/* Logos are tripled in JS, so one copy = 33.333% of the total track width */
+/*
+  --marquee-offset is set in JS to the exact pixel width of one logo copy
+  (Math.ceil(scrollWidth / 3)), so the loop seam is always pixel-perfect.
+  The fallback -33.333% covers SSR / no-JS before measurement fires.
+*/
 @keyframes marquee {
   0%   { transform: translateX(0); }
-  100% { transform: translateX(-33.333%); }
+  100% { transform: translateX(var(--marquee-offset, -33.333%)); }
 }
 @keyframes marquee-reverse {
-  0%   { transform: translateX(-33.333%); }
+  0%   { transform: translateX(var(--marquee-offset, -33.333%)); }
   100% { transform: translateX(0); }
 }
 

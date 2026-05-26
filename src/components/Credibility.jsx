@@ -1,3 +1,4 @@
+import { useRef, useEffect, useState } from 'react'
 import { BOOKING_URL } from '../config.js'
 
 /* Two rows of real client logos, rendered as uniform white silhouettes so
@@ -138,17 +139,42 @@ export default function Credibility() {
   )
 }
 
+/*
+  Seamless marquee — three copies so the strip always covers any viewport.
+  We measure the EXACT pixel width of one copy after layout, then pass it as
+  the CSS variable --marquee-offset used by the @keyframes.
+  This avoids the sub-pixel rounding that makes a percentage-based offset
+  land 1–2 px off and show a visible seam.
+*/
 function LogoMarquee({ logos, direction = 'forward' }) {
-  // Duplicate the list so the translateX(-50%) loop is seamless.
-  /* Triple so the strip is always wider than any viewport — pairs with the
-     -33.333% keyframe translation so the loop seam never shows. */
-  const doubled = [...logos, ...logos, ...logos]
+  const trackRef = useRef(null)
+  const [ready, setReady] = useState(false)
+  const tripled = [...logos, ...logos, ...logos]
   const trackClass = direction === 'reverse' ? 'marquee-track-reverse' : 'marquee-track'
+
+  useEffect(() => {
+    const el = trackRef.current
+    if (!el) return
+    const measure = () => {
+      /* scrollWidth = 3 copies; we want exactly 1 copy's width */
+      const oneCopy = Math.ceil(el.scrollWidth / 3)
+      el.style.setProperty('--marquee-offset', `-${oneCopy}px`)
+      setReady(true)
+    }
+    /* Double-RAF: first RAF = end of paint, second = after layout is final */
+    const id = requestAnimationFrame(() => requestAnimationFrame(measure))
+    window.addEventListener('resize', measure)
+    return () => { cancelAnimationFrame(id); window.removeEventListener('resize', measure) }
+  }, [logos.length])
 
   return (
     <div className="relative overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)]">
-      <div className={`flex w-max items-center gap-8 md:gap-16 lg:gap-20 ${trackClass}`}>
-        {doubled.map((logo, i) => (
+      <div
+        ref={trackRef}
+        className={`flex w-max items-center gap-8 md:gap-16 lg:gap-20 ${trackClass}`}
+        style={{ opacity: ready ? 1 : 0, transition: ready ? 'opacity 0.4s ease' : 'none' }}
+      >
+        {tripled.map((logo, i) => (
           <LogoTile key={`${logo.alt}-${i}`} {...logo} />
         ))}
       </div>

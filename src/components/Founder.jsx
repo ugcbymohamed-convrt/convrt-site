@@ -89,9 +89,8 @@ export default function Founder() {
               style={{
                 opacity: inView ? 1 : 0,
                 transform: inView ? 'translateY(0) scale(1)' : 'translateY(36px) scale(1.04)',
-                transition: inView
-                  ? 'opacity 0.9s 0.05s cubic-bezier(0.22,1,0.36,1), transform 1.2s 0.05s cubic-bezier(0.25,1,0.5,1)'
-                  : 'none',
+                /* transition must be present BEFORE the values change, so never set 'none' */
+                transition: 'opacity 0.9s 0.05s cubic-bezier(0.22,1,0.36,1), transform 1.2s 0.05s cubic-bezier(0.25,1,0.5,1)',
               }}
             >
 
@@ -113,7 +112,8 @@ export default function Founder() {
                   borderRadius: '28px',
                   boxShadow: '0 40px 100px -20px rgba(0,0,0,0.75), 0 0 0 1px rgba(255,255,255,0.06) inset',
                   clipPath: inView ? 'inset(0% 0% 0% 0% round 28px)' : 'inset(8% 0% 2% 0% round 28px)',
-                  transition: inView ? 'clip-path 1.1s 0.1s cubic-bezier(0.22,1,0.36,1)' : 'none',
+                  /* likewise — always keep clip-path transition declared */
+                  transition: 'clip-path 1.1s 0.1s cubic-bezier(0.22,1,0.36,1)',
                 }}
               >
                   <img
