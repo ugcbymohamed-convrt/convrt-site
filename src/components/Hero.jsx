@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import Hls from 'hls.js'
 import { BOOKING_URL } from '../config.js'
 
 const ROTATING_WORDS = ['convert', 'resonate', 'sell', 'connect']
@@ -218,39 +219,140 @@ function PhoneStatic({ src, alt, tilt = '0deg', className = '' }) {
   )
 }
 
-/* ---------- Center phone with looping YouTube video ---------- */
+/* ---------- Center phone with looping video + controls ---------- */
 
-const HERO_EMBED = 'https://iframe.cloudflarestream.com/52559a16bde25920724239e737b62373?autoplay=true&muted=true&loop=true&controls=false&preload=auto'
+const HERO_VIDEO_ID = '52559a16bde25920724239e737b62373'
+const HERO_HLS = `https://videodelivery.net/${HERO_VIDEO_ID}/manifest/video.m3u8`
 
 function PhoneMockup() {
+  const videoRef = useRef(null)
+  const progressRef = useRef(null)
+  const [muted, setMuted] = useState(true)
+  const [volume, setVolume] = useState(0.8)
+  const [progress, setProgress] = useState(0)
+  const [duration, setDuration] = useState(0)
+  const [showVolume, setShowVolume] = useState(false)
+  const [playing, setPlaying] = useState(true)
+
+  /* HLS setup */
+  useEffect(() => {
+    const video = videoRef.current
+    if (!video) return
+    let hls
+    if (video.canPlayType('application/vnd.apple.mpegurl')) {
+      video.src = HERO_HLS
+    } else if (Hls.isSupported()) {
+      hls = new Hls()
+      hls.loadSource(HERO_HLS)
+      hls.attachMedia(video)
+    }
+    return () => hls && hls.destroy()
+  }, [])
+
+  /* Video events */
+  useEffect(() => {
+    const video = videoRef.current
+    if (!video) return
+    const onTimeUpdate = () => setProgress(video.currentTime)
+    const onLoadedMetadata = () => setDuration(video.duration || 0)
+    const onEnded = () => setProgress(0)
+    const onPlay = () => setPlaying(true)
+    const onPause = () => setPlaying(false)
+    video.addEventListener('timeupdate', onTimeUpdate)
+    video.addEventListener('loadedmetadata', onLoadedMetadata)
+    video.addEventListener('ended', onEnded)
+    video.addEventListener('play', onPlay)
+    video.addEventListener('pause', onPause)
+    return () => {
+      video.removeEventListener('timeupdate', onTimeUpdate)
+      video.removeEventListener('loadedmetadata', onLoadedMetadata)
+      video.removeEventListener('ended', onEnded)
+      video.removeEventListener('play', onPlay)
+      video.removeEventListener('pause', onPause)
+    }
+  }, [])
+
+  useEffect(() => {
+    const video = videoRef.current
+    if (!video) return
+    video.muted = muted
+    video.volume = volume
+  }, [muted, volume])
+
+  const toggleMute = () => setMuted(m => { const next = !m; if (!next) setShowVolume(true); return next })
+  const togglePlay = () => { const v = videoRef.current; if (!v) return; v.paused ? v.play() : v.pause() }
+  const handleSeek = (e) => {
+    const video = videoRef.current
+    const track = progressRef.current
+    if (!video || !track || !duration) return
+    const rect = track.getBoundingClientRect()
+    video.currentTime = Math.min(Math.max(e.clientX - rect.left, 0), rect.width) / rect.width * duration
+  }
+
+  const pct = duration ? (progress / duration) * 100 : 0
+
   return (
     <div className="relative z-20 w-[240px] sm:w-[260px] md:w-[260px] lg:w-[280px] xl:w-[300px] aspect-[9/19.5] rounded-[44px] md:rounded-[48px] bg-[#0a0a0a] p-[10px] md:p-[12px] shadow-[0_40px_100px_-20px_rgba(0,0,0,0.75),0_0_0_1px_rgba(255,255,255,0.06)_inset,0_0_0_1px_rgba(255,255,255,0.08)]">
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 rounded-[44px] md:rounded-[48px] ring-1 ring-white/5"
-      />
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 rounded-[44px] md:rounded-[48px] ring-1 ring-white/5" />
 
       <div className="relative h-full w-full overflow-hidden rounded-[36px] md:rounded-[38px] bg-black">
-        <iframe
-          src={HERO_EMBED}
-          className="absolute inset-0 h-full w-full"
-          style={{ border: 'none' }}
-          allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture"
-          allowFullScreen={false}
-          title="CONVRT performance creative — UGC ad sample"
+        <video
+          ref={videoRef}
+          className="absolute inset-0 h-full w-full object-cover"
+          autoPlay loop muted playsInline preload="auto"
+          aria-label="CONVRT performance creative — UGC ad sample"
         />
 
-        {/* Dynamic Island */}
-        <div
-          aria-hidden="true"
-          className="absolute left-1/2 top-2 md:top-2.5 -translate-x-1/2 h-[26px] md:h-[28px] w-[100px] md:w-[110px] rounded-full bg-black z-20 pointer-events-none"
-        />
+        <div aria-hidden="true" className="absolute left-1/2 top-2 md:top-2.5 -translate-x-1/2 h-[26px] md:h-[28px] w-[100px] md:w-[110px] rounded-full bg-black z-20" />
 
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-0 rounded-[36px] md:rounded-[38px] ring-1 ring-white/10 z-10"
-        />
+        {/* Volume control */}
+        <div className="absolute top-14 right-4 z-30 flex items-center gap-1.5" onMouseEnter={() => !muted && setShowVolume(true)} onMouseLeave={() => setShowVolume(false)}>
+          <div className={`flex items-center overflow-hidden transition-all duration-300 ${!muted && showVolume ? 'w-[88px] opacity-100' : 'w-0 opacity-0'}`}>
+            <div className="flex h-9 items-center rounded-full bg-black/55 backdrop-blur-md px-3">
+              <input type="range" min="0" max="1" step="0.01" value={volume}
+                onChange={(e) => setVolume(parseFloat(e.target.value))}
+                aria-label="Volume" className="volume-slider w-16 cursor-pointer"
+                style={{ background: `linear-gradient(to right, #fafafa 0%, #fafafa ${volume * 100}%, rgba(255,255,255,0.25) ${volume * 100}%, rgba(255,255,255,0.25) 100%)` }}
+              />
+            </div>
+          </div>
+          <button type="button" onClick={toggleMute} aria-label={muted ? 'Unmute video' : 'Mute video'}
+            className="h-9 w-9 rounded-full bg-black/55 backdrop-blur-md text-white flex items-center justify-center transition-colors hover:bg-black/75 active:scale-95">
+            {muted ? <SpeakerMutedIcon /> : <SpeakerOnIcon level={volume} />}
+          </button>
+        </div>
+
+        {/* Bottom controls */}
+        <div className="absolute inset-x-4 bottom-5 z-30">
+          <div className="flex items-center gap-2.5 rounded-full bg-black/55 backdrop-blur-md pl-1.5 pr-3 py-1.5">
+            <button type="button" onClick={togglePlay} aria-label={playing ? 'Pause video' : 'Play video'}
+              className="h-8 w-8 shrink-0 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors active:scale-95">
+              {playing ? <PauseIcon /> : <PlayIcon />}
+            </button>
+            <div ref={progressRef} onClick={handleSeek} role="progressbar" aria-valuenow={Math.round(pct)} aria-valuemin={0} aria-valuemax={100}
+              className="group relative flex-1 h-1 cursor-pointer rounded-full bg-white/20 transition-[height] duration-150 hover:h-1.5">
+              <div className="absolute left-0 top-0 h-full rounded-full bg-white transition-[width] duration-100 ease-linear" style={{ width: `${pct}%` }} />
+              <div className="absolute -top-1 h-3 w-3 -translate-x-1/2 rounded-full bg-white shadow opacity-0 transition-opacity group-hover:opacity-100" style={{ left: `${pct}%` }} />
+            </div>
+          </div>
+        </div>
+
+        <div aria-hidden="true" className="pointer-events-none absolute inset-0 rounded-[36px] md:rounded-[38px] ring-1 ring-white/10 z-10" />
       </div>
     </div>
   )
+}
+
+/* ---------- Icons ---------- */
+function SpeakerMutedIcon() {
+  return <svg viewBox="0 0 20 20" className="h-4 w-4" fill="none" aria-hidden="true"><path d="M4 7v6h3l5 4V3L7 7H4z" fill="currentColor" /><path d="M14.5 7.5l4 4M18.5 7.5l-4 4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" /></svg>
+}
+function SpeakerOnIcon({ level = 1 }) {
+  return <svg viewBox="0 0 20 20" className="h-4 w-4" fill="none" aria-hidden="true"><path d="M4 7v6h3l5 4V3L7 7H4z" fill="currentColor" />{level > 0.05 && <path d="M14 8c.8.6 1.3 1.3 1.3 2s-.5 1.4-1.3 2" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />}{level > 0.5 && <path d="M16.6 5.6c1.7 1.2 2.6 2.7 2.6 4.4s-.9 3.2-2.6 4.4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />}</svg>
+}
+function PlayIcon() {
+  return <svg viewBox="0 0 16 16" className="h-3.5 w-3.5 ml-0.5" fill="currentColor" aria-hidden="true"><path d="M4 3l9 5-9 5V3z" /></svg>
+}
+function PauseIcon() {
+  return <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="currentColor" aria-hidden="true"><rect x="4" y="3" width="3" height="10" rx="1" /><rect x="9" y="3" width="3" height="10" rx="1" /></svg>
 }

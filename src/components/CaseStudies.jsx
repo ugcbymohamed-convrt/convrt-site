@@ -1,4 +1,5 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useCallback } from 'react'
+import Hls from 'hls.js'
 import { BOOKING_URL } from '../config.js'
 
 /* ─────────────────────────────────────────────
@@ -190,9 +191,15 @@ export default function CaseStudies() {
 function PhoneCarousel({ videos, brandId, accentColor }) {
   const [order, setOrder] = useState([1, 0, 2])
   const [hoveredPos, setHoveredPos] = useState(null)
+  const videoRefs = useRef([null, null, null])
   const [phoneOffset, setPhoneOffset] = useState(158)
 
-  /* Responsive side-phone offset */
+  const stableVideoRefs = useRef([
+    (el) => { videoRefs.current[0] = el },
+    (el) => { videoRefs.current[1] = el },
+    (el) => { videoRefs.current[2] = el },
+  ])
+
   useEffect(() => {
     const update = () => {
       const w = window.innerWidth
@@ -203,11 +210,20 @@ function PhoneCarousel({ videos, brandId, accentColor }) {
     return () => window.removeEventListener('resize', update)
   }, [])
 
-  /* Reset order & hover on brand switch */
   useEffect(() => {
     setOrder([1, 0, 2])
     setHoveredPos(null)
   }, [brandId])
+
+  /* Drive playback: center plays, sides pause */
+  useEffect(() => {
+    const centerIdx = order[1]
+    videoRefs.current.forEach((ref, i) => {
+      if (!ref) return
+      if (i === centerIdx) { ref.currentTime = 0; ref.play().catch(() => {}) }
+      else ref.pause()
+    })
+  }, [order, brandId])
 
   function clickPosition(pos) {
     if (pos === 0) setOrder(([l, c, r]) => [r, l, c])
@@ -216,20 +232,9 @@ function PhoneCarousel({ videos, brandId, accentColor }) {
   }
 
   return (
-    <div
-      className="relative w-full select-none"
-      style={{ height: '700px', perspective: '1400px', perspectiveOrigin: '50% 50%' }}
-    >
-      {/* Per-brand ambient glow */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0"
-        style={{
-          background: `radial-gradient(ellipse 75% 55% at 50% 58%, ${accentColor}1c 0%, transparent 68%)`,
-          transition: 'background 0.9s ease',
-        }}
-      />
-
+    <div className="relative w-full select-none" style={{ height: '700px', perspective: '1400px', perspectiveOrigin: '50% 50%' }}>
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0"
+        style={{ background: `radial-gradient(ellipse 75% 55% at 50% 58%, ${accentColor}1c 0%, transparent 68%)`, transition: 'background 0.9s ease' }} />
       {[0, 1, 2].map((videoIdx) => {
         const pos = order.indexOf(videoIdx)
         return (
@@ -242,6 +247,7 @@ function PhoneCarousel({ videos, brandId, accentColor }) {
             onClick={() => pos !== 1 && clickPosition(pos)}
             onHover={() => pos !== 1 && setHoveredPos(pos)}
             onHoverEnd={() => setHoveredPos(null)}
+            videoRef={stableVideoRefs.current[videoIdx]}
           />
         )
       })}
@@ -267,147 +273,141 @@ const BEZEL        = 12    /* matches Hero's md:p-[12px] */
 const DI_H         = 28    /* matches Hero's md:h-[28px] */
 const DI_W         = 110   /* matches Hero's md:w-[110px] */
 
-function PhoneUnit({ videoId, pos, phoneOffset, isHovered, onClick, onHover, onHoverEnd }) {
+function PhoneUnit({ videoId, pos, phoneOffset, isHovered, onClick, onHover, onHoverEnd, videoRef }) {
   const isCenter = pos === 1
   const isLeft   = pos === 0
 
-  const SCALE_SIDE       = 0.78
-  const SCALE_SIDE_HOVER = 0.86
-  const ROT_Y            = 20
-  const ROT_Y_HOVER      = 11
+  const SCALE_SIDE = 0.78, SCALE_SIDE_HOVER = 0.86, ROT_Y = 20, ROT_Y_HOVER = 11
 
   let transform
-  if (isCenter) {
-    transform = 'translate(-50%, -50%) scale(1) rotateY(0deg)'
-  } else if (isLeft) {
-    const s = isHovered ? SCALE_SIDE_HOVER : SCALE_SIDE
-    const r = isHovered ? ROT_Y_HOVER      : ROT_Y
-    transform = `translate(calc(-50% - ${phoneOffset}px), -50%) scale(${s}) rotateY(${r}deg)`
-  } else {
-    const s = isHovered ? SCALE_SIDE_HOVER : SCALE_SIDE
-    const r = isHovered ? ROT_Y_HOVER      : ROT_Y
-    transform = `translate(calc(-50% + ${phoneOffset}px), -50%) scale(${s}) rotateY(-${r}deg)`
-  }
+  if (isCenter) transform = 'translate(-50%, -50%) scale(1) rotateY(0deg)'
+  else if (isLeft) { const s = isHovered ? SCALE_SIDE_HOVER : SCALE_SIDE; const r = isHovered ? ROT_Y_HOVER : ROT_Y; transform = `translate(calc(-50% - ${phoneOffset}px), -50%) scale(${s}) rotateY(${r}deg)` }
+  else { const s = isHovered ? SCALE_SIDE_HOVER : SCALE_SIDE; const r = isHovered ? ROT_Y_HOVER : ROT_Y; transform = `translate(calc(-50% + ${phoneOffset}px), -50%) scale(${s}) rotateY(-${r}deg)` }
 
-  const zIndex     = isCenter ? 20 : 10
-  const opacity    = isCenter ? 1  : isHovered ? 0.90 : 0.62
-  const brightness = isCenter ? 1  : isHovered ? 0.88 : 0.65
+  const zIndex = isCenter ? 20 : 10
+  const opacity = isCenter ? 1 : isHovered ? 0.90 : 0.62
+  const brightness = isCenter ? 1 : isHovered ? 0.88 : 0.65
 
-  const embedUrl = `https://iframe.cloudflarestream.com/${videoId}?autoplay=true&muted=true&loop=true&controls=false&preload=auto`
+  const [playing, setPlaying] = useState(false)
+  const [muted, setMuted] = useState(true)
+  const [progress, setProgress] = useState(0)
+  const [duration, setDuration] = useState(0)
+  const [loaded, setLoaded] = useState(false)
+  const internalRef = useRef(null)
+
+  const combinedRef = useCallback((el) => {
+    internalRef.current = el
+    if (typeof videoRef === 'function') videoRef(el)
+  }, [videoRef])
+
+  /* HLS setup */
+  useEffect(() => {
+    const el = internalRef.current
+    if (!el) return
+    const src = `https://videodelivery.net/${videoId}/manifest/video.m3u8`
+    let hls
+    if (el.canPlayType('application/vnd.apple.mpegurl')) {
+      el.src = src
+    } else if (Hls.isSupported()) {
+      hls = new Hls()
+      hls.loadSource(src)
+      hls.attachMedia(el)
+    }
+    return () => hls && hls.destroy()
+  }, [videoId])
+
+  useEffect(() => { const el = internalRef.current; if (el) el.muted = muted }, [muted])
+
+  useEffect(() => {
+    const el = internalRef.current
+    if (!el) return
+    const onTime  = () => setProgress(el.currentTime)
+    const onMeta  = () => setDuration(el.duration || 0)
+    const onPlay  = () => setPlaying(true)
+    const onPause = () => setPlaying(false)
+    const onReady = () => setLoaded(true)
+    el.addEventListener('timeupdate', onTime)
+    el.addEventListener('loadedmetadata', onMeta)
+    el.addEventListener('play', onPlay)
+    el.addEventListener('pause', onPause)
+    el.addEventListener('canplay', onReady)
+    return () => {
+      el.removeEventListener('timeupdate', onTime)
+      el.removeEventListener('loadedmetadata', onMeta)
+      el.removeEventListener('play', onPlay)
+      el.removeEventListener('pause', onPause)
+      el.removeEventListener('canplay', onReady)
+    }
+  }, [])
+
+  const togglePlay = useCallback(() => { const el = internalRef.current; if (!el) return; el.paused ? el.play().catch(() => {}) : el.pause() }, [])
+  const toggleMute = useCallback((e) => { e.stopPropagation(); setMuted(m => !m) }, [])
+  const seek = useCallback((e) => {
+    e.stopPropagation()
+    const el = internalRef.current
+    if (!el || !duration) return
+    const rect = e.currentTarget.getBoundingClientRect()
+    el.currentTime = ((e.clientX - rect.left) / rect.width) * duration
+  }, [duration])
+
+  const pct = duration > 0 ? (progress / duration) * 100 : 0
 
   return (
-    <div
-      className="absolute"
-      style={{
-        left: '50%',
-        top: '50%',
-        width: `${PHONE_W}px`,
-        transform,
-        zIndex,
-        opacity,
-        filter: `brightness(${brightness})`,
-        transition: 'transform 0.65s cubic-bezier(0.34, 1.18, 0.64, 1), opacity 0.5s ease, filter 0.5s ease',
-        cursor: isCenter ? 'default' : 'pointer',
-        willChange: 'transform, opacity',
-      }}
-      onClick={onClick}
-      onMouseEnter={onHover}
-      onMouseLeave={onHoverEnd}
-    >
+    <div className="absolute" style={{ left: '50%', top: '50%', width: `${PHONE_W}px`, transform, zIndex, opacity, filter: `brightness(${brightness})`, transition: 'transform 0.65s cubic-bezier(0.34, 1.18, 0.64, 1), opacity 0.5s ease, filter 0.5s ease', cursor: isCenter ? 'default' : 'pointer', willChange: 'transform, opacity' }}
+      onClick={onClick} onMouseEnter={onHover} onMouseLeave={onHoverEnd}>
       <div className={isCenter ? 'phone-float' : undefined} style={{ width: '100%' }}>
+        <div style={{ position: 'relative', width: '100%', aspectRatio: '9 / 19.5', borderRadius: `${OUTER_RADIUS}px`, background: '#0a0a0a', padding: `${BEZEL}px`, boxShadow: isCenter ? `0 40px 100px -20px rgba(0,0,0,0.80), inset 0 0 0 1px rgba(255,255,255,0.07), 0 0 0 1px rgba(255,255,255,0.05)` : `0 24px 60px -15px rgba(0,0,0,0.65), inset 0 0 0 1px rgba(255,255,255,0.05)` }}>
+          <div aria-hidden="true" style={{ position: 'absolute', inset: 0, borderRadius: `${OUTER_RADIUS}px`, boxShadow: 'inset 0 0 0 1px rgba(255,255,255,0.05)', pointerEvents: 'none' }} />
+          <div style={{ position: 'relative', height: '100%', width: '100%', overflow: 'hidden', borderRadius: `${INNER_RADIUS}px`, background: '#000' }}>
 
-        {/* ── OUTER PHONE BODY ── */}
-        <div
-          style={{
-            position: 'relative',
-            width: '100%',
-            aspectRatio: '9 / 19.5',
-            borderRadius: `${OUTER_RADIUS}px`,
-            background: '#0a0a0a',
-            padding: `${BEZEL}px`,
-            boxShadow: isCenter
-              ? `0 40px 100px -20px rgba(0,0,0,0.80), inset 0 0 0 1px rgba(255,255,255,0.07), 0 0 0 1px rgba(255,255,255,0.05)`
-              : `0 24px 60px -15px rgba(0,0,0,0.65), inset 0 0 0 1px rgba(255,255,255,0.05)`,
-          }}
-        >
-          <div
-            aria-hidden="true"
-            style={{
-              position: 'absolute', inset: 0,
-              borderRadius: `${OUTER_RADIUS}px`,
-              boxShadow: 'inset 0 0 0 1px rgba(255,255,255,0.05)',
-              pointerEvents: 'none',
-            }}
-          />
+            <video ref={combinedRef} className="absolute inset-0 w-full h-full object-cover" loop muted playsInline preload="metadata"
+              onClick={isCenter ? togglePlay : undefined} style={{ cursor: isCenter ? 'pointer' : 'default' }} />
 
-          {/* ── INNER SCREEN ── */}
-          <div
-            style={{
-              position: 'relative',
-              height: '100%',
-              width: '100%',
-              overflow: 'hidden',
-              borderRadius: `${INNER_RADIUS}px`,
-              background: '#000',
-            }}
-          >
-            <iframe
-              src={embedUrl}
-              className="absolute inset-0 w-full h-full"
-              style={{ border: 'none', pointerEvents: isCenter ? 'auto' : 'none' }}
-              allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture"
-              allowFullScreen={false}
-              title={`Video ${videoId}`}
-            />
+            {!loaded && <div className="absolute inset-0 animate-pulse" style={{ background: '#111114', borderRadius: `${INNER_RADIUS}px` }} />}
 
-            {/* Dynamic Island */}
-            <div
-              aria-hidden="true"
-              style={{
-                position: 'absolute',
-                top: '8px',
-                left: '50%',
-                transform: 'translateX(-50%)',
-                zIndex: 20,
-                height: `${DI_H}px`,
-                width: `${DI_W}px`,
-                borderRadius: '9999px',
-                background: '#000',
-                pointerEvents: 'none',
-              }}
-            />
+            <div aria-hidden="true" style={{ position: 'absolute', top: '8px', left: '50%', transform: 'translateX(-50%)', zIndex: 20, height: `${DI_H}px`, width: `${DI_W}px`, borderRadius: '9999px', background: '#000' }} />
 
-            {/* Side phone swap arrow */}
+            {isCenter && (
+              <>
+                <button onClick={toggleMute} aria-label={muted ? 'Unmute' : 'Mute'}
+                  className="absolute top-14 right-3 z-30 h-9 w-9 rounded-full flex items-center justify-center bg-black/55 backdrop-blur-md text-white transition-colors hover:bg-black/75 active:scale-95">
+                  {muted
+                    ? <svg viewBox="0 0 20 20" className="h-4 w-4" fill="none"><path d="M4 7v6h3l5 4V3L7 7H4z" fill="currentColor" /><path d="M14.5 7.5l4 4M18.5 7.5l-4 4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" /></svg>
+                    : <svg viewBox="0 0 20 20" className="h-4 w-4" fill="none"><path d="M4 7v6h3l5 4V3L7 7H4z" fill="currentColor" /><path d="M14 8c.8.6 1.3 1.3 1.3 2s-.5 1.4-1.3 2" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" /><path d="M16.6 5.6c1.7 1.2 2.6 2.7 2.6 4.4s-.9 3.2-2.6 4.4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" /></svg>}
+                </button>
+                <button onClick={togglePlay} aria-label={playing ? 'Pause' : 'Play'}
+                  className={`absolute inset-0 z-10 flex items-center justify-center transition-opacity duration-200 ${playing ? 'opacity-0 hover:opacity-100' : 'opacity-100'}`}>
+                  <span className="h-14 w-14 rounded-full bg-black/55 backdrop-blur-md text-white flex items-center justify-center shadow-[0_4px_20px_rgba(0,0,0,0.5)] transition-transform duration-150 hover:scale-110">
+                    {playing
+                      ? <svg viewBox="0 0 16 16" className="h-5 w-5" fill="currentColor"><rect x="4" y="3" width="3" height="10" rx="1" /><rect x="9" y="3" width="3" height="10" rx="1" /></svg>
+                      : <svg viewBox="0 0 16 16" className="h-5 w-5 ml-0.5" fill="currentColor"><path d="M4 3l9 5-9 5V3z" /></svg>}
+                  </span>
+                </button>
+                <div className="absolute inset-x-3 bottom-5 z-30">
+                  <div className="flex items-center gap-2.5 rounded-full bg-black/55 backdrop-blur-md pl-1.5 pr-3 py-1.5">
+                    <button type="button" onClick={togglePlay} className="h-8 w-8 shrink-0 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors active:scale-95">
+                      {playing ? <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="currentColor"><rect x="4" y="3" width="3" height="10" rx="1" /><rect x="9" y="3" width="3" height="10" rx="1" /></svg> : <svg viewBox="0 0 16 16" className="h-3.5 w-3.5 ml-0.5" fill="currentColor"><path d="M4 3l9 5-9 5V3z" /></svg>}
+                    </button>
+                    <div className="group relative flex-1 h-1 cursor-pointer rounded-full bg-white/20 transition-[height] duration-150 hover:h-1.5" onClick={seek} role="progressbar" aria-valuenow={Math.round(pct)} aria-valuemin={0} aria-valuemax={100}>
+                      <div className="absolute left-0 top-0 h-full rounded-full bg-white" style={{ width: `${pct}%`, transition: 'width 0.1s linear' }} />
+                      <div className="absolute -top-1 h-3 w-3 -translate-x-1/2 rounded-full bg-white shadow opacity-0 transition-opacity group-hover:opacity-100" style={{ left: `${pct}%` }} />
+                    </div>
+                  </div>
+                </div>
+              </>
+            )}
+
             {!isCenter && (
-              <div
-                className="absolute inset-0 z-20 flex items-center justify-center"
-                style={{ opacity: isHovered ? 1 : 0, transition: 'opacity 0.22s ease' }}
-              >
+              <div className="absolute inset-0 z-20 flex items-center justify-center" style={{ opacity: isHovered ? 1 : 0, transition: 'opacity 0.22s ease' }}>
                 <div className="h-12 w-12 rounded-full bg-black/70 backdrop-blur-sm border border-white/15 flex items-center justify-center shadow-[0_4px_16px_rgba(0,0,0,0.5)]">
-                  {isLeft ? (
-                    <svg viewBox="0 0 12 12" className="h-4 w-4 text-white" fill="none">
-                      <path d="M9 6H3M3 6L5.5 3.5M3 6l2.5 2.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-                    </svg>
-                  ) : (
-                    <svg viewBox="0 0 12 12" className="h-4 w-4 text-white" fill="none">
-                      <path d="M3 6h6M9 6L6.5 3.5M9 6l-2.5 2.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-                    </svg>
-                  )}
+                  {isLeft
+                    ? <svg viewBox="0 0 12 12" className="h-4 w-4 text-white" fill="none"><path d="M9 6H3M3 6L5.5 3.5M3 6l2.5 2.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                    : <svg viewBox="0 0 12 12" className="h-4 w-4 text-white" fill="none"><path d="M3 6h6M9 6L6.5 3.5M9 6l-2.5 2.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" /></svg>}
                 </div>
               </div>
             )}
 
-            {/* Screen glass-edge ring */}
-            <div
-              aria-hidden="true"
-              style={{
-                position: 'absolute', inset: 0,
-                borderRadius: `${INNER_RADIUS}px`,
-                boxShadow: 'inset 0 0 0 1px rgba(255,255,255,0.10)',
-                pointerEvents: 'none',
-                zIndex: 30,
-              }}
-            />
+            <div aria-hidden="true" style={{ position: 'absolute', inset: 0, borderRadius: `${INNER_RADIUS}px`, boxShadow: 'inset 0 0 0 1px rgba(255,255,255,0.10)', pointerEvents: 'none', zIndex: 10 }} />
           </div>
         </div>
       </div>
