@@ -220,8 +220,7 @@ function PhoneStatic({ src, alt, tilt = '0deg', className = '' }) {
 
 /* ---------- Center phone with looping YouTube video ---------- */
 
-const HERO_YT_ID = 'ViCGTxa0ulo'
-const HERO_EMBED = `https://www.youtube-nocookie.com/embed/${HERO_YT_ID}?autoplay=1&mute=1&loop=1&playlist=${HERO_YT_ID}&rel=0&playsinline=1`
+const HERO_EMBED = 'https://iframe.cloudflarestream.com/52559a16bde25920724239e737b62373?autoplay=true&muted=true&loop=true&controls=false&preload=auto'
 
 function PhoneMockup() {
   return (
@@ -236,7 +235,7 @@ function PhoneMockup() {
           src={HERO_EMBED}
           className="absolute inset-0 h-full w-full"
           style={{ border: 'none' }}
-          allow="autoplay; encrypted-media"
+          allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture"
           allowFullScreen={false}
           title="CONVRT performance creative — UGC ad sample"
         />

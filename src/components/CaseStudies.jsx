@@ -12,7 +12,7 @@ const CASES = [
     logo: { src: '/clients/elyon.png', alt: 'Elyon Dubai', w: 600, h: 226 },
     title: '100+ creatives tested.\nMultiple winners found.',
     body: "We have created over 100 pieces of content with Elyon Dubai. Since their launch back in 2025, we have tested multiple concepts & variations. So far, we've already found many formats that are killing it for Elyon. When the product is of quality, it's so much easier to make genuine content that resonates with people.",
-    videos: ['FN8_o7jIrDM', 'tcp0SErAHOk', 'SyIu0CM5GZ8'],
+    videos: ['fa02007b36fae2b3bb68c97cdd00e9fc', '0905b814e2ba3950197b5bfe1cefae38', '9e6cb8438c9b0c1ab8b55953718eddde'],
     accentColor: '#f59e0b',
   },
   {
@@ -21,7 +21,7 @@ const CASES = [
     logo: { src: '/clients/adscale.png', alt: 'Adscale', w: 531, h: 149 },
     title: "Long-form creatives\nthat can't be skipped.",
     body: 'If you think long creatives are not a thing, check these out. These are not just creatives, they build trust, they scream confidence, and they show "we know what we\'re doing". Aesthetic transitions, catchy visuals and a delivery so engaging that it makes it almost impossible to skip.',
-    videos: ['SuYTkK7jju4', '552nJGX4AyY', 'qNULZMcy_1A'],
+    videos: ['8d4dbbeabac272bddb23068c91037af8', '08abef50c734085f25f345cdde4b1e33', 'e3fe66bacac503de0a0be989a3a4ed4b'],
     accentColor: '#3b82f6',
   },
   {
@@ -30,7 +30,7 @@ const CASES = [
     logo: { src: '/clients/graspo.png', alt: 'Graspo', w: 619, h: 279, height: 62 },
     title: '6 million views.\nIn less than 2 months.',
     body: "We have generated over 6 million views for Graspo in less than 2 months. And yes, it took 6 months of content testing beforehand to figure out what really clicks and what doesn't. Today, Graspo has over 10k followers on Facebook and almost 4k on Instagram.",
-    videos: ['Qj6c6-O7hOk', 'IoXPeuH7KbI', 'iwqk3-lDBEk'],
+    videos: ['15dd5505109f6821ccdcb13fc3cdc1fd', '3616606e3ca6d1a85c8a57d7cc2f656f', 'c1379ace38f2fa19ef2a45de1bb5d4b1'],
     accentColor: '#10b981',
   },
 ]
@@ -235,7 +235,7 @@ function PhoneCarousel({ videos, brandId, accentColor }) {
         return (
           <PhoneUnit
             key={videoIdx}
-            youtubeId={videos[videoIdx]}
+            videoId={videos[videoIdx]}
             pos={pos}
             phoneOffset={phoneOffset}
             isHovered={hoveredPos === pos && pos !== 1}
@@ -267,7 +267,7 @@ const BEZEL        = 12    /* matches Hero's md:p-[12px] */
 const DI_H         = 28    /* matches Hero's md:h-[28px] */
 const DI_W         = 110   /* matches Hero's md:w-[110px] */
 
-function PhoneUnit({ youtubeId, pos, phoneOffset, isHovered, onClick, onHover, onHoverEnd }) {
+function PhoneUnit({ videoId, pos, phoneOffset, isHovered, onClick, onHover, onHoverEnd }) {
   const isCenter = pos === 1
   const isLeft   = pos === 0
 
@@ -293,7 +293,7 @@ function PhoneUnit({ youtubeId, pos, phoneOffset, isHovered, onClick, onHover, o
   const opacity    = isCenter ? 1  : isHovered ? 0.90 : 0.62
   const brightness = isCenter ? 1  : isHovered ? 0.88 : 0.65
 
-  const embedUrl = `https://www.youtube-nocookie.com/embed/${youtubeId}?autoplay=1&mute=1&loop=1&playlist=${youtubeId}&rel=0&playsinline=1`
+  const embedUrl = `https://iframe.cloudflarestream.com/${videoId}?autoplay=true&muted=true&loop=true&controls=false&preload=auto`
 
   return (
     <div
@@ -355,9 +355,9 @@ function PhoneUnit({ youtubeId, pos, phoneOffset, isHovered, onClick, onHover, o
               src={embedUrl}
               className="absolute inset-0 w-full h-full"
               style={{ border: 'none', pointerEvents: isCenter ? 'auto' : 'none' }}
-              allow="autoplay; encrypted-media"
+              allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture"
               allowFullScreen={false}
-              title={`Video ${youtubeId}`}
+              title={`Video ${videoId}`}
             />
 
             {/* Dynamic Island */}
