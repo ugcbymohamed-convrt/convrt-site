@@ -124,7 +124,7 @@ export default function Credibility() {
               </svg>
             </a>
             <a
-              href={BOOKING_URL} target="_blank" rel="noopener noreferrer"
+              href="https://forms.gle/Bg8ubU2tnmMj88m7A" target="_blank" rel="noopener noreferrer"
               className="inline-flex items-center justify-center gap-2 rounded-full bg-ink px-6 py-3 text-sm font-semibold text-canvas transition-transform duration-150 active:scale-[0.98] hover:bg-white w-full sm:w-auto"
             >
               I'm a creator
