@@ -39,21 +39,9 @@ export default function Footer() {
                 </a>
               </li>
               <li className="flex gap-3 pt-2">
-                <Social href="https://instagram.com/" label="Instagram">
-                  <path d="M4 8a4 4 0 014-4h4a4 4 0 014 4v4a4 4 0 01-4 4H8a4 4 0 01-4-4V8z" stroke="currentColor" strokeWidth="1.4" fill="none" />
-                  <circle cx="10" cy="10" r="2.5" stroke="currentColor" strokeWidth="1.4" fill="none" />
-                  <circle cx="14" cy="6" r="0.8" fill="currentColor" />
-                </Social>
-                <Social href="https://tiktok.com/" label="TikTok">
-                  <path d="M11 3v8.5a2.5 2.5 0 11-2.5-2.5" stroke="currentColor" strokeWidth="1.4" fill="none" strokeLinecap="round" />
-                  <path d="M11 3c.5 2 2 3.5 4 4" stroke="currentColor" strokeWidth="1.4" fill="none" strokeLinecap="round" />
-                </Social>
-                <Social href="https://linkedin.com/" label="LinkedIn">
+                <Social href="https://www.linkedin.com/company/convrtstudio/" label="LinkedIn">
                   <rect x="3" y="3" width="14" height="14" rx="2" stroke="currentColor" strokeWidth="1.4" fill="none" />
                   <path d="M6 8.5V14M6 6.5v.01M9 14v-3a2 2 0 014 0v3M9 14V8.5" stroke="currentColor" strokeWidth="1.4" fill="none" strokeLinecap="round" />
-                </Social>
-                <Social href="https://x.com/" label="X (Twitter)">
-                  <path d="M4 4l12 12M16 4L4 16" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
                 </Social>
               </li>
             </ul>
