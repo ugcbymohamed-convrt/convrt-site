@@ -396,7 +396,7 @@ export default function HowItWorks() {
             </p>
           </div>
           <a
-            href={BOOKING_URL}
+            href={BOOKING_URL} target="_blank" rel="noopener noreferrer"
             className="cta-gradient shrink-0 inline-flex items-center gap-2 rounded-full px-7 py-3.5 text-sm font-semibold text-canvas"
           >
             Book a Discovery Call

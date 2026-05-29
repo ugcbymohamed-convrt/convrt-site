@@ -143,7 +143,7 @@ export default function CaseStudies() {
 
             {/* CTA */}
             <a
-              href={BOOKING_URL}
+              href={BOOKING_URL} target="_blank" rel="noopener noreferrer"
               className="cs-fade-up cta-gradient mt-1 inline-flex w-fit items-center gap-2 rounded-full px-7 py-3.5 text-sm font-semibold text-canvas"
               style={{ animationDelay: '190ms' }}
             >

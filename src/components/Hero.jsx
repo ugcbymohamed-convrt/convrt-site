@@ -39,7 +39,7 @@ export default function Hero() {
 
             <div className="mt-6 md:mt-8 flex flex-wrap items-center justify-center lg:justify-start gap-5">
               <a
-                href={BOOKING_URL}
+                href={BOOKING_URL} target="_blank" rel="noopener noreferrer"
                 className="cta-gradient group inline-flex items-center gap-2 rounded-full px-6 py-3.5 text-sm font-semibold text-canvas"
               >
                 Book a Creative Call

@@ -45,7 +45,7 @@ export default function Nav() {
 
         <div className="flex items-center gap-2">
           <a
-            href={BOOKING_URL}
+            href={BOOKING_URL} target="_blank" rel="noopener noreferrer"
             className="hidden md:inline-flex items-center gap-1.5 rounded-full bg-ink px-4 py-2.5 text-sm font-medium text-canvas transition-transform duration-150 active:scale-[0.98] hover:bg-white"
           >
             Book a Discovery Call
@@ -87,7 +87,7 @@ export default function Nav() {
               </a>
             ))}
             <a
-              href={BOOKING_URL}
+              href={BOOKING_URL} target="_blank" rel="noopener noreferrer"
               onClick={() => setOpen(false)}
               className="mt-2 inline-flex items-center justify-center gap-1.5 rounded-full bg-ink px-4 py-3 text-sm font-medium text-canvas"
             >

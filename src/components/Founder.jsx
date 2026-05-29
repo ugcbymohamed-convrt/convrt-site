@@ -213,7 +213,7 @@ export default function Founder() {
             <FadeUp inView={inView} delay={1100}>
               <div className="flex flex-wrap items-center justify-center lg:justify-start gap-5 pt-2">
                 <a
-                  href={BOOKING_URL}
+                  href={BOOKING_URL} target="_blank" rel="noopener noreferrer"
                   className="cta-gradient inline-flex items-center gap-2 rounded-full px-7 py-3.5 text-sm font-semibold text-canvas"
                 >
                   Book a creative call

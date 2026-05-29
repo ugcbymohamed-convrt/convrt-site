@@ -272,7 +272,7 @@ export default function Services() {
             <p className="font-display font-semibold text-ink text-xl leading-tight">Not sure which service fits?</p>
             <p className="mt-1.5 text-sm text-ink-muted">We'll tell you exactly what you need in a free 20-minute call.</p>
           </div>
-          <a href={BOOKING_URL} className="cta-gradient shrink-0 inline-flex items-center gap-2 rounded-full px-7 py-3.5 text-sm font-semibold text-canvas">
+          <a href={BOOKING_URL} target="_blank" rel="noopener noreferrer" className="cta-gradient shrink-0 inline-flex items-center gap-2 rounded-full px-7 py-3.5 text-sm font-semibold text-canvas">
             Book a Creative Call
             <svg viewBox="0 0 12 12" className="h-3.5 w-3.5" fill="none">
               <path d="M3 9L9 3M9 3H4M9 3V8" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />

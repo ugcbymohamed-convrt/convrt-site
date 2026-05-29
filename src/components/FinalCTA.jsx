@@ -114,7 +114,7 @@ export default function FinalCTA() {
 
             {/* Primary — lime */}
             <a
-              href={BOOKING_URL}
+              href={BOOKING_URL} target="_blank" rel="noopener noreferrer"
               onMouseEnter={() => setBtnHovered(true)}
               onMouseLeave={() => setBtnHovered(false)}
               className="group relative inline-flex items-center gap-2.5 rounded-full px-8 py-4 text-[15px] font-semibold text-canvas overflow-hidden"

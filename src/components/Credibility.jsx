@@ -115,7 +115,7 @@ export default function Credibility() {
           </h2>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
             <a
-              href={BOOKING_URL}
+              href={BOOKING_URL} target="_blank" rel="noopener noreferrer"
               className="cta-gradient inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-semibold text-canvas w-full sm:w-auto"
             >
               Become our next client
@@ -124,7 +124,7 @@ export default function Credibility() {
               </svg>
             </a>
             <a
-              href={BOOKING_URL}
+              href={BOOKING_URL} target="_blank" rel="noopener noreferrer"
               className="inline-flex items-center justify-center gap-2 rounded-full bg-ink px-6 py-3 text-sm font-semibold text-canvas transition-transform duration-150 active:scale-[0.98] hover:bg-white w-full sm:w-auto"
             >
               I'm a creator
