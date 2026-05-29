@@ -223,8 +223,8 @@ export default function Founder() {
                 </a>
                 <span className="text-[13px] text-ink-muted">
                   or reach us at{' '}
-                  <a href="mailto:hello@convrt.studio" className="text-ink hover:text-lime transition-colors underline underline-offset-2 decoration-hairline">
-                    hello@convrt.studio
+                  <a href="mailto:mohamed@convrt.studio" className="text-ink hover:text-lime transition-colors underline underline-offset-2 decoration-hairline">
+                    mohamed@convrt.studio
                   </a>
                 </span>
               </div>
