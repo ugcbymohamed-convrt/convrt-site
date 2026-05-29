@@ -2,4 +2,4 @@
 // The Nav, Hero, and Final CTA buttons all read from this constant.
 export const BOOKING_URL = 'https://calendly.com/mohamed-convrt/30min'
 
-export const CONTACT_EMAIL = 'hello@convrt.studio'
+export const CONTACT_EMAIL = 'mohamed@convrt.studio'
