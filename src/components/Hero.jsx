@@ -221,7 +221,7 @@ function PhoneStatic({ src, alt, tilt = '0deg', className = '' }) {
 
 /* ---------- Center phone with looping video + controls ---------- */
 
-const HERO_VIDEO_ID = '52559a16bde25920724239e737b62373'
+const HERO_VIDEO_ID = '1bedc6a9b9464398ef3bf12119b391eb'
 const HERO_HLS = `https://videodelivery.net/${HERO_VIDEO_ID}/manifest/video.m3u8`
 
 function PhoneMockup() {
@@ -299,7 +299,7 @@ function PhoneMockup() {
         <video
           ref={videoRef}
           className="absolute inset-0 h-full w-full object-cover"
-          poster="https://videodelivery.net/52559a16bde25920724239e737b62373/thumbnails/thumbnail.jpg?time=0s&height=600"
+          poster="https://videodelivery.net/1bedc6a9b9464398ef3bf12119b391eb/thumbnails/thumbnail.jpg?time=0s&height=600"
           autoPlay loop muted playsInline preload="auto"
           aria-label="CONVRT performance creative — UGC ad sample"
         />
