@@ -282,7 +282,7 @@ export default function Services() {
 
         <p className="mt-6 text-center lg:text-right text-xs text-ink-subtle">
           Need to test creative concepts first?{' '}
-          <a href="/creative-testing-sprint" className="text-ink-muted hover:text-lime underline underline-offset-2 transition-colors">
+          <a href="/pricing" className="text-ink-muted hover:text-lime underline underline-offset-2 transition-colors">
             Explore the Creative Testing Sprint
           </a>
         </p>

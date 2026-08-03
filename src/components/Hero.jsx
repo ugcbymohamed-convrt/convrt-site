@@ -238,13 +238,16 @@ function PhoneMockup() {
   useEffect(() => {
     const video = videoRef.current
     if (!video) return
+    const tryPlay = () => { video.play().catch(() => {}) }
     let hls
     if (video.canPlayType('application/vnd.apple.mpegurl')) {
       video.src = HERO_HLS
+      video.addEventListener('loadedmetadata', tryPlay, { once: true })
     } else if (Hls.isSupported()) {
       hls = new Hls()
       hls.loadSource(HERO_HLS)
       hls.attachMedia(video)
+      hls.on(Hls.Events.MANIFEST_PARSED, tryPlay)
     }
     return () => hls && hls.destroy()
   }, [])

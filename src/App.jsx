@@ -13,7 +13,7 @@ import SectionDivider from './components/SectionDivider.jsx'
 import CreativeTestingSprintPage from './CreativeTestingSprintPage.jsx'
 
 const ROUTES = {
-  '/creative-testing-sprint': CreativeTestingSprintPage,
+  '/pricing': CreativeTestingSprintPage,
 }
 
 function HomePage() {

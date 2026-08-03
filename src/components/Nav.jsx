@@ -5,7 +5,7 @@ import { BOOKING_URL } from '../config.js'
 const links = [
   { label: 'Services', href: '#services' },
   { label: 'How It Works', href: '#how-it-works' },
-  { label: 'Pricing', href: '/creative-testing-sprint' },
+  { label: 'Pricing', href: '/pricing' },
   { label: 'Clients', href: '#clients' },
   { label: 'Contact', href: '#contact' },
 ]
