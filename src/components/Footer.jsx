@@ -3,6 +3,8 @@ import { CONTACT_EMAIL } from '../config.js'
 
 export default function Footer() {
   const year = new Date().getFullYear()
+  const onHome = typeof window !== 'undefined' ? window.location.pathname === '/' : true
+  const homePrefix = onHome ? '' : '/'
   return (
     <footer className="border-t border-hairline bg-canvas">
       <div className="mx-auto max-w-7xl px-5 py-14 md:px-8 md:py-16">
@@ -21,10 +23,10 @@ export default function Footer() {
               Studio
             </p>
             <ul className="mt-4 space-y-2.5 text-sm text-ink-muted">
-              <li><a className="hover:text-ink transition-colors" href="#services">Services</a></li>
-              <li><a className="hover:text-ink transition-colors" href="#how-it-works">How It Works</a></li>
-              <li><a className="hover:text-ink transition-colors" href="#clients">Clients</a></li>
-              <li><a className="hover:text-ink transition-colors" href="#contact">Contact</a></li>
+              <li><a className="hover:text-ink transition-colors" href={`${homePrefix}#services`}>Services</a></li>
+              <li><a className="hover:text-ink transition-colors" href={`${homePrefix}#how-it-works`}>How It Works</a></li>
+              <li><a className="hover:text-ink transition-colors" href={`${homePrefix}#clients`}>Clients</a></li>
+              <li><a className="hover:text-ink transition-colors" href={`${homePrefix}#contact`}>Contact</a></li>
             </ul>
           </div>
 

@@ -5,6 +5,7 @@ import { BOOKING_URL } from '../config.js'
 const links = [
   { label: 'Services', href: '#services' },
   { label: 'How It Works', href: '#how-it-works' },
+  { label: 'Pricing', href: '/creative-testing-sprint' },
   { label: 'Clients', href: '#clients' },
   { label: 'Contact', href: '#contact' },
 ]
@@ -12,6 +13,9 @@ const links = [
 export default function Nav() {
   const [scrolled, setScrolled] = useState(false)
   const [open, setOpen] = useState(false)
+  const onHome = typeof window !== 'undefined' ? window.location.pathname === '/' : true
+  const homePrefix = onHome ? '' : '/'
+  const resolveHref = (href) => (href.startsWith('#') ? `${homePrefix}${href}` : href)
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8)
@@ -24,7 +28,7 @@ export default function Nav() {
     <header
       className={`sticky top-0 z-50 transition-colors duration-300 ${
         scrolled
-          ? 'bg-canvas/80 backdrop-blur-xl border-b border-hairline/70'
+          ? 'bg-canvas/95 backdrop-blur-xl border-b border-hairline/70'
           : 'bg-transparent border-b border-transparent'
       }`}
     >
@@ -35,7 +39,7 @@ export default function Nav() {
           {links.map((l) => (
             <a
               key={l.href}
-              href={l.href}
+              href={resolveHref(l.href)}
               className="text-sm text-ink-muted hover:text-ink transition-colors"
             >
               {l.label}
@@ -48,7 +52,7 @@ export default function Nav() {
             href={BOOKING_URL} target="_blank" rel="noopener noreferrer"
             className="hidden md:inline-flex items-center gap-1.5 rounded-full bg-ink px-4 py-2.5 text-sm font-medium text-canvas transition-transform duration-150 active:scale-[0.98] hover:bg-white"
           >
-            Book a Discovery Call
+            Book a Creative Call
             <ArrowUpRight className="h-3.5 w-3.5" />
           </a>
           <button
@@ -79,7 +83,7 @@ export default function Nav() {
             {links.map((l) => (
               <a
                 key={l.href}
-                href={l.href}
+                href={resolveHref(l.href)}
                 onClick={() => setOpen(false)}
                 className="rounded-lg px-3 py-3 text-base text-ink-muted hover:text-ink hover:bg-surface-1"
               >
@@ -91,7 +95,7 @@ export default function Nav() {
               onClick={() => setOpen(false)}
               className="mt-2 inline-flex items-center justify-center gap-1.5 rounded-full bg-ink px-4 py-3 text-sm font-medium text-canvas"
             >
-              Book a Discovery Call
+              Book a Creative Call
               <ArrowUpRight className="h-3.5 w-3.5" />
             </a>
           </div>

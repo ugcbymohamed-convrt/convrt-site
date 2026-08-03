@@ -1,7 +1,8 @@
 export default function Logo({ className = '', size = 'h-12 md:h-16' }) {
+  const onHome = typeof window !== 'undefined' ? window.location.pathname === '/' : true
   return (
     <a
-      href="#top"
+      href={onHome ? '#top' : '/'}
       className={`inline-flex items-center text-ink hover:text-white transition-colors ${className}`}
       aria-label="CONVRT — home"
     >
