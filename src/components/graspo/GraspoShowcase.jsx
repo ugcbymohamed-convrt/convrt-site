@@ -18,22 +18,6 @@ const VIDEOS = [
   { id: 'c1379ace38f2fa19ef2a45de1bb5d4b1', views: '7.5M' },
 ]
 
-/* Real post captions and view counts, pulled directly from the Graspo
-   Instagram Reels grid. Photos aren't available as site assets, so each
-   tile shows the real caption (Arabic, as posted) with an English gloss
-   and the real view count, rather than a fabricated thumbnail. */
-const GRID_POSTS = [
-  { views: '7.5M', caption: 'خطأ فادح', gloss: 'A major mistake', accent: '#d5ff40' },
-  { views: '1.9M', caption: 'ماكينة', gloss: 'One machine', accent: '#8b5cf6' },
-  { views: '1.2M', caption: 'قطعة مهمة', gloss: 'The key part', accent: '#ff6a4d' },
-  { views: '84.2K', caption: 'معاييرنا', gloss: 'Our standards', accent: '#ec4899' },
-  { views: '31.3K', caption: 'خطأ لا يغفر', gloss: 'An unforgivable mistake', accent: '#3b82f6' },
-  { views: '15.2K', caption: 'تستهبلون؟', gloss: 'Think we\'re joking?', accent: '#ffb547' },
-  { views: '15.1K', caption: 'أهم شي', gloss: 'The most important thing', accent: '#d5ff40' },
-  { views: '5.3K', caption: 'شحن؟', gloss: 'Shipping?', accent: '#8b5cf6' },
-  { views: '3.8K', caption: 'الفرق', gloss: 'The difference', accent: '#ff6a4d' },
-]
-
 export default function GraspoShowcase() {
   return (
     <section id="showcase" className="relative py-16 md:py-24 overflow-hidden">
@@ -62,48 +46,8 @@ export default function GraspoShowcase() {
             <ShowcasePhone key={v.id} video={v} />
           ))}
         </div>
-
-        <p className="mt-16 mb-8 text-center text-xs font-semibold uppercase tracking-[0.18em] text-ink-subtle">
-          More from the same feed
-        </p>
-
-        <div className="grid grid-cols-3 gap-2.5 md:gap-3 max-w-3xl mx-auto">
-          {GRID_POSTS.map((post) => (
-            <GridTile key={post.caption} post={post} />
-          ))}
-        </div>
       </div>
     </section>
-  )
-}
-
-function GridTile({ post }) {
-  return (
-    <div
-      className="relative overflow-hidden rounded-xl md:rounded-2xl flex flex-col items-center justify-center text-center px-2 py-4 md:px-3 md:py-6"
-      style={{ aspectRatio: '3 / 4', background: '#0c0c0f', border: '1px solid rgba(255,255,255,0.06)' }}
-    >
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 opacity-[0.16]"
-        style={{ background: `radial-gradient(120% 90% at 50% 0%, ${post.accent}, transparent 70%)` }}
-      />
-      <p dir="rtl" lang="ar" className="relative font-display font-bold text-ink leading-tight text-[13px] md:text-base">
-        {post.caption}
-      </p>
-      <p className="relative mt-1.5 text-[9px] md:text-[10.5px] text-ink-subtle leading-snug">
-        {post.gloss}
-      </p>
-      <div className="relative mt-auto pt-3 flex items-center gap-1 md:gap-1.5">
-        <svg viewBox="0 0 16 16" className="h-2.5 w-2.5 md:h-3 md:w-3" fill="none" aria-hidden="true">
-          <path d="M1 8s2.5-4.5 7-4.5S15 8 15 8s-2.5 4.5-7 4.5S1 8 1 8z" stroke={post.accent} strokeWidth="1.2" strokeLinejoin="round" />
-          <circle cx="8" cy="8" r="1.8" stroke={post.accent} strokeWidth="1.2" />
-        </svg>
-        <span className="font-display font-bold text-[11px] md:text-[13px] tabular-nums" style={{ color: post.accent }}>
-          {post.views}
-        </span>
-      </div>
-    </div>
   )
 }
 

@@ -19,7 +19,7 @@ export default function GraspoResult() {
           Over six months, Graspo went from limited visibility in Arabic-speaking markets to
           10.7M organic views and a recognizable presence in Saudi Arabia, Iraq, Morocco, Egypt
           and across the wider MENA region. More importantly, that attention landed with the
-          right people: 60 unique inbound leads, 26 qualified as high priority, and 10 that
+          right people: 75 unique inbound leads, 26 qualified as high priority, and 10 that
           reached an advanced, quotation-ready stage, publishers, print agencies and buyers
           who found Graspo through the content itself.
         </p>

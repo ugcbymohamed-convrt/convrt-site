@@ -15,7 +15,7 @@ import GraspoResult from './components/graspo/GraspoResult.jsx'
 
 const PAGE_TITLE = 'Graspo Case Study: 10.7M Organic Views & Arabic Social Media Leads | CONVRT'
 const PAGE_DESCRIPTION =
-  'How CONVRT turned a European printing company into an Arabic-first social content engine, 10.7M organic views, 3.4M reach across MENA, and 60 qualified inbound printing leads.'
+  'How CONVRT turned a European printing company into an Arabic-first social content engine, 10.7M organic views, 3.4M reach across MENA, and 75 qualified inbound printing leads.'
 const OG_TITLE = 'Graspo × CONVRT, From Printing Expertise to 10.7M Organic Views and Qualified MENA Demand'
 const OG_DESCRIPTION =
   'A social media content management case study: how Arabic-first strategy, production and inbound handling turned Graspo into a recognized name across Saudi Arabia, Iraq, Morocco, Egypt and the wider MENA region.'

@@ -14,7 +14,7 @@ const ACCENT = '#d5ff40'
 const STAGES = [
   { value: '10.7M', label: 'Total views', desc: 'Facebook + Instagram, Jan–Jun 2026', pct: 100 },
   { value: '3.4M', label: 'Accounts reached', desc: 'Unique people who saw the content', pct: 74 },
-  { value: '60', label: 'Unique inbound leads', desc: 'Real inquiries across Meta, email & WhatsApp', pct: 46 },
+  { value: '75', label: 'Unique inbound leads', desc: 'Real inquiries across Meta, email & WhatsApp', pct: 46 },
   { value: '26', label: 'High-priority opportunities', desc: 'Qualified for active follow-up', pct: 30 },
   { value: '10', label: 'Advanced / quotation-stage', desc: 'Offer sent or being prepared, samples shipped, or moved to WhatsApp/sales', pct: 18 },
 ]

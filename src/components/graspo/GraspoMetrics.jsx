@@ -12,7 +12,7 @@ const METRICS = [
   { value: '10.7M', label: 'Total Views', sub: 'Facebook + Instagram' },
   { value: '3.4M', label: 'Accounts Reached', sub: 'Organic distribution' },
   { value: '65K', label: 'Content Interactions', sub: 'Likes, comments, shares, saves' },
-  { value: '60', label: 'Unique Inbound Leads', sub: 'Meta, email & WhatsApp' },
+  { value: '75', label: 'Unique Inbound Leads', sub: 'Meta, email & WhatsApp' },
   { value: '26', label: 'High-Priority Opportunities', sub: 'Qualified for follow-up' },
 ]
 
@@ -36,7 +36,7 @@ export default function GraspoMetrics() {
   const [wrapRef, visible] = useInView()
 
   return (
-    <section id="kpis" className="relative py-12 md:py-16 scroll-mt-24">
+    <section id="kpis" className="relative pt-4 pb-12 md:pt-6 md:pb-16 scroll-mt-24">
       <div ref={wrapRef} className="mx-auto max-w-7xl px-5 md:px-8">
         <div className="grid grid-cols-2 lg:grid-cols-5 gap-4 md:gap-5">
           {METRICS.map((m, i) => (

@@ -40,7 +40,7 @@ export default function GraspoHero() {
   }, [])
 
   return (
-    <section ref={ref} className="relative overflow-hidden pt-14 pb-16 md:pt-20 md:pb-24">
+    <section ref={ref} className="relative overflow-hidden pt-14 pb-4 md:pt-20 md:pb-6">
       {/* Ambient glow — lime, matches the sitewide brand color */}
       <div
         aria-hidden="true"
@@ -63,7 +63,7 @@ export default function GraspoHero() {
 
         <FadeUp inView={inView} delay={90}>
           <p
-            className="font-display font-bold tracking-display uppercase text-[clamp(1.1rem,2.4vw,1.5rem)]"
+            className="font-display font-bold tracking-display-xl leading-[1.05] text-[clamp(1.9rem,5vw,3.6rem)]"
             style={{ color: ACCENT }}
           >
             6 months
@@ -100,7 +100,7 @@ export default function GraspoHero() {
           </div>
         </FadeUp>
 
-        <FadeUp inView={inView} delay={340} className="mt-16">
+        <FadeUp inView={inView} delay={340} className="mt-10">
           <div className="rounded-3xl border border-hairline bg-surface-1/50 backdrop-blur-md px-6 py-7 md:px-10 md:py-8">
             <dl className="grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 text-center">
               {PROJECT_INFO.map((item) => (

@@ -3,20 +3,20 @@ import { useEffect, useRef, useState } from 'react'
 const ACCENT = '#d5ff40'
 
 const CATEGORIES = [
-  { label: 'Book & catalog printing', count: 30, color: '#a3e600' },
-  { label: 'B2B cooperation / agency / samples', count: 11, color: '#c2f227' },
-  { label: 'Shipping / MOQ questions', count: 8, color: '#d5ff40' },
-  { label: 'General printing / pricing', count: 7, color: '#e2ff70' },
-  { label: 'Premium / other print', count: 4, color: '#eeffa3' },
+  { label: 'Book & catalog printing', count: 37, color: '#a3e600' },
+  { label: 'B2B cooperation / agency / samples', count: 14, color: '#c2f227' },
+  { label: 'Shipping / MOQ questions', count: 10, color: '#d5ff40' },
+  { label: 'General printing / pricing', count: 9, color: '#e2ff70' },
+  { label: 'Premium / other print', count: 5, color: '#eeffa3' },
 ]
 const TOTAL_LEADS = CATEGORIES.reduce((sum, c) => sum + c.count, 0)
 
 const MONTHS = [
-  { label: 'Feb', count: 8 },
-  { label: 'Mar', count: 15 },
-  { label: 'Apr', count: 5 },
-  { label: 'May', count: 24, peak: true },
-  { label: 'Jun', count: 7 },
+  { label: 'Feb', count: 10 },
+  { label: 'Mar', count: 20 },
+  { label: 'Apr', count: 6 },
+  { label: 'May', count: 30, peak: true },
+  { label: 'Jun', count: 9 },
 ]
 const MAX_MONTH = Math.max(...MONTHS.map((m) => m.count))
 
@@ -57,7 +57,7 @@ export default function GraspoLeadComposition() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10">
           {/* Category breakdown */}
           <div className="lg:col-span-7 rounded-3xl border border-hairline bg-surface-1/40 px-7 py-8 md:px-9 md:py-9">
-            <p className="text-sm font-semibold text-ink mb-1">What the 60 leads were about</p>
+            <p className="text-sm font-semibold text-ink mb-1">What the 75 leads were about</p>
             <p className="text-[12px] text-ink-subtle mb-6">By inquiry group, {TOTAL_LEADS} unique leads</p>
 
             <div className="h-4 w-full rounded-full overflow-hidden flex bg-surface-3 mb-6">
@@ -113,7 +113,7 @@ export default function GraspoLeadComposition() {
               ))}
             </div>
             <p className="mt-6 text-[12.5px] text-ink-muted leading-relaxed">
-              <span className="font-semibold text-ink">May was the strongest month,</span> 24 unique
+              <span className="font-semibold text-ink">May was the strongest month,</span> 30 unique
               leads, as content momentum compounded rather than spiked and faded.
             </p>
           </div>
