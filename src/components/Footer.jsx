@@ -24,6 +24,7 @@ export default function Footer() {
             </p>
             <ul className="mt-4 space-y-2.5 text-sm text-ink-muted">
               <li><a className="hover:text-ink transition-colors" href={`${homePrefix}#services`}>Services</a></li>
+              <li><a className="hover:text-ink transition-colors" href="/case-studies">Case Studies</a></li>
               <li><a className="hover:text-ink transition-colors" href={`${homePrefix}#how-it-works`}>How It Works</a></li>
               <li><a className="hover:text-ink transition-colors" href={`${homePrefix}#clients`}>Clients</a></li>
               <li><a className="hover:text-ink transition-colors" href={`${homePrefix}#contact`}>Contact</a></li>

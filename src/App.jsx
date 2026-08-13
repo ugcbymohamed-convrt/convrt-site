@@ -11,9 +11,12 @@ import FinalCTA from './components/FinalCTA.jsx'
 import Footer from './components/Footer.jsx'
 import SectionDivider from './components/SectionDivider.jsx'
 import CreativeTestingSprintPage from './CreativeTestingSprintPage.jsx'
+import GraspoCaseStudyPage from './GraspoCaseStudyPage.jsx'
 
 const ROUTES = {
   '/pricing': CreativeTestingSprintPage,
+  '/case-studies': GraspoCaseStudyPage,
+  '/case-studies/graspo': GraspoCaseStudyPage,
 }
 
 function HomePage() {

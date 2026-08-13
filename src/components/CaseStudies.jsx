@@ -152,6 +152,16 @@ export default function CaseStudies() {
                 <path d="M3 9L9 3M9 3H4M9 3V8" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </a>
+
+            {activeId === 'graspo' && (
+              <a
+                href="/case-studies"
+                className="cs-fade-up text-xs text-ink-subtle hover:text-lime underline underline-offset-2 transition-colors"
+                style={{ animationDelay: '220ms' }}
+              >
+                Read the full Graspo case study →
+              </a>
+            )}
           </div>
 
           {/* RIGHT — 3D phone carousel */}

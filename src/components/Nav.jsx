@@ -4,6 +4,7 @@ import { BOOKING_URL } from '../config.js'
 
 const links = [
   { label: 'Services', href: '#services' },
+  { label: 'Case Studies', href: '/case-studies' },
   { label: 'How It Works', href: '#how-it-works' },
   { label: 'Pricing', href: '/pricing' },
   { label: 'Clients', href: '#clients' },
