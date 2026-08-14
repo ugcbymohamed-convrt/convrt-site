@@ -82,10 +82,11 @@ function ShowcasePhone({ video }) {
   const toggleMute = useCallback((e) => { e.stopPropagation(); setMuted((m) => !m) }, [])
 
   return (
-    <div className="relative w-full mx-auto" style={{ maxWidth: '220px', aspectRatio: '9 / 19.5' }}>
+    <div className="w-full mx-auto" style={{ maxWidth: '220px' }}>
       <div
+        className="relative"
         style={{
-          position: 'relative', width: '100%', height: '100%',
+          width: '100%', aspectRatio: '9 / 19.5',
           borderRadius: '40px', background: '#0a0a0a', padding: '10px',
           boxShadow: '0 30px 70px -20px rgba(0,0,0,0.75), inset 0 0 0 1px rgba(255,255,255,0.06)',
         }}

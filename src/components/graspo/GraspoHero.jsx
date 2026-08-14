@@ -92,10 +92,10 @@ export default function GraspoHero() {
               </svg>
             </a>
             <a
-              href="#kpis"
+              href="https://www.instagram.com/graspo_khaleej/" target="_blank" rel="noopener noreferrer"
               className="inline-flex items-center gap-2 rounded-full border border-hairline px-7 py-3.5 text-sm font-medium text-ink-muted hover:text-ink hover:border-hairline-strong transition-colors"
             >
-              See the numbers
+              See the page
             </a>
           </div>
         </FadeUp>
