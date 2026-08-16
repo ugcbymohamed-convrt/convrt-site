@@ -5,9 +5,9 @@ import CreativeTestingProcess from './components/CreativeTestingProcess.jsx'
 import CreativeTestingNextStep from './components/CreativeTestingNextStep.jsx'
 import SectionDivider from './components/SectionDivider.jsx'
 
-const PAGE_TITLE = 'Creative Testing Sprint | CONVRT'
+const PAGE_TITLE = 'Paid & Organic Social Pricing | CONVRT'
 const PAGE_DESCRIPTION =
-  'Develop distinct paid-social concepts, scripts, creators, hooks, and platform-ready ad variations with the CONVRT Creative Testing Sprint.'
+  'Explore CONVRT pricing for paid social creative testing and organic social media management, from strategy and production to publishing and optimization.'
 
 export default function CreativeTestingSprintPage() {
   useEffect(() => {

@@ -1,9 +1,12 @@
+import { useState } from 'react'
 import { BOOKING_URL } from '../config.js'
 
 /* ─────────────────────────────────────────────
-   CREATIVE TESTING SPRINT — Main offer section
-   Three-column composition: editorial panel,
-   standard package, premium package.
+   PRICING — Paid Social + Organic Social
+   Service switcher above a shared package-card
+   architecture. Three-column composition for Paid
+   Social (editorial panel + 2 packages); two-column
+   composition for Organic Social (2 packages).
 ───────────────────────────────────────────── */
 
 const BUILT_FOR = [
@@ -45,48 +48,166 @@ const PLUS_FEATURES = [
   'Priority production scheduling',
 ]
 
+const ORGANIC_FEATURES = [
+  'Organic social content strategy',
+  'Monthly content planning',
+  'Content research and ideation',
+  'Concepts and scripting',
+  'Brand content filming and production',
+  'Short-form video editing',
+  'Captions and platform adaptation',
+  'Publishing and scheduling',
+  'Instagram, TikTok & Facebook distribution',
+  'Performance review and ongoing optimization',
+]
+
+const SERVICES = [
+  { id: 'paid', label: 'Paid Social' },
+  { id: 'organic', label: 'Organic Social' },
+]
+
 export default function CreativeTestingOffer() {
+  const [service, setService] = useState('paid')
+
   return (
     <section id="packages" className="relative overflow-hidden py-14 md:py-20">
       <div className="relative mx-auto max-w-7xl px-5 md:px-8">
-        <p className="mb-8 md:mb-10 text-center text-xs md:text-sm font-medium uppercase tracking-[0.14em] text-ink-subtle">
+        <p className="mb-6 md:mb-8 text-center text-xs md:text-sm font-medium uppercase tracking-[0.14em] text-ink-subtle">
           A structured creative test, not another batch of minor variations.
         </p>
 
+        <ServiceSwitch value={service} onChange={setService} />
+
         <div className="rounded-[32px] md:rounded-[40px] border border-hairline bg-surface-1/60 backdrop-blur-md p-4 sm:p-5 md:p-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[0.85fr_1fr_1fr] gap-4 md:gap-5 items-stretch">
-            <EditorialPanel className="md:col-span-2 lg:col-span-1" />
+          {service === 'paid' ? (
+            <div
+              key="paid"
+              id="service-panel-paid"
+              role="tabpanel"
+              aria-labelledby="service-tab-paid"
+              className="pricing-panel-in grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[0.85fr_1fr_1fr] gap-4 md:gap-5 items-stretch"
+            >
+              <EditorialPanel className="md:col-span-2 lg:col-span-1" />
 
-            <PackageCard
-              variant="standard"
-              name="Creative Testing Sprint"
-              price="From €2,500"
-              supportingLine="A focused first sprint for brands that need stronger creative diversity."
-              features={STANDARD_FEATURES}
-              timeline="Approximately 10 business days after script approval."
-              ctaLabel="Discuss Your Sprint"
-            />
+              <PackageCard
+                variant="standard"
+                name="Creative Testing Sprint"
+                price="From €2,500"
+                supportingLine="A focused first sprint for brands that need stronger creative diversity."
+                features={STANDARD_FEATURES}
+                timeline="Approximately 10 business days after script approval."
+                ctaLabel="Discuss Your Sprint"
+              />
 
-            <PackageCard
-              variant="plus"
-              badge="Deeper Testing"
-              name="Creative Testing Sprint Plus"
-              price="From €4,500"
-              supportingLine="For brands that need more concepts, creators, and testing depth."
-              features={PLUS_FEATURES}
-              timeline="Approximately 15 business days after script approval."
-              ctaLabel="Discuss Your Sprint"
-            />
-          </div>
+              <PackageCard
+                variant="plus"
+                badge="Deeper Testing"
+                name="Creative Testing Sprint Plus"
+                price="From €4,500"
+                supportingLine="For brands that need more concepts, creators, and testing depth."
+                features={PLUS_FEATURES}
+                timeline="Approximately 15 business days after script approval."
+                ctaLabel="Discuss Your Sprint"
+              />
+            </div>
+          ) : (
+            <div
+              key="organic"
+              id="service-panel-organic"
+              role="tabpanel"
+              aria-labelledby="service-tab-organic"
+              className="pricing-panel-in grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-5 items-stretch"
+            >
+              <PackageCard
+                variant="standard"
+                name="Organic Light"
+                price="$1,500"
+                priceSuffix="/month"
+                supportingLine="Full-service organic content: strategy, production, and editing, with every post adapted and distributed across Instagram, TikTok & Facebook."
+                cadenceLine="2 posts per week, approximately 9 original posts per month"
+                features={ORGANIC_FEATURES}
+                footerLabel="Platforms"
+                footerValue="Instagram, TikTok & Facebook"
+                ctaLabel="Discuss Your Plan"
+              />
+
+              <PackageCard
+                variant="plus"
+                badge="Recommended"
+                name="Organic Growth"
+                price="$2,000"
+                priceSuffix="/month"
+                supportingLine="Higher-cadence organic content production, with more room to test formats, hooks, and creative directions across Instagram, TikTok & Facebook."
+                cadenceLine="3 posts per week, 13 original posts per month"
+                features={ORGANIC_FEATURES}
+                footerLabel="Platforms"
+                footerValue="Instagram, TikTok & Facebook"
+                ctaLabel="Discuss Your Plan"
+              />
+            </div>
+          )}
         </div>
 
         <p className="mt-6 md:mt-8 mx-auto max-w-2xl text-center text-[13px] text-ink-muted leading-relaxed">
-          Pricing is based on the confirmed production scope. Additional languages, creators,
-          locations, raw footage, paid-media usage requirements, specialist production needs, and
-          extensive revisions may affect the final quote.
+          {service === 'paid'
+            ? 'Pricing is based on the confirmed production scope. Additional languages, creators, locations, raw footage, paid-media usage requirements, specialist production needs, and extensive revisions may affect the final quote.'
+            : 'Pricing covers the full organic content workflow: strategy, production, editing, publishing, and optimization, across Instagram, TikTok & Facebook.'}
         </p>
       </div>
     </section>
+  )
+}
+
+/* ─────────────────────────────────────────────
+   Service switch — segmented toggle between
+   Paid Social and Organic Social. Follows the
+   WAI-ARIA tabs pattern (roving tabindex, arrow-key
+   navigation) since it swaps a content panel below it.
+───────────────────────────────────────────── */
+function ServiceSwitch({ value, onChange }) {
+  const activeIndex = SERVICES.findIndex((s) => s.id === value)
+
+  const handleKeyDown = (event) => {
+    if (event.key !== 'ArrowRight' && event.key !== 'ArrowLeft') return
+    event.preventDefault()
+    const dir = event.key === 'ArrowRight' ? 1 : -1
+    const next = SERVICES[(activeIndex + dir + SERVICES.length) % SERVICES.length]
+    onChange(next.id)
+    document.getElementById(`service-tab-${next.id}`)?.focus()
+  }
+
+  return (
+    <div className="mb-8 md:mb-10 flex justify-center">
+      <div
+        role="tablist"
+        aria-label="Select service type"
+        onKeyDown={handleKeyDown}
+        className="inline-grid grid-cols-2 rounded-full border border-hairline bg-surface-1/60 p-1 backdrop-blur-md"
+      >
+        {SERVICES.map((option) => {
+          const isActive = option.id === value
+          return (
+            <button
+              key={option.id}
+              id={`service-tab-${option.id}`}
+              role="tab"
+              type="button"
+              aria-selected={isActive}
+              aria-controls={`service-panel-${option.id}`}
+              tabIndex={isActive ? 0 : -1}
+              onClick={() => onChange(option.id)}
+              className={`whitespace-nowrap rounded-full px-5 md:px-6 py-2.5 sm:py-3 text-sm font-semibold transition-all duration-300 ${
+                isActive
+                  ? 'bg-lime text-canvas shadow-[0_0_22px_rgba(213,255,64,0.35)]'
+                  : 'text-ink-muted hover:text-ink'
+              }`}
+            >
+              {option.label}
+            </button>
+          )
+        })}
+      </div>
+    </div>
   )
 }
 
@@ -204,8 +325,22 @@ function ConceptTree() {
 /* ─────────────────────────────────────────────
    Package card — standard (near-white) or plus (lime)
 ───────────────────────────────────────────── */
-function PackageCard({ variant, badge, name, price, supportingLine, features, timeline, ctaLabel }) {
+function PackageCard({
+  variant,
+  badge,
+  name,
+  price,
+  priceSuffix,
+  supportingLine,
+  cadenceLine,
+  features,
+  timeline,
+  footerLabel = 'Typical delivery',
+  footerValue,
+  ctaLabel,
+}) {
   const isPlus = variant === 'plus'
+  const footerText = footerValue ?? timeline
 
   return (
     <div
@@ -223,7 +358,18 @@ function PackageCard({ variant, badge, name, price, supportingLine, features, ti
         {name}
       </h3>
 
-      <p className="mt-3 font-display font-bold tracking-display text-3xl md:text-4xl">{price}</p>
+      <p className="mt-3 font-display font-bold tracking-display text-3xl md:text-4xl">
+        {price}
+        {priceSuffix && (
+          <span className="ml-1 text-base md:text-lg font-semibold tracking-display opacity-60">
+            {priceSuffix}
+          </span>
+        )}
+      </p>
+
+      {cadenceLine && (
+        <p className="mt-2 text-[13px] font-semibold leading-relaxed opacity-80">{cadenceLine}</p>
+      )}
 
       <p className="mt-3 text-sm leading-relaxed opacity-70">{supportingLine}</p>
 
@@ -240,9 +386,9 @@ function PackageCard({ variant, badge, name, price, supportingLine, features, ti
 
       <div className="mt-7 pt-5 border-t border-canvas/12">
         <p className="text-[11px] font-semibold uppercase tracking-[0.14em] opacity-60">
-          Typical delivery
+          {footerLabel}
         </p>
-        <p className="mt-1.5 text-[13px] leading-relaxed opacity-80">{timeline}</p>
+        <p className="mt-1.5 text-[13px] leading-relaxed opacity-80">{footerText}</p>
       </div>
 
       <a

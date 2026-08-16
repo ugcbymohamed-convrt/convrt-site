@@ -191,6 +191,15 @@ body {
   animation: icon-breathe 2s ease-in-out infinite;
 }
 
+/* ── Pricing — package panel swap ── */
+@keyframes pricing-panel-in {
+  0%   { opacity: 0; transform: translateY(10px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+.pricing-panel-in {
+  animation: pricing-panel-in 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .marquee-track,
   .marquee-track-reverse,
@@ -200,7 +209,8 @@ body {
   .cs-card-in,
   .phone-float,
   .service-card-shine,
-  .icon-breathe {
+  .icon-breathe,
+  .pricing-panel-in {
     animation: none;
   }
   .cta-gradient {
