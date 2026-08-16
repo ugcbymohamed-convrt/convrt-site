@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import CreativeTestingHero from './components/CreativeTestingHero.jsx'
 import CreativeTestingOffer from './components/CreativeTestingOffer.jsx'
 import CreativeTestingProcess from './components/CreativeTestingProcess.jsx'
@@ -10,6 +10,8 @@ const PAGE_DESCRIPTION =
   'Explore CONVRT pricing for paid social creative testing and organic social media management, from strategy and production to publishing and optimization.'
 
 export default function CreativeTestingSprintPage() {
+  const [service, setService] = useState('paid')
+
   useEffect(() => {
     const previousTitle = document.title
     const meta = document.querySelector('meta[name="description"]')
@@ -28,11 +30,11 @@ export default function CreativeTestingSprintPage() {
     <>
       <CreativeTestingHero />
       <SectionDivider />
-      <CreativeTestingOffer />
+      <CreativeTestingOffer service={service} onServiceChange={setService} />
       <SectionDivider />
-      <CreativeTestingProcess />
+      <CreativeTestingProcess service={service} />
       <SectionDivider />
-      <CreativeTestingNextStep />
+      <CreativeTestingNextStep service={service} />
     </>
   )
 }

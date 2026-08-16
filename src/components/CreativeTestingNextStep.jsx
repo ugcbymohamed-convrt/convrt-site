@@ -1,6 +1,8 @@
 import { BOOKING_URL } from '../config.js'
 
-export default function CreativeTestingNextStep() {
+export default function CreativeTestingNextStep({ service }) {
+  const isPaid = service === 'paid'
+
   return (
     <section id="contact" className="relative overflow-hidden py-20 md:py-28">
       <div
@@ -9,20 +11,28 @@ export default function CreativeTestingNextStep() {
         style={{ background: 'radial-gradient(circle, rgba(213,255,64,0.08) 0%, transparent 60%)' }}
       />
 
-      <div className="relative mx-auto max-w-3xl px-5 md:px-8 text-center">
+      <div key={service} className="pricing-panel-in relative mx-auto max-w-3xl px-5 md:px-8 text-center">
         <h2
           className="font-display font-bold tracking-display leading-[1.05] mb-6"
           style={{ fontSize: 'clamp(2rem, 4.5vw, 3.25rem)' }}
         >
-          <span className="text-ink">Start with a sprint. </span>
-          <span className="text-lime">Scale what works.</span>
+          {isPaid ? (
+            <>
+              <span className="text-ink">Start with a sprint. </span>
+              <span className="text-lime">Scale what works.</span>
+            </>
+          ) : (
+            <>
+              <span className="text-ink">Build a social presence </span>
+              <span className="text-lime">people actually want to follow.</span>
+            </>
+          )}
         </h2>
 
         <p className="text-ink-muted leading-relaxed mx-auto mb-10 max-w-xl">
-          The Creative Testing Sprint runs as a monthly engagement, giving you a continuous
-          stream of new concepts, scripts, and test-ready ads. As winning directions emerge,
-          CONVRT scales production to match, with more concepts, more variations, and more
-          testing depth.
+          {isPaid
+            ? 'The Creative Testing Sprint runs as a monthly engagement, giving you a continuous stream of new concepts, scripts, and test-ready ads. As winning directions emerge, CONVRT scales production to match, with more concepts, more variations, and more testing depth.'
+            : 'Start with a consistent content system. Learn what earns attention, then build around what works.'}
         </p>
 
         <a

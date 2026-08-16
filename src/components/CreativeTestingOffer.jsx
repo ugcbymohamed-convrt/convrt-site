@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { BOOKING_URL } from '../config.js'
 
 /* ─────────────────────────────────────────────
@@ -48,35 +47,48 @@ const PLUS_FEATURES = [
   'Priority production scheduling',
 ]
 
-const ORGANIC_FEATURES = [
-  'Organic social content strategy',
-  'Monthly content planning',
-  'Content research and ideation',
-  'Concepts and scripting',
-  'Brand content filming and production',
+const ORGANIC_LIGHT_FEATURES = [
+  'Organic content strategy',
+  'Content research & ideation',
+  'Concepts & scripting',
+  'Planned monthly content production',
   'Short-form video editing',
-  'Captions and platform adaptation',
-  'Publishing and scheduling',
-  'Instagram, TikTok & Facebook distribution',
-  'Performance review and ongoing optimization',
+  'Captions & platform adaptation',
+  'Publishing & scheduling',
+  'Performance review & optimization',
 ]
+
+const ORGANIC_GROWTH_FEATURES = [
+  'Organic content strategy',
+  'Content research & ideation',
+  'Concepts & scripting',
+  'Planned monthly content production',
+  'Short-form video editing',
+  'Captions & platform adaptation',
+  'Publishing & scheduling',
+  'Higher creative testing cadence',
+  'More formats, hooks & creative angles tested',
+  'Performance review & optimization',
+]
+
+const PLATFORM_NOTE = 'Instagram, TikTok, Facebook and LinkedIn available depending on strategy.'
 
 const SERVICES = [
   { id: 'paid', label: 'Paid Social' },
   { id: 'organic', label: 'Organic Social' },
 ]
 
-export default function CreativeTestingOffer() {
-  const [service, setService] = useState('paid')
-
+export default function CreativeTestingOffer({ service, onServiceChange }) {
   return (
     <section id="packages" className="relative overflow-hidden py-14 md:py-20">
       <div className="relative mx-auto max-w-7xl px-5 md:px-8">
         <p className="mb-6 md:mb-8 text-center text-xs md:text-sm font-medium uppercase tracking-[0.14em] text-ink-subtle">
-          A structured creative test, not another batch of minor variations.
+          {service === 'paid'
+            ? 'A structured creative test, not another batch of minor variations.'
+            : 'Consistent social content built to earn attention, not fill a calendar.'}
         </p>
 
-        <ServiceSwitch value={service} onChange={setService} />
+        <ServiceSwitch value={service} onChange={onServiceChange} />
 
         <div className="rounded-[32px] md:rounded-[40px] border border-hairline bg-surface-1/60 backdrop-blur-md p-4 sm:p-5 md:p-6">
           {service === 'paid' ? (
@@ -92,7 +104,7 @@ export default function CreativeTestingOffer() {
               <PackageCard
                 variant="standard"
                 name="Creative Testing Sprint"
-                price="From $2,500"
+                price="From €2,500"
                 priceSuffix="/month"
                 supportingLine="A focused first sprint for brands that need stronger creative diversity."
                 features={STANDARD_FEATURES}
@@ -104,7 +116,7 @@ export default function CreativeTestingOffer() {
                 variant="plus"
                 badge="Deeper Testing"
                 name="Creative Testing Sprint Plus"
-                price="From $4,500"
+                price="From €4,500"
                 priceSuffix="/month"
                 supportingLine="For brands that need more concepts, creators, and testing depth."
                 features={PLUS_FEATURES}
@@ -123,13 +135,14 @@ export default function CreativeTestingOffer() {
               <PackageCard
                 variant="standard"
                 name="Organic Light"
-                price="$1,500"
+                price="€1,500"
                 priceSuffix="/month"
-                supportingLine="Full-service organic content: strategy, production, and editing, with every post adapted and distributed across Instagram, TikTok & Facebook."
-                cadenceLine="2 posts per week, approximately 9 original posts per month"
-                features={ORGANIC_FEATURES}
+                supportingLine="Full-service organic content, from strategy and production to editing and publishing."
+                cadenceLine="2 posts per week, approximately 9 original posts per month, adapted and distributed across your selected platforms"
+                features={ORGANIC_LIGHT_FEATURES}
                 footerLabel="Platforms"
-                footerValue="Instagram, TikTok & Facebook"
+                footerValue="Distribution across up to 3 selected platforms"
+                footerNote={PLATFORM_NOTE}
                 ctaLabel="Discuss Your Plan"
               />
 
@@ -137,13 +150,14 @@ export default function CreativeTestingOffer() {
                 variant="plus"
                 badge="Recommended"
                 name="Organic Growth"
-                price="$2,000"
+                price="€2,000"
                 priceSuffix="/month"
-                supportingLine="Higher-cadence organic content production, with more room to test formats, hooks, and creative directions across Instagram, TikTok & Facebook."
-                cadenceLine="3 posts per week, 13 original posts per month"
-                features={ORGANIC_FEATURES}
+                supportingLine="Higher-cadence organic content production, with more room to test formats, hooks, and creative directions."
+                cadenceLine="3 posts per week, 13 original posts per month, adapted and distributed across your selected platforms"
+                features={ORGANIC_GROWTH_FEATURES}
                 footerLabel="Platforms"
-                footerValue="Instagram, TikTok & Facebook"
+                footerValue="Distribution across up to 3 selected platforms"
+                footerNote={PLATFORM_NOTE}
                 ctaLabel="Discuss Your Plan"
               />
             </div>
@@ -153,8 +167,10 @@ export default function CreativeTestingOffer() {
         <p className="mt-6 md:mt-8 mx-auto max-w-2xl text-center text-[13px] text-ink-muted leading-relaxed">
           {service === 'paid'
             ? 'Pricing is based on the confirmed production scope. Additional languages, creators, locations, raw footage, paid-media usage requirements, specialist production needs, and extensive revisions may affect the final quote.'
-            : 'Pricing covers the full organic content workflow: strategy, production, editing, publishing, and optimization, across Instagram, TikTok & Facebook.'}
+            : 'Pricing covers the full organic content workflow: strategy, production, editing, publishing, and optimization, across your selected platforms.'}
         </p>
+
+        {service === 'organic' && <GraspoProof />}
       </div>
     </section>
   )
@@ -339,6 +355,7 @@ function PackageCard({
   timeline,
   footerLabel = 'Typical delivery',
   footerValue,
+  footerNote,
   ctaLabel,
 }) {
   const isPlus = variant === 'plus'
@@ -391,6 +408,9 @@ function PackageCard({
           {footerLabel}
         </p>
         <p className="mt-1.5 text-[13px] leading-relaxed opacity-80">{footerText}</p>
+        {footerNote && (
+          <p className="mt-1 text-[11.5px] leading-relaxed opacity-55">{footerNote}</p>
+        )}
       </div>
 
       <a
@@ -413,5 +433,55 @@ function CheckIcon({ className = '' }) {
     <svg viewBox="0 0 16 16" className={className} fill="none" aria-hidden="true">
       <path d="M3 8.5l3 3 7-7" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
+  )
+}
+
+/* ─────────────────────────────────────────────
+   Graspo proof — compact organic-results block.
+   Figures sourced from the Graspo case study
+   (GraspoMetrics.jsx / GraspoAudience.jsx).
+───────────────────────────────────────────── */
+const GRASPO_STATS = [
+  { value: '10.7M+', label: 'Organic Views' },
+  { value: '20K+', label: 'Facebook Followers' },
+  { value: '8K+', label: 'Instagram Followers' },
+  { value: '75+', label: 'Inbound Leads' },
+]
+
+function GraspoProof() {
+  return (
+    <div className="pricing-panel-in mt-6 md:mt-8 rounded-[24px] md:rounded-[28px] border border-hairline bg-surface-1/60 backdrop-blur-md p-6 md:p-8">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 md:gap-8">
+        <div className="md:max-w-xs">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-ink-subtle mb-2">
+            Proven with organic social
+          </p>
+          <h3 className="font-display font-bold text-ink tracking-display leading-[1.15] text-xl md:text-2xl">
+            Organic social that actually gets watched.
+          </h3>
+        </div>
+
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 md:gap-5 flex-1">
+          {GRASPO_STATS.map((stat) => (
+            <div key={stat.label} className="text-center sm:text-left">
+              <p className="font-display font-bold text-lime tracking-display text-2xl md:text-[28px] tabular-nums leading-none">
+                {stat.value}
+              </p>
+              <p className="mt-1.5 text-[11.5px] text-ink-muted leading-tight">{stat.label}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="mt-6 pt-5 border-t border-hairline flex justify-center md:justify-end">
+        <a
+          href="/case-studies/graspo"
+          className="inline-flex items-center gap-1.5 text-sm font-semibold text-lime hover:text-lime-light transition-colors"
+        >
+          See how we grew Graspo
+          <span aria-hidden="true">→</span>
+        </a>
+      </div>
+    </div>
   )
 }
