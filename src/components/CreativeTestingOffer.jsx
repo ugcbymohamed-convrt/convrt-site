@@ -92,7 +92,8 @@ export default function CreativeTestingOffer() {
               <PackageCard
                 variant="standard"
                 name="Creative Testing Sprint"
-                price="From €2,500"
+                price="From $2,500"
+                priceSuffix="/month"
                 supportingLine="A focused first sprint for brands that need stronger creative diversity."
                 features={STANDARD_FEATURES}
                 timeline="Approximately 10 business days after script approval."
@@ -103,7 +104,8 @@ export default function CreativeTestingOffer() {
                 variant="plus"
                 badge="Deeper Testing"
                 name="Creative Testing Sprint Plus"
-                price="From €4,500"
+                price="From $4,500"
+                priceSuffix="/month"
                 supportingLine="For brands that need more concepts, creators, and testing depth."
                 features={PLUS_FEATURES}
                 timeline="Approximately 15 business days after script approval."

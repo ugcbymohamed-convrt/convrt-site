@@ -19,10 +19,10 @@ export default function CreativeTestingNextStep() {
         </h2>
 
         <p className="text-ink-muted leading-relaxed mx-auto mb-10 max-w-xl">
-          The Creative Testing Sprint is a focused paid engagement, not a long-term commitment.
-          Once promising concepts and angles are identified, CONVRT can turn them into a
-          structured monthly production system built around continuous testing, iteration, and
-          scale.
+          The Creative Testing Sprint runs as a monthly engagement, giving you a continuous
+          stream of new concepts, scripts, and test-ready ads. As winning directions emerge,
+          CONVRT scales production to match, with more concepts, more variations, and more
+          testing depth.
         </p>
 
         <a
