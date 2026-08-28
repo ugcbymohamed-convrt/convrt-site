@@ -22,19 +22,16 @@ export default function CreativeTestingHero() {
         </div>
 
         <h1
-          className="mt-6 font-display font-semibold text-ink tracking-display-xl leading-[1.05]"
-          style={{ fontSize: 'clamp(2.25rem, 5vw, 3.75rem)' }}
+          className="mt-6 font-display font-semibold text-ink tracking-display-xl leading-[1.05] md:whitespace-nowrap"
+          style={{ fontSize: 'clamp(2.25rem, 4.6vw, 3.5rem)' }}
         >
           Find winning ad concepts <span className="text-lime">faster.</span>
         </h1>
 
         <p className="mt-6 max-w-2xl mx-auto text-base md:text-lg text-ink-muted leading-relaxed">
           Most brands do not need more minor variations. They need genuinely different ideas to
-          test.
-        </p>
-        <p className="mt-4 max-w-2xl mx-auto text-base md:text-lg text-ink-muted leading-relaxed">
-          CONVRT develops distinct concepts, scripts, hooks, formats, and angles, then turns them
-          into platform-ready ads with a clear testing plan.
+          test. CONVRT develops distinct concepts, scripts, hooks, formats, and angles, then
+          turns them into platform-ready ads with a clear testing plan.
         </p>
 
         <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">

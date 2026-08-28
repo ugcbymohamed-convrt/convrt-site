@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import Logo from './Logo.jsx'
 import { BOOKING_URL } from '../config.js'
+import { openBookingModal } from '../lib/bookingModal.js'
 
 const links = [
   { label: 'Services', href: '#services' },
@@ -17,6 +18,15 @@ export default function Nav() {
   const onHome = typeof window !== 'undefined' ? window.location.pathname === '/' : true
   const homePrefix = onHome ? '' : '/'
   const resolveHref = (href) => (href.startsWith('#') ? `${homePrefix}${href}` : href)
+
+  // /scale is a paid-acquisition page with its own in-page booking modal
+  // and consistent "Book a Discovery Call" CTA copy — everywhere else the
+  // header keeps its normal "Book a Creative Call" link straight to Calendly.
+  const onScalePage = typeof window !== 'undefined' ? window.location.pathname === '/scale' : false
+  const ctaLabel = onScalePage ? 'Book a Discovery Call' : 'Book a Creative Call'
+  const handleCtaClick = onScalePage
+    ? (e) => { e.preventDefault(); setOpen(false); openBookingModal({ location: 'nav' }) }
+    : () => setOpen(false)
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8)
@@ -50,10 +60,11 @@ export default function Nav() {
 
         <div className="flex items-center gap-2">
           <a
-            href={BOOKING_URL} target="_blank" rel="noopener noreferrer"
+            href={BOOKING_URL} target={onScalePage ? undefined : '_blank'} rel={onScalePage ? undefined : 'noopener noreferrer'}
+            onClick={handleCtaClick}
             className="hidden md:inline-flex items-center gap-1.5 rounded-full bg-ink px-4 py-2.5 text-sm font-medium text-canvas transition-transform duration-150 active:scale-[0.98] hover:bg-white"
           >
-            Book a Creative Call
+            {ctaLabel}
             <ArrowUpRight className="h-3.5 w-3.5" />
           </a>
           <button
@@ -92,11 +103,11 @@ export default function Nav() {
               </a>
             ))}
             <a
-              href={BOOKING_URL} target="_blank" rel="noopener noreferrer"
-              onClick={() => setOpen(false)}
+              href={BOOKING_URL} target={onScalePage ? undefined : '_blank'} rel={onScalePage ? undefined : 'noopener noreferrer'}
+              onClick={handleCtaClick}
               className="mt-2 inline-flex items-center justify-center gap-1.5 rounded-full bg-ink px-4 py-3 text-sm font-medium text-canvas"
             >
-              Book a Creative Call
+              {ctaLabel}
               <ArrowUpRight className="h-3.5 w-3.5" />
             </a>
           </div>
