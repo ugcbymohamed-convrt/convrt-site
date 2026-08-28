@@ -78,12 +78,24 @@ function ShowcasePhone({ video }) {
     if (!el) return
     const src = `https://videodelivery.net/${video.id}/manifest/video.m3u8`
     let hls
-    if (el.canPlayType('application/vnd.apple.mpegurl')) {
-      el.src = src
-    } else if (Hls.isSupported()) {
+    // Prefer hls.js's JS demuxer whenever MSE is available — it's what actually
+    // gets exercised and error-tested across Chrome/Firefox/Edge. Some Chromium
+    // builds report canPlayType('application/vnd.apple.mpegurl') as truthy but
+    // then fail to demux the stream natively (DEMUXER_ERROR_COULD_NOT_PARSE),
+    // which is what caused the frozen-video bug. Native <video src> is now only
+    // used as the last-resort fallback for browsers hls.js can't run on at all.
+    if (Hls.isSupported()) {
       hls = new Hls()
       hls.loadSource(src)
       hls.attachMedia(el)
+      hls.on(Hls.Events.ERROR, (_event, data) => {
+        if (!data.fatal) return
+        if (data.type === Hls.ErrorTypes.NETWORK_ERROR) hls.startLoad()
+        else if (data.type === Hls.ErrorTypes.MEDIA_ERROR) hls.recoverMediaError()
+        else hls.destroy()
+      })
+    } else if (el.canPlayType('application/vnd.apple.mpegurl')) {
+      el.src = src
     }
     return () => hls && hls.destroy()
   }, [shouldLoad, video.id])
