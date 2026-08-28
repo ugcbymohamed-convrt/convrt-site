@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { BOOKING_URL } from '../../config.js'
+import GraspoHeroScene from './GraspoHeroScene.jsx'
 
 /* ─────────────────────────────────────────────
    GRASPO CASE STUDY — HERO
@@ -48,7 +49,9 @@ export default function GraspoHero() {
         style={{ background: ACCENT }}
       />
 
-      <div className="relative mx-auto max-w-5xl px-5 md:px-8 text-center">
+      <GraspoHeroScene />
+
+      <div className="relative z-10 mx-auto max-w-5xl px-5 md:px-8 text-center">
         <FadeUp inView={inView} delay={0}>
           <div
             className="inline-flex items-center gap-2.5 rounded-full border px-4 py-1.5 mb-8 backdrop-blur"
@@ -99,6 +102,8 @@ export default function GraspoHero() {
             </a>
           </div>
         </FadeUp>
+
+        <GraspoHeroScene mobile />
 
         <FadeUp inView={inView} delay={340} className="mt-10">
           <div className="rounded-3xl border border-hairline bg-surface-1/50 backdrop-blur-md px-6 py-7 md:px-10 md:py-8">

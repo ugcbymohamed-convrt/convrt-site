@@ -1,48 +1,40 @@
 import { useEffect, useRef, useState } from 'react'
 import Hls from 'hls.js'
+import Eyebrow from '../caseStudies/shared/Eyebrow.jsx'
+import { ACCENT } from './theme.js'
 
-/* ─────────────────────────────────────────────
-   CONTENT SHOWCASE
-   Real Graspo creative — the same three Cloudflare
-   Stream assets featured in the homepage Case Studies
-   carousel, played back here (muted, autoplay-in-view,
-   pause-offscreen) rather than shown as static stills.
-───────────────────────────────────────────── */
-
-const ACCENT = '#d5ff40'
-
+/* Real Elyon creative — the same three Cloudflare Stream assets featured
+   in the homepage Case Studies carousel, reused here so the case study
+   plays actual campaign content, not stand-ins. */
 const VIDEOS = [
-  { id: '15dd5505109f6821ccdcb13fc3cdc1fd', views: '295K' },
-  { id: '3616606e3ca6d1a85c8a57d7cc2f656f', views: '1.2M' },
-  { id: 'c1379ace38f2fa19ef2a45de1bb5d4b1', views: '7.5M' },
+  { id: 'fa02007b36fae2b3bb68c97cdd00e9fc', label: 'Creator-Led Ad' },
+  { id: '0905b814e2ba3950197b5bfe1cefae38', label: 'Street Interview' },
+  { id: '9e6cb8438c9b0c1ab8b55953718eddde', label: 'Performance Concept' },
 ]
 
-export default function GraspoShowcase() {
+export default function ElyonShowcase() {
   return (
-    <section id="showcase" className="relative py-16 md:py-24 overflow-hidden">
+    <section className="relative py-14 md:py-20 overflow-hidden">
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute top-1/3 left-1/2 -translate-x-1/2 h-[420px] w-[900px] rounded-full opacity-[0.05] blur-[120px]"
+        className="pointer-events-none absolute top-1/3 left-1/2 -translate-x-1/2 h-[420px] w-[900px] rounded-full opacity-[0.06] blur-[120px]"
         style={{ background: ACCENT }}
       />
       <div className="relative mx-auto max-w-7xl px-5 md:px-8">
         <div className="max-w-2xl mb-12 md:mb-14 text-center mx-auto">
-          <div className="inline-flex items-center gap-2 rounded-full border border-hairline bg-surface-1/60 px-4 py-1.5 mb-6 backdrop-blur">
-            <span className="h-1.5 w-1.5 rounded-full animate-pulse" style={{ background: ACCENT }} />
-            <span className="text-xs font-medium uppercase tracking-[0.18em] text-ink-muted">The Content</span>
-          </div>
+          <Eyebrow label="The Creative" accent={ACCENT} className="mb-6" />
           <h2 className="font-display font-bold text-ink tracking-display leading-[1.05] text-3xl md:text-[44px]">
-            What actually ran on the feed.
+            What actually ran on paid social.
           </h2>
           <p className="mt-6 text-[15px] md:text-base text-ink-muted leading-relaxed">
-            Native, platform-ready short-form video, built to stop the scroll of someone who
-            might genuinely need a print run, not just to look good in a portfolio.
+            Real campaign creative from the Elyon library, built to earn attention and still look
+            like it belongs to a luxury fragrance brand.
           </p>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 md:gap-8 max-w-4xl mx-auto">
           {VIDEOS.map((v) => (
-            <ShowcasePhone key={v.id} video={v} />
+            <VideoPhone key={v.id} video={v} />
           ))}
         </div>
       </div>
@@ -50,7 +42,7 @@ export default function GraspoShowcase() {
   )
 }
 
-function ShowcasePhone({ video }) {
+function VideoPhone({ video }) {
   const wrapperRef = useRef(null)
   const videoRef = useRef(null)
   const [inView, setInView] = useState(false)
@@ -122,7 +114,7 @@ function ShowcasePhone({ video }) {
           ) : (
             <img
               src={`https://videodelivery.net/${video.id}/thumbnails/thumbnail.jpg?time=0s&height=600`}
-              alt="Graspo organic content still"
+              alt={`Elyon ${video.label} still`}
               loading="lazy"
               className="absolute inset-0 w-full h-full object-cover"
             />
@@ -151,11 +143,8 @@ function ShowcasePhone({ video }) {
         </div>
       </div>
       <p className="mt-4 text-center">
-        <span className="block font-display font-bold leading-none text-2xl md:text-[28px] tabular-nums" style={{ color: ACCENT }}>
-          {video.views}
-        </span>
-        <span className="mt-1.5 block text-[10.5px] font-semibold uppercase tracking-[0.16em] text-ink-subtle">
-          views
+        <span className="block text-[10.5px] font-semibold uppercase tracking-[0.16em]" style={{ color: ACCENT }}>
+          {video.label}
         </span>
       </p>
     </div>

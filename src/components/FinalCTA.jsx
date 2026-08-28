@@ -137,7 +137,7 @@ export default function FinalCTA() {
                   transition: 'transform 0.5s ease',
                 }}
               />
-              <span className="relative">Book a Discovery Call</span>
+              <span className="relative">Book a Creative Call</span>
               <svg viewBox="0 0 12 12" className="relative h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" fill="none">
                 <path d="M3 9L9 3M9 3H4M9 3V8" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
               </svg>

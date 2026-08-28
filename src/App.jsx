@@ -11,12 +11,16 @@ import FinalCTA from './components/FinalCTA.jsx'
 import Footer from './components/Footer.jsx'
 import SectionDivider from './components/SectionDivider.jsx'
 import CreativeTestingSprintPage from './CreativeTestingSprintPage.jsx'
-import GraspoCaseStudyPage from './GraspoCaseStudyPage.jsx'
+import CaseStudiesPage from './CaseStudiesPage.jsx'
+import ScalePage from './ScalePage.jsx'
 
 const ROUTES = {
   '/pricing': CreativeTestingSprintPage,
-  '/case-studies': GraspoCaseStudyPage,
-  '/case-studies/graspo': GraspoCaseStudyPage,
+  '/case-studies': CaseStudiesPage,
+  '/case-studies/graspo': CaseStudiesPage,
+  '/case-studies/elyon': CaseStudiesPage,
+  // Paid-acquisition landing page. Intentionally not linked from Nav/Footer/Sitemap — see ScalePage.jsx.
+  '/scale': ScalePage,
 }
 
 function HomePage() {

@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import SectionDivider from './components/SectionDivider.jsx'
 import FinalCTA from './components/FinalCTA.jsx'
+import NextCaseStudy from './components/caseStudies/NextCaseStudy.jsx'
 import GraspoHero from './components/graspo/GraspoHero.jsx'
 import GraspoMetrics from './components/graspo/GraspoMetrics.jsx'
 import GraspoChallenge from './components/graspo/GraspoChallenge.jsx'
@@ -70,6 +71,7 @@ export default function GraspoCaseStudyPage() {
       <GraspoLeadComposition />
       <SectionDivider />
       <GraspoResult />
+      <NextCaseStudy currentId="graspo" />
       <SectionDivider />
       <FinalCTA />
     </>

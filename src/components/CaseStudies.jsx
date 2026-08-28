@@ -162,6 +162,15 @@ export default function CaseStudies() {
                 Read the full Graspo case study →
               </a>
             )}
+            {activeId === 'elyon' && (
+              <a
+                href="/case-studies?case=elyon"
+                className="cs-fade-up text-xs text-ink-subtle hover:text-lime underline underline-offset-2 transition-colors"
+                style={{ animationDelay: '220ms' }}
+              >
+                Read the full Elyon Dubai case study →
+              </a>
+            )}
           </div>
 
           {/* RIGHT — 3D phone carousel */}
