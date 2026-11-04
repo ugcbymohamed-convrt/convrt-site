@@ -31,6 +31,7 @@ export default function ScaleHero() {
   const sectionRef = useRef(null)
   const copyRef = useRef(null)
   const frameRef = useRef(null)
+  const stickyRef = useRef(null)
   const videoRef = useRef(null)
   const reducedMotion = usePrefersReducedMotion()
 
@@ -54,8 +55,14 @@ export default function ScaleHero() {
     let pinDistance = 1
     let rafId = null
 
+    // The pin starts when the section's top reaches the sticky offset (= header
+    // height) and ends when its bottom meets the sticky wrapper's bottom, so
+    // the scroll distance is section height minus wrapper height. Progress is
+    // measured over exactly that range: it starts the instant the visitor
+    // scrolls (no dead zone under the header) and hits 1 at the moment of release.
+    const stickyOffset = () => (window.innerWidth < 768 ? 72 : 96)
     const measure = () => {
-      pinDistance = Math.max(section.offsetHeight - window.innerHeight, 1)
+      pinDistance = Math.max(section.offsetHeight - stickyRef.current.offsetHeight, 1)
     }
 
     // The video re-centres itself in the visible area (below the header) as it
@@ -69,12 +76,19 @@ export default function ScaleHero() {
       copy.style.transform = `translateY(${(-copyFade * 50).toFixed(1)}px)`
 
       const isMobile = window.innerWidth < 768
-      const maxScale = isMobile ? 1.08 : 1.48
+      const navH = isMobile ? 72 : 96
+      // Never let the grown video exceed the visible height (header and a small
+      // margin excluded) — on wide, short screens 92vw would otherwise be taller
+      // than the viewport and push the bottom controls off screen.
+      const fitScale = (window.innerHeight - navH - 32) / frame.offsetHeight
+      const maxScale = Math.min(isMobile ? 1.08 : 1.48, Math.max(1, fitScale))
       const scale = 1 + p * (maxScale - 1)
 
-      const navH = isMobile ? 72 : 96
+      // Measure the frame's resting centre relative to the sticky container, so
+      // the result doesn't change as the page scrolls (including after release).
       const rect = frame.getBoundingClientRect()
-      const baseCenter = rect.top + rect.height / 2 - appliedTy
+      const stickyRect = stickyRef.current.getBoundingClientRect()
+      const baseCenter = navH + (rect.top + rect.height / 2 - appliedTy - stickyRect.top)
       const targetCenter = navH + (window.innerHeight - navH) / 2
       const ty = Math.min(0, targetCenter - baseCenter) * p
       appliedTy = ty
@@ -86,8 +100,9 @@ export default function ScaleHero() {
 
     const compute = () => {
       rafId = null
+      measure() // cheap, and keeps the range correct as fonts/images settle layout
       const rect = section.getBoundingClientRect()
-      const scrolled = -rect.top
+      const scrolled = stickyOffset() - rect.top
       const p = scrolled < 0 ? 0 : scrolled > pinDistance ? 1 : scrolled / pinDistance
       apply(p)
     }
@@ -218,7 +233,8 @@ export default function ScaleHero() {
       />
 
       <div
-        className={reducedMotion ? 'relative pt-10 pb-16 md:pt-14 md:pb-20' : 'sticky top-[72px] md:top-[96px] flex flex-col items-center justify-center overflow-hidden'}
+        ref={stickyRef}
+        className={reducedMotion ? 'relative pt-10 pb-16 md:pt-14 md:pb-20' : 'sticky top-[72px] md:top-[96px] flex flex-col items-center justify-center overflow-x-clip'}
         style={reducedMotion ? undefined : { minHeight: 'calc(100vh - 72px)' }}
       >
         <div className="relative mx-auto w-full max-w-7xl px-5 md:px-8">
@@ -255,8 +271,10 @@ export default function ScaleHero() {
           <FadeIn show={entered} delay={300} className="mt-8 md:mt-10">
             <div
               ref={frameRef}
-              className="relative mx-auto aspect-video w-full max-w-[62vw] min-w-[320px] overflow-hidden rounded-[28px] border border-hairline-strong bg-black shadow-[0_40px_100px_-20px_rgba(0,0,0,0.75)]"
-              style={{ willChange: 'transform, border-radius' }}
+              className="relative mx-auto aspect-video w-full min-w-[320px] overflow-hidden rounded-[28px] border border-hairline-strong bg-black shadow-[0_40px_100px_-20px_rgba(0,0,0,0.75)]"
+              // 62vw on normal desktops. On wide-but-short screens the starting size is
+              // capped by viewport height so the video still has room to grow into.
+              style={{ maxWidth: 'min(62vw, calc((100vh - 128px) * 1.28))', willChange: 'transform, border-radius' }}
             >
               {/* Base layer: designed placeholder — also the fallback if the poster can't load */}
               <FounderPlaceholderArt />
@@ -335,7 +353,7 @@ export default function ScaleHero() {
                   type="button"
                   onClick={handlePlay}
                   aria-label="Play the CONVRT founder video"
-                  className={`group absolute inset-x-0 flex items-center justify-center ${playing ? 'top-14 bottom-4' : 'top-0 bottom-14 md:bottom-16'}`}
+                  className={`group absolute inset-x-0 flex items-center justify-center ${playing ? 'top-16 bottom-20' : 'top-0 bottom-14 md:bottom-16'}`}
                 >
                   <span className="relative flex h-20 w-20 md:h-24 md:w-24 items-center justify-center rounded-full transition-transform duration-300 ease-out group-hover:scale-[1.06] group-active:scale-95">
                     <span className="absolute inset-0 rounded-full bg-lime/25 blur-xl transition-opacity duration-300 group-hover:opacity-100 opacity-70" />

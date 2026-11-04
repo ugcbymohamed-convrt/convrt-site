@@ -14,6 +14,7 @@ import { useEffect, useRef, useState } from 'react'
 
 const LIME = '#d5ff40'
 const PROGRESS_EXPONENT = 0.6
+const TRACK_HEIGHT = 7 // px — thick enough to read clearly on any video frame
 
 export default function VslControls({ videoRef, containerRef, visible, playing, paused }) {
   const barRef = useRef(null)
@@ -60,6 +61,18 @@ export default function VslControls({ videoRef, containerRef, visible, playing, 
       document.removeEventListener('webkitfullscreenchange', onChange)
     }
   }, [])
+
+  const togglePlay = () => {
+    const v = videoRef.current
+    if (!v) return
+    if (v.paused) v.play().catch(() => {})
+    else v.pause()
+  }
+
+  const rewind = () => {
+    const v = videoRef.current
+    if (v) v.currentTime = Math.max(0, v.currentTime - 10)
+  }
 
   const toggleMute = () => {
     const v = videoRef.current
@@ -150,13 +163,51 @@ export default function VslControls({ videoRef, containerRef, visible, playing, 
         </div>
       </div>
 
-      {/* Progress bar — always visible while a video is running */}
+      {/* Bottom control strip — pause/play, rewind 10s, mute. Fades with pointer activity. */}
+      <div
+        className="absolute inset-x-0 z-20 flex items-center gap-0.5 px-2.5 pb-2 pt-12 md:px-3.5"
+        style={{
+          bottom: TRACK_HEIGHT,
+          background: 'linear-gradient(to top, rgba(0,0,0,0.55), rgba(0,0,0,0))',
+          color: LIME,
+          opacity: visible ? 1 : 0,
+          transition: 'opacity 0.25s ease',
+          pointerEvents: visible ? 'auto' : 'none',
+        }}
+      >
+        <IconButton label={paused ? 'Play' : 'Pause'} onClick={togglePlay} size="lg">
+          {paused ? (
+            <path d="M5 3l8 5-8 5V3z" fill="currentColor" />
+          ) : (
+            <>
+              <rect x="3.5" y="3" width="3" height="10" rx="0.8" fill="currentColor" stroke="none" />
+              <rect x="9.5" y="3" width="3" height="10" rx="0.8" fill="currentColor" stroke="none" />
+            </>
+          )}
+        </IconButton>
+        <IconButton label="Rewind 10 seconds" onClick={rewind} size="lg">
+          <path d="M2.8 8a5.2 5.2 0 1 0 1.7-3.8" />
+          <path d="M2.6 2v3.2h3.2" />
+          <text x="8" y="10.2" textAnchor="middle" fontSize="5.4" fontWeight="700" fill="currentColor" stroke="none" fontFamily="Inter, sans-serif">10</text>
+        </IconButton>
+        <IconButton label={muted || volume === 0 ? 'Unmute' : 'Mute'} onClick={toggleMute} size="lg">
+          <path d="M2 6v4h2.5L8 13V3L4.5 6H2z" fill="currentColor" />
+          {level > 0 && <path d="M10.5 5.5c.9.7 1.3 1.5 1.3 2.5s-.4 1.8-1.3 2.5" />}
+          {level > 0.5 && <path d="M12.6 3.5C14 4.6 14.8 6.1 14.8 8s-.8 3.4-2.2 4.5" />}
+          {level === 0 && <path d="M10.5 6l4 4M14.5 6l-4 4" />}
+        </IconButton>
+      </div>
+
+      {/* Progress bar — full width at the very bottom, always visible while a video is running */}
       {playing && (
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-20 h-[5px] bg-white/15">
+        <div
+          className="pointer-events-none absolute inset-x-0 bottom-0 z-20 bg-white/20"
+          style={{ height: TRACK_HEIGHT }}
+        >
           <div
             ref={barRef}
             className="h-full w-full origin-left"
-            style={{ background: LIME, transform: 'scaleX(0)', boxShadow: '0 0 12px rgba(213,255,64,0.6)', willChange: 'transform' }}
+            style={{ background: LIME, transform: 'scaleX(0)', boxShadow: '0 0 14px rgba(213,255,64,0.75)', willChange: 'transform' }}
           />
         </div>
       )}
@@ -164,15 +215,17 @@ export default function VslControls({ videoRef, containerRef, visible, playing, 
   )
 }
 
-function IconButton({ label, onClick, children }) {
+function IconButton({ label, onClick, children, size = 'md' }) {
+  const box = size === 'lg' ? 'h-10 w-10' : 'h-9 w-9'
+  const icon = size === 'lg' ? 'h-[22px] w-[22px]' : 'h-[18px] w-[18px]'
   return (
     <button
       type="button"
       onClick={onClick}
       aria-label={label}
-      className="flex h-9 w-9 items-center justify-center rounded-full transition-colors hover:bg-white/10 active:scale-95"
+      className={`flex ${box} items-center justify-center rounded-full transition-colors hover:bg-white/10 active:scale-95`}
     >
-      <svg viewBox="0 0 16 16" className="h-[18px] w-[18px]" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <svg viewBox="0 0 16 16" className={icon} fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
         {children}
       </svg>
     </button>
