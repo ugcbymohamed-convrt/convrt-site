@@ -1,13 +1,15 @@
 import { useEffect, useRef, useState } from 'react'
+import Hls from 'hls.js'
 import { usePrefersReducedMotion } from '../caseStudies/shared/usePrefersReducedMotion.js'
 import { trackEvent } from '../../lib/analytics.js'
 import DiscoveryCallButton from './DiscoveryCallButton.jsx'
 
 /* ─────────────────────────────────────────────
-   VSL not recorded yet. Set VSL_SRC to the hosted mp4/HLS URL once it
-   exists (same Cloudflare Stream pattern as the homepage hero — see
-   HERO_HLS in components/Hero.jsx) and the player lights up with no
-   other changes.
+   VSL is hosted on Cloudflare Stream — same pattern as the homepage
+   hero (HERO_HLS in components/Hero.jsx). Nothing is fetched until the
+   visitor presses play: the <video> has no src and preload="none" until
+   then, so the VSL costs the page nothing on load. Set VSL_VIDEO_ID to
+   '' to fall back to the "being finalized" placeholder state.
 
    SCROLL MECHANIC — fixes the earlier "dead scroll" bug. Progress is
    driven by the OUTER section's own measured height, not a fixed
@@ -20,7 +22,9 @@ import DiscoveryCallButton from './DiscoveryCallButton.jsx'
    wrapper is about to release — there is no leftover scroll distance
    where the video sits frozen before the next section arrives.
 ───────────────────────────────────────────── */
-const VSL_SRC = ''
+const VSL_VIDEO_ID = 'f6d1f28ee80ac337872fd410d7b7906e'
+const VSL_HLS = VSL_VIDEO_ID ? `https://videodelivery.net/${VSL_VIDEO_ID}/manifest/video.m3u8` : ''
+const VSL_POSTER = VSL_VIDEO_ID ? `https://videodelivery.net/${VSL_VIDEO_ID}/thumbnails/thumbnail.jpg?height=720` : ''
 
 export default function ScaleHero() {
   const sectionRef = useRef(null)
@@ -88,15 +92,45 @@ export default function ScaleHero() {
     }
   }, [reducedMotion])
 
+  const hlsRef = useRef(null)
+  const attachedRef = useRef(false)
+  const [posterOk, setPosterOk] = useState(true)
+  const [loadError, setLoadError] = useState(false)
+
+  useEffect(() => () => hlsRef.current?.destroy(), [])
+
+  // Attach the HLS source lazily, on first play only.
+  const attachSource = (video) => {
+    if (attachedRef.current) return
+    attachedRef.current = true
+    if (video.canPlayType('application/vnd.apple.mpegurl')) {
+      video.src = VSL_HLS
+    } else if (Hls.isSupported()) {
+      const hls = new Hls()
+      hlsRef.current = hls
+      hls.on(Hls.Events.ERROR, (_, data) => { if (data.fatal) setLoadError(true) })
+      hls.loadSource(VSL_HLS)
+      hls.attachMedia(video)
+    } else {
+      setLoadError(true)
+    }
+  }
+
   const handlePlay = () => {
-    trackEvent('vsl_play', { page: 'scale' })
-    if (!VSL_SRC) {
+    const firstPlay = !milestonesRef.current.has('played')
+    if (firstPlay) {
+      milestonesRef.current.add('played')
+      trackEvent('vsl_play', { page: 'scale' })
+    }
+    if (!VSL_HLS) {
       setShowComingSoon(true)
       return
     }
-    setShowComingSoon(false)
-    setPlaying(true)
-    videoRef.current?.play().catch(() => {})
+    const video = videoRef.current
+    if (!video) return
+    setLoadError(false)
+    attachSource(video)
+    video.play().then(() => setPlaying(true)).catch(() => {})
   }
 
   const handleTimeUpdate = () => {
@@ -115,6 +149,17 @@ export default function ScaleHero() {
     if (!milestonesRef.current.has(100)) {
       milestonesRef.current.add(100)
       trackEvent('vsl_complete', { page: 'scale' })
+    }
+    // Replaying an hls.js stream from its ended state throws a sticky
+    // DEMUXER_ERROR in Chromium. Tear the player down so the next play
+    // attaches a fresh source instead.
+    const video = videoRef.current
+    hlsRef.current?.destroy()
+    hlsRef.current = null
+    attachedRef.current = false
+    if (video) {
+      video.removeAttribute('src')
+      video.load()
     }
     setPlaying(false)
   }
@@ -172,19 +217,51 @@ export default function ScaleHero() {
               className="relative mx-auto aspect-video w-full max-w-[62vw] min-w-[320px] overflow-hidden rounded-[28px] border border-hairline-strong bg-black shadow-[0_40px_100px_-20px_rgba(0,0,0,0.75)]"
               style={{ willChange: 'transform, border-radius' }}
             >
-              {VSL_SRC ? (
-                <video
-                  ref={videoRef}
-                  className="absolute inset-0 h-full w-full object-cover"
-                  src={VSL_SRC}
-                  playsInline
-                  muted={false}
-                  onTimeUpdate={handleTimeUpdate}
-                  onEnded={handleEnded}
-                  onPause={() => setPlaying(false)}
-                />
-              ) : (
-                <FounderPlaceholderArt />
+              {/* Base layer: designed placeholder — also the fallback if the poster can't load */}
+              <FounderPlaceholderArt />
+
+              {VSL_HLS && (
+                <>
+                  {posterOk && !playing && (
+                    <>
+                      <img
+                        src={VSL_POSTER}
+                        alt=""
+                        className="absolute inset-0 h-full w-full object-cover"
+                        draggable="false"
+                        onError={() => setPosterOk(false)}
+                      />
+                      <div
+                        aria-hidden="true"
+                        className="pointer-events-none absolute inset-0"
+                        style={{ background: 'linear-gradient(to top, rgba(10,10,11,0.7) 0%, rgba(10,10,11,0.05) 45%, rgba(10,10,11,0.25) 100%)' }}
+                      />
+                      <div className="pointer-events-none absolute top-3 left-3 md:top-5 md:left-5 flex items-center gap-2 rounded-full bg-black/50 backdrop-blur-md px-3.5 py-2">
+                        <span className="h-1.5 w-1.5 rounded-full bg-lime" />
+                        <span className="text-[12px] font-medium text-white/85">Mohamed — Founder, CONVRT</span>
+                      </div>
+                    </>
+                  )}
+                  <video
+                    ref={videoRef}
+                    className="absolute inset-0 h-full w-full bg-black object-cover"
+                    style={{ opacity: playing ? 1 : 0, pointerEvents: playing ? 'auto' : 'none' }}
+                    preload="none"
+                    playsInline
+                    controls={playing}
+                    onTimeUpdate={handleTimeUpdate}
+                    onEnded={handleEnded}
+                  />
+                </>
+              )}
+
+              {loadError && (
+                <div className="absolute inset-x-4 bottom-4 md:inset-x-6 md:bottom-6 z-10 flex flex-col sm:flex-row sm:items-center gap-3 rounded-2xl bg-canvas/90 backdrop-blur-md border border-hairline px-5 py-4">
+                  <p className="flex-1 text-[13px] text-ink-muted leading-snug">
+                    The video couldn't load. Happy to walk you through it live instead.
+                  </p>
+                  <DiscoveryCallButton location="vsl_error" size="sm" variant="inverse" className="shrink-0" />
+                </div>
               )}
 
               {!playing && (
