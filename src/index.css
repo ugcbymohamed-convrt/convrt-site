@@ -258,3 +258,13 @@ body {
 .volume-slider::-moz-range-track {
   background: transparent;
 }
+
+/* Lime thumb variant — used by the /scale VSL controls */
+.volume-slider.vsl-lime::-webkit-slider-thumb {
+  background: #d5ff40;
+  box-shadow: 0 0 8px rgba(213, 255, 64, 0.55);
+}
+.volume-slider.vsl-lime::-moz-range-thumb {
+  background: #d5ff40;
+  box-shadow: 0 0 8px rgba(213, 255, 64, 0.55);
+}

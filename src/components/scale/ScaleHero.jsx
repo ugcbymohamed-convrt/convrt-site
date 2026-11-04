@@ -3,6 +3,7 @@ import Hls from 'hls.js'
 import { usePrefersReducedMotion } from '../caseStudies/shared/usePrefersReducedMotion.js'
 import { trackEvent } from '../../lib/analytics.js'
 import DiscoveryCallButton from './DiscoveryCallButton.jsx'
+import VslControls from './VslControls.jsx'
 
 /* ─────────────────────────────────────────────
    VSL is hosted on Cloudflare Stream — same pattern as the homepage
@@ -57,6 +58,11 @@ export default function ScaleHero() {
       pinDistance = Math.max(section.offsetHeight - window.innerHeight, 1)
     }
 
+    // The video re-centres itself in the visible area (below the header) as it
+    // grows, so at full size its whole frame — including the progress bar at
+    // the bottom edge — is on screen on any viewport height, not pushed
+    // below the fold by the hero copy above it.
+    let appliedTy = 0
     const apply = (p) => {
       const copyFade = Math.min(p / 0.6, 1)
       copy.style.opacity = String(1 - copyFade * 0.85)
@@ -65,7 +71,15 @@ export default function ScaleHero() {
       const isMobile = window.innerWidth < 768
       const maxScale = isMobile ? 1.08 : 1.48
       const scale = 1 + p * (maxScale - 1)
-      frame.style.transform = `translateY(${(-p * 36).toFixed(1)}px) scale(${scale.toFixed(4)})`
+
+      const navH = isMobile ? 72 : 96
+      const rect = frame.getBoundingClientRect()
+      const baseCenter = rect.top + rect.height / 2 - appliedTy
+      const targetCenter = navH + (window.innerHeight - navH) / 2
+      const ty = Math.min(0, targetCenter - baseCenter) * p
+      appliedTy = ty
+
+      frame.style.transform = `translateY(${ty.toFixed(1)}px) scale(${scale.toFixed(4)})`
       frame.style.borderRadius = `${(28 - p * 18).toFixed(1)}px`
       frame.style.boxShadow = `0 ${40 + p * 50}px ${100 + p * 70}px -20px rgba(0,0,0,${(0.7 + p * 0.15).toFixed(2)})`
     }
@@ -96,8 +110,34 @@ export default function ScaleHero() {
   const attachedRef = useRef(false)
   const [posterOk, setPosterOk] = useState(true)
   const [loadError, setLoadError] = useState(false)
+  const [paused, setPaused] = useState(false)
+  const [controlsVisible, setControlsVisible] = useState(false)
+  const playerRef = useRef(null)
+  const hideTimerRef = useRef(null)
+  const pointerTypeRef = useRef('mouse')
+  const wasVisibleRef = useRef(false)
 
-  useEffect(() => () => hlsRef.current?.destroy(), [])
+  useEffect(() => () => {
+    hlsRef.current?.destroy()
+    clearTimeout(hideTimerRef.current)
+  }, [])
+
+  // Controls fade in on pointer/touch activity and out after a short idle.
+  const showControls = () => {
+    setControlsVisible(true)
+    clearTimeout(hideTimerRef.current)
+    hideTimerRef.current = setTimeout(() => setControlsVisible(false), 2500)
+  }
+  const hideControlsSoon = () => {
+    clearTimeout(hideTimerRef.current)
+    hideTimerRef.current = setTimeout(() => setControlsVisible(false), 600)
+  }
+  const togglePlayPause = () => {
+    const v = videoRef.current
+    if (!v) return
+    if (v.paused) v.play().catch(() => {})
+    else v.pause()
+  }
 
   // Attach the HLS source lazily, on first play only.
   const attachSource = (video) => {
@@ -161,6 +201,7 @@ export default function ScaleHero() {
       video.removeAttribute('src')
       video.load()
     }
+    setPaused(false)
     setPlaying(false)
   }
 
@@ -242,16 +283,41 @@ export default function ScaleHero() {
                       </div>
                     </>
                   )}
-                  <video
-                    ref={videoRef}
-                    className="absolute inset-0 h-full w-full bg-black object-cover"
-                    style={{ opacity: playing ? 1 : 0, pointerEvents: playing ? 'auto' : 'none' }}
-                    preload="none"
-                    playsInline
-                    controls={playing}
-                    onTimeUpdate={handleTimeUpdate}
-                    onEnded={handleEnded}
-                  />
+                  <div
+                    ref={playerRef}
+                    className="absolute inset-0 bg-black [&:fullscreen_video]:object-contain"
+                    style={{ pointerEvents: playing ? 'auto' : 'none', opacity: playing ? 1 : 0 }}
+                    onPointerDown={(e) => {
+                      pointerTypeRef.current = e.pointerType
+                      wasVisibleRef.current = controlsVisible
+                      if (playing) showControls()
+                    }}
+                    onPointerMove={() => { if (playing) showControls() }}
+                    onPointerLeave={() => { if (playing) hideControlsSoon() }}
+                  >
+                    <video
+                      ref={videoRef}
+                      className="absolute inset-0 h-full w-full cursor-pointer object-cover"
+                      preload="none"
+                      playsInline
+                      onTimeUpdate={handleTimeUpdate}
+                      onEnded={handleEnded}
+                      onPlay={() => setPaused(false)}
+                      onPause={(e) => { if (!e.currentTarget.ended) setPaused(true) }}
+                      onClick={() => {
+                        // On touch, the first tap just reveals the controls.
+                        if (pointerTypeRef.current === 'touch' && !wasVisibleRef.current) return
+                        togglePlayPause()
+                      }}
+                    />
+                    <VslControls
+                      videoRef={videoRef}
+                      containerRef={playerRef}
+                      visible={controlsVisible || paused}
+                      playing={playing}
+                      paused={paused}
+                    />
+                  </div>
                 </>
               )}
 
@@ -264,12 +330,12 @@ export default function ScaleHero() {
                 </div>
               )}
 
-              {!playing && (
+              {(!playing || paused) && (
                 <button
                   type="button"
                   onClick={handlePlay}
                   aria-label="Play the CONVRT founder video"
-                  className="group absolute inset-x-0 top-0 bottom-14 md:bottom-16 flex items-center justify-center"
+                  className={`group absolute inset-x-0 flex items-center justify-center ${playing ? 'top-14 bottom-4' : 'top-0 bottom-14 md:bottom-16'}`}
                 >
                   <span className="relative flex h-20 w-20 md:h-24 md:w-24 items-center justify-center rounded-full transition-transform duration-300 ease-out group-hover:scale-[1.06] group-active:scale-95">
                     <span className="absolute inset-0 rounded-full bg-lime/25 blur-xl transition-opacity duration-300 group-hover:opacity-100 opacity-70" />
