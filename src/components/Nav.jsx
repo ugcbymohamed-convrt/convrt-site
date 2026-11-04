@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 import Logo from './Logo.jsx'
-import { BOOKING_URL } from '../config.js'
+import { BOOKING_URL, OFFER_PATHS } from '../config.js'
 import { openBookingModal } from '../lib/bookingModal.js'
+import { trackEvent } from '../lib/analytics.js'
 
 const links = [
   { label: 'Services', href: '#services' },
@@ -20,13 +21,15 @@ export default function Nav() {
   const resolveHref = (href) => (href.startsWith('#') ? `${homePrefix}${href}` : href)
 
   // /scale is a paid-acquisition page with its own in-page booking modal
-  // and consistent "Book a Discovery Call" CTA copy — everywhere else the
-  // header keeps its normal "Book a Creative Call" link straight to Calendly.
+  // and consistent "Book a Discovery Call" CTA copy. Everywhere else the
+  // header promotes the primary offer (Creative Growth Roadmap); direct
+  // booking stays available in the page-level CTAs.
   const onScalePage = typeof window !== 'undefined' ? window.location.pathname === '/scale' : false
-  const ctaLabel = onScalePage ? 'Book a Discovery Call' : 'Book a Creative Call'
+  const ctaLabel = onScalePage ? 'Book a Discovery Call' : 'Get 5 Free Ad Concepts'
+  const ctaHref = onScalePage ? BOOKING_URL : OFFER_PATHS.roadmap
   const handleCtaClick = onScalePage
     ? (e) => { e.preventDefault(); setOpen(false); openBookingModal({ location: 'nav' }) }
-    : () => setOpen(false)
+    : () => { setOpen(false); trackEvent('hero_creative_roadmap_click', { location: 'nav' }) }
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8)
@@ -60,7 +63,7 @@ export default function Nav() {
 
         <div className="flex items-center gap-2">
           <a
-            href={BOOKING_URL} target={onScalePage ? undefined : '_blank'} rel={onScalePage ? undefined : 'noopener noreferrer'}
+            href={ctaHref}
             onClick={handleCtaClick}
             className="hidden md:inline-flex items-center gap-1.5 rounded-full bg-ink px-4 py-2.5 text-sm font-medium text-canvas transition-transform duration-150 active:scale-[0.98] hover:bg-white"
           >
@@ -103,7 +106,7 @@ export default function Nav() {
               </a>
             ))}
             <a
-              href={BOOKING_URL} target={onScalePage ? undefined : '_blank'} rel={onScalePage ? undefined : 'noopener noreferrer'}
+              href={ctaHref}
               onClick={handleCtaClick}
               className="mt-2 inline-flex items-center justify-center gap-1.5 rounded-full bg-ink px-4 py-3 text-sm font-medium text-canvas"
             >

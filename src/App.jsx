@@ -1,6 +1,7 @@
 import Nav from './components/Nav.jsx'
 import Hero from './components/Hero.jsx'
 import Credibility from './components/Credibility.jsx'
+import StartHereOffers from './components/StartHereOffers.jsx'
 import CaseStudies from './components/CaseStudies.jsx'
 import Services from './components/Services.jsx'
 import HowItWorks from './components/HowItWorks.jsx'
@@ -13,6 +14,8 @@ import SectionDivider from './components/SectionDivider.jsx'
 import CreativeTestingSprintPage from './CreativeTestingSprintPage.jsx'
 import CaseStudiesPage from './CaseStudiesPage.jsx'
 import ScalePage from './ScalePage.jsx'
+import { RoadmapPlaceholderPage, HooksPlaceholderPage, RiskFreePlaceholderPage } from './OfferPlaceholderPage.jsx'
+import { OFFER_PATHS } from './config.js'
 
 const ROUTES = {
   '/pricing': CreativeTestingSprintPage,
@@ -21,6 +24,10 @@ const ROUTES = {
   '/case-studies/elyon': CaseStudiesPage,
   // Paid-acquisition landing page. Intentionally not linked from Nav/Footer/Sitemap — see ScalePage.jsx.
   '/scale': ScalePage,
+  // Homepage offer destinations — placeholders until the real landing pages ship.
+  [OFFER_PATHS.roadmap]: RoadmapPlaceholderPage,
+  [OFFER_PATHS.hooks]: HooksPlaceholderPage,
+  [OFFER_PATHS.riskFree]: RiskFreePlaceholderPage,
 }
 
 function HomePage() {
@@ -28,6 +35,7 @@ function HomePage() {
     <>
       <Hero />
       <Credibility />
+      <StartHereOffers />
       <SectionDivider />
       <CaseStudies />
       <SectionDivider />

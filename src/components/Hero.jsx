@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import Hls from 'hls.js'
-import { BOOKING_URL } from '../config.js'
+import { OFFER_PATHS } from '../config.js'
+import { trackEvent } from '../lib/analytics.js'
 
 const ROTATING_WORDS = ['convert', 'resonate', 'sell', 'connect']
 
@@ -39,10 +40,11 @@ export default function Hero() {
 
             <div className="mt-6 md:mt-8 flex flex-wrap items-center justify-center lg:justify-start gap-5">
               <a
-                href={BOOKING_URL} target="_blank" rel="noopener noreferrer"
+                href={OFFER_PATHS.roadmap}
+                onClick={() => trackEvent('hero_creative_roadmap_click', { location: 'hero' })}
                 className="cta-gradient group inline-flex items-center gap-2 rounded-full px-6 py-3.5 text-sm font-semibold text-canvas"
               >
-                Book a Creative Call
+                Get 5 Free Ad Concepts
                 <svg viewBox="0 0 12 12" className="h-3.5 w-3.5 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" fill="none">
                   <path d="M3 9L9 3M9 3H4M9 3V8" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
