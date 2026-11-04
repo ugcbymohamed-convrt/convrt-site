@@ -22,7 +22,7 @@ import DiscoveryCallButton from './DiscoveryCallButton.jsx'
    wrapper is about to release — there is no leftover scroll distance
    where the video sits frozen before the next section arrives.
 ───────────────────────────────────────────── */
-const VSL_VIDEO_ID = 'f6d1f28ee80ac337872fd410d7b7906e'
+const VSL_VIDEO_ID = 'a5e60be52e693016bb47bed4c801eb5f'
 const VSL_HLS = VSL_VIDEO_ID ? `https://videodelivery.net/${VSL_VIDEO_ID}/manifest/video.m3u8` : ''
 const VSL_POSTER = VSL_VIDEO_ID ? `https://videodelivery.net/${VSL_VIDEO_ID}/thumbnails/thumbnail.jpg?height=720` : ''
 
