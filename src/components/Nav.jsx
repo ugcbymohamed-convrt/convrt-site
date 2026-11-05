@@ -3,6 +3,7 @@ import Logo from './Logo.jsx'
 import { BOOKING_URL, OFFER_PATHS } from '../config.js'
 import { openBookingModal } from '../lib/bookingModal.js'
 import { trackEvent } from '../lib/analytics.js'
+import { scrollToApply } from '../lib/roadmapForm.js'
 
 const links = [
   { label: 'Services', href: '#services' },
@@ -25,11 +26,17 @@ export default function Nav() {
   // header promotes the primary offer (Creative Growth Roadmap); direct
   // booking stays available in the page-level CTAs.
   const onScalePage = typeof window !== 'undefined' ? window.location.pathname === '/scale' : false
+  // On the roadmap landing page itself, the CTA scrolls to the application form
+  // instead of reloading the page it's already on.
+  const onRoadmapPage =
+    typeof window !== 'undefined' ? window.location.pathname.replace(/\/$/, '') === OFFER_PATHS.roadmap : false
   const ctaLabel = onScalePage ? 'Book a Discovery Call' : 'Get 5 Free Ad Concepts'
-  const ctaHref = onScalePage ? BOOKING_URL : OFFER_PATHS.roadmap
+  const ctaHref = onScalePage ? BOOKING_URL : onRoadmapPage ? '#apply' : OFFER_PATHS.roadmap
   const handleCtaClick = onScalePage
     ? (e) => { e.preventDefault(); setOpen(false); openBookingModal({ location: 'nav' }) }
-    : () => { setOpen(false); trackEvent('hero_creative_roadmap_click', { location: 'nav' }) }
+    : onRoadmapPage
+      ? (e) => { e.preventDefault(); setOpen(false); trackEvent('roadmap_apply_click', { location: 'nav' }); scrollToApply() }
+      : () => { setOpen(false); trackEvent('hero_creative_roadmap_click', { location: 'nav' }) }
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8)

@@ -14,7 +14,8 @@ import SectionDivider from './components/SectionDivider.jsx'
 import CreativeTestingSprintPage from './CreativeTestingSprintPage.jsx'
 import CaseStudiesPage from './CaseStudiesPage.jsx'
 import ScalePage from './ScalePage.jsx'
-import { RoadmapPlaceholderPage, HooksPlaceholderPage, RiskFreePlaceholderPage } from './OfferPlaceholderPage.jsx'
+import RoadmapPage from './RoadmapPage.jsx'
+import { HooksPlaceholderPage, RiskFreePlaceholderPage } from './OfferPlaceholderPage.jsx'
 import { OFFER_PATHS } from './config.js'
 
 const ROUTES = {
@@ -24,8 +25,8 @@ const ROUTES = {
   '/case-studies/elyon': CaseStudiesPage,
   // Paid-acquisition landing page. Intentionally not linked from Nav/Footer/Sitemap — see ScalePage.jsx.
   '/scale': ScalePage,
-  // Homepage offer destinations — placeholders until the real landing pages ship.
-  [OFFER_PATHS.roadmap]: RoadmapPlaceholderPage,
+  // Homepage offer destinations. Roadmap is live; hooks / risk-free are still placeholders.
+  [OFFER_PATHS.roadmap]: RoadmapPage,
   [OFFER_PATHS.hooks]: HooksPlaceholderPage,
   [OFFER_PATHS.riskFree]: RiskFreePlaceholderPage,
 }

@@ -11,11 +11,6 @@ import { BOOKING_URL } from './config.js'
 ───────────────────────────────────────────── */
 
 const COPY = {
-  roadmap: {
-    eyebrow: 'Creative Growth Roadmap',
-    title: 'Get 5 Free Ad Concepts',
-    body: 'Qualifying brands can apply to receive five personalized ad concepts, presented during a strategy call. The application page is being finalized.',
-  },
   hooks: {
     eyebrow: 'Free Hooks Library',
     title: '10 Free Ad Hooks',
@@ -69,6 +64,5 @@ function OfferPlaceholderPage({ copy }) {
   )
 }
 
-export const RoadmapPlaceholderPage = () => <OfferPlaceholderPage copy={COPY.roadmap} />
 export const HooksPlaceholderPage = () => <OfferPlaceholderPage copy={COPY.hooks} />
 export const RiskFreePlaceholderPage = () => <OfferPlaceholderPage copy={COPY.riskFree} />
