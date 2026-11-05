@@ -1,10 +1,8 @@
 import { useEffect, useRef } from 'react'
 import SectionDivider from './components/SectionDivider.jsx'
 import RoadmapHero from './components/roadmap/RoadmapHero.jsx'
-import { RoadmapIncluded, RoadmapProof, RoadmapProcess, RoadmapAudience } from './components/roadmap/RoadmapSections.jsx'
 import RoadmapApplication from './components/roadmap/RoadmapApplication.jsx'
 import RoadmapFAQ from './components/roadmap/RoadmapFAQ.jsx'
-import RoadmapFinalCTA from './components/roadmap/RoadmapFinalCTA.jsx'
 import { captureAttribution, trackEvent } from './lib/analytics.js'
 import { OFFER_PATHS, SITE_URL, ROADMAP_INDEXABLE } from './config.js'
 
@@ -76,18 +74,9 @@ export default function RoadmapPage() {
     <>
       <RoadmapHero />
       <SectionDivider />
-      <RoadmapIncluded />
-      <SectionDivider />
-      <RoadmapProof />
-      <SectionDivider />
-      <RoadmapProcess />
-      <SectionDivider />
-      <RoadmapAudience />
-      <SectionDivider />
       <RoadmapApplication />
       <SectionDivider />
       <RoadmapFAQ />
-      <RoadmapFinalCTA />
     </>
   )
 }

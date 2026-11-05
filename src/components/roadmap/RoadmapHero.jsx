@@ -1,17 +1,10 @@
 import { ApplyButton } from './shared.jsx'
+import ConceptCardsVisual from './ConceptCardsVisual.jsx'
 
 /* ─────────────────────────────────────────────
-   HERO — offer + illustrative Roadmap preview.
-   The preview is a clearly-labelled EXAMPLE: it does not depict a real
-   client, ad, or result.
+   HERO — the offer, one CTA, and an animated stage of floating concept
+   cards (see ConceptCardsVisual.jsx).
 ───────────────────────────────────────────── */
-
-const DETAILS = [
-  { label: 'Angle', value: 'Problem → Solution' },
-  { label: 'Format', value: 'Creator-led Video' },
-  { label: 'Hook Direction', value: 'Show the friction' },
-  { label: 'Objective', value: 'Demonstrate product value' },
-]
 
 export default function RoadmapHero() {
   return (
@@ -54,87 +47,12 @@ export default function RoadmapHero() {
             </div>
           </div>
 
-          {/* Preview */}
+          {/* Visual */}
           <div className="min-w-0 lg:col-span-5">
-            <RoadmapPreview />
+            <ConceptCardsVisual />
           </div>
         </div>
       </div>
     </section>
-  )
-}
-
-function RoadmapPreview() {
-  return (
-    <figure className="mx-auto w-full max-w-[480px] lg:max-w-none" aria-label="Example Creative Growth Roadmap concept">
-      <div className="relative pb-9">
-        {/* Hints of concepts 02–05 stacked behind — decorative only */}
-        <div
-          aria-hidden="true"
-          className="absolute inset-x-6 bottom-0 top-8 rounded-3xl border border-hairline bg-surface-1/50"
-        />
-        <div
-          aria-hidden="true"
-          className="absolute inset-x-3 bottom-[18px] top-4 rounded-3xl border border-hairline bg-surface-1/80"
-        />
-
-        {/* Main concept card */}
-        <div className="relative overflow-hidden rounded-3xl border border-hairline-strong bg-surface-1 shadow-[0_40px_90px_-30px_rgba(0,0,0,0.85)]">
-          <div aria-hidden="true" className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-lime/60 to-transparent" />
-
-          {/* Document header */}
-          <div className="flex items-center justify-between gap-3 border-b border-hairline px-5 py-3.5 sm:px-6">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-ink-muted">
-              Creative Growth Roadmap
-            </p>
-            <span className="shrink-0 rounded-full border border-lime/40 bg-lime/10 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-lime">
-              Example
-            </span>
-          </div>
-
-          <div className="px-5 pb-6 pt-5 sm:px-6 sm:pt-6">
-            {/* Concept counter */}
-            <div className="flex items-center justify-between gap-4">
-              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-ink-muted">
-                Concept <span className="text-lime">01</span> <span className="text-ink-subtle">/ 05</span>
-              </p>
-              <div className="flex items-center gap-1.5" aria-hidden="true">
-                <span className="h-1 w-7 rounded-full bg-lime" />
-                <span className="h-1 w-4 rounded-full bg-surface-3" />
-                <span className="h-1 w-4 rounded-full bg-surface-3" />
-                <span className="h-1 w-4 rounded-full bg-surface-3" />
-                <span className="h-1 w-4 rounded-full bg-surface-3" />
-              </div>
-            </div>
-
-            <p className="mt-5 font-display text-[1.6rem] font-bold leading-[1.1] tracking-display text-ink sm:text-[1.9rem]">
-              The Before / After Transformation
-            </p>
-            <p className="mt-3 text-[15px] leading-relaxed text-ink-muted">
-              Show the frustration customers experience before discovering the product, then contrast it
-              with the desired outcome.
-            </p>
-
-            <dl className="mt-6 grid grid-cols-2 gap-2.5">
-              {DETAILS.map((d) => (
-                <div key={d.label} className="min-w-0 rounded-2xl border border-hairline bg-canvas/60 px-3.5 py-3">
-                  <dt className="text-[10px] font-semibold uppercase tracking-[0.16em] text-ink-subtle">{d.label}</dt>
-                  <dd className="mt-1 text-[13px] font-medium leading-snug text-ink">{d.value}</dd>
-                </div>
-              ))}
-            </dl>
-
-            <p className="mt-5 flex gap-2 border-t border-hairline pt-4 text-xs leading-relaxed text-ink-subtle">
-              <span aria-hidden="true" className="mt-[5px] h-1.5 w-1.5 shrink-0 rounded-full bg-amber" />
-              Illustrative example. Not a tested ad or a real client result.
-            </p>
-          </div>
-        </div>
-      </div>
-
-      <figcaption className="text-center text-xs text-ink-subtle">
-        One sample concept. Your roadmap is built around your own brand.
-      </figcaption>
-    </figure>
   )
 }
