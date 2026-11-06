@@ -1,23 +1,22 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
 import SectionDivider from './components/SectionDivider.jsx'
 import HooksHero from './components/hooks/HooksHero.jsx'
-import IndustrySelector from './components/hooks/IndustrySelector.jsx'
-import HooksInside from './components/hooks/HooksInside.jsx'
+import RoadmapUpsell from './components/hooks/RoadmapUpsell.jsx'
 import { captureAttribution, trackEvent } from './lib/analytics.js'
 import { useDocumentHead } from './lib/useDocumentHead.js'
-import { scrollToId } from './lib/scrollToId.js'
 import { FREE_HOOKS_INDEXABLE, OFFER_PATHS, SITE_URL } from './config.js'
 
 /* ─────────────────────────────────────────────
-   /free-hooks — lead magnet: pick SaaS or E-commerce, enter email, MailerLite
-   delivers the matching 10-hook library by email.
+   /free-hooks — a one-screen lead magnet: pick SaaS or E-commerce, enter
+   email, MailerLite delivers the matching 10-hook library by email.
 
-   • `industry` lives here so the selector, the form and the "What's inside"
-     preview stay in sync.
-   • Analytics events (src/lib/analytics.js → dataLayer / Meta Pixel when
-     present): hooks_page_view, hooks_industry_selected, hooks_form_started,
-     hooks_signup_submitted, hooks_signup_success, hooks_signup_error.
-     Params are limited to { industry, location, reason } — never an email.
+   Page = hero with signup card + Roadmap upsell (+ the site footer from App).
+
+   • Signup card: components/hooks/HooksSignupCard.jsx. Analytics events
+     (src/lib/analytics.js): hooks_page_view, hooks_industry_selected,
+     hooks_form_started, hooks_signup_submitted, hooks_signup_success,
+     hooks_signup_error. Params are limited to { industry, location, reason } —
+     never an email.
    • Backend: api/free-hooks-subscribe.js → MailerLite. See
      docs/free-hooks-mailerlite-setup.md.
 ───────────────────────────────────────────── */
@@ -27,8 +26,6 @@ const PAGE_DESCRIPTION =
   'Get 10 ready-to-adapt advertising hooks for your industry — verbal, visual and on-screen text — delivered free by email from CONVRT.'
 
 export default function FreeHooksPage() {
-  const [industry, setIndustry] = useState(null) // 'saas' | 'ecommerce' | null
-
   useDocumentHead({
     title: PAGE_TITLE,
     description: PAGE_DESCRIPTION,
@@ -44,20 +41,11 @@ export default function FreeHooksPage() {
     trackEvent('hooks_page_view')
   }, [])
 
-  const selectIndustry = useCallback((key, source = 'selector') => {
-    setIndustry(key)
-    trackEvent('hooks_industry_selected', { industry: key, location: source })
-  }, [])
-
-  const goToSelector = useCallback(() => scrollToId('industry', 'industry-heading'), [])
-
   return (
     <>
-      <HooksHero onCta={goToSelector} />
+      <HooksHero />
       <SectionDivider />
-      <IndustrySelector industry={industry} onSelect={selectIndustry} />
-      <SectionDivider />
-      <HooksInside industry={industry} onCta={goToSelector} />
+      <RoadmapUpsell />
     </>
   )
 }
