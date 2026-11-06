@@ -29,3 +29,9 @@ export const ROADMAP_INDEXABLE = false
 // this is empty and the application form shows its data-use notice without a
 // link. Set it (e.g. '/privacy') once the policy is published.
 export const PRIVACY_POLICY_URL = ''
+
+// ── Free Hooks lead magnet (/free-hooks) ────────────────────────────────────
+// Launch gate, same idea as ROADMAP_INDEXABLE: the page is served with
+// <meta name="robots" content="noindex"> until MailerLite is connected and a
+// real end-to-end signup has been tested. Then flip to `true`.
+export const FREE_HOOKS_INDEXABLE = false
