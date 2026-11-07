@@ -157,6 +157,21 @@ body {
   }
 }
 
+/* Hero secondary CTA ("See Our Work") — dark charcoal, border brightens on hover,
+   a small lift and a restrained press that echo (but stay quieter than) .hero-cta. */
+.hero-cta-ghost {
+  transition: border-color 0.2s ease, background-color 0.2s ease,
+    transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1), scale 0.15s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.hero-cta-ghost:hover {
+  transform: translateY(-1px);
+  background-color: #222227;
+}
+.hero-cta-ghost:active {
+  transform: translateY(0);
+  scale: 0.98;
+}
+
 /* ── Case Studies micro-interactions ────────────────────────────
    cs-fade-up  : left-col text (fade + gentle rise)
    cs-card-in  : each video card (fade + rise + slight scale-up)
@@ -263,6 +278,16 @@ body {
   }
   .hero-cta-fire {
     animation: none;
+  }
+  .hero-cta-ghost {
+    transition: none;
+  }
+  .hero-cta-ghost:hover {
+    transform: none;
+  }
+  .hero-cta-ghost:active {
+    scale: 1;
+    filter: brightness(0.9);
   }
 }
 

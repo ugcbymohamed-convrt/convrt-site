@@ -22,7 +22,7 @@ const SECONDARY_OFFERS = [
   {
     id: 'hooks',
     icon: IconBolt,
-    title: <>10 <span className="text-lime">FREE</span> Ad Hooks</>,
+    title: <>10 <span className="text-[#F472B6]">FREE</span> Ad Hooks</>,
     description: 'Fresh hooks for your next ads.',
     cta: 'Get free hooks',
     href: OFFER_PATHS.hooks,
@@ -69,7 +69,7 @@ export default function Hero() {
             </h1>
 
             <p className="mt-6 md:mt-8 max-w-xl mx-auto lg:mx-0 text-base md:text-lg text-ink-muted leading-relaxed">
-              UGC ads, spokesperson videos, and creative strategy for brands that scale on paid social.
+              Human-led UGC and spokesperson videos for paid ads, plus engaging content for your social channels.
             </p>
 
             {/* Level 1 — the primary action: one value-prop line tied tightly to the button.
@@ -79,22 +79,37 @@ export default function Hero() {
               <p className="mb-3 text-balance text-[15px] md:text-base font-medium leading-snug text-ink">
                 Your next 5 ad concepts. Tailored to your brand. <span className="text-lime">On us.</span>
               </p>
-              <a
-                href={OFFER_PATHS.roadmap}
-                onClick={(e) => {
-                  firePulse(e)
-                  trackEvent('hero_creative_roadmap_click', { location: 'hero' })
-                }}
-                onAnimationEnd={(e) => e.currentTarget.classList.remove('hero-cta-fire')}
-                className="cta-gradient hero-cta group inline-flex w-full sm:w-auto min-h-[64px] md:min-h-[68px] items-center justify-center gap-2.5
-                           rounded-full px-8 md:px-10 py-4 text-[17px] md:text-lg font-bold tracking-snug text-canvas
-                           focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-lime"
-              >
-                Get 5 Free Ad Concepts
-                <svg viewBox="0 0 12 12" className="h-4 w-4 md:h-[18px] md:w-[18px] transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0 motion-reduce:group-hover:translate-y-0" fill="none" aria-hidden="true">
-                  <path d="M3 9L9 3M9 3H4M9 3V8" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </a>
+              <div className="flex flex-col items-stretch gap-3 sm:flex-row sm:items-center sm:justify-center lg:justify-start">
+                <a
+                  href={OFFER_PATHS.roadmap}
+                  onClick={(e) => {
+                    firePulse(e)
+                    trackEvent('hero_creative_roadmap_click', { location: 'hero' })
+                  }}
+                  onAnimationEnd={(e) => e.currentTarget.classList.remove('hero-cta-fire')}
+                  className="cta-gradient hero-cta group inline-flex w-full sm:w-auto min-h-[64px] md:min-h-[68px] items-center justify-center gap-2.5
+                             rounded-full px-6 md:px-7 lg:px-6 xl:px-7 py-4 text-base md:text-[17px] font-bold tracking-snug text-canvas
+                             focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-lime"
+                >
+                  Get 5 Free Ad Concepts
+                  <svg viewBox="0 0 12 12" className="h-4 w-4 md:h-[18px] md:w-[18px] transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0 motion-reduce:group-hover:translate-y-0" fill="none" aria-hidden="true">
+                    <path d="M3 9L9 3M9 3H4M9 3V8" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </a>
+                <a
+                  href="/case-studies"
+                  onClick={() => trackEvent('hero_see_our_work_click', { location: 'hero' })}
+                  className="hero-cta-ghost group inline-flex w-full sm:w-auto min-h-[48px] sm:min-h-[64px] md:min-h-[68px] items-center justify-center gap-2
+                             rounded-full border border-hairline-strong bg-surface-2 px-6 md:px-7 lg:px-5 xl:px-7 py-3 sm:py-4 text-base md:text-[17px] font-semibold tracking-snug text-ink
+                             hover:border-ink-muted
+                             focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink"
+                >
+                  See Our Work
+                  <svg viewBox="0 0 12 12" className="h-3.5 w-3.5 md:h-4 md:w-4 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0 motion-reduce:group-hover:translate-y-0" fill="none" aria-hidden="true">
+                    <path d="M3 9L9 3M9 3H4M9 3V8" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </a>
+              </div>
             </div>
 
             {/* Level 2 — compact secondary offers under a quiet, left-aligned label */}
