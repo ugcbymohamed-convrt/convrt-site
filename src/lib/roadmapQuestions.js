@@ -28,6 +28,12 @@ export const TIMELINE_OPTIONS = [
   'Just exploring options',
 ]
 
+export const INVESTMENT_OPTIONS = [
+  'Yes, we’re actively looking for a production partner',
+  'Possibly, depending on the creative strategy',
+  'Not yet, we’re only researching',
+]
+
 const oneOf = (options, value) => options.includes(value)
 
 /* Returns { field: message } for every unanswered question ({} when complete). */
@@ -37,5 +43,6 @@ export function validateAnswers(v) {
   if (!oneOf(SPEND_OPTIONS, v.adSpend)) errors.adSpend = 'Select your monthly paid advertising spend.'
   if (!oneOf(CHALLENGE_OPTIONS, v.challenge)) errors.challenge = 'Select your biggest creative challenge.'
   if (!oneOf(TIMELINE_OPTIONS, v.timeline)) errors.timeline = 'Select when you’re looking to produce new creatives.'
+  if (!oneOf(INVESTMENT_OPTIONS, v.investment)) errors.investment = 'Select whether you’re looking to invest in professional video production.'
   return errors
 }

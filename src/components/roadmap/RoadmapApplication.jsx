@@ -1,11 +1,12 @@
 import { useEffect, useRef, useState } from 'react'
 import { trackEvent } from '../../lib/analytics.js'
-import { PRIVACY_POLICY_URL, ROADMAP_BOOKING_URL } from '../../config.js'
+import { OFFER_PATHS, PRIVACY_POLICY_URL, ROADMAP_BOOKING_URL } from '../../config.js'
 import {
   BUSINESS_TYPE_OPTIONS,
   SPEND_OPTIONS,
   CHALLENGE_OPTIONS,
   TIMELINE_OPTIONS,
+  INVESTMENT_OPTIONS,
   validateAnswers,
 } from '../../lib/roadmapQuestions.js'
 import { qualifyApplication } from '../../lib/roadmapQualification.js'
@@ -14,23 +15,35 @@ import { RadioGroup, Progress } from '../forms/fields.jsx'
 import RoadmapBooking from './RoadmapBooking.jsx'
 
 /* ─────────────────────────────────────────────
-   QUALIFICATION — four questions, then Calendly (or a polite message).
+   QUALIFICATION — five questions, then Calendly (or a relevant alternative).
 
    • No backend: answers are checked and qualified in the browser
      (rules: src/lib/roadmapQualification.js) and nothing is sent to CONVRT.
    • Qualified → the Calendly calendar appears on this page. Calendly's own
      booking form and confirmation emails handle everything from there.
-   • Not qualified → a polite message; no calendar.
+   • Not ready (just exploring / only researching) → no calendar; points to
+     the free 10-hooks library (/free-hooks).
+   • Different business type (agency / other) → no calendar; points to the
+     contact section. This outcome takes priority over "not ready".
+   • "Change my answers" returns to the form with answers intact; the outcome
+     is recomputed from scratch on every Continue.
    • Answers live in memory only (no storage) and never go to analytics.
    • A CONVERSION is counted only when Calendly reports a real booking
      (see RoadmapBooking.jsx) — not when the calendar appears.
 ───────────────────────────────────────────── */
 
-const EMPTY = { businessType: '', adSpend: '', challenge: '', timeline: '' }
+const EMPTY = { businessType: '', adSpend: '', challenge: '', timeline: '', investment: '' }
 const FIELDS = Object.keys(EMPTY)
 
+// One analytics event per outcome (no answers or personal data).
+const OUTCOME_EVENTS = {
+  qualified: 'roadmap_qualified',
+  not_ready: 'roadmap_not_ready',
+  different_business: 'roadmap_different_business',
+}
+
 const NEXT_STEPS = [
-  'Answer four quick questions about your business.',
+  'Answer five quick questions about your business.',
   'If your brand is a good fit, pick a time for your strategy session straight away.',
   'We prepare your concepts and present them on the call.',
 ]
@@ -79,7 +92,7 @@ export default function RoadmapApplication() {
     // Analytics events carry no answers or personal data.
     trackEvent('roadmap_application_submitted') // = qualification form completed
     const { status } = qualifyApplication(values)
-    trackEvent(status === 'qualified' ? 'roadmap_qualified' : 'roadmap_manual_review')
+    trackEvent(OUTCOME_EVENTS[status])
     setResult({ status, answers: { ...values } })
   }
 
@@ -108,7 +121,7 @@ export default function RoadmapApplication() {
                 Let’s Find Your Next 5 Ad Concepts.
               </h2>
               <p className="mt-4 text-base leading-relaxed text-ink-muted md:text-lg">
-                Answer four quick questions. If your brand is a good fit, you can choose a time for your free strategy
+                Answer five quick questions. If your brand is a good fit, you can choose a time for your free strategy
                 session straight away.
               </p>
 
@@ -126,7 +139,7 @@ export default function RoadmapApplication() {
                 result.status === 'qualified' ? (
                   <RoadmapBooking bookingUrl={ROADMAP_BOOKING_URL} headingRef={resultHeadingRef} />
                 ) : (
-                  <NotQualified headingRef={resultHeadingRef} onChange={changeAnswers} />
+                  <Alternative kind={result.status} headingRef={resultHeadingRef} onChange={changeAnswers} />
                 )
               ) : (
                 <form ref={formRef} onSubmit={onSubmit} noValidate aria-label="Creative Growth Roadmap qualification">
@@ -149,6 +162,10 @@ export default function RoadmapApplication() {
                     <RadioGroup
                       name="timeline" legend="When are you looking to produce new creatives?" options={TIMELINE_OPTIONS}
                       value={values.timeline} error={errors.timeline} onChange={set('timeline')} columns={1}
+                    />
+                    <RadioGroup
+                      name="investment" legend="Are you currently looking to invest in professional video production?" options={INVESTMENT_OPTIONS}
+                      value={values.investment} error={errors.investment} onChange={set('investment')} columns={1}
                     />
 
                     <button type="submit" className={`${primaryBtn} w-full`}>
@@ -197,25 +214,52 @@ function NextSteps() {
   )
 }
 
-/* ---------- Not qualified: polite message, no calendar ---------- */
+/* ---------- Alternatives: no calendar, a relevant next step instead ---------- */
 
-function NotQualified({ headingRef, onChange }) {
+const ALTERNATIVES = {
+  not_ready: {
+    title: 'Not Quite Ready for a Roadmap?',
+    body: [
+      'Our personalized Creative Growth Roadmaps are designed for brands preparing to produce and test new video ads.',
+      'In the meantime, explore new creative directions with our free library of 10 advertising hooks.',
+    ],
+    cta: 'Get 10 Free Ad Hooks',
+    href: OFFER_PATHS.hooks,
+    event: 'roadmap_alt_hooks_click',
+  },
+  different_business: {
+    title: 'Looking for a Different Kind of Collaboration?',
+    body: [
+      'Our Creative Growth Roadmap is currently designed for SaaS and E-commerce brands. If you’d like to explore another type of collaboration with CONVRT, we’d still love to hear from you.',
+    ],
+    cta: 'Contact CONVRT',
+    href: '/#contact',
+    event: 'roadmap_alt_contact_click',
+  },
+}
+
+function Alternative({ kind, headingRef, onChange }) {
+  const alt = ALTERNATIVES[kind]
   return (
     <div className="px-1 py-4 text-center sm:py-8" role="status">
       <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full border border-lime/40 bg-lime/10 text-lime">
         <Check className="h-6 w-6" />
       </div>
       <h3 ref={headingRef} tabIndex={-1} className="mt-6 font-display text-3xl font-bold tracking-display text-ink outline-none">
-        Thanks for your interest!
+        {alt.title}
       </h3>
-      <p className="mx-auto mt-4 max-w-md text-base leading-relaxed text-ink-muted">
-        Based on your answers, we can’t offer a booking for the Creative Growth Roadmap right now. It’s currently best
-        suited to SaaS and e-commerce brands planning to produce new creatives in the next few months.
-      </p>
-      <p className="mx-auto mt-3 max-w-md text-base leading-relaxed text-ink-muted">
-        If you picked the wrong option, you can change your answers.
-      </p>
+      {alt.body.map((t) => (
+        <p key={t} className="mx-auto mt-4 max-w-md text-base leading-relaxed text-ink-muted">{t}</p>
+      ))}
       <div className="mt-8 flex flex-col items-stretch justify-center gap-3 sm:flex-row sm:items-center">
+        <a
+          href={alt.href}
+          onClick={() => trackEvent(alt.event)}
+          className={`${primaryBtn} group`}
+        >
+          {alt.cta}
+          <span aria-hidden="true" className="transition-transform duration-200 group-hover:translate-x-0.5 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0">→</span>
+        </a>
         <button
           type="button"
           onClick={onChange}
@@ -223,12 +267,6 @@ function NotQualified({ headingRef, onChange }) {
         >
           ← Change my answers
         </button>
-        <a
-          href="/"
-          className="inline-flex min-h-[48px] items-center justify-center rounded-full px-6 py-3 text-sm font-semibold text-ink-muted transition-colors hover:text-lime focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-lime"
-        >
-          Back to home
-        </a>
       </div>
     </div>
   )

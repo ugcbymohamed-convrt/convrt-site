@@ -16,7 +16,7 @@ const FAQS = [
   },
   {
     q: 'Who qualifies?',
-    a: 'We primarily work with SaaS and e-commerce brands looking to improve or scale their video advertising. Answer four quick questions and you’ll see straight away whether you can book your session.',
+    a: 'The Roadmap is built for SaaS and e-commerce brands that are preparing to produce and test new video ads. Answer five quick questions and you’ll see straight away whether you can book your session. If the timing isn’t right yet, we’ll point you to something more useful, like our free library of 10 ad hooks.',
   },
   {
     q: 'Do I need to share access to my advertising accounts?',
