@@ -2,6 +2,28 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Inter, self-hosted (variable font; one file per subset covers weights 400–800).
+   Replaces the render-blocking Google Fonts stylesheet and its two extra connections.
+   `font-weight: 400 800` matches the weights previously requested, so font-black (900)
+   still renders at 800 exactly as before. Latin is preloaded in index.html; latin-ext is
+   only downloaded if a page actually uses one of its characters. */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url(/fonts/inter-latin-ext.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url(/fonts/inter-latin.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
 :root {
   color-scheme: dark;
 }
@@ -121,55 +143,49 @@ body {
   transform: scale(0.98);
 }
 
-/* Hero primary CTA only — a soft resting glow, a small lift on hover, a press-down
-   while pressed, and a short lime glow pulse when activated (.hero-cta-fire is added
-   by Hero.jsx on click; it never delays navigation). Layered on top of
-   .cta-gradient, which other pages share, so that class is left untouched.
-   `scale` is used (not `transform`) so press / pulse compose with the hover lift. */
+/* Hero primary CTA only — a soft resting glow, a small lift on hover, and a clear press.
+   `scale` is used (not `transform`) so the press composes with the hover lift.
+   The pressed look (`.is-pressed`, toggled by src/lib/usePressFeedback.js on pointer-down /
+   Enter, with `:active` as a no-JS fallback) is reached in ~60 ms (the transition INTO the
+   state) and released at the slower base pace. Layered on .cta-gradient, which other pages
+   share, so that class is left untouched. */
 .hero-cta {
   box-shadow: 0 0 0 1px rgba(213, 255, 64, 0.35), 0 16px 44px -16px rgba(213, 255, 64, 0.5);
-  transition: background-position 0.6s ease, box-shadow 0.3s ease,
-    transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1), scale 0.18s cubic-bezier(0.2, 0.8, 0.2, 1);
+  transition: background-position 0.6s ease, box-shadow 0.25s ease,
+    transform 0.22s cubic-bezier(0.2, 0.8, 0.2, 1), scale 0.22s cubic-bezier(0.2, 0.8, 0.2, 1), filter 0.22s ease;
+  -webkit-tap-highlight-color: transparent;
 }
 .hero-cta:hover {
   transform: translateY(-2px);
   box-shadow: 0 0 0 1px rgba(213, 255, 64, 0.65), 0 22px 54px -16px rgba(213, 255, 64, 0.65);
 }
-.hero-cta:active {
+.hero-cta:active,
+.hero-cta.is-pressed {
   transform: translateY(0);
-  scale: 0.97;
-}
-.hero-cta-fire {
-  animation: hero-cta-pulse 0.5s cubic-bezier(0.22, 0.8, 0.3, 1);
-}
-@keyframes hero-cta-pulse {
-  0% {
-    scale: 1;
-    box-shadow: 0 0 0 1px rgba(213, 255, 64, 0.6), 0 0 0 0 rgba(213, 255, 64, 0.55), 0 16px 44px -16px rgba(213, 255, 64, 0.5);
-  }
-  22% {
-    scale: 0.97;
-    box-shadow: 0 0 0 1px rgba(213, 255, 64, 0.85), 0 0 0 5px rgba(213, 255, 64, 0.32), 0 10px 30px -12px rgba(213, 255, 64, 0.75);
-  }
-  100% {
-    scale: 1;
-    box-shadow: 0 0 0 1px rgba(213, 255, 64, 0.35), 0 0 0 18px rgba(213, 255, 64, 0), 0 16px 44px -16px rgba(213, 255, 64, 0.5);
-  }
+  scale: 0.96;
+  filter: brightness(0.9) saturate(1.05);
+  box-shadow: 0 0 0 1px rgba(213, 255, 64, 0.85), 0 0 0 6px rgba(213, 255, 64, 0.22), 0 6px 22px -8px rgba(213, 255, 64, 0.7);
+  transition-duration: 0.6s, 0.06s, 0.06s, 0.06s, 0.06s;
 }
 
-/* Hero secondary CTA ("See Our Work") — dark charcoal, border brightens on hover,
-   a small lift and a restrained press that echo (but stay quieter than) .hero-cta. */
+/* Hero secondary CTA ("See Our Work") — dark charcoal, border brightens on hover, a small
+   lift and a restrained press that echo (but stay quieter than) .hero-cta. */
 .hero-cta-ghost {
   transition: border-color 0.2s ease, background-color 0.2s ease,
-    transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1), scale 0.15s cubic-bezier(0.2, 0.8, 0.2, 1);
+    transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1), scale 0.2s cubic-bezier(0.2, 0.8, 0.2, 1), filter 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
 }
 .hero-cta-ghost:hover {
   transform: translateY(-1px);
   background-color: #222227;
 }
-.hero-cta-ghost:active {
+.hero-cta-ghost:active,
+.hero-cta-ghost.is-pressed {
   transform: translateY(0);
-  scale: 0.98;
+  scale: 0.97;
+  filter: brightness(0.88);
+  border-color: #a1a1aa;
+  transition-duration: 0.06s, 0.06s, 0.06s, 0.06s, 0.06s;
 }
 
 /* ── Case Studies micro-interactions ────────────────────────────
@@ -265,29 +281,21 @@ body {
     animation: none;
   }
   .cta-gradient,
-  .hero-cta {
-    transition: none;
-  }
-  .hero-cta:hover {
-    transform: none;
-  }
-  /* No movement or pulse; pressing still dims the button slightly as feedback. */
-  .hero-cta:active {
-    scale: 1;
-    filter: brightness(0.94);
-  }
-  .hero-cta-fire {
-    animation: none;
-  }
+  .hero-cta,
   .hero-cta-ghost {
     transition: none;
   }
+  .hero-cta:hover,
   .hero-cta-ghost:hover {
     transform: none;
   }
-  .hero-cta-ghost:active {
+  /* No movement: pressing only dims the button and brightens its ring. */
+  .hero-cta:active,
+  .hero-cta.is-pressed,
+  .hero-cta-ghost:active,
+  .hero-cta-ghost.is-pressed {
+    transform: none;
     scale: 1;
-    filter: brightness(0.9);
   }
 }
 

@@ -1,5 +1,6 @@
 import { useEffect, useId, useRef, useState } from 'react'
 import { trackEvent } from '../../lib/analytics.js'
+import { scrollToElement } from '../../lib/scroll.js'
 import { EMAIL_RE, submitSignup } from '../../lib/hooksSignup.js'
 import { INDUSTRIES, industryByKey } from '../../lib/hooksLibrary.js'
 import { CONTACT_EMAIL, OFFER_PATHS, PRIVACY_POLICY_URL } from '../../config.js'
@@ -47,10 +48,7 @@ export default function HooksSignupCard() {
   const prevIndustry = useRef(null)
   useEffect(() => {
     if (industry && !prevIndustry.current) {
-      const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
-      window.requestAnimationFrame(() =>
-        formRef.current?.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'nearest' }),
-      )
+      window.requestAnimationFrame(() => scrollToElement(formRef.current, { block: 'nearest' }))
     }
     prevIndustry.current = industry
   }, [industry])

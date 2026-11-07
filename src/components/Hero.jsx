@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
-import Hls from 'hls.js'
+import { attachHls } from '../lib/hls.js'
+import { usePressFeedback } from '../lib/usePressFeedback.js'
 import { OFFER_PATHS } from '../config.js'
 import { trackEvent } from '../lib/analytics.js'
 
@@ -33,18 +34,9 @@ const SECONDARY_OFFERS = [
   },
 ]
 
-/* Restarts the CTA's short glow pulse (see .hero-cta-fire in index.css). It only
-   toggles a class: no preventDefault and no timers, so navigation is never delayed
-   and modifier-clicks / keyboard activation behave exactly like a normal link. The
-   old page stays painted until the next one arrives, so the pulse is visible then. */
-function firePulse(event) {
-  const el = event.currentTarget
-  el.classList.remove('hero-cta-fire')
-  void el.offsetWidth // force reflow so a repeat click restarts the animation
-  el.classList.add('hero-cta-fire')
-}
-
 export default function Hero() {
+  const primaryPress = usePressFeedback()
+  const ghostPress = usePressFeedback()
   return (
     <section id="top" className="relative overflow-hidden">
       {/* Ambient lime glow — replaces the old violet/coral wash */}
@@ -82,11 +74,8 @@ export default function Hero() {
               <div className="flex flex-col items-stretch gap-3 sm:flex-row sm:items-center sm:justify-center lg:justify-start">
                 <a
                   href={OFFER_PATHS.roadmap}
-                  onClick={(e) => {
-                    firePulse(e)
-                    trackEvent('hero_creative_roadmap_click', { location: 'hero' })
-                  }}
-                  onAnimationEnd={(e) => e.currentTarget.classList.remove('hero-cta-fire')}
+                  onClick={() => trackEvent('hero_creative_roadmap_click', { location: 'hero' })}
+                  {...primaryPress}
                   className="cta-gradient hero-cta group inline-flex w-full sm:w-auto min-h-[64px] md:min-h-[68px] items-center justify-center gap-2.5
                              rounded-full px-6 md:px-7 lg:px-6 xl:px-7 py-4 text-base md:text-[17px] font-bold tracking-snug text-canvas
                              focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-lime"
@@ -99,6 +88,7 @@ export default function Hero() {
                 <a
                   href="/case-studies"
                   onClick={() => trackEvent('hero_see_our_work_click', { location: 'hero' })}
+                  {...ghostPress}
                   className="hero-cta-ghost group inline-flex w-full sm:w-auto min-h-[48px] sm:min-h-[64px] md:min-h-[68px] items-center justify-center gap-2
                              rounded-full border border-hairline-strong bg-surface-2 px-6 md:px-7 lg:px-5 xl:px-7 py-3 sm:py-4 text-base md:text-[17px] font-semibold tracking-snug text-ink
                              hover:border-ink-muted
@@ -208,14 +198,14 @@ function PhonesStage() {
       {/* Phones cluster — side phones tucked behind the center */}
       <div className="relative z-10 flex items-center justify-center">
         <PhoneStatic
-          src="/hero-side-1.png"
+          src="/hero-side-1.webp"
           alt="UGC spokesperson video sample 1"
           tilt="-9deg"
           className="opacity-80 md:opacity-90 -mr-5 md:-mr-10 lg:-mr-14 translate-y-4"
         />
         <PhoneMockup />
         <PhoneStatic
-          src="/hero-side-2.png"
+          src="/hero-side-2.webp"
           alt="UGC spokesperson video sample 2"
           tilt="9deg"
           className="opacity-80 md:opacity-90 -ml-5 md:-ml-10 lg:-ml-14 translate-y-4"
@@ -288,6 +278,9 @@ function PhoneStatic({ src, alt, tilt = '0deg', className = '' }) {
         <img
           src={src}
           alt={alt}
+          width="660"
+          height="1170"
+          decoding="async"
           className="absolute inset-0 h-full w-full object-cover"
           draggable="false"
         />
@@ -334,17 +327,8 @@ function PhoneMockup() {
     const video = videoRef.current
     if (!video) return
     const tryPlay = () => { video.play().catch(() => {}) }
-    let hls
-    if (video.canPlayType('application/vnd.apple.mpegurl')) {
-      video.src = HERO_HLS
-      video.addEventListener('loadedmetadata', tryPlay, { once: true })
-    } else if (Hls.isSupported()) {
-      hls = new Hls()
-      hls.loadSource(HERO_HLS)
-      hls.attachMedia(video)
-      hls.on(Hls.Events.MANIFEST_PARSED, tryPlay)
-    }
-    return () => hls && hls.destroy()
+    const stream = attachHls(video, HERO_HLS, { onReady: tryPlay })
+    return stream.destroy
   }, [])
 
   /* Video events */

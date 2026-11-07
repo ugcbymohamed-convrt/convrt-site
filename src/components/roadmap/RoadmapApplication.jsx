@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { trackEvent } from '../../lib/analytics.js'
+import { scrollToElement } from '../../lib/scroll.js'
 import { OFFER_PATHS, PRIVACY_POLICY_URL, ROADMAP_BOOKING_URL } from '../../config.js'
 import {
   BUSINESS_TYPE_OPTIONS,
@@ -70,7 +71,7 @@ export default function RoadmapApplication() {
   useEffect(() => {
     if (!result) return
     resultHeadingRef.current?.focus({ preventScroll: true })
-    document.getElementById('apply')?.scrollIntoView({ behavior: 'auto', block: 'start' })
+    scrollToElement(document.getElementById('apply'), { duration: 0 })
   }, [result])
 
   const focusFirstError = (errs) => {
@@ -79,7 +80,7 @@ export default function RoadmapApplication() {
     window.requestAnimationFrame(() => {
       const el = formRef.current?.querySelector(`[data-field="${first}"]`)
       el?.focus()
-      el?.scrollIntoView?.({ block: 'center', behavior: 'smooth' })
+      if (el) scrollToElement(el, { block: 'center' })
     })
   }
 
@@ -108,7 +109,7 @@ export default function RoadmapApplication() {
         <div className="grid grid-cols-1 gap-10 lg:grid-cols-12 lg:gap-14">
           {/* Intro */}
           <div className="lg:col-span-5">
-            <Reveal>
+            <Reveal early>
               <div className="inline-flex items-center gap-2.5">
                 <span className="h-px w-8 bg-lime" aria-hidden="true" />
                 <span className="text-xs font-semibold uppercase tracking-[0.2em] text-lime">Apply</span>

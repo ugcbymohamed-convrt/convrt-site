@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 
 /* Fires once when the element enters the viewport, then disconnects.
    Shared by every case-study section that reveals stats/charts on scroll. */
-export function useInView(threshold = 0.15) {
+export function useInView(threshold = 0.15, rootMargin = '0px') {
   const ref = useRef(null)
   const [visible, setVisible] = useState(false)
   useEffect(() => {
@@ -10,10 +10,10 @@ export function useInView(threshold = 0.15) {
     if (!el) return
     const obs = new IntersectionObserver(
       ([e]) => { if (e.isIntersecting) { setVisible(true); obs.disconnect() } },
-      { threshold }
+      { threshold, rootMargin }
     )
     obs.observe(el)
     return () => obs.disconnect()
-  }, [threshold])
+  }, [threshold, rootMargin])
   return [ref, visible]
 }

@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
-import Hls from 'hls.js'
+import { attachHls } from '../lib/hls.js'
 import { BOOKING_URL } from '../config.js'
 
 /* ─────────────────────────────────────────────
@@ -314,27 +314,42 @@ function PhoneUnit({ videoId, pos, phoneOffset, isHovered, onClick, onHover, onH
   const [duration, setDuration] = useState(0)
   const [loaded, setLoaded] = useState(false)
   const internalRef = useRef(null)
+  const wrapRef = useRef(null)
+  const streamRef = useRef(null)
+  const isCenterRef = useRef(isCenter)
+  isCenterRef.current = isCenter
+  const [near, setNear] = useState(false)
+
+  /* Start nothing until the carousel is within ~one screen of the viewport. */
+  useEffect(() => {
+    const el = wrapRef.current
+    if (!el || typeof IntersectionObserver === 'undefined') { setNear(true); return }
+    const io = new IntersectionObserver(([e]) => { if (e.isIntersecting) { setNear(true); io.disconnect() } }, { rootMargin: '600px 0px' })
+    io.observe(el)
+    return () => io.disconnect()
+  }, [])
 
   const combinedRef = useCallback((el) => {
     internalRef.current = el
     if (typeof videoRef === 'function') videoRef(el)
   }, [videoRef])
 
-  /* HLS setup */
+  /* HLS setup — only once near the viewport. The centre phone loads and plays; the two
+     side phones stay on their poster (no segment downloads) until one is rotated to centre. */
   useEffect(() => {
+    if (!near) return
     const el = internalRef.current
     if (!el) return
     const src = `https://videodelivery.net/${videoId}/manifest/video.m3u8`
-    let hls
-    if (el.canPlayType('application/vnd.apple.mpegurl')) {
-      el.src = src
-    } else if (Hls.isSupported()) {
-      hls = new Hls()
-      hls.loadSource(src)
-      hls.attachMedia(el)
-    }
-    return () => hls && hls.destroy()
-  }, [videoId])
+    const stream = attachHls(el, src, {
+      autoStartLoad: isCenterRef.current,
+      onReady: () => { if (isCenterRef.current) el.play().catch(() => {}) },
+    })
+    streamRef.current = stream
+    return () => { stream.destroy(); streamRef.current = null }
+  }, [videoId, near])
+
+  useEffect(() => { if (isCenter) streamRef.current?.startLoad() }, [isCenter, near])
 
   useEffect(() => { const el = internalRef.current; if (el) el.muted = muted }, [muted])
 
@@ -373,7 +388,7 @@ function PhoneUnit({ videoId, pos, phoneOffset, isHovered, onClick, onHover, onH
   const pct = duration > 0 ? (progress / duration) * 100 : 0
 
   return (
-    <div className="absolute" style={{ left: '50%', top: '50%', width: `${PHONE_W}px`, transform, zIndex, opacity, filter: `brightness(${brightness})`, transition: 'transform 0.65s cubic-bezier(0.34, 1.18, 0.64, 1), opacity 0.5s ease, filter 0.5s ease', cursor: isCenter ? 'default' : 'pointer', willChange: 'transform, opacity' }}
+    <div ref={wrapRef} className="absolute" style={{ left: '50%', top: '50%', width: `${PHONE_W}px`, transform, zIndex, opacity, filter: `brightness(${brightness})`, transition: 'transform 0.65s cubic-bezier(0.34, 1.18, 0.64, 1), opacity 0.5s ease, filter 0.5s ease', cursor: isCenter ? 'default' : 'pointer', willChange: 'transform, opacity' }}
       onClick={onClick} onMouseEnter={onHover} onMouseLeave={onHoverEnd}>
       <div className={isCenter ? 'phone-float' : undefined} style={{ width: '100%' }}>
         <div style={{ position: 'relative', width: '100%', aspectRatio: '9 / 19.5', borderRadius: `${OUTER_RADIUS}px`, background: '#0a0a0a', padding: `${BEZEL}px`, boxShadow: isCenter ? `0 40px 100px -20px rgba(0,0,0,0.80), inset 0 0 0 1px rgba(255,255,255,0.07), 0 0 0 1px rgba(255,255,255,0.05)` : `0 24px 60px -15px rgba(0,0,0,0.65), inset 0 0 0 1px rgba(255,255,255,0.05)` }}>
@@ -385,7 +400,7 @@ function PhoneUnit({ videoId, pos, phoneOffset, isHovered, onClick, onHover, onH
               loop muted playsInline preload="auto"
               onClick={isCenter ? togglePlay : undefined} style={{ cursor: isCenter ? 'pointer' : 'default' }} />
 
-            {!loaded && <div className="absolute inset-0 animate-pulse" style={{ background: '#111114', borderRadius: `${INNER_RADIUS}px` }} />}
+            {!loaded && isCenter && <div className="absolute inset-0 animate-pulse" style={{ background: '#111114', borderRadius: `${INNER_RADIUS}px` }} />}
 
             <div aria-hidden="true" style={{ position: 'absolute', top: '8px', left: '50%', transform: 'translateX(-50%)', zIndex: 20, height: `${DI_H}px`, width: `${DI_W}px`, borderRadius: '9999px', background: '#000' }} />
 

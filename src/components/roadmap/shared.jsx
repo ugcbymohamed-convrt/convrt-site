@@ -4,13 +4,17 @@ import { useInView } from '../caseStudies/shared/useInView.js'
 
 /* Scroll-reveal wrapper. Pure CSS transitions; reduced-motion users get the
    final state immediately. Only used below the fold. */
-export function Reveal({ children, delay = 0, className = '' }) {
-  const [ref, visible] = useInView(0.08)
+/* `early`: for the application form's intro — begins fading in while the block is still
+   ~30% of a screen below the fold and fades faster, so it is already visible when a CTA's
+   scroll lands (it used to start at opacity 0 and finish ~0.8 s after the click). */
+export function Reveal({ children, delay = 0, className = '', early = false }) {
+  const [ref, visible] = useInView(early ? 0 : 0.08, early ? '0px 0px 30% 0px' : '0px')
   return (
     <div
       ref={ref}
+      data-reveal=""
       style={{ transitionDelay: visible ? `${delay}ms` : '0ms' }}
-      className={`transition-[opacity,transform] duration-700 ease-out motion-reduce:transition-none motion-reduce:opacity-100 motion-reduce:translate-y-0 ${
+      className={`transition-[opacity,transform] ${early ? 'duration-300' : 'duration-700'} ease-out motion-reduce:transition-none motion-reduce:opacity-100 motion-reduce:translate-y-0 ${
         visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'
       } ${className}`}
     >

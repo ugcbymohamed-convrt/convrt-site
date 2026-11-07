@@ -3,7 +3,7 @@ import { BOOKING_URL } from '../config.js'
 
 /* ─────────────────────────────────────────────
    SECTION — MEET THE FOUNDER
-   Photo: /public/founder.jpg
+   Photo: /public/founder.webp (960×1280, metadata stripped)
    Place between HowItWorks and FinalCTA in App.jsx
 ───────────────────────────────────────────── */
 
@@ -117,8 +117,12 @@ export default function Founder() {
                 }}
               >
                   <img
-                    src="/founder.jpg?v=3"
+                    src="/founder.webp"
                     alt="Mohamed — Founder of CONVRT"
+                    width="960"
+                    height="1280"
+                    loading="lazy"
+                    decoding="async"
                     className="block w-full"
                     style={{
                       aspectRatio: '3 / 4',
