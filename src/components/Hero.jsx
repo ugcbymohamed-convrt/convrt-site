@@ -3,10 +3,8 @@ import Hls from 'hls.js'
 import { OFFER_PATHS } from '../config.js'
 import { trackEvent } from '../lib/analytics.js'
 
-const ROTATING_WORDS = ['convert', 'resonate', 'sell', 'connect']
-
 /* Secondary offers — Level 2 in the hero's attention hierarchy. Each has its own
-   accent (lime for the video offer, muted violet for the hooks library) so the
+   accent (lime for the video offer, a muted lavender for the hooks library) so the
    two are recognisable at a glance, but both stay well below the primary CTA. */
 const SECONDARY_OFFERS = [
   {
@@ -29,9 +27,9 @@ const SECONDARY_OFFERS = [
     cta: 'Get free hooks',
     href: OFFER_PATHS.hooks,
     event: 'hooks_library_click',
-    card: 'border-violet/30 bg-violet/[0.07] hover:border-violet/60 hover:bg-violet/[0.11] hover:shadow-[0_14px_34px_-18px_rgba(139,92,246,0.6)] focus-visible:outline-[#b9a4fb]',
-    iconTile: 'border-violet/30 bg-violet/15 text-[#b9a4fb]',
-    ctaText: 'text-[#b9a4fb]',
+    card: 'border-[#9a8fd0]/30 bg-[#9a8fd0]/[0.06] hover:border-[#9a8fd0]/55 hover:bg-[#9a8fd0]/[0.10] hover:shadow-[0_14px_34px_-18px_rgba(154,143,208,0.5)] focus-visible:outline-[#b8aedf]',
+    iconTile: 'border-[#9a8fd0]/30 bg-[#9a8fd0]/12 text-[#b8aedf]',
+    ctaText: 'text-[#b8aedf]',
   },
 ]
 
@@ -55,7 +53,7 @@ export default function Hero() {
             <h1 className="font-display font-semibold text-ink tracking-display-xl leading-[1.02] text-[48px] sm:text-[50px] md:text-[54px] lg:text-[60px] xl:text-[70px]">
               <span className="block">Performance creatives</span>
               <span className="block">
-                engineered to <RotatingWord words={ROTATING_WORDS} />
+                engineered to <HighlightWord>convert</HighlightWord>
               </span>
             </h1>
 
@@ -63,8 +61,11 @@ export default function Hero() {
               UGC ads, spokesperson videos, and creative strategy for brands that scale on paid social.
             </p>
 
-            {/* Level 1 — the primary action. Largest, lime, with a soft resting glow. */}
+            {/* Level 1 — the primary action: one value-prop line, then the button. */}
             <div className="mt-8 md:mt-10">
+              <p className="mb-4 text-balance text-[15px] md:text-base font-medium leading-snug text-ink">
+                Your next 5 ad concepts. Tailored to your brand. <span className="text-lime">On us.</span>
+              </p>
               <a
                 href={OFFER_PATHS.roadmap}
                 onClick={() => trackEvent('hero_creative_roadmap_click', { location: 'hero' })}
@@ -79,14 +80,10 @@ export default function Hero() {
               </a>
             </div>
 
-            {/* Level 2 — compact secondary offers, set apart by a hairline label */}
-            <div className="mt-8 md:mt-10 max-w-xl mx-auto lg:mx-0">
-              <div className="flex items-center gap-3 text-[13px] text-ink-muted">
-                <span aria-hidden="true" className="h-px flex-1 bg-hairline" />
-                <span>Or explore our free offers</span>
-                <span aria-hidden="true" className="h-px flex-1 bg-hairline" />
-              </div>
-              <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-left">
+            {/* Level 2 — compact secondary offers under a quiet, left-aligned label */}
+            <div className="mt-8 md:mt-9 max-w-xl mx-auto lg:mx-0">
+              <p className="text-left text-[13px] text-ink-muted">Other ways to get started</p>
+              <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-left">
                 {SECONDARY_OFFERS.map((offer) => (
                   <SecondaryOffer key={offer.id} offer={offer} />
                 ))}
@@ -153,39 +150,19 @@ function IconBolt() {
   )
 }
 
-/* ---------- Rotating headline word ---------- */
+/* ---------- Highlighted headline word ----------
+   Lime text with the brand underline. Same underline geometry the old rotating
+   word used, so the headline keeps its look and its line height. */
 
-function RotatingWord({ words }) {
-  const [index, setIndex] = useState(0)
-
-  useEffect(() => {
-    const id = setInterval(() => {
-      setIndex((i) => (i + 1) % words.length)
-    }, 2200)
-    return () => clearInterval(id)
-  }, [words.length])
-
-  // Pick the longest word to set a stable container width — no layout shift.
-  const widest = words.reduce((a, b) => (a.length >= b.length ? a : b), '')
-
+function HighlightWord({ children }) {
   return (
-    <span className="relative inline-block align-baseline overflow-hidden pb-[0.12em]">
-      {/* Invisible sizing element — reserves space for the widest word + underline padding */}
-      <span className="invisible whitespace-pre">{widest}</span>
-
-      {/* Animated word + underline, both bound to the current word so the
-          underline tracks the word's width and sits flush under it */}
-      <span
-        key={index}
-        className="animate-word-in absolute inset-0 flex items-baseline justify-center lg:justify-start"
-      >
-        <span className="relative text-lime">
-          {words[index]}
-          <span
-            aria-hidden="true"
-            className="absolute inset-x-0 -bottom-[0.04em] h-[0.08em] rounded-full bg-lime"
-          />
-        </span>
+    <span className="relative inline-block align-baseline pb-[0.12em]">
+      <span className="relative text-lime">
+        {children}
+        <span
+          aria-hidden="true"
+          className="absolute inset-x-0 -bottom-[0.04em] h-[0.08em] rounded-full bg-lime"
+        />
       </span>
     </span>
   )
