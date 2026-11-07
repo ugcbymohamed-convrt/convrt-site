@@ -5,24 +5,33 @@ import { trackEvent } from '../lib/analytics.js'
 
 const ROTATING_WORDS = ['convert', 'resonate', 'sell', 'connect']
 
+/* Secondary offers — Level 2 in the hero's attention hierarchy. Each has its own
+   accent (lime for the video offer, muted violet for the hooks library) so the
+   two are recognisable at a glance, but both stay well below the primary CTA. */
 const SECONDARY_OFFERS = [
   {
     id: 'video',
     icon: IconClapper,
-    title: 'Try 1 Video FREE',
-    description: 'Experience our production quality before committing.',
-    cta: 'See If You Qualify',
+    title: <>1 <span className="text-lime">FREE</span> Video</>,
+    description: 'Try our production risk-free.',
+    cta: 'See if you qualify',
     href: OFFER_PATHS.riskFree,
     event: 'risk_free_trial_click',
+    card: 'border-lime/30 bg-lime/[0.06] hover:border-lime/60 hover:bg-lime/[0.09] hover:shadow-[0_14px_34px_-18px_rgba(213,255,64,0.55)] focus-visible:outline-lime',
+    iconTile: 'border-lime/30 bg-lime/10 text-lime',
+    ctaText: 'text-lime',
   },
   {
     id: 'hooks',
-    icon: IconBook,
-    title: 'Get 10 Free Ad Hooks',
-    description: 'Ready-to-adapt hooks for SaaS and E-commerce ads.',
-    cta: 'Get Free Hooks',
+    icon: IconBolt,
+    title: '10 Free Ad Hooks',
+    description: 'Fresh hooks for your next ads.',
+    cta: 'Get free hooks',
     href: OFFER_PATHS.hooks,
     event: 'hooks_library_click',
+    card: 'border-violet/30 bg-violet/[0.07] hover:border-violet/60 hover:bg-violet/[0.11] hover:shadow-[0_14px_34px_-18px_rgba(139,92,246,0.6)] focus-visible:outline-[#b9a4fb]',
+    iconTile: 'border-violet/30 bg-violet/15 text-[#b9a4fb]',
+    ctaText: 'text-[#b9a4fb]',
   },
 ]
 
@@ -41,14 +50,9 @@ export default function Hero() {
 
       <div className="relative mx-auto max-w-7xl px-5 pt-8 pb-14 md:px-8 md:pt-10 md:pb-16 lg:pt-12 lg:pb-20">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-10 items-center">
-          {/* Left column — text */}
+          {/* Left column — headline → description → primary CTA → compact secondary offers */}
           <div className="lg:col-span-6 text-center lg:text-left">
-            <div className="inline-flex items-center gap-2 rounded-full border border-hairline bg-surface-1/60 px-3 py-1.5 text-xs font-medium text-ink-muted backdrop-blur">
-              <span className="h-1.5 w-1.5 rounded-full bg-lime" />
-              Paid social + Organic creative studio
-            </div>
-
-            <h1 className="mt-5 md:mt-6 font-display font-semibold text-ink tracking-display-xl leading-[1.02] text-[48px] sm:text-[50px] md:text-[54px] lg:text-[60px] xl:text-[70px]">
+            <h1 className="font-display font-semibold text-ink tracking-display-xl leading-[1.02] text-[48px] sm:text-[50px] md:text-[54px] lg:text-[60px] xl:text-[70px]">
               <span className="block">Performance creatives</span>
               <span className="block">
                 engineered to <RotatingWord words={ROTATING_WORDS} />
@@ -59,38 +63,30 @@ export default function Hero() {
               UGC ads, spokesperson videos, and creative strategy for brands that scale on paid social.
             </p>
 
-            {/* Primary offer — the dominant action */}
-            <div className="mt-5 md:mt-6 flex flex-wrap items-start justify-center lg:justify-start gap-x-5 gap-y-3">
-              <div className="flex flex-col items-center lg:items-start max-w-[300px]">
-                <a
-                  href={OFFER_PATHS.roadmap}
-                  onClick={() => trackEvent('hero_creative_roadmap_click', { location: 'hero' })}
-                  className="cta-gradient group inline-flex items-center gap-2 rounded-full px-6 py-3.5 text-sm font-semibold text-canvas"
-                >
-                  Get 5 Free Ad Concepts
-                  <svg viewBox="0 0 12 12" className="h-3.5 w-3.5 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" fill="none" aria-hidden="true">
-                    <path d="M3 9L9 3M9 3H4M9 3V8" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
-                </a>
-                <p className="mt-2.5 text-[13px] leading-snug text-ink-muted">
-                  5 personalized ad concepts for your brand. Presented in a free strategy session.
-                </p>
-              </div>
+            {/* Level 1 — the primary action. Largest, lime, with a soft resting glow. */}
+            <div className="mt-8 md:mt-10">
               <a
-                href="#how-it-works"
-                className="inline-flex min-h-[44px] items-center gap-1.5 text-sm font-medium text-ink hover:text-lime transition-colors"
+                href={OFFER_PATHS.roadmap}
+                onClick={() => trackEvent('hero_creative_roadmap_click', { location: 'hero' })}
+                className="cta-gradient hero-cta group inline-flex w-full sm:w-auto min-h-[64px] md:min-h-[68px] items-center justify-center gap-2.5
+                           rounded-full px-8 md:px-10 py-4 text-[17px] md:text-lg font-bold tracking-snug text-canvas
+                           focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-lime"
               >
-                See the process
-                <span aria-hidden="true">↓</span>
+                Get 5 Free Ad Concepts
+                <svg viewBox="0 0 12 12" className="h-4 w-4 md:h-[18px] md:w-[18px] transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0 motion-reduce:group-hover:translate-y-0" fill="none" aria-hidden="true">
+                  <path d="M3 9L9 3M9 3H4M9 3V8" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
               </a>
             </div>
 
-            {/* Secondary offers — compact, deliberately quieter than the primary CTA */}
-            <div className="mt-4 md:mt-5 max-w-xl mx-auto lg:mx-0">
-              <p className="text-sm text-ink-muted">
-                Not ready for a strategy call? <span className="text-ink">Start here instead.</span>
-              </p>
-              <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-left">
+            {/* Level 2 — compact secondary offers, set apart by a hairline label */}
+            <div className="mt-8 md:mt-10 max-w-xl mx-auto lg:mx-0">
+              <div className="flex items-center gap-3 text-[13px] text-ink-muted">
+                <span aria-hidden="true" className="h-px flex-1 bg-hairline" />
+                <span>Or explore our free offers</span>
+                <span aria-hidden="true" className="h-px flex-1 bg-hairline" />
+              </div>
+              <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-left">
                 {SECONDARY_OFFERS.map((offer) => (
                   <SecondaryOffer key={offer.id} offer={offer} />
                 ))}
@@ -108,7 +104,10 @@ export default function Hero() {
   )
 }
 
-/* ---------- Secondary offer module ---------- */
+/* ---------- Secondary offer module ----------
+   The whole card is the link. On phones the icon sits beside three stacked text
+   lines (short card); from sm up the icon shares a row with the title so two
+   cards fit side by side in the left column without wrapping. */
 
 function SecondaryOffer({ offer }) {
   const Icon = offer.icon
@@ -116,20 +115,19 @@ function SecondaryOffer({ offer }) {
     <a
       href={offer.href}
       onClick={() => trackEvent(offer.event, { location: 'hero' })}
-      className="group flex flex-col rounded-2xl border border-hairline bg-surface-1/70 p-3.5 transition-colors duration-200
-                 hover:border-lime/40 hover:bg-surface-2/60
-                 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-lime"
+      className={`group grid grid-cols-[auto_1fr] items-center gap-x-3 rounded-2xl border p-3.5 sm:p-4
+                  transition-[transform,border-color,background-color,box-shadow] duration-200 hover:-translate-y-0.5
+                  motion-reduce:transition-none motion-reduce:hover:translate-y-0
+                  focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 ${offer.card}`}
     >
-      <span className="flex items-center gap-2.5">
-        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-hairline-strong bg-surface-2 text-lime">
-          <Icon />
-        </span>
-        <span className="text-[15px] font-semibold tracking-snug text-ink">{offer.title}</span>
+      <span className={`col-start-1 row-start-1 row-span-3 sm:row-span-1 flex h-10 w-10 items-center justify-center rounded-xl border sm:h-9 sm:w-9 ${offer.iconTile}`}>
+        <Icon />
       </span>
-      <span className="mt-1.5 text-[13px] leading-snug text-ink-muted">{offer.description}</span>
-      <span className="mt-2 inline-flex min-h-[24px] items-center gap-1 text-[13px] font-semibold text-ink group-hover:text-lime transition-colors">
+      <span className="col-start-2 row-start-1 text-[15px] sm:text-base font-semibold leading-tight tracking-snug text-ink">{offer.title}</span>
+      <span className="col-start-2 row-start-2 mt-0.5 text-[13px] leading-snug text-ink-muted sm:col-start-1 sm:col-span-2 sm:mt-2.5">{offer.description}</span>
+      <span className={`col-start-2 row-start-3 mt-1.5 inline-flex items-center gap-1 text-[13px] font-semibold sm:col-start-1 sm:col-span-2 ${offer.ctaText}`}>
         {offer.cta}
-        <svg viewBox="0 0 12 12" className="h-3 w-3 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 motion-reduce:transition-none" fill="none" aria-hidden="true">
+        <svg viewBox="0 0 12 12" className="h-3 w-3 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0 motion-reduce:group-hover:translate-y-0" fill="none" aria-hidden="true">
           <path d="M3 9L9 3M9 3H4M9 3V8" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       </span>
@@ -139,7 +137,7 @@ function SecondaryOffer({ offer }) {
 
 function IconClapper() {
   return (
-    <svg width="18" height="18" viewBox="0 0 26 26" fill="none" aria-hidden="true">
+    <svg width="20" height="20" viewBox="0 0 26 26" fill="none" aria-hidden="true">
       <rect x="3" y="10" width="20" height="13" rx="2.5" stroke="currentColor" strokeWidth="1.8" />
       <path d="M3.4 10L2.6 5.9a1.2 1.2 0 01.9-1.4l17.3-3.5a1.2 1.2 0 011.4.9l.7 3.4L3.4 10z" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
       <path d="M11 14.2l5 2.8-5 2.8v-5.6z" fill="currentColor" />
@@ -147,11 +145,10 @@ function IconClapper() {
   )
 }
 
-function IconBook() {
+function IconBolt() {
   return (
-    <svg width="18" height="18" viewBox="0 0 26 26" fill="none" aria-hidden="true">
-      <path d="M13 6.5C11 4.8 8 4.2 4 4.5v14.5c4-.3 7 .3 9 2 2-1.7 5-2.3 9-2V4.5c-4-.3-7 .3-9 2z" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" />
-      <path d="M13 6.5V21" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M13.5 2.5L5 13.5h6l-1 8 8.5-11h-6l1-8z" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" strokeLinecap="round" />
     </svg>
   )
 }
