@@ -4,7 +4,7 @@ import { OFFER_PATHS } from '../config.js'
 import { trackEvent } from '../lib/analytics.js'
 
 /* Secondary offers — Level 2 in the hero's attention hierarchy. Each has its own
-   accent (lime for the video offer, a muted lavender for the hooks library) so the
+   accent (lime for the video offer, pink for the hooks library) so the
    two are recognisable at a glance, but both stay well below the primary CTA. */
 const SECONDARY_OFFERS = [
   {
@@ -22,16 +22,27 @@ const SECONDARY_OFFERS = [
   {
     id: 'hooks',
     icon: IconBolt,
-    title: '10 Free Ad Hooks',
+    title: <>10 <span className="text-lime">FREE</span> Ad Hooks</>,
     description: 'Fresh hooks for your next ads.',
     cta: 'Get free hooks',
     href: OFFER_PATHS.hooks,
     event: 'hooks_library_click',
-    card: 'border-[#9a8fd0]/30 bg-[#9a8fd0]/[0.06] hover:border-[#9a8fd0]/55 hover:bg-[#9a8fd0]/[0.10] hover:shadow-[0_14px_34px_-18px_rgba(154,143,208,0.5)] focus-visible:outline-[#b8aedf]',
-    iconTile: 'border-[#9a8fd0]/30 bg-[#9a8fd0]/12 text-[#b8aedf]',
-    ctaText: 'text-[#b8aedf]',
+    card: 'border-[#F472B6]/35 bg-[#EC4899]/[0.08] hover:border-[#F472B6]/70 hover:bg-[#EC4899]/[0.14] hover:shadow-[0_14px_34px_-16px_rgba(236,72,153,0.6)] focus-visible:outline-[#F472B6]',
+    iconTile: 'border-[#F472B6]/35 bg-[#EC4899]/15 text-[#F472B6]',
+    ctaText: 'text-[#F472B6]',
   },
 ]
+
+/* Restarts the CTA's short glow pulse (see .hero-cta-fire in index.css). It only
+   toggles a class: no preventDefault and no timers, so navigation is never delayed
+   and modifier-clicks / keyboard activation behave exactly like a normal link. The
+   old page stays painted until the next one arrives, so the pulse is visible then. */
+function firePulse(event) {
+  const el = event.currentTarget
+  el.classList.remove('hero-cta-fire')
+  void el.offsetWidth // force reflow so a repeat click restarts the animation
+  el.classList.add('hero-cta-fire')
+}
 
 export default function Hero() {
   return (
@@ -57,18 +68,24 @@ export default function Hero() {
               </span>
             </h1>
 
-            <p className="mt-5 md:mt-6 max-w-xl mx-auto lg:mx-0 text-base md:text-lg text-ink-muted leading-relaxed">
+            <p className="mt-6 md:mt-8 max-w-xl mx-auto lg:mx-0 text-base md:text-lg text-ink-muted leading-relaxed">
               UGC ads, spokesperson videos, and creative strategy for brands that scale on paid social.
             </p>
 
-            {/* Level 1 — the primary action: one value-prop line, then the button. */}
-            <div className="mt-8 md:mt-10">
-              <p className="mb-4 text-balance text-[15px] md:text-base font-medium leading-snug text-ink">
+            {/* Level 1 — the primary action: one value-prop line tied tightly to the button.
+                Vertical rhythm of this column: 24 / 32 headline→description, 24 description→offer,
+                12 offer→button, 32 / 40 button→secondary, 12 label→cards. */}
+            <div className="mt-6">
+              <p className="mb-3 text-balance text-[15px] md:text-base font-medium leading-snug text-ink">
                 Your next 5 ad concepts. Tailored to your brand. <span className="text-lime">On us.</span>
               </p>
               <a
                 href={OFFER_PATHS.roadmap}
-                onClick={() => trackEvent('hero_creative_roadmap_click', { location: 'hero' })}
+                onClick={(e) => {
+                  firePulse(e)
+                  trackEvent('hero_creative_roadmap_click', { location: 'hero' })
+                }}
+                onAnimationEnd={(e) => e.currentTarget.classList.remove('hero-cta-fire')}
                 className="cta-gradient hero-cta group inline-flex w-full sm:w-auto min-h-[64px] md:min-h-[68px] items-center justify-center gap-2.5
                            rounded-full px-8 md:px-10 py-4 text-[17px] md:text-lg font-bold tracking-snug text-canvas
                            focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-lime"
@@ -81,7 +98,7 @@ export default function Hero() {
             </div>
 
             {/* Level 2 — compact secondary offers under a quiet, left-aligned label */}
-            <div className="mt-8 md:mt-9 max-w-xl mx-auto lg:mx-0">
+            <div className="mt-8 md:mt-10 max-w-xl mx-auto lg:mx-0">
               <p className="text-left text-[13px] text-ink-muted">Other ways to get started</p>
               <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-left">
                 {SECONDARY_OFFERS.map((offer) => (

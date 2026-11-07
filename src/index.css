@@ -121,18 +121,40 @@ body {
   transform: scale(0.98);
 }
 
-/* Hero primary CTA only — a soft resting glow and a small lift on hover, layered
-   on top of .cta-gradient (which other pages share, so it is left untouched). */
+/* Hero primary CTA only — a soft resting glow, a small lift on hover, a press-down
+   while pressed, and a short lime glow pulse when activated (.hero-cta-fire is added
+   by Hero.jsx on click; it never delays navigation). Layered on top of
+   .cta-gradient, which other pages share, so that class is left untouched.
+   `scale` is used (not `transform`) so press / pulse compose with the hover lift. */
 .hero-cta {
   box-shadow: 0 0 0 1px rgba(213, 255, 64, 0.35), 0 16px 44px -16px rgba(213, 255, 64, 0.5);
-  transition: background-position 0.6s ease, box-shadow 0.3s ease, transform 0.2s ease;
+  transition: background-position 0.6s ease, box-shadow 0.3s ease,
+    transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1), scale 0.18s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 .hero-cta:hover {
   transform: translateY(-2px);
   box-shadow: 0 0 0 1px rgba(213, 255, 64, 0.65), 0 22px 54px -16px rgba(213, 255, 64, 0.65);
 }
 .hero-cta:active {
-  transform: translateY(0) scale(0.98);
+  transform: translateY(0);
+  scale: 0.97;
+}
+.hero-cta-fire {
+  animation: hero-cta-pulse 0.5s cubic-bezier(0.22, 0.8, 0.3, 1);
+}
+@keyframes hero-cta-pulse {
+  0% {
+    scale: 1;
+    box-shadow: 0 0 0 1px rgba(213, 255, 64, 0.6), 0 0 0 0 rgba(213, 255, 64, 0.55), 0 16px 44px -16px rgba(213, 255, 64, 0.5);
+  }
+  22% {
+    scale: 0.97;
+    box-shadow: 0 0 0 1px rgba(213, 255, 64, 0.85), 0 0 0 5px rgba(213, 255, 64, 0.32), 0 10px 30px -12px rgba(213, 255, 64, 0.75);
+  }
+  100% {
+    scale: 1;
+    box-shadow: 0 0 0 1px rgba(213, 255, 64, 0.35), 0 0 0 18px rgba(213, 255, 64, 0), 0 16px 44px -16px rgba(213, 255, 64, 0.5);
+  }
 }
 
 /* ── Case Studies micro-interactions ────────────────────────────
@@ -233,6 +255,14 @@ body {
   }
   .hero-cta:hover {
     transform: none;
+  }
+  /* No movement or pulse; pressing still dims the button slightly as feedback. */
+  .hero-cta:active {
+    scale: 1;
+    filter: brightness(0.94);
+  }
+  .hero-cta-fire {
+    animation: none;
   }
 }
 
