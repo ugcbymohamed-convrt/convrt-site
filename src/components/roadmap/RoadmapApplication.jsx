@@ -1,4 +1,4 @@
-import { useEffect, useId, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { trackEvent } from '../../lib/analytics.js'
 import { PRIVACY_POLICY_URL, ROADMAP_BOOKING_URL } from '../../config.js'
 import {
@@ -10,6 +10,7 @@ import {
 } from '../../lib/roadmapQuestions.js'
 import { qualifyApplication } from '../../lib/roadmapQualification.js'
 import { Reveal, Check } from './shared.jsx'
+import { RadioGroup, Progress } from '../forms/fields.jsx'
 import RoadmapBooking from './RoadmapBooking.jsx'
 
 /* ─────────────────────────────────────────────
@@ -129,7 +130,7 @@ export default function RoadmapApplication() {
                 )
               ) : (
                 <form ref={formRef} onSubmit={onSubmit} noValidate aria-label="Creative Growth Roadmap qualification">
-                  <Progress answered={answered} total={FIELDS.length} />
+                  <Progress label="Quick fit check" answered={answered} total={FIELDS.length} />
 
                   <div className="mt-7 space-y-7">
                     <RadioGroup
@@ -195,83 +196,6 @@ function NextSteps() {
     </ol>
   )
 }
-
-/* ---------- Progress: one segment per answered question ---------- */
-
-function Progress({ answered, total }) {
-  return (
-    <div>
-      <div className="flex items-center justify-between text-xs">
-        <p className="font-semibold uppercase tracking-[0.16em] text-lime">Quick fit check</p>
-        <p className="text-ink-muted" aria-live="polite">{answered} of {total} answered</p>
-      </div>
-      <div className="mt-3 grid gap-2" style={{ gridTemplateColumns: `repeat(${total}, minmax(0, 1fr))` }} aria-hidden="true">
-        {Array.from({ length: total }).map((_, i) => (
-          <span key={i} className={`block h-1.5 rounded-full transition-colors duration-300 motion-reduce:transition-none ${i < answered ? 'bg-lime' : 'bg-surface-3'}`} />
-        ))}
-      </div>
-    </div>
-  )
-}
-
-/* ---------- Fields ---------- */
-
-function ErrorText({ id, children }) {
-  return (
-    <p id={id} className="mt-2 flex items-start gap-1.5 text-[13px] font-medium leading-snug text-coral">
-      <svg viewBox="0 0 16 16" className="mt-[2px] h-3.5 w-3.5 shrink-0" fill="none" aria-hidden="true">
-        <circle cx="8" cy="8" r="6.25" stroke="currentColor" strokeWidth="1.5" />
-        <path d="M8 4.7v3.6M8 10.8v.01" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
-      </svg>
-      <span>{children}</span>
-    </p>
-  )
-}
-
-function RadioGroup({ name, legend, options, value, onChange, error, hint, columns = 2 }) {
-  const uid = useId()
-  const errId = `${uid}-error`
-  const hintId = `${uid}-hint`
-  const cols = columns === 1 ? '' : columns === 3 ? 'sm:grid-cols-3' : 'sm:grid-cols-2'
-  return (
-    <fieldset
-      aria-required="true"
-      aria-invalid={error ? 'true' : undefined}
-      aria-describedby={error ? errId : hint ? hintId : undefined}
-      className="min-w-0"
-    >
-      <legend className="mb-2 text-sm font-semibold text-ink">{legend}</legend>
-      <div className={`grid grid-cols-1 gap-2.5 ${cols}`}>
-        {options.map((opt, i) => (
-          <label
-            key={opt}
-            className={`group relative flex min-h-[48px] cursor-pointer items-center gap-3 rounded-2xl border px-4 py-3 text-[15px] leading-snug transition-colors
-              has-[:checked]:border-lime has-[:checked]:bg-lime/10 has-[:checked]:text-ink has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-lime/70
-              motion-reduce:transition-none ${error ? 'border-coral/60' : 'border-hairline-strong hover:border-ink-subtle/60'} text-ink-muted`}
-          >
-            <input
-              type="radio"
-              name={name}
-              value={opt}
-              checked={value === opt}
-              onChange={() => onChange(opt)}
-              data-field={i === 0 ? name : undefined}
-              className="peer sr-only"
-            />
-            <span
-              aria-hidden="true"
-              className="h-[18px] w-[18px] shrink-0 rounded-full border border-ink-subtle transition-colors peer-checked:border-lime peer-checked:bg-lime peer-checked:shadow-[inset_0_0_0_4px_#0a0a0b] motion-reduce:transition-none"
-            />
-            <span>{opt}</span>
-          </label>
-        ))}
-      </div>
-      {hint && !error && <p id={hintId} className="mt-2 text-xs text-ink-subtle">{hint}</p>}
-      {error && <ErrorText id={errId}>{error}</ErrorText>}
-    </fieldset>
-  )
-}
-
 
 /* ---------- Not qualified: polite message, no calendar ---------- */
 

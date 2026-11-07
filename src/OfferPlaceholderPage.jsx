@@ -16,11 +16,6 @@ const COPY = {
     title: '10 Free Ad Hooks',
     body: 'Soon you’ll be able to choose SaaS or e-commerce and receive the relevant hook frameworks by email. The library is being finalized.',
   },
-  riskFree: {
-    eyebrow: 'Risk-Free Video Production',
-    title: 'Try CONVRT Risk-Free',
-    body: 'Qualifying brands can apply for a free video production trial, including two bonus hook variations, subject to production conditions. The application page is being finalized.',
-  },
 }
 
 function OfferPlaceholderPage({ copy }) {
@@ -65,4 +60,3 @@ function OfferPlaceholderPage({ copy }) {
 }
 
 export const HooksPlaceholderPage = () => <OfferPlaceholderPage copy={COPY.hooks} />
-export const RiskFreePlaceholderPage = () => <OfferPlaceholderPage copy={COPY.riskFree} />

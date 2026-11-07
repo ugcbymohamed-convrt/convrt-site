@@ -21,8 +21,8 @@ const OFFERS = [
   {
     id: 'risk-free',
     icon: IconClapper,
-    title: 'Try CONVRT Risk-Free',
-    description: 'Apply for a free video production trial, including two bonus hook variations.',
+    title: <>1 <span className="text-lime">FREE</span> Video Production</>,
+    description: 'Try CONVRT risk free. Apply to see if you qualify for a free video ad, plus two bonus hook variations.',
     cta: 'See If You Qualify',
     href: OFFER_PATHS.riskFree,
     event: 'risk_free_trial_click',
@@ -49,7 +49,7 @@ export default function StartHereOffers() {
           </h2>
 
           <p className="mt-4 text-base text-ink-muted max-w-md mx-auto leading-relaxed">
-            Explore our creative resources or experience CONVRT before committing to a project.
+            Grab free creative resources, or let us prove it with a free video before you commit to anything.
           </p>
         </div>
 

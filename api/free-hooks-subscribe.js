@@ -4,40 +4,9 @@
    Uses only plain Node req/res so it also runs in the Vite dev middleware. */
 
 import { processSignup, isSameOrigin } from './_lib/subscribe.js'
+import { send, readJson } from './_lib/http.js'
 
 const MAX_BODY_BYTES = 4 * 1024
-
-function send(res, status, body, headers = {}) {
-  res.statusCode = status
-  res.setHeader('Content-Type', 'application/json; charset=utf-8')
-  res.setHeader('Cache-Control', 'no-store')
-  for (const [k, v] of Object.entries(headers)) res.setHeader(k, v)
-  res.end(JSON.stringify(body))
-}
-
-async function readJson(req) {
-  if (req.body !== undefined && req.body !== null) {
-    // Vercel pre-parses JSON; if the content-type was wrong it may be a string/Buffer.
-    if (typeof req.body === 'object' && !Buffer.isBuffer(req.body)) return req.body
-    try {
-      return JSON.parse(Buffer.isBuffer(req.body) ? req.body.toString('utf8') : String(req.body))
-    } catch {
-      return null
-    }
-  }
-  const chunks = []
-  let size = 0
-  for await (const chunk of req) {
-    size += chunk.length
-    if (size > MAX_BODY_BYTES) return null
-    chunks.push(chunk)
-  }
-  try {
-    return JSON.parse(Buffer.concat(chunks).toString('utf8'))
-  } catch {
-    return null
-  }
-}
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -49,7 +18,7 @@ export default async function handler(req, res) {
     return send(res, 403, { ok: false, error: 'forbidden' })
   }
 
-  const body = await readJson(req)
+  const body = await readJson(req, MAX_BODY_BYTES)
   if (body === null) return send(res, 400, { ok: false, error: 'invalid_request' })
 
   try {

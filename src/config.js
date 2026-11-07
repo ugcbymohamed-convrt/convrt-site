@@ -4,9 +4,7 @@ export const BOOKING_URL = 'https://calendly.com/mohamed-convrt/30min'
 
 export const CONTACT_EMAIL = 'mohamed@convrt.studio'
 
-// Homepage offer destinations. These pages are placeholders (see
-// src/OfferPlaceholderPage.jsx) until the real landing pages ship —
-// swap the page registered for each path in App.jsx, no link changes needed.
+// Homepage offer destinations. Each path is registered to its page in App.jsx.
 export const OFFER_PATHS = {
   roadmap: '/creative-growth-roadmap',
   hooks: '/free-hooks',
@@ -35,3 +33,10 @@ export const PRIVACY_POLICY_URL = ''
 // <meta name="robots" content="noindex"> until MailerLite is connected and a
 // real end-to-end signup has been tested. Then flip to `true`.
 export const FREE_HOOKS_INDEXABLE = false
+
+// ── Risk-Free Trial application (/risk-free-trial) ──────────────────────────
+// Launch gate, same idea as the flags above: the page is served with
+// <meta name="robots" content="noindex"> until MailerLite is configured
+// (docs/risk-free-application-setup.md) and a real test application has been
+// received. Then flip to `true`.
+export const RISK_FREE_INDEXABLE = false
