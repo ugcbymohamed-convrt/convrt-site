@@ -1,7 +1,6 @@
 import Nav from './components/Nav.jsx'
 import Hero from './components/Hero.jsx'
 import Credibility from './components/Credibility.jsx'
-import StartHereOffers from './components/StartHereOffers.jsx'
 import CaseStudies from './components/CaseStudies.jsx'
 import Services from './components/Services.jsx'
 import HowItWorks from './components/HowItWorks.jsx'
@@ -37,7 +36,6 @@ function HomePage() {
     <>
       <Hero />
       <Credibility />
-      <StartHereOffers />
       <SectionDivider />
       <CaseStudies />
       <SectionDivider />

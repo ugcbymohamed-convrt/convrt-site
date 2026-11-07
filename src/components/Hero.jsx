@@ -5,6 +5,27 @@ import { trackEvent } from '../lib/analytics.js'
 
 const ROTATING_WORDS = ['convert', 'resonate', 'sell', 'connect']
 
+const SECONDARY_OFFERS = [
+  {
+    id: 'video',
+    icon: IconClapper,
+    title: 'Try 1 Video FREE',
+    description: 'Experience our production quality before committing.',
+    cta: 'See If You Qualify',
+    href: OFFER_PATHS.riskFree,
+    event: 'risk_free_trial_click',
+  },
+  {
+    id: 'hooks',
+    icon: IconBook,
+    title: 'Get 10 Free Ad Hooks',
+    description: 'Ready-to-adapt hooks for SaaS and E-commerce ads.',
+    cta: 'Get Free Hooks',
+    href: OFFER_PATHS.hooks,
+    event: 'hooks_library_click',
+  },
+]
+
 export default function Hero() {
   return (
     <section id="top" className="relative overflow-hidden">
@@ -38,24 +59,42 @@ export default function Hero() {
               UGC ads, spokesperson videos, and creative strategy for brands that scale on paid social.
             </p>
 
-            <div className="mt-6 md:mt-8 flex flex-wrap items-center justify-center lg:justify-start gap-5">
-              <a
-                href={OFFER_PATHS.roadmap}
-                onClick={() => trackEvent('hero_creative_roadmap_click', { location: 'hero' })}
-                className="cta-gradient group inline-flex items-center gap-2 rounded-full px-6 py-3.5 text-sm font-semibold text-canvas"
-              >
-                Get 5 Free Ad Concepts
-                <svg viewBox="0 0 12 12" className="h-3.5 w-3.5 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" fill="none">
-                  <path d="M3 9L9 3M9 3H4M9 3V8" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </a>
+            {/* Primary offer — the dominant action */}
+            <div className="mt-5 md:mt-6 flex flex-wrap items-start justify-center lg:justify-start gap-x-5 gap-y-3">
+              <div className="flex flex-col items-center lg:items-start max-w-[300px]">
+                <a
+                  href={OFFER_PATHS.roadmap}
+                  onClick={() => trackEvent('hero_creative_roadmap_click', { location: 'hero' })}
+                  className="cta-gradient group inline-flex items-center gap-2 rounded-full px-6 py-3.5 text-sm font-semibold text-canvas"
+                >
+                  Get 5 Free Ad Concepts
+                  <svg viewBox="0 0 12 12" className="h-3.5 w-3.5 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" fill="none" aria-hidden="true">
+                    <path d="M3 9L9 3M9 3H4M9 3V8" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </a>
+                <p className="mt-2.5 text-[13px] leading-snug text-ink-muted">
+                  5 personalized ad concepts for your brand. Presented in a free strategy session.
+                </p>
+              </div>
               <a
                 href="#how-it-works"
-                className="inline-flex items-center gap-1.5 text-sm font-medium text-ink hover:text-lime transition-colors"
+                className="inline-flex min-h-[44px] items-center gap-1.5 text-sm font-medium text-ink hover:text-lime transition-colors"
               >
                 See the process
                 <span aria-hidden="true">↓</span>
               </a>
+            </div>
+
+            {/* Secondary offers — compact, deliberately quieter than the primary CTA */}
+            <div className="mt-4 md:mt-5 max-w-xl mx-auto lg:mx-0">
+              <p className="text-sm text-ink-muted">
+                Not ready for a strategy call? <span className="text-ink">Start here instead.</span>
+              </p>
+              <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-left">
+                {SECONDARY_OFFERS.map((offer) => (
+                  <SecondaryOffer key={offer.id} offer={offer} />
+                ))}
+              </div>
             </div>
           </div>
 
@@ -66,6 +105,54 @@ export default function Hero() {
         </div>
       </div>
     </section>
+  )
+}
+
+/* ---------- Secondary offer module ---------- */
+
+function SecondaryOffer({ offer }) {
+  const Icon = offer.icon
+  return (
+    <a
+      href={offer.href}
+      onClick={() => trackEvent(offer.event, { location: 'hero' })}
+      className="group flex flex-col rounded-2xl border border-hairline bg-surface-1/70 p-3.5 transition-colors duration-200
+                 hover:border-lime/40 hover:bg-surface-2/60
+                 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-lime"
+    >
+      <span className="flex items-center gap-2.5">
+        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-hairline-strong bg-surface-2 text-lime">
+          <Icon />
+        </span>
+        <span className="text-[15px] font-semibold tracking-snug text-ink">{offer.title}</span>
+      </span>
+      <span className="mt-1.5 text-[13px] leading-snug text-ink-muted">{offer.description}</span>
+      <span className="mt-2 inline-flex min-h-[24px] items-center gap-1 text-[13px] font-semibold text-ink group-hover:text-lime transition-colors">
+        {offer.cta}
+        <svg viewBox="0 0 12 12" className="h-3 w-3 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 motion-reduce:transition-none" fill="none" aria-hidden="true">
+          <path d="M3 9L9 3M9 3H4M9 3V8" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      </span>
+    </a>
+  )
+}
+
+function IconClapper() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 26 26" fill="none" aria-hidden="true">
+      <rect x="3" y="10" width="20" height="13" rx="2.5" stroke="currentColor" strokeWidth="1.8" />
+      <path d="M3.4 10L2.6 5.9a1.2 1.2 0 01.9-1.4l17.3-3.5a1.2 1.2 0 011.4.9l.7 3.4L3.4 10z" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
+      <path d="M11 14.2l5 2.8-5 2.8v-5.6z" fill="currentColor" />
+    </svg>
+  )
+}
+
+function IconBook() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 26 26" fill="none" aria-hidden="true">
+      <path d="M13 6.5C11 4.8 8 4.2 4 4.5v14.5c4-.3 7 .3 9 2 2-1.7 5-2.3 9-2V4.5c-4-.3-7 .3-9 2z" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" />
+      <path d="M13 6.5V21" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+    </svg>
   )
 }
 
