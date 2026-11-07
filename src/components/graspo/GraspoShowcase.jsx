@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import Hls from 'hls.js'
+import { softGlow } from '../../lib/glow.js'
 
 /* ─────────────────────────────────────────────
    CONTENT SHOWCASE
@@ -22,8 +23,8 @@ export default function GraspoShowcase() {
     <section id="showcase" className="relative py-16 md:py-24 overflow-hidden">
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute top-1/3 left-1/2 -translate-x-1/2 h-[420px] w-[900px] rounded-full opacity-[0.05] blur-[120px]"
-        style={{ background: ACCENT }}
+        className="pointer-events-none absolute top-[calc(33.333%-240px)] left-1/2 -translate-x-1/2 h-[900px] w-[1380px] soft-glow"
+        style={{ background: softGlow(ACCENT, 0.05, 900, 420, 120) }}
       />
       <div className="relative mx-auto max-w-7xl px-5 md:px-8">
         <div className="max-w-2xl mb-12 md:mb-14 text-center mx-auto">

@@ -3,6 +3,7 @@ import { attachHls } from '../lib/hls.js'
 import { usePressFeedback } from '../lib/usePressFeedback.js'
 import { OFFER_PATHS } from '../config.js'
 import { trackEvent } from '../lib/analytics.js'
+import { softGlow } from '../lib/glow.js'
 
 /* Secondary offers — Level 2 in the hero's attention hierarchy. Each has its own
    accent (lime for the video offer, pink for the hooks library) so the
@@ -42,11 +43,11 @@ export default function Hero() {
       {/* Ambient lime glow — replaces the old violet/coral wash */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute -top-40 left-1/2 h-[560px] w-[1100px] -translate-x-1/2 rounded-full bg-lime/10 blur-[160px]"
+        className="pointer-events-none absolute -top-[480px] left-1/2 h-[1200px] w-[1740px] -translate-x-1/2 soft-glow" style={{ background: softGlow('#d5ff40', 0.1, 1100, 560, 160) }}
       />
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute top-[40%] left-1/2 h-[420px] w-[820px] -translate-x-1/2 rounded-full bg-lime/[0.07] blur-[140px]"
+        className="pointer-events-none absolute top-[calc(40%-280px)] left-1/2 h-[980px] w-[1380px] -translate-x-1/2 soft-glow" style={{ background: softGlow('#d5ff40', 0.07, 820, 420, 140) }}
       />
 
       <div className="relative mx-auto max-w-7xl px-5 pt-8 pb-14 md:px-8 md:pt-10 md:pb-16 lg:pt-12 lg:pb-20">

@@ -1,6 +1,7 @@
 import { useInView } from '../caseStudies/shared/useInView.js'
 import DiscoveryCallButton from './DiscoveryCallButton.jsx'
 import { trackEvent } from '../../lib/analytics.js'
+import { softGlow } from '../../lib/glow.js'
 
 /* ─────────────────────────────────────────────
    Outcome-led, not explainer-led — the full Challenge/Approach story
@@ -73,8 +74,8 @@ export default function ScaleCaseStudies() {
               >
                 <div
                   aria-hidden="true"
-                  className="pointer-events-none absolute -top-16 -right-16 h-56 w-56 rounded-full blur-[70px]"
-                  style={{ background: s.accentSoft }}
+                  className="pointer-events-none absolute -top-[204px] -right-[204px] h-[504px] w-[504px] soft-glow"
+                  style={{ background: softGlow(s.accentSoft, 1.0, 224, 224, 70) }}
                 />
 
                 <div className="relative flex items-center justify-between gap-3">

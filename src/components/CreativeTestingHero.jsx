@@ -1,4 +1,5 @@
 import { BOOKING_URL } from '../config.js'
+import { softGlow } from '../lib/glow.js'
 
 const PROOF_STATS = [
   { value: '30M+', label: 'Views generated' },
@@ -12,7 +13,7 @@ export default function CreativeTestingHero() {
     <section id="top" className="relative overflow-hidden">
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute -top-40 left-1/2 h-[480px] w-[900px] -translate-x-1/2 rounded-full bg-lime/10 blur-[160px]"
+        className="pointer-events-none absolute -top-[480px] left-1/2 h-[1120px] w-[1540px] -translate-x-1/2 soft-glow" style={{ background: softGlow('#d5ff40', 0.1, 900, 480, 160) }}
       />
 
       <div className="relative mx-auto max-w-4xl px-5 pt-16 pb-14 md:px-8 md:pt-20 md:pb-16 text-center">

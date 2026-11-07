@@ -349,3 +349,9 @@ body {
   background: #d5ff40;
   box-shadow: 0 0 8px rgba(213, 255, 64, 0.55);
 }
+
+/* Gradient glows (see src/lib/glow.js): the gradient itself is set inline per element.
+   Replaces large `blur-[…]` shapes, which Safari does not reliably paint. */
+.soft-glow {
+  background-repeat: no-repeat;
+}

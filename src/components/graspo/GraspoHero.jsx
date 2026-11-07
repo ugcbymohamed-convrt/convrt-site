@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { BOOKING_URL } from '../../config.js'
 import GraspoHeroScene from './GraspoHeroScene.jsx'
+import { softGlow } from '../../lib/glow.js'
 
 /* ─────────────────────────────────────────────
    GRASPO CASE STUDY — HERO
@@ -45,8 +46,8 @@ export default function GraspoHero() {
       {/* Ambient glow — lime, matches the sitewide brand color */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute -top-40 left-1/2 -translate-x-1/2 h-[520px] w-[900px] rounded-full opacity-[0.10] blur-[120px]"
-        style={{ background: ACCENT }}
+        className="pointer-events-none absolute -top-[400px] left-1/2 -translate-x-1/2 h-[1000px] w-[1380px] soft-glow"
+        style={{ background: softGlow(ACCENT, 0.1, 900, 520, 120) }}
       />
 
       <GraspoHeroScene />

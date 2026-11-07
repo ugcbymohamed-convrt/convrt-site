@@ -3,6 +3,7 @@ import { BOOKING_URL } from '../../config.js'
 import FadeUp from '../caseStudies/shared/FadeUp.jsx'
 import ElyonHeroScene from './ElyonHeroScene.jsx'
 import { ACCENT, ACCENT_LIGHT } from './theme.js'
+import { softGlow } from '../../lib/glow.js'
 
 const PROJECT_INFO = [
   { label: 'Client', value: 'Elyon Dubai' },
@@ -30,8 +31,8 @@ export default function ElyonHero() {
       {/* Ambient glow — warm champagne, replaces the sitewide lime glow for this study only */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute -top-40 left-1/2 -translate-x-1/2 h-[520px] w-[900px] rounded-full opacity-[0.14] blur-[120px]"
-        style={{ background: ACCENT }}
+        className="pointer-events-none absolute -top-[400px] left-1/2 -translate-x-1/2 h-[1000px] w-[1380px] soft-glow"
+        style={{ background: softGlow(ACCENT, 0.14, 900, 520, 120) }}
       />
       <div
         aria-hidden="true"

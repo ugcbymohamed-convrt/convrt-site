@@ -1,5 +1,6 @@
 import { useRef, useEffect, useState } from 'react'
 import { BOOKING_URL } from '../config.js'
+import { softGlow } from '../lib/glow.js'
 
 /* ─────────────────────────────────────────────
    SECTION — MEET THE FOUNDER
@@ -66,11 +67,11 @@ export default function Founder() {
       {/* ── Section ambient glow — lime left, subtle ── */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute -left-60 top-1/2 -translate-y-1/2 h-[600px] w-[600px] rounded-full bg-lime/[0.055] blur-[140px]"
+        className="pointer-events-none absolute -left-[520px] top-1/2 -translate-y-1/2 h-[1160px] w-[1160px] soft-glow" style={{ background: softGlow('#d5ff40', 0.055, 600, 600, 140) }}
       />
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute right-0 top-0 h-[400px] w-[400px] rounded-full bg-lime/[0.03] blur-[120px]"
+        className="pointer-events-none absolute -right-[240px] -top-[240px] h-[880px] w-[880px] soft-glow" style={{ background: softGlow('#d5ff40', 0.03, 400, 400, 120) }}
       />
 
       <div className="relative mx-auto max-w-7xl px-5 md:px-8">

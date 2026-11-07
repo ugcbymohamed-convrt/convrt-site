@@ -1,4 +1,5 @@
 import { useInView } from '../caseStudies/shared/useInView.js'
+import { softGlow } from '../../lib/glow.js'
 
 /* ─────────────────────────────────────────────
    Replaces the old marketplace-style review cards. No Fiverr, no
@@ -54,7 +55,7 @@ export default function ScalePartnershipProof() {
     <section className="relative py-14 md:py-20 overflow-hidden">
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute left-1/2 top-0 -translate-x-1/2 h-[380px] w-[640px] rounded-full bg-lime/[0.04] blur-[150px]"
+        className="pointer-events-none absolute left-1/2 -top-[300px] -translate-x-1/2 h-[980px] w-[1240px] soft-glow" style={{ background: softGlow('#d5ff40', 0.04, 640, 380, 150) }}
       />
 
       <div ref={ref} className="relative mx-auto max-w-6xl px-5 md:px-8">

@@ -1,4 +1,5 @@
 import { useEffect, useLayoutEffect, useRef } from 'react'
+import { softGlow } from '../../lib/glow.js'
 
 /* ─────────────────────────────────────────────
    HERO VISUAL — a stage of floating "paper" concept cards.
@@ -106,7 +107,7 @@ export default function ConceptCardsVisual() {
         {/* Soft lime glow behind the cards */}
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute left-1/2 top-1/2 h-[70%] w-[80%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-lime/[0.09] blur-[70px]"
+          className="pointer-events-none absolute left-1/2 top-1/2 h-[calc(70%+280px)] w-[calc(80%+280px)] -translate-x-1/2 -translate-y-1/2 soft-glow" style={{ background: softGlow('#d5ff40', 0.09, 420, 300, 70) }}
         />
 
         {CARDS.map((c, i) => (

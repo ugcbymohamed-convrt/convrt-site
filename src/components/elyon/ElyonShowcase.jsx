@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import Hls from 'hls.js'
 import Eyebrow from '../caseStudies/shared/Eyebrow.jsx'
 import { ACCENT } from './theme.js'
+import { softGlow } from '../../lib/glow.js'
 
 /* Real Elyon creative — the same three Cloudflare Stream assets featured
    in the homepage Case Studies carousel, reused here so the case study
@@ -17,8 +18,8 @@ export default function ElyonShowcase() {
     <section className="relative py-14 md:py-20 overflow-hidden">
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute top-1/3 left-1/2 -translate-x-1/2 h-[420px] w-[900px] rounded-full opacity-[0.06] blur-[120px]"
-        style={{ background: ACCENT }}
+        className="pointer-events-none absolute top-[calc(33.333%-240px)] left-1/2 -translate-x-1/2 h-[900px] w-[1380px] soft-glow"
+        style={{ background: softGlow(ACCENT, 0.06, 900, 420, 120) }}
       />
       <div className="relative mx-auto max-w-7xl px-5 md:px-8">
         <div className="max-w-2xl mb-12 md:mb-14 text-center mx-auto">

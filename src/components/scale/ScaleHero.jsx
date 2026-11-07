@@ -4,6 +4,7 @@ import { usePrefersReducedMotion } from '../caseStudies/shared/usePrefersReduced
 import { trackEvent } from '../../lib/analytics.js'
 import DiscoveryCallButton from './DiscoveryCallButton.jsx'
 import VslControls from './VslControls.jsx'
+import { softGlow } from '../../lib/glow.js'
 
 /* ─────────────────────────────────────────────
    VSL is hosted on Cloudflare Stream — same pattern as the homepage
@@ -224,12 +225,12 @@ export default function ScaleHero() {
     <section
       id="watch"
       ref={sectionRef}
-      className="relative"
+      className="relative overflow-x-clip"
       style={{ height: reducedMotion ? 'auto' : 'clamp(135vh, 160vh, 175vh)' }}
     >
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute -top-32 left-1/2 h-[520px] w-[1100px] -translate-x-1/2 rounded-full bg-lime/[0.09] blur-[160px]"
+        className="pointer-events-none absolute -top-[448px] left-1/2 h-[1160px] w-[1740px] -translate-x-1/2 soft-glow" style={{ background: softGlow('#d5ff40', 0.09, 1100, 520, 160) }}
       />
 
       <div
@@ -391,8 +392,8 @@ function FounderPlaceholderArt() {
     >
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute left-1/2 top-1/2 h-[70%] w-[70%] -translate-x-1/2 -translate-y-1/2 rounded-full opacity-[0.16] blur-[90px]"
-        style={{ background: '#d5ff40' }}
+        className="pointer-events-none absolute left-1/2 top-1/2 h-[calc(70%+360px)] w-[calc(70%+360px)] -translate-x-1/2 -translate-y-1/2 soft-glow"
+        style={{ background: softGlow('#d5ff40', 0.16, 700, 700, 90) }}
       />
       <div
         aria-hidden="true"

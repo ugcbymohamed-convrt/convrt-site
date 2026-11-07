@@ -1,5 +1,6 @@
 import { OFFER_PATHS } from '../../config.js'
 import { Reveal } from './shared.jsx'
+import { softGlow } from '../../lib/glow.js'
 
 /* SECTION 2 — one compact next step for visitors who want more than a hook
    library: the Free Creative Growth Roadmap. */
@@ -9,7 +10,7 @@ export default function RoadmapUpsell() {
     <section aria-labelledby="roadmap-upsell-heading" className="relative overflow-hidden py-14 md:py-20">
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute left-1/2 top-1/2 h-[420px] w-[900px] max-w-full -translate-x-1/2 -translate-y-1/2 rounded-full bg-lime/[0.07] blur-[130px]"
+        className="pointer-events-none absolute left-1/2 top-1/2 h-[940px] w-[1420px] max-w-[calc(100%+520px)] -translate-x-1/2 -translate-y-1/2 soft-glow" style={{ background: softGlow('#d5ff40', 0.07, 900, 420, 130) }}
       />
       <Reveal className="relative mx-auto max-w-3xl px-5 text-center md:px-8">
         <h2

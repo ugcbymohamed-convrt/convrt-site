@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { BOOKING_URL } from '../config.js'
+import { softGlow } from '../lib/glow.js'
 
 /* ─────────────────────────────────────────────
    SECTION 4 — WHAT WE OFFER
@@ -219,9 +220,9 @@ export default function Services() {
 
       {/* ── Section-level ambient depth ── */}
       <div aria-hidden="true" className="pointer-events-none absolute inset-0">
-        <div className="absolute -top-48 -right-48 h-[700px] w-[700px] rounded-full bg-violet/[0.05] blur-[150px]" />
-        <div className="absolute -bottom-32 -left-32 h-[600px] w-[600px] rounded-full bg-coral/[0.045] blur-[140px]" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[400px] w-[900px] rounded-full bg-lime/[0.025] blur-[110px]" />
+        <div className="absolute -top-[492px] -right-[492px] h-[1300px] w-[1300px] soft-glow" style={{ background: softGlow('#8b5cf6', 0.05, 700, 700, 150) }} />
+        <div className="absolute -bottom-[408px] -left-[408px] h-[1160px] w-[1160px] soft-glow" style={{ background: softGlow('#ff6a4d', 0.045, 600, 600, 140) }} />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[840px] w-[1340px] soft-glow" style={{ background: softGlow('#d5ff40', 0.025, 900, 400, 110) }} />
         <div className="absolute inset-0 opacity-[0.02]" style={{ backgroundImage: NOISE_BG, backgroundSize: '180px 180px' }} />
       </div>
 

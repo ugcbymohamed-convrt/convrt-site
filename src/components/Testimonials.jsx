@@ -1,4 +1,5 @@
 import { useRef, useEffect, useState } from 'react'
+import { softGlow } from '../lib/glow.js'
 
 /* ─────────────────────────────────────────────
    SECTION — SOCIAL PROOF / TESTIMONIALS
@@ -108,7 +109,7 @@ function ReviewCard({ review, inView, delay }) {
         {/* Ambient glow blob — top */}
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute -top-20 -right-20 h-[260px] w-[260px] rounded-full blur-[80px] transition-opacity duration-500"
+          className="pointer-events-none absolute -top-20 -right-20 h-[260px] w-[260px] rounded-full transition-opacity duration-500"
           style={{
             background: `radial-gradient(circle, ${review.glowColor} 0%, transparent 70%)`,
             opacity: hovered ? 1 : 0.4,
@@ -193,11 +194,11 @@ export default function Testimonials() {
       {/* ── Ambient background glows ── */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute left-1/2 top-0 -translate-x-1/2 h-[500px] w-[700px] rounded-full bg-lime/[0.04] blur-[160px]"
+        className="pointer-events-none absolute left-1/2 -top-[320px] -translate-x-1/2 h-[1140px] w-[1340px] soft-glow" style={{ background: softGlow('#d5ff40', 0.04, 700, 500, 160) }}
       />
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute right-0 bottom-0 h-[350px] w-[350px] rounded-full bg-lime/[0.03] blur-[120px]"
+        className="pointer-events-none absolute -right-[240px] -bottom-[240px] h-[830px] w-[830px] soft-glow" style={{ background: softGlow('#d5ff40', 0.03, 350, 350, 120) }}
       />
 
       <div className="relative mx-auto max-w-7xl px-5 md:px-8">

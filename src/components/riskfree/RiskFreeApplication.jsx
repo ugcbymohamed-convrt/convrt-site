@@ -13,6 +13,7 @@ import {
 import { submitApplication } from '../../lib/riskFreeApply.js'
 import { Reveal, Check } from '../roadmap/shared.jsx'
 import { ErrorText, Progress, RadioGroup, TextField } from '../forms/fields.jsx'
+import { softGlow } from '../../lib/glow.js'
 
 /* ─────────────────────────────────────────────
    APPLICATION — six qualification questions, then contact details (kept
@@ -118,7 +119,7 @@ export default function RiskFreeApplication() {
     <section id="apply" aria-labelledby="apply-heading" className="relative scroll-mt-20 overflow-hidden py-16 md:scroll-mt-24 md:py-24">
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute left-1/2 top-1/2 h-[700px] w-[900px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-lime/[0.05] blur-[150px]"
+        className="pointer-events-none absolute left-1/2 top-1/2 h-[1300px] w-[1500px] -translate-x-1/2 -translate-y-1/2 soft-glow" style={{ background: softGlow('#d5ff40', 0.05, 900, 700, 150) }}
       />
       <div className="relative mx-auto max-w-7xl px-5 md:px-8">
         <div className="grid grid-cols-1 gap-10 lg:grid-cols-12 lg:gap-14">

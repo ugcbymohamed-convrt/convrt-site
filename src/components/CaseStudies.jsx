@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
 import { attachHls } from '../lib/hls.js'
 import { BOOKING_URL } from '../config.js'
+import { softGlow } from '../lib/glow.js'
 
 /* ─────────────────────────────────────────────
    SECTION 3 — CASE STUDIES / CREATIVE SHOWCASE
@@ -48,7 +49,7 @@ export default function CaseStudies() {
       {/* Ambient glow */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute -top-40 left-1/2 -translate-x-1/2 h-[400px] w-[800px] rounded-full opacity-[0.04] blur-[100px] bg-lime"
+        className="pointer-events-none absolute -top-[360px] left-1/2 -translate-x-1/2 h-[800px] w-[1200px] soft-glow" style={{ background: softGlow('#d5ff40', 0.04, 800, 400, 100) }}
       />
 
       <div className="mx-auto max-w-7xl px-5 md:px-8">
