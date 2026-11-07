@@ -50,9 +50,13 @@ export default function Hero() {
       />
 
       <div className="relative mx-auto max-w-7xl px-5 pt-8 pb-14 md:px-8 md:pt-10 md:pb-16 lg:pt-12 lg:pb-20">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-10 items-center">
-          {/* Left column — headline → description → primary CTA → compact secondary offers */}
-          <div className="lg:col-span-6 text-center lg:text-left">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
+          {/* Left column — headline → description → primary CTA → compact secondary offers.
+              Below lg the wrapper is `display: contents`, so its two groups become grid items that can be
+              ordered around the phone showcase: headline + description, then the phones, then the CTAs
+              and offers. From lg up it is a normal left column and the order classes do nothing. */}
+          <div className="contents lg:block lg:col-span-6 text-center lg:text-left">
+            <div className="order-1 lg:order-none">
             <h1 className="font-display font-semibold text-ink tracking-display-xl leading-[1.02] text-[48px] sm:text-[50px] md:text-[54px] lg:text-[60px] xl:text-[70px]">
               <span className="block">Performance creatives</span>
               <span className="block">
@@ -63,11 +67,14 @@ export default function Hero() {
             <p className="mt-6 md:mt-8 max-w-xl mx-auto lg:mx-0 text-base md:text-lg text-ink-muted leading-relaxed">
               Human-led UGC and spokesperson videos for paid ads, plus engaging content for your social channels.
             </p>
+            </div>
+
+            <div className="order-3 lg:order-none">
 
             {/* Level 1 — the primary action: one value-prop line tied tightly to the button.
                 Vertical rhythm of this column: 24 / 32 headline→description, 24 description→offer,
                 12 offer→button, 32 / 40 button→secondary, 12 label→cards. */}
-            <div className="mt-6">
+            <div className="lg:mt-6">
               <p className="mb-3 text-balance text-[15px] md:text-base font-medium leading-snug text-ink">
                 Your next 5 ad concepts. Tailored to your brand. <span className="text-lime">On us.</span>
               </p>
@@ -111,10 +118,11 @@ export default function Hero() {
                 ))}
               </div>
             </div>
+            </div>
           </div>
 
-          {/* Right column — phones cluster + emojis + stats */}
-          <div className="lg:col-span-6">
+          {/* Right column — phones cluster + emojis + stats (second on small screens) */}
+          <div className="order-2 lg:order-none lg:col-span-6">
             <PhonesStage />
           </div>
         </div>
