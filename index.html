@@ -10,6 +10,20 @@
     <link rel="preload" href="/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin />
     <!-- Homepage hero + case-study videos stream from Cloudflare Stream: open the connection early. -->
     <link rel="preconnect" href="https://videodelivery.net" crossorigin />
+    <!-- Homepage only: the hero video's poster is its largest paint. It is otherwise requested only after the
+         JS bundle has rendered the <video>, which put it ~3 s out on slow 4G. Start it during HTML parsing,
+         at high priority. Must stay identical to the poster URL in src/components/Hero.jsx so it is reused,
+         not fetched twice. (Tested on the live site: LCP 3.03 s -> 1.43 s, slow 4G + 4x CPU.) -->
+    <script>
+      if (location.pathname === '/') {
+        var l = document.createElement('link')
+        l.rel = 'preload'
+        l.as = 'image'
+        l.fetchPriority = 'high'
+        l.href = 'https://videodelivery.net/20c642c760e1937953fc33e98f3d859f/thumbnails/thumbnail.jpg?time=0s&height=600'
+        document.head.appendChild(l)
+      }
+    </script>
     <title>Performance Creative Studio for Paid Social | CONVRT</title>
     <meta
       name="description"
