@@ -68,7 +68,7 @@ export default function Hero() {
             </h1>
 
             <p className="mt-6 md:mt-8 max-w-xl mx-auto lg:mx-0 text-base md:text-lg text-ink-muted leading-relaxed">
-              Human-led UGC and spokesperson videos for paid ads, plus engaging content for your social channels.
+              Multilingual, human-led UGC and spokesperson videos for paid ads and engaging content for your social channels.
             </p>
             </div>
 
