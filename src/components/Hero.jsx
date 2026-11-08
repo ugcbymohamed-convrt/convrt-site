@@ -124,7 +124,7 @@ export default function Hero() {
 
             {/* Level 2 — compact secondary offers under a quiet, left-aligned label */}
             <div className="mt-8 md:mt-10 max-w-xl mx-auto lg:mx-0">
-              <p className="text-left text-[13px] text-ink-muted">Other ways to get started</p>
+              <p className="text-left text-[13px] text-ink-muted">{"Not ready yet? We've got two FREE ways to start."}</p>
               <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-left">
                 {SECONDARY_OFFERS.map((offer) => (
                   <SecondaryOffer key={offer.id} offer={offer} />
