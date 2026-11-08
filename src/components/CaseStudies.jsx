@@ -22,7 +22,13 @@ const CASES = [
     logo: { src: '/clients/adscale.png', alt: 'Adscale', w: 531, h: 149 },
     title: "Long-form creatives\nthat can't be skipped.",
     body: 'If you think long creatives are not a thing, check these out. These are not just creatives, they build trust, they scream confidence, and they show "we know what we\'re doing". Aesthetic transitions, catchy visuals and a delivery so engaging that it makes it almost impossible to skip.',
-    videos: ['8d4dbbeabac272bddb23068c91037af8', '08abef50c734085f25f345cdde4b1e33', 'e3fe66bacac503de0a0be989a3a4ed4b'],
+    videos: [
+      '8d4dbbeabac272bddb23068c91037af8',
+      // Adscale Agentic — Cloudflare stream, custom poster (computer with Facebook ads)
+      { id: '08abef50c734085f25f345cdde4b1e33', poster: '/showcase/adscale-agentic-poster.webp' },
+      // Female creator with a sun umbrella — self-hosted MP4 (720×1280, ~12 MB)
+      { mp4: '/showcase/adscale-creator.mp4', poster: '/showcase/adscale-creator-poster.webp' },
+    ],
     accentColor: '#3b82f6',
   },
   {
@@ -35,6 +41,15 @@ const CASES = [
     accentColor: '#10b981',
   },
 ]
+
+/* A video entry is either a Cloudflare Stream id (string) or an object:
+   { id, poster? }  – Cloudflare Stream (HLS) with an optional custom poster
+   { mp4, poster }  – self-hosted MP4 (no HLS), for clips not uploaded to Stream */
+const cfPoster = (id) => `https://videodelivery.net/${id}/thumbnails/thumbnail.jpg?time=0s&height=600`
+function videoSource(v) {
+  if (typeof v === 'string') return { id: v, mp4: null, poster: cfPoster(v) }
+  return { id: v.id ?? null, mp4: v.mp4 ?? null, poster: v.poster ?? cfPoster(v.id) }
+}
 
 /* ─────────────────────────────────────────────
    Main section
@@ -259,7 +274,7 @@ function PhoneCarousel({ videos, brandId, accentColor }) {
         return (
           <PhoneUnit
             key={videoIdx}
-            videoId={videos[videoIdx]}
+            video={videos[videoIdx]}
             pos={pos}
             phoneOffset={phoneOffset}
             isHovered={hoveredPos === pos && pos !== 1}
@@ -292,9 +307,10 @@ const BEZEL        = 12    /* matches Hero's md:p-[12px] */
 const DI_H         = 28    /* matches Hero's md:h-[28px] */
 const DI_W         = 110   /* matches Hero's md:w-[110px] */
 
-function PhoneUnit({ videoId, pos, phoneOffset, isHovered, onClick, onHover, onHoverEnd, videoRef }) {
+function PhoneUnit({ video, pos, phoneOffset, isHovered, onClick, onHover, onHoverEnd, videoRef }) {
   const isCenter = pos === 1
   const isLeft   = pos === 0
+  const { id: videoId, mp4, poster } = videoSource(video)
 
   const SCALE_SIDE = 0.78, SCALE_SIDE_HOVER = 0.86, ROT_Y = 20, ROT_Y_HOVER = 11
 
@@ -337,7 +353,7 @@ function PhoneUnit({ videoId, pos, phoneOffset, isHovered, onClick, onHover, onH
   /* HLS setup — only once near the viewport. The centre phone loads and plays; the two
      side phones stay on their poster (no segment downloads) until one is rotated to centre. */
   useEffect(() => {
-    if (!near) return
+    if (!near || mp4) return
     const el = internalRef.current
     if (!el) return
     const src = `https://videodelivery.net/${videoId}/manifest/video.m3u8`
@@ -347,9 +363,18 @@ function PhoneUnit({ videoId, pos, phoneOffset, isHovered, onClick, onHover, onH
     })
     streamRef.current = stream
     return () => { stream.destroy(); streamRef.current = null }
-  }, [videoId, near])
+  }, [videoId, mp4, near])
 
   useEffect(() => { if (isCenter) streamRef.current?.startLoad() }, [isCenter, near])
+
+  /* Self-hosted MP4: like the HLS phones, nothing downloads until it reaches the centre. */
+  useEffect(() => {
+    if (!mp4 || !near || !isCenter) return
+    const el = internalRef.current
+    if (!el) return
+    if (!el.getAttribute('src')) el.src = mp4
+    el.play().catch(() => {})
+  }, [mp4, near, isCenter])
 
   useEffect(() => { const el = internalRef.current; if (el) el.muted = muted }, [muted])
 
@@ -396,8 +421,8 @@ function PhoneUnit({ videoId, pos, phoneOffset, isHovered, onClick, onHover, onH
           <div style={{ position: 'relative', height: '100%', width: '100%', overflow: 'hidden', borderRadius: `${INNER_RADIUS}px`, background: '#000' }}>
 
             <video ref={combinedRef} className="absolute inset-0 w-full h-full object-cover"
-              poster={`https://videodelivery.net/${videoId}/thumbnails/thumbnail.jpg?time=0s&height=600`}
-              loop muted playsInline preload="auto"
+              poster={poster}
+              loop muted playsInline preload={mp4 ? 'none' : 'auto'}
               onClick={isCenter ? togglePlay : undefined} style={{ cursor: isCenter ? 'pointer' : 'default' }} />
 
             {!loaded && isCenter && <div className="absolute inset-0 animate-pulse" style={{ background: '#111114', borderRadius: `${INNER_RADIUS}px` }} />}
