@@ -1,5 +1,5 @@
 import { useRef, useEffect, useState } from 'react'
-import { BOOKING_URL, CONTACT_EMAIL } from '../config.js'
+import { OFFER_PATHS, CONTACT_EMAIL } from '../config.js'
 
 /* ─────────────────────────────────────────────
    FINAL CTA — Cinematic close
@@ -114,7 +114,7 @@ export default function FinalCTA() {
 
             {/* Primary — lime */}
             <a
-              href={BOOKING_URL} target="_blank" rel="noopener noreferrer"
+              href={OFFER_PATHS.roadmap}
               onMouseEnter={() => setBtnHovered(true)}
               onMouseLeave={() => setBtnHovered(false)}
               className="group relative inline-flex items-center gap-2.5 rounded-full px-8 py-4 text-[15px] font-semibold text-canvas overflow-hidden"

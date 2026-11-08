@@ -24,11 +24,19 @@ import { useEffect, useRef } from 'react'
    earlier, while the section still has a little further to
    settle into place, rather than waiting for it to fully stop.
 
+   "viewport" (pass `viewportRange: [from, to]`, fractions of the viewport
+   height): 0 while the section's top edge is still below `from`, 1 once it has
+   risen to `to`, linear in between. Used for small elements that must animate
+   WHILE they are on screen (the mobile paper stack) rather than as the section
+   scrolls out of view.
+
    Fully idle (no listeners, no rAF) whenever the target
    is nowhere near the viewport, and skipped entirely
    when `disabled` (prefers-reduced-motion) is true.
 ───────────────────────────────────────────── */
-export function useScrollDriver(targetRef, onTick, { disabled = false, throughPx, throughOffsetPx = 0 } = {}) {
+export function useScrollDriver(targetRef, onTick, { disabled = false, throughPx, throughOffsetPx = 0, viewportRange } = {}) {
+  const vrFrom = viewportRange ? viewportRange[0] : null
+  const vrTo = viewportRange ? viewportRange[1] : null
   const rafRef = useRef(null)
 
   useEffect(() => {
@@ -39,7 +47,10 @@ export function useScrollDriver(targetRef, onTick, { disabled = false, throughPx
       rafRef.current = null
       const rect = el.getBoundingClientRect()
       let raw
-      if (throughPx) {
+      if (vrFrom != null) {
+        const vh = window.innerHeight || 1
+        raw = (vrFrom * vh - rect.top) / ((vrFrom - vrTo) * vh)
+      } else if (throughPx) {
         raw = rect.top > throughOffsetPx ? 0 : (throughOffsetPx - rect.top) / throughPx
       } else {
         const vh = window.innerHeight || 1
@@ -73,7 +84,7 @@ export function useScrollDriver(targetRef, onTick, { disabled = false, throughPx
       window.removeEventListener('resize', requestTick)
       if (rafRef.current != null) cancelAnimationFrame(rafRef.current)
     }
-  }, [targetRef, onTick, disabled, throughPx, throughOffsetPx])
+  }, [targetRef, onTick, disabled, throughPx, throughOffsetPx, vrFrom, vrTo])
 }
 
 export function clamp01(n) {

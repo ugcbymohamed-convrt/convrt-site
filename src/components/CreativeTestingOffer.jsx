@@ -1,4 +1,4 @@
-import { BOOKING_URL } from '../config.js'
+import { OFFER_PATHS } from '../config.js'
 
 /* ─────────────────────────────────────────────
    PRICING — Paid Social + Organic Social
@@ -21,7 +21,6 @@ const STANDARD_FEATURES = [
   '5 distinct creative concepts',
   '5 complete scripts',
   'Scripts approved before filming',
-  'Up to 10 final ad variations',
   'Multiple hooks or angle variations',
   '1 creator or spokesperson',
   'Creator-led or spokesperson production',
@@ -36,7 +35,6 @@ const PLUS_FEATURES = [
   '8 distinct creative concepts',
   '8 complete scripts',
   'Scripts approved before filming',
-  'Up to 20 final ad variations',
   'Additional hook, angle, and format variations',
   'Up to 2 creators or spokespersons',
   'Creator-led and spokesperson production',
@@ -107,6 +105,7 @@ export default function CreativeTestingOffer({ service, onServiceChange }) {
                 price="From €2,500"
                 priceSuffix="/month"
                 supportingLine="A focused first sprint for brands that need stronger creative diversity."
+                deliverable={{ count: '10', label: 'Video Ad Variations', note: 'Final ad variations, built from 5 distinct creative concepts.' }}
                 features={STANDARD_FEATURES}
                 timeline="Approximately 10 business days after script approval."
                 ctaLabel="Discuss Your Sprint"
@@ -119,6 +118,7 @@ export default function CreativeTestingOffer({ service, onServiceChange }) {
                 price="From €4,500"
                 priceSuffix="/month"
                 supportingLine="For brands that need more concepts, creators, and testing depth."
+                deliverable={{ count: '20', label: 'Video Ad Variations', note: 'Final ad variations, built from 8 distinct creative concepts.' }}
                 features={PLUS_FEATURES}
                 timeline="Approximately 15 business days after script approval."
                 ctaLabel="Discuss Your Sprint"
@@ -350,6 +350,7 @@ function PackageCard({
   price,
   priceSuffix,
   supportingLine,
+  deliverable,
   cadenceLine,
   features,
   timeline,
@@ -390,7 +391,32 @@ function PackageCard({
         <p className="mt-2 text-[13px] font-semibold leading-relaxed opacity-80">{cadenceLine}</p>
       )}
 
-      <p className="mt-3 text-sm leading-relaxed opacity-70">{supportingLine}</p>
+      {deliverable && (
+        <div
+          className={`mt-4 flex items-center gap-4 rounded-2xl px-4 py-3.5 md:px-5 ${
+            isPlus ? 'bg-canvas text-lime shadow-[0_14px_34px_-18px_rgba(0,0,0,0.7)]' : 'bg-canvas/[0.07] text-canvas ring-1 ring-inset ring-canvas/10'
+          }`}
+        >
+          <div className="shrink-0 leading-none">
+            <span className="block text-[10px] font-bold uppercase tracking-[0.16em] opacity-70">Up to</span>
+            <span
+              className={`mt-1 block font-display font-extrabold tabular-nums tracking-display ${
+                isPlus ? 'text-[56px] md:text-[64px]' : 'text-[48px] md:text-[56px]'
+              }`}
+            >
+              {deliverable.count}
+            </span>
+          </div>
+          <div className="min-w-0">
+            <p className={`font-display font-bold leading-tight tracking-display text-[17px] md:text-lg ${isPlus ? 'text-ink' : ''}`}>
+              {deliverable.label}
+            </p>
+            <p className={`mt-1 text-[12.5px] leading-snug ${isPlus ? 'text-ink/70' : 'opacity-70'}`}>{deliverable.note}</p>
+          </div>
+        </div>
+      )}
+
+      <p className="mt-4 text-sm leading-relaxed opacity-70">{supportingLine}</p>
 
       <div className="mt-6 h-px bg-canvas/12" />
 
@@ -414,9 +440,7 @@ function PackageCard({
       </div>
 
       <a
-        href={BOOKING_URL}
-        target="_blank"
-        rel="noopener noreferrer"
+        href={OFFER_PATHS.roadmap}
         className="mt-6 inline-flex items-center justify-center gap-2 rounded-full bg-canvas px-6 py-3.5 text-sm font-semibold text-ink transition-transform duration-150 active:scale-[0.98] hover:bg-[#1c1c20]"
       >
         {ctaLabel}

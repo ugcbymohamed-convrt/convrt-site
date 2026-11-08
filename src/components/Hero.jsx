@@ -249,9 +249,9 @@ function PhonesStage() {
         />
         <PhoneMockup />
         <PhoneStatic
-          src="/hero-side-gym.webp"
+          src="/hero-side-gym-2.webp"
           alt="Creator filming a UGC video in the gym"
-          position="60% center"
+          position="52% center"
           tilt="9deg"
           className="opacity-80 md:opacity-90 -ml-5 md:-ml-10 lg:-ml-14 translate-y-4"
         />

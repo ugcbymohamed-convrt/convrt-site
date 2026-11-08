@@ -1,21 +1,12 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
 import { attachHls } from '../lib/hls.js'
-import { BOOKING_URL } from '../config.js'
+import { OFFER_PATHS } from '../config.js'
 
 /* ─────────────────────────────────────────────
    SECTION 3 — CASE STUDIES / CREATIVE SHOWCASE
    Videos hosted on YouTube (Shorts)
 ───────────────────────────────────────────── */
 const CASES = [
-  {
-    id: 'elyon',
-    tab: 'E-commerce',
-    logo: { src: '/clients/elyon.png', alt: 'Elyon Dubai', w: 600, h: 226 },
-    title: '100+ creatives tested.\nMultiple winners found.',
-    body: "We have created over 100 pieces of content with Elyon Dubai. Since their launch back in 2025, we have tested multiple concepts & variations. So far, we've already found many formats that are killing it for Elyon. When the product is of quality, it's so much easier to make genuine content that resonates with people.",
-    videos: ['fa02007b36fae2b3bb68c97cdd00e9fc', '0905b814e2ba3950197b5bfe1cefae38', '9e6cb8438c9b0c1ab8b55953718eddde'],
-    accentColor: '#f59e0b',
-  },
   {
     id: 'adscale',
     tab: 'SaaS',
@@ -30,6 +21,15 @@ const CASES = [
       { mp4: '/showcase/adscale-creator.mp4', poster: '/showcase/adscale-creator-poster.webp' },
     ],
     accentColor: '#3b82f6',
+  },
+  {
+    id: 'elyon',
+    tab: 'E-commerce',
+    logo: { src: '/clients/elyon.png', alt: 'Elyon Dubai', w: 600, h: 226 },
+    title: '100+ creatives tested.\nMultiple winners found.',
+    body: "We have created over 100 pieces of content with Elyon Dubai. Since their launch back in 2025, we have tested multiple concepts & variations. So far, we've already found many formats that are killing it for Elyon. When the product is of quality, it's so much easier to make genuine content that resonates with people.",
+    videos: ['fa02007b36fae2b3bb68c97cdd00e9fc', '0905b814e2ba3950197b5bfe1cefae38', '9e6cb8438c9b0c1ab8b55953718eddde'],
+    accentColor: '#f59e0b',
   },
   {
     id: 'graspo',
@@ -55,7 +55,7 @@ function videoSource(v) {
    Main section
 ───────────────────────────────────────────── */
 export default function CaseStudies() {
-  const [activeId, setActiveId] = useState('elyon')
+  const [activeId, setActiveId] = useState('adscale')
   const active = CASES.find((c) => c.id === activeId)
 
   return (
@@ -158,7 +158,7 @@ export default function CaseStudies() {
 
             {/* CTA */}
             <a
-              href={BOOKING_URL} target="_blank" rel="noopener noreferrer"
+              href={OFFER_PATHS.roadmap}
               className="cs-fade-up cta-gradient mt-1 inline-flex w-fit items-center gap-2 rounded-full px-7 py-3.5 text-sm font-semibold text-canvas"
               style={{ animationDelay: '190ms' }}
             >

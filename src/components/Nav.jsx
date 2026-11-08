@@ -4,6 +4,7 @@ import { BOOKING_URL, OFFER_PATHS } from '../config.js'
 import { openBookingModal } from '../lib/bookingModal.js'
 import { trackEvent } from '../lib/analytics.js'
 import { scrollToApply } from '../lib/roadmapForm.js'
+import { usePressFeedback } from '../lib/usePressFeedback.js'
 
 const links = [
   { label: 'Services', href: '#services' },
@@ -17,6 +18,8 @@ const links = [
 export default function Nav() {
   const [scrolled, setScrolled] = useState(false)
   const [open, setOpen] = useState(false)
+  const pressDesktop = usePressFeedback()
+  const pressMobile = usePressFeedback()
   const onHome = typeof window !== 'undefined' ? window.location.pathname === '/' : true
   const homePrefix = onHome ? '' : '/'
   const resolveHref = (href) => (href.startsWith('#') ? `${homePrefix}${href}` : href)
@@ -72,7 +75,8 @@ export default function Nav() {
           <a
             href={ctaHref}
             onClick={handleCtaClick}
-            className="hidden md:inline-flex items-center gap-1.5 rounded-full bg-ink px-4 py-2.5 text-sm font-medium text-canvas transition-transform duration-150 active:scale-[0.98] hover:bg-white"
+            {...pressDesktop}
+            className="nav-cta hidden md:inline-flex items-center gap-1.5 rounded-full bg-lime px-4 py-2.5 text-sm font-medium text-canvas"
           >
             {ctaLabel}
             <ArrowUpRight className="h-3.5 w-3.5" />
@@ -115,7 +119,8 @@ export default function Nav() {
             <a
               href={ctaHref}
               onClick={handleCtaClick}
-              className="mt-2 inline-flex items-center justify-center gap-1.5 rounded-full bg-ink px-4 py-3 text-sm font-medium text-canvas"
+              {...pressMobile}
+              className="nav-cta mt-2 inline-flex items-center justify-center gap-1.5 rounded-full bg-lime px-4 py-3 text-sm font-medium text-canvas"
             >
               {ctaLabel}
               <ArrowUpRight className="h-3.5 w-3.5" />

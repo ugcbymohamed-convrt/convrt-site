@@ -1,248 +1,261 @@
-import { useEffect, useLayoutEffect, useRef } from 'react'
+import { useEffect, useRef } from 'react'
 
 /* ─────────────────────────────────────────────
-   HERO VISUAL — a stage of floating "paper" concept cards.
+   HERO VISUAL — five stacked creative-concept cards.
 
-   Motion, kept deliberately light:
-   • Idle float: each card bobs a few px on its own slow loop (CSS keyframes,
-     transform only, compositor-friendly).
-   • Scroll drift: one passive scroll listener, throttled with
-     requestAnimationFrame, writes a single CSS variable (--s, -1…1) on the
-     stage. Every card derives its own parallax offset + rotation from that
-     variable, so there's no per-card JS and no layout work.
-   • The listener and the idle loops only run while the stage is on screen
-     (IntersectionObserver).
-   • Entrance: the cards fade/rise in the first time the stage scrolls into view
-     (not at page load, so it also plays on mobile where the stage is below the
-     fold). Without JS, or with prefers-reduced-motion, they're simply visible.
-   • prefers-reduced-motion: no float, no drift, no entrance — just a still,
-     composed arrangement.
+   One package, five different ideas. The cards start as a tight stack with a
+   strip of each colour showing, and fan apart as the visitor scrolls: each
+   card slides to its own side, turns a different amount and settles at full
+   size, so the five directions are revealed one under the other.
 
-   The cards are illustrative concept labels (not real ads or client work);
-   the whole stage is decorative and exposed to assistive tech as one image.
+   How it works (kept deliberately light):
+   • One passive scroll listener, throttled with requestAnimationFrame, writes a
+     single CSS variable (--e, 0 = stacked … 1 = separated) on the stage. Every
+     card derives its transform from it with calc() — transform only, no layout
+     work, no per-card JS, no libraries.
+   • The scroll range is measured on mount / resize (never during scroll) and
+     starts when the stage is well inside the viewport, so it works for the
+     desktop hero (visible on load) and the mobile hero (below the copy). It is
+     scroll-linked and finishes after about a third of a screen of scrolling —
+     no pinning, no extra scroll length.
+   • The listener only runs while the stage is near the viewport.
+   • prefers-reduced-motion (or no JS): no listener — the cards simply sit in the
+     separated, fully readable arrangement.
+
+   The cards are illustrative concept labels (not real ads or client work); the
+   whole stage is decorative and exposed to assistive tech as one image.
 ───────────────────────────────────────────── */
 
-/* pos: % of stage · depth: how far the card travels at full scroll (px / deg)
-   float: idle bob amplitude (px), wobble (deg), period (s), start delay (s) */
+/* x / r : horizontal offset (em) and rotation (deg) when stacked (0) and separated (1).
+   Back cards (low index) are smaller while stacked, for depth. */
 const CARDS = [
-  { id: 'c1', kind: 'concept', label: 'Concept 01', title: 'Before / After', tag: 'Creator-led',
-    pos: { left: 1, top: 1, w: 41 }, rot: -7, z: 3, depth: { dx: -14, dy: -44, dr: -3 }, float: { a: 7, r: 1.2, d: 7.5, delay: 0 } },
-  { id: 'hook', kind: 'hook', label: 'Hook Idea', title: '“What if you stopped guessing?”',
-    pos: { left: 56, top: 0, w: 42 }, rot: 5, z: 2, depth: { dx: 18, dy: 30, dr: 4 }, float: { a: 6, r: 1, d: 8.5, delay: -2 } },
-  { id: 'c2', kind: 'featured', label: 'Concept 02', title: 'Creator Story', tag: 'UGC',
-    pos: { left: 17, top: 28, w: 51 }, rot: -2, z: 6, depth: { dx: 0, dy: -18, dr: 2 }, float: { a: 9, r: 0.8, d: 9, delay: -1 } },
-  { id: 'angle', kind: 'angle', label: 'Angle', title: 'Problem → Solution',
-    pos: { left: 68, top: 44, w: 31 }, rot: 7, z: 4, depth: { dx: 22, dy: 58, dr: 5 }, float: { a: 7, r: 1.4, d: 7, delay: -3.5 } },
-  { id: 'c3', kind: 'concept', label: 'Concept 03', title: 'Product Demo', tag: 'Demo',
-    pos: { left: 0, top: 61, w: 39 }, rot: 6, z: 4, depth: { dx: -18, dy: 34, dr: 4 }, float: { a: 8, r: 1.2, d: 8, delay: -4.5 } },
-  { id: 'c4', kind: 'concept', label: 'Concept 04', title: 'Founder Q&A', tag: 'Spokesperson', dim: true,
-    pos: { left: 37, top: 69, w: 33 }, rot: -6, z: 2, depth: { dx: 6, dy: -26, dr: -3 }, float: { a: 6, r: 1, d: 9.5, delay: -5.5 } },
-  { id: 'c5', kind: 'concept', label: 'Concept 05', title: 'Street Interview', tag: 'UGC', dim: true,
-    pos: { left: 71, top: 68, w: 28 }, rot: 4, z: 1, depth: { dx: 12, dy: 22, dr: 3 }, float: { a: 5, r: 0.8, d: 8.2, delay: -1.5 } },
+  { n: '01', title: 'Problem / Solution', color: '#d5ff40', ink: '#0a0a0b', icon: 'split', x0: -0.6, x1: -2.2, r0: -1.2, r1: -3.6 },
+  { n: '02', title: 'Social Proof', color: '#ff4fa3', ink: '#0a0a0b', icon: 'star', x0: 0.7, x1: 2.0, r0: 1.0, r1: 3.0 },
+  { n: '03', title: 'Pattern Interrupt', color: '#3b82f6', ink: '#ffffff', icon: 'bolt', x0: -0.4, x1: -1.2, r0: -0.7, r1: -2.4 },
+  { n: '04', title: 'Product Demonstration', color: '#8b5cf6', ink: '#ffffff', icon: 'play', x0: 0.5, x1: 2.4, r0: 0.9, r1: 3.4 },
+  { n: '05', title: 'Objection Breaker', color: '#ff8a1f', ink: '#0a0a0b', icon: 'shield', x0: -0.2, x1: -1.8, r0: -0.5, r1: -2.8,
+    blurb: 'Answer the doubt before they voice it.' },
 ]
+
+const clamp = (n, lo, hi) => Math.min(Math.max(n, lo), hi)
 
 export default function ConceptCardsVisual() {
   const stageRef = useRef(null)
 
-  // Hide the cards before first paint (animated users only) so the entrance can play on first view.
-  useLayoutEffect(() => {
-    const stage = stageRef.current
-    if (!stage || window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return
-    stage.dataset.entered = 'false'
-  }, [])
-
   useEffect(() => {
     const stage = stageRef.current
     if (!stage) return
-    const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
-    if (reduce) return // static arrangement only
+    if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return // static, separated arrangement
 
+    let startY = 0
+    let dist = 400
     let raf = 0
     let listening = false
 
-    const update = () => {
-      raf = 0
+    // Scroll range, measured here (never while scrolling):
+    //  • starts once the stage is well inside the viewport (immediately on desktop,
+    //    where the hero is visible on load);
+    //  • ends while the whole stack is still on screen: the stage also drifts down by
+    //    --k as it separates, so it stays clear of the sticky header instead of
+    //    scrolling away mid-animation.
+    const measure = () => {
       const r = stage.getBoundingClientRect()
       const vh = window.innerHeight
-      const progress = (vh - r.top) / (vh + r.height) // 0 = entering from below, 1 = leaving above
-      const s = Math.max(-1, Math.min(1, (progress - 0.5) * 2))
-      stage.style.setProperty('--s', s.toFixed(3))
+      const k = parseFloat(getComputedStyle(stage).getPropertyValue('--k')) || 0
+      const e = parseFloat(stage.style.getPropertyValue('--e')) || 0
+      const header = document.querySelector('header')
+      const headerH = header ? header.getBoundingClientRect().height : 72
+      const topDoc = r.top + window.scrollY - e * k // where the stage sits un-shifted
+      const centre = topDoc + r.height / 2
+      startY = Math.max(0, centre - vh * 0.72)
+      dist = clamp(topDoc + k - headerH - 18 - startY, 120, 300)
     }
-    const onScroll = () => {
-      if (!raf) raf = window.requestAnimationFrame(update)
+    const update = () => {
+      raf = 0
+      const p = clamp((window.scrollY - startY) / dist, 0, 1)
+      stage.style.setProperty('--e', (p * p * (3 - 2 * p)).toFixed(3))
     }
+    const onScroll = () => { if (!raf) raf = window.requestAnimationFrame(update) }
+    const onResize = () => { measure(); onScroll() }
     const listen = (on) => {
       if (on === listening) return
       listening = on
       const fn = on ? 'addEventListener' : 'removeEventListener'
       window[fn]('scroll', onScroll, { passive: true })
-      window[fn]('resize', onScroll)
+      window[fn]('resize', onResize)
     }
+
+    measure()
+    update()
+    window.addEventListener('load', onResize, { once: true })
 
     const io = new IntersectionObserver(
       ([entry]) => {
-        stage.dataset.active = entry.isIntersecting ? 'true' : 'false'
-        if (entry.isIntersecting && stage.dataset.entered === 'false') stage.dataset.entered = 'true'
         listen(entry.isIntersecting)
-        if (entry.isIntersecting) update()
+        if (entry.isIntersecting) { measure(); update() }
       },
-      { rootMargin: '120px 0px' },
+      { rootMargin: '60% 0px' },
     )
     io.observe(stage)
 
     return () => {
       io.disconnect()
       listen(false)
+      window.removeEventListener('load', onResize)
       if (raf) window.cancelAnimationFrame(raf)
     }
   }, [])
 
   return (
-    <figure className="mx-auto w-full max-w-[460px] lg:max-w-none" role="img" aria-label="Illustration of floating ad concept, hook and angle cards">
+    <figure
+      className="mx-auto w-full max-w-[380px] sm:max-w-[460px] lg:max-w-[520px]"
+      role="img"
+      aria-label="Illustration of five stacked, colour-coded creative concept cards: problem and solution, social proof, pattern interrupt, product demonstration and objection breaker"
+    >
       <style>{CSS}</style>
 
-      <div ref={stageRef} className="rm-stage w-full" data-active="true">
-       <div className="rm-scene relative w-full">
-        {/* Soft lime glow behind the cards */}
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute left-1/2 top-1/2 h-[70%] w-[80%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-lime/[0.09] blur-[70px]"
-        />
-
-        {CARDS.map((c, i) => (
+      <div ref={stageRef} className="rc-stage w-full">
+       <div className="rc-scene relative w-full">
+          {/* Soft glow behind the stack */}
           <div
-            key={c.id}
             aria-hidden="true"
-            className={`rm-pos ${c.dim ? 'rm-dim' : ''}`}
-            style={{
-              left: `${c.pos.left}%`,
-              top: `${c.pos.top}%`,
-              width: `${c.pos.w}%`,
-              zIndex: c.z,
-              '--dx': `${c.depth.dx}px`,
-              '--dy': `${c.depth.dy}px`,
-              '--dr': `${c.depth.dr}deg`,
-              '--r': `${c.rot}deg`,
-              animationDelay: `${0.08 * i}s`,
-            }}
-          >
-            <div
-              className={`rm-card rm-${c.kind}`}
-              style={{ '--fa': `${c.float.a}px`, '--fr': `${c.float.r}deg`, '--fd': `${c.float.d}s`, '--fdelay': `${c.float.delay}s` }}
-            >
-              <Card card={c} />
-            </div>
-          </div>
-        ))}
-       </div>
-      </div>
+            className="pointer-events-none absolute left-1/2 top-1/2 h-[70%] w-[80%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-lime/[0.07] blur-[70px]"
+          />
 
-      <figcaption className="mt-4 text-center text-xs text-ink-subtle">Illustrative concept ideas, not real ads.</figcaption>
+          {CARDS.map((c, i) => (
+            <div
+              key={c.n}
+              aria-hidden="true"
+              className="rc-card"
+              style={{
+                zIndex: i + 1,
+                '--i': i,
+                '--x0': c.x0, '--x1': c.x1,
+                '--r0': c.r0, '--r1': c.r1,
+                '--s0': (0.88 + i * 0.03).toFixed(2),
+                background: `linear-gradient(180deg, ${tint(c.color)} 0%, ${c.color} 38%)`,
+                color: c.ink,
+                '--chip': c.ink === '#ffffff' ? 'rgba(255,255,255,0.2)' : 'rgba(10,10,11,0.13)',
+              }}
+            >
+              <div className="rc-head">
+                <p className="rc-num">
+                  {c.n}
+                  <span>Concept</span>
+                </p>
+                <span className="rc-chip"><Icon name={c.icon} /></span>
+              </div>
+              <p className="rc-title">{c.title}</p>
+
+              {/* Lower part of the card: only the front card shows it in full. */}
+              <span className="rc-deco" />
+              {c.blurb && <p className="rc-blurb">{c.blurb}</p>}
+            </div>
+          ))}
+       </div>
+
+       <figcaption className="mt-4 text-center text-xs text-ink-subtle">Illustrative concept ideas, not real ads.</figcaption>
+      </div>
     </figure>
   )
 }
 
-function Card({ card }) {
-  if (card.kind === 'hook') {
-    return (
-      <>
-        <p className="rm-label"><i /> {card.label}</p>
-        <p className="rm-quote">{card.title}</p>
-      </>
-    )
-  }
-  if (card.kind === 'angle') {
-    return (
-      <>
-        <p className="rm-label"><i /> {card.label}</p>
-        <p className="rm-title">{card.title}</p>
-      </>
-    )
-  }
-  return (
-    <>
-      <p className="rm-label"><i /> {card.label}</p>
-      <p className="rm-title">{card.title}</p>
-      <span className="rm-line" style={{ width: '88%' }} />
-      <span className="rm-line" style={{ width: '62%' }} />
-      {card.kind === 'featured' && <span className="rm-line" style={{ width: '74%' }} />}
-      {card.tag && <span className="rm-tag">{card.tag}</span>}
-    </>
-  )
+/* lighten a hex colour a touch for the top edge of the card gradient */
+function tint(hex) {
+  const n = parseInt(hex.slice(1), 16)
+  const mix = (v) => Math.round(v + (255 - v) * 0.22)
+  return `rgb(${mix(n >> 16)}, ${mix((n >> 8) & 255)}, ${mix(n & 255)})`
 }
 
-/* Component-scoped CSS. Sizes are in em off the stage's own width (container
-   query units) so the whole arrangement scales cleanly from 320px to desktop. */
+function Icon({ name }) {
+  const common = { viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: 1.9, strokeLinecap: 'round', strokeLinejoin: 'round' }
+  switch (name) {
+    case 'split':
+      return (
+        <svg {...common}><rect x="3.5" y="5" width="17" height="14" rx="2.5" /><path d="M12 5v14" /><path d="M6.5 10l2 2-2 2" /><path d="M15.5 12.5l1.6 1.6 2.4-3" /></svg>
+      )
+    case 'star':
+      return <svg {...common}><path d="M12 3.8l2.4 5 5.4.7-4 3.7 1 5.4L12 16l-4.8 2.6 1-5.4-4-3.7 5.4-.7z" /></svg>
+    case 'bolt':
+      return <svg {...common}><path d="M13 3L5 13.5h6L10 21l8-10.5h-6z" /></svg>
+    case 'play':
+      return <svg {...common}><rect x="6" y="3.5" width="12" height="17" rx="2.6" /><path d="M10.5 9.2v5.6l4.2-2.8z" /></svg>
+    default:
+      return <svg {...common}><path d="M12 3.2l7 2.6v5.6c0 4.3-2.9 7.6-7 9.4-4.1-1.8-7-5.1-7-9.4V5.8z" /><path d="M8.8 12.2l2.3 2.3 4.1-4.5" /></svg>
+  }
+}
+
+/* Component-scoped CSS. Everything is sized in em off the scene's own width
+   (container-query units), so the arrangement scales cleanly from 320px up.
+   Scene width = 100 / 3.5 ≈ 28.57em. */
 const CSS = `
-.rm-stage {
-  --s: 0;
-  container-type: inline-size;     /* the scene below sizes itself from this box */
-}
-.rm-scene {
-  aspect-ratio: 1 / 1;
-  font-size: 11px;                 /* fallback where cqw is unsupported */
-  font-size: max(11px, 3.5cqw);    /* cqw resolves against .rm-stage (an ancestor) */
-}
-.rm-pos {
-  position: absolute;
-  /* scroll drift: translate + rotate derive from --s on the stage */
-  transform: translate3d(calc(var(--s) * var(--dx)), calc(var(--s) * var(--dy)), 0) rotate(calc(var(--r) + var(--s) * var(--dr)));
+.rc-stage {
+  --e: 1;                           /* separated by default: reduced motion / no JS */
+  --step: 4.9;                      /* vertical distance between cards when separated (em) */
+  --k: 48px;                        /* how far the stage drifts down while separating */
+  container-type: inline-size;
+  /* drift down a little while separating so it stays on screen as the page scrolls */
+  transform: translate3d(0, calc(var(--e) * var(--k)), 0);
   will-change: transform;
 }
-.rm-stage[data-entered='false'] .rm-pos { opacity: 0; }
-.rm-stage[data-entered='true'] .rm-pos { animation: rm-in 0.7s cubic-bezier(0.22, 1, 0.36, 1) both; }
-.rm-dim .rm-card { opacity: 0.66; }  /* on the inner card: the outer wrapper's entrance animation owns its opacity */
-
-.rm-card {
-  position: relative;
-  padding: 0.95em 1em 1em;
-  border-radius: 1.1em;
-  border: 1px solid #34343a;
-  background: linear-gradient(180deg, #1c1c20 0%, #131316 100%);
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.06), 0 1.6em 2.6em -1.2em rgba(0,0,0,0.75);
-  animation: rm-float var(--fd) ease-in-out var(--fdelay) infinite;
+@media (min-width: 640px) { .rc-stage { --k: 88px; } }
+.rc-scene {
+  font-size: 11px;                  /* fallback where cqw is unsupported */
+  font-size: max(11px, 3.5cqw);
+  /* top pad + card height + 4 steps + bottom pad: no layout shift, no excess space */
+  height: calc((1.4 + 11.4 + 4 * var(--step) + 1.2) * 1em);
 }
-.rm-featured {
-  border-color: rgba(213,255,64,0.45);
-  background: linear-gradient(180deg, #202026 0%, #141417 100%);
-  box-shadow: inset 0 1px 0 rgba(213,255,64,0.35), 0 0 0 1px rgba(213,255,64,0.08), 0 2em 3.2em -1.2em rgba(0,0,0,0.85), 0 0 3em -1em rgba(213,255,64,0.25);
+.rc-card {
+  position: absolute;
+  left: 5.08em;
+  top: 1.4em;
+  width: 18.4em;
+  height: 11.4em;
+  padding: 0.7em 1em;
+  border-radius: 1.15em;
+  overflow: hidden;
+  transform-origin: 50% 0;
+  /* position, turn and size each interpolate between the stacked (0) and separated (1) pose via --e */
+  transform:
+    translate3d(
+      calc((var(--x0) + (var(--x1) - var(--x0)) * var(--e)) * 1em),
+      calc(((var(--i) * 0.85) + ((var(--step) - 0.85) * 2) * (1 - var(--e)) + (var(--i) * (var(--step) - 0.85)) * var(--e)) * 1em),
+      0)
+    rotate(calc((var(--r0) + (var(--r1) - var(--r0)) * var(--e)) * 1deg))
+    scale(calc(var(--s0) + (1 - var(--s0)) * var(--e)));
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.45),
+    0 0.9em 1.8em -0.9em rgba(0,0,0,0.75),
+    0 0 0 1px rgba(0,0,0,0.12);
+  will-change: transform;
+  backface-visibility: hidden;
 }
-.rm-hook, .rm-angle { padding-top: 0.85em; padding-bottom: 0.9em; }
-
-.rm-label {
-  display: flex; align-items: center; gap: 0.5em;
-  font-size: 0.68em; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase;
-  color: #a1a1aa; white-space: nowrap;
+.rc-head { display: flex; align-items: center; justify-content: space-between; }
+.rc-num {
+  display: flex; align-items: baseline; gap: 0.55em;
+  font-size: 1.65em; font-weight: 800; line-height: 1; letter-spacing: -0.04em;
 }
-.rm-label i { width: 0.55em; height: 0.55em; border-radius: 9999px; background: #71717a; display: inline-block; }
-.rm-featured .rm-label, .rm-hook .rm-label, .rm-angle .rm-label { color: #d5ff40; }
-.rm-featured .rm-label i, .rm-hook .rm-label i, .rm-angle .rm-label i { background: #d5ff40; }
-
-.rm-title { margin-top: 0.55em; font-size: 1.12em; font-weight: 700; line-height: 1.15; letter-spacing: -0.02em; color: #fafafa; }
-.rm-quote { margin-top: 0.55em; font-size: 0.98em; font-weight: 600; line-height: 1.25; letter-spacing: -0.01em; color: #fafafa; }
-.rm-featured .rm-title { font-size: 1.35em; }
-
-.rm-line { display: block; height: 0.42em; margin-top: 0.62em; border-radius: 9999px; background: #2b2b31; }
-.rm-line:first-of-type { margin-top: 0.85em; }
-.rm-tag {
-  display: inline-block; margin-top: 0.85em; padding: 0.22em 0.7em; border-radius: 9999px;
-  font-size: 0.66em; font-weight: 600; letter-spacing: 0.06em; color: #d5ff40;
-  background: rgba(213,255,64,0.1); border: 1px solid rgba(213,255,64,0.25);
+.rc-num span {
+  font-size: 0.32em; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; opacity: 0.7;
 }
-
-@keyframes rm-in {
-  from { opacity: 0; translate: 0 1.4em; }
-  to   { opacity: 1; translate: 0 0; }
+.rc-chip {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 1.75em; height: 1.75em; border-radius: 9999px; background: var(--chip);
 }
-@keyframes rm-float {
-  0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg); }
-  50%      { transform: translate3d(0, calc(var(--fa) * -1), 0) rotate(var(--fr)); }
+.rc-chip svg { width: 1.05em; height: 1.05em; }
+.rc-title {
+  margin-top: 0.4em; font-size: 1.1em; font-weight: 700; line-height: 1.1; letter-spacing: -0.02em; white-space: nowrap;
 }
-
-/* Pause everything while the stage is off screen */
-.rm-stage[data-active='false'] .rm-card { animation-play-state: paused; }
-
-@media (prefers-reduced-motion: reduce) {
-  .rm-pos, .rm-card { animation: none; will-change: auto; }
+.rc-deco {
+  position: absolute; right: -2.4em; bottom: -2.6em; width: 9em; height: 9em; border-radius: 9999px;
+  border: 0.18em solid currentColor; opacity: 0.16;
+  box-shadow: 0 0 0 1.4em transparent, inset 0 0 0 1.6em transparent;
+}
+.rc-deco::after {
+  content: ''; position: absolute; inset: 1.7em; border-radius: 9999px; border: 0.18em solid currentColor;
+}
+.rc-blurb {
+  position: absolute; left: 1em; right: 6em; bottom: 0.9em;
+  font-size: 0.85em; font-weight: 600; line-height: 1.3; opacity: 0.78;
 }
 `

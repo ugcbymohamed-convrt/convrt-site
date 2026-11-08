@@ -283,6 +283,14 @@ function LimeMark() {
    Top sheets lift slightly and one drifts a short
    distance outward, then stays put. No cross-screen
    travel, nothing behind text.
+
+   Timing is tied to where the stack is ON SCREEN: it sits
+   still while it scrolls in, lifts as it travels up through
+   the lower-middle of the viewport, and has settled by the
+   time it is about a third of the way down the screen. (It
+   used to key off the stack reaching the top edge, which
+   meant the whole animation played after it had scrolled
+   out of sight.)
 ───────────────────────────────────────────── */
 function MobileScene({ reducedMotion }) {
   const sceneRef = useRef(null)
@@ -293,20 +301,20 @@ function MobileScene({ reducedMotion }) {
   const onTick = useCallback((p) => {
     const top = topRef.current
     if (top) {
-      const t = remap(p, 0.15, 0.4)
+      const t = remap(p, 0.1, 0.55)
       const te = easeOutBack(t)
       top.style.transform = `translate3d(${-8 * te}px, ${-16 * te}px, 0) rotateZ(${-4 - 6 * te}deg)`
     }
     const drift = driftRef.current
     if (drift) {
-      const t = remap(p, 0.3, 0.6)
+      const t = remap(p, 0.3, 0.9)
       const te = easeOutBack(t)
       drift.style.transform = `translate3d(${-34 * te}px, ${-40 * te}px, 0) rotateZ(${-2 + 16 * te}deg)`
-      drift.style.opacity = String(Math.min(1, te + (t > 0 ? 0.15 : 0)))
+      drift.style.opacity = String(Math.min(1, t * 3)) // fades in over the first third: no pop
     }
   }, [])
 
-  useScrollDriver(sceneRef, onTick, { disabled: reducedMotion, throughPx: 500 })
+  useScrollDriver(sceneRef, onTick, { disabled: reducedMotion, viewportRange: [0.9, 0.35] })
 
   useEffect(() => {
     if (reducedMotion) {
@@ -319,8 +327,8 @@ function MobileScene({ reducedMotion }) {
     <div
       ref={sceneRef}
       aria-hidden="true"
-      className="pointer-events-none relative mx-auto mt-3 md:hidden"
-      style={{ height: '120px', width: '160px' }}
+      className="pointer-events-none relative mx-auto mt-3 lg:hidden"
+      style={{ height: '150px', width: '160px' }}
     >
       {pileJitter.map((j, i) => (
         <div

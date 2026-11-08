@@ -1,4 +1,5 @@
 import { useRef, useEffect, useState, useCallback } from 'react'
+import { CONTACT_EMAIL } from '../config.js'
 
 /* ─────────────────────────────────────────────
    SECTION — FAQ
@@ -283,7 +284,7 @@ export default function FAQ() {
               </p>
             </div>
             <a
-              href="mailto:hello@convrt.studio"
+              href={`mailto:${CONTACT_EMAIL}`}
               className="flex-shrink-0 inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-semibold text-canvas cta-gradient whitespace-nowrap"
             >
               Get in touch

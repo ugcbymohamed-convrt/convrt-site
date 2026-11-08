@@ -1,4 +1,4 @@
-import { BOOKING_URL } from '../config.js'
+import { OFFER_PATHS } from '../config.js'
 
 export default function CreativeTestingNextStep({ service }) {
   const isPaid = service === 'paid'
@@ -36,9 +36,7 @@ export default function CreativeTestingNextStep({ service }) {
         </p>
 
         <a
-          href={BOOKING_URL}
-          target="_blank"
-          rel="noopener noreferrer"
+          href={OFFER_PATHS.roadmap}
           className="cta-gradient group inline-flex items-center gap-2 rounded-full px-8 py-4 text-sm font-semibold text-canvas"
         >
           Book a Creative Call

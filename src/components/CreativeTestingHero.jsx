@@ -1,4 +1,4 @@
-import { BOOKING_URL } from '../config.js'
+import { OFFER_PATHS } from '../config.js'
 
 const PROOF_STATS = [
   { value: '30M+', label: 'Views generated' },
@@ -36,9 +36,7 @@ export default function CreativeTestingHero() {
 
         <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
           <a
-            href={BOOKING_URL}
-            target="_blank"
-            rel="noopener noreferrer"
+            href={OFFER_PATHS.roadmap}
             className="cta-gradient group inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-full px-7 py-3.5 text-sm font-semibold text-canvas"
           >
             Discuss Your Sprint

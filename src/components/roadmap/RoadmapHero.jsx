@@ -2,8 +2,8 @@ import { ApplyButton } from './shared.jsx'
 import ConceptCardsVisual from './ConceptCardsVisual.jsx'
 
 /* ─────────────────────────────────────────────
-   HERO — the offer, one CTA, and an animated stage of floating concept
-   cards (see ConceptCardsVisual.jsx).
+   HERO — the offer, one CTA, and a stack of five colour-coded concept cards
+   that fans apart on scroll (see ConceptCardsVisual.jsx).
 ───────────────────────────────────────────── */
 
 export default function RoadmapHero() {

@@ -1,9 +1,9 @@
 import { useRef, useEffect, useState } from 'react'
-import { BOOKING_URL } from '../config.js'
+import { OFFER_PATHS } from '../config.js'
 
 /* ─────────────────────────────────────────────
    SECTION — MEET THE FOUNDER
-   Photo: /public/founder.webp (960×1280, metadata stripped)
+   Photo: /public/founder-family.webp (1080×1365, EXIF/GPS stripped)
    Place between HowItWorks and FinalCTA in App.jsx
 ───────────────────────────────────────────── */
 
@@ -117,17 +117,17 @@ export default function Founder() {
                 }}
               >
                   <img
-                    src="/founder.webp"
-                    alt="Mohamed — Founder of CONVRT"
-                    width="960"
-                    height="1280"
+                    src="/founder-family.webp"
+                    alt="Mohamed, founder of CONVRT, holding his daughter"
+                    width="1080"
+                    height="1365"
                     loading="lazy"
                     decoding="async"
                     className="block w-full"
                     style={{
                       aspectRatio: '3 / 4',
                       objectFit: 'cover',
-                      objectPosition: 'center 12%',
+                      objectPosition: '38% 30%',
                       display: 'block',
                     }}
                     draggable="false"
@@ -217,7 +217,7 @@ export default function Founder() {
             <FadeUp inView={inView} delay={1100}>
               <div className="flex flex-wrap items-center justify-center lg:justify-start gap-5 pt-2">
                 <a
-                  href={BOOKING_URL} target="_blank" rel="noopener noreferrer"
+                  href={OFFER_PATHS.roadmap}
                   className="cta-gradient inline-flex items-center gap-2 rounded-full px-7 py-3.5 text-sm font-semibold text-canvas"
                 >
                   Book a creative call

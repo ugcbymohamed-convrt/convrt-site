@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { BOOKING_URL } from '../../config.js'
+import { OFFER_PATHS } from '../../config.js'
 import FadeUp from '../caseStudies/shared/FadeUp.jsx'
 import ElyonHeroScene from './ElyonHeroScene.jsx'
 import { ACCENT, ACCENT_LIGHT } from './theme.js'
@@ -89,7 +89,7 @@ export default function ElyonHero() {
         <FadeUp inView={inView} delay={280}>
           <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
             <a
-              href={BOOKING_URL} target="_blank" rel="noopener noreferrer"
+              href={OFFER_PATHS.roadmap}
               className="inline-flex items-center gap-2 rounded-full px-7 py-3.5 text-sm font-semibold text-canvas transition-transform duration-150 active:scale-[0.98]"
               style={{ background: `linear-gradient(110deg, ${ACCENT_LIGHT} 0%, ${ACCENT} 60%, ${ACCENT_LIGHT} 100%)` }}
             >

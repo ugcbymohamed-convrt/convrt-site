@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { BOOKING_URL } from '../../config.js'
+import { OFFER_PATHS } from '../../config.js'
 import GraspoHeroScene from './GraspoHeroScene.jsx'
 
 /* ─────────────────────────────────────────────
@@ -86,7 +86,7 @@ export default function GraspoHero() {
         <FadeUp inView={inView} delay={260}>
           <div className="mt-9 flex flex-col sm:flex-row items-center justify-center gap-4">
             <a
-              href={BOOKING_URL} target="_blank" rel="noopener noreferrer"
+              href={OFFER_PATHS.roadmap}
               className="cta-gradient inline-flex items-center gap-2 rounded-full px-7 py-3.5 text-sm font-semibold text-canvas"
             >
               Book a Creative Call

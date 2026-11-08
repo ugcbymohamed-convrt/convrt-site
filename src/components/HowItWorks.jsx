@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { BOOKING_URL } from '../config.js'
+import { OFFER_PATHS } from '../config.js'
 
 /* ─────────────────────────────────────────────
    HOW IT WORKS — Scroll-driven vertical timeline
@@ -396,7 +396,7 @@ export default function HowItWorks() {
             </p>
           </div>
           <a
-            href={BOOKING_URL} target="_blank" rel="noopener noreferrer"
+            href={OFFER_PATHS.roadmap}
             className="cta-gradient shrink-0 inline-flex items-center gap-2 rounded-full px-7 py-3.5 text-sm font-semibold text-canvas"
           >
             Book a Discovery Call

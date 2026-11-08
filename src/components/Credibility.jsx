@@ -1,5 +1,5 @@
 import { useRef, useEffect, useState } from 'react'
-import { BOOKING_URL } from '../config.js'
+import { OFFER_PATHS } from '../config.js'
 
 /* Two rows of real client logos, rendered as uniform white silhouettes so
    they read cleanly against the dark canvas regardless of original color
@@ -115,7 +115,7 @@ export default function Credibility() {
           </h2>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
             <a
-              href={BOOKING_URL} target="_blank" rel="noopener noreferrer"
+              href={OFFER_PATHS.roadmap}
               className="cta-gradient inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-semibold text-canvas w-full sm:w-auto"
             >
               Become our next client
