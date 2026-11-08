@@ -44,7 +44,7 @@ export default function CaseStudies() {
   const active = CASES.find((c) => c.id === activeId)
 
   return (
-    <section id="showcase" className="relative overflow-hidden py-14 md:py-20">
+    <section id="showcase" tabIndex={-1} className="relative overflow-hidden py-14 md:py-20 scroll-mt-[72px] md:scroll-mt-24 focus:outline-none">
       {/* Ambient glow */}
       <div
         aria-hidden="true"

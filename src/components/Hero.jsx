@@ -2,7 +2,10 @@ import { useEffect, useRef, useState } from 'react'
 import { attachHls } from '../lib/hls.js'
 import { usePressFeedback } from '../lib/usePressFeedback.js'
 import { OFFER_PATHS } from '../config.js'
+import { scrollToElement } from '../lib/scroll.js'
 import { trackEvent } from '../lib/analytics.js'
+
+const ROTATING_WORDS = ['convert', 'resonate', 'sell', 'connect']
 
 /* Secondary offers — Level 2 in the hero's attention hierarchy. Each has its own
    accent (lime for the video offer, pink for the hooks library) so the
@@ -60,7 +63,7 @@ export default function Hero() {
             <h1 className="font-display font-semibold text-ink tracking-display-xl leading-[1.02] text-[48px] sm:text-[50px] md:text-[54px] lg:text-[60px] xl:text-[70px]">
               <span className="block">Performance creatives</span>
               <span className="block">
-                engineered to <HighlightWord>convert</HighlightWord>
+                engineered to <RotatingWord words={ROTATING_WORDS} />
               </span>
             </h1>
 
@@ -93,8 +96,18 @@ export default function Hero() {
                   </svg>
                 </a>
                 <a
-                  href="/case-studies"
-                  onClick={() => trackEvent('hero_see_our_work_click', { location: 'hero' })}
+                  href="#showcase"
+                  onClick={(e) => {
+                    trackEvent('hero_see_our_work_click', { location: 'hero' })
+                    // Plain left-click: scroll to the portfolio section below (fast ease-out, see lib/scroll.js).
+                    // Modified clicks (new tab, etc.) and a missing target keep normal link behaviour.
+                    if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return
+                    const target = document.getElementById('showcase')
+                    if (!target) return
+                    e.preventDefault()
+                    scrollToElement(target)
+                    target.focus({ preventScroll: true })
+                  }}
                   {...ghostPress}
                   className="hero-cta-ghost group inline-flex w-full sm:w-auto min-h-[48px] sm:min-h-[64px] md:min-h-[68px] items-center justify-center gap-2
                              rounded-full border border-hairline-strong bg-surface-2 px-6 md:px-7 lg:px-5 xl:px-7 py-3 sm:py-4 text-base md:text-[17px] font-semibold tracking-snug text-ink
@@ -180,19 +193,41 @@ function IconBolt() {
   )
 }
 
-/* ---------- Highlighted headline word ----------
-   Lime text with the brand underline. Same underline geometry the old rotating
-   word used, so the headline keeps its look and its line height. */
+/* ---------- Rotating headline word ---------- */
 
-function HighlightWord({ children }) {
+function RotatingWord({ words }) {
+  const [index, setIndex] = useState(0)
+
+  useEffect(() => {
+    // Reduced motion: keep the first word still instead of cycling.
+    if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return
+    const id = setInterval(() => {
+      setIndex((i) => (i + 1) % words.length)
+    }, 2200)
+    return () => clearInterval(id)
+  }, [words.length])
+
+  // Pick the longest word to set a stable container width — no layout shift.
+  const widest = words.reduce((a, b) => (a.length >= b.length ? a : b), '')
+
   return (
-    <span className="relative inline-block align-baseline pb-[0.12em]">
-      <span className="relative text-lime">
-        {children}
-        <span
-          aria-hidden="true"
-          className="absolute inset-x-0 -bottom-[0.04em] h-[0.08em] rounded-full bg-lime"
-        />
+    <span className="relative inline-block align-baseline overflow-hidden pb-[0.12em]">
+      {/* Invisible sizing element — reserves space for the widest word + underline padding */}
+      <span className="invisible whitespace-pre">{widest}</span>
+
+      {/* Animated word + underline, both bound to the current word so the
+          underline tracks the word's width and sits flush under it */}
+      <span
+        key={index}
+        className="animate-word-in absolute inset-0 flex items-baseline justify-center lg:justify-start"
+      >
+        <span className="relative text-lime">
+          {words[index]}
+          <span
+            aria-hidden="true"
+            className="absolute inset-x-0 -bottom-[0.04em] h-[0.08em] rounded-full bg-lime"
+          />
+        </span>
       </span>
     </span>
   )
@@ -206,15 +241,17 @@ function PhonesStage() {
       {/* Phones cluster — side phones tucked behind the center */}
       <div className="relative z-10 flex items-center justify-center">
         <PhoneStatic
-          src="/hero-side-1.webp"
-          alt="UGC spokesperson video sample 1"
+          src="/hero-side-beach.webp"
+          alt="Creator filming a UGC video on the beach"
+          position="35% center"
           tilt="-9deg"
           className="opacity-80 md:opacity-90 -mr-5 md:-mr-10 lg:-mr-14 translate-y-4"
         />
         <PhoneMockup />
         <PhoneStatic
-          src="/hero-side-2.webp"
-          alt="UGC spokesperson video sample 2"
+          src="/hero-side-gym.webp"
+          alt="Creator filming a UGC video in the gym"
+          position="60% center"
           tilt="9deg"
           className="opacity-80 md:opacity-90 -ml-5 md:-ml-10 lg:-ml-14 translate-y-4"
         />
@@ -276,7 +313,7 @@ function FloatingStat({ value, label, className = '' }) {
 
 /* ---------- Static side phone (image only, no controls) ---------- */
 
-function PhoneStatic({ src, alt, tilt = '0deg', className = '' }) {
+function PhoneStatic({ src, alt, position = 'center', tilt = '0deg', className = '' }) {
   return (
     <div
       style={{ transform: `rotate(${tilt})` }}
@@ -286,10 +323,11 @@ function PhoneStatic({ src, alt, tilt = '0deg', className = '' }) {
         <img
           src={src}
           alt={alt}
-          width="660"
-          height="1170"
+          width="540"
+          height="960"
           decoding="async"
           className="absolute inset-0 h-full w-full object-cover"
+          style={{ objectPosition: position }}
           draggable="false"
         />
 
