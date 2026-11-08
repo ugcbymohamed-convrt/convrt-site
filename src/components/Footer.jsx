@@ -42,7 +42,7 @@ export default function Footer() {
                 </a>
               </li>
               <li className="flex gap-3 pt-2">
-                <Social href="https://www.linkedin.com/company/convrtstudio/" label="LinkedIn">
+                <Social href="https://www.linkedin.com/in/mohameddoukkaliazizi/" label="LinkedIn">
                   <rect x="3" y="3" width="14" height="14" rx="2" stroke="currentColor" strokeWidth="1.4" fill="none" />
                   <path d="M6 8.5V14M6 6.5v.01M9 14v-3a2 2 0 014 0v3M9 14V8.5" stroke="currentColor" strokeWidth="1.4" fill="none" strokeLinecap="round" />
                 </Social>
