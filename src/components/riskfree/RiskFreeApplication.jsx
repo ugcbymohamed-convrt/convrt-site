@@ -132,7 +132,7 @@ export default function RiskFreeApplication() {
               <h2
                 id="apply-heading"
                 tabIndex={-1}
-                className="mt-5 font-display text-[1.9rem] font-bold leading-[1.06] tracking-display text-ink outline-none sm:text-4xl md:text-[2.75rem]"
+                className="mt-5 font-display text-[1.9rem] font-bold leading-[1.22] tracking-display text-ink outline-none sm:text-4xl sm:leading-[1.22] md:text-[2.75rem]"
               >
                 Apply for Your <span className="text-lime">FREE</span> Video.
               </h2>
