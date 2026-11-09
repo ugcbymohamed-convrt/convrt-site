@@ -15,9 +15,10 @@ const links = [
   { label: 'Contact', href: '#contact' },
 ]
 
-/* "Refer Us, Earn 10%": one link to the referral program. The 10% is the Agency & Strategic
-   Partner commission (Standard referrals earn $150); the destination page shows both rewards
-   side by side straight away. The whole label is a single link. */
+/* "Refer & Earn": one link to the referral program. The label names no figure on purpose:
+   Standard referrals earn $150 and Agency & Strategic partners 10% (capped at $500), and the
+   destination page shows both rewards side by side straight away. The whole label is a
+   single link. */
 function ReferralNavLink({ onClick, className = '', underline = false }) {
   return (
     <a
@@ -28,7 +29,7 @@ function ReferralNavLink({ onClick, className = '', underline = false }) {
       }}
       className={`group relative whitespace-nowrap rounded text-ink-muted transition-colors hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-lime ${className}`}
     >
-      Refer Us, Earn <span className="font-semibold text-lime">10%</span>
+      Refer &amp; <span className="font-semibold text-lime">Earn</span>
       {underline && (
         <span
           aria-hidden="true"

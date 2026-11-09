@@ -149,13 +149,13 @@ the tracker, not in analytics. Registrations are not revenue.
 Free video (`/risk-free-trial`), free hooks and Roadmap pages and their endpoints weren't touched. The shared
 `api/_lib/notify.js` and `subscribe.js` are used as they are on `main` (including the "alert on every genuine
 submission, `[NOT SAVED]` when MailerLite fails" behaviour). Homepage offers are unchanged. Site changes outside the page itself: the
-"Referral Program" footer link, the main-nav link **"Refer Us, Earn 10%"** (`src/components/Nav.jsx`; desktop and mobile
+"Referral Program" footer link, the main-nav link **"Refer & Earn"** (`src/components/Nav.jsx`; desktop and mobile
 menu, with slightly tighter link spacing at 1024–1279px so seven links fit), and an additive `compact` option and checkbox
 in `src/components/forms/fields.jsx`.
 
-**About the nav label.** The 10% is only the Agency & Strategic commission (capped at $500); standard referrals earn $150.
-The label is as requested, and the page shows both rewards side by side immediately, but a general visitor may read it
-as "everyone earns 10%". If you'd rather avoid that, safer alternatives are "Refer & Earn" or "Refer Us, Earn $150".
+**About the nav label.** "Refer & Earn" deliberately names no single figure: Standard referrals earn $150 and
+Agency & Strategic partners 10% (capped at $500), and the page shows both rewards side by side straight away. (The first
+version of the label, "Refer Us, Earn 10%", could be read as "everyone earns 10%", so it was replaced.)
 
 ## 9. ⚠ Needs your decision / legal review before public launch
 

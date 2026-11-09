@@ -614,10 +614,11 @@ test('the full program terms stay reachable: compact summary, accordion, and lin
   assert.ok(SRC.page.indexOf('<ReferralTerms />') < SRC.page.indexOf('<ReferralForm'))
 })
 
-test('the navigation has one "Refer Us, Earn 10%" link to /referrals (desktop and mobile), 10% in lime, with focus + hover states', () => {
+test('the navigation has one "Refer & Earn" link to /referrals (desktop and mobile), "Earn" in lime, naming no single reward, with focus + hover states', () => {
   const nav = read('src/components/Nav.jsx')
   assert.match(nav, /href=\{REFERRALS_PATH\}/)
-  assert.match(nav, /Refer Us, Earn <span className="font-semibold text-lime">10%<\/span>/)
+  assert.match(nav, /Refer &amp; <span className="font-semibold text-lime">Earn<\/span>/)
+  assert.ok(!/Refer Us, Earn/.test(nav), 'the 10%-only label (misleading for $150 standard referrals) is not used')
   assert.equal((nav.match(/<ReferralNavLink/g) || []).length, 2, 'desktop nav + mobile menu')
   assert.match(nav, /focus-visible:outline/)
   assert.match(nav, /group-hover:w-full/)
