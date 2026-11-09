@@ -34,7 +34,8 @@ export function Progress({ label, answered, total }) {
   )
 }
 
-export function RadioGroup({ name, legend, options, value, onChange, error, hint, columns = 2 }) {
+/* `compact` keeps two columns on phones (for long lists of short options). */
+export function RadioGroup({ name, legend, options, value, onChange, error, hint, columns = 2, compact = false }) {
   const uid = useId()
   const errId = `${uid}-error`
   const hintId = `${uid}-hint`
@@ -47,7 +48,7 @@ export function RadioGroup({ name, legend, options, value, onChange, error, hint
       className="min-w-0"
     >
       <legend className="mb-2 text-sm font-semibold text-ink">{legend}</legend>
-      <div className={`grid grid-cols-1 gap-2.5 ${cols}`}>
+      <div className={`grid ${compact ? 'grid-cols-2' : 'grid-cols-1'} gap-2.5 ${cols}`}>
         {options.map((opt, i) => (
           <label
             key={opt}
@@ -120,6 +121,47 @@ export function TextField({
         {...rest}
       />
       {hint && !error && <p id={hintId} className="mt-2 text-xs text-ink-subtle">{hint}</p>}
+      {error && <ErrorText id={errId}>{error}</ErrorText>}
+    </div>
+  )
+}
+
+/* Required-consent style checkbox. `children` is the label (it may contain a link).
+   `name` doubles as the data-field used to focus the first invalid field. */
+export function CheckboxField({ name, checked, onChange, error, disabled, children }) {
+  const uid = useId()
+  const errId = `${uid}-${name}-error`
+  return (
+    <div className="min-w-0">
+      <label
+        className={`flex cursor-pointer items-start gap-3 rounded-2xl border px-4 py-3.5 text-sm leading-relaxed text-ink-muted transition-colors
+          has-[:checked]:border-lime/60 has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-lime/70 motion-reduce:transition-none ${
+            error ? 'border-coral/60' : 'border-hairline-strong hover:border-ink-subtle/60'
+          }`}
+      >
+        <input
+          type="checkbox"
+          name={name}
+          data-field={name}
+          checked={checked}
+          disabled={disabled}
+          aria-required="true"
+          aria-invalid={error ? 'true' : undefined}
+          aria-describedby={error ? errId : undefined}
+          onChange={(e) => onChange(e.target.checked)}
+          className="peer sr-only"
+        />
+        <span
+          aria-hidden="true"
+          className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-md border border-ink-subtle text-transparent transition-colors
+            peer-checked:border-lime peer-checked:bg-lime peer-checked:text-canvas motion-reduce:transition-none"
+        >
+          <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none">
+            <path d="M3.5 8.5l3 3 6-7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </span>
+        <span>{children}</span>
+      </label>
       {error && <ErrorText id={errId}>{error}</ErrorText>}
     </div>
   )

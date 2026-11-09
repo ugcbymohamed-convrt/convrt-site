@@ -50,3 +50,12 @@ export const FREE_HOOKS_INDEXABLE = false
 // (docs/risk-free-application-setup.md) and a real test application has been
 // received. Then flip to `true`.
 export const RISK_FREE_INDEXABLE = false
+
+// ── Referral Partner Program (/referrals) ───────────────────────────────────
+export const REFERRALS_PATH = '/referrals'
+
+// Launch gate, same idea as the flags above: the page is served with
+// <meta name="robots" content="noindex"> until MailerLite is configured
+// (docs/referral-program-setup.md), the program terms have had their legal review and a
+// real test application has been received. Then flip to `true`.
+export const REFERRALS_INDEXABLE = false
