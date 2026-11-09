@@ -192,3 +192,85 @@ test('handler: valid same-origin request without server config answers 503', asy
     Object.assign(process.env, saved)
   }
 })
+
+/* ───────── owner alert (Resend) ───────── */
+import { RESEND_ENDPOINT, DEFAULT_NOTIFY_TO, DEFAULT_NOTIFY_FROM } from '../api/_lib/apply.js'
+
+// One fake fetch for both services: MailerLite then Resend, told apart by URL.
+const twoServiceFetch = ({ resendStatus = 200, resendThrows } = {}) => {
+  const calls = []
+  const fn = async (url, init) => {
+    const body = JSON.parse(init.body)
+    calls.push({ url, init, body })
+    if (url === RESEND_ENDPOINT) {
+      if (resendThrows) throw Object.assign(new Error('boom'), { name: resendThrows })
+      return { status: resendStatus, headers: { get: () => null }, json: async () => ({ id: 'x' }) }
+    }
+    return { status: 201, headers: { get: () => null }, json: async () => ({ data: { status: 'active' } }) }
+  }
+  fn.calls = calls
+  return fn
+}
+const resendCalls = (f) => f.calls.filter((c) => c.url === RESEND_ENDPOINT)
+
+test('owner alert: no RESEND_API_KEY → nothing is sent, application still succeeds', async () => {
+  const f = twoServiceFetch()
+  const r = await run(valid(), f)
+  assert.equal(r.status, 200)
+  assert.equal(resendCalls(f).length, 0)
+})
+
+test('owner alert: sends one email to mohamed@convrt.studio with every answer and Reply-To = applicant', async () => {
+  const f = twoServiceFetch()
+  const r = await run(valid({ brief: 'We sell candles' }), f, { ...ENV, RESEND_API_KEY: 're_test_123' })
+  assert.equal(r.status, 200)
+  const calls = resendCalls(f)
+  assert.equal(calls.length, 1)
+  const { init, body } = calls[0]
+  assert.equal(init.headers.Authorization, 'Bearer re_test_123')
+  assert.deepEqual(body.to, [DEFAULT_NOTIFY_TO])
+  assert.equal(DEFAULT_NOTIFY_TO, 'mohamed@convrt.studio')
+  assert.equal(body.from, DEFAULT_NOTIFY_FROM)
+  assert.equal(body.reply_to, 'jane@example.com')
+  assert.match(body.subject, /Jane Doe/)
+  for (const s of ['Jane Doe', 'jane@example.com', 'SaaS / Software', 'Not running paid ads yet', 'We sell candles']) {
+    assert.ok(body.text.includes(s), s)
+  }
+})
+
+test('owner alert: NOTIFY_EMAIL_TO / NOTIFY_EMAIL_FROM override the defaults', async () => {
+  const f = twoServiceFetch()
+  await run(valid(), f, { ...ENV, RESEND_API_KEY: 'k', NOTIFY_EMAIL_TO: 'team@convrt.studio', NOTIFY_EMAIL_FROM: 'CONVRT <apply@convrt.studio>' })
+  const { body } = resendCalls(f)[0]
+  assert.deepEqual(body.to, ['team@convrt.studio'])
+  assert.equal(body.from, 'CONVRT <apply@convrt.studio>')
+})
+
+test('owner alert: applicant text is HTML-escaped in the email body', async () => {
+  const f = twoServiceFetch()
+  await run(valid({ brief: '<script>alert(1)</script>' }), f, { ...ENV, RESEND_API_KEY: 'k' })
+  const { body } = resendCalls(f)[0]
+  assert.ok(!body.html.includes('<script>'))
+  assert.ok(body.html.includes('&lt;script&gt;'))
+})
+
+test('owner alert: Resend failing (error status or network) never fails the application', async () => {
+  for (const f of [twoServiceFetch({ resendStatus: 500 }), twoServiceFetch({ resendThrows: 'AbortError' })]) {
+    const r = await run(valid(), f, { ...ENV, RESEND_API_KEY: 'k' })
+    assert.equal(r.status, 200)
+    assert.deepEqual(r.body, { ok: true })
+  }
+})
+
+test('owner alert: not sent for honeypot bots, invalid applications or when MailerLite did not save', async () => {
+  const env = { ...ENV, RESEND_API_KEY: 'k' }
+  let f = twoServiceFetch()
+  await run(valid({ company: 'Bot Inc' }), f, env)
+  await run({ email: 'nope' }, f, env)
+  assert.equal(f.calls.length, 0)
+
+  f = fakeFetch(500, { message: 'down' })
+  const r = await run(valid(), f, env)
+  assert.equal(r.status, 502)
+  assert.equal(f.calls.filter((c) => c.url === RESEND_ENDPOINT).length, 0)
+})

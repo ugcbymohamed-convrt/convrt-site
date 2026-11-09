@@ -45,6 +45,28 @@ Redeploy afterwards. Until both exist the endpoint answers `503` and the form sh
 false "Application received!". Local dev: add the same variables to `.env.local`; `npm run dev` serves the real
 handler at `/api/risk-free-apply`.
 
+### Optional: instant email alert for every application
+
+Each saved application can also email `mohamed@convrt.studio` (name, email, website, every answer; **Reply** goes
+to the applicant). It uses [Resend](https://resend.com) and is off until the key exists.
+
+1. Create a free Resend account **with the email address that should receive the alerts**
+   (`mohamed@convrt.studio`), then Resend → API Keys → Create (sending access).
+2. Vercel → Environment Variables → add `RESEND_API_KEY` (Production), redeploy.
+3. That's all for the default sender (`onboarding@resend.dev`), which Resend only delivers to the account owner's own
+   address. To send from your own domain instead (or to several people): Resend → Domains → add `convrt.studio`
+   (add the DNS records it shows), then set `NOTIFY_EMAIL_FROM` (e.g. `CONVRT <apply@convrt.studio>`) and,
+   if needed, `NOTIFY_EMAIL_TO`.
+
+| Variable | Required | |
+|---|---|---|
+| `RESEND_API_KEY` | for alerts | Secret. Without it nothing is sent and nothing else changes |
+| `NOTIFY_EMAIL_TO` | no | Default `mohamed@convrt.studio` |
+| `NOTIFY_EMAIL_FROM` | no | Default `CONVRT Site <onboarding@resend.dev>` |
+
+The alert is best-effort: it is sent only after MailerLite saved the application, and if Resend fails the applicant
+still sees success (the failure is logged without personal data). MailerLite stays the source of truth.
+
 ## 3. Behaviour
 
 - **Repeat applications** from the same email update that contact's answers; no duplicate is created.
@@ -61,9 +83,10 @@ handler at `/api/risk-free-apply`.
 - [ ] Submit a real test application → contact appears in the group with every field filled
 - [ ] Submit the same email again → no error, answers updated
 - [ ] Confirm no automation emails the applicant
+- [ ] (If using alerts) test application → email arrives at mohamed@convrt.studio
 - [ ] Privacy policy published and `PRIVACY_POLICY_URL` set
 - [ ] Flip `RISK_FREE_INDEXABLE`
 
 ## 5. Tests
 
-`node --test tests/risk-free-apply.test.mjs` (fake MailerLite, no network).
+`node --test tests/risk-free-apply.test.mjs` (fake MailerLite and Resend, no network).
