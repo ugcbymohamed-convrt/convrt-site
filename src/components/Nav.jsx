@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import Logo from './Logo.jsx'
-import { BOOKING_URL, OFFER_PATHS } from '../config.js'
+import { BOOKING_URL, OFFER_PATHS, REFERRALS_PATH } from '../config.js'
 import { openBookingModal } from '../lib/bookingModal.js'
 import { trackEvent } from '../lib/analytics.js'
 import { scrollToApply } from '../lib/roadmapForm.js'
@@ -14,6 +14,30 @@ const links = [
   { label: 'Clients', href: '#clients' },
   { label: 'Contact', href: '#contact' },
 ]
+
+/* "Refer Us, Earn 10%": one link to the referral program. The 10% is the Agency & Strategic
+   Partner commission (Standard referrals earn $150); the destination page shows both rewards
+   side by side straight away. The whole label is a single link. */
+function ReferralNavLink({ onClick, className = '', underline = false }) {
+  return (
+    <a
+      href={REFERRALS_PATH}
+      onClick={() => {
+        trackEvent('referral_cta_click', { location: 'nav' })
+        onClick?.()
+      }}
+      className={`group relative whitespace-nowrap rounded text-ink-muted transition-colors hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-lime ${className}`}
+    >
+      Refer Us, Earn <span className="font-semibold text-lime">10%</span>
+      {underline && (
+        <span
+          aria-hidden="true"
+          className="absolute -bottom-1 left-0 h-px w-0 bg-lime transition-[width] duration-300 group-hover:w-full group-focus-visible:w-full motion-reduce:transition-none"
+        />
+      )}
+    </a>
+  )
+}
 
 export default function Nav() {
   const [scrolled, setScrolled] = useState(false)
@@ -59,16 +83,17 @@ export default function Nav() {
       <div className="mx-auto flex h-[72px] max-w-7xl items-center justify-between px-5 md:h-[96px] md:px-8">
         <Logo />
 
-        <nav className="hidden lg:flex items-center gap-8" aria-label="Primary">
+        <nav className="hidden lg:flex items-center gap-3.5 xl:gap-8" aria-label="Primary">
           {links.map((l) => (
             <a
               key={l.href}
               href={resolveHref(l.href)}
-              className="text-sm text-ink-muted hover:text-ink transition-colors"
+              className="whitespace-nowrap text-[13px] text-ink-muted transition-colors hover:text-ink xl:text-sm"
             >
               {l.label}
             </a>
           ))}
+          <ReferralNavLink underline className="text-[13px] xl:text-sm" />
         </nav>
 
         <div className="flex items-center gap-2">
@@ -76,7 +101,7 @@ export default function Nav() {
             href={ctaHref}
             onClick={handleCtaClick}
             {...pressDesktop}
-            className="nav-cta hidden md:inline-flex items-center gap-1.5 rounded-full bg-lime px-4 py-2.5 text-sm font-medium text-canvas"
+            className="nav-cta hidden md:inline-flex items-center gap-1.5 whitespace-nowrap rounded-full bg-lime px-4 py-2.5 text-sm font-medium text-canvas"
           >
             {ctaLabel}
             <ArrowUpRight className="h-3.5 w-3.5" />
@@ -116,6 +141,7 @@ export default function Nav() {
                 {l.label}
               </a>
             ))}
+            <ReferralNavLink onClick={() => setOpen(false)} className="block px-3 py-3 text-base hover:bg-surface-1" />
             <a
               href={ctaHref}
               onClick={handleCtaClick}

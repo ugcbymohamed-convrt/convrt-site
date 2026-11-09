@@ -13,6 +13,7 @@ import {
 } from '../../lib/referralProgram.js'
 import { submitReferral } from '../../lib/referralApply.js'
 import { Reveal, Check } from '../roadmap/shared.jsx'
+import { TermsLink } from './shared.jsx'
 import { CheckboxField, ErrorText, RadioGroup, TextField } from '../forms/fields.jsx'
 
 /* ─────────────────────────────────────────────
@@ -32,9 +33,9 @@ import { CheckboxField, ErrorText, RadioGroup, TextField } from '../forms/fields
 ───────────────────────────────────────────── */
 
 const NEXT_STEPS = [
-  'We receive your details and review your application by hand.',
-  'If approved, we email you the partner kit and confirm the final conditions with you.',
-  'Then you can introduce brands. We handle the conversation, and rewards follow the program terms.',
+  'We review your application.',
+  'If approved, you get the partner kit by email.',
+  'Then you can start introducing brands.',
 ]
 
 const SUBMIT_ERROR_COPY = {
@@ -152,7 +153,7 @@ export default function ReferralForm({ preselect }) {
                 Let’s Become <span className="text-lime">Partners.</span>
               </h2>
               <p className="mt-4 text-base leading-relaxed text-ink-muted md:text-lg">
-                Join the program and start introducing brands that could benefit from better video creatives.
+                Join the program and start introducing brands.
               </p>
 
               <div className="mt-8 hidden rounded-3xl border border-hairline bg-surface-1/60 p-6 lg:block">
@@ -189,7 +190,7 @@ export default function ReferralForm({ preselect }) {
                         />
                         <RadioGroup
                           name="program" legend="Program" options={PROGRAM_OPTIONS} columns={2}
-                          hint="Agency & Strategic Partner requires approval by CONVRT. See the reward cards above for the details of each."
+                          hint="Agency & Strategic Partner requires approval."
                           value={values.program} error={errors.program} onChange={set('program')}
                         />
                         <TextField
@@ -252,7 +253,10 @@ export default function ReferralForm({ preselect }) {
                           )}
                         </button>
                         <p className="mt-3 text-center text-sm text-ink-muted" role="status">
-                          {submitting ? 'Sending your application…' : 'Free to join. Approval isn’t guaranteed, and rewards depend on the program terms below.'}
+                          {submitting ? 'Sending your application…' : 'Free to join. Approval isn’t guaranteed.'}
+                        </p>
+                        <p className="text-center">
+                          <TermsLink>Read the full program terms</TermsLink>
                         </p>
                       </div>
                     </div>

@@ -24,10 +24,13 @@ export const KIT_SHORT_MESSAGE =
 
 /* What an approved partner receives. Order matches the page. */
 export const KIT_ITEMS = [
-  'A ready-to-send introduction message',
-  'A short LinkedIn or WhatsApp message',
-  'A clear explanation of the FREE Creative Upgrade',
-  'A selection of relevant CONVRT video examples',
-  'Simple instructions for submitting referrals',
-  'Clear qualification and reward conditions',
+  'Ready-to-send introduction message',
+  'Short LinkedIn / WhatsApp message',
+  'FREE Creative Upgrade explainer',
+  'Relevant CONVRT video examples',
+  'Simple referral instructions',
+  'Qualification and reward guide',
 ]
+
+/* The page previews only the opening of the email; the full text is in docs/partner-kit.md. */
+export const KIT_EMAIL_PREVIEW_PARAGRAPHS = 3

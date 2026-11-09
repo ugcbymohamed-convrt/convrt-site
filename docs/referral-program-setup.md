@@ -148,13 +148,18 @@ the tracker, not in analytics. Registrations are not revenue.
 
 Free video (`/risk-free-trial`), free hooks and Roadmap pages and their endpoints weren't touched. The shared
 `api/_lib/notify.js` and `subscribe.js` are used as they are on `main` (including the "alert on every genuine
-submission, `[NOT SAVED]` when MailerLite fails" behaviour). Homepage offers and navigation are unchanged; the only site
-change outside this feature is the "Referral Program" footer link and an additive `compact` option and checkbox in
-`src/components/forms/fields.jsx`.
+submission, `[NOT SAVED]` when MailerLite fails" behaviour). Homepage offers are unchanged. Site changes outside the page itself: the
+"Referral Program" footer link, the main-nav link **"Refer Us, Earn 10%"** (`src/components/Nav.jsx`; desktop and mobile
+menu, with slightly tighter link spacing at 1024–1279px so seven links fit), and an additive `compact` option and checkbox
+in `src/components/forms/fields.jsx`.
+
+**About the nav label.** The 10% is only the Agency & Strategic commission (capped at $500); standard referrals earn $150.
+The label is as requested, and the page shows both rewards side by side immediately, but a general visitor may read it
+as "everyone earns 10%". If you'd rather avoid that, safer alternatives are "Refer & Earn" or "Refer Us, Earn $150".
 
 ## 9. ⚠ Needs your decision / legal review before public launch
 
-The on-page **Terms & eligibility** block and FAQ are a plain-language summary, **not** a legal agreement. They
+The on-page **program terms** (a compact summary with the full list in an accordion, opened from every "full terms" link) and FAQ are a plain-language summary, **not** a legal agreement. They
 deliberately state no attribution window, payout deadline or minimum project size. Decide these before promoting the page:
 
 1. **Payout timing and method**, and whether a short **written partner agreement** is needed before anyone is paid.

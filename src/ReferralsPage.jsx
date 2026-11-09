@@ -17,7 +17,9 @@ import { REFERRALS_INDEXABLE, REFERRALS_PATH, SITE_URL } from './config.js'
    /referrals — Referral Partner Program.
 
    Page = hero · everyone wins (rewards + FREE Creative Upgrade) · how it works · why refer ·
-   partner kit preview · registration form · terms · FAQ (+ the site footer from App).
+   partner kit preview · program terms (compact, full terms in an accordion) · registration
+   form · FAQ (+ the site footer from App). Copy is deliberately short: conditions live in the
+   terms and the FAQ, not repeated in every section.
    Registrations go to api/referral-apply.js (MailerLite + owner email) for manual review;
    nothing is auto-approved and no payment is promised. Individual referrals are tracked
    manually. Setup: docs/referral-program-setup.md.
@@ -91,8 +93,8 @@ export default function ReferralsPage() {
       <SectionDivider />
       <ReferralKit />
       <SectionDivider />
-      <ReferralForm preselect={preselect} />
       <ReferralTerms />
+      <ReferralForm preselect={preselect} />
       <ReferralFAQ />
     </>
   )

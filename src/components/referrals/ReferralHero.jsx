@@ -3,25 +3,25 @@ import { scrollToApply } from '../../lib/roadmapForm.js'
 import { Arrow, ScrollCta, goToSection } from './shared.jsx'
 
 /* ─────────────────────────────────────────────
-   HERO — headline, supporting copy, two CTAs (form / explanation), one trust line and a
-   lightweight CSS + SVG journey: You introduce → CONVRT creates → You get rewarded, with a
-   secondary note that the referred brand gets the FREE Creative Upgrade.
+   HERO — one headline, one sentence, two CTAs, one trust line and a lightweight CSS + SVG
+   journey (You refer → We create → You earn) with a single bonus note for the referred brand.
+   Eligibility and conditions live in the rewards cards, the FAQ and the program terms.
 
    No statistics, testimonials or earnings are claimed here.
 ───────────────────────────────────────────── */
 
 const JOURNEY = [
   {
-    title: 'You introduce a brand',
-    note: 'A SaaS or e-commerce brand that could use better video ads.',
+    title: 'You refer',
+    note: 'Introduce a brand that needs better video ads.',
     tone: 'lime',
     icon: (
       <path d="M4 12h12m0 0-5-5m5 5-5 5M20 5v14" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
     ),
   },
   {
-    title: 'CONVRT creates the videos',
-    note: 'We review the fit and, when it makes sense, handle the creative and production conversation.',
+    title: 'We create',
+    note: 'We handle the creative and production.',
     tone: 'ink',
     icon: (
       <>
@@ -31,8 +31,8 @@ const JOURNEY = [
     ),
   },
   {
-    title: 'You get rewarded',
-    note: 'Receive your reward once the program conditions are met.',
+    title: 'You earn',
+    note: 'Get rewarded when your referral becomes a client.',
     tone: 'magenta',
     icon: (
       <>
@@ -74,15 +74,13 @@ export default function ReferralHero() {
 
             <h1
               id="referrals-h1"
-              className="mt-6 font-display font-bold text-ink tracking-display-xl leading-[1.08] text-[2.15rem] min-[400px]:text-[2.6rem] sm:text-[3.1rem] md:text-[3.6rem] lg:text-[3.05rem] xl:text-[3.6rem]"
+              className="mt-6 font-display font-bold text-ink tracking-display-xl leading-[1.08] text-[2.4rem] min-[400px]:text-[2.9rem] sm:text-[3.5rem] md:text-[4rem] lg:text-[3.4rem] xl:text-[4rem]"
             >
-              Know a Brand That Needs Better Video Ads?{' '}
-              <span className="text-lime">Let’s Make It a Win for Everyone.</span>
+              Know a Brand That Needs <span className="text-lime">Better Video Ads?</span>
             </h1>
 
             <p className="mt-6 max-w-xl text-base leading-relaxed text-ink-muted md:text-lg">
-              Introduce SaaS and e-commerce brands to CONVRT. Earn rewards when they become clients, and give them an
-              exclusive creative upgrade.
+              Introduce SaaS and e-commerce brands to CONVRT. Get rewarded when they become clients.
             </p>
 
             <div className="mt-8 flex flex-col items-stretch gap-3 sm:flex-row sm:items-center">
@@ -112,7 +110,7 @@ export default function ReferralHero() {
 
             <p className="mt-6 flex max-w-xl items-start gap-2.5 text-sm leading-relaxed text-ink-muted">
               <span className="mt-[7px] h-1.5 w-1.5 shrink-0 rounded-full bg-magenta" aria-hidden="true" />
-              <span>Simple introductions. No selling required. Rewards for successful referrals.</span>
+              <span>Simple introductions. No selling required.</span>
             </p>
           </div>
 
@@ -120,7 +118,7 @@ export default function ReferralHero() {
           <div className="min-w-0 lg:col-span-5">
             <div className="rounded-3xl border border-hairline-strong bg-surface-1 p-6 shadow-[0_40px_90px_-40px_rgba(0,0,0,0.8)] sm:p-8">
               <p className="text-xs font-semibold uppercase tracking-[0.16em] text-lime">The referral journey</p>
-              <ol className="mt-6" aria-label="The referral journey: you introduce a brand, CONVRT creates the videos, you get rewarded">
+              <ol className="mt-6" aria-label="The referral journey: you refer, we create, you earn">
                 {JOURNEY.map((step, i) => {
                   const last = i === JOURNEY.length - 1
                   return (
@@ -159,8 +157,8 @@ export default function ReferralHero() {
                   </svg>
                 </span>
                 <p className="text-sm leading-snug text-ink-muted">
-                  <span className="font-semibold text-ink">Your referral gets a FREE Creative Upgrade:</span> two extra
-                  ad variations on their first qualifying paid video project.
+                  <span className="font-semibold text-lime">PLUS:</span>{' '}
+                  <span className="font-semibold text-ink">Your referral gets 2 FREE ad variations.</span>
                 </p>
               </div>
             </div>

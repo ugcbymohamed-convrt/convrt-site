@@ -1,6 +1,6 @@
 import { trackEvent } from '../../lib/analytics.js'
 import { scrollToApply } from '../../lib/roadmapForm.js'
-import { KIT_EMAIL_PARAGRAPHS, KIT_EMAIL_SUBJECT, KIT_ITEMS, KIT_SHORT_MESSAGE } from '../../lib/partnerKit.js'
+import { KIT_EMAIL_PARAGRAPHS, KIT_EMAIL_PREVIEW_PARAGRAPHS, KIT_EMAIL_SUBJECT, KIT_ITEMS, KIT_SHORT_MESSAGE } from '../../lib/partnerKit.js'
 import { Check, Reveal, SectionHeader } from '../roadmap/shared.jsx'
 import { Arrow, ScrollCta } from './shared.jsx'
 
@@ -8,9 +8,8 @@ import { Arrow, ScrollCta } from './shared.jsx'
    WE MAKE REFERRING EASY — the partner kit, previewed.
 
    The kit is real (message text in src/lib/partnerKit.js and docs/partner-kit.md) and is sent
-   BY EMAIL, BY HAND, after a partner is approved. The page therefore says exactly that:
-   nothing to download before applying, nothing automatic, and no promise of a referral link,
-   dashboard or portal (none exist).
+   BY EMAIL, BY HAND, after a partner is approved. The page therefore says only that, and
+   previews just the opening of the email. No promise of a referral link, dashboard or portal.
 ───────────────────────────────────────────── */
 
 export default function ReferralKit() {
@@ -19,8 +18,7 @@ export default function ReferralKit() {
       <div className="mx-auto max-w-7xl px-5 md:px-8">
         <Reveal>
           <SectionHeader id="kit-heading" eyebrow="Refer in seconds" title="We Make Referring Easy.">
-            Approved partners receive a simple referral kit by email, so making an introduction takes a minute, not an
-            afternoon.
+            Approved partners get a ready-to-send referral kit.
           </SectionHeader>
         </Reveal>
 
@@ -42,10 +40,7 @@ export default function ReferralKit() {
               <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-hairline-strong text-ink-muted">
                 <Check className="h-3 w-3" />
               </span>
-              <span>
-                There’s nothing to download before you apply. After your application is approved, we send the kit by
-                email.
-              </span>
+              <span>Sent by email after approval. Nothing to download first.</span>
             </p>
             <div className="mt-8">
               <ScrollCta
@@ -79,9 +74,10 @@ export default function ReferralKit() {
                     <span className="font-semibold text-ink">Subject:</span> {KIT_EMAIL_SUBJECT}
                   </p>
                   <div className="mt-4 space-y-3 text-sm leading-relaxed text-ink-muted">
-                    {KIT_EMAIL_PARAGRAPHS.map((p) => (
+                    {KIT_EMAIL_PARAGRAPHS.slice(0, KIT_EMAIL_PREVIEW_PARAGRAPHS).map((p) => (
                       <p key={p}>{p}</p>
                     ))}
+                    <p aria-hidden="true">…</p>
                   </div>
                 </div>
               </div>

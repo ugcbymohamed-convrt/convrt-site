@@ -489,24 +489,28 @@ test('FAQ is an accessible accordion: button + aria-expanded + aria-controls + l
   assert.match(SRC.css, /prefers-reduced-motion[\s\S]*?\.ref-faq-panel/)
 })
 
-test('the FAQ has the ten required questions, with the specified key facts', () => {
+test('the FAQ is concise (eight questions) and keeps every key fact', () => {
   const qs = [...SRC.faq.matchAll(/q: '([^']+)'/g)].map((m) => m[1])
   assert.deepEqual(qs, [
-    'Who can join the referral program?',
+    'Who can join?',
     'How much do I earn?',
-    'What does the referred brand receive?',
+    'What does the referred brand get?',
     'When do I get paid?',
-    'Can I refer multiple brands?',
-    'Does the brand need to purchase a service?',
     'Can I become a strategic partner?',
     'What if the company already contacted CONVRT?',
     'Do I need to sell CONVRT’s services?',
     'Can I track my referrals?',
   ])
-  assert.match(SRC.faq, /\$150 for an eligible successful referral/)
-  assert.match(SRC.faq, /10% of the first qualifying project payment/)
-  assert.match(SRC.faq, /Two additional ready-to-test video ad variations/)
-  assert.match(SRC.faq, /self-service dashboard is not available at launch/)
+  const answers = [...SRC.faq.matchAll(/a: '([^']+)'/g)].map((m) => m[1])
+  assert.ok(answers.every((a) => a.length < 260), 'each answer stays short')
+  assert.match(SRC.faq, /\$150 per eligible new client, as cash or production credit/)
+  assert.match(SRC.faq, /10% of the first qualifying project payment, up to \$500 per referred client/)
+  assert.match(SRC.faq, /no limit on eligible referrals/i)
+  assert.match(SRC.faq, /Two extra ad variations on their first qualifying paid video project/)
+  assert.match(SRC.faq, /Introductions, sign-ups and calls alone don’t earn a reward/)
+  assert.match(SRC.faq, /first qualifying payment clears and stays non-refundable/)
+  assert.match(SRC.faq, /Previously active prospects may be excluded/)
+  assert.match(SRC.faq, /no self-service dashboard at launch/i)
 })
 
 test('the form prevents duplicate submits (synchronous ref guard + disabled button) and shows a loading state', () => {
@@ -557,32 +561,75 @@ test('press feedback and reduced motion: buttons give visible feedback and anima
 })
 
 test('copy: headline, offer figures and the Creative Upgrade match the brief', () => {
-  assert.match(SRC.hero, /Know a Brand That Needs Better Video Ads\?/)
-  assert.match(SRC.hero, /Let’s Make It a Win for Everyone\./)
-  assert.match(SRC.hero, /Simple introductions\. No selling required\. Rewards for successful referrals\./)
+  assert.match(SRC.hero, /Know a Brand That Needs <span className="text-lime">Better Video Ads\?<\/span>/)
+  assert.match(SRC.hero, /Introduce SaaS and e-commerce brands to CONVRT\. Get rewarded when they become clients\./)
+  assert.match(SRC.hero, /Simple introductions\. No selling required\./)
+  for (const t of ['You refer', 'We create', 'You earn']) assert.ok(SRC.hero.includes(`title: '${t}'`), t)
+  assert.match(SRC.hero, /Your referral gets 2 FREE ad variations\./)
+  assert.match(SRC.hero, /Become a Referral Partner/)
+  assert.match(SRC.hero, /See How It Works/)
   assert.match(SRC.rewards, /One Introduction\. Two Winners\./)
   assert.match(SRC.rewards, /amount: '\$150'/)
   assert.match(SRC.rewards, /amount: '10%'/)
-  assert.match(SRC.rewards, /cap: 'up to \$500'/)
+  assert.match(SRC.rewards, /Earn \$150 cash or production credit for every successful referral\./)
+  assert.match(SRC.rewards, /Earn 10% of the first qualifying project when you refer a client to CONVRT\./)
   assert.match(SRC.rewards, /Start Referring/)
-  assert.match(SRC.rewards, /Become an Agency Partner/)
+  assert.match(SRC.rewards, /cta: 'Become a Partner'/)
   assert.match(SRC.rewards, /FREE Creative Upgrade/)
-  assert.match(SRC.rewards, /Two additional ready-to-test video ad variations on their first qualifying paid project\./)
-  assert.match(SRC.rewards, /Not a new production: no extra filming, creator sourcing or shoot days/)
-  assert.match(SRC.rewards, /Not exchangeable for cash/)
+  assert.match(SRC.rewards, /2 Extra Ad Variations\. On Us\./)
+  assert.match(SRC.rewards, /we’ll create two additional ad\s+variations at no extra cost\./)
+  assert.match(SRC.rewards, /Made from existing project footage and assets\. No additional filming required\./)
+  assert.match(SRC.how, /Three Steps\. That’s It\./)
+  assert.match(SRC.how, /Know a brand that needs better video ads\? Connect them with CONVRT\./)
+  assert.match(SRC.how, /You get rewarded\. Your referral gets a FREE Creative Upgrade\./)
+  assert.match(SRC.terms, /Simple, Transparent Rewards\./)
+  assert.match(SRC.terms, /Read Full Program Terms/)
   assert.match(SRC.kit, /We Make Referring Easy\./)
-  assert.match(SRC.how, /Three Steps\. One Valuable Introduction\./)
   assert.match(SRC.page, /CONVRT Referral Partner Program \| Earn Rewards for Introductions/)
   assert.match(SRC.page, /Refer SaaS and e-commerce brands to CONVRT, earn rewards for successful introductions, and give your connections an exclusive creative upgrade\./)
   assert.match(SRC.page, /\$\{SITE_URL\}\$\{REFERRALS_PATH\}/)
 })
 
+test('the agency card shows "Earn 10%" with the $500 cap explained on the line below, and no "maximum" wording', () => {
+  assert.match(SRC.rewards, /note: 'Up to \$500 per client\. For example, a \$5,000 first payment earns \$500\.'/)
+  assert.ok(!/the maximum/i.test(SRC.rewards))
+  assert.ok(!/cap: 'up to/.test(SRC.rewards), 'the cap is no longer shown beside the 10%')
+})
+
+test('the page is much shorter: the long upgrade checklist and repeated disclaimers are gone', () => {
+  assert.ok(!/UPGRADE_POINTS|Variations already included|doesn’t automatically stack|Not a new production/.test(SRC.rewards))
+  assert.ok(!/Not every introduction qualifies/.test(SRC.how))
+  assert.ok(!/Edit-based variations made from/.test(SRC.rewards))
+})
+
+test('the full program terms stay reachable: compact summary, accordion, and links from the rewards, form and FAQ flow', () => {
+  assert.match(SRC.terms, /aria-expanded=\{open\}/)
+  assert.match(SRC.terms, /aria-controls=\{panelId\}/)
+  assert.match(SRC.terms, /role="region"/)
+  assert.match(SRC.terms, /TERMS_OPEN_EVENT/)
+  assert.match(SRC.rewards, /<TermsLink>/)
+  assert.match(SRC.form, /<TermsLink>/)
+  assert.match(read('src/components/referrals/shared.jsx'), /export function openTerms\(\)[\s\S]*goToSection\('terms'\)/)
+  // the terms section sits before the form, so it is read before anyone applies
+  assert.ok(SRC.page.indexOf('<ReferralTerms />') < SRC.page.indexOf('<ReferralForm'))
+})
+
+test('the navigation has one "Refer Us, Earn 10%" link to /referrals (desktop and mobile), 10% in lime, with focus + hover states', () => {
+  const nav = read('src/components/Nav.jsx')
+  assert.match(nav, /href=\{REFERRALS_PATH\}/)
+  assert.match(nav, /Refer Us, Earn <span className="font-semibold text-lime">10%<\/span>/)
+  assert.equal((nav.match(/<ReferralNavLink/g) || []).length, 2, 'desktop nav + mobile menu')
+  assert.match(nav, /focus-visible:outline/)
+  assert.match(nav, /group-hover:w-full/)
+  assert.match(nav, /motion-reduce:transition-none/)
+  assert.match(nav, /nav-cta/) // the primary CTA is still there
+  assert.match(read('src/config.js'), /REFERRALS_PATH = '\/referrals'/)
+})
+
 test('the agency commission cap ($500 per referred client) is stated consistently everywhere it is promised', () => {
-  assert.match(SRC.rewards, /earn 10% of their first qualifying project payment, up to \$500\./)
-  assert.match(SRC.rewards, /a \$5,000 first payment earns \$500, the maximum/)
-  assert.match(SRC.rewards, /Capped at \$500 per referred client/)
+  assert.match(SRC.rewards, /Up to \$500 per client/)
   assert.match(SRC.terms, /capped at \$500 per referred client/)
-  assert.match(SRC.faq, /up to a maximum of \$500 per referred client/)
+  assert.match(SRC.faq, /up to \$500 per referred client/)
   assert.match(read('docs/partner-kit.md'), /up to \$500 per referred client/)
   assert.match(read('docs/referral-program-setup.md'), /capped at \$500/)
   // the Standard reward is unchanged and no other cap / tier appears
@@ -612,6 +659,8 @@ test('terms cover every required condition and invent no attribution window or p
     /bulk outreach/i, /One reward structure per qualifying referral/i, /first qualifying payment clears/i, /taxes, refunds/i,
     /Refunded or cancelled/i, /Production credit/i, /FREE Creative Upgrade/i, /disclose their financial incentive/i,
     /change or end the program going forward/i, /not removed retroactively/i,
+    /doesn’t automatically combine with the free production trial/i, /not exchangeable for cash/i, /Free Creative Growth Roadmap/i,
+    /Prospects who were already active/i, /No self-referrals/i,
   ]
   for (const re of required) assert.match(SRC.terms, re)
   assert.ok(!/\d+\s*(days|weeks|months)/i.test(SRC.terms.replace(/\/\*[\s\S]*?\*\//g, '')))
@@ -647,7 +696,7 @@ test('both kit templates include a short financial-referral disclosure', () => {
 test('the kit never claims a referral link, portal or automatic delivery', () => {
   const copy = (SRC.kit + readFileSync(join(ROOT, 'src/lib/partnerKit.js'), 'utf8')).replace(/\/\*[\s\S]*?\*\//g, '')
   assert.ok(!/referral (link|code)|dashboard|portal|instantly|automatically/i.test(copy))
-  assert.match(SRC.kit, /nothing to download before you apply|There’s nothing to download before you apply/)
+  assert.match(SRC.kit, /Nothing to download first/)
 })
 
 test('the manual referral tracker has every required column and the nine statuses are documented', () => {

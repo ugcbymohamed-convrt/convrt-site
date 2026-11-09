@@ -6,18 +6,9 @@ import { Reveal, SectionHeader } from '../roadmap/shared.jsx'
 ───────────────────────────────────────────── */
 
 const STEPS = [
-  {
-    title: 'Make the Introduction',
-    text: 'Know a brand that could benefit from better video ads? Introduce them to CONVRT or share your referral invitation.',
-  },
-  {
-    title: 'We Take It From There',
-    text: 'We review the opportunity, connect with the brand when appropriate, and handle the creative and production conversation.',
-  },
-  {
-    title: 'Everyone Wins',
-    text: 'When your referral becomes an eligible paying client, you receive your reward and they receive their FREE Creative Upgrade.',
-  },
+  { title: 'Make the Introduction', text: 'Know a brand that needs better video ads? Connect them with CONVRT.' },
+  { title: 'We Take It From There', text: 'We handle the conversation, creative strategy, and production.' },
+  { title: 'Everyone Wins', text: 'You get rewarded. Your referral gets a FREE Creative Upgrade.' },
 ]
 
 export default function ReferralHowItWorks() {
@@ -30,9 +21,7 @@ export default function ReferralHowItWorks() {
     >
       <div className="mx-auto max-w-7xl px-5 md:px-8">
         <Reveal>
-          <SectionHeader id="how-heading" eyebrow="How it works" title="Three Steps. One Valuable Introduction.">
-            Simple for you, and most of the work is ours.
-          </SectionHeader>
+          <SectionHeader id="how-heading" eyebrow="How it works" title="Three Steps. That’s It." />
         </Reveal>
 
         <ol className="mt-14 grid grid-cols-1 gap-0 md:grid-cols-3 md:gap-8">
@@ -73,11 +62,6 @@ export default function ReferralHowItWorks() {
           })}
         </ol>
 
-        <Reveal delay={200}>
-          <p className="mx-auto mt-12 max-w-2xl text-center text-sm leading-relaxed text-ink-muted">
-            Not every introduction qualifies or becomes a client, and that’s fine. Rewards and the Creative Upgrade apply only to eligible referrals confirmed by CONVRT.
-          </p>
-        </Reveal>
       </div>
     </section>
   )

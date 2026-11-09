@@ -3,8 +3,8 @@ import { Reveal, SectionHeader } from '../roadmap/shared.jsx'
 /* ─────────────────────────────────────────────
    WHY REFER CONVRT — lowers the reputational risk of recommending us.
 
-   Reassurance without bragging: what CONVRT actually makes (the same services described on
-   the homepage and in the brief) plus two REAL portfolio frames from the homepage showcase,
+   Reassurance without bragging: what CONVRT actually makes, as short labels (the same services
+   described on the homepage) plus two REAL portfolio frames from the homepage showcase,
    lazy-loaded with explicit dimensions (no layout shift) and linking to the real case
    studies page. No testimonials, results or statistics are shown: none have been confirmed
    for use on this page, so they are intentionally omitted.
@@ -13,27 +13,22 @@ import { Reveal, SectionHeader } from '../roadmap/shared.jsx'
 const CAPABILITIES = [
   {
     title: 'Human-led UGC & spokesperson videos',
-    text: 'Real creators and on-camera spokespeople, built for paid social.',
     icon: <path d="M12 12a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Zm-7 8c.6-3.4 3.4-5.5 7-5.5s6.4 2.1 7 5.5" />,
   },
   {
     title: 'Multilingual video production',
-    text: 'Creative that speaks to audiences in more than one language.',
     icon: <path d="M3.5 12h17M12 3.5c2.4 2.4 3.6 5.2 3.6 8.5s-1.2 6.1-3.6 8.5c-2.4-2.4-3.6-5.2-3.6-8.5S9.6 5.9 12 3.5ZM12 3.5a8.5 8.5 0 1 0 0 17 8.5 8.5 0 0 0 0-17Z" />,
   },
   {
     title: 'SaaS explainers & product demos',
-    text: 'Clear walkthroughs that show what a product does and why it matters.',
     icon: <path d="M4 5.5h16v10H4v-10ZM9 19h6M12 15.5V19M10.5 8.8v3.4l3-1.7-3-1.7Z" />,
   },
   {
     title: 'Performance-focused creative strategy',
-    text: 'Hooks, angles and scripts planned around what is worth testing.',
     icon: <path d="M4 19V5M4 19h16M8 15l3.5-4 3 2.5L19 8" />,
   },
   {
-    title: 'Video for paid ads & social channels',
-    text: 'Formats made for the placements where the brand actually advertises.',
+    title: 'Video for paid ads & social',
     icon: <path d="M7 3.5h10a1.5 1.5 0 0 1 1.5 1.5v14a1.5 1.5 0 0 1-1.5 1.5H7A1.5 1.5 0 0 1 5.5 19V5A1.5 1.5 0 0 1 7 3.5ZM10.5 9.5v5l4-2.5-4-2.5Z" />,
   },
 ]
@@ -49,7 +44,7 @@ export default function ReferralWhyRefer() {
       <div className="mx-auto max-w-7xl px-5 md:px-8">
         <Reveal>
           <SectionHeader id="why-heading" eyebrow="Why refer CONVRT" title="A Creative Partner You’ll Feel Good Recommending.">
-            Your reputation matters. We make sure the brands you introduce receive a professional, thoughtful experience.
+            Your reputation matters. Your referrals get a professional experience.
           </SectionHeader>
         </Reveal>
 
@@ -58,7 +53,7 @@ export default function ReferralWhyRefer() {
             {CAPABILITIES.map((c, i) => (
               <li key={c.title} className={i === CAPABILITIES.length - 1 ? 'sm:col-span-2' : ''}>
                 <Reveal delay={i * 60} className="h-full">
-                  <div className="ref-card flex h-full items-start gap-4 rounded-2xl border border-hairline bg-surface-1 p-5 hover:border-lime/40">
+                  <div className="ref-card flex h-full items-center gap-4 rounded-2xl border border-hairline bg-surface-1 p-5 hover:border-lime/40">
                     <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-lime/40 bg-lime/10 text-lime">
                       <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                         {c.icon}
@@ -66,8 +61,7 @@ export default function ReferralWhyRefer() {
                     </span>
                     <div className="min-w-0">
                       <h3 className="font-display text-base font-bold leading-snug tracking-snug text-ink">{c.title}</h3>
-                      <p className="mt-1.5 text-sm leading-snug text-ink-muted">{c.text}</p>
-                    </div>
+                                          </div>
                   </div>
                 </Reveal>
               </li>

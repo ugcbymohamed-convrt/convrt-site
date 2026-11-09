@@ -14,44 +14,36 @@ import { Reveal, SectionHeader } from '../roadmap/shared.jsx'
 
 export const FAQS = [
   {
-    q: 'Who can join the referral program?',
-    a: 'Existing clients, founders, creators, consultants, agencies, and relevant professionals can apply. Participation is subject to approval and eligibility.',
+    q: 'Who can join?',
+    a: 'Clients, founders, creators, consultants, agencies and other professionals. CONVRT reviews and approves every application.',
   },
   {
     q: 'How much do I earn?',
-    a: 'Standard partners earn $150 for an eligible successful referral, as cash or as production credit. Approved agencies earn 10% of the first qualifying project payment, up to a maximum of $500 per referred client.',
+    a: 'Standard partners earn $150 per eligible new client, as cash or production credit. Approved agencies earn 10% of the first qualifying project payment, up to $500 per referred client. There’s no limit on eligible referrals.',
   },
   {
-    q: 'What does the referred brand receive?',
-    a: 'Two additional ready-to-test video ad variations on its first qualifying paid video project. They are edit-based variations of the approved project assets, in addition to the package’s standard deliverables, and can’t be exchanged for cash.',
+    q: 'What does the referred brand get?',
+    a: 'Two extra ad variations on their first qualifying paid video project. They’re edits of the approved project assets, not a new production, and can’t be exchanged for cash.',
   },
   {
     q: 'When do I get paid?',
-    a: 'After the referred client completes its first qualifying payment, the payment clears and remains non-refundable, and CONVRT confirms eligibility. Payment method and payout timing are agreed with the partner.',
-  },
-  {
-    q: 'Can I refer multiple brands?',
-    a: 'Yes. Each eligible new client can generate a separate reward.',
-  },
-  {
-    q: 'Does the brand need to purchase a service?',
-    a: 'Yes. Registration, introductions, and free consultations alone do not trigger rewards.',
+    a: 'After the client’s first qualifying payment clears and stays non-refundable, and CONVRT confirms eligibility. Introductions, sign-ups and calls alone don’t earn a reward. Payment method and timing are agreed with you.',
   },
   {
     q: 'Can I become a strategic partner?',
-    a: 'Yes. Agencies and consultants may apply for the strategic partnership program. It requires approval by CONVRT before participation.',
+    a: 'Yes. Agencies and consultants can apply. Strategic partners need CONVRT’s approval first.',
   },
   {
     q: 'What if the company already contacted CONVRT?',
-    a: 'Previously active prospects may be excluded. CONVRT must confirm referral attribution.',
+    a: 'Previously active prospects may be excluded. CONVRT confirms attribution.',
   },
   {
     q: 'Do I need to sell CONVRT’s services?',
-    a: 'No. Make the introduction and CONVRT handles the conversation.',
+    a: 'No. Make the introduction and we handle the conversation.',
   },
   {
     q: 'Can I track my referrals?',
-    a: 'Partners can request a status update from CONVRT. A self-service dashboard is not available at launch.',
+    a: 'Ask CONVRT for a status update any time. There’s no self-service dashboard at launch.',
   },
 ]
 
@@ -104,7 +96,7 @@ export default function ReferralFAQ() {
     <section id="faq" aria-labelledby="faq-heading" className="relative scroll-mt-20 pb-20 md:scroll-mt-24 md:pb-28">
       <div className="mx-auto max-w-3xl px-5 md:px-8">
         <Reveal>
-          <SectionHeader id="faq-heading" eyebrow="FAQ" title="Referral program questions." />
+          <SectionHeader id="faq-heading" eyebrow="FAQ" title="Quick answers." />
         </Reveal>
         <Reveal delay={80}>
           <div className="mt-10 border-t border-hairline">

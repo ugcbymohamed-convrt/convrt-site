@@ -50,3 +50,28 @@ export function goToSection(id) {
   scrollToElement(el)
   el.focus({ preventScroll: true })
 }
+
+/* Opens the full program terms (an accordion in ReferralTerms.jsx) and scrolls to them.
+   Used by every "full terms" link on the page, so the terms stay one click away from the
+   rewards, the form and the FAQ. */
+export const TERMS_OPEN_EVENT = 'referral-terms-open'
+export function openTerms() {
+  window.dispatchEvent(new Event(TERMS_OPEN_EVENT))
+  goToSection('terms')
+}
+
+/* Inline-looking text link with a 44px touch target. */
+export function TermsLink({ children = 'Read full program terms', className = '' }) {
+  return (
+    <a
+      href="#terms"
+      onClick={(e) => {
+        e.preventDefault()
+        openTerms()
+      }}
+      className={`inline-flex min-h-[44px] items-center font-medium text-ink-muted underline underline-offset-2 transition-colors hover:text-lime focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-lime ${className}`}
+    >
+      {children}
+    </a>
+  )
+}
