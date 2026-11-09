@@ -12,10 +12,10 @@ const STEPS = [
     number: '01',
     phase: 'Phase One',
     label: 'Discovery',
-    title: 'Discovery Call',
+    title: '20-Minute Strategy Call',
     description: 'Strategy, brainstorming, positioning, and understanding your goals.',
     detail: 'We dig into your brand, audience, offer, and current performance — building a clear creative direction before a single frame is planned.',
-    time: '15–30 min',
+    time: '20 min',
     accent: '#8b5cf6',
     accentSoft: 'rgba(139,92,246,0.16)',
     accentGlow: 'rgba(139,92,246,0.22)',
@@ -392,14 +392,14 @@ export default function HowItWorks() {
               Ready to start?
             </p>
             <p className="mt-1.5 text-sm text-ink-muted">
-              Book a free discovery call and we'll build a creative plan tailored to your brand.
+              Book a free 20-minute strategy call and we'll build a creative plan tailored to your brand.
             </p>
           </div>
           <a
             href={OFFER_PATHS.roadmap}
             className="cta-gradient shrink-0 inline-flex items-center gap-2 rounded-full px-7 py-3.5 text-sm font-semibold text-canvas"
           >
-            Book a Discovery Call
+            Book a Strategy Call
             <svg viewBox="0 0 12 12" className="h-3.5 w-3.5" fill="none">
               <path d="M3 9L9 3M9 3H4M9 3V8" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
             </svg>

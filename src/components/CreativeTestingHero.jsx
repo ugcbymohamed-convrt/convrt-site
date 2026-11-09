@@ -1,9 +1,10 @@
 import { OFFER_PATHS } from '../config.js'
+import { CONVRT_STATS } from '../lib/siteStats.js'
 
 const PROOF_STATS = [
-  { value: '30M+', label: 'Views generated' },
-  { value: '1,000+', label: 'Videos produced' },
-  { value: '400+', label: 'Clients served' },
+  { value: CONVRT_STATS.views, label: 'Views generated' },
+  { value: CONVRT_STATS.videos, label: 'Videos produced' },
+  { value: CONVRT_STATS.clients, label: 'Clients served' },
   { value: '4', label: 'Languages available' },
 ]
 

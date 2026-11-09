@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
 import { attachHls } from '../lib/hls.js'
 import { OFFER_PATHS } from '../config.js'
+import { GRASPO_FOLLOWING } from '../lib/siteStats.js'
 
 /* ─────────────────────────────────────────────
    SECTION 3 — CASE STUDIES / CREATIVE SHOWCASE
@@ -36,7 +37,7 @@ const CASES = [
     tab: 'Printing',
     logo: { src: '/clients/graspo.png', alt: 'Graspo', w: 619, h: 279, height: 62 },
     title: '6 million views.\nIn less than 2 months.',
-    body: "We have generated over 6 million views for Graspo in less than 2 months. And yes, it took 6 months of content testing beforehand to figure out what really clicks and what doesn't. Today, Graspo has over 10k followers on Facebook and almost 4k on Instagram.",
+    body: `We have generated over 6 million views for Graspo in less than 2 months. And yes, it took 6 months of content testing beforehand to figure out what really clicks and what doesn't. Today, Graspo has ${GRASPO_FOLLOWING.combined} followers: ${GRASPO_FOLLOWING.facebook} on Facebook, ${GRASPO_FOLLOWING.instagram} on Instagram and ${GRASPO_FOLLOWING.tiktok} on TikTok.`,
     videos: ['15dd5505109f6821ccdcb13fc3cdc1fd', '3616606e3ca6d1a85c8a57d7cc2f656f', 'c1379ace38f2fa19ef2a45de1bb5d4b1'],
     accentColor: '#10b981',
   },

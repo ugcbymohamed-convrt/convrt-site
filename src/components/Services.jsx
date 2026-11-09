@@ -270,7 +270,7 @@ export default function Services() {
         >
           <div>
             <p className="font-display font-semibold text-ink text-xl leading-tight">Not sure which service fits?</p>
-            <p className="mt-1.5 text-sm text-ink-muted">We'll tell you exactly what you need in a free 20-minute call.</p>
+            <p className="mt-1.5 text-sm text-ink-muted">We'll tell you exactly what you need in a free 20-minute strategy call.</p>
           </div>
           <a href={OFFER_PATHS.roadmap} className="cta-gradient shrink-0 inline-flex items-center gap-2 rounded-full px-7 py-3.5 text-sm font-semibold text-canvas">
             Book a Creative Call
