@@ -9,7 +9,8 @@ import { goToSection } from './shared.jsx'
    ReferralsPage → ReferralForm) and scrolls to the form.
 
    Figures are exactly the program terms: $150 one-time (Standard, cash or production
-   credit) · 10% of the first qualifying project payment (Agency & Strategic).
+   credit) · 10% of the first qualifying project payment, capped at $500 per referred client
+   (Agency & Strategic). The cap is stated on the card, in the terms and in the FAQ.
    The Creative Upgrade is deliberately specific about what it is and isn't: two additional
    EDIT-BASED variations of the approved project assets, on the first qualifying PAID video
    project. It is not a new production, not exchangeable for cash, and it is separate from
@@ -46,11 +47,13 @@ const CARDS = [
     title: 'Agency & Strategic Partner',
     lead: 'Earn',
     amount: '10%',
+    cap: 'up to $500',
+    capNote: 'Per referred client. For example, a $5,000 first payment earns $500, the maximum.',
     blurb:
-      'Connect your clients with high-quality video production and earn 10% of their first qualifying project payment.',
+      'Connect your clients with high-quality video production and earn 10% of their first qualifying project payment, up to $500.',
     points: [
       'Designed for agencies and consultants.',
-      'First qualifying project only.',
+      'First qualifying project only. Capped at $500 per referred client.',
       'Dedicated approval process.',
       'Potential for deeper collaboration.',
     ],
@@ -103,10 +106,14 @@ export default function ReferralRewards({ onSelect }) {
                     {card.title}
                   </h3>
 
-                  <p className="mt-3 flex items-baseline gap-3">
+                  <p className="mt-3 flex flex-wrap items-baseline gap-x-3 gap-y-1">
                     <span className="text-base font-semibold text-ink">{card.lead}</span>
                     <span className={`font-display text-6xl font-bold leading-none tracking-display-xl ${card.accent.text}`}>{card.amount}</span>
+                    {card.cap && (
+                      <span className={`font-display text-2xl font-bold leading-none tracking-snug sm:text-3xl ${card.accent.text}`}>{card.cap}</span>
+                    )}
                   </p>
+                  {card.capNote && <p className="mt-2 text-sm leading-snug text-ink-muted">{card.capNote}</p>}
 
                   <p className="mt-5 text-[15px] leading-relaxed text-ink-muted">{card.blurb}</p>
 

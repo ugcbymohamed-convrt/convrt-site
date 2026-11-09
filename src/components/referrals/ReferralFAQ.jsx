@@ -19,7 +19,7 @@ export const FAQS = [
   },
   {
     q: 'How much do I earn?',
-    a: 'Standard partners earn $150 for an eligible successful referral, as cash or as production credit. Approved agencies earn 10% of the first qualifying project payment.',
+    a: 'Standard partners earn $150 for an eligible successful referral, as cash or as production credit. Approved agencies earn 10% of the first qualifying project payment, up to a maximum of $500 per referred client.',
   },
   {
     q: 'What does the referred brand receive?',

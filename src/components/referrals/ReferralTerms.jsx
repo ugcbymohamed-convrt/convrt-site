@@ -17,7 +17,7 @@ export const TERMS = [
   'No unsolicited bulk outreach on CONVRT’s behalf.',
   'One reward structure per qualifying referral. The $150 reward and the 10% commission can’t be combined.',
   'Rewards are payable only after the referred client’s first qualifying payment clears and remains non-refundable. Payment method and timing are agreed with the partner.',
-  'The 10% commission excludes taxes, refunds, and third-party pass-through costs.',
+  'The 10% commission is capped at $500 per referred client and excludes taxes, refunds, and third-party pass-through costs.',
   'Refunded or cancelled projects may not qualify for a reward.',
   'Production credit applies to eligible CONVRT services only. Its conditions are confirmed with the partner.',
   'The FREE Creative Upgrade applies to the first qualifying paid video project: two additional edit-based variations made from approved project assets, not exchangeable for cash. Eligibility and specifications are confirmed before purchase.',

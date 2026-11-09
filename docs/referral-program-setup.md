@@ -20,8 +20,8 @@ Browser ──POST {name, email, partner type, program, company?, website?, cons
 
 | | Standard Referral Partner | Agency & Strategic Partner |
 |---|---|---|
-| Reward | **$150** per eligible referral, cash **or** production credit | **10%** of the first qualifying project payment |
-| Nature | One-time, no recurring commission, no cap on eligible referrals | One-time, excludes taxes, refunds and pass-through costs |
+| Reward | **$150** per eligible referral, cash **or** production credit | **10%** of the first qualifying project payment, **capped at $500** per referred client (a $5,000 first payment earns the $500 maximum) |
+| Nature | One-time, no recurring commission, no cap on eligible referrals | One-time, excludes taxes, refunds and pass-through costs; the $500 cap is the most one referred client can earn |
 | Approval | Application reviewed by CONVRT | Explicit CONVRT approval required before participating |
 | Combining | The two structures can't automatically be combined | White-label / reseller / recurring deals need a separate agreement |
 
@@ -115,7 +115,7 @@ and the brief asked not to add a database or subscription without approval, so t
 4. **Attribution decision**: `Pending` / `Accepted` / `Rejected: already in pipeline` / `Rejected: other`, with the
    reason in *Attribution notes*. Check the brand against your pipeline on receipt; if it was already active, note the
    date of first contact.
-5. **Reward columns**: reward type (`$150 cash`, `$150 production credit`, `10% agency`), amount, payment status, and the
+5. **Reward columns**: reward type (`$150 cash`, `$150 production credit`, `10% agency, max $500`), amount, payment status, and the
    date the first qualifying payment cleared (ex. tax; **only when it remains non-refundable**).
 6. **Creative Upgrade status**: `Pending confirmation` → `Confirmed` (eligibility and specs agreed before purchase) →
    `Delivered`. Make sure the two variations are additional to the package's standard deliverables.
@@ -161,8 +161,11 @@ deliberately state no attribution window, payout deadline or minimum project siz
 2. **Attribution window** and how you handle a brand that was already in your pipeline.
 3. **Refunds**: what "remains non-refundable" means in practice (refund period), and how a reward is handled if a
    project is refunded or cancelled later.
-4. **The 10% commission** on the first project payment: how "eligible", "pass-through costs" and a first project paid in
-   several instalments are treated.
+4. **The 10% commission, capped at $500** (added after the first version of the brief): the cap is per referred client and
+   is shown on the card, in the terms and in the FAQ. Decide how "eligible", "pass-through costs" and a first project
+   paid in several instalments are treated (the $500 is the total across all of them), and that the cap applies to the
+   one-time commission only. Cheap projects pay less than $500 (10% of $2,000 is $200); only first payments of $5,000 or
+   more reach the cap.
 5. **Production credit**: where it can be used, whether it expires, whether it can be transferred.
 6. **Creative Upgrade**: confirm the exact definition of a "qualifying paid video project" (minimum package / size),
    what "additional to the package" means per package, and the turnaround, and confirm it doesn't stack with the free trial.

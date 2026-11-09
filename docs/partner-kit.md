@@ -22,7 +22,7 @@ registration form never emails the partner. The kit is previewed on `/referrals`
 > the Creative Upgrade your referrals can receive, and simple instructions for making an introduction.
 >
 > Before you start, here is what we've agreed:
-> - Program: [Standard Referral Partner: $150 cash or production credit per eligible referral | Agency & Strategic Partner: 10% of the first qualifying project payment]
+> - Program: [Standard Referral Partner: $150 cash or production credit per eligible referral | Agency & Strategic Partner: 10% of the first qualifying project payment, up to $500 per referred client]
 > - Payment method and timing: [agreed with the partner]
 > - Referrals are confirmed as eligible by CONVRT, and a reward is earned only when the referred brand becomes a paying client and its first qualifying payment clears and remains non-refundable.
 >
@@ -115,7 +115,8 @@ and CONVRT confirms attribution.
   the brand becomes a paying client, and its first qualifying payment clears and remains non-refundable.
 - Registering, submitting a company name or booking a call doesn't trigger a reward.
 - Standard partners: $150 per eligible referral, as cash or production credit. Agency & Strategic Partners: 10% of the
-  first qualifying project payment, excluding taxes, refunds and third-party pass-through costs. One-time, not recurring.
+  first qualifying project payment, up to a maximum of $500 per referred client, excluding taxes, refunds and third-party
+  pass-through costs. One-time, not recurring.
   The two can't automatically be combined.
 - Payment method and timing are agreed with the partner. There is no self-service dashboard at launch: partners can
   ask CONVRT for a status update.

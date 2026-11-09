@@ -563,6 +563,7 @@ test('copy: headline, offer figures and the Creative Upgrade match the brief', (
   assert.match(SRC.rewards, /One Introduction\. Two Winners\./)
   assert.match(SRC.rewards, /amount: '\$150'/)
   assert.match(SRC.rewards, /amount: '10%'/)
+  assert.match(SRC.rewards, /cap: 'up to \$500'/)
   assert.match(SRC.rewards, /Start Referring/)
   assert.match(SRC.rewards, /Become an Agency Partner/)
   assert.match(SRC.rewards, /FREE Creative Upgrade/)
@@ -574,6 +575,18 @@ test('copy: headline, offer figures and the Creative Upgrade match the brief', (
   assert.match(SRC.page, /CONVRT Referral Partner Program \| Earn Rewards for Introductions/)
   assert.match(SRC.page, /Refer SaaS and e-commerce brands to CONVRT, earn rewards for successful introductions, and give your connections an exclusive creative upgrade\./)
   assert.match(SRC.page, /\$\{SITE_URL\}\$\{REFERRALS_PATH\}/)
+})
+
+test('the agency commission cap ($500 per referred client) is stated consistently everywhere it is promised', () => {
+  assert.match(SRC.rewards, /earn 10% of their first qualifying project payment, up to \$500\./)
+  assert.match(SRC.rewards, /a \$5,000 first payment earns \$500, the maximum/)
+  assert.match(SRC.rewards, /Capped at \$500 per referred client/)
+  assert.match(SRC.terms, /capped at \$500 per referred client/)
+  assert.match(SRC.faq, /up to a maximum of \$500 per referred client/)
+  assert.match(read('docs/partner-kit.md'), /up to \$500 per referred client/)
+  assert.match(read('docs/referral-program-setup.md'), /capped at \$500/)
+  // the Standard reward is unchanged and no other cap / tier appears
+  assert.ok(!/\$(1,?000|750|600)\b/.test(SRC.rewards + SRC.faq + SRC.terms))
 })
 
 test('nothing on the page invents statistics, testimonials, earnings, timelines or guarantees', () => {
