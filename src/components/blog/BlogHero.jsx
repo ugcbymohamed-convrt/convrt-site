@@ -1,4 +1,4 @@
-/* CONVRT Insights masthead. Compact on purpose: headline, one line of copy, and (only while
+/* CONVRT Blog masthead. Compact on purpose: headline, one line of copy, and (only while
    there are no published articles) the Coming Soon badge + line. The right-hand artwork is
    pure SVG and hidden below lg. */
 
@@ -21,7 +21,7 @@ export default function BlogHero({ comingSoon }) {
           <div className="lg:col-span-8">
             <div className="inline-flex items-center gap-2.5">
               <span className="h-px w-8 bg-lime" aria-hidden="true" />
-              <span className="text-xs font-semibold uppercase tracking-[0.22em] text-lime">CONVRT Insights</span>
+              <span className="text-xs font-semibold uppercase tracking-[0.22em] text-lime">The CONVRT Blog</span>
             </div>
 
             <h1

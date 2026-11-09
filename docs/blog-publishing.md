@@ -1,4 +1,4 @@
-# CONVRT Insights — publishing guide
+# CONVRT Blog — publishing guide
 
 The blog lives at `/blog` (index) and `/blog/<slug>` (articles). **One Markdown file = one article.**
 Nothing in the page code lists articles: add a file and it appears; delete it and it is gone.
@@ -28,7 +28,7 @@ Nothing in the page code lists articles: add a file and it appears; delete it an
 | `updatedAt` | no | `YYYY-MM-DD`; shown as "Updated" and used as `dateModified`. |
 | `featured` | no | `true` puts it in the big featured slot on `/blog` (newest wins if several; if none, the newest article is featured). |
 | `image`, `imageAlt` | no (alt required with image) | Cover image, 1200×630 recommended. Without one, the card uses an abstract graphic. |
-| `seoTitle` | no | ≤ 70 chars. Default: `<title> \| CONVRT Insights`. |
+| `seoTitle` | no | ≤ 70 chars. Default: `<title> \| CONVRT Blog`. |
 | `metaDescription` | no | ≤ 170 chars. Default: the excerpt. |
 | `canonicalUrl` | no | Full `https://` URL. Default: `https://www.convrt.studio/blog/<slug>`. |
 | `ogImage` | no | Social share image. Default: `image`. |

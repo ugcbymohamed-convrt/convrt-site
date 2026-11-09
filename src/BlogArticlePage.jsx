@@ -25,7 +25,7 @@ import { BLOG_PATH } from './config.js'
 ───────────────────────────────────────────── */
 
 const NOT_FOUND_HEAD = {
-  title: 'Article not found | CONVRT Insights',
+  title: 'Article not found | CONVRT Blog',
   description: 'This article could not be found.',
   url: BLOG_URL,
   robots: 'noindex, follow',
@@ -83,7 +83,7 @@ export default function BlogArticlePage() {
         <header className="mx-auto max-w-7xl px-5 pt-8 md:px-8 md:pt-12">
           <nav aria-label="Breadcrumb">
             <ol className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-ink-muted">
-              <li><a className="hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-lime" href={BLOG_PATH}>Insights</a></li>
+              <li><a className="hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-lime" href={BLOG_PATH}>Blog</a></li>
               <li aria-hidden="true">/</li>
               <li aria-current="page">{meta.categoryLabel}</li>
             </ol>
@@ -165,13 +165,13 @@ export default function BlogArticlePage() {
 function NotFound() {
   return (
     <section className="mx-auto max-w-2xl px-5 py-24 text-center md:px-8 md:py-32">
-      <CategoryLabel>CONVRT Insights</CategoryLabel>
+      <CategoryLabel>The CONVRT Blog</CategoryLabel>
       <h1 className="mt-4 font-display text-4xl font-bold tracking-display text-ink md:text-5xl">Article not found</h1>
       <p className="mt-4 text-base leading-relaxed text-ink-muted md:text-lg">
-        That article isn’t published. Browse everything we’ve got on CONVRT Insights.
+        That article isn’t published. Browse everything we’ve got on the CONVRT Blog.
       </p>
       <div className="mt-8 flex flex-col items-stretch sm:items-center">
-        <PrimaryCta href={BLOG_PATH}>Back to Insights</PrimaryCta>
+        <PrimaryCta href={BLOG_PATH}>Back to the Blog</PrimaryCta>
       </div>
     </section>
   )

@@ -9,7 +9,7 @@
 import { SITE_URL, BLOG_PATH, BLOG_INDEXABLE } from '../../config.js'
 import { articlePath } from './schema.js'
 
-export const BLOG_TITLE = 'CONVRT Insights | Video Ads, UGC & Creative Strategy'
+export const BLOG_TITLE = 'CONVRT Blog | Video Ads, UGC & Creative Strategy'
 export const BLOG_DESCRIPTION =
   'Explore CONVRT Insights for practical guides on UGC video ads, SaaS marketing, e-commerce creative, and performance-focused video strategy.'
 
@@ -35,7 +35,7 @@ export function blogIndexJsonLd(published = []) {
   const page = {
     '@context': 'https://schema.org',
     '@type': 'CollectionPage',
-    name: 'CONVRT Insights',
+    name: 'CONVRT Blog',
     description: BLOG_DESCRIPTION,
     url: BLOG_URL,
     isPartOf: { '@type': 'WebSite', name: 'CONVRT', url: SITE_URL },
@@ -60,7 +60,7 @@ export const articleUrl = (a) => a.canonicalUrl || `${SITE_URL}${articlePath(a.s
 export function articleHead(a) {
   const image = absolute(a.ogImage || a.image)
   return {
-    title: a.seoTitle || `${a.title} | CONVRT Insights`,
+    title: a.seoTitle || `${a.title} | CONVRT Blog`,
     description: a.metaDescription || a.excerpt,
     url: articleUrl(a),
     image,
@@ -92,7 +92,7 @@ export function articleJsonLd(a) {
       '@type': 'BreadcrumbList',
       itemListElement: [
         { '@type': 'ListItem', position: 1, name: 'Home', item: `${SITE_URL}/` },
-        { '@type': 'ListItem', position: 2, name: 'Insights', item: BLOG_URL },
+        { '@type': 'ListItem', position: 2, name: 'Blog', item: BLOG_URL },
         { '@type': 'ListItem', position: 3, name: a.title, item: url },
       ],
     },

@@ -250,7 +250,7 @@ test('indexing: the blog index is noindex,follow while it only has coming-soon c
   assert.equal(BLOG_INDEXABLE, false)
   const head = blogIndexHead([])
   assert.equal(head.robots, 'noindex, follow')
-  assert.equal(head.title, 'CONVRT Insights | Video Ads, UGC & Creative Strategy')
+  assert.equal(head.title, 'CONVRT Blog | Video Ads, UGC & Creative Strategy')
   assert.equal(head.url, 'https://www.convrt.studio/blog')
   assert.match(head.description, /^Explore CONVRT Insights for practical guides on UGC video ads/)
   assert.equal(robotsFor(true), 'index, follow')
