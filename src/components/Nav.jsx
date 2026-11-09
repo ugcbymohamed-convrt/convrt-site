@@ -7,7 +7,7 @@ import { scrollToApply } from '../lib/roadmapForm.js'
 import { usePressFeedback } from '../lib/usePressFeedback.js'
 
 // `compactHide`: shown in the desktop bar only from xl (1280px) up, so the bar doesn't crowd
-// at 1024–1279px now that Blog (and the referral link) have joined it. They are still in the
+// at 1024–1279px now that Blog (and the referral link) have joined it. It is still in the
 // mobile menu, the footer, and the hero/CTA buttons — nothing is removed.
 const links = [
   { label: 'Services', href: '#services' },
@@ -15,7 +15,6 @@ const links = [
   { label: 'How It Works', href: '#how-it-works' },
   { label: 'Pricing', href: '/pricing' },
   { label: 'Blog', href: '/blog' },
-  { label: 'Clients', href: '#clients', compactHide: true },
   { label: 'Contact', href: '#contact', compactHide: true },
 ]
 
