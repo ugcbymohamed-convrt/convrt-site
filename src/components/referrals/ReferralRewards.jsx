@@ -3,28 +3,32 @@ import { Check, Reveal, SectionHeader } from '../roadmap/shared.jsx'
 import { goToSection } from './shared.jsx'
 
 /* ─────────────────────────────────────────────
-   REWARDS — two cards. Each CTA preselects its program in the form (via `onSelect`,
-   handled by ReferralsPage → ReferralForm) and scrolls to the form.
+   EVERYONE WINS — two reward cards + the FREE Creative Upgrade strip.
 
-   Eligibility and payout conditions stay visible in the cards, and nothing implies
-   that every submission earns a reward. Figures are exactly the program terms:
-   $150 one-time (Standard) · 10% of the first qualifying project payment (Agency).
+   Each card CTA preselects its program in the form (via `onSelect`, handled by
+   ReferralsPage → ReferralForm) and scrolls to the form.
+
+   Figures are exactly the program terms: $150 one-time (Standard, cash or production
+   credit) · 10% of the first qualifying project payment (Agency & Strategic).
+   The Creative Upgrade is deliberately specific about what it is and isn't: two additional
+   EDIT-BASED variations of the approved project assets, on the first qualifying PAID video
+   project. It is not a new production, not exchangeable for cash, and it is separate from
+   the free Roadmap / free production trial / free hooks offers.
 ───────────────────────────────────────────── */
 
 const CARDS = [
   {
     id: 'standard',
     eyebrow: 'Standard Referrals',
-    title: 'Standard Referral',
+    title: 'Standard Referral Partner',
+    lead: 'Earn',
     amount: '$150',
-    amountNote: 'per successful referral',
-    blurb:
-      'For clients, creators, founders, and professional connections who introduce a brand that becomes a paying CONVRT client.',
+    blurb: 'Introduce a brand that becomes a CONVRT client and receive $150 cash or production credit.',
     points: [
-      'One-time reward per qualifying new client.',
-      'Reward becomes eligible after the referred client completes their first qualifying payment and the payment clears.',
-      'No limit on the number of eligible referrals.',
-      'No recurring commissions.',
+      'One-time reward.',
+      'Eligible new clients only.',
+      'No selling required.',
+      'Unlimited eligible introductions.',
     ],
     cta: 'Start Referring',
     accent: {
@@ -39,18 +43,18 @@ const CARDS = [
   {
     id: 'agency',
     eyebrow: 'Agency & Strategic Partners',
-    title: 'Agency / Strategic Partner',
+    title: 'Agency & Strategic Partner',
+    lead: 'Earn',
     amount: '10%',
-    amountNote: 'of the first qualifying project payment',
     blurb:
-      'For approved marketing agencies, consultants, and business partners who regularly introduce brands that need video production or creative strategy.',
+      'Connect your clients with high-quality video production and earn 10% of their first qualifying project payment.',
     points: [
-      '10% of the first eligible project payment, excluding taxes, refunds, and third-party pass-through costs.',
-      'One-time commission, not a recurring revenue share.',
-      'Requires approval by CONVRT before participation.',
-      'Not automatically combined with the standard referral reward.',
+      'Designed for agencies and consultants.',
+      'First qualifying project only.',
+      'Dedicated approval process.',
+      'Potential for deeper collaboration.',
     ],
-    cta: 'Apply as a Partner',
+    cta: 'Become an Agency Partner',
     accent: {
       text: 'text-magenta',
       border: 'border-magenta/30 hover:border-magenta/60',
@@ -62,13 +66,22 @@ const CARDS = [
   },
 ]
 
+/* The fine print, kept next to the offer instead of hidden in the terms. */
+export const UPGRADE_POINTS = [
+  'Additional to the standard deliverables of the package they buy. Variations already included in the package don’t count.',
+  'Edit-based variations made from the approved footage, voiceover and graphics: new hooks, openings, text overlays or CTA endings.',
+  'Not a new production: no extra filming, creator sourcing or shoot days, and no new video concepts are included.',
+  'Applies to the first qualifying paid video project. Not exchangeable for cash, and it doesn’t automatically stack with the free production trial.',
+  'Eligibility and delivery specifications are confirmed before purchase. No specific results are promised.',
+]
+
 export default function ReferralRewards({ onSelect }) {
   return (
     <section id="rewards" aria-labelledby="rewards-heading" className="relative scroll-mt-20 py-16 md:scroll-mt-24 md:py-24">
       <div className="mx-auto max-w-7xl px-5 md:px-8">
         <Reveal>
-          <SectionHeader id="rewards-heading" eyebrow="Rewards" title="Two ways to earn.">
-            Choose the program that fits how you work with brands. Eligibility and payout conditions are shown on each card.
+          <SectionHeader id="rewards-heading" eyebrow="Everyone wins" title="One Introduction. Two Winners.">
+            When you introduce the right brand to CONVRT, everyone gets something valuable.
           </SectionHeader>
         </Reveal>
 
@@ -90,9 +103,9 @@ export default function ReferralRewards({ onSelect }) {
                     {card.title}
                   </h3>
 
-                  <p className="mt-3 flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                  <p className="mt-3 flex items-baseline gap-3">
+                    <span className="text-base font-semibold text-ink">{card.lead}</span>
                     <span className={`font-display text-6xl font-bold leading-none tracking-display-xl ${card.accent.text}`}>{card.amount}</span>
-                    <span className="text-base font-semibold text-ink">{card.amountNote}</span>
                   </p>
 
                   <p className="mt-5 text-[15px] leading-relaxed text-ink-muted">{card.blurb}</p>
@@ -112,7 +125,7 @@ export default function ReferralRewards({ onSelect }) {
                   <button
                     type="button"
                     onClick={() => {
-                      trackEvent('referrals_apply_click', { location: `reward_${card.id}` })
+                      trackEvent('referral_cta_click', { location: `reward_${card.id}` })
                       onSelect(card.id)
                     }}
                     className={`group inline-flex min-h-[52px] w-full items-center justify-center gap-2 rounded-full px-7 py-3.5 text-[15px] font-semibold
@@ -129,18 +142,53 @@ export default function ReferralRewards({ onSelect }) {
           ))}
         </div>
 
-        <Reveal delay={120}>
+        {/* FREE Creative Upgrade strip */}
+        <Reveal delay={140}>
+          <aside
+            aria-labelledby="upgrade-heading"
+            className="relative mt-6 overflow-hidden rounded-3xl border border-lime/30 bg-gradient-to-r from-lime/[0.09] via-surface-1 to-magenta/[0.09] p-6 sm:p-8 lg:mt-8"
+          >
+            <div className="grid grid-cols-1 gap-6 lg:grid-cols-12 lg:items-center lg:gap-10">
+              <div className="lg:col-span-5">
+                <span className="inline-flex w-fit items-center rounded-full border border-magenta/40 bg-magenta/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-magenta">
+                  For the brand you refer
+                </span>
+                <h3 id="upgrade-heading" className="mt-4 font-display text-2xl font-bold uppercase leading-tight tracking-display text-ink sm:text-[1.7rem]">
+                  Your referral gets a <span className="text-lime">FREE Creative Upgrade</span>
+                </h3>
+                <p className="mt-3 text-base leading-relaxed text-ink-muted">
+                  Two additional ready-to-test video ad variations on their first qualifying paid project.
+                </p>
+                <p className="mt-3 text-sm leading-relaxed text-ink-muted">
+                  It’s a separate bonus for paid production, not an extra free video, and it’s different from the Free
+                  Creative Growth Roadmap, the Free Video Production Trial and the 10 Free Ad Hooks.
+                </p>
+              </div>
+              <ul className="space-y-3 lg:col-span-7">
+                {UPGRADE_POINTS.map((point) => (
+                  <li key={point} className="flex gap-3 text-sm leading-snug text-ink-muted">
+                    <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-lime/40 bg-lime/10 text-lime">
+                      <Check className="h-3 w-3" />
+                    </span>
+                    <span>{point}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </aside>
+        </Reveal>
+
+        <Reveal delay={160}>
           <p className="mx-auto mt-8 max-w-3xl text-center text-sm leading-relaxed text-ink-muted">
             Rewards apply only to eligible new clients and are confirmed by CONVRT. Submitting an introduction doesn’t
-            guarantee a reward or acceptance into the program.{' '}
+            guarantee a reward or acceptance into the program.
             <a
               href="#terms"
               onClick={(e) => { e.preventDefault(); goToSection('terms') }}
-              className="font-medium text-ink-muted underline underline-offset-2 transition-colors hover:text-lime focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-lime"
+              className="mx-auto mt-1 flex min-h-[44px] w-fit items-center font-medium text-ink-muted underline underline-offset-2 transition-colors hover:text-lime focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-lime"
             >
               Read the program terms
             </a>
-            .
           </p>
         </Reveal>
       </div>

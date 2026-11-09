@@ -15,7 +15,7 @@
      • standard field `name`
      • custom fields (must exist in MailerLite → Subscribers → Fields, using
        exactly these keys): partner_type, referral_program, partner_company,
-       partner_website, referred_company, referred_website, referral_notes
+       partner_website
      • `groups` = [MAILERLITE_GROUP_REFERRALS_ID]  (additive: never removes a
        contact from other groups)
    Optional answers that were left blank are NOT sent, so a returning partner never
@@ -23,10 +23,12 @@
    No `status` is sent (unsubscribed / bounced / junk contacts cannot be re-added
    by a website form).
 
-   MailerLite is keyed by email, so it holds ONE record per partner: the latest
-   referral details overwrite the previous ones. The owner email sent for every
-   submission is the complete per-referral record — see docs/referral-program-setup.md
-   for the manual tracking process.
+   MailerLite holds PARTNERS only (one record per email). Individual referrals are NOT
+   collected by this endpoint and are never stored in subscriber fields: a partner can make
+   any number of referrals and a subscriber record cannot hold that history. They are
+   tracked in the manual referral tracker (docs/referral-program-setup.md,
+   docs/referral-tracker-template.csv). The MailerLite subscriber id is included in the
+   owner email so it can serve as the tracker's partner identifier.
 
    The API tokens only ever live in process.env (Vercel project settings).
 ───────────────────────────────────────────── */
@@ -58,9 +60,6 @@ export function buildSubscriberPayload(partner, groupId) {
   const optional = {
     partner_company: partner.partnerCompany,
     partner_website: partner.partnerWebsite,
-    referred_company: partner.referredCompany,
-    referred_website: partner.referredWebsite,
-    referral_notes: partner.referralNotes,
   }
   for (const [key, value] of Object.entries(optional)) if (value) fields[key] = value
   return { email: partner.email, fields, groups: [groupId] }
@@ -69,12 +68,11 @@ export function buildSubscriberPayload(partner, groupId) {
 /* Owner alert (optional, best-effort): see ./notify.js. Never throws. */
 export async function notifyOwner(partner, result, submittedAt, { env = process.env, fetchImpl = globalThis.fetch } = {}) {
   const saved = result.status === 200
-  const hasReferral = Boolean(partner.referredCompany || partner.referredWebsite || partner.referralNotes)
   try {
     return await sendOwnerAlert(
       {
         subject: `${saved ? '' : '[NOT SAVED] '}New referral partner application: ${partner.fullName} (${partner.program})`,
-        title: 'New Referral Partner Program application.',
+        title: 'New Referral Partner Program application (registration only; no referral submitted).',
         rows: [
           ['Name', partner.fullName],
           ['Email', partner.email],
@@ -82,19 +80,18 @@ export async function notifyOwner(partner, result, submittedAt, { env = process.
           ['Program', partner.program],
           ['Company / agency', partner.partnerCompany || '(not provided)'],
           ['Website / LinkedIn', partner.partnerWebsite || '(not provided)'],
-          ['Referred company', partner.referredCompany || '(none submitted)'],
-          ['Referred website', partner.referredWebsite || '(none submitted)'],
-          ['Opportunity notes', partner.referralNotes || '(none submitted)'],
           ['Submitted (UTC)', submittedAt],
           [
             'Saved to MailerLite',
             saved ? 'Yes (group: Referral Partner Applications)' : `NO (${result.body?.error || 'error'}): follow up with them by email`,
           ],
+          ...(result.subscriberId ? [['MailerLite subscriber ID (partner ID)', String(result.subscriberId)]] : []),
         ],
         footer:
           'Reply to this email to reach the applicant. ' +
-          (hasReferral ? 'Add this referral to the tracking sheet. ' : '') +
-          'Nothing has been approved, promised or paid: agency partners need your approval and final terms are confirmed with the partner.',
+          'Nothing has been approved, promised or paid: review the application, approve or decline it yourself, ' +
+          'agree the final terms with the partner and send the partner kit manually (docs/partner-kit.md). ' +
+          'Agency & Strategic Partners always need your explicit approval.',
         replyTo: partner.email,
       },
       { env, fetchImpl, log: logUpstream },
@@ -170,7 +167,7 @@ async function saveReferral(partner, { env, fetchImpl }) {
       logUpstream('cannot_resubscribe', { status })
       return json(409, { ok: false, error: 'cannot_subscribe' })
     }
-    return json(200, { ok: true })
+    return { ...json(200, { ok: true }), subscriberId: data?.data?.id }
   }
 
   if (res.status === 422) {

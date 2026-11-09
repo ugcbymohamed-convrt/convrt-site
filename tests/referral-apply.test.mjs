@@ -11,9 +11,10 @@ import { MAILERLITE_ENDPOINT } from '../api/_lib/subscribe.js'
 import { RESEND_ENDPOINT, DEFAULT_NOTIFY_TO } from '../api/_lib/notify.js'
 import handler from '../api/referral-apply.js'
 import {
-  PARTNER_TYPES, PROGRAMS, EMPTY_REFERRAL,
-  validateReferral, normalizeReferral, applyCardSelection, looksLikeContactDetails,
+  PARTNER_TYPES, PROGRAMS, PROGRAM_OPTIONS, EMPTY_REFERRAL, FIELD_ORDER,
+  validateReferral, normalizeReferral, applyCardSelection,
 } from '../src/lib/referralProgram.js'
+import { KIT_EMAIL_PARAGRAPHS, KIT_EMAIL_SUBJECT, KIT_SHORT_MESSAGE, KIT_ITEMS } from '../src/lib/partnerKit.js'
 
 const ENV = { MAILERLITE_API_TOKEN: 'test-token-abc', [REFERRALS_GROUP_ENV]: '444' }
 const NOW = () => new Date('2026-11-09T12:30:00.000Z')
@@ -28,7 +29,7 @@ const valid = (over = {}) => ({
 })
 
 // One fake fetch for both services, told apart by URL.
-const fakeFetch = ({ mlStatus = 201, mlPayload = { data: { status: 'active' } }, mlThrows, resendStatus = 200, resendThrows, headers = {} } = {}) => {
+const fakeFetch = ({ mlStatus = 201, mlPayload = { data: { id: '9876', status: 'active' } }, mlThrows, resendStatus = 200, resendThrows, headers = {} } = {}) => {
   const calls = []
   const fn = async (url, init) => {
     const body = JSON.parse(init.body)
@@ -50,21 +51,27 @@ const run = (body, fetchImpl, env = ENV) => processReferral({ body, env, fetchIm
 
 /* ───────── validation (shared by the form and the endpoint) ───────── */
 
-test('only name, email, partner type, program and consent are required', () => {
+test('only name, email, partner type, program and consent are required (and the program defaults to Standard)', () => {
   assert.deepEqual(validateReferral(valid()), {})
   const errs = validateReferral({})
   assert.deepEqual(Object.keys(errs).sort(), ['consent', 'email', 'fullName', 'partnerType', 'program'])
+  // the form starts on Standard, so the hero CTA (which selects nothing) never leaves the program empty
+  assert.equal(EMPTY_REFERRAL.program, PROGRAMS.standard)
+  assert.deepEqual(validateReferral({ ...EMPTY_REFERRAL, fullName: 'J', email: 'j@x.co', partnerType: 'Other', consent: true }), {})
 })
 
-test('a referral is never required to join', () => {
-  const errs = validateReferral(valid({ referredCompany: '', referredWebsite: '', referralNotes: '' }))
-  assert.deepEqual(errs, {})
+test('V2 partner types and program names are exactly the ones on the page', () => {
+  assert.deepEqual(PARTNER_TYPES, [
+    'Existing CONVRT client', 'Marketing agency', 'Consultant', 'UGC creator / video professional', 'Founder / entrepreneur', 'Other',
+  ])
+  assert.deepEqual(PROGRAM_OPTIONS, ['Standard Referral Partner', 'Agency & Strategic Partner'])
 })
 
 test('partner type and program must be one of the listed options', () => {
-  assert.deepEqual(PARTNER_TYPES, ['Existing client', 'Agency', 'Consultant', 'Creator', 'Founder', 'Other'])
   assert.ok(validateReferral(valid({ partnerType: 'Investor' })).partnerType)
+  assert.ok(validateReferral(valid({ partnerType: 'Agency' })).partnerType, 'V1 label is no longer accepted')
   assert.ok(validateReferral(valid({ program: 'VIP' })).program)
+  assert.ok(validateReferral(valid({ program: 'Standard Referral' })).program, 'V1 label is no longer accepted')
   for (const partnerType of PARTNER_TYPES) assert.equal(validateReferral(valid({ partnerType })).partnerType, undefined)
   for (const program of Object.values(PROGRAMS)) assert.equal(validateReferral(valid({ program })).program, undefined)
 })
@@ -75,85 +82,64 @@ test('consent must be exactly true (not "true", not 1)', () => {
 
 test('email is validated and meaningful errors are returned', () => {
   assert.match(validateReferral(valid({ email: '' })).email, /Enter your email/)
-  assert.match(validateReferral(valid({ email: 'nope' })).email, /doesn’t look right/)
+  for (const email of ['nope', 'a@b', 'a b@c.com', '@c.com', 'a@.com']) assert.match(validateReferral(valid({ email })).email, /doesn’t look right/, email)
+  assert.equal(validateReferral(valid({ email: 'jane.doe+tag@sub.example.co' })).email, undefined)
 })
 
-test('optional websites: bare domain / LinkedIn URL accepted; junk rejected', () => {
+test('optional website: bare domain / LinkedIn URL accepted; junk rejected', () => {
   for (const w of ['example.com', 'linkedin.com/in/jane-doe', 'https://www.linkedin.com/in/jane', '']) {
     assert.equal(validateReferral(valid({ partnerWebsite: w })).partnerWebsite, undefined, w)
-    assert.equal(validateReferral(valid({ referredWebsite: w })).referredWebsite, undefined, w)
   }
   for (const w of ['example', 'exa mple.com', 'me@example.com']) {
     assert.ok(validateReferral(valid({ partnerWebsite: w })).partnerWebsite, w)
-    assert.ok(validateReferral(valid({ referredWebsite: w })).referredWebsite, w)
   }
-  assert.equal(normalizeReferral(valid({ referredWebsite: 'brand.com' })).referredWebsite, 'https://brand.com')
+  assert.equal(normalizeReferral(valid({ partnerWebsite: 'brand.com' })).partnerWebsite, 'https://brand.com')
 })
 
 test('length limits are enforced', () => {
   assert.ok(validateReferral(valid({ fullName: 'x'.repeat(101) })).fullName)
   assert.ok(validateReferral(valid({ partnerCompany: 'x'.repeat(121) })).partnerCompany)
-  assert.ok(validateReferral(valid({ referredCompany: 'x'.repeat(121) })).referredCompany)
-  assert.ok(validateReferral(valid({ referralNotes: 'x'.repeat(1001) })).referralNotes)
 })
 
-test('a third party’s email or phone number is rejected in the referral fields', () => {
-  for (const notes of [
-    'Talk to sam@theirbrand.com',
-    'Call +44 20 7946 0958',
-    'Phone: (415) 555-0132',
-    'Mobile 415-555-0132',
-    '4155550132',
-  ]) {
-    assert.ok(validateReferral(valid({ referralNotes: notes })).referralNotes, notes)
-  }
-  assert.ok(validateReferral(valid({ referredCompany: 'Acme (ceo@acme.com)' })).referredCompany)
-})
-
-test('ordinary descriptions with years and amounts are not mistaken for contact details', () => {
-  for (const notes of ['Founded 2019, raised $4.5M, spends around 20,000 a month on ads', 'Runs 2024 2025 2026 campaigns', 'Series A, 120 employees']) {
-    assert.equal(looksLikeContactDetails(notes), false, notes)
-    assert.equal(validateReferral(valid({ referralNotes: notes })).referralNotes, undefined, notes)
-  }
+test('the form collects nothing about referred people or companies', () => {
+  for (const k of Object.keys(EMPTY_REFERRAL)) assert.ok(!/referred|notes|phone/i.test(k), k)
+  assert.deepEqual(FIELD_ORDER.sort(), Object.keys(EMPTY_REFERRAL).sort())
+  // unknown extra keys in a request body are dropped, never forwarded
+  const n = normalizeReferral(valid({ referredCompany: 'Acme', referredEmail: 'x@acme.com', phone: '+1 415 555 0132' }))
+  assert.deepEqual(Object.keys(n).sort(), Object.keys(EMPTY_REFERRAL).sort())
 })
 
 /* ───────── reward-card preselection ───────── */
 
-test('Standard card preselects the Standard Referral program', () => {
+test('Standard card preselects the Standard Referral Partner program', () => {
   const out = applyCardSelection('standard', EMPTY_REFERRAL)
-  assert.equal(out.program, 'Standard Referral')
+  assert.equal(out.program, 'Standard Referral Partner')
   assert.equal(out.partnerType, '') // not guessed
 })
 
-test('Agency card preselects Agency / Strategic Partner and the Agency partner type', () => {
+test('Agency card preselects Agency & Strategic Partner and the Marketing agency partner type', () => {
   const out = applyCardSelection('agency', EMPTY_REFERRAL)
-  assert.equal(out.program, 'Agency / Strategic Partner')
-  assert.equal(out.partnerType, 'Agency')
+  assert.equal(out.program, 'Agency & Strategic Partner')
+  assert.equal(out.partnerType, 'Marketing agency')
 })
 
 test('the Agency card never overrides a partner type the visitor already chose', () => {
   const out = applyCardSelection('agency', { ...EMPTY_REFERRAL, partnerType: 'Consultant', fullName: 'Jane' })
-  assert.equal(out.program, 'Agency / Strategic Partner')
+  assert.equal(out.program, 'Agency & Strategic Partner')
   assert.equal(out.partnerType, 'Consultant')
   assert.equal(out.fullName, 'Jane') // other answers untouched
 })
 
 test('switching cards switches the program', () => {
   const a = applyCardSelection('agency', EMPTY_REFERRAL)
-  assert.equal(applyCardSelection('standard', a).program, 'Standard Referral')
+  assert.equal(applyCardSelection('standard', a).program, 'Standard Referral Partner')
 })
 
 /* ───────── MailerLite group assignment + custom-field mapping ───────── */
 
 test('a full application is saved to the referrals group with every custom field mapped', async () => {
   const f = fakeFetch()
-  const r = await run(
-    valid({
-      partnerCompany: 'Growth Co', partnerWebsite: 'linkedin.com/in/jane',
-      referredCompany: 'Acme Inc', referredWebsite: 'acme.com', referralNotes: 'DTC brand, no video ads yet',
-    }),
-    f,
-  )
+  const r = await run(valid({ partnerCompany: 'Growth Co', partnerWebsite: 'linkedin.com/in/jane' }), f)
   assert.equal(r.status, 200)
   assert.deepEqual(r.body, { ok: true })
   assert.equal(f.ml().length, 1)
@@ -165,12 +151,9 @@ test('a full application is saved to the referrals group with every custom field
     fields: {
       name: 'Jane Doe',
       partner_type: 'Consultant',
-      referral_program: 'Standard Referral',
+      referral_program: 'Standard Referral Partner',
       partner_company: 'Growth Co',
       partner_website: 'https://linkedin.com/in/jane',
-      referred_company: 'Acme Inc',
-      referred_website: 'https://acme.com',
-      referral_notes: 'DTC brand, no video ads yet',
     },
     groups: ['444'],
   })
@@ -188,26 +171,22 @@ test('the group comes from MAILERLITE_GROUP_REFERRALS_ID (not another group’s 
 test('blank optional answers are not sent, so a returning partner never wipes earlier values', () => {
   const payload = buildSubscriberPayload(normalizeReferral(valid()), '444')
   assert.deepEqual(Object.keys(payload.fields).sort(), ['name', 'partner_type', 'referral_program'])
-  for (const k of ['partner_company', 'partner_website', 'referred_company', 'referred_website', 'referral_notes']) {
-    assert.ok(!(k in payload.fields), k)
-  }
+  for (const k of ['partner_company', 'partner_website']) assert.ok(!(k in payload.fields), k)
 })
 
-test('only the seven documented custom fields (plus the built-in name) are ever written', () => {
-  const full = normalizeReferral(valid({
-    partnerCompany: 'a', partnerWebsite: 'a.com', referredCompany: 'b', referredWebsite: 'b.com', referralNotes: 'c',
-  }))
+test('only the four documented custom fields (plus the built-in name) are ever written: no per-referral history', () => {
+  const full = normalizeReferral(valid({ partnerCompany: 'a', partnerWebsite: 'a.com', referredCompany: 'b', referralNotes: 'c' }))
   assert.deepEqual(Object.keys(buildSubscriberPayload(full, '1').fields).sort(), [
-    'name', 'partner_company', 'partner_type', 'partner_website', 'referral_notes', 'referral_program', 'referred_company', 'referred_website',
+    'name', 'partner_company', 'partner_type', 'partner_website', 'referral_program',
   ].sort())
 })
 
-test('the response never carries a booking link, approval or payment promise', async () => {
+test('the response never carries a booking link, approval, partner ID or payment promise', async () => {
   const r = await run(valid({ program: PROGRAMS.agency }), fakeFetch())
   assert.deepEqual(Object.keys(r.body), ['ok'])
 })
 
-test('a repeat application (200) is an idempotent success', async () => {
+test('a repeat registration (200) is an idempotent success', async () => {
   const r = await run(valid(), fakeFetch({ mlStatus: 200 }))
   assert.equal(r.status, 200)
 })
@@ -219,6 +198,12 @@ test('unsubscribed / bounced / junk contacts are not reported as success (and th
     assert.equal(r.status, 409)
     assert.equal(r.body.error, 'cannot_subscribe')
     assert.match(f.resend()[0].body.subject, /^\[NOT SAVED\]/)
+  }
+})
+
+test('active, unconfirmed and missing subscriber states are all saved applications', async () => {
+  for (const mlPayload of [{ data: { status: 'active' } }, { data: { status: 'unconfirmed' } }, { data: {} }, {}]) {
+    assert.equal((await run(valid(), fakeFetch({ mlPayload }))).status, 200)
   }
 })
 
@@ -280,13 +265,10 @@ test('no RESEND_API_KEY → nothing is sent and the application still succeeds',
   assert.equal(f.resend().length, 0)
 })
 
-test('owner email goes to mohamed@convrt.studio with every detail, a timestamp and Reply-To = partner', async () => {
+test('owner email goes to mohamed@convrt.studio with every detail, a timestamp, the partner ID and Reply-To = partner', async () => {
   const f = fakeFetch()
   const r = await run(
-    valid({
-      program: PROGRAMS.agency, partnerType: 'Agency', partnerCompany: 'Growth Co', partnerWebsite: 'growth.co',
-      referredCompany: 'Acme Inc', referredWebsite: 'acme.com', referralNotes: 'Needs UGC ads',
-    }),
+    valid({ program: PROGRAMS.agency, partnerType: 'Marketing agency', partnerCompany: 'Growth Co', partnerWebsite: 'growth.co' }),
     f,
     { ...ENV, RESEND_API_KEY: 're_test_123' },
   )
@@ -298,20 +280,22 @@ test('owner email goes to mohamed@convrt.studio with every detail, a timestamp a
   assert.equal(DEFAULT_NOTIFY_TO, 'mohamed@convrt.studio')
   assert.equal(body.reply_to, 'jane@example.com')
   assert.match(body.subject, /Jane Doe/)
-  assert.match(body.subject, /Agency \/ Strategic Partner/)
+  assert.match(body.subject, /Agency & Strategic Partner/)
   for (const s of [
-    'Jane Doe', 'jane@example.com', 'Agency', 'Agency / Strategic Partner', 'Growth Co', 'https://growth.co',
-    'Acme Inc', 'https://acme.com', 'Needs UGC ads', '2026-11-09T12:30:00.000Z',
+    'Jane Doe', 'jane@example.com', 'Marketing agency', 'Agency & Strategic Partner', 'Growth Co', 'https://growth.co',
+    '2026-11-09T12:30:00.000Z', '9876',
   ]) {
     assert.ok(body.text.includes(s), s)
   }
   assert.match(body.text, /Nothing has been approved, promised or paid/)
+  assert.match(body.text, /Agency & Strategic Partners always need your explicit approval/)
+  assert.match(body.text, /send the partner kit manually/)
 })
 
-test('a partner who submits no referral is clearly marked as such in the email', async () => {
+test('the owner email carries no referral fields (registrations only)', async () => {
   const f = fakeFetch()
   await run(valid(), f, { ...ENV, RESEND_API_KEY: 'k' })
-  assert.match(f.resend()[0].body.text, /Referred company: \(none submitted\)/)
+  assert.ok(!/Referred company|Referred website|Opportunity notes/.test(f.resend()[0].body.text))
 })
 
 test('NOTIFY_EMAIL_TO / NOTIFY_EMAIL_FROM override the defaults', async () => {
@@ -324,7 +308,7 @@ test('NOTIFY_EMAIL_TO / NOTIFY_EMAIL_FROM override the defaults', async () => {
 
 test('partner-supplied text is HTML-escaped in the email body', async () => {
   const f = fakeFetch()
-  await run(valid({ referralNotes: '<script>alert(1)</script>' }), f, { ...ENV, RESEND_API_KEY: 'k' })
+  await run(valid({ partnerCompany: '<script>alert(1)</script>' }), f, { ...ENV, RESEND_API_KEY: 'k' })
   const { body } = f.resend()[0]
   assert.ok(!body.html.includes('<script>'))
   assert.ok(body.html.includes('&lt;script&gt;'))
@@ -364,6 +348,14 @@ test('MailerLite failing still alerts the owner, flagged NOT SAVED, so no partne
   assert.equal(f.ml().length, 0)
   assert.equal(f.resend().length, 1)
   assert.match(f.resend()[0].body.subject, /^\[NOT SAVED\]/)
+})
+
+test('a failed save shows no partner ID in the alert, and still names the partner', async () => {
+  const f = fakeFetch({ mlStatus: 500 })
+  await run(valid(), f, { ...ENV, RESEND_API_KEY: 'k' })
+  const { text } = f.resend()[0].body
+  assert.ok(!/partner ID/.test(text))
+  assert.ok(text.includes('Jane Doe'))
 })
 
 test('a saved application is marked as saved in the owner email', async () => {
@@ -464,4 +456,203 @@ test('the endpoint is registered in the Vite dev middleware and the page route +
   assert.match(readFileSync(join(ROOT, 'vite.config.js'), 'utf8'), /'referral-apply'/)
   assert.match(readFileSync(join(ROOT, 'src/App.jsx'), 'utf8'), /\[REFERRALS_PATH\]: ReferralsPage/)
   assert.match(readFileSync(join(ROOT, 'src/components/Footer.jsx'), 'utf8'), /Referral Program/)
+})
+
+
+/* ───────── page content, accessibility and behaviour (static checks on the source) ─────────
+   The project has no browser test runner, so these read the component source for the attributes
+   and rules that matter. Real rendering, scrolling, focus and responsive layout are verified by
+   hand in the Browser pane (docs/referral-program-setup.md §11). */
+
+const read = (rel) => readFileSync(join(ROOT, rel), 'utf8')
+const SRC = {
+  faq: read('src/components/referrals/ReferralFAQ.jsx'),
+  form: read('src/components/referrals/ReferralForm.jsx'),
+  rewards: read('src/components/referrals/ReferralRewards.jsx'),
+  hero: read('src/components/referrals/ReferralHero.jsx'),
+  kit: read('src/components/referrals/ReferralKit.jsx'),
+  how: read('src/components/referrals/ReferralHowItWorks.jsx'),
+  terms: read('src/components/referrals/ReferralTerms.jsx'),
+  page: read('src/ReferralsPage.jsx'),
+  css: read('src/index.css'),
+}
+const allReferralSource = Object.values(SRC).join('\n')
+
+test('FAQ is an accessible accordion: button + aria-expanded + aria-controls + labelled region, reduced-motion aware', () => {
+  assert.match(SRC.faq, /<button[\s\S]*?type="button"/)
+  assert.match(SRC.faq, /aria-expanded=\{open\}/)
+  assert.match(SRC.faq, /aria-controls=\{panelId\}/)
+  assert.match(SRC.faq, /role="region"/)
+  assert.match(SRC.faq, /aria-labelledby=\{buttonId\}/)
+  assert.match(SRC.faq, /focus-visible:outline/)
+  assert.match(SRC.css, /\.ref-faq-panel/)
+  assert.match(SRC.css, /prefers-reduced-motion[\s\S]*?\.ref-faq-panel/)
+})
+
+test('the FAQ has the ten required questions, with the specified key facts', () => {
+  const qs = [...SRC.faq.matchAll(/q: '([^']+)'/g)].map((m) => m[1])
+  assert.deepEqual(qs, [
+    'Who can join the referral program?',
+    'How much do I earn?',
+    'What does the referred brand receive?',
+    'When do I get paid?',
+    'Can I refer multiple brands?',
+    'Does the brand need to purchase a service?',
+    'Can I become a strategic partner?',
+    'What if the company already contacted CONVRT?',
+    'Do I need to sell CONVRT’s services?',
+    'Can I track my referrals?',
+  ])
+  assert.match(SRC.faq, /\$150 for an eligible successful referral/)
+  assert.match(SRC.faq, /10% of the first qualifying project payment/)
+  assert.match(SRC.faq, /Two additional ready-to-test video ad variations/)
+  assert.match(SRC.faq, /self-service dashboard is not available at launch/)
+})
+
+test('the form prevents duplicate submits (synchronous ref guard + disabled button) and shows a loading state', () => {
+  assert.match(SRC.form, /if \(inflightRef\.current\) return/)
+  assert.match(SRC.form, /inflightRef\.current = true/)
+  assert.match(SRC.form, /finally \{\s*inflightRef\.current = false/)
+  assert.match(SRC.form, /disabled=\{submitting\}/)
+  assert.match(SRC.form, /Submitting…/)
+  assert.match(SRC.form, /aria-busy=\{submitting\}/)
+})
+
+test('the form is bot-protected, labelled, and shows the specified CTA and confirmation copy', () => {
+  assert.match(SRC.form, /name="hp_check"/)
+  assert.match(SRC.form, /tabIndex=\{-1\}/)
+  assert.match(SRC.form, /Join the Referral Program/)
+  assert.match(SRC.form, /Let’s Become <span className="text-lime">Partners\.<\/span>/)
+  assert.match(SRC.form, /You’re One Step Closer to Becoming a CONVRT Partner\./)
+  assert.match(SRC.form, /If approved, we’ll send\s+you everything you need to start referring\./)
+  assert.match(SRC.form, /role="alert"/)
+  assert.match(SRC.form, /role="status"/)
+  assert.match(SRC.form, /noValidate/)
+})
+
+test('the confirmation and form promise no turnaround time, approval, booking link or payment', () => {
+  const copy = SRC.form.replace(/\/\*[\s\S]*?\*\//g, '')
+  assert.ok(!/within \d|business days|24 hours|48 hours|calendly|BOOKING_URL|you['’]re approved|you have been approved/i.test(copy))
+})
+
+test('reward-card and hero CTAs reach the form: cards preselect, the hero scrolls, both start scrolling at once', () => {
+  assert.match(SRC.rewards, /onSelect\(card\.id\)/)
+  assert.match(SRC.page, /scrollToApply\(\)/)
+  assert.match(SRC.page, /<ReferralRewards onSelect=\{selectProgram\} \/>/)
+  assert.match(SRC.hero, /scrollToApply\(\)/)
+  assert.match(SRC.hero, /href="#apply"/)
+  assert.match(SRC.hero, /goToSection\('how-it-works'\)/)
+  assert.match(SRC.form, /applyCardSelection\(preselect\.card, v\)/)
+  assert.match(SRC.form, /id="apply"/)
+  assert.match(SRC.how, /id="how-it-works"/)
+  // no CTA sends referral visitors to the Roadmap or a booking link
+  assert.ok(!/creative-growth-roadmap|OFFER_PATHS|BOOKING_URL/.test(allReferralSource.replace(/\/\*[\s\S]*?\*\//g, '').replace(/Free Creative Growth Roadmap/g, '')))
+})
+
+test('press feedback and reduced motion: buttons give visible feedback and animations are switched off', () => {
+  assert.match(SRC.rewards, /active:scale-\[0\.97\]/)
+  assert.match(SRC.rewards, /motion-reduce:/)
+  assert.match(read('src/components/referrals/shared.jsx'), /usePressFeedback/)
+  assert.match(SRC.css, /prefers-reduced-motion[\s\S]*?\.ref-pulse/)
+})
+
+test('copy: headline, offer figures and the Creative Upgrade match the brief', () => {
+  assert.match(SRC.hero, /Know a Brand That Needs Better Video Ads\?/)
+  assert.match(SRC.hero, /Let’s Make It a Win for Everyone\./)
+  assert.match(SRC.hero, /Simple introductions\. No selling required\. Rewards for successful referrals\./)
+  assert.match(SRC.rewards, /One Introduction\. Two Winners\./)
+  assert.match(SRC.rewards, /amount: '\$150'/)
+  assert.match(SRC.rewards, /amount: '10%'/)
+  assert.match(SRC.rewards, /Start Referring/)
+  assert.match(SRC.rewards, /Become an Agency Partner/)
+  assert.match(SRC.rewards, /FREE Creative Upgrade/)
+  assert.match(SRC.rewards, /Two additional ready-to-test video ad variations on their first qualifying paid project\./)
+  assert.match(SRC.rewards, /Not a new production: no extra filming, creator sourcing or shoot days/)
+  assert.match(SRC.rewards, /Not exchangeable for cash/)
+  assert.match(SRC.kit, /We Make Referring Easy\./)
+  assert.match(SRC.how, /Three Steps\. One Valuable Introduction\./)
+  assert.match(SRC.page, /CONVRT Referral Partner Program \| Earn Rewards for Introductions/)
+  assert.match(SRC.page, /Refer SaaS and e-commerce brands to CONVRT, earn rewards for successful introductions, and give your connections an exclusive creative upgrade\./)
+  assert.match(SRC.page, /\$\{SITE_URL\}\$\{REFERRALS_PATH\}/)
+})
+
+test('nothing on the page invents statistics, testimonials, earnings, timelines or guarantees', () => {
+  const copy = allReferralSource.replace(/\/\*[\s\S]*?\*\//g, '')
+  assert.ok(!/\b\d+\+\s*(creatives|brands|clients)|testimonial|“[^”]{40,}”|earned \$|average (reward|earning)|guaranteed (results|roas|conversions)/i.test(copy), 'no invented claims')
+  assert.ok(!/within \d+ (days|business days|weeks)|\d+[- ](day|week) (window|payout)|attribution window of/i.test(copy), 'no invented payout / attribution timelines')
+})
+
+test('analytics: V2 event names are used, and no personal data is passed to them', () => {
+  const events = new Set([...allReferralSource.matchAll(/trackEvent\('([a-z_]+)'/g)].map((m) => m[1]))
+  assert.deepEqual([...events].sort(), [
+    'referral_application_error', 'referral_application_submit', 'referral_application_success',
+    'referral_cta_click', 'referral_form_start', 'referral_page_view',
+  ])
+  assert.ok(!/trackEvent\([^)]*(email|fullName|values\.)/.test(allReferralSource))
+  // "submit" is fired when the request starts; "success" only after the server confirmed the save
+  assert.match(SRC.form, /await submitReferral\(values, honeypot\)\s*\n\s*setStatus\('success'\)\s*\n\s*trackEvent\('referral_application_success'\)/)
+})
+
+test('terms cover every required condition and invent no attribution window or payout deadline', () => {
+  const required = [
+    /eligible new clients/i, /approval/i, /attribution/i, /already active/i, /self-referrals/i, /fraudulent or misleading/i,
+    /bulk outreach/i, /One reward structure per qualifying referral/i, /first qualifying payment clears/i, /taxes, refunds/i,
+    /Refunded or cancelled/i, /Production credit/i, /FREE Creative Upgrade/i, /disclose their financial incentive/i,
+    /change or end the program going forward/i, /not removed retroactively/i,
+  ]
+  for (const re of required) assert.match(SRC.terms, re)
+  assert.ok(!/\d+\s*(days|weeks|months)/i.test(SRC.terms.replace(/\/\*[\s\S]*?\*\//g, '')))
+})
+
+test('structured data is generated from the visible FAQ only', () => {
+  assert.match(SRC.page, /FAQS\.map/)
+  assert.ok(!/"@type":\s*"(Review|AggregateRating|Offer|Product)"|aggregateRating/.test(SRC.page))
+})
+
+test('the page is noindex until the launch gate is flipped, with the canonical URL set', () => {
+  assert.match(read('src/config.js'), /export const REFERRALS_INDEXABLE = false/)
+  assert.match(SRC.page, /noindex: !REFERRALS_INDEXABLE/)
+  assert.match(SRC.page, /url: PAGE_URL/)
+  assert.match(read('src/config.js'), /SITE_URL = 'https:\/\/www\.convrt\.studio'/)
+})
+
+/* ───────── partner kit and tracker ───────── */
+
+test('the partner-kit text on the page and in docs/partner-kit.md is identical', () => {
+  const doc = read('docs/partner-kit.md')
+  assert.ok(doc.includes(KIT_EMAIL_SUBJECT))
+  for (const p of KIT_EMAIL_PARAGRAPHS) assert.ok(doc.includes(p), p)
+  assert.ok(doc.includes(KIT_SHORT_MESSAGE))
+  assert.equal(KIT_ITEMS.length, 6)
+})
+
+test('both kit templates include a short financial-referral disclosure', () => {
+  assert.match(KIT_EMAIL_PARAGRAPHS.join(' '), /may receive a referral reward/)
+  assert.match(KIT_SHORT_MESSAGE, /may get a referral reward/)
+})
+
+test('the kit never claims a referral link, portal or automatic delivery', () => {
+  const copy = (SRC.kit + readFileSync(join(ROOT, 'src/lib/partnerKit.js'), 'utf8')).replace(/\/\*[\s\S]*?\*\//g, '')
+  assert.ok(!/referral (link|code)|dashboard|portal|instantly|automatically/i.test(copy))
+  assert.match(SRC.kit, /nothing to download before you apply|There’s nothing to download before you apply/)
+})
+
+test('the manual referral tracker has every required column and the nine statuses are documented', () => {
+  const header = read('docs/referral-tracker-template.csv').split('\n')[0].split(',')
+  for (const col of [
+    'Referral ID', 'Partner ID (MailerLite subscriber ID)', 'Referred company', 'Referred website', 'Submission date',
+    'Referral source', 'Status', 'Attribution decision', 'Qualifying project value (ex. tax)', 'Reward type', 'Reward amount', 'Payment status',
+  ]) assert.ok(header.includes(col), col)
+  const doc = read('docs/referral-program-setup.md')
+  for (const st of ['Submitted', 'Under Review', 'Accepted', 'Rejected', 'Contacted', 'Call Booked', 'Client Won', 'Reward Eligible', 'Reward Paid']) {
+    assert.ok(doc.includes(st), st)
+  }
+})
+
+test('the referral endpoint reuses the shared MailerLite and Resend helpers instead of copying them', () => {
+  for (const f of ['api/free-hooks-subscribe.js', 'api/risk-free-apply.js', 'api/_lib/notify.js', 'api/_lib/subscribe.js', 'api/_lib/apply.js']) {
+    assert.ok(existsSync(join(ROOT, f)), f)
+  }
+  assert.match(read('api/_lib/referral.js'), /from '\.\/notify\.js'/)
+  assert.match(read('api/_lib/referral.js'), /from '\.\/subscribe\.js'/)
 })

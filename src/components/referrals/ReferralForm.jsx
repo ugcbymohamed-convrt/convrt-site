@@ -16,24 +16,25 @@ import { Reveal, Check } from '../roadmap/shared.jsx'
 import { CheckboxField, ErrorText, RadioGroup, TextField } from '../forms/fields.jsx'
 
 /* ─────────────────────────────────────────────
-   REGISTRATION & REFERRAL FORM — one form that joins the program and (optionally)
-   submits a first referral. A referral is never required.
+   REGISTRATION FORM — joins the program. Short on purpose: name, email and partner type are
+   the only answers a visitor must give (plus consent); the program is pre-selected.
 
    • Saved by api/referral-apply.js → MailerLite group + owner email. Nothing is
      auto-approved, no booking link is shown and no payment is promised.
+   • Individual referrals are NOT collected here. They happen after approval, by warm
+     introduction, and are tracked manually (docs/referral-program-setup.md), so no third
+     party's details are ever requested on this page.
    • `preselect` ({ card, id }) comes from the reward cards: the card's program is
-     selected (and "Agency" for the agency card while no partner type is chosen).
+     selected (and "Marketing agency" for the agency card while no partner type is chosen).
    • Duplicate submits are blocked by a ref (synchronous, unlike state) and the
      disabled button; success is shown only after the server confirms it saved.
-   • No third-party email / phone is collected: those fields don't exist and the
-     free-text fields reject anything that looks like one.
-   • Analytics events carry no names, emails or referral details.
+   • Analytics events carry no names, emails or other form contents.
 ───────────────────────────────────────────── */
 
 const NEXT_STEPS = [
-  'Tell us about you and the program you’d like to join. A referral is optional.',
-  'Our team reviews every application by hand and replies by email.',
-  'Final conditions are confirmed with you before you start referring clients.',
+  'We receive your details and review your application by hand.',
+  'If approved, we email you the partner kit and confirm the final conditions with you.',
+  'Then you can introduce brands. We handle the conversation, and rewards follow the program terms.',
 ]
 
 const SUBMIT_ERROR_COPY = {
@@ -58,7 +59,7 @@ export default function ReferralForm({ preselect }) {
   const markStarted = () => {
     if (startedRef.current) return
     startedRef.current = true
-    trackEvent('referrals_form_started')
+    trackEvent('referral_form_start')
   }
 
   const set = (field) => (value) => {
@@ -104,11 +105,11 @@ export default function ReferralForm({ preselect }) {
     inflightRef.current = true
     setSubmitError(null)
     setStatus('submitting')
-    trackEvent('referrals_application_submitted')
+    trackEvent('referral_application_submit')
     try {
       await submitReferral(values, honeypot)
       setStatus('success')
-      trackEvent('referrals_application_success')
+      trackEvent('referral_application_success')
     } catch (err) {
       setStatus('idle')
       if (err?.kind === 'invalid') {
@@ -121,18 +122,11 @@ export default function ReferralForm({ preselect }) {
       } else {
         const kind = err?.kind in SUBMIT_ERROR_COPY ? err.kind : 'unavailable'
         setSubmitError(kind)
-        trackEvent('referrals_application_error', { reason: kind })
+        trackEvent('referral_application_error', { reason: kind })
       }
     } finally {
       inflightRef.current = false
     }
-  }
-
-  // "Introduce another brand": keep who the partner is, clear the referral and confirmation.
-  const startAnother = () => {
-    setValues((v) => ({ ...v, referredCompany: '', referredWebsite: '', referralNotes: '' }))
-    setErrors({})
-    setStatus('idle')
   }
 
   return (
@@ -155,11 +149,10 @@ export default function ReferralForm({ preselect }) {
                 tabIndex={-1}
                 className="mt-5 font-display text-[1.9rem] font-bold leading-[1.18] tracking-display text-ink outline-none sm:text-4xl md:text-[2.75rem]"
               >
-                Become a <span className="text-lime">Referral Partner.</span>
+                Let’s Become <span className="text-lime">Partners.</span>
               </h2>
               <p className="mt-4 text-base leading-relaxed text-ink-muted md:text-lg">
-                Tell us a little about you. Have a brand in mind already? Add it, or join now and introduce someone
-                later. Joining doesn’t require a referral.
+                Join the program and start introducing brands that could benefit from better video creatives.
               </p>
 
               <div className="mt-8 hidden rounded-3xl border border-hairline bg-surface-1/60 p-6 lg:block">
@@ -173,7 +166,7 @@ export default function ReferralForm({ preselect }) {
           <div className="lg:col-span-7">
             <div className="rounded-3xl border border-hairline-strong bg-surface-1 p-5 shadow-[0_40px_90px_-40px_rgba(0,0,0,0.8)] sm:p-8">
               {status === 'success' ? (
-                <Received headingRef={successHeadingRef} onAnother={startAnother} />
+                <Received headingRef={successHeadingRef} />
               ) : (
                 <form ref={formRef} onSubmit={onSubmit} noValidate aria-label="Referral Partner Program registration" aria-busy={submitting}>
                   <div className="space-y-7">
@@ -196,7 +189,7 @@ export default function ReferralForm({ preselect }) {
                         />
                         <RadioGroup
                           name="program" legend="Program" options={PROGRAM_OPTIONS} columns={2}
-                          hint="Agency / Strategic Partner requires approval by CONVRT. See the reward cards above for the details of each."
+                          hint="Agency & Strategic Partner requires approval by CONVRT. See the reward cards above for the details of each."
                           value={values.program} error={errors.program} onChange={set('program')}
                         />
                         <TextField
@@ -211,36 +204,6 @@ export default function ReferralForm({ preselect }) {
                         />
                       </div>
                     </div>
-
-                    {/* Optional first referral */}
-                    <fieldset className="min-w-0 border-t border-hairline pt-7">
-                      <legend className="sr-only">Optional: introduce a brand</legend>
-                      <h3 className="font-display text-xl font-bold tracking-snug text-ink" aria-hidden="true">
-                        Have a brand in mind? <span className="text-base font-normal text-ink-muted">(Optional)</span>
-                      </h3>
-                      <p className="mt-1 text-sm leading-relaxed text-ink-muted">
-                        You can join without introducing anyone. If you do, share the company only. Please don’t include
-                        anyone’s personal email address or phone number; we’ll ask for contact details later, with the
-                        right permission.
-                      </p>
-                      <div className="mt-5 space-y-5">
-                        <TextField
-                          name="referredCompany" optional label="Referred company name" maxLength={LIMITS.company}
-                          value={values.referredCompany} error={errors.referredCompany} readOnly={submitting} onChange={set('referredCompany')}
-                        />
-                        <TextField
-                          name="referredWebsite" optional label="Referred company website" autoComplete="off" inputMode="url"
-                          autoCapitalize="none" spellCheck={false} placeholder="theirbrand.com" maxLength={LIMITS.website}
-                          value={values.referredWebsite} error={errors.referredWebsite} readOnly={submitting} onChange={set('referredWebsite')}
-                        />
-                        <TextField
-                          name="referralNotes" multiline optional label="Short description of the opportunity"
-                          hint="What they do and why they might need video ads. Mention if they’ve already spoken with CONVRT."
-                          maxLength={LIMITS.notes}
-                          value={values.referralNotes} error={errors.referralNotes} readOnly={submitting} onChange={set('referralNotes')}
-                        />
-                      </div>
-                    </fieldset>
 
                     {/* Honeypot — hidden from people and assistive tech; bots fill it in.
                         Not named "company": browsers autofill that, and this form has a real company field. */}
@@ -289,7 +252,7 @@ export default function ReferralForm({ preselect }) {
                           )}
                         </button>
                         <p className="mt-3 text-center text-sm text-ink-muted" role="status">
-                          {submitting ? 'Sending your application…' : 'Free to join. Participation isn’t guaranteed and rewards depend on the program terms below.'}
+                          {submitting ? 'Sending your application…' : 'Free to join. Approval isn’t guaranteed, and rewards depend on the program terms below.'}
                         </p>
                       </div>
                     </div>
@@ -324,34 +287,24 @@ function NextSteps() {
 }
 
 /* Shown only after the server has saved the application. No booking link, no approval,
-   no promise of payment. */
-function Received({ headingRef, onAnother }) {
+   no promise of payment and no review turnaround time. */
+function Received({ headingRef }) {
   return (
     <div className="cs-fade-up px-1 py-4 text-center sm:py-8" role="status">
       <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full border border-lime/40 bg-lime/10 text-lime">
         <Check className="h-6 w-6" />
       </div>
-      <h3 ref={headingRef} tabIndex={-1} className="mt-6 font-display text-3xl font-bold tracking-display text-ink outline-none">
-        Application received!
+      <h3 ref={headingRef} tabIndex={-1} className="mt-6 font-display text-2xl font-bold leading-tight tracking-display text-ink outline-none sm:text-3xl">
+        You’re One Step Closer to Becoming a CONVRT Partner.
       </h3>
       <p className="mx-auto mt-4 max-w-md text-base leading-relaxed text-ink-muted">
-        Thanks for your interest in the CONVRT Referral Partner Program. Our team reviews every application and will
-        reply by email. Final conditions are confirmed with you before you start referring clients.
+        Thanks for your interest! We’ve received your details and will review your application. If approved, we’ll send
+        you everything you need to start referring.
       </p>
-      <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-ink-muted">
-        Receiving this message doesn’t guarantee acceptance or a reward.
-      </p>
-      <div className="mt-8 flex flex-col items-stretch justify-center gap-3 sm:flex-row sm:items-center">
-        <button
-          type="button"
-          onClick={onAnother}
-          className="inline-flex min-h-[48px] items-center justify-center rounded-full border border-hairline-strong px-6 py-3 text-sm font-semibold text-ink transition-colors hover:border-lime/50 hover:text-lime focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-lime"
-        >
-          Introduce another brand
-        </button>
+      <div className="mt-8 flex justify-center">
         <a
           href="/"
-          className="inline-flex min-h-[48px] items-center justify-center rounded-full px-6 py-3 text-sm font-semibold text-ink-muted transition-colors hover:text-lime focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-lime"
+          className="inline-flex min-h-[48px] items-center justify-center rounded-full border border-hairline-strong px-6 py-3 text-sm font-semibold text-ink transition-colors hover:border-lime/50 hover:text-lime focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-lime"
         >
           Back to home
         </a>

@@ -3,7 +3,8 @@ import SectionDivider from './components/SectionDivider.jsx'
 import ReferralHero from './components/referrals/ReferralHero.jsx'
 import ReferralRewards from './components/referrals/ReferralRewards.jsx'
 import ReferralHowItWorks from './components/referrals/ReferralHowItWorks.jsx'
-import ReferralWhoCanJoin from './components/referrals/ReferralWhoCanJoin.jsx'
+import ReferralWhyRefer from './components/referrals/ReferralWhyRefer.jsx'
+import ReferralKit from './components/referrals/ReferralKit.jsx'
 import ReferralForm from './components/referrals/ReferralForm.jsx'
 import ReferralTerms from './components/referrals/ReferralTerms.jsx'
 import ReferralFAQ, { FAQS } from './components/referrals/ReferralFAQ.jsx'
@@ -15,20 +16,24 @@ import { REFERRALS_INDEXABLE, REFERRALS_PATH, SITE_URL } from './config.js'
 /* ─────────────────────────────────────────────
    /referrals — Referral Partner Program.
 
-   Page = hero · rewards · how it works · who can join · form · terms · FAQ (+ the site
-   footer from App). Applications go to api/referral-apply.js (MailerLite + owner email)
-   for manual review; nothing is auto-approved and no payment is promised.
-   Setup: docs/referral-program-setup.md.
+   Page = hero · everyone wins (rewards + FREE Creative Upgrade) · how it works · why refer ·
+   partner kit preview · registration form · terms · FAQ (+ the site footer from App).
+   Registrations go to api/referral-apply.js (MailerLite + owner email) for manual review;
+   nothing is auto-approved and no payment is promised. Individual referrals are tracked
+   manually. Setup: docs/referral-program-setup.md.
 
-   Analytics events (src/lib/analytics.js): referrals_page_view, referrals_apply_click,
-   referrals_how_it_works_click, referrals_form_started, referrals_application_submitted,
-   referrals_application_success, referrals_application_error. No personal data.
+   Analytics (src/lib/analytics.js, no personal data):
+     referral_page_view · referral_cta_click · referral_form_start ·
+     referral_application_submit · referral_application_success · referral_application_error
+   PRIMARY CONVERSION: referral_application_success (a saved partner application).
+   BUSINESS KPI (not trackable on the page): qualified referrals that become paying clients,
+   counted in the manual referral tracker.
 ───────────────────────────────────────────── */
 
 const PAGE_URL = `${SITE_URL}${REFERRALS_PATH}`
-const PAGE_TITLE = 'Referral Partner Program | Get Rewarded for Introductions | CONVRT'
+const PAGE_TITLE = 'CONVRT Referral Partner Program | Earn Rewards for Introductions'
 const PAGE_DESCRIPTION =
-  'Know a brand that needs better-performing video ads? Introduce them to CONVRT and get rewarded when they become a client. Join the Referral Partner Program.'
+  'Refer SaaS and e-commerce brands to CONVRT, earn rewards for successful introductions, and give your connections an exclusive creative upgrade.'
 
 /* FAQPage structured data built from the FAQ shown on the page, so it can never drift from it. */
 function useFaqStructuredData() {
@@ -71,7 +76,7 @@ export default function ReferralsPage() {
     captureAttribution()
     if (viewed.current) return // StrictMode double-invokes effects in dev
     viewed.current = true
-    trackEvent('referrals_page_view')
+    trackEvent('referral_page_view')
   }, [])
 
   return (
@@ -82,7 +87,9 @@ export default function ReferralsPage() {
       <SectionDivider />
       <ReferralHowItWorks />
       <SectionDivider />
-      <ReferralWhoCanJoin />
+      <ReferralWhyRefer />
+      <SectionDivider />
+      <ReferralKit />
       <SectionDivider />
       <ReferralForm preselect={preselect} />
       <ReferralTerms />

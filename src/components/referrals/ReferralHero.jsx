@@ -3,25 +3,25 @@ import { scrollToApply } from '../../lib/roadmapForm.js'
 import { Arrow, ScrollCta, goToSection } from './shared.jsx'
 
 /* ─────────────────────────────────────────────
-   HERO — headline, supporting copy, two CTAs (form / explanation), one credibility
-   line and a lightweight CSS + SVG "You Refer → We Create → You Get Rewarded" graphic.
+   HERO — headline, supporting copy, two CTAs (form / explanation), one trust line and a
+   lightweight CSS + SVG journey: You introduce → CONVRT creates → You get rewarded, with a
+   secondary note that the referred brand gets the FREE Creative Upgrade.
 
-   Credibility line: uses ONLY the production figure already published on the
-   homepage (Founder section: "750+ creatives produced"). Nothing new is claimed.
+   No statistics, testimonials or earnings are claimed here.
 ───────────────────────────────────────────── */
 
 const JOURNEY = [
   {
-    title: 'You Refer',
-    note: 'Introduce a brand that needs better-performing video ads.',
+    title: 'You introduce a brand',
+    note: 'A SaaS or e-commerce brand that could use better video ads.',
     tone: 'lime',
     icon: (
       <path d="M4 12h12m0 0-5-5m5 5-5 5M20 5v14" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
     ),
   },
   {
-    title: 'We Create',
-    note: 'We review the fit and, when it makes sense, make the ads.',
+    title: 'CONVRT creates the videos',
+    note: 'We review the fit and, when it makes sense, handle the creative and production conversation.',
     tone: 'ink',
     icon: (
       <>
@@ -31,7 +31,7 @@ const JOURNEY = [
     ),
   },
   {
-    title: 'You Get Rewarded',
+    title: 'You get rewarded',
     note: 'Receive your reward once the program conditions are met.',
     tone: 'magenta',
     icon: (
@@ -68,20 +68,21 @@ export default function ReferralHero() {
             <div className="inline-flex max-w-full items-center gap-2 rounded-2xl border border-hairline bg-surface-1/60 px-3.5 py-1.5 backdrop-blur sm:rounded-full">
               <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-lime" aria-hidden="true" />
               <span className="text-[10px] font-medium uppercase tracking-[0.14em] text-ink-muted min-[400px]:text-[11px] min-[400px]:tracking-[0.16em] sm:text-xs sm:tracking-[0.18em]">
-                Referral Partner Program
+                CONVRT Referral Partner Program
               </span>
             </div>
 
             <h1
               id="referrals-h1"
-              className="mt-6 font-display font-bold text-ink tracking-display-xl leading-[1.05] text-[2.5rem] min-[400px]:text-[3rem] sm:text-[3.6rem] md:text-[4.2rem] lg:text-[3.4rem] xl:text-[4.2rem]"
+              className="mt-6 font-display font-bold text-ink tracking-display-xl leading-[1.08] text-[2.15rem] min-[400px]:text-[2.6rem] sm:text-[3.1rem] md:text-[3.6rem] lg:text-[3.05rem] xl:text-[3.6rem]"
             >
-              Great Connections Deserve <span className="text-lime">Great Rewards.</span>
+              Know a Brand That Needs Better Video Ads?{' '}
+              <span className="text-lime">Let’s Make It a Win for Everyone.</span>
             </h1>
 
             <p className="mt-6 max-w-xl text-base leading-relaxed text-ink-muted md:text-lg">
-              Know a brand that needs better-performing video ads? Introduce them to CONVRT and get rewarded when
-              they become a client.
+              Introduce SaaS and e-commerce brands to CONVRT. Earn rewards when they become clients, and give them an
+              exclusive creative upgrade.
             </p>
 
             <div className="mt-8 flex flex-col items-stretch gap-3 sm:flex-row sm:items-center">
@@ -90,7 +91,7 @@ export default function ReferralHero() {
                 variant="primary"
                 className="w-full sm:w-auto min-h-[56px] md:min-h-[60px]"
                 onGo={() => {
-                  trackEvent('referrals_apply_click', { location: 'hero' })
+                  trackEvent('referral_cta_click', { location: 'hero' })
                   scrollToApply()
                 }}
               >
@@ -101,7 +102,7 @@ export default function ReferralHero() {
                 variant="ghost"
                 className="w-full sm:w-auto min-h-[56px] md:min-h-[60px]"
                 onGo={() => {
-                  trackEvent('referrals_how_it_works_click', { location: 'hero' })
+                  trackEvent('referral_cta_click', { location: 'hero_how_it_works' })
                   goToSection('how-it-works')
                 }}
               >
@@ -111,10 +112,7 @@ export default function ReferralHero() {
 
             <p className="mt-6 flex max-w-xl items-start gap-2.5 text-sm leading-relaxed text-ink-muted">
               <span className="mt-[7px] h-1.5 w-1.5 shrink-0 rounded-full bg-magenta" aria-hidden="true" />
-              <span>
-                <span className="font-semibold text-ink">750+ creatives produced</span> by CONVRT for
-                e-commerce, SaaS and retail brands, including returning clients and long-term retainers.
-              </span>
+              <span>Simple introductions. No selling required. Rewards for successful referrals.</span>
             </p>
           </div>
 
@@ -122,7 +120,7 @@ export default function ReferralHero() {
           <div className="min-w-0 lg:col-span-5">
             <div className="rounded-3xl border border-hairline-strong bg-surface-1 p-6 shadow-[0_40px_90px_-40px_rgba(0,0,0,0.8)] sm:p-8">
               <p className="text-xs font-semibold uppercase tracking-[0.16em] text-lime">The referral journey</p>
-              <ol className="mt-6" aria-label="The referral journey: You Refer, We Create, You Get Rewarded">
+              <ol className="mt-6" aria-label="The referral journey: you introduce a brand, CONVRT creates the videos, you get rewarded">
                 {JOURNEY.map((step, i) => {
                   const last = i === JOURNEY.length - 1
                   return (
@@ -142,7 +140,7 @@ export default function ReferralHero() {
                         </span>
                       )}
                       <div className="min-w-0 pt-0.5">
-                        <p className="font-display text-xl font-bold leading-tight tracking-snug text-ink">
+                        <p className="font-display text-lg font-bold uppercase leading-tight tracking-snug text-ink sm:text-xl">
                           <span className="mr-2 text-sm font-semibold tabular-nums text-ink-muted" aria-hidden="true">0{i + 1}</span>
                           {step.title}
                         </p>
@@ -152,6 +150,19 @@ export default function ReferralHero() {
                   )
                 })}
               </ol>
+
+              {/* Secondary indication: what the referred brand receives. */}
+              <div className="mt-6 flex items-start gap-3 rounded-2xl border border-dashed border-magenta/40 bg-magenta/[0.06] p-4">
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-magenta/40 bg-magenta/10 text-magenta">
+                  <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" aria-hidden="true">
+                    <path d="M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8L12 3ZM18.5 15l.8 2.2 2.2.8-2.2.8-.8 2.2-.8-2.2-2.2-.8 2.2-.8.8-2.2Z" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" />
+                  </svg>
+                </span>
+                <p className="text-sm leading-snug text-ink-muted">
+                  <span className="font-semibold text-ink">Your referral gets a FREE Creative Upgrade:</span> two extra
+                  ad variations on their first qualifying paid video project.
+                </p>
+              </div>
             </div>
           </div>
         </div>

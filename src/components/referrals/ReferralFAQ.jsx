@@ -8,46 +8,50 @@ import { Reveal, SectionHeader } from '../roadmap/shared.jsx'
    motion turns the transition off.
 
    Answers restate the program terms only. They deliberately give NO payout timeline,
-   minimum project size or attribution window: those are confirmed with each partner.
+   minimum project size or attribution window: those are agreed with each partner.
    The same array feeds the FAQPage structured data in ReferralsPage.jsx.
 ───────────────────────────────────────────── */
 
 export const FAQS = [
   {
-    q: 'Who can join the CONVRT Referral Partner Program?',
-    a: 'Existing CONVRT clients, marketing agencies, growth consultants, UGC creators and video professionals, founders, and marketing professionals with relevant networks. Every application is reviewed by CONVRT, and agencies and strategic partners need approval before participating.',
+    q: 'Who can join the referral program?',
+    a: 'Existing clients, founders, creators, consultants, agencies, and relevant professionals can apply. Participation is subject to approval and eligibility.',
   },
   {
-    q: 'How much can I earn for a successful referral?',
-    a: 'Standard referrals earn a one-time $150 reward per qualifying new client. Approved agency and strategic partners earn a one-time 10% of the first eligible project payment, excluding taxes, refunds, and third-party pass-through costs. Neither option is recurring, and the two can’t automatically be combined.',
+    q: 'How much do I earn?',
+    a: 'Standard partners earn $150 for an eligible successful referral, as cash or as production credit. Approved agencies earn 10% of the first qualifying project payment.',
   },
   {
-    q: 'What counts as a successful referral?',
-    a: 'A new brand you introduced that CONVRT confirms as eligible, that becomes a paying client, and whose first qualifying payment clears. CONVRT confirms attribution and eligibility. Self-referrals and fraudulent submissions are excluded, and existing opportunities may be too.',
+    q: 'What does the referred brand receive?',
+    a: 'Two additional ready-to-test video ad variations on its first qualifying paid video project. They are edit-based variations of the approved project assets, in addition to the package’s standard deliverables, and can’t be exchanged for cash.',
   },
   {
-    q: 'When will I receive my reward?',
-    a: 'Only after the referred client’s first qualifying payment has cleared and remains non-refundable. The payment method and final payout conditions, including timing, are agreed with you before you start referring clients.',
+    q: 'When do I get paid?',
+    a: 'After the referred client completes its first qualifying payment, the payment clears and remains non-refundable, and CONVRT confirms eligibility. Payment method and payout timing are agreed with the partner.',
   },
   {
-    q: 'Can I refer multiple clients?',
-    a: 'Yes. There’s no limit on the number of eligible referrals under the Standard Referral program. Each introduction is assessed on its own, so please send relevant, genuine introductions rather than lists.',
+    q: 'Can I refer multiple brands?',
+    a: 'Yes. Each eligible new client can generate a separate reward.',
   },
   {
-    q: 'Do I need to be a CONVRT client to participate?',
-    a: 'No. Clients are welcome, but so are agencies, consultants, creators, founders, and other professionals whose networks include brands that need video ads.',
+    q: 'Does the brand need to purchase a service?',
+    a: 'Yes. Registration, introductions, and free consultations alone do not trigger rewards.',
   },
   {
-    q: 'Can marketing agencies become referral partners?',
-    a: 'Yes. Agencies can apply to the Agency / Strategic Partner program. It requires approval by CONVRT before participation, and the final conditions are confirmed with you before you start referring.',
+    q: 'Can I become a strategic partner?',
+    a: 'Yes. Agencies and consultants may apply for the strategic partnership program. It requires approval by CONVRT before participation.',
   },
   {
-    q: 'What happens if the company has already contacted CONVRT?',
-    a: 'Let us know in your submission. Existing opportunities or previously active sales conversations may be excluded, and CONVRT confirms attribution and eligibility on a case-by-case basis.',
+    q: 'What if the company already contacted CONVRT?',
+    a: 'Previously active prospects may be excluded. CONVRT must confirm referral attribution.',
   },
   {
-    q: 'How do I know whether my referral was accepted?',
-    a: 'Our team reviews every submission and replies by email. Joining or submitting a referral doesn’t guarantee acceptance or a reward, and nothing is approved automatically.',
+    q: 'Do I need to sell CONVRT’s services?',
+    a: 'No. Make the introduction and CONVRT handles the conversation.',
+  },
+  {
+    q: 'Can I track my referrals?',
+    a: 'Partners can request a status update from CONVRT. A self-service dashboard is not available at launch.',
   },
 ]
 

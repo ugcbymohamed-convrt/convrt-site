@@ -2,20 +2,27 @@ import { Reveal } from '../roadmap/shared.jsx'
 
 /* ─────────────────────────────────────────────
    PROGRAM TERMS & ELIGIBILITY — a plain-language summary, NOT a legal agreement.
-   ⚠ Needs formal legal review before launch (see docs/referral-program-setup.md).
+   It invents no attribution window, payout deadline or minimum project size: those are left to
+   each partner agreement. ⚠ Needs legal review and owner sign-off on the open points listed in
+   docs/referral-program-setup.md before the page is made public.
 ───────────────────────────────────────────── */
 
 export const TERMS = [
   'Rewards apply only to eligible new clients.',
+  'Participation requires CONVRT’s approval. Agency & Strategic Partners always need explicit approval.',
   'CONVRT must confirm referral attribution and eligibility.',
-  'Existing opportunities or previously active sales conversations may be excluded.',
-  'Self-referrals and fraudulent submissions are excluded.',
-  'Rewards are payable only after the qualifying client payment clears and remains non-refundable.',
-  'Taxes, refunds, and third-party pass-through costs are excluded from percentage-based rewards.',
-  'Agency commissions require approval.',
-  'The two reward structures cannot automatically be combined.',
-  'Participation does not guarantee acceptance or payment.',
-  'Payment method and final payout conditions must be agreed upon with the partner.',
+  'Prospects who were already active with CONVRT may be excluded.',
+  'No self-referrals.',
+  'No fraudulent or misleading submissions.',
+  'No unsolicited bulk outreach on CONVRT’s behalf.',
+  'One reward structure per qualifying referral. The $150 reward and the 10% commission can’t be combined.',
+  'Rewards are payable only after the referred client’s first qualifying payment clears and remains non-refundable. Payment method and timing are agreed with the partner.',
+  'The 10% commission excludes taxes, refunds, and third-party pass-through costs.',
+  'Refunded or cancelled projects may not qualify for a reward.',
+  'Production credit applies to eligible CONVRT services only. Its conditions are confirmed with the partner.',
+  'The FREE Creative Upgrade applies to the first qualifying paid video project: two additional edit-based variations made from approved project assets, not exchangeable for cash. Eligibility and specifications are confirmed before purchase.',
+  'Partners should disclose their financial incentive when making a referral, where required.',
+  'CONVRT may change or end the program going forward. Rewards already earned under confirmed terms are not removed retroactively.',
 ]
 
 export default function ReferralTerms() {
@@ -36,8 +43,8 @@ export default function ReferralTerms() {
                   Terms &amp; eligibility
                 </h2>
                 <p className="mt-3 text-sm leading-relaxed text-ink-muted">
-                  A short summary of how the program works. The final conditions are communicated and confirmed with
-                  you before you start referring clients.
+                  A plain-language summary of how the program works, not a legal agreement. Final conditions are
+                  confirmed with each partner before they start referring clients.
                 </p>
               </div>
               <ul className="grid grid-cols-1 gap-x-8 gap-y-3.5 sm:grid-cols-2 lg:col-span-8">

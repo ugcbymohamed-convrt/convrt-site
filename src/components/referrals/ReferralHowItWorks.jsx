@@ -7,16 +7,16 @@ import { Reveal, SectionHeader } from '../roadmap/shared.jsx'
 
 const STEPS = [
   {
-    title: 'Make an Introduction',
-    text: 'Tell us about a brand or business that could benefit from CONVRT’s video production services.',
+    title: 'Make the Introduction',
+    text: 'Know a brand that could benefit from better video ads? Introduce them to CONVRT or share your referral invitation.',
   },
   {
     title: 'We Take It From There',
-    text: 'Our team reviews the introduction, connects with the brand when appropriate, and explores whether we’re a good fit.',
+    text: 'We review the opportunity, connect with the brand when appropriate, and handle the creative and production conversation.',
   },
   {
-    title: 'Get Rewarded',
-    text: 'When your qualified referral becomes a paying client and meets the program conditions, you receive your reward.',
+    title: 'Everyone Wins',
+    text: 'When your referral becomes an eligible paying client, you receive your reward and they receive their FREE Creative Upgrade.',
   },
 ]
 
@@ -30,8 +30,8 @@ export default function ReferralHowItWorks() {
     >
       <div className="mx-auto max-w-7xl px-5 md:px-8">
         <Reveal>
-          <SectionHeader id="how-heading" eyebrow="How it works" title="Simple for you. Handled by us.">
-            Three steps, and most of the work is ours.
+          <SectionHeader id="how-heading" eyebrow="How it works" title="Three Steps. One Valuable Introduction.">
+            Simple for you, and most of the work is ours.
           </SectionHeader>
         </Reveal>
 
@@ -75,7 +75,7 @@ export default function ReferralHowItWorks() {
 
         <Reveal delay={200}>
           <p className="mx-auto mt-12 max-w-2xl text-center text-sm leading-relaxed text-ink-muted">
-            Not every introduction becomes a client, and that’s fine. We’ll only reach out when it makes sense for the brand.
+            Not every introduction qualifies or becomes a client, and that’s fine. Rewards and the Creative Upgrade apply only to eligible referrals confirmed by CONVRT.
           </p>
         </Reveal>
       </div>
