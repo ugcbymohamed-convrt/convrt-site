@@ -45,7 +45,10 @@ Redeploy afterwards. Until both exist the endpoint answers `503` and the form sh
 false "Application received!". Local dev: add the same variables to `.env.local`; `npm run dev` serves the real
 handler at `/api/risk-free-apply`.
 
-### Optional: instant email alert for every application
+### Optional: instant email alert for every application (and every free-hooks signup)
+
+The same `RESEND_API_KEY` also alerts you to every `/free-hooks` signup (email, industry, new/repeat, confirmed or
+not, tips-and-offers consent). Code: `api/_lib/notify.js`.
 
 Each saved application can also email `mohamed@convrt.studio` (name, email, website, every answer; **Reply** goes
 to the applicant). It uses [Resend](https://resend.com) and is off until the key exists.

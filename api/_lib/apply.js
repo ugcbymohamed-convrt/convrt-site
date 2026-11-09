@@ -23,6 +23,7 @@
 ───────────────────────────────────────────── */
 
 import { MAILERLITE_ENDPOINT } from './subscribe.js'
+import { sendOwnerAlert, RESEND_ENDPOINT, DEFAULT_NOTIFY_TO, DEFAULT_NOTIFY_FROM } from './notify.js'
 import { normalizeApplication, validateApplication } from '../../src/lib/riskFreeQuestions.js'
 
 export const RISK_FREE_GROUP_ENV = 'MAILERLITE_GROUP_RISK_FREE_ID'
@@ -38,87 +39,31 @@ function logUpstream(kind, detail) {
   console.error(`[risk-free] ${kind}`, detail)
 }
 
-/* ─────────────────────────────────────────────
-   Owner alert: one email per saved application, sent through Resend
-   (POST https://api.resend.com/emails).
+/* Owner alert (optional, best-effort): see ./notify.js. */
+export { RESEND_ENDPOINT, DEFAULT_NOTIFY_TO, DEFAULT_NOTIFY_FROM }
 
-   • Entirely optional: with no RESEND_API_KEY nothing is sent and nothing changes.
-   • Best-effort: the application is already safe in MailerLite by the time this
-     runs, so a failure here is logged (no personal data) and never shown to the
-     applicant or turned into an error.
-   • Awaited with a short timeout (serverless functions are frozen once they
-     respond, so a fire-and-forget request could be dropped).
-   • Reply-To is the applicant, so "Reply" in the inbox goes straight to them.
-───────────────────────────────────────────── */
-
-export const RESEND_ENDPOINT = 'https://api.resend.com/emails'
-export const DEFAULT_NOTIFY_TO = 'mohamed@convrt.studio'
-// Resend's shared test sender: it only delivers to the Resend account owner's own
-// address. Set NOTIFY_EMAIL_FROM to an address on a verified domain to lift that.
-export const DEFAULT_NOTIFY_FROM = 'CONVRT Site <onboarding@resend.dev>'
-const NOTIFY_TIMEOUT_MS = 4000
-
-const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c])
-const oneLine = (s) => String(s).replace(/[\r\n]+/g, ' ').trim()
-
-export function buildNotification(app, env = process.env) {
-  const rows = [
-    ['Name', app.fullName],
-    ['Email', app.email],
-    ['Website', app.website],
-    ['Business', app.businessType],
-    ['Monthly ad spend', app.adSpend],
-    ['Video ads per month', app.videosPerMonth],
-    ['Video type to test', app.videoType],
-    ['Timeline', app.timeline],
-    ['Ongoing interest', app.ongoing],
-    ['Brief', app.brief || '(none)'],
-  ]
-  const text = [
-    'New application for the 1 FREE video production.',
-    '',
-    ...rows.map(([k, v]) => `${k}: ${v}`),
-    '',
-    'Saved in MailerLite (group: Free Video Applications). Reply to this email to reach the applicant.',
-  ].join('\n')
-  const html =
-    '<p><strong>New application for the 1 FREE video production.</strong></p>' +
-    '<table cellpadding="6" style="border-collapse:collapse;font-family:sans-serif;font-size:14px">' +
-    rows.map(([k, v]) => `<tr><td style="color:#666;vertical-align:top;white-space:nowrap">${esc(k)}</td><td style="white-space:pre-wrap">${esc(v)}</td></tr>`).join('') +
-    '</table>' +
-    '<p style="color:#666;font-size:12px">Saved in MailerLite. Reply to this email to reach the applicant.</p>'
-
-  return {
-    from: String(env.NOTIFY_EMAIL_FROM || '').trim() || DEFAULT_NOTIFY_FROM,
-    to: [String(env.NOTIFY_EMAIL_TO || '').trim() || DEFAULT_NOTIFY_TO],
-    reply_to: app.email,
-    subject: oneLine(`New free video application: ${app.fullName}`).slice(0, 150),
-    text,
-    html,
-  }
-}
-
-export async function notifyOwner(app, { env = process.env, fetchImpl = globalThis.fetch } = {}) {
-  const key = String(env.RESEND_API_KEY || '').trim()
-  if (!key) return false
-
-  const controller = new AbortController()
-  const timer = setTimeout(() => controller.abort(), NOTIFY_TIMEOUT_MS)
-  try {
-    const res = await fetchImpl(RESEND_ENDPOINT, {
-      method: 'POST',
-      headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify(buildNotification(app, env)),
-      signal: controller.signal,
-    })
-    if (res.status >= 200 && res.status < 300) return true
-    logUpstream('notify_failed', { status: res.status })
-  } catch (err) {
-    logUpstream('notify_error', { name: err?.name })
-  } finally {
-    clearTimeout(timer)
-  }
-  return false
+export function notifyOwner(app, { env = process.env, fetchImpl = globalThis.fetch } = {}) {
+  return sendOwnerAlert(
+    {
+      subject: `New free video application: ${app.fullName}`,
+      title: 'New application for the 1 FREE video production.',
+      rows: [
+        ['Name', app.fullName],
+        ['Email', app.email],
+        ['Website', app.website],
+        ['Business', app.businessType],
+        ['Monthly ad spend', app.adSpend],
+        ['Video ads per month', app.videosPerMonth],
+        ['Video type to test', app.videoType],
+        ['Timeline', app.timeline],
+        ['Ongoing interest', app.ongoing],
+        ['Brief', app.brief || '(none)'],
+      ],
+      footer: 'Saved in MailerLite (group: Free Video Applications). Reply to this email to reach the applicant.',
+      replyTo: app.email,
+    },
+    { env, fetchImpl, log: logUpstream },
+  )
 }
 
 export async function processApplication({ body, env = process.env, fetchImpl = globalThis.fetch }) {

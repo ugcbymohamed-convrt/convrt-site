@@ -20,6 +20,8 @@
    The API token only ever lives in process.env (Vercel project settings).
 ───────────────────────────────────────────── */
 
+import { sendOwnerAlert } from './notify.js'
+
 export const MAILERLITE_ENDPOINT = 'https://connect.mailerlite.com/api/subscribers'
 
 /* industry key → env var holding that MailerLite group's numeric ID */
@@ -27,6 +29,8 @@ export const INDUSTRY_GROUP_ENV = {
   saas: 'MAILERLITE_GROUP_SAAS_ID',
   ecommerce: 'MAILERLITE_GROUP_ECOMMERCE_ID',
 }
+
+const INDUSTRY_LABEL = { saas: 'SaaS / Software', ecommerce: 'E-commerce / DTC' }
 
 /* Optional: a third group that only consenting contacts are added to, so
    marketing/nurture emails can be limited to people who ticked the box. */
@@ -126,6 +130,22 @@ export async function processSignup({ body, env = process.env, fetchImpl = globa
       logUpstream('cannot_resubscribe', { status })
       return json(409, { ok: false, error: 'cannot_subscribe' })
     }
+    await sendOwnerAlert(
+      {
+        subject: `New free hooks signup: ${INDUSTRY_LABEL[parsed.industry]}`,
+        title: 'Someone just requested the 10 FREE ad hooks.',
+        rows: [
+          ['Email', parsed.email],
+          ['Industry', INDUSTRY_LABEL[parsed.industry]],
+          ['New or repeat', res.status === 201 ? 'New subscriber' : 'Already on the list'],
+          ['Email confirmed', status === 'unconfirmed' ? 'Not yet (waiting on the confirmation email)' : 'Yes'],
+          ['OK to send tips and offers', parsed.marketingConsent ? 'Yes' : 'No'],
+        ],
+        footer: 'Saved in MailerLite. Reply to this email to reach them.',
+        replyTo: parsed.email,
+      },
+      { env, fetchImpl, log: logUpstream },
+    )
     return json(200, { ok: true, confirmation: status === 'unconfirmed' })
   }
 

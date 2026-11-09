@@ -151,3 +151,79 @@ test('handler: 405 for GET, 403 for cross-origin, 400 for unparseable body, 503 
   assert.equal(r.status, 503)
   assert.equal(r.headers['cache-control'], 'no-store')
 })
+
+/* ───────── owner alert (Resend) ───────── */
+import { RESEND_ENDPOINT, DEFAULT_NOTIFY_TO } from '../api/_lib/notify.js'
+
+const twoServiceFetch = ({ mlStatus = 201, mlPayload = { data: { status: 'active' } }, resendStatus = 200, resendThrows } = {}) => {
+  const calls = []
+  const fn = async (url, init) => {
+    calls.push({ url, init, body: JSON.parse(init.body) })
+    if (url === RESEND_ENDPOINT) {
+      if (resendThrows) throw Object.assign(new Error('boom'), { name: resendThrows })
+      return { status: resendStatus, headers: { get: () => null }, json: async () => ({ id: 'x' }) }
+    }
+    return { status: mlStatus, headers: { get: () => null }, json: async () => mlPayload }
+  }
+  fn.calls = calls
+  return fn
+}
+const resendCalls = (f) => f.calls.filter((c) => c.url === RESEND_ENDPOINT)
+const ALERT_ENV = { ...ENV, RESEND_API_KEY: 're_test_123' }
+
+test('owner alert: no RESEND_API_KEY → nothing sent, signup unchanged', async () => {
+  const f = twoServiceFetch()
+  const r = await run({ industry: 'saas', email: 'jane@example.com' }, f)
+  assert.equal(r.status, 200)
+  assert.equal(resendCalls(f).length, 0)
+})
+
+test('owner alert: new signup emails mohamed@convrt.studio with email, industry and consent; Reply-To = subscriber', async () => {
+  const f = twoServiceFetch()
+  const r = await run({ industry: 'ecommerce', email: ' Jane@Example.com ', marketingConsent: true }, f, ALERT_ENV)
+  assert.deepEqual(r.body, { ok: true, confirmation: false })
+  const calls = resendCalls(f)
+  assert.equal(calls.length, 1)
+  const { init, body } = calls[0]
+  assert.equal(init.headers.Authorization, 'Bearer re_test_123')
+  assert.deepEqual(body.to, [DEFAULT_NOTIFY_TO])
+  assert.equal(body.reply_to, 'jane@example.com')
+  assert.match(body.subject, /hooks/i)
+  assert.match(body.subject, /E-commerce/)
+  for (const s of ['jane@example.com', 'E-commerce / DTC', 'New subscriber', 'OK to send tips and offers: Yes']) assert.ok(body.text.includes(s), s)
+})
+
+test('owner alert: repeat signups and unconfirmed (double opt-in) are labelled', async () => {
+  const f = twoServiceFetch({ mlStatus: 200, mlPayload: { data: { status: 'unconfirmed' } } })
+  const r = await run({ industry: 'saas', email: 'jane@example.com' }, f, ALERT_ENV)
+  assert.deepEqual(r.body, { ok: true, confirmation: true })
+  const { body } = resendCalls(f)[0]
+  assert.ok(body.text.includes('Already on the list'))
+  assert.ok(body.text.includes('Not yet'))
+  assert.ok(body.text.includes('OK to send tips and offers: No'))
+})
+
+test('owner alert: Resend failing never fails the signup', async () => {
+  for (const f of [twoServiceFetch({ resendStatus: 500 }), twoServiceFetch({ resendThrows: 'AbortError' })]) {
+    const r = await run({ industry: 'saas', email: 'jane@example.com' }, f, ALERT_ENV)
+    assert.equal(r.status, 200)
+    assert.deepEqual(r.body, { ok: true, confirmation: false })
+  }
+})
+
+test('owner alert: not sent for bots, invalid input, or contacts MailerLite refused', async () => {
+  let f = twoServiceFetch()
+  await run({ industry: 'saas', email: 'jane@example.com', company: 'Bot Inc' }, f, ALERT_ENV)
+  await run({ industry: 'nope', email: 'jane@example.com' }, f, ALERT_ENV)
+  await run({ industry: 'saas', email: 'nope' }, f, ALERT_ENV)
+  assert.equal(f.calls.length, 0)
+
+  f = twoServiceFetch({ mlPayload: { data: { status: 'unsubscribed' } } })
+  const r = await run({ industry: 'saas', email: 'jane@example.com' }, f, ALERT_ENV)
+  assert.equal(r.status, 409)
+  assert.equal(resendCalls(f).length, 0)
+
+  f = twoServiceFetch({ mlStatus: 500, mlPayload: { message: 'down' } })
+  assert.equal((await run({ industry: 'saas', email: 'jane@example.com' }, f, ALERT_ENV)).status, 502)
+  assert.equal(resendCalls(f).length, 0)
+})
