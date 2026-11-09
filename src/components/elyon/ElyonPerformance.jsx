@@ -25,8 +25,8 @@ export default function ElyonPerformance() {
             It sold perfume.
           </h2>
           <p className="mt-6 text-[15px] md:text-base text-ink-muted leading-relaxed">
-            Two verified snapshots from two different moments in the campaign. They are kept separate
-            below on purpose, not added together.
+            Two verified snapshots from two different moments in the campaign: a two-day early test and a
+            single standout creative. They are kept separate below on purpose, not added together.
           </p>
         </div>
 
@@ -107,6 +107,12 @@ export default function ElyonPerformance() {
 
           <ProofBadge src={`${PROOF_BASE}/proof-nine-sales.webp`} label="Client-verified via WhatsApp" center />
         </div>
+
+        <p className="mt-6 mx-auto max-w-2xl text-center text-[12px] leading-relaxed text-ink-subtle">
+          Both are point-in-time snapshots from Meta Ads Manager, not sustained campaign averages, and they say nothing
+          about results beyond the period measured. ROAS compares purchase value with ad spend. It does not account for
+          product cost or margin, so it is not a measure of profit.
+        </p>
       </div>
     </section>
   )

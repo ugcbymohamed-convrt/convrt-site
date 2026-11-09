@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react'
 import SectionDivider from './components/SectionDivider.jsx'
 import RiskFreeHero from './components/riskfree/RiskFreeHero.jsx'
 import RiskFreeApplication from './components/riskfree/RiskFreeApplication.jsx'
+import RiskFreeFAQ from './components/riskfree/RiskFreeFAQ.jsx'
 import { captureAttribution, trackEvent } from './lib/analytics.js'
 import { useDocumentHead } from './lib/useDocumentHead.js'
 import { OFFER_PATHS, RISK_FREE_INDEXABLE, SITE_URL } from './config.js'
@@ -44,6 +45,8 @@ export default function RiskFreePage() {
       <RiskFreeHero />
       <SectionDivider />
       <RiskFreeApplication />
+      <SectionDivider />
+      <RiskFreeFAQ />
     </>
   )
 }

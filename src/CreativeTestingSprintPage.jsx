@@ -4,6 +4,7 @@ import CreativeTestingOffer from './components/CreativeTestingOffer.jsx'
 import CreativeTestingProcess from './components/CreativeTestingProcess.jsx'
 import CreativeTestingNextStep from './components/CreativeTestingNextStep.jsx'
 import SectionDivider from './components/SectionDivider.jsx'
+import { captureAttribution } from './lib/analytics.js'
 
 const PAGE_TITLE = 'Paid & Organic Social Pricing | CONVRT'
 const PAGE_DESCRIPTION =
@@ -11,6 +12,10 @@ const PAGE_DESCRIPTION =
 
 export default function CreativeTestingSprintPage() {
   const [service, setService] = useState('paid')
+
+  useEffect(() => {
+    captureAttribution() // keep UTM params for the organic booking link
+  }, [])
 
   useEffect(() => {
     const previousTitle = document.title

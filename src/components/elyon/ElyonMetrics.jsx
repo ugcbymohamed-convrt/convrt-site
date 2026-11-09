@@ -1,11 +1,12 @@
 import { useInView } from '../caseStudies/shared/useInView.js'
 import { ACCENT } from './theme.js'
+import { ELYON_STATS } from '../../lib/siteStats.js'
 
 const METRICS = [
-  { value: '160+', label: 'Creatives Produced', sub: 'Full library, and counting' },
+  { value: ELYON_STATS.creatives, label: 'Creatives Produced', sub: 'Full library, and counting' },
   { value: '4', label: 'Production Locations', sub: 'Prague, Almería, Granada, Marbella' },
-  { value: '5.28x', label: 'Peak ROAS', sub: 'Single standout creative' },
-  { value: '3.63x', label: 'Average ROAS', sub: 'Early four-creative test' },
+  { value: ELYON_STATS.standout.roas, label: 'Peak ROAS', sub: 'Single standout creative' },
+  { value: ELYON_STATS.earlyTest.avgRoas, label: 'Average ROAS', sub: 'Early four-creative, two-day test' },
 ]
 
 export default function ElyonMetrics() {

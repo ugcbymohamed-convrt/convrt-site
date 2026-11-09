@@ -19,7 +19,7 @@ export default function RoadmapUpsell() {
           Want Us to Handle the Hooks <span className="text-lime">AND the Full Ad Concepts?</span>
         </h2>
         <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-ink-muted md:text-lg">
-          Get 5 personalized ad concepts built around your brand, audience, and growth goals. We’ll develop the creative
+          Get 5 ad concepts worth testing, built around your brand, audience, and growth goals. We’ll develop the creative
           directions and walk you through them in a free strategy session.
         </p>
         <div className="mt-8 flex flex-col items-stretch sm:items-center">

@@ -119,7 +119,7 @@ export default function RoadmapApplication() {
                 tabIndex={-1}
                 className="mt-5 font-display text-[1.9rem] font-bold leading-[1.06] tracking-display text-ink outline-none sm:text-4xl md:text-[2.75rem]"
               >
-                Let’s Find Your Next 5 Ad Concepts.
+                Let’s Find 5 Ad Concepts Worth Testing.
               </h2>
               <p className="mt-4 text-base leading-relaxed text-ink-muted md:text-lg">
                 Answer five quick questions. If your brand is a good fit, you can choose a time for your free strategy

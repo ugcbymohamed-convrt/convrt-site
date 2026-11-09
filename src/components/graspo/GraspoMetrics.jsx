@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { GRASPO_STATS } from '../../lib/siteStats.js'
 
 /* ─────────────────────────────────────────────
    HERO METRICS — the numbers that carry the page.
@@ -8,12 +9,13 @@ import { useEffect, useRef, useState } from 'react'
 
 const ACCENT = '#d5ff40'
 
+const R = GRASPO_STATS.report
 const METRICS = [
-  { value: '10.7M', label: 'Total Views', sub: 'Facebook + Instagram' },
-  { value: '3.4M', label: 'Accounts Reached', sub: 'Organic distribution' },
-  { value: '65K', label: 'Content Interactions', sub: 'Likes, comments, shares, saves' },
-  { value: '75', label: 'Unique Inbound Leads', sub: 'Meta, email & WhatsApp' },
-  { value: '26', label: 'High-Priority Opportunities', sub: 'Qualified for follow-up' },
+  { value: R.views, label: 'Total Views', sub: 'Facebook + Instagram' },
+  { value: R.reach, label: 'Accounts Reached', sub: 'Organic distribution' },
+  { value: R.interactions, label: 'Content Interactions', sub: 'Likes, comments, shares, saves' },
+  { value: R.leads, label: 'Unique Inbound Leads', sub: 'Meta, email & WhatsApp' },
+  { value: R.highPriority, label: 'High-Priority Opportunities', sub: 'Qualified for follow-up' },
 ]
 
 function useInView(threshold = 0.15) {
@@ -66,7 +68,7 @@ export default function GraspoMetrics() {
           ))}
         </div>
         <p className="mt-5 text-center text-xs text-ink-subtle">
-          Source: Meta Business Suite analytics, Jan 1 – Jun 19 2026 · Leads: internal inbound tracker across Meta, email and WhatsApp
+          Source: Meta Business Suite analytics, {R.window} · Leads: internal inbound tracker across Meta, email and WhatsApp. Leads are inbound enquiries, not confirmed customers or revenue.
         </p>
       </div>
     </section>

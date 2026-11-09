@@ -60,7 +60,7 @@ export default function ElyonHero() {
 
         <FadeUp inView={inView} delay={90}>
           <h1 className="font-display font-bold text-ink tracking-display-xl leading-[1.08] text-[clamp(1.9rem,4.4vw,3.3rem)] max-w-4xl mx-auto">
-            Taking a luxury perfume brand from launch into profitable paid-social creative.
+            Taking a luxury perfume brand from launch into performance-driven paid-social creative.
           </h1>
         </FadeUp>
 

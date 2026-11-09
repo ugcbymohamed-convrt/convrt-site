@@ -15,7 +15,7 @@ const STEPS = [
     title: 'Discovery Call',
     description: 'Strategy, brainstorming, positioning, and understanding your goals.',
     detail: 'We dig into your brand, audience, offer, and current performance — building a clear creative direction before a single frame is planned.',
-    time: '15–30 min',
+    time: '20 min',
     accent: '#8b5cf6',
     accentSoft: 'rgba(139,92,246,0.16)',
     accentGlow: 'rgba(139,92,246,0.22)',

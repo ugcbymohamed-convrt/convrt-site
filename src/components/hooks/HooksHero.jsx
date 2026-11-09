@@ -1,4 +1,5 @@
 import HooksSignupCard from './HooksSignupCard.jsx'
+import { SAMPLE_HOOK } from '../../lib/hooksLibrary.js'
 
 /* SECTION 1 — headline + copy on the left, the signup card on the right.
    DOM order is headline → card → benefits, so on mobile the form follows the
@@ -40,8 +41,9 @@ export default function HooksHero() {
             </h1>
 
             <p className="mt-5 max-w-xl text-base leading-relaxed text-ink-muted md:text-lg">
-              Stop staring at a blank script. Get 10 ready-to-adapt advertising hooks designed to capture attention,
-              spark curiosity, and give your next video ads a stronger start.
+              Stop staring at a blank script. Choose your industry and get 10 ready-to-adapt advertising hook concepts,
+              delivered to your inbox as a PDF. Each one gives you the three parts of a strong opening: what to say,
+              what to show, and what to put on screen.
             </p>
           </div>
 
@@ -65,6 +67,28 @@ export default function HooksHero() {
                 </li>
               ))}
             </ul>
+
+            {/* One complete example of the structure, from the approved library */}
+            <figure className="mt-6 rounded-2xl border border-hairline bg-surface-1/60 p-4 sm:p-5" aria-labelledby="sample-hook-title">
+              <figcaption id="sample-hook-title" className="flex flex-wrap items-baseline justify-between gap-x-3 text-xs font-semibold uppercase tracking-[0.16em] text-ink-subtle">
+                <span>Sample hook · {SAMPLE_HOOK.industry}</span>
+                <span className="font-medium normal-case tracking-normal text-ink-muted">{SAMPLE_HOOK.name}</span>
+              </figcaption>
+              <dl className="mt-3 space-y-2.5 text-[14px] leading-snug">
+                <div>
+                  <dt className="text-[11px] font-semibold uppercase tracking-[0.14em] text-lime">Verbal hook</dt>
+                  <dd className="mt-0.5 text-ink">“{SAMPLE_HOOK.verbal}”</dd>
+                </div>
+                <div>
+                  <dt className="text-[11px] font-semibold uppercase tracking-[0.14em] text-lime">Visual hook</dt>
+                  <dd className="mt-0.5 text-ink-muted">{SAMPLE_HOOK.visual}</dd>
+                </div>
+                <div>
+                  <dt className="text-[11px] font-semibold uppercase tracking-[0.14em] text-lime">Text hook</dt>
+                  <dd className="mt-0.5 text-ink-muted">“{SAMPLE_HOOK.text}”</dd>
+                </div>
+              </dl>
+            </figure>
           </div>
         </div>
       </div>

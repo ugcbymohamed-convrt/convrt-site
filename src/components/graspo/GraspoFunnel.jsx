@@ -51,7 +51,7 @@ export default function GraspoFunnel() {
           </h2>
           <p className="mt-6 text-[15px] text-ink-muted leading-relaxed">
             This is the funnel observed during the management period, not a claim that every
-            view produced an inquiry. It's what happened between a content strategy and a sales team's inbox.
+            view produced an inquiry. It's what happened between a content strategy and a sales team's inbox. Inquiries and opportunities are not confirmed customers or revenue.
           </p>
         </div>
 

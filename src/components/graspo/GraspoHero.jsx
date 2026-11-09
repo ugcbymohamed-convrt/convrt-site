@@ -81,6 +81,9 @@ export default function GraspoHero() {
             Graspo is an established European printing company. CONVRT built its Arabic-first
             social presence, turning printing expertise into millions of views and real MENA inquiries.
           </p>
+          <p className="mt-4 text-[13px] text-ink-subtle leading-relaxed max-w-3xl mx-auto">
+            CONVRT&rsquo;s scope: content strategy, Arabic-first video production and localization, and inbound inquiry handling.
+          </p>
         </FadeUp>
 
         <FadeUp inView={inView} delay={260}>

@@ -1,4 +1,6 @@
-import { OFFER_PATHS } from '../config.js'
+import { BOOKING_URL, OFFER_PATHS } from '../config.js'
+import { GRASPO_STATS } from '../lib/siteStats.js'
+import { trackEvent, withUtm } from '../lib/analytics.js'
 
 /* ─────────────────────────────────────────────
    PRICING — Paid Social + Organic Social
@@ -68,6 +70,10 @@ const ORGANIC_GROWTH_FEATURES = [
   'More formats, hooks & creative angles tested',
   'Performance review & optimization',
 ]
+
+/* Organic enquiries are not a fit for the paid-ads Creative Growth Roadmap, so these
+   cards open the site's existing booking calendar (BOOKING_URL) directly. */
+export const ORGANIC_CTA_LABEL = 'Book a 20-Minute Strategy Call'
 
 const PLATFORM_NOTE = 'Instagram, TikTok, Facebook and LinkedIn available depending on strategy.'
 
@@ -143,7 +149,10 @@ export default function CreativeTestingOffer({ service, onServiceChange }) {
                 footerLabel="Platforms"
                 footerValue="Distribution across up to 3 selected platforms"
                 footerNote={PLATFORM_NOTE}
-                ctaLabel="Discuss Your Plan"
+                ctaLabel={ORGANIC_CTA_LABEL}
+                ctaHref={BOOKING_URL}
+                ctaEvent="organic_plan_book_click"
+                ctaPlan="organic_light"
               />
 
               <PackageCard
@@ -158,7 +167,10 @@ export default function CreativeTestingOffer({ service, onServiceChange }) {
                 footerLabel="Platforms"
                 footerValue="Distribution across up to 3 selected platforms"
                 footerNote={PLATFORM_NOTE}
-                ctaLabel="Discuss Your Plan"
+                ctaLabel={ORGANIC_CTA_LABEL}
+                ctaHref={BOOKING_URL}
+                ctaEvent="organic_plan_book_click"
+                ctaPlan="organic_growth"
               />
             </div>
           )}
@@ -166,7 +178,7 @@ export default function CreativeTestingOffer({ service, onServiceChange }) {
 
         <p className="mt-6 md:mt-8 mx-auto max-w-2xl text-center text-[13px] text-ink-muted leading-relaxed">
           {service === 'paid'
-            ? 'Pricing is based on the confirmed production scope. Additional languages, creators, locations, raw footage, paid-media usage requirements, specialist production needs, and extensive revisions may affect the final quote.'
+            ? 'Prices are per month, and the Creative Testing Sprint runs as a monthly engagement. Pricing is based on the confirmed production scope. Additional languages, creators, locations, raw footage, paid-media usage requirements, specialist production needs, and extensive revisions may affect the final quote.'
             : 'Pricing covers the full organic content workflow: strategy, production, editing, publishing, and optimization, across your selected platforms.'}
         </p>
 
@@ -358,6 +370,9 @@ function PackageCard({
   footerValue,
   footerNote,
   ctaLabel,
+  ctaHref,
+  ctaEvent,
+  ctaPlan,
 }) {
   const isPlus = variant === 'plus'
   const footerText = footerValue ?? timeline
@@ -440,7 +455,15 @@ function PackageCard({
       </div>
 
       <a
-        href={OFFER_PATHS.roadmap}
+        href={ctaHref ?? OFFER_PATHS.roadmap}
+        {...(ctaHref ? {
+          target: '_blank',
+          rel: 'noopener noreferrer',
+          onClick: (e) => {
+            trackEvent(ctaEvent, { plan: ctaPlan, location: 'pricing' })
+            e.currentTarget.href = withUtm(ctaHref) // carry any captured UTM params into the booking
+          },
+        } : {})}
         className="mt-6 inline-flex items-center justify-center gap-2 rounded-full bg-canvas px-6 py-3.5 text-sm font-semibold text-ink transition-transform duration-150 active:scale-[0.98] hover:bg-[#1c1c20]"
       >
         {ctaLabel}
@@ -465,11 +488,12 @@ function CheckIcon({ className = '' }) {
    Figures sourced from the Graspo case study
    (GraspoMetrics.jsx / GraspoAudience.jsx).
 ───────────────────────────────────────────── */
-const GRASPO_STATS = [
-  { value: '10.7M+', label: 'Organic Views' },
-  { value: '20K+', label: 'Facebook Followers' },
-  { value: '8K+', label: 'Instagram Followers' },
-  { value: '75+', label: 'Inbound Leads' },
+const GR = GRASPO_STATS.report
+const GRASPO_PROOF = [
+  { value: GR.views, label: 'Organic views' },
+  { value: GR.leads, label: 'Inbound enquiries' },
+  { value: GRASPO_STATS.following.facebook, label: 'Facebook followers today' },
+  { value: GRASPO_STATS.following.instagram, label: 'Instagram followers today' },
 ]
 
 function GraspoProof() {
@@ -486,7 +510,7 @@ function GraspoProof() {
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 md:gap-5 flex-1">
-          {GRASPO_STATS.map((stat) => (
+          {GRASPO_PROOF.map((stat) => (
             <div key={stat.label} className="text-center sm:text-left">
               <p className="font-display font-bold text-lime tracking-display text-2xl md:text-[28px] tabular-nums leading-none">
                 {stat.value}
@@ -497,7 +521,12 @@ function GraspoProof() {
         </div>
       </div>
 
-      <div className="mt-6 pt-5 border-t border-hairline flex justify-center md:justify-end">
+      <p className="mt-5 text-[11.5px] leading-relaxed text-ink-subtle">
+        Views and enquiries: {GR.window}. Enquiries are not confirmed sales. Follower counts are current
+        ({GRASPO_STATS.following.combined} combined with {GRASPO_STATS.following.tiktok} on TikTok).
+      </p>
+
+      <div className="mt-4 pt-5 border-t border-hairline flex justify-center md:justify-end">
         <a
           href="/case-studies/graspo"
           className="inline-flex items-center gap-1.5 text-sm font-semibold text-lime hover:text-lime-light transition-colors"

@@ -27,9 +27,11 @@ import { ErrorText, Progress, RadioGroup, TextField } from '../forms/fields.jsx'
 ───────────────────────────────────────────── */
 
 const NEXT_STEPS = [
-  'Answer six quick questions and tell us where to reach you.',
-  'Our team reviews your brand and production needs.',
-  'If there’s a good fit, we’ll invite you to a short call to discuss next steps.',
+  'Submit your application: six quick questions and your contact details.',
+  'Our team reviews it by hand.',
+  'If there’s a good fit, we invite you to a short call.',
+  'We confirm the production details together.',
+  'Your video is produced according to the conditions we agreed.',
 ]
 
 const SUBMIT_ERROR_COPY = {

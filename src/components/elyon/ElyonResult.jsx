@@ -19,7 +19,7 @@ export default function ElyonResult() {
           performance concepts across multiple locations.
         </p>
         <p className="mt-5 text-[15px] md:text-base text-ink-muted leading-relaxed">
-          Even during an early learning phase, individual creatives reached as high as 5.28x ROAS.
+          In the measured snapshots, individual creatives reached as high as 5.28x ROAS.
           The bigger win was building a system capable of producing and iterating more of them.
         </p>
       </div>

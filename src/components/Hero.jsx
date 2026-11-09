@@ -4,6 +4,7 @@ import { usePressFeedback } from '../lib/usePressFeedback.js'
 import { OFFER_PATHS } from '../config.js'
 import { scrollToElement } from '../lib/scroll.js'
 import { trackEvent } from '../lib/analytics.js'
+import { CONVRT_STATS } from '../lib/siteStats.js'
 
 const ROTATING_WORDS = ['convert', 'resonate', 'sell', 'connect']
 
@@ -79,7 +80,7 @@ export default function Hero() {
                 12 offer→button, 32 / 40 button→secondary, 12 label→cards. */}
             <div className="lg:mt-6">
               <p className="mb-3 text-balance text-[15px] md:text-base font-medium leading-snug text-ink">
-                Your next 5 ad concepts. Tailored to your brand. <span className="text-lime">On us.</span>
+                5 ad concepts worth testing. Tailored to your brand. <span className="text-lime">On us.</span>
               </p>
               <div className="flex flex-col items-stretch gap-3 sm:flex-row sm:items-center sm:justify-center lg:justify-start">
                 <a
@@ -269,18 +270,18 @@ function PhonesStage() {
       {/* Floating stats around the cluster */}
       <FloatingStat
         className="top-4 left-0 md:left-2 lg:left-4"
-        value="30M+"
+        value={CONVRT_STATS.views}
         label="Views generated"
       />
       <FloatingStat
         className="top-6 right-2 md:top-8 md:-right-8 lg:-right-12"
-        value="1k+"
+        value={CONVRT_STATS.videos}
         label="Videos produced"
       />
       <FloatingStat
         className="-bottom-4 md:-bottom-5 left-1/2 -translate-x-1/2"
-        value="400+"
-        label="Happy clients"
+        value={CONVRT_STATS.clients}
+        label="Clients served"
       />
     </div>
   )

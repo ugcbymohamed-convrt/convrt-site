@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { GRASPO_STATS } from '../../lib/siteStats.js'
 
 /* ─────────────────────────────────────────────
    AUDIENCE / MENA REACH
@@ -76,14 +77,14 @@ export default function GraspoAudience() {
         <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-5">
           <DemoCard
             platform="Instagram"
-            followers="8K"
+            followers={GRASPO_STATS.following.instagram}
             genderSplit="83% men · 17% women"
             peakAge="25–34"
             color={ACCENT}
           />
           <DemoCard
             platform="Facebook"
-            followers="20K"
+            followers={GRASPO_STATS.following.facebook}
             genderSplit="96% men · 4% women"
             peakAge="35–44"
             color="#3b82f6"
@@ -93,8 +94,14 @@ export default function GraspoAudience() {
         <p className="mt-6 text-[13px] text-ink-subtle leading-relaxed max-w-2xl mx-auto text-center">
           Working-age adults, overwhelmingly male, concentrated in the 25–44 range, the
           demographic most likely to hold purchasing or procurement decisions for a printing
-          project, not a passive consumer audience. Both followings have kept growing since the
-          report window, now past 8K on Instagram and 20K on Facebook.
+          project, not a passive consumer audience. Country, age and gender data come from the{' '}
+          {GRASPO_STATS.report.window} report window.
+        </p>
+        <p className="mt-3 text-[13px] text-ink-subtle leading-relaxed max-w-2xl mx-auto text-center">
+          <span className="font-semibold text-ink-muted">Following today:</span>{' '}
+          {GRASPO_STATS.following.facebook} on Facebook, {GRASPO_STATS.following.instagram} on Instagram and{' '}
+          {GRASPO_STATS.following.tiktok} on TikTok, {GRASPO_STATS.following.combined} combined. Counts have kept growing
+          since the report window.
         </p>
       </div>
     </section>

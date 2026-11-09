@@ -1,6 +1,7 @@
 import { lazy, Suspense, useEffect } from 'react'
 import Nav from './components/Nav.jsx'
 import Hero from './components/Hero.jsx'
+import ResultsStrip from './components/ResultsStrip.jsx'
 import Credibility from './components/Credibility.jsx'
 import CaseStudies from './components/CaseStudies.jsx'
 import Services from './components/Services.jsx'
@@ -41,6 +42,7 @@ function HomePage() {
   return (
     <>
       <Hero />
+      <ResultsStrip />
       <Credibility />
       <SectionDivider />
       <CaseStudies />

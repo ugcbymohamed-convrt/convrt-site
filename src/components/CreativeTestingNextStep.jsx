@@ -1,4 +1,6 @@
-import { OFFER_PATHS } from '../config.js'
+import { BOOKING_URL, OFFER_PATHS } from '../config.js'
+import { trackEvent, withUtm } from '../lib/analytics.js'
+import { ORGANIC_CTA_LABEL } from './CreativeTestingOffer.jsx'
 
 export default function CreativeTestingNextStep({ service }) {
   const isPaid = service === 'paid'
@@ -36,10 +38,18 @@ export default function CreativeTestingNextStep({ service }) {
         </p>
 
         <a
-          href={OFFER_PATHS.roadmap}
+          href={isPaid ? OFFER_PATHS.roadmap : BOOKING_URL}
+          {...(!isPaid ? {
+            target: '_blank',
+            rel: 'noopener noreferrer',
+            onClick: (e) => {
+              trackEvent('organic_plan_book_click', { plan: 'section_cta', location: 'pricing' })
+              e.currentTarget.href = withUtm(BOOKING_URL)
+            },
+          } : {})}
           className="cta-gradient group inline-flex items-center gap-2 rounded-full px-8 py-4 text-sm font-semibold text-canvas"
         >
-          Book a Creative Call
+          {isPaid ? 'Book a Creative Call' : ORGANIC_CTA_LABEL}
           <svg viewBox="0 0 12 12" className="h-3.5 w-3.5 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" fill="none">
             <path d="M3 9L9 3M9 3H4M9 3V8" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
           </svg>

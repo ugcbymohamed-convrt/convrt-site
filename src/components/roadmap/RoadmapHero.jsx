@@ -26,16 +26,16 @@ export default function RoadmapHero() {
             </div>
 
             <h1 className="mt-6 font-display font-bold text-ink tracking-display-xl leading-[1.03] text-[2.2rem] min-[400px]:text-[2.75rem] sm:text-[3rem] md:text-[3.5rem] lg:text-[2.75rem] xl:text-[3.6rem]">
-              <span className="block">Your Next 5 Ad Concepts.</span>
-              <span className="block">Built for Your Brand.</span>
+              <span className="block">5 Ad Concepts Worth</span>
+              <span className="block">Testing for Your Brand.</span>
               <span className="block text-lime">On Us.</span>
             </h1>
 
             <p className="mt-6 max-w-xl text-base leading-relaxed text-ink-muted md:text-lg">
               <span className="font-semibold text-ink">Stop guessing what ad to create next.</span>
               <br />
-              Get five personalized advertising concepts built around your brand, audience, and growth
-              goals, presented in a free creative strategy session with CONVRT.
+              Get five personalized advertising concepts, with suggested angles and hooks, built around your brand,
+              audience, and growth goals and presented in a free creative strategy session with CONVRT.
             </p>
 
             <div className="mt-8 flex flex-col items-stretch gap-4 sm:items-start">
@@ -44,6 +44,12 @@ export default function RoadmapHero() {
                 <p>For qualifying SaaS and e-commerce brands. No obligation.</p>
                 <p>Takes about a minute. Qualifying brands can book right away.</p>
               </div>
+              <figure className="mt-1 max-w-md border-l-2 border-lime/40 pl-4">
+                <blockquote className="text-sm leading-relaxed text-ink-muted">
+                  “Mohamed understood the concept really well and actually exceeded my expectations with the quality.”
+                </blockquote>
+                <figcaption className="mt-1.5 text-xs text-ink-subtle">Elyon Dubai, repeat client</figcaption>
+              </figure>
             </div>
           </div>
 

@@ -6,9 +6,9 @@ import RoadmapFAQ from './components/roadmap/RoadmapFAQ.jsx'
 import { captureAttribution, trackEvent } from './lib/analytics.js'
 import { OFFER_PATHS, SITE_URL, ROADMAP_INDEXABLE } from './config.js'
 
-const PAGE_TITLE = 'Free Creative Growth Roadmap | 5 Custom Ad Concepts | CONVRT'
+const PAGE_TITLE = 'Free Creative Growth Roadmap | 5 Ad Concepts Worth Testing | CONVRT'
 const PAGE_DESCRIPTION =
-  'Apply for five personalized ad concepts tailored to your SaaS or e-commerce brand. Get creative angles, hooks, and testing recommendations from CONVRT.'
+  'Apply for five ad concepts worth testing, tailored to your SaaS or e-commerce brand. Walk through the creative angles and hooks with CONVRT in a free strategy session.'
 const PAGE_URL = `${SITE_URL}${OFFER_PATHS.roadmap}`
 
 /* Sets <title> and the page's meta/link tags, and restores the previous state

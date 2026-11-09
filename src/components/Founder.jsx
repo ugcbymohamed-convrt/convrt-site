@@ -1,5 +1,6 @@
 import { useRef, useEffect, useState } from 'react'
 import { OFFER_PATHS } from '../config.js'
+import { CONVRT_STATS } from '../lib/siteStats.js'
 
 /* ─────────────────────────────────────────────
    SECTION — MEET THE FOUNDER
@@ -22,7 +23,7 @@ const STORY_BLOCKS = [
     delay: 640,
   },
   {
-    text: "Today CONVRT works with returning clients and long-term retainers across e-commerce, SaaS, and retail. 750+ creatives produced, millions of views generated, and honestly, I feel like I'm only getting started.",
+    text: `Today CONVRT works with returning clients and long-term retainers across e-commerce, SaaS, and retail. ${CONVRT_STATS.videos} videos produced, ${CONVRT_STATS.views} views generated, and honestly, I feel like I'm only getting started.`,
     delay: 800,
   },
 ]
@@ -202,6 +203,18 @@ export default function Founder() {
                 </FadeUp>
               ))}
             </div>
+
+            {/* How projects are delivered — process only; no staff counts or titles */}
+            <FadeUp inView={inView} delay={940}>
+              <div className="rounded-2xl border border-hairline bg-surface-1/50 px-5 py-4 text-left">
+                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-ink-subtle">How projects are delivered</p>
+                <p className="mt-2 text-[14px] leading-relaxed text-ink-muted">
+                  Every project follows the same path: creative strategy, scripts, creator casting, production,
+                  editing and quality control. Creators are brought in per project, and everything is either
+                  worked on or approved by the founder before it reaches you.
+                </p>
+              </div>
+            </FadeUp>
 
             {/* Founder attribution line */}
             <FadeUp inView={inView} delay={1020}>

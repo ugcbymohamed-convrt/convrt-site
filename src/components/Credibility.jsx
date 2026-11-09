@@ -1,5 +1,6 @@
 import { useRef, useEffect, useState } from 'react'
 import { OFFER_PATHS } from '../config.js'
+import { CONVRT_STATS } from '../lib/siteStats.js'
 
 /* Two rows of real client logos, rendered as uniform white silhouettes so
    they read cleanly against the dark canvas regardless of original color
@@ -111,7 +112,7 @@ export default function Credibility() {
         {/* Headline + CTA below */}
         <div className="mt-14 md:mt-16 flex flex-col items-center text-center gap-10 md:gap-12">
           <h2 className="font-display font-semibold tracking-display text-ink leading-[1.1] text-3xl md:text-4xl lg:text-[44px] max-w-3xl">
-            Trusted by <span className="text-lime">400+ brands</span> across ecommerce, apps, SaaS, and global consumer markets.
+            Trusted by <span className="text-lime">{CONVRT_STATS.clients} clients</span> across ecommerce, apps, SaaS, and global consumer markets.
           </h2>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
             <a

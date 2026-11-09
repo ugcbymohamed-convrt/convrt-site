@@ -10,9 +10,9 @@ export const CASE_STUDIES = [
     id: 'graspo',
     label: 'Graspo',
     category: 'Social Growth',
-    descriptor: '10M+ Organic Views',
+    descriptor: '10.7M Organic Views',
     accent: '#d5ff40',
-    blurb: 'From zero to 10M+ organic views.',
+    blurb: 'From limited visibility to 10.7M organic views.',
   },
   {
     id: 'elyon',

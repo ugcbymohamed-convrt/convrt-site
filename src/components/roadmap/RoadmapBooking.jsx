@@ -75,12 +75,12 @@ export default function RoadmapBooking({ bookingUrl, headingRef }) {
         You’re a good fit
       </div>
       <h3 ref={headingRef} tabIndex={-1} className="mt-3 font-display text-2xl font-bold leading-tight tracking-display text-ink outline-none sm:text-3xl">
-        {booked ? 'You’re booked. See you on the call!' : 'Choose a time for your strategy session.'}
+        {booked ? 'You’re booked. See you on the call!' : 'Choose a time for your 20-minute strategy call.'}
       </h3>
       <p className="mt-3 text-[15px] leading-relaxed text-ink-muted" role="status">
         {booked
           ? 'Calendly will email your confirmation and meeting details. We’ll prepare your roadmap concepts ahead of the session.'
-          : 'Pick a time below to book your free Creative Growth Roadmap session. You’ll enter your details on the next screen and Calendly will confirm your booking. Your concepts are prepared for confirmed bookings, so please choose a time that works.'}
+          : 'Pick a time below to book your free 20-minute Creative Growth Roadmap strategy call. You’ll enter your details on the next screen and Calendly will confirm your booking. Your concepts are prepared for confirmed bookings, so please choose a time that works.'}
       </p>
 
       {/* Fixed-height frame: reserved up-front so revealing the calendar never shifts the page. */}

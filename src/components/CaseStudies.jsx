@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
 import { attachHls } from '../lib/hls.js'
 import { OFFER_PATHS } from '../config.js'
+import { GRASPO_STATS, ELYON_STATS } from '../lib/siteStats.js'
 
 /* ─────────────────────────────────────────────
    SECTION 3 — CASE STUDIES / CREATIVE SHOWCASE
@@ -11,8 +12,8 @@ const CASES = [
     id: 'adscale',
     tab: 'SaaS',
     logo: { src: '/clients/adscale.png', alt: 'Adscale', w: 531, h: 149 },
-    title: "Long-form creatives\nthat can't be skipped.",
-    body: 'If you think long creatives are not a thing, check these out. These are not just creatives, they build trust, they scream confidence, and they show "we know what we\'re doing". Aesthetic transitions, catchy visuals and a delivery so engaging that it makes it almost impossible to skip.',
+    title: 'Long-form creatives\nworth watching.',
+    body: 'Long creatives can work when the opening earns the watch. These Adscale videos are designed to capture attention early, explain the product clearly, and give viewers a reason to keep watching, with clean transitions, strong visuals and confident delivery.',
     videos: [
       '8d4dbbeabac272bddb23068c91037af8',
       // Adscale Agentic — Cloudflare stream, custom poster (computer with Facebook ads)
@@ -26,8 +27,8 @@ const CASES = [
     id: 'elyon',
     tab: 'E-commerce',
     logo: { src: '/clients/elyon.png', alt: 'Elyon Dubai', w: 600, h: 226 },
-    title: '100+ creatives tested.\nMultiple winners found.',
-    body: "We have created over 100 pieces of content with Elyon Dubai. Since their launch back in 2025, we have tested multiple concepts & variations. So far, we've already found many formats that are killing it for Elyon. When the product is of quality, it's so much easier to make genuine content that resonates with people.",
+    title: `${ELYON_STATS.creatives} creatives produced.\nStrong early ROAS.`,
+    body: `We have produced ${ELYON_STATS.creatives} creatives for Elyon Dubai since their launch in 2025, testing multiple concepts and variations along the way. In an early two-day test on a ${ELYON_STATS.earlyTest.spend} spend, four creatives averaged ${ELYON_STATS.earlyTest.avgRoas} ROAS, and one later creative reached ${ELYON_STATS.standout.roas} ROAS on ${ELYON_STATS.standout.purchases} purchases. These are short test snapshots, not profit figures. When the product is of quality, it is much easier to make genuine content that resonates.`,
     videos: ['fa02007b36fae2b3bb68c97cdd00e9fc', '0905b814e2ba3950197b5bfe1cefae38', '9e6cb8438c9b0c1ab8b55953718eddde'],
     accentColor: '#f59e0b',
   },
@@ -35,8 +36,8 @@ const CASES = [
     id: 'graspo',
     tab: 'Printing',
     logo: { src: '/clients/graspo.png', alt: 'Graspo', w: 619, h: 279, height: 62 },
-    title: '6 million views.\nIn less than 2 months.',
-    body: "We have generated over 6 million views for Graspo in less than 2 months. And yes, it took 6 months of content testing beforehand to figure out what really clicks and what doesn't. Today, Graspo has over 10k followers on Facebook and almost 4k on Instagram.",
+    title: `${GRASPO_STATS.report.views} organic views.\n${GRASPO_STATS.report.leads} inbound leads.`,
+    body: `Over six months (${GRASPO_STATS.report.window}), Graspo's Arabic-first organic content generated ${GRASPO_STATS.report.views} views across Facebook and Instagram and ${GRASPO_STATS.report.leads} inbound enquiries, ${GRASPO_STATS.report.highPriority} of them high-priority. Graspo's following today: ${GRASPO_STATS.following.facebook} on Facebook, ${GRASPO_STATS.following.instagram} on Instagram and ${GRASPO_STATS.following.tiktok} on TikTok (${GRASPO_STATS.following.combined} combined).`,
     videos: ['15dd5505109f6821ccdcb13fc3cdc1fd', '3616606e3ca6d1a85c8a57d7cc2f656f', 'c1379ace38f2fa19ef2a45de1bb5d4b1'],
     accentColor: '#10b981',
   },

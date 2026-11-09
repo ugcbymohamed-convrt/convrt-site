@@ -1,10 +1,11 @@
 import { OFFER_PATHS } from '../config.js'
+import { CONVRT_STATS } from '../lib/siteStats.js'
 
 const PROOF_STATS = [
-  { value: '30M+', label: 'Views generated' },
-  { value: '1,000+', label: 'Videos produced' },
-  { value: '400+', label: 'Clients served' },
-  { value: '4', label: 'Languages available' },
+  { value: CONVRT_STATS.views, label: 'Views generated' },
+  { value: CONVRT_STATS.videos, label: 'Videos produced' },
+  { value: CONVRT_STATS.clients, label: 'Clients served' },
+  { value: CONVRT_STATS.languages, label: 'Languages available' },
 ]
 
 export default function CreativeTestingHero() {
@@ -25,7 +26,7 @@ export default function CreativeTestingHero() {
           className="mt-6 font-display font-semibold text-ink tracking-display-xl leading-[1.05] md:whitespace-nowrap"
           style={{ fontSize: 'clamp(2.25rem, 4.6vw, 3.5rem)' }}
         >
-          Find winning ad concepts <span className="text-lime">faster.</span>
+          Find stronger ad concepts <span className="text-lime">faster.</span>
         </h1>
 
         <p className="mt-6 max-w-2xl mx-auto text-base md:text-lg text-ink-muted leading-relaxed">

@@ -22,7 +22,7 @@ const SERVICES = [
     number: '01',
     tag: 'CREATOR-LED',
     title: 'UGC Ads',
-    description: 'Creator-led ads built for Meta, TikTok, and paid social performance.',
+    description: 'Creator-led video ads for Meta, TikTok, and YouTube, scripted, filmed, and edited by CONVRT for e-commerce, app, and SaaS brands.',
     pills: ['Meta', 'TikTok', 'YouTube'],
     icon: IconUGC,
     colSpan: 'lg:col-span-7',
@@ -71,7 +71,7 @@ const SERVICES = [
     number: '02',
     tag: 'TRUST-DRIVEN',
     title: 'Spokesperson Ads',
-    description: 'Trust-driven talking creatives that simplify your offer and drive action.',
+    description: 'On-camera spokesperson videos that explain your product or offer clearly and give viewers a reason to act, made for paid social ads.',
     pills: ['Authority', 'Retention', 'Action'],
     icon: IconSpokesperson,
     colSpan: 'lg:col-span-5',
@@ -112,7 +112,7 @@ const SERVICES = [
     number: '03',
     tag: 'ALWAYS-ON',
     title: 'Social Media Content & Management',
-    description: 'Organic content systems designed to build consistency, trust, and reach.',
+    description: 'Monthly organic content for your social channels: strategy, short-form video production, editing, and publishing.',
     pills: ['Instagram', 'TikTok', 'Facebook'],
     icon: IconSocial,
     colSpan: 'lg:col-span-5',
@@ -153,7 +153,7 @@ const SERVICES = [
     number: '04',
     tag: 'PERFORMANCE-FIRST',
     title: 'Creative Strategy for Organic & Paid',
-    description: 'Hooks, angles, scripts, and testing frameworks built around performance psychology.',
+    description: 'Research, hooks, angles, and scripts for organic and paid content, with a clear plan for what to test first.',
     pills: ['Hooks', 'Scripts', 'A/B Testing'],
     icon: IconStrategy,
     colSpan: 'lg:col-span-7',
@@ -270,7 +270,7 @@ export default function Services() {
         >
           <div>
             <p className="font-display font-semibold text-ink text-xl leading-tight">Not sure which service fits?</p>
-            <p className="mt-1.5 text-sm text-ink-muted">We'll tell you exactly what you need in a free 20-minute call.</p>
+            <p className="mt-1.5 text-sm text-ink-muted">We'll tell you exactly what you need in a free 20-minute strategy call.</p>
           </div>
           <a href={OFFER_PATHS.roadmap} className="cta-gradient shrink-0 inline-flex items-center gap-2 rounded-full px-7 py-3.5 text-sm font-semibold text-canvas">
             Book a Creative Call

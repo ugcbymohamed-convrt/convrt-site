@@ -11,6 +11,14 @@ const FAQS = [
     a: 'Yes. For qualifying brands, we develop five tailored advertising concepts and present them during a complimentary creative strategy session. There’s no obligation to hire CONVRT.',
   },
   {
+    q: 'What exactly do I get?',
+    a: 'Five ad concepts tailored to your brand, each with a suggested creative angle, opening hooks, and a recommended direction, walked through live in a strategy session with CONVRT. Concepts are ideas worth testing, not a guarantee of how any ad will perform.',
+  },
+  {
+    q: 'How long is the strategy session?',
+    a: 'It is a 20-minute strategy call, booked through Calendly.',
+  },
+  {
     q: 'Will you produce the five ads for free?',
     a: 'No. The roadmap covers creative concepts, suggested angles, hooks, and recommended directions. Video production is a separate service.',
   },
@@ -28,7 +36,8 @@ const FAQS = [
   },
 ]
 
-export default function RoadmapFAQ() {
+/* Reusable: the Free Video page passes its own questions (same accessible accordion). */
+export default function RoadmapFAQ({ faqs = FAQS, idPrefix = 'roadmap-faq' }) {
   const [open, setOpen] = useState(() => new Set())
   const toggle = (i) =>
     setOpen((prev) => {
@@ -46,10 +55,10 @@ export default function RoadmapFAQ() {
 
         <Reveal className="mt-10 md:mt-12">
           <div className="border-t border-hairline">
-            {FAQS.map((item, i) => {
+            {faqs.map((item, i) => {
               const isOpen = open.has(i)
-              const btnId = `roadmap-faq-q-${i}`
-              const panelId = `roadmap-faq-a-${i}`
+              const btnId = `${idPrefix}-q-${i}`
+              const panelId = `${idPrefix}-a-${i}`
               return (
                 <div key={item.q} className="border-b border-hairline">
                   <h3>

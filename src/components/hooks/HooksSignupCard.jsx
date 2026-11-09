@@ -259,7 +259,7 @@ export default function HooksSignupCard() {
               <button type="submit" disabled={submitting} className={`${primaryBtnClass} mt-5 w-full`}>
                 {submitting ? 'Sending…' : (<>Send Me My 10 Free Hooks <span aria-hidden="true">→</span></>)}
               </button>
-              <p className="mt-3 text-center text-sm text-ink-muted">Delivered straight to your inbox.</p>
+              <p className="mt-3 text-center text-sm text-ink-muted">Your hooks library arrives by email as a PDF.</p>
 
               <p className="mt-3 text-xs leading-relaxed text-ink-subtle">
                 By submitting, you ask CONVRT to email you this resource through our email provider, MailerLite. You may be
