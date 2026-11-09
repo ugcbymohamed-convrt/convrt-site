@@ -3,8 +3,15 @@ import { useEffect } from 'react'
 /* Sets <title>, description, Open Graph / Twitter tags, canonical and
    (optionally) robots noindex for a page, and restores the previous state on
    unmount. Same behaviour as the head handling in RoadmapPage.jsx, extracted
-   so new pages don't copy it. */
-export function useDocumentHead({ title, description, url, noindex = false }) {
+   so new pages don't copy it.
+
+   Optional extras (used by the blog; existing callers are unaffected):
+   • robots   — full directive string, e.g. 'noindex, follow'. Wins over `noindex`.
+   • image    — absolute URL for og:image / twitter:image (switches the card to large).
+   • type     — og:type, default 'website' ('article' for blog posts).
+   • jsonLd   — one JSON-LD object or an array of them, injected as <script type="application/ld+json">. */
+export function useDocumentHead({ title, description, url, noindex = false, robots, image, type = 'website', jsonLd }) {
+  const jsonLdText = jsonLd ? JSON.stringify(jsonLd) : ''
   useEffect(() => {
     const restores = []
 
@@ -31,15 +38,32 @@ export function useDocumentHead({ title, description, url, noindex = false }) {
     meta({ name: 'description' }, description)
     meta({ property: 'og:title' }, title)
     meta({ property: 'og:description' }, description)
-    meta({ property: 'og:type' }, 'website')
+    meta({ property: 'og:type' }, type)
     meta({ property: 'og:url' }, url)
     meta({ property: 'og:site_name' }, 'CONVRT')
-    meta({ name: 'twitter:card' }, 'summary')
+    meta({ name: 'twitter:card' }, image ? 'summary_large_image' : 'summary')
     meta({ name: 'twitter:title' }, title)
     meta({ name: 'twitter:description' }, description)
-    if (noindex) meta({ name: 'robots' }, 'noindex')
+    if (image) {
+      meta({ property: 'og:image' }, image)
+      meta({ name: 'twitter:image' }, image)
+    }
+    const robotsValue = robots ?? (noindex ? 'noindex' : '')
+    if (robotsValue) meta({ name: 'robots' }, robotsValue)
     upsert('link', { rel: 'canonical' }, 'href')(url)
 
+    if (jsonLdText) {
+      const items = [].concat(JSON.parse(jsonLdText))
+      items.forEach((item) => {
+        const el = document.createElement('script')
+        el.type = 'application/ld+json'
+        el.setAttribute('data-blog-jsonld', '')
+        el.textContent = JSON.stringify(item)
+        document.head.appendChild(el)
+        restores.push(() => el.remove())
+      })
+    }
+
     return () => restores.reverse().forEach((fn) => fn())
-  }, [title, description, url, noindex])
+  }, [title, description, url, noindex, robots, image, type, jsonLdText])
 }

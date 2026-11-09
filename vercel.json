@@ -2,6 +2,12 @@
   "redirects": [
     { "source": "/creative-testing-sprint", "destination": "/pricing", "permanent": true }
   ],
+  "headers": [
+    {
+      "source": "/blog",
+      "headers": [{ "key": "X-Robots-Tag", "value": "noindex, follow" }]
+    }
+  ],
   "rewrites": [
     { "source": "/(.*)", "destination": "/index.html" }
   ]

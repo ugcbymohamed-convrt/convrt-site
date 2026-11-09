@@ -28,6 +28,16 @@ export const ROADMAP_INDEXABLE = false
 // link. Set it (e.g. '/privacy') once the policy is published.
 export const PRIVACY_POLICY_URL = ''
 
+// ── CONVRT Insights blog (/blog) ────────────────────────────────────────────
+export const BLOG_PATH = '/blog'
+
+// Launch gate for the blog INDEX, same idea as the flags below. While the blog only
+// shows coming-soon topics the index is served `noindex, follow`. Flip to `true` after
+// the first real article is published and reviewed, AND delete the `/blog` X-Robots-Tag
+// rule in vercel.json (tests/blog.test.mjs fails if the two disagree).
+// Published article pages are indexable regardless of this flag.
+export const BLOG_INDEXABLE = false
+
 // ── Free Hooks lead magnet (/free-hooks) ────────────────────────────────────
 // Launch gate, same idea as ROADMAP_INDEXABLE: the page is served with
 // <meta name="robots" content="noindex"> until MailerLite is connected and a

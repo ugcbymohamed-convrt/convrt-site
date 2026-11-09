@@ -10,7 +10,7 @@ import FAQ from './components/FAQ.jsx'
 import FinalCTA from './components/FinalCTA.jsx'
 import Footer from './components/Footer.jsx'
 import SectionDivider from './components/SectionDivider.jsx'
-import { OFFER_PATHS } from './config.js'
+import { BLOG_PATH, OFFER_PATHS } from './config.js'
 import { scrollToHash } from './lib/scroll.js'
 
 /* Route-level code splitting: every non-home page is its own chunk, fetched only when
@@ -22,6 +22,8 @@ const ScalePage = lazy(() => import('./ScalePage.jsx'))
 const RoadmapPage = lazy(() => import('./RoadmapPage.jsx'))
 const FreeHooksPage = lazy(() => import('./FreeHooksPage.jsx'))
 const RiskFreePage = lazy(() => import('./RiskFreePage.jsx'))
+const BlogPage = lazy(() => import('./BlogPage.jsx'))
+const BlogArticlePage = lazy(() => import('./BlogArticlePage.jsx'))
 
 const ROUTES = {
   '/pricing': CreativeTestingSprintPage,
@@ -34,6 +36,16 @@ const ROUTES = {
   [OFFER_PATHS.roadmap]: RoadmapPage,
   [OFFER_PATHS.hooks]: FreeHooksPage,
   [OFFER_PATHS.riskFree]: RiskFreePage,
+  // CONVRT Insights blog index. Individual articles live at /blog/<slug> (see resolvePage).
+  [BLOG_PATH]: BlogPage,
+}
+
+/* /blog/<slug> → the article template. The page itself decides whether the slug is a
+   published article and shows a (noindex) not-found state otherwise. */
+function resolvePage(path) {
+  if (ROUTES[path]) return ROUTES[path]
+  if (path.startsWith(`${BLOG_PATH}/`)) return BlogArticlePage
+  return null
 }
 
 function HomePage() {
@@ -70,7 +82,7 @@ const PageFallback = <div className="min-h-[100svh]" aria-hidden="true" />
 
 export default function App() {
   const path = typeof window !== 'undefined' ? window.location.pathname.replace(/\/$/, '') || '/' : '/'
-  const Page = ROUTES[path]
+  const Page = resolvePage(path)
 
   return (
     <div className="bg-canvas text-ink min-h-screen antialiased">
