@@ -67,8 +67,11 @@ to the applicant). It uses [Resend](https://resend.com) and is off until the key
 | `NOTIFY_EMAIL_TO` | no | Default `mohamed@convrt.studio` |
 | `NOTIFY_EMAIL_FROM` | no | Default `CONVRT Site <onboarding@resend.dev>` |
 
-The alert is best-effort: it is sent only after MailerLite saved the application, and if Resend fails the applicant
-still sees success (the failure is logged without personal data). MailerLite stays the source of truth.
+The alert goes out for **every genuine submission**, including ones MailerLite could not save (service down, not
+configured, rate-limited, or a contact that previously unsubscribed). Those arrive with `[NOT SAVED]` in the subject so
+you can follow up by email and no address is lost. Bots (honeypot) and incomplete/invalid submissions are not
+alerted. The alert itself is best-effort: if Resend fails the visitor's experience is unchanged (the failure is
+logged without personal data). MailerLite stays the source of truth.
 
 ## 3. Behaviour
 

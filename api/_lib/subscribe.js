@@ -75,6 +75,31 @@ export async function processSignup({ body, env = process.env, fetchImpl = globa
   // Bots get a convincing success and nothing is sent anywhere.
   if (parsed.isBot) return json(200, { ok: true, confirmation: false })
 
+  const result = await saveSignup(parsed, { env, fetchImpl })
+  // Every genuine signup alerts the owner, even when it could not be saved,
+  // so no email address that was typed into the form is ever lost.
+  await sendOwnerAlert(
+    {
+      subject: `${result.status === 200 ? '' : '[NOT SAVED] '}New free hooks signup: ${INDUSTRY_LABEL[parsed.industry]}`,
+      title: 'Someone just requested the 10 FREE ad hooks.',
+      rows: [
+        ['Email', parsed.email],
+        ['Industry', INDUSTRY_LABEL[parsed.industry]],
+        ['New or repeat', result.created ? 'New subscriber' : 'Already on the list, or not saved'],
+        ['OK to send tips and offers', parsed.marketingConsent ? 'Yes' : 'No'],
+        result.status === 200
+          ? ['Saved to MailerLite', result.body.confirmation ? 'Yes (waiting on their confirmation email)' : 'Yes']
+          : ['Saved to MailerLite', `NO (${result.body?.error || 'error'}): follow up with them by email`],
+      ],
+      footer: 'Reply to this email to reach them.',
+      replyTo: parsed.email,
+    },
+    { env, fetchImpl, log: logUpstream },
+  )
+  return result
+}
+
+async function saveSignup(parsed, { env, fetchImpl }) {
   const token = env.MAILERLITE_API_TOKEN
   const groupId = env[INDUSTRY_GROUP_ENV[parsed.industry]]
   const marketingGroupId = env[MARKETING_GROUP_ENV]
@@ -130,23 +155,7 @@ export async function processSignup({ body, env = process.env, fetchImpl = globa
       logUpstream('cannot_resubscribe', { status })
       return json(409, { ok: false, error: 'cannot_subscribe' })
     }
-    await sendOwnerAlert(
-      {
-        subject: `New free hooks signup: ${INDUSTRY_LABEL[parsed.industry]}`,
-        title: 'Someone just requested the 10 FREE ad hooks.',
-        rows: [
-          ['Email', parsed.email],
-          ['Industry', INDUSTRY_LABEL[parsed.industry]],
-          ['New or repeat', res.status === 201 ? 'New subscriber' : 'Already on the list'],
-          ['Email confirmed', status === 'unconfirmed' ? 'Not yet (waiting on the confirmation email)' : 'Yes'],
-          ['OK to send tips and offers', parsed.marketingConsent ? 'Yes' : 'No'],
-        ],
-        footer: 'Saved in MailerLite. Reply to this email to reach them.',
-        replyTo: parsed.email,
-      },
-      { env, fetchImpl, log: logUpstream },
-    )
-    return json(200, { ok: true, confirmation: status === 'unconfirmed' })
+    return { ...json(200, { ok: true, confirmation: status === 'unconfirmed' }), created: res.status === 201 }
   }
 
   if (res.status === 422) {

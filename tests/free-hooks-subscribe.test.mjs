@@ -199,7 +199,7 @@ test('owner alert: repeat signups and unconfirmed (double opt-in) are labelled',
   assert.deepEqual(r.body, { ok: true, confirmation: true })
   const { body } = resendCalls(f)[0]
   assert.ok(body.text.includes('Already on the list'))
-  assert.ok(body.text.includes('Not yet'))
+  assert.ok(body.text.includes('waiting on their confirmation email'))
   assert.ok(body.text.includes('OK to send tips and offers: No'))
 })
 
@@ -211,19 +211,36 @@ test('owner alert: Resend failing never fails the signup', async () => {
   }
 })
 
-test('owner alert: not sent for bots, invalid input, or contacts MailerLite refused', async () => {
-  let f = twoServiceFetch()
+test('owner alert: not sent for bots or invalid input', async () => {
+  const f = twoServiceFetch()
   await run({ industry: 'saas', email: 'jane@example.com', company: 'Bot Inc' }, f, ALERT_ENV)
   await run({ industry: 'nope', email: 'jane@example.com' }, f, ALERT_ENV)
   await run({ industry: 'saas', email: 'nope' }, f, ALERT_ENV)
   assert.equal(f.calls.length, 0)
+})
 
-  f = twoServiceFetch({ mlPayload: { data: { status: 'unsubscribed' } } })
-  const r = await run({ industry: 'saas', email: 'jane@example.com' }, f, ALERT_ENV)
-  assert.equal(r.status, 409)
-  assert.equal(resendCalls(f).length, 0)
+test('owner alert: still sent, flagged NOT SAVED, when MailerLite refuses or fails — no email is ever lost', async () => {
+  const cases = [
+    [twoServiceFetch({ mlPayload: { data: { status: 'unsubscribed' } } }), 409],
+    [twoServiceFetch({ mlStatus: 500, mlPayload: { message: 'down' } }), 502],
+    [twoServiceFetch({ mlStatus: 429, mlPayload: {} }), 429],
+  ]
+  for (const [f, expected] of cases) {
+    const r = await run({ industry: 'saas', email: 'jane@example.com' }, f, ALERT_ENV)
+    assert.equal(r.status, expected) // the visitor still sees the honest error
+    const calls = resendCalls(f)
+    assert.equal(calls.length, 1)
+    assert.match(calls[0].body.subject, /^\[NOT SAVED\]/)
+    assert.ok(calls[0].body.text.includes('jane@example.com'))
+    assert.ok(calls[0].body.text.includes('Saved to MailerLite: NO'))
+  }
+})
 
-  f = twoServiceFetch({ mlStatus: 500, mlPayload: { message: 'down' } })
-  assert.equal((await run({ industry: 'saas', email: 'jane@example.com' }, f, ALERT_ENV)).status, 502)
-  assert.equal(resendCalls(f).length, 0)
+test('owner alert: still sent when the server is not configured for MailerLite (503)', async () => {
+  const f = twoServiceFetch()
+  const r = await run({ industry: 'saas', email: 'jane@example.com' }, f, { RESEND_API_KEY: 'k' })
+  assert.equal(r.status, 503)
+  const calls = resendCalls(f)
+  assert.equal(calls.length, 1)
+  assert.match(calls[0].body.subject, /NOT SAVED/)
 })

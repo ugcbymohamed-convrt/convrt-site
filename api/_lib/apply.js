@@ -42,10 +42,11 @@ function logUpstream(kind, detail) {
 /* Owner alert (optional, best-effort): see ./notify.js. */
 export { RESEND_ENDPOINT, DEFAULT_NOTIFY_TO, DEFAULT_NOTIFY_FROM }
 
-export function notifyOwner(app, { env = process.env, fetchImpl = globalThis.fetch } = {}) {
+export function notifyOwner(app, result, { env = process.env, fetchImpl = globalThis.fetch } = {}) {
+  const saved = result.status === 200
   return sendOwnerAlert(
     {
-      subject: `New free video application: ${app.fullName}`,
+      subject: `${saved ? '' : '[NOT SAVED] '}New free video application: ${app.fullName}`,
       title: 'New application for the 1 FREE video production.',
       rows: [
         ['Name', app.fullName],
@@ -58,8 +59,9 @@ export function notifyOwner(app, { env = process.env, fetchImpl = globalThis.fet
         ['Timeline', app.timeline],
         ['Ongoing interest', app.ongoing],
         ['Brief', app.brief || '(none)'],
+        ['Saved to MailerLite', saved ? 'Yes (group: Free Video Applications)' : `NO (${result.body?.error || 'error'}): follow up with them by email`],
       ],
-      footer: 'Saved in MailerLite (group: Free Video Applications). Reply to this email to reach the applicant.',
+      footer: 'Reply to this email to reach the applicant.',
       replyTo: app.email,
     },
     { env, fetchImpl, log: logUpstream },
@@ -79,6 +81,14 @@ export async function processApplication({ body, env = process.env, fetchImpl = 
   if (Object.keys(errors).length) return json(422, { ok: false, error: 'invalid_application', fields: Object.keys(errors) })
 
   const app = normalizeApplication(body)
+  const result = await saveApplication(app, { env, fetchImpl })
+  // Every genuine application alerts the owner, even when it could not be saved,
+  // so no email address that was typed into the form is ever lost.
+  await notifyOwner(app, result, { env, fetchImpl })
+  return result
+}
+
+async function saveApplication(app, { env, fetchImpl }) {
   const token = env.MAILERLITE_API_TOKEN
   const groupId = String(env[RISK_FREE_GROUP_ENV] || '').trim()
 
@@ -139,7 +149,6 @@ export async function processApplication({ body, env = process.env, fetchImpl = 
       logUpstream('cannot_resubscribe', { status })
       return json(409, { ok: false, error: 'cannot_subscribe' })
     }
-    await notifyOwner(app, { env, fetchImpl })
     return json(200, { ok: true })
   }
 

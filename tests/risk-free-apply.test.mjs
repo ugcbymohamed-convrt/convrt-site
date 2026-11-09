@@ -262,15 +262,39 @@ test('owner alert: Resend failing (error status or network) never fails the appl
   }
 })
 
-test('owner alert: not sent for honeypot bots, invalid applications or when MailerLite did not save', async () => {
+test('owner alert: not sent for honeypot bots or invalid applications', async () => {
   const env = { ...ENV, RESEND_API_KEY: 'k' }
-  let f = twoServiceFetch()
+  const f = twoServiceFetch()
   await run(valid({ company: 'Bot Inc' }), f, env)
   await run({ email: 'nope' }, f, env)
   assert.equal(f.calls.length, 0)
+})
 
-  f = fakeFetch(500, { message: 'down' })
-  const r = await run(valid(), f, env)
-  assert.equal(r.status, 502)
-  assert.equal(f.calls.filter((c) => c.url === RESEND_ENDPOINT).length, 0)
+test('owner alert: still sent, flagged NOT SAVED, when MailerLite fails or refuses — no email is ever lost', async () => {
+  const env = { ...ENV, RESEND_API_KEY: 'k' }
+  const mk = (mlStatus, mlPayload) => {
+    const calls = []
+    const fn = async (url, init) => {
+      calls.push({ url, body: JSON.parse(init.body) })
+      if (url === RESEND_ENDPOINT) return { status: 200, headers: { get: () => null }, json: async () => ({}) }
+      return { status: mlStatus, headers: { get: () => null }, json: async () => mlPayload }
+    }
+    fn.calls = calls
+    return fn
+  }
+  const cases = [[mk(500, { message: 'down' }), 502], [mk(201, { data: { status: 'junk' } }), 409], [mk(429, {}), 429]]
+  for (const [f, expected] of cases) {
+    const r = await run(valid(), f, env)
+    assert.equal(r.status, expected)
+    const calls = resendCalls(f)
+    assert.equal(calls.length, 1)
+    assert.match(calls[0].body.subject, /^\[NOT SAVED\]/)
+    assert.ok(calls[0].body.text.includes('jane@example.com'))
+    assert.ok(calls[0].body.text.includes('Saved to MailerLite: NO'))
+  }
+  // not configured at all → 503, still alerted
+  const f = mk(201, {})
+  const r = await run(valid(), f, { RESEND_API_KEY: 'k' })
+  assert.equal(r.status, 503)
+  assert.equal(resendCalls(f).length, 1)
 })
