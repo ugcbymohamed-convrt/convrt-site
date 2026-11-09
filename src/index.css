@@ -374,3 +374,41 @@ body {
   background: #d5ff40;
   box-shadow: 0 0 8px rgba(213, 255, 64, 0.55);
 }
+
+/* ── Referral Partner Program (/referrals) ──────────────────────
+   ref-pulse : a small light travels along the "You Refer → We Create → You Get
+               Rewarded" connectors in the hero graphic (transform only).
+   ref-card  : reward cards lift slightly on hover.
+──────────────────────────────────────────────────────────────── */
+@keyframes ref-pulse {
+  0%   { transform: translateY(-100%); }
+  100% { transform: translateY(100%); }
+}
+.ref-pulse {
+  animation: ref-pulse 2.4s cubic-bezier(0.45, 0, 0.25, 1) infinite;
+  will-change: transform;
+}
+
+/* FAQ answer panel: height via grid rows; hidden (out of the tab order) once collapsed. */
+.ref-faq-panel {
+  visibility: hidden;
+  transition: grid-template-rows 0.3s ease-out, visibility 0s linear 0.3s;
+}
+.ref-faq-panel[data-open='true'] {
+  visibility: visible;
+  transition-delay: 0s;
+}
+
+.ref-card {
+  transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), border-color 0.25s ease, box-shadow 0.25s ease;
+}
+@media (hover: hover) {
+  .ref-card:hover { transform: translateY(-4px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ref-pulse { animation: none; display: none; }
+  .ref-card { transition: none; }
+  .ref-card:hover { transform: none; }
+  .ref-faq-panel { transition: none; }
+}

@@ -1,5 +1,5 @@
 import Logo from './Logo.jsx'
-import { CONTACT_EMAIL } from '../config.js'
+import { CONTACT_EMAIL, REFERRALS_PATH } from '../config.js'
 
 export default function Footer() {
   const year = new Date().getFullYear()
@@ -27,6 +27,7 @@ export default function Footer() {
               <li><a className="hover:text-ink transition-colors" href="/case-studies">Case Studies</a></li>
               <li><a className="hover:text-ink transition-colors" href={`${homePrefix}#how-it-works`}>How It Works</a></li>
               <li><a className="hover:text-ink transition-colors" href={`${homePrefix}#clients`}>Clients</a></li>
+              <li><a className="hover:text-ink transition-colors" href={REFERRALS_PATH}>Referral Program</a></li>
               <li><a className="hover:text-ink transition-colors" href={`${homePrefix}#contact`}>Contact</a></li>
             </ul>
           </div>

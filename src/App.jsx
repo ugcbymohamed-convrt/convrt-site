@@ -11,7 +11,7 @@ import FAQ from './components/FAQ.jsx'
 import FinalCTA from './components/FinalCTA.jsx'
 import Footer from './components/Footer.jsx'
 import SectionDivider from './components/SectionDivider.jsx'
-import { OFFER_PATHS } from './config.js'
+import { OFFER_PATHS, REFERRALS_PATH } from './config.js'
 import { scrollToHash } from './lib/scroll.js'
 
 /* Route-level code splitting: every non-home page is its own chunk, fetched only when
@@ -23,6 +23,7 @@ const ScalePage = lazy(() => import('./ScalePage.jsx'))
 const RoadmapPage = lazy(() => import('./RoadmapPage.jsx'))
 const FreeHooksPage = lazy(() => import('./FreeHooksPage.jsx'))
 const RiskFreePage = lazy(() => import('./RiskFreePage.jsx'))
+const ReferralsPage = lazy(() => import('./ReferralsPage.jsx'))
 
 const ROUTES = {
   '/pricing': CreativeTestingSprintPage,
@@ -35,6 +36,8 @@ const ROUTES = {
   [OFFER_PATHS.roadmap]: RoadmapPage,
   [OFFER_PATHS.hooks]: FreeHooksPage,
   [OFFER_PATHS.riskFree]: RiskFreePage,
+  // Referral Partner Program. Linked from the footer only (not the main nav).
+  [REFERRALS_PATH]: ReferralsPage,
 }
 
 function HomePage() {
