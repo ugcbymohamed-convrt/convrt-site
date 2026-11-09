@@ -4,6 +4,7 @@ import { usePressFeedback } from '../lib/usePressFeedback.js'
 import { OFFER_PATHS } from '../config.js'
 import { scrollToElement } from '../lib/scroll.js'
 import { trackEvent } from '../lib/analytics.js'
+import { CONVRT_STATS } from '../lib/siteStats.js'
 
 const ROTATING_WORDS = ['convert', 'resonate', 'sell', 'connect']
 
@@ -269,17 +270,17 @@ function PhonesStage() {
       {/* Floating stats around the cluster */}
       <FloatingStat
         className="top-4 left-0 md:left-2 lg:left-4"
-        value="30M+"
+        value={CONVRT_STATS.views}
         label="Views generated"
       />
       <FloatingStat
         className="top-6 right-2 md:top-8 md:-right-8 lg:-right-12"
-        value="1k+"
+        value={CONVRT_STATS.videos}
         label="Videos produced"
       />
       <FloatingStat
         className="-bottom-4 md:-bottom-5 left-1/2 -translate-x-1/2"
-        value="400+"
+        value={CONVRT_STATS.clients}
         label="Happy clients"
       />
     </div>

@@ -5,7 +5,6 @@ import Credibility from './components/Credibility.jsx'
 import CaseStudies from './components/CaseStudies.jsx'
 import Services from './components/Services.jsx'
 import HowItWorks from './components/HowItWorks.jsx'
-import Founder from './components/Founder.jsx'
 import Testimonials from './components/Testimonials.jsx'
 import FAQ from './components/FAQ.jsx'
 import FinalCTA from './components/FinalCTA.jsx'
@@ -51,8 +50,6 @@ function HomePage() {
       <Services />
       <SectionDivider />
       <HowItWorks />
-      <SectionDivider />
-      <Founder />
       <SectionDivider />
       <Testimonials />
       <SectionDivider />

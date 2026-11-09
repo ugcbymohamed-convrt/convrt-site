@@ -1,4 +1,5 @@
 import { OFFER_PATHS } from '../config.js'
+import { GRASPO_FOLLOWING } from '../lib/siteStats.js'
 
 /* ─────────────────────────────────────────────
    PRICING — Paid Social + Organic Social
@@ -467,8 +468,8 @@ function CheckIcon({ className = '' }) {
 ───────────────────────────────────────────── */
 const GRASPO_STATS = [
   { value: '10.7M+', label: 'Organic Views' },
-  { value: '20K+', label: 'Facebook Followers' },
-  { value: '8K+', label: 'Instagram Followers' },
+  { value: GRASPO_FOLLOWING.facebook, label: 'Facebook Followers' },
+  { value: GRASPO_FOLLOWING.instagram, label: 'Instagram Followers' },
   { value: '75+', label: 'Inbound Leads' },
 ]
 

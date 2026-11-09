@@ -1,5 +1,6 @@
 import { useRef, useEffect, useState } from 'react'
 import { OFFER_PATHS, CONTACT_EMAIL } from '../config.js'
+import { CONVRT_STATS } from '../lib/siteStats.js'
 
 /* ─────────────────────────────────────────────
    FINAL CTA — Cinematic close
@@ -7,8 +8,8 @@ import { OFFER_PATHS, CONTACT_EMAIL } from '../config.js'
 ───────────────────────────────────────────── */
 
 const PROOF_PILLS = [
-  { value: '750+', label: 'Creatives produced' },
-  { value: '30M+', label: 'Views generated' },
+  { value: CONVRT_STATS.videos, label: 'Videos produced' },
+  { value: CONVRT_STATS.views, label: 'Views generated' },
   { value: '50%+', label: 'of clients return for more' },
 ]
 
