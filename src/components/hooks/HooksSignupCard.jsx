@@ -176,14 +176,14 @@ export default function HooksSignupCard() {
             </div>
           </fieldset>
 
-          <p className="mt-3 text-[13px] leading-relaxed text-ink-muted">
-            In another industry? See if you qualify for{' '}
+          <p className="mt-3 text-[13px] leading-relaxed text-ink-muted lg:max-xl:text-xs">
+            We create performance-driven videos for other industries, too. See if you qualify for{' '}
             <a
               href={OFFER_PATHS.roadmap}
               onClick={() => trackEvent('hooks_other_industries_click', { location: 'hooks_card' })}
               className="text-lime underline underline-offset-2 transition-colors hover:text-lime-light motion-reduce:transition-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-lime"
             >
-              5 free video ad ideas
+              5 FREE video ad concepts
             </a>{' '}
             tailored to your brand.
           </p>
