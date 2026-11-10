@@ -15,7 +15,7 @@ import { FREE_HOOKS_INDEXABLE, OFFER_PATHS, SITE_URL } from './config.js'
    • Signup card: components/hooks/HooksSignupCard.jsx. Analytics events
      (src/lib/analytics.js): hooks_page_view, hooks_industry_selected,
      hooks_form_started, hooks_signup_submitted, hooks_signup_success,
-     hooks_signup_error. Params are limited to { industry, location, reason } —
+     hooks_signup_error, hooks_other_industries_click. Params are limited to { industry, location, reason } —
      never an email.
    • Backend: api/free-hooks-subscribe.js → MailerLite. See
      docs/free-hooks-mailerlite-setup.md.

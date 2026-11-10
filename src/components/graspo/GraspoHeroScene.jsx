@@ -279,19 +279,41 @@ function LimeMark() {
 }
 
 /* ─────────────────────────────────────────────
-   MOBILE — a small, contained stack below the CTAs.
+   MOBILE — a contained, centered stack below the CTAs.
    Top sheets lift slightly and one drifts a short
    distance outward, then stays put. No cross-screen
    travel, nothing behind text.
 
+   Layout: everything is sized from one CSS variable (--sw, the sheet
+   width) and positioned from the stage's horizontal CENTER. The pile
+   is nudged right by half the drift distance, and the drifting sheet
+   travels left by the full distance, so the FINISHED composition (pile
+   + drifted sheet) is centered on the stage — not just the stage on
+   the page. (It used to anchor every sheet with `right:` inside a
+   160px box, which left the composition ~30px right of center, with
+   58px-wide sheets.) Travel distances are fractions of --sw so the
+   motion scales with the sheets.
+
    Timing is tied to where the stack is ON SCREEN: it sits
    still while it scrolls in, lifts as it travels up through
    the lower-middle of the viewport, and has settled by the
-   time it is about a third of the way down the screen. (It
-   used to key off the stack reaching the top edge, which
-   meant the whole animation played after it had scrolled
-   out of sight.)
+   time it is about a third of the way down the screen.
 ───────────────────────────────────────────── */
+const M_DRIFT_X = -0.44 // × sheet width, leftward
+const M_DRIFT_Y = -0.24 // × sheet height-ish (× sheet width)
+const M_PILE_SHIFT = 0.26 // × sheet width: half the drift distance, re-centers the finished composition
+const M_PILE_LEFT = `calc(50% - var(--sw) / 2 + var(--sw) * ${M_PILE_SHIFT}`
+
+function mobileTop(el, te) {
+  if (!el) return
+  el.style.transform = `translate3d(calc(var(--sw) * ${-0.07 * te}), calc(var(--sw) * ${-0.13 * te}), 0) rotateZ(${-4 - 6 * te}deg)`
+}
+function mobileDrift(el, te, opacity) {
+  if (!el) return
+  el.style.transform = `translate3d(calc(var(--sw) * ${M_DRIFT_X * te}), calc(var(--sw) * ${M_DRIFT_Y * te}), 0) rotateZ(${-2 + 16 * te}deg)`
+  el.style.opacity = String(opacity)
+}
+
 function MobileScene({ reducedMotion }) {
   const sceneRef = useRef(null)
   const topRef = useRef(null)
@@ -299,46 +321,38 @@ function MobileScene({ reducedMotion }) {
   const pileJitter = useMemo(() => makeJitter(11, 5), [])
 
   const onTick = useCallback((p) => {
-    const top = topRef.current
-    if (top) {
-      const t = remap(p, 0.1, 0.55)
-      const te = easeOutBack(t)
-      top.style.transform = `translate3d(${-8 * te}px, ${-16 * te}px, 0) rotateZ(${-4 - 6 * te}deg)`
-    }
-    const drift = driftRef.current
-    if (drift) {
-      const t = remap(p, 0.3, 0.9)
-      const te = easeOutBack(t)
-      drift.style.transform = `translate3d(${-34 * te}px, ${-40 * te}px, 0) rotateZ(${-2 + 16 * te}deg)`
-      drift.style.opacity = String(Math.min(1, t * 3)) // fades in over the first third: no pop
-    }
+    mobileTop(topRef.current, easeOutBack(remap(p, 0.1, 0.55)))
+    const t = remap(p, 0.3, 0.9)
+    mobileDrift(driftRef.current, easeOutBack(t), Math.min(1, t * 3)) // fades in over the first third: no pop
   }, [])
 
   useScrollDriver(sceneRef, onTick, { disabled: reducedMotion, viewportRange: [0.9, 0.35] })
 
   useEffect(() => {
     if (reducedMotion) {
-      if (topRef.current) topRef.current.style.transform = 'translate3d(-4px,-8px,0) rotateZ(-7deg)'
-      if (driftRef.current) { driftRef.current.style.transform = 'translate3d(0,0,0) rotateZ(-2deg)'; driftRef.current.style.opacity = '1' }
+      // Static finished composition (same end pose as the animation), so it stays centered.
+      mobileTop(topRef.current, 1)
+      mobileDrift(driftRef.current, 1, 1)
     }
   }, [reducedMotion])
+
+  const sheet = { width: 'var(--sw)', aspectRatio: SHEET_ASPECT }
 
   return (
     <div
       ref={sceneRef}
       aria-hidden="true"
-      className="pointer-events-none relative mx-auto mt-3 lg:hidden"
-      style={{ height: '150px', width: '160px' }}
+      className="pointer-events-none relative mx-auto mt-2 w-full lg:hidden"
+      style={{ '--sw': 'clamp(96px, 30vw, 116px)', height: 'calc(var(--sw) * 1.4143 + 66px)' }}
     >
       {pileJitter.map((j, i) => (
         <div
           key={i}
           className="absolute rounded-[2px]"
           style={{
-            right: `${8 + i * 2}px`,
-            bottom: `${6 + i * 2.6}px`,
-            width: '58px',
-            aspectRatio: SHEET_ASPECT,
+            ...sheet,
+            left: `${M_PILE_LEFT} - ${i * 2}px)`,
+            bottom: `${2 + i * 2.6}px`,
             transform: `rotate(${j.rot}deg)`,
             background: SHEET_BG,
             boxShadow: SHEET_SHADOW,
@@ -346,10 +360,10 @@ function MobileScene({ reducedMotion }) {
           }}
         />
       ))}
-      <div className="absolute" style={{ right: '4px', bottom: '18px', width: '58px', aspectRatio: SHEET_ASPECT, zIndex: 9 }}>
+      <div className="absolute" style={{ ...sheet, left: `${M_PILE_LEFT} + 4px)`, bottom: '14px', zIndex: 9 }}>
         <div ref={driftRef} className="h-full w-full rounded-[2px]" style={{ background: SHEET_BG, boxShadow: SHEET_SHADOW, opacity: 0, willChange: 'transform, opacity' }} />
       </div>
-      <div className="absolute" style={{ right: '10px', bottom: '20px', width: '58px', aspectRatio: SHEET_ASPECT, zIndex: 10 }}>
+      <div className="absolute" style={{ ...sheet, left: `${M_PILE_LEFT} - 2px)`, bottom: '16px', zIndex: 10 }}>
         <div ref={topRef} className="h-full w-full rounded-[2px]" style={{ background: SHEET_BG, boxShadow: SHEET_SHADOW, willChange: 'transform' }} />
       </div>
     </div>

@@ -1,4 +1,5 @@
 import HooksSignupCard from './HooksSignupCard.jsx'
+import OtherIndustriesNote from './OtherIndustriesNote.jsx'
 
 /* SECTION 1 — headline + copy on the left, the signup card on the right.
    DOM order is headline → card → benefits, so on mobile the form follows the
@@ -48,6 +49,7 @@ export default function HooksHero() {
           {/* Signup card */}
           <div id="signup" className="min-w-0 scroll-mt-24 lg:col-start-2 lg:row-span-2 lg:row-start-1">
             <HooksSignupCard />
+            <OtherIndustriesNote />
           </div>
 
           {/* Benefits */}
