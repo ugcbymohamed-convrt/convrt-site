@@ -177,7 +177,7 @@ export default function HooksSignupCard() {
           </fieldset>
 
           <p className="mt-3 text-[13px] leading-relaxed text-ink-muted lg:max-xl:text-xs">
-            We create performance-driven videos for other industries, too. See if you qualify for{' '}
+            In a different industry? We create content for brands across industries. See if you qualify for{' '}
             <a
               href={OFFER_PATHS.roadmap}
               onClick={() => trackEvent('hooks_other_industries_click', { location: 'hooks_card' })}
