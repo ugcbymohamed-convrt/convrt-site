@@ -81,7 +81,7 @@ to tidy up). Until then they never link, never appear in the sitemap and never p
 - Structured data: the index gets `CollectionPage`. Articles get `BlogPosting` + `BreadcrumbList`, plus `FAQPage`
   only when `faq` is filled in. Placeholders never get any.
 - Each build writes `sitemap-blog.xml` listing **published articles only** (and `/blog` once it is indexable).
-  The site has no main sitemap or `robots.txt` yet; when one is added, reference `sitemap-blog.xml` from it.
+  `public/robots.txt` references both it and the main `sitemap.xml` (pages; see `src/lib/seo/sitemap.js`).
 - Not-found slugs render a `noindex` "Article not found" state (the host serves the app shell for every URL,
   so the HTTP status is 200).
 

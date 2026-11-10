@@ -16,6 +16,13 @@
          not fetched twice. (Tested on the live site: LCP 3.03 s -> 1.43 s, slow 4G + 4x CPU.) -->
     <script>
       if (location.pathname === '/') {
+        // Homepage canonical (query strings / hashes / utm links all point at the clean URL).
+        // Set here, for "/" only: this HTML shell is served for EVERY route, so a static
+        // canonical or og:url tag would wrongly point every other page at the homepage.
+        var c = document.createElement('link')
+        c.rel = 'canonical'
+        c.href = 'https://www.convrt.studio/'
+        document.head.appendChild(c)
         var l = document.createElement('link')
         l.rel = 'preload'
         l.as = 'image'
@@ -29,6 +36,9 @@
       name="description"
       content="CONVRT creates performance-driven UGC, spokesperson ads and creator-led videos for apps, SaaS and e-commerce brands in English, Spanish, French and Arabic."
     />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="CONVRT" />
+    <meta name="twitter:card" content="summary" />
     <meta property="og:title" content="CONVRT — Performance creatives that convert." />
     <meta
       property="og:description"

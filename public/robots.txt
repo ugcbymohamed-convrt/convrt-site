@@ -1,0 +1,10 @@
+# CONVRT — https://www.convrt.studio
+# Everything is crawlable on purpose: pages that must stay out of search are marked
+# "noindex" (meta tag / X-Robots-Tag). Blocking them here would stop crawlers from ever
+# seeing that directive.
+User-agent: *
+Allow: /
+Disallow: /api/
+
+Sitemap: https://www.convrt.studio/sitemap.xml
+Sitemap: https://www.convrt.studio/sitemap-blog.xml
