@@ -4,7 +4,8 @@ import RiskFreeHero from './components/riskfree/RiskFreeHero.jsx'
 import RiskFreeApplication from './components/riskfree/RiskFreeApplication.jsx'
 import { captureAttribution, trackEvent } from './lib/analytics.js'
 import { useDocumentHead } from './lib/useDocumentHead.js'
-import { OFFER_PATHS, RISK_FREE_INDEXABLE, SITE_URL } from './config.js'
+import { OFFER_PATHS } from './config.js'
+import { pageHead } from './seo/siteSeo.js'
 
 /* ─────────────────────────────────────────────
    /risk-free-trial — "1 FREE Video Production", by application.
@@ -19,17 +20,8 @@ import { OFFER_PATHS, RISK_FREE_INDEXABLE, SITE_URL } from './config.js'
    personal data are ever sent.
 ───────────────────────────────────────────── */
 
-const PAGE_TITLE = '1 Free Video Production | Try CONVRT Risk Free'
-const PAGE_DESCRIPTION =
-  'Apply for one free video ad produced by CONVRT, plus two bonus hook variations. Try CONVRT risk free and see if you qualify.'
-
 export default function RiskFreePage() {
-  useDocumentHead({
-    title: PAGE_TITLE,
-    description: PAGE_DESCRIPTION,
-    url: `${SITE_URL}${OFFER_PATHS.riskFree}`,
-    noindex: !RISK_FREE_INDEXABLE,
-  })
+  useDocumentHead(pageHead(OFFER_PATHS.riskFree))
 
   const viewed = useRef(false)
   useEffect(() => {

@@ -70,3 +70,62 @@ test('index.html: route-agnostic social defaults present', () => {
   assert.match(html, /property="og:site_name" content="CONVRT"/)
   assert.match(html, /name="twitter:card" content="summary"/)
 })
+
+// ── SEO phase 2: the manifest is the single source of truth ─────────────────────────────
+import { SITE_SEO, pageHead, canonicalPathFor, urlFor, sitemapRoutes } from '../src/seo/siteSeo.js'
+
+test('manifest: "/" copy matches the static <head> in index.html (no drift)', () => {
+  const html = read('index.html')
+  assert.ok(html.includes(`<title>${SITE_SEO['/'].title}</title>`))
+  assert.ok(html.replace(/\s+/g, ' ').includes(`content="${SITE_SEO['/'].description}"`))
+})
+
+test('manifest: Referrals keeps its own in-page head code (its tests pin that file) — copy must match the manifest', () => {
+  const page = read('src/ReferralsPage.jsx')
+  assert.ok(page.includes(`'${SITE_SEO[REFERRALS_PATH].title}'`), 'title drifted')
+  assert.ok(page.includes(`'${SITE_SEO[REFERRALS_PATH].description}'`), 'description drifted')
+  assert.match(page, /noindex: !REFERRALS_INDEXABLE/)
+})
+
+test('manifest: every page with a head has a unique title and description, absolute canonical on www', () => {
+  const titles = new Set(), descs = new Set()
+  for (const [path, e] of Object.entries(SITE_SEO)) {
+    if (e.canonicalPath) continue
+    assert.ok(e.title && e.description, path)
+    assert.ok(!titles.has(e.title) && !descs.has(e.description), `duplicate title/description on ${path}`)
+    titles.add(e.title); descs.add(e.description)
+    assert.match(urlFor(path), /^https:\/\/www\.convrt\.studio(\/|\/[a-z0-9\-/]+)$/)
+  }
+})
+
+test('manifest: every distinct case study has its OWN canonical; the duplicate points at the default', () => {
+  assert.equal(canonicalPathFor('/case-studies/graspo'), '/case-studies/graspo')
+  assert.equal(canonicalPathFor('/case-studies/elyon'), '/case-studies/elyon')
+  assert.equal(canonicalPathFor('/case-studies'), '/case-studies/graspo')
+  assert.equal(pageHead('/case-studies/graspo').url, `${SITE_URL}/case-studies/graspo`)
+  assert.equal(pageHead('/case-studies/elyon').url, `${SITE_URL}/case-studies/elyon`)
+})
+
+test('manifest: noindex is preserved — flagged pages follow their flag, /scale stays "noindex, follow"', () => {
+  assert.equal(pageHead('/scale').robots, 'noindex, follow')
+  assert.equal(pageHead(OFFER_PATHS.roadmap).noindex, !ROADMAP_INDEXABLE)
+  assert.equal(pageHead(OFFER_PATHS.hooks).noindex, !FREE_HOOKS_INDEXABLE)
+  assert.equal(pageHead(OFFER_PATHS.riskFree).noindex, !RISK_FREE_INDEXABLE)
+  assert.equal(SITE_SEO[REFERRALS_PATH].indexable, REFERRALS_INDEXABLE)
+  assert.equal(pageHead('/pricing').noindex, false)
+  // And the sitemap can never contradict it.
+  for (const p of sitemapRoutes()) assert.ok(SITE_SEO[p].indexable && !SITE_SEO[p].robots, p)
+})
+
+test('manifest: case-study social copy is kept separate from the search title', () => {
+  assert.match(pageHead('/case-studies/graspo').ogTitle, /^Graspo × CONVRT/)
+  assert.match(pageHead('/case-studies/elyon').ogTitle, /^Elyon Dubai × CONVRT/)
+})
+
+test('pages use the shared head: no page re-implements title/meta handling', () => {
+  for (const f of ['CreativeTestingSprintPage', 'GraspoCaseStudyPage', 'ElyonCaseStudyPage', 'ScalePage', 'RoadmapPage', 'FreeHooksPage', 'RiskFreePage']) {
+    const src = read(`src/${f}.jsx`)
+    assert.match(src, /useDocumentHead\(pageHead\(/, f)
+    assert.ok(!/document\.title\s*=/.test(src), `${f} still sets document.title itself`)
+  }
+})

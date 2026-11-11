@@ -1,31 +1,22 @@
 /* Main sitemap (sitemap.xml). Pure functions, unit-tested in tests/seo.test.mjs.
 
-   • Always-indexable pages are listed here. `/case-studies` is deliberately NOT listed: it
-     renders the same default study as `/case-studies/graspo` (a duplicate). Which URL should
-     be canonical is a pending decision (SEO phase 2).
-   • Pages behind an `*_INDEXABLE` flag in config.js join the sitemap automatically the moment
-     the flag is flipped to `true`, so the sitemap can never list a noindex page.
+   The page list comes from the SEO manifest (src/seo/siteSeo.js), so the sitemap can never list a
+   noindex page or a duplicate URL: a page appears only when it is indexable AND its own canonical.
+   Pages behind an `*_INDEXABLE` flag join automatically when the flag flips to `true`.
+
    • Blog articles (and /blog once indexable) live in sitemap-blog.xml, referenced from robots.txt.
    • No <lastmod>: the repo has no reliable per-page modified dates, and a wrong date is worse
      than none. */
 
-import {
-  SITE_URL, OFFER_PATHS, REFERRALS_PATH,
-  ROADMAP_INDEXABLE, FREE_HOOKS_INDEXABLE, RISK_FREE_INDEXABLE, REFERRALS_INDEXABLE,
-} from '../../config.js'
+import { SITE_URL } from '../../config.js'
+import { SITE_SEO, canonicalPathFor, sitemapRoutes } from '../../seo/siteSeo.js'
 
-export const SITEMAP_ENTRIES = [
-  { path: '/', indexable: true },
-  { path: '/pricing', indexable: true },
-  { path: '/case-studies/graspo', indexable: true },
-  { path: '/case-studies/elyon', indexable: true },
-  { path: OFFER_PATHS.roadmap, indexable: ROADMAP_INDEXABLE },
-  { path: OFFER_PATHS.hooks, indexable: FREE_HOOKS_INDEXABLE },
-  { path: OFFER_PATHS.riskFree, indexable: RISK_FREE_INDEXABLE },
-  { path: REFERRALS_PATH, indexable: REFERRALS_INDEXABLE },
-]
+export const SITEMAP_ENTRIES = Object.entries(SITE_SEO)
+  .filter(([path]) => canonicalPathFor(path) === path)
+  .map(([path, e]) => ({ path, indexable: e.indexable }))
 
-export const sitemapPaths = (entries = SITEMAP_ENTRIES) => entries.filter((e) => e.indexable).map((e) => e.path)
+export const sitemapPaths = (entries) =>
+  entries ? entries.filter((e) => e.indexable).map((e) => e.path) : sitemapRoutes()
 
 export function buildSitemap(paths = sitemapPaths(), siteUrl = SITE_URL) {
   const body = paths.map((p) => `  <url><loc>${siteUrl}${p === '/' ? '/' : p}</loc></url>`).join('\n')

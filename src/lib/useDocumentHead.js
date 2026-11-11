@@ -9,8 +9,10 @@ import { useEffect } from 'react'
    • robots   — full directive string, e.g. 'noindex, follow'. Wins over `noindex`.
    • image    — absolute URL for og:image / twitter:image (switches the card to large).
    • type     — og:type, default 'website' ('article' for blog posts).
+   • ogTitle / ogDescription — social copy when it should differ from title / description
+     (the case studies). Default: the same as title / description.
    • jsonLd   — one JSON-LD object or an array of them, injected as <script type="application/ld+json">. */
-export function useDocumentHead({ title, description, url, noindex = false, robots, image, type = 'website', jsonLd }) {
+export function useDocumentHead({ title, description, url, noindex = false, robots, image, type = 'website', jsonLd, ogTitle, ogDescription }) {
   const jsonLdText = jsonLd ? JSON.stringify(jsonLd) : ''
   useEffect(() => {
     const restores = []
@@ -36,14 +38,14 @@ export function useDocumentHead({ title, description, url, noindex = false, robo
     const meta = (attrs, value) => upsert('meta', attrs, 'content')(value)
 
     meta({ name: 'description' }, description)
-    meta({ property: 'og:title' }, title)
-    meta({ property: 'og:description' }, description)
+    meta({ property: 'og:title' }, ogTitle ?? title)
+    meta({ property: 'og:description' }, ogDescription ?? description)
     meta({ property: 'og:type' }, type)
     meta({ property: 'og:url' }, url)
     meta({ property: 'og:site_name' }, 'CONVRT')
     meta({ name: 'twitter:card' }, image ? 'summary_large_image' : 'summary')
-    meta({ name: 'twitter:title' }, title)
-    meta({ name: 'twitter:description' }, description)
+    meta({ name: 'twitter:title' }, ogTitle ?? title)
+    meta({ name: 'twitter:description' }, ogDescription ?? description)
     if (image) {
       meta({ property: 'og:image' }, image)
       meta({ name: 'twitter:image' }, image)
@@ -65,5 +67,5 @@ export function useDocumentHead({ title, description, url, noindex = false, robo
     }
 
     return () => restores.reverse().forEach((fn) => fn())
-  }, [title, description, url, noindex, robots, image, type, jsonLdText])
+  }, [title, description, url, noindex, robots, image, type, jsonLdText, ogTitle, ogDescription])
 }

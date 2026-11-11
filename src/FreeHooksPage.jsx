@@ -4,7 +4,8 @@ import HooksHero from './components/hooks/HooksHero.jsx'
 import RoadmapUpsell from './components/hooks/RoadmapUpsell.jsx'
 import { captureAttribution, trackEvent } from './lib/analytics.js'
 import { useDocumentHead } from './lib/useDocumentHead.js'
-import { FREE_HOOKS_INDEXABLE, OFFER_PATHS, SITE_URL } from './config.js'
+import { OFFER_PATHS } from './config.js'
+import { pageHead } from './seo/siteSeo.js'
 
 /* ─────────────────────────────────────────────
    /free-hooks — a one-screen lead magnet: pick SaaS or E-commerce, enter
@@ -21,17 +22,8 @@ import { FREE_HOOKS_INDEXABLE, OFFER_PATHS, SITE_URL } from './config.js'
      docs/free-hooks-mailerlite-setup.md.
 ───────────────────────────────────────────── */
 
-const PAGE_TITLE = '10 Free Ad Hooks for SaaS & E-commerce | CONVRT'
-const PAGE_DESCRIPTION =
-  'Get 10 ready-to-adapt advertising hooks for your industry — verbal, visual and on-screen text — delivered free by email from CONVRT.'
-
 export default function FreeHooksPage() {
-  useDocumentHead({
-    title: PAGE_TITLE,
-    description: PAGE_DESCRIPTION,
-    url: `${SITE_URL}${OFFER_PATHS.hooks}`,
-    noindex: !FREE_HOOKS_INDEXABLE,
-  })
+  useDocumentHead(pageHead(OFFER_PATHS.hooks))
 
   const viewed = useRef(false)
   useEffect(() => {
