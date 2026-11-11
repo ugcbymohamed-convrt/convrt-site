@@ -27,6 +27,9 @@ export const SITE_SEO = {
     title: 'Performance Creative Studio for Paid Social | CONVRT',
     description:
       'CONVRT creates performance-driven UGC, spokesperson ads and creator-led videos for apps, SaaS and e-commerce brands in English, Spanish, French and Arabic.',
+    ogTitle: 'CONVRT — Performance creatives that convert.',
+    ogDescription:
+      'UGC ads, spokesperson videos, organic social content, and creative strategy — built to stop the scroll and drive action.',
     indexable: true,
   },
   '/pricing': {

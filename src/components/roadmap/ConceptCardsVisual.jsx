@@ -112,7 +112,9 @@ export default function ConceptCardsVisual() {
       role="img"
       aria-label="Illustration of five stacked, colour-coded creative concept cards: problem and solution, social proof, pattern interrupt, product demonstration and objection breaker"
     >
-      <style>{CSS}</style>
+      {/* dangerouslySetInnerHTML: React's server renderer HTML-escapes text inside <style> (') but browsers read
+          <style> content literally, which broke the .rc-deco rule in the static HTML. The CSS is a constant. */}
+      <style dangerouslySetInnerHTML={{ __html: CSS }} />
 
       <div ref={stageRef} className="rc-stage w-full">
        <div className="rc-scene relative w-full">

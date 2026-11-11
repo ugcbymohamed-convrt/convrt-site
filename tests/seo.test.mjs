@@ -52,16 +52,15 @@ test('robots.txt: allows crawling (so noindex is visible), blocks only /api/, li
   assert.match(txt, new RegExp(`^Sitemap: ${SITE_URL}/sitemap-blog\\.xml$`, 'm'))
 })
 
-test('index.html: no static canonical / og:url / robots (the shell is served for every route)', () => {
+test('index.html (the shell template): no static canonical / og:url / robots, no script-injected canonical', () => {
+  // The shell is the template for EVERY route, so route-specific tags must never live in it. Each route's head
+  // (including the homepage canonical) is written into that route's own HTML at build time (tests/prerender.test.mjs).
   const html = read('index.html')
-  // The homepage canonical is injected by the inline script, guarded to pathname "/".
-  assert.ok(!/<link[^>]+rel="canonical"/i.test(html), 'static canonical would point every route at the homepage')
-  assert.ok(!/property="og:url"/.test(html), 'static og:url would be wrong on every other route')
-  assert.ok(!/name="robots"/.test(html), 'static robots would apply to every route')
+  assert.ok(!/<link[^>]+rel="canonical"/i.test(html), 'a static canonical would point every route at the homepage')
+  assert.ok(!/property="og:url"/.test(html), 'a static og:url would be wrong on every other route')
+  assert.ok(!/name="robots"/.test(html), 'a static robots tag would apply to every route')
   const script = html.match(/<script>([\s\S]*?)<\/script>/)[1]
-  assert.match(script, /location\.pathname === '\/'/)
-  assert.match(script, /rel = 'canonical'/)
-  assert.match(script, new RegExp(`href = '${SITE_URL}/'`))
+  assert.ok(!/canonical/.test(script), 'the homepage canonical is static in the built homepage now, not injected by script')
 })
 
 test('index.html: route-agnostic social defaults present', () => {

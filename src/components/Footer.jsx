@@ -59,7 +59,7 @@ export default function Footer() {
         </div>
 
         <div className="mt-12 pt-6 border-t border-hairline flex flex-col md:flex-row md:items-center md:justify-between gap-3 text-xs text-ink-subtle">
-          <p>© {year} CONVRT Studio. All rights reserved.</p>
+          <p suppressHydrationWarning>© {year} CONVRT Studio. All rights reserved.</p>
           <p>Built to convert.</p>
         </div>
       </div>

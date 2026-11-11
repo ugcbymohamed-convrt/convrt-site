@@ -3,7 +3,7 @@ import ArticleBody from './components/blog/ArticleBody.jsx'
 import { ArticleFaq, RelatedArticles, TocMobile, TocSticky } from './components/blog/ArticleExtras.jsx'
 import { RoadmapPromo } from './components/blog/BlogOffers.jsx'
 import { CategoryLabel, PrimaryCta, formatDate } from './components/blog/shared.jsx'
-import { getArticleMeta, getPublishedArticles, loadArticleBody } from './lib/blog/posts.js'
+import { getArticleMeta, getPublishedArticles, getLoadedBody, loadArticleBody } from './lib/blog/posts.js'
 import { parseMarkdown } from './lib/blog/markdown.js'
 import { relatedFor, SLUG_RE } from './lib/blog/schema.js'
 import { articleHead, BLOG_URL } from './lib/blog/seo.js'
@@ -42,9 +42,13 @@ export default function BlogArticlePage() {
   const meta = found?.meta
   const isDraft = Boolean(found?.draft)
 
-  const [content, setContent] = useState(null) // { blocks, toc } once the body chunk has loaded
+  // { blocks, toc } once the body chunk has loaded. Preloaded bodies (prerender / hydration) are there on first render.
+  const [content, setContent] = useState(() => {
+    const md = meta ? getLoadedBody(meta.slug) : null
+    return md == null ? null : parseMarkdown(md)
+  })
   useEffect(() => {
-    if (!meta) return
+    if (!meta || content) return
     let cancelled = false
     loadArticleBody(meta.slug).then((md) => {
       if (cancelled || md == null) return

@@ -75,7 +75,7 @@ test('404.html: noindex, own title, no canonical, throws if the shell changes sh
   assert.match(html, /<title>Page not found \| CONVRT<\/title>/)
   assert.match(html, /<meta name="robots" content="noindex, follow" \/>/)
   assert.ok(!/<link[^>]+rel="canonical"/i.test(html))
-  assert.ok(html.includes('<div id="root">'), 'must still boot the app')
+  assert.ok(html.includes('<div id="root"></div>'), 'the 404 page stays an empty shell that boots the app')
   assert.throws(() => notFoundHtml('<html><head><title>x</title></head></html>'))
 })
 
@@ -185,12 +185,13 @@ after(async () => {
 
 const get = (p, init) => fetch(base + p, { redirect: 'manual', ...init })
 
-test('HTTP: every known route answers 200 with the app shell', async () => {
+test('HTTP: every known route answers 200 with its prerendered page', async () => {
   for (const p of KNOWN_PATHS) {
     const r = await get(p)
     assert.equal(r.status, 200, p)
     assert.match(r.headers.get('content-type'), /text\/html/, p)
-    assert.ok((await r.text()).includes('<div id="root">'), `${p} is not the app shell`)
+    const body = await r.text()
+    assert.ok(body.includes(`<div id="root" data-ssr-path="${p}">`), `${p} is not its prerendered page`)
   }
 })
 

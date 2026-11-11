@@ -38,7 +38,13 @@ export function getArticleMeta(slug, today) {
   return null
 }
 
+const bodyCache = new Map()
+
+/* Already-loaded Markdown body, or null. Lets the article page's FIRST render include the body when it
+   was preloaded (prerender and hydration both do this), so server and client markup match. */
+export const getLoadedBody = (slug) => bodyCache.get(slug) ?? null
+
 export function loadArticleBody(slug) {
   const key = Object.keys(bodyModules).find((k) => k.endsWith(`/${slug}.md`))
-  return key ? bodyModules[key]() : Promise.resolve(null)
+  return key ? bodyModules[key]().then((md) => { bodyCache.set(slug, md); return md }) : Promise.resolve(null)
 }
