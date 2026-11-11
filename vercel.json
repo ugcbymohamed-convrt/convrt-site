@@ -7,8 +7,5 @@
       "source": "/blog",
       "headers": [{ "key": "X-Robots-Tag", "value": "noindex, follow" }]
     }
-  ],
-  "rewrites": [
-    { "source": "/(.*)", "destination": "/index.html" }
   ]
 }

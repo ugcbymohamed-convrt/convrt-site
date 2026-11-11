@@ -10,7 +10,8 @@ import FAQ from './components/FAQ.jsx'
 import FinalCTA from './components/FinalCTA.jsx'
 import Footer from './components/Footer.jsx'
 import SectionDivider from './components/SectionDivider.jsx'
-import { BLOG_PATH, OFFER_PATHS, REFERRALS_PATH } from './config.js'
+import { BLOG_PATH, REFERRALS_PATH } from './config.js'
+import { PATHS } from './routes.js'
 import { scrollToHash } from './lib/scroll.js'
 
 /* Route-level code splitting: every non-home page is its own chunk, fetched only when
@@ -25,26 +26,30 @@ const RiskFreePage = lazy(() => import('./RiskFreePage.jsx'))
 const ReferralsPage = lazy(() => import('./ReferralsPage.jsx'))
 const BlogPage = lazy(() => import('./BlogPage.jsx'))
 const BlogArticlePage = lazy(() => import('./BlogArticlePage.jsx'))
+const NotFoundPage = lazy(() => import('./NotFoundPage.jsx'))
 
+/* Every path here must also be listed in src/routes.js (tests enforce it): the build writes a real
+   HTML file per listed path, and the host answers any other URL with HTTP 404. */
 const ROUTES = {
-  '/pricing': CreativeTestingSprintPage,
-  '/case-studies': CaseStudiesPage,
-  '/case-studies/graspo': CaseStudiesPage,
-  '/case-studies/elyon': CaseStudiesPage,
+  [PATHS.pricing]: CreativeTestingSprintPage,
+  [PATHS.caseStudies]: CaseStudiesPage,
+  [PATHS.caseStudyGraspo]: CaseStudiesPage,
+  [PATHS.caseStudyElyon]: CaseStudiesPage,
   // Paid-acquisition landing page. Intentionally not linked from Nav/Footer/Sitemap — see ScalePage.jsx.
-  '/scale': ScalePage,
+  [PATHS.scale]: ScalePage,
   // Homepage offer destinations.
-  [OFFER_PATHS.roadmap]: RoadmapPage,
-  [OFFER_PATHS.hooks]: FreeHooksPage,
-  [OFFER_PATHS.riskFree]: RiskFreePage,
+  [PATHS.roadmap]: RoadmapPage,
+  [PATHS.hooks]: FreeHooksPage,
+  [PATHS.riskFree]: RiskFreePage,
   // Referral Partner Program. Linked from the footer only (not the main nav).
   [REFERRALS_PATH]: ReferralsPage,
   // The Blog index. Individual articles live at /blog/<slug> (see resolvePage).
-  [BLOG_PATH]: BlogPage,
+  [PATHS.blog]: BlogPage,
 }
 
-/* /blog/<slug> → the article template. The page itself decides whether the slug is a
-   published article and shows a (noindex) not-found state otherwise. */
+/* /blog/<slug> → the article template (the host only serves published slugs; anything else is a
+   404 whose page shows the article template's own not-found state). Any other unknown path →
+   null, which renders NotFoundPage — never the homepage. */
 function resolvePage(path) {
   if (ROUTES[path]) return ROUTES[path]
   if (path.startsWith(`${BLOG_PATH}/`)) return BlogArticlePage
@@ -92,7 +97,7 @@ export default function App() {
       <Nav />
       <main>
         <Suspense fallback={PageFallback}>
-          {Page ? <Page /> : <HomePage />}
+          {path === PATHS.home ? <HomePage /> : Page ? <Page /> : <NotFoundPage />}
           <HashScroller />
         </Suspense>
       </main>

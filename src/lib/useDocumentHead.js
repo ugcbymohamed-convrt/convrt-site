@@ -6,6 +6,7 @@ import { useEffect } from 'react'
    so new pages don't copy it.
 
    Optional extras (used by the blog; existing callers are unaffected):
+   • url      — omit it (e.g. the 404 page) to set neither og:url nor a canonical.
    • robots   — full directive string, e.g. 'noindex, follow'. Wins over `noindex`.
    • image    — absolute URL for og:image / twitter:image (switches the card to large).
    • type     — og:type, default 'website' ('article' for blog posts).
@@ -41,7 +42,7 @@ export function useDocumentHead({ title, description, url, noindex = false, robo
     meta({ property: 'og:title' }, ogTitle ?? title)
     meta({ property: 'og:description' }, ogDescription ?? description)
     meta({ property: 'og:type' }, type)
-    meta({ property: 'og:url' }, url)
+    if (url) meta({ property: 'og:url' }, url)
     meta({ property: 'og:site_name' }, 'CONVRT')
     meta({ name: 'twitter:card' }, image ? 'summary_large_image' : 'summary')
     meta({ name: 'twitter:title' }, ogTitle ?? title)
@@ -52,7 +53,7 @@ export function useDocumentHead({ title, description, url, noindex = false, robo
     }
     const robotsValue = robots ?? (noindex ? 'noindex' : '')
     if (robotsValue) meta({ name: 'robots' }, robotsValue)
-    upsert('link', { rel: 'canonical' }, 'href')(url)
+    if (url) upsert('link', { rel: 'canonical' }, 'href')(url)
 
     if (jsonLdText) {
       const items = [].concat(JSON.parse(jsonLdText))
