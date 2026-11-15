@@ -24,8 +24,8 @@ const faq = (id) => faqAnswerText(PRICING_FAQ.find((f) => f.id === id))
 const graph = () => pricingGraph({ title: SITE_SEO['/pricing'].title, description: SITE_SEO['/pricing'].description })['@graph']
 
 // ── confirmed commercial policy ─────────────────────────────────────────────────────────
-test('Sprint: €2,500/month, 5 concepts x 2 variations = 10, 10 business days, 2 revision rounds, 6 months usage', () => {
-  assert.deepEqual(SPRINT.monthly, { amount: 2500, currency: 'EUR' })
+test('Sprint: $2,500/month, 5 concepts x 2 variations = 10, 10 business days, 2 revision rounds, 6 months usage', () => {
+  assert.deepEqual(SPRINT.monthly, { amount: 2500, currency: 'USD' })
   assert.equal(SPRINT.concepts, 5)
   assert.equal(SPRINT.variationsPerConcept, 2)
   assert.equal(SPRINT.variations, SPRINT.concepts * SPRINT.variationsPerConcept)
@@ -35,21 +35,31 @@ test('Sprint: €2,500/month, 5 concepts x 2 variations = 10, 10 business days, 
   assert.equal(SPRINT.usageMonthsIncluded, 6)
 })
 
-test('Sprint Plus: €4,500/month, 20 variations, 15 business days, 2 revision rounds, 6 months usage', () => {
-  assert.deepEqual(SPRINT_PLUS.monthly, { amount: 4500, currency: 'EUR' })
+test('Sprint Plus: $4,500/month, 20 variations, 15 business days, 2 revision rounds, 6 months usage', () => {
+  assert.deepEqual(SPRINT_PLUS.monthly, { amount: 4500, currency: 'USD' })
   assert.equal(SPRINT_PLUS.variations, 20)
   assert.equal(SPRINT_PLUS.turnaroundBusinessDays, 15)
   assert.equal(SPRINT_PLUS.revisionRoundsPerConcept, 2)
   assert.equal(SPRINT_PLUS.usageMonthsIncluded, 6)
 })
 
-test('Sprint Plus concept count is flagged as unconfirmed and no new claim is built on it', () => {
-  assert.equal(SPRINT_PLUS.concepts.status, 'pending-owner-confirmation')
-  assert.ok(OWNER_REVIEW_FLAGS.some((f) => /Sprint Plus concept count/.test(f)))
-  const everyNewClaim = JSON.stringify(graph()) + PRICING_FAQ.map(faqAnswerText).join(' ')
-  assert.ok(!new RegExp(`\\b${SPRINT_PLUS.concepts.value} (distinct )?(creative )?concepts`, 'i').test(everyNewClaim), 'FAQ/JSON-LD must not state the unconfirmed concept count')
-  assert.ok(!/\b10 (distinct )?(creative )?concepts/i.test(everyNewClaim), 'must not invent a 10-concept Sprint Plus')
-  // The concept diagram is drawn for the standard Sprint only.
+test('Sprint Plus: 8 concepts / 8 scripts / 20 variations, distributed (not evenly) across concepts', () => {
+  assert.equal(SPRINT_PLUS.concepts.value, 8)
+  assert.equal(SPRINT_PLUS.concepts.status, 'confirmed')
+  assert.equal(SPRINT_PLUS.variations, 20)
+  assert.match(SPRINT_PLUS.variationsDistribution, /distributed across the concepts according to the creative testing strategy/)
+  assert.match(SPRINT_PLUS.variationsDistribution, /not necessarily have the same number of variations/)
+  const offer = read('src/components/CreativeTestingOffer.jsx')
+  assert.match(offer, /SPRINT_PLUS\.concepts\.value\} distinct creative concepts/)
+  assert.match(offer, /SPRINT_PLUS\.concepts\.value\} complete scripts/)
+  assert.match(faq('whats-included'), /8 distinct concepts and 20 ad variations in total, distributed across the concepts/)
+  const svc = graph().find((n) => n.name === 'Creative Testing Sprint Plus')
+  assert.match(svc.description, /8 distinct creative concepts and 20 ad variations in total, distributed across the concepts/)
+  // Never implies an even split or a different concept count.
+  const everyClaim = JSON.stringify(graph()) + PRICING_FAQ.map(faqAnswerText).join(' ') + offer
+  assert.ok(!/\b10 (distinct )?(creative )?concepts/i.test(everyClaim), 'no invented 10-concept Sprint Plus')
+  assert.ok(!/(two and a half|2\.5 variations|same number of variations|equal(ly)? (split|distributed)|each concept (has|gets|includes) \d+ variations)/i.test(everyClaim.replace(/not necessarily have the same number of variations/gi, '')), 'no even-split claim')
+  // The 5 x 2 concept diagram stays about the standard Sprint only.
   assert.match(read('src/components/pricing/ConceptExplainer.jsx'), /SPRINT\.concepts/)
   assert.ok(!/SPRINT_PLUS/.test(read('src/components/pricing/ConceptExplainer.jsx')))
 })
@@ -67,9 +77,10 @@ test('one-off prices are $3,000 and $5,400 in USD, monthly in EUR: currencies pr
   assert.deepEqual(SPRINT_PLUS.oneOff, { amount: 5400, currency: 'USD' })
   assert.equal(formatMoney(SPRINT.oneOff), '$3,000')
   assert.equal(formatMoney(SPRINT_PLUS.oneOff), '$5,400')
-  assert.equal(formatMoney(SPRINT.monthly), '€2,500')
-  assert.ok(OWNER_REVIEW_FLAGS.some((f) => /Currency/.test(f)))
+  assert.equal(formatMoney(SPRINT.monthly), '$2,500')
+  assert.ok(!OWNER_REVIEW_FLAGS.some((f) => /currency/i.test(f)), 'currency question is closed')
   assert.match(faq('one-off-and-single-video'), /\$3,000.*\$5,400/)
+  assert.ok(!/euro|EUR|€/i.test(faq('one-off-and-single-video')), 'no currency mix-up text')
   assert.ok(SINGLE_VIDEOS.sold === false && /does not sell individual paid videos/.test(SINGLE_VIDEOS.statement))
 })
 
@@ -95,14 +106,14 @@ test('usage rights: 6 months worldwide from delivery; expiry rules; not a copyri
 
 test('usage-rights extensions (entire batch, excl. VAT): exact prices for both packages; perpetual is custom', () => {
   const table = (p) => p.usageExtensions.map((e) => [e.months, e.price.amount, e.price.currency])
-  assert.deepEqual(table(SPRINT), [[3, 625, 'EUR'], [6, 1000, 'EUR'], [12, 1750, 'EUR']])
-  assert.deepEqual(table(SPRINT_PLUS), [[3, 1125, 'EUR'], [6, 1800, 'EUR'], [12, 3150, 'EUR']])
+  assert.deepEqual(table(SPRINT), [[3, 625, 'USD'], [6, 1000, 'USD'], [12, 1750, 'USD']])
+  assert.deepEqual(table(SPRINT_PLUS), [[3, 1125, 'USD'], [6, 1800, 'USD'], [12, 3150, 'USD']])
   const a = faq('usage-rights-expiry-extension')
-  for (const p of ['€625', '€1,000', '€1,750', '€1,125', '€1,800', '€3,150']) assert.ok(a.includes(p), p)
+  for (const p of ['$625', '$1,000', '$1,750', '$1,125', '$1,800', '$3,150']) assert.ok(a.includes(p), p)
   assert.match(a, /entire creative batch/)
   assert.match(a, /exclude VAT/)
   assert.match(faq('perpetual-usage'), /subject to agreement with the featured creator or creators/)
-  assert.ok(!/€\s?[\d,]+.{0,40}perpetual/i.test(faq('perpetual-usage')), 'perpetual has no fixed price')
+  assert.ok(!/$\s?[\d,]+.{0,40}perpetual/i.test(faq('perpetual-usage')), 'perpetual has no fixed price')
 })
 
 test('creator-account advertising (Spark Ads / partnership ads): separate, not automatic, not indefinite', () => {
@@ -115,11 +126,11 @@ test('creator-account advertising (Spark Ads / partnership ads): separate, not a
   assert.match(a, /confirmed individually/)
 })
 
-test('raw footage: €250 per creative concept, add-on only, no ownership or perpetual-rights implication', () => {
-  assert.deepEqual(RAW_FOOTAGE.price, { amount: 250, currency: 'EUR' })
+test('raw footage: $250 per creative concept, add-on only, no ownership or perpetual-rights implication', () => {
+  assert.deepEqual(RAW_FOOTAGE.price, { amount: 250, currency: 'USD' })
   assert.equal(RAW_FOOTAGE.per, 'creative concept')
   assert.equal(RAW_FOOTAGE.addOnOnly, true)
-  assert.equal(faq('raw-footage').split('\n')[0].startsWith('We offer raw footage as an additional service for €250 per creative concept.'), true)
+  assert.equal(faq('raw-footage').split('\n')[0].startsWith('We offer raw footage as an additional service for $250 per creative concept.'), true)
   assert.match(faq('raw-footage'), /rather than as a replacement/)
   assert.match(faq('raw-footage'), /does not by itself transfer copyright ownership, unlimited editing rights or perpetual usage rights/)
 })
@@ -167,7 +178,7 @@ test('production process: the 8 confirmed steps, in order; physical and SaaS pro
 })
 
 test('organic: existing prices and post counts preserved; confirmed scope, platforms and exclusions', () => {
-  assert.deepEqual(ORGANIC_PACKAGES.map((p) => [p.name, p.monthly.amount, p.monthly.currency]), [['Organic Light', 1500, 'EUR'], ['Organic Growth', 2000, 'EUR']])
+  assert.deepEqual(ORGANIC_PACKAGES.map((p) => [p.name, p.monthly.amount, p.monthly.currency]), [['Organic Light', 1500, 'USD'], ['Organic Growth', 2000, 'USD']])
   assert.match(ORGANIC.light.cadence, /2 posts per week, approximately 9 original posts per month/)
   assert.match(ORGANIC.growth.cadence, /3 posts per week, 13 original posts per month/)
   assert.deepEqual(ORGANIC.platforms, ['Facebook', 'Instagram', 'TikTok'])
@@ -190,7 +201,7 @@ test('pricing page copy is data-driven: package prices are not typed into the co
   const offer = read('src/components/CreativeTestingOffer.jsx')
   for (const literal of ['2,500', '4,500', '1,500', '2,000', '3,000', '5,400']) assert.ok(!offer.includes(literal), `hard-coded ${literal}`)
   for (const f of ['UsageRights', 'CommercialTerms', 'ProductionTerms']) {
-    assert.ok(!/[€$]\s?\d/.test(read(`src/components/pricing/${f}.jsx`)), `${f} hard-codes a price`)
+    assert.ok(!/[$$]\s?\d/.test(read(`src/components/pricing/${f}.jsx`)), `${f} hard-codes a price`)
   }
 })
 
@@ -249,6 +260,21 @@ test('JSON-LD entity ids are stable and every @id reference resolves inside the 
   assert.deepEqual(graph().map((n) => n['@id']), nodes.map((n) => n['@id']))
 })
 
+test('USD everywhere: no € / EUR / euro in pricing data, components, FAQ or JSON-LD; every priceCurrency is USD', () => {
+  const data = JSON.stringify({ SPRINT, SPRINT_PLUS, RAW_FOOTAGE, ORGANIC_PACKAGES }) + PRICING_FAQ.map(faqAnswerText).join(' ') + JSON.stringify(graph())
+  assert.ok(!/€|\bEUR\b|euros?\b/i.test(data))
+  const currencies = [...JSON.stringify(graph()).matchAll(/"priceCurrency":"([A-Z]+)"/g)].map((m) => m[1])
+  assert.equal(currencies.length, 6, '2 Sprint packages x (monthly + one-off) + 2 organic monthly')
+  assert.ok(currencies.every((c) => c === 'USD'))
+  // Whole site: no € in any source file (the only "European" hits are a case-study description of Graspo).
+  const walk = (d) => fs.readdirSync(d, { withFileTypes: true }).flatMap((e) => (e.isDirectory() ? walk(path.join(d, e.name)) : [path.join(d, e.name)]))
+  for (const f of [...walk(path.join(ROOT, 'src')), ...walk(path.join(ROOT, 'api')), path.join(ROOT, 'index.html')].filter((x) => /\.(jsx?|html|md)$/.test(x))) {
+    const t = fs.readFileSync(f, 'utf8')
+    assert.ok(!/€/.test(t), `${path.relative(ROOT, f)} contains €`)
+    assert.ok(!/\bEUR\b|\beuros?\b/i.test(t.replace(/priceCurrency/g, '')), `${path.relative(ROOT, f)} mentions euros`)
+  }
+})
+
 test('Organization: verified facts only (name, url, description, logo, Instagram, email, languages)', () => {
   const org = graph().find((n) => n['@type'] === 'Organization')
   assert.equal(org.name, 'CONVRT Studio')
@@ -267,10 +293,10 @@ test('Offers: numeric prices, correct currencies, monthly vs one-off kept apart,
   const spec = (s, i) => s.offers[i].priceSpecification
   const sprint = svc('creative-testing-sprint')
   const plus = svc('creative-testing-sprint-plus')
-  assert.equal(spec(sprint, 0).price, 2500); assert.equal(spec(sprint, 0).priceCurrency, 'EUR'); assert.equal(spec(sprint, 0).unitCode, 'MON')
+  assert.equal(spec(sprint, 0).price, 2500); assert.equal(spec(sprint, 0).priceCurrency, 'USD'); assert.equal(spec(sprint, 0).unitCode, 'MON')
   assert.equal(spec(sprint, 0)['@type'], 'UnitPriceSpecification')
   assert.equal(spec(sprint, 1).price, 3000); assert.equal(spec(sprint, 1).priceCurrency, 'USD'); assert.equal(spec(sprint, 1).unitCode, undefined)
-  assert.equal(spec(plus, 0).price, 4500); assert.equal(spec(plus, 0).priceCurrency, 'EUR')
+  assert.equal(spec(plus, 0).price, 4500); assert.equal(spec(plus, 0).priceCurrency, 'USD')
   assert.equal(spec(plus, 1).price, 5400); assert.equal(spec(plus, 1).priceCurrency, 'USD')
   for (const id of ['organic-light', 'organic-growth']) assert.equal(spec(svc(id), 0).unitCode, 'MON')
   assert.equal(spec(svc('organic-light'), 0).price, 1500)
@@ -280,7 +306,8 @@ test('Offers: numeric prices, correct currencies, monthly vs one-off kept apart,
       assert.equal(typeof o.priceSpecification.price, 'number')
       assert.equal(o.priceSpecification.valueAddedTaxIncluded, false)
       // The visible string for the same price uses the same currency symbol.
-      const sym = o.priceSpecification.priceCurrency === 'EUR' ? '€' : '$'
+      assert.equal(o.priceSpecification.priceCurrency, 'USD', o.name)
+      const sym = '$'
       assert.ok(o.description.startsWith(`${sym}${String(o.priceSpecification.price).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`), o.name)
     }
   }

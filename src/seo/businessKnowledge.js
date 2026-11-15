@@ -10,21 +10,21 @@
    • Pure data + tiny formatters. No React, no Vite: it runs in the browser, in the build and in `node --test`.
    • Every number here was supplied or confirmed by the owner, or already published on the live pricing page.
      Do not add counts, ratings, locations, credentials or results that were not supplied.
-   • Money is stored as { amount, currency } and shown exactly in that currency. Nothing here is converted.
-   • `status: 'pending-owner-confirmation'` marks a value the owner has NOT confirmed. Pages must not build new
-     claims on top of it (see OWNER_REVIEW_FLAGS at the bottom, which the build report lists). */
+   • ALL pricing is in US dollars (owner decision, Nov 2026: a currency standardisation of the same numbers, not an
+     exchange-rate conversion). Money is stored as { amount, currency } and shown in that currency.
+   • `status: 'pending-owner-confirmation'` would mark a value the owner has NOT confirmed; pages must not build new
+     claims on it (see OWNER_REVIEW_FLAGS at the bottom). */
 
 import { SITE_URL, CONTACT_EMAIL } from '../config.js'
 
-/** @typedef {{ amount: number, currency: 'EUR' | 'USD' }} Money */
+/** @typedef {{ amount: number, currency: 'USD' }} Money  (all CONVRT pricing is in US dollars) */
 
 /* ── money ────────────────────────────────────────────────────────────────────────────── */
-const SYMBOL = { EUR: '€', USD: '$' }
+const SYMBOL = { USD: '$' }
 const group = (n) => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ',')
 
-/** @param {Money} m  e.g. {amount:2500,currency:'EUR'} → "€2,500" */
+/** @param {Money} m  e.g. {amount:2500,currency:'USD'} → "$2,500" */
 export const formatMoney = (m) => `${SYMBOL[m.currency]}${group(m.amount)}`
-const eur = (amount) => ({ amount, currency: 'EUR' })
 const usd = (amount) => ({ amount, currency: 'USD' })
 
 /* ── brand ────────────────────────────────────────────────────────────────────────────── */
@@ -94,7 +94,7 @@ const USAGE_MONTHS_INCLUDED = 6
 export const SPRINT = {
   id: 'creative-testing-sprint',
   name: 'Creative Testing Sprint',
-  monthly: eur(2500),
+  monthly: usd(2500),
   oneOff: usd(3000),
   concepts: 5,
   variationsPerConcept: 2,
@@ -104,30 +104,30 @@ export const SPRINT = {
   usageMonthsIncluded: USAGE_MONTHS_INCLUDED,
   /* Extension prices are for the ENTIRE creative batch, not per video. */
   usageExtensions: [
-    { months: 3, price: eur(625) },
-    { months: 6, price: eur(1000) },
-    { months: 12, price: eur(1750) },
+    { months: 3, price: usd(625) },
+    { months: 6, price: usd(1000) },
+    { months: 12, price: usd(1750) },
   ],
 }
 
 export const SPRINT_PLUS = {
   id: 'creative-testing-sprint-plus',
   name: 'Creative Testing Sprint Plus',
-  monthly: eur(4500),
+  monthly: usd(4500),
   oneOff: usd(5400),
   variations: 20,
-  /* The latest owner instructions do NOT state how many original concepts Sprint Plus contains.
-     The live pricing page already said "8 distinct creative concepts / 8 complete scripts"; that existing public
-     copy is kept as-is and surfaced for owner review. Nothing new (FAQ, structured data, the concept diagram)
-     may state or imply a Sprint Plus concept count. Do not derive one from 20 variations. */
-  concepts: { value: 8, status: 'pending-owner-confirmation' },
+  /* 8 distinct concepts / 8 scripts: confirmed by the owner. The 20 variations are distributed across the concepts
+     according to the creative testing strategy (hook or CTA changes). Do NOT imply every concept has the same number of
+     variations, and do not derive a per-concept figure. */
+  concepts: { value: 8, status: 'confirmed' },
+  variationsDistribution: 'Variations are distributed across the concepts according to the creative testing strategy, with changes to hooks or CTAs. Concepts do not necessarily have the same number of variations.',
   turnaroundBusinessDays: 15,
   revisionRoundsPerConcept: 2,
   usageMonthsIncluded: USAGE_MONTHS_INCLUDED,
   usageExtensions: [
-    { months: 3, price: eur(1125) },
-    { months: 6, price: eur(1800) },
-    { months: 12, price: eur(3150) },
+    { months: 3, price: usd(1125) },
+    { months: 6, price: usd(1800) },
+    { months: 12, price: usd(3150) },
   ],
 }
 
@@ -190,7 +190,7 @@ export const USAGE_RIGHTS = {
 
 /* ── raw footage ──────────────────────────────────────────────────────────────────────── */
 export const RAW_FOOTAGE = {
-  price: eur(250),
+  price: usd(250),
   per: 'creative concept',
   addOnOnly: true,
   note:
@@ -249,13 +249,13 @@ export const ORGANIC = {
   light: {
     id: 'organic-light',
     name: 'Organic Light',
-    monthly: eur(1500),
+    monthly: usd(1500),
     cadence: '2 posts per week, approximately 9 original posts per month',
   },
   growth: {
     id: 'organic-growth',
     name: 'Organic Growth',
-    monthly: eur(2000),
+    monthly: usd(2000),
     cadence: '3 posts per week, 13 original posts per month',
   },
   platforms: ['Facebook', 'Instagram', 'TikTok'],
@@ -282,8 +282,6 @@ export const ORGANIC_PACKAGES = [ORGANIC.light, ORGANIC.growth]
 /* Things the owner must confirm before production. The tests assert this list exists so it cannot be dropped
    silently; the delivery report prints it. */
 export const OWNER_REVIEW_FLAGS = [
-  'Sprint Plus concept count: the live page says 8 distinct concepts / 8 scripts for 20 variations; the latest owner instructions do not confirm it.',
-  'Currency: monthly prices are EUR but one-off prices were supplied in USD (shown as supplied, not converted).',
-  'Organic platforms: confirmed list is Facebook, Instagram and TikTok; the previous pricing page also said LinkedIn.',
-  'Copyright, derivative-editing and ownership terms, and organic service-level details, are not specified and are deferred to the agreement.',
+  'Copyright, derivative-editing and ownership terms are deferred to the applicable agreement: no ownership transfer or unrestricted editing rights may be implied.',
+  'Detailed organic operational commitments (reporting schedule, response times, video counts) are deferred to the applicable agreement.',
 ]

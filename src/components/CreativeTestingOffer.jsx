@@ -36,8 +36,7 @@ const sprintFeatures = [
   'Organized testing recommendations',
 ]
 
-/* "8 concepts / 8 scripts" is the copy that was already live. It is NOT confirmed in the latest owner instructions
-   (see SPRINT_PLUS.concepts in businessKnowledge.js), so it is kept as published and flagged for owner review. */
+/* Sprint Plus: 8 concepts / 8 scripts (owner-confirmed). Variations are distributed across concepts, not evenly. */
 const plusFeatures = [
   'Expanded creative research',
   `${SPRINT_PLUS.concepts.value} distinct creative concepts`,
@@ -133,7 +132,7 @@ export default function CreativeTestingOffer({ service, onServiceChange }) {
                 deliverable={{
                   count: String(SPRINT_PLUS.variations),
                   label: 'Ad Variations',
-                  note: 'Final ad variations, built from the concepts in your sprint.',
+                  note: `${SPRINT_PLUS.concepts.value} distinct creative concepts. Variations are distributed across concepts, with hook or CTA changes.`,
                 }}
                 features={plusFeatures}
                 footerLabel="Production turnaround"

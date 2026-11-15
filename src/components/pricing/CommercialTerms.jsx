@@ -2,7 +2,7 @@ import { SPRINT, SPRINT_PLUS, COMMITMENT, SINGLE_VIDEOS, TAX, formatMoney } from
 import { Card, CardTitle, CardLabel, Small } from './shared.jsx'
 
 /* Directly under the paid packages: how the monthly price is committed to, what a one-off costs, and VAT.
-   Currencies are shown exactly as supplied (monthly in EUR, one-off in USD). Nothing is converted. */
+   All prices are in US dollars. */
 export default function CommercialTerms() {
   return (
     <div className="mt-5 md:mt-6 grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-5">
@@ -32,7 +32,7 @@ export default function CommercialTerms() {
             </dd>
           </div>
         </dl>
-        <Small className="mt-3">One-off prices are in US dollars; monthly prices are in euros. {SINGLE_VIDEOS.statement}</Small>
+        <Small className="mt-3">{SINGLE_VIDEOS.statement}</Small>
       </Card>
 
       <Card>

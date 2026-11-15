@@ -26,7 +26,7 @@ export const PRICING_FAQ = [
     id: 'whats-included',
     q: 'What is included in a Creative Testing package?',
     a: [
-      `Full-service creative production: research, concept and script development, creator selection, filming, editing and delivery. ${SPRINT.name} is ${formatMoney(SPRINT.monthly)}/month for ${SPRINT.concepts} concepts and ${SPRINT.variations} ad variations. ${SPRINT_PLUS.name} is ${formatMoney(SPRINT_PLUS.monthly)}/month for ${SPRINT_PLUS.variations} ad variations.`,
+      `Full-service creative production: research, concept and script development, creator selection, filming, editing and delivery. ${SPRINT.name} is ${formatMoney(SPRINT.monthly)}/month for ${SPRINT.concepts} concepts and ${SPRINT.variations} ad variations. ${SPRINT_PLUS.name} is ${formatMoney(SPRINT_PLUS.monthly)}/month for ${SPRINT_PLUS.concepts.value} distinct concepts and ${SPRINT_PLUS.variations} ad variations in total, distributed across the concepts according to the creative testing strategy.`,
       `Both include ${REVISIONS.roundsPerConcept} rounds of revisions per creative concept and ${USAGE_RIGHTS.includedMonths} months of worldwide usage rights. Production includes ${andList(FORMATS.fullProductionIncludes.map((x) => (x === 'B-roll' ? x : x.toLowerCase())))}, ${FORMATS.scopeQualifier}.`,
     ],
   },
@@ -42,7 +42,7 @@ export const PRICING_FAQ = [
     id: 'one-off-and-single-video',
     q: 'Can I book a one-off package, or order just one video?',
     a: [
-      `Yes, one-off packages are available: ${SPRINT.name} is ${formatMoney(SPRINT.oneOff)} and ${SPRINT_PLUS.name} is ${formatMoney(SPRINT_PLUS.oneOff)}. One-off prices are quoted in US dollars; the monthly prices are in euros.`,
+      `Yes, one-off packages are available: ${SPRINT.name} is ${formatMoney(SPRINT.oneOff)} and ${SPRINT_PLUS.name} is ${formatMoney(SPRINT_PLUS.oneOff)}.`,
       `${SINGLE_VIDEOS.statement} Our packages are structured creative batches, so there is enough variety to test.`,
     ],
   },

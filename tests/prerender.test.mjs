@@ -56,6 +56,14 @@ test('client hook and static head are built from the SAME spec (cannot drift)', 
   assert.match(read('vite-plugin-static-routes.js'), /buildHeadSpec\(headParamsFor\(/)
 })
 
+test('injectPage: "$" in head text (prices like $1,500) is copied literally, never read as a replacement pattern', () => {
+  const head = headSpecToHtml(buildHeadSpec({ title: 'From $1,500 & $2,000 $& $1', description: 'Costs $1,125 or $&', url: 'https://www.convrt.studio/p' }))
+  const page = injectPage(read('index.html'), { headHtml: head, bodyHtml: '<p>$1 $&</p>', ssrPath: '/p' })
+  assert.ok(page.includes('<title>From $1,500 &amp; $2,000 $&amp; $1</title>'))
+  assert.ok(page.includes('content="Costs $1,125 or $&amp;"'))
+  assert.ok(page.includes('<p>$1 $&</p>'))
+})
+
 test('injectPage: replaces the shell defaults (one of each tag), fills #root, stamps the path', () => {
   const shell = read('index.html')
   const head = headSpecToHtml(buildHeadSpec({ title: 'New', description: 'New desc', url: 'https://www.convrt.studio/new' }))
@@ -248,20 +256,21 @@ test('/pricing HTML: title, description, ONE canonical, indexable, and the prici
 test('/pricing HTML: every confirmed price, term and policy is in the visible markup', () => {
   const text = unescape(visibleText(page('/pricing')))
   for (const needle of [
-    '€2,500', '€4,500', '$3,000', '$5,400', '€1,500', '€2,000',
+    '$2,500', '$4,500', '$3,000', '$5,400', '$1,500', '$2,000', '8 distinct creative concepts', '8 complete scripts',
     '5 creative concepts. 10 opportunities to test.',
     'initial three-month commitment', "30 days' cancellation notice",
     'All prices exclude VAT. Applicable taxes will be calculated based on your business location and tax status.',
     'Your creative. Flexible usage rights.', '6 months of worldwide usage rights', 'date each video is delivered',
-    '€625', '€1,000', '€1,750', '€1,125', '€1,800', '€3,150', 'Perpetual usage',
+    '$625', '$1,000', '$1,750', '$1,125', '$1,800', '$3,150', 'Perpetual usage',
     'Paid advertising use must stop', 'Existing organic social media posts may remain published',
     'TikTok Spark Ads', 'Meta partnership ads', 'separate from the standard usage rights',
-    '€250 per creative concept', '10 business days', '15 business days',
+    '$250 per creative concept', '10 business days', '15 business days',
     'not unlimited', 'charged in full', 'Horizontal 16:9 production counts as a separate video', 'Square 1:1 reframing',
     'Brand and product discovery', 'Delivery and revisions', 'ship the product to the selected creator', 'dedicated demo or dummy account',
     'Customer support is not part of the service', 'Facebook, Instagram and TikTok',
   ]) assert.ok(text.includes(needle), `missing in raw HTML: ${needle}`)
   assert.ok(!/LinkedIn/.test(text), 'LinkedIn is not a confirmed platform')
+  assert.ok(!/€|\bEUR\b|\beuros?\b/i.test(text), 'no euro pricing anywhere on the page')
 })
 
 test('/pricing HTML: both service panels are present (inactive one only `hidden`), organic prices included', () => {
@@ -269,7 +278,7 @@ test('/pricing HTML: both service panels are present (inactive one only `hidden`
   assert.match(root, /id="service-panel-paid" role="tabpanel"[^>]*>/)
   assert.match(root, /id="service-panel-organic" role="tabpanel"[^>]*hidden=""/)
   assert.ok(!/id="service-panel-paid"[^>]*hidden/.test(root), 'paid is the default, visible panel')
-  assert.match(visibleText(page('/pricing')), /Organic Light[\s\S]*€1,500[\s\S]*Organic Growth[\s\S]*€2,000/)
+  assert.match(visibleText(page('/pricing')), /Organic Light[\s\S]*\$1,500[\s\S]*Organic Growth[\s\S]*\$2,000/)
 })
 
 test('/pricing HTML: the FAQ is visible content: every question and full answer is in the markup, and equals the JSON-LD', () => {
@@ -292,7 +301,7 @@ test('/pricing HTML: one h1, a logical heading order, extension prices in a real
   assert.ok(count(root, /<h2[\s>]/g) >= 6)
   const levels = [...root.matchAll(/<h([1-4])[\s>]/g)].map((m) => Number(m[1]))
   levels.forEach((l, i) => { if (i) assert.ok(l <= levels[i - 1] + 1, `heading level jumps from h${levels[i - 1]} to h${l}`) })
-  assert.match(root.replace(/<!-- -->/g, ''), /<table[\s\S]*Additional 3 months[\s\S]*€625[\s\S]*€1,125[\s\S]*<\/table>/)
+  assert.match(root.replace(/<!-- -->/g, ''), /<table[\s\S]*Additional 3 months[\s\S]*\$625[\s\S]*\$1,125[\s\S]*<\/table>/)
   assert.equal(count(root, /<th scope="col"/g), 3)
 })
 
