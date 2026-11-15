@@ -19,7 +19,7 @@ export default function CreativeTestingHero() {
       <div className="relative mx-auto max-w-4xl px-5 pt-16 pb-14 md:px-8 md:pt-20 md:pb-16 text-center">
         <div className="inline-flex items-center gap-2 rounded-full border border-hairline bg-surface-1/60 px-3 py-1.5 text-xs font-medium text-ink-muted backdrop-blur">
           <span className="h-1.5 w-1.5 rounded-full bg-lime" />
-          CONVRT Creative Testing Sprint
+          UGC &amp; video production pricing
         </div>
 
         <h1
@@ -32,7 +32,8 @@ export default function CreativeTestingHero() {
         <p className="mt-6 max-w-2xl mx-auto text-base md:text-lg text-ink-muted leading-relaxed">
           Most brands do not need more minor variations. They need genuinely different ideas to
           test. CONVRT develops distinct concepts, scripts, hooks, formats, and angles, then
-          turns them into platform-ready ads with a clear testing plan.
+          produces them as human-led UGC and spokesperson video ads, with clear prices, usage
+          rights and revision terms.
         </p>
 
         <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">

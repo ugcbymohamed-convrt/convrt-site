@@ -222,3 +222,109 @@ test('production bundle: hydration wiring present, nothing server-only shipped t
   assert.ok(!/renderToPipeableStream/.test(all), 'react-dom/server must not reach the browser bundle')
   assert.ok(!fs.existsSync(path.join(ROOT, 'node_modules', '.convrt-ssr')) || fs.readdirSync(path.join(ROOT, 'node_modules', '.convrt-ssr')).length === 0, 'temporary SSR build output must be cleaned up')
 })
+
+// ── SEO/GEO phase 1: the pricing page and its structured data, read from the raw HTML (no JavaScript) ──────────────
+import { PRICING_FAQ } from '../src/seo/pricingFaq.js'
+import { OFFER_PATHS } from '../src/config.js'
+
+const ldScripts = (h) => [...headOf(h).matchAll(/<script type="application\/ld\+json" data-blog-jsonld="static">([\s\S]*?)<\/script>/g)].map((m) => JSON.parse(m[1].replace(/\\u003c/g, '<')))
+const unescape = (s) => s.replace(/&#x27;/g, "'").replace(/&quot;/g, '"').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>')
+
+test('/pricing HTML: title, description, ONE canonical, indexable, and the pricing graph, all before any JavaScript', () => {
+  const h = page('/pricing')
+  const head = headOf(h)
+  assert.match(head, /<title>UGC &amp; Video Production Pricing \| CONVRT Studio<\/title>/)
+  assert.ok(head.includes(`<link rel="canonical" href="${SITE_URL}/pricing" />`))
+  assert.equal(count(head, /rel="canonical"/g), 1)
+  assert.ok(!/name="robots"/.test(head), 'pricing stays indexable')
+  const scripts = ldScripts(h)
+  assert.equal(scripts.length, 1, 'exactly one JSON-LD block (the client hook replaces, never adds)')
+  const types = scripts[0]['@graph'].map((n) => n['@type'])
+  for (const t of ['Organization', 'WebPage', 'BreadcrumbList', 'Service', 'FAQPage']) assert.ok(types.includes(t), t)
+  // Same data as the manifest hands to the client hook, so hydration cannot change it.
+  assert.deepEqual(scripts[0], JSON.parse(JSON.stringify(pageHead('/pricing').jsonLd)))
+})
+
+test('/pricing HTML: every confirmed price, term and policy is in the visible markup', () => {
+  const text = unescape(visibleText(page('/pricing')))
+  for (const needle of [
+    '€2,500', '€4,500', '$3,000', '$5,400', '€1,500', '€2,000',
+    '5 creative concepts. 10 opportunities to test.',
+    'initial three-month commitment', "30 days' cancellation notice",
+    'All prices exclude VAT. Applicable taxes will be calculated based on your business location and tax status.',
+    'Your creative. Flexible usage rights.', '6 months of worldwide usage rights', 'date each video is delivered',
+    '€625', '€1,000', '€1,750', '€1,125', '€1,800', '€3,150', 'Perpetual usage',
+    'Paid advertising use must stop', 'Existing organic social media posts may remain published',
+    'TikTok Spark Ads', 'Meta partnership ads', 'separate from the standard usage rights',
+    '€250 per creative concept', '10 business days', '15 business days',
+    'not unlimited', 'charged in full', 'Horizontal 16:9 production counts as a separate video', 'Square 1:1 reframing',
+    'Brand and product discovery', 'Delivery and revisions', 'ship the product to the selected creator', 'dedicated demo or dummy account',
+    'Customer support is not part of the service', 'Facebook, Instagram and TikTok',
+  ]) assert.ok(text.includes(needle), `missing in raw HTML: ${needle}`)
+  assert.ok(!/LinkedIn/.test(text), 'LinkedIn is not a confirmed platform')
+})
+
+test('/pricing HTML: both service panels are present (inactive one only `hidden`), organic prices included', () => {
+  const root = rootOf(page('/pricing'))
+  assert.match(root, /id="service-panel-paid" role="tabpanel"[^>]*>/)
+  assert.match(root, /id="service-panel-organic" role="tabpanel"[^>]*hidden=""/)
+  assert.ok(!/id="service-panel-paid"[^>]*hidden/.test(root), 'paid is the default, visible panel')
+  assert.match(visibleText(page('/pricing')), /Organic Light[\s\S]*€1,500[\s\S]*Organic Growth[\s\S]*€2,000/)
+})
+
+test('/pricing HTML: the FAQ is visible content: every question and full answer is in the markup, and equals the JSON-LD', () => {
+  const h = page('/pricing')
+  const text = unescape(visibleText(h))
+  for (const f of PRICING_FAQ) {
+    assert.ok(text.includes(f.q), `question: ${f.q}`)
+    for (const p of f.a) assert.ok(text.includes(p), `answer text for ${f.id}`)
+  }
+  const faqNode = ldScripts(h)[0]['@graph'].find((n) => n['@type'] === 'FAQPage')
+  assert.deepEqual(faqNode.mainEntity.map((q) => q.name), PRICING_FAQ.map((f) => f.q))
+  // Accessible accordion: a button per question wired to its answer region.
+  assert.equal(count(rootOf(h), /aria-controls="faq-a-/g), PRICING_FAQ.length)
+  assert.equal(count(rootOf(h), /role="region" aria-labelledby="faq-q-/g), PRICING_FAQ.length)
+})
+
+test('/pricing HTML: one h1, a logical heading order, extension prices in a real table', () => {
+  const root = rootOf(page('/pricing'))
+  assert.equal(count(root, /<h1[\s>]/g), 1)
+  assert.ok(count(root, /<h2[\s>]/g) >= 6)
+  const levels = [...root.matchAll(/<h([1-4])[\s>]/g)].map((m) => Number(m[1]))
+  levels.forEach((l, i) => { if (i) assert.ok(l <= levels[i - 1] + 1, `heading level jumps from h${levels[i - 1]} to h${l}`) })
+  assert.match(root.replace(/<!-- -->/g, ''), /<table[\s\S]*Additional 3 months[\s\S]*€625[\s\S]*€1,125[\s\S]*<\/table>/)
+  assert.equal(count(root, /<th scope="col"/g), 3)
+})
+
+test('/pricing HTML: conversion funnel intact: Roadmap CTAs, Free Video Production and the other offers still linked', () => {
+  const root = rootOf(page('/pricing'))
+  assert.ok(count(root, new RegExp(`href="${OFFER_PATHS.roadmap}"`, 'g')) >= 5, 'package, hero, next-step and nav CTAs still go to the Roadmap')
+  assert.ok(root.includes(`href="${OFFER_PATHS.riskFree}"`) || visibleText(page('/')).includes('Free'), 'the separate free-video promotion is untouched')
+  for (const h of [`href="${PATHS.pricing}"`, 'href="/blog"', 'href="/referrals"']) assert.ok(root.includes(h), h)
+  assert.ok(!/<form/.test(root.slice(root.indexOf('id="packages"'))), 'no form was added or moved into the pricing sections')
+})
+
+test('homepage HTML: Organization + WebSite JSON-LD once; no JSON-LD on noindex or offer pages', () => {
+  const home = ldScripts(page('/'))
+  assert.equal(home.length, 1)
+  assert.deepEqual(home[0]['@graph'].map((n) => n['@type']), ['Organization', 'WebSite'])
+  for (const p of [PATHS.roadmap, PATHS.hooks, PATHS.riskFree, PATHS.referrals, PATHS.scale]) {
+    assert.equal(ldScripts(page(p)).length, 0, `${p} must not carry structured data`)
+  }
+  for (const p of ['/case-studies/graspo', '/case-studies/elyon']) assert.equal(ldScripts(page(p)).length, 0, p)
+})
+
+test('hydration safety: the client hook REPLACES the prerendered JSON-LD, and /pricing still hydrates its own HTML', () => {
+  const hook = read('src/lib/useDocumentHead.js')
+  assert.match(hook, /querySelectorAll\(`script\[\$\{STATIC_JSONLD_ATTR\}="\$\{STATIC_JSONLD_VALUE\}"\]`\)\.forEach\(\(n\) => n\.remove\(\)\)/)
+  assert.equal(canHydrate({ pathname: '/pricing', ssrPath: '/pricing' }), true)
+  // Both service panels render identically on server and client (default tab = paid), so there is no mismatch.
+  assert.match(read('src/CreativeTestingSprintPage.jsx'), /useState\('paid'\)/)
+})
+
+test('sitemap + robots unchanged: /pricing listed once, blog/offer rules intact', () => {
+  const xml = fs.readFileSync(path.join(dist, 'sitemap.xml'), 'utf8')
+  assert.equal(count(xml, new RegExp(`<loc>${SITE_URL}/pricing</loc>`, 'g')), 1)
+  assert.ok(!/convrt-logo|#/.test(xml))
+  assert.deepEqual([...read('public/robots.txt').matchAll(/^Disallow:\s*(.*)$/gm)].map((m) => m[1].trim()), ['/api/'])
+})

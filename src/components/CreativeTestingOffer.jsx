@@ -1,5 +1,7 @@
 import { OFFER_PATHS } from '../config.js'
 import { GRASPO_FOLLOWING } from '../lib/siteStats.js'
+import { SPRINT, SPRINT_PLUS, ORGANIC, TAX, formatMoney } from '../seo/businessKnowledge.js'
+import CommercialTerms from './pricing/CommercialTerms.jsx'
 
 /* ─────────────────────────────────────────────
    PRICING — Paid Social + Organic Social
@@ -17,30 +19,37 @@ const BUILT_FOR = [
   'Teams actively running paid-social campaigns',
 ]
 
-const STANDARD_FEATURES = [
+/* Figures and policies come from src/seo/businessKnowledge.js (the single source of truth). */
+const sprintFeatures = [
   'Creative research and concept development',
-  '5 distinct creative concepts',
-  '5 complete scripts',
+  `${SPRINT.concepts} distinct creative concepts`,
+  `${SPRINT.variationsPerConcept} variations per concept (a different hook or CTA)`,
+  `${SPRINT.concepts} complete scripts`,
   'Scripts approved before filming',
-  'Multiple hooks or angle variations',
   '1 creator or spokesperson',
   'Creator-led or spokesperson production',
-  'Professional editing',
-  'Platform-ready delivery',
+  'Full-service production: filming, editing, captions, B-roll and motion graphics as agreed',
+  'Square 1:1 and portrait 4:5 reframing included',
+  `${SPRINT.revisionRoundsPerConcept} rounds of revisions per creative concept`,
+  `${SPRINT.usageMonthsIncluded} months of worldwide usage rights included`,
   'Production in one selected language: English, Spanish, French, or Arabic',
   'Organized testing recommendations',
 ]
 
-const PLUS_FEATURES = [
+/* "8 concepts / 8 scripts" is the copy that was already live. It is NOT confirmed in the latest owner instructions
+   (see SPRINT_PLUS.concepts in businessKnowledge.js), so it is kept as published and flagged for owner review. */
+const plusFeatures = [
   'Expanded creative research',
-  '8 distinct creative concepts',
-  '8 complete scripts',
+  `${SPRINT_PLUS.concepts.value} distinct creative concepts`,
+  `${SPRINT_PLUS.concepts.value} complete scripts`,
   'Scripts approved before filming',
   'Additional hook, angle, and format variations',
   'Up to 2 creators or spokespersons',
   'Creator-led and spokesperson production',
-  'Professional editing',
-  'Platform-ready delivery',
+  'Full-service production: filming, editing, captions, B-roll and motion graphics as agreed',
+  'Square 1:1 and portrait 4:5 reframing included',
+  `${SPRINT_PLUS.revisionRoundsPerConcept} rounds of revisions per creative concept`,
+  `${SPRINT_PLUS.usageMonthsIncluded} months of worldwide usage rights included`,
   'Production in one selected language: English, Spanish, French, or Arabic',
   'Expanded testing recommendations',
   'Priority production scheduling',
@@ -70,7 +79,7 @@ const ORGANIC_GROWTH_FEATURES = [
   'Performance review & optimization',
 ]
 
-const PLATFORM_NOTE = 'Instagram, TikTok, Facebook and LinkedIn available depending on strategy.'
+const PLATFORM_NOTE = `Supported platforms: ${ORGANIC.platforms.slice(0, -1).join(', ')} and ${ORGANIC.platforms.at(-1)}.`
 
 const SERVICES = [
   { id: 'paid', label: 'Paid Social' },
@@ -78,6 +87,9 @@ const SERVICES = [
 ]
 
 export default function CreativeTestingOffer({ service, onServiceChange }) {
+  /* BOTH service panels are always in the DOM (the inactive one carries `hidden`), so the prerendered HTML
+     contains every package and price; the tabs only decide which one a visitor sees. The `hidden` attribute is
+     on a plain wrapper: a Tailwind `grid` class on the same element would override it. */
   return (
     <section id="packages" className="relative overflow-hidden py-14 md:py-20">
       <div className="relative mx-auto max-w-7xl px-5 md:px-8">
@@ -90,56 +102,56 @@ export default function CreativeTestingOffer({ service, onServiceChange }) {
         <ServiceSwitch value={service} onChange={onServiceChange} />
 
         <div className="rounded-[32px] md:rounded-[40px] border border-hairline bg-surface-1/60 backdrop-blur-md p-4 sm:p-5 md:p-6">
-          {service === 'paid' ? (
-            <div
-              key="paid"
-              id="service-panel-paid"
-              role="tabpanel"
-              aria-labelledby="service-tab-paid"
-              className="pricing-panel-in grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[0.85fr_1fr_1fr] gap-4 md:gap-5 items-stretch"
-            >
+          <div id="service-panel-paid" role="tabpanel" aria-labelledby="service-tab-paid" hidden={service !== 'paid'}>
+            <div className="pricing-panel-in grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[0.85fr_1fr_1fr] gap-4 md:gap-5 items-stretch">
               <EditorialPanel className="md:col-span-2 lg:col-span-1" />
 
               <PackageCard
                 variant="standard"
-                name="Creative Testing Sprint"
-                price="From €2,500"
+                name={SPRINT.name}
+                price={formatMoney(SPRINT.monthly)}
                 priceSuffix="/month"
                 supportingLine="A focused first sprint for brands that need stronger creative diversity."
-                deliverable={{ count: '10', label: 'Video Ad Variations', note: 'Final ad variations, built from 5 distinct creative concepts.' }}
-                features={STANDARD_FEATURES}
-                timeline="Approximately 10 business days after script approval."
+                deliverable={{
+                  count: String(SPRINT.variations),
+                  label: 'Ad Variations',
+                  note: `${SPRINT.concepts} distinct creative concepts, ${SPRINT.variationsPerConcept} variations each. Variations change the hook or CTA.`,
+                }}
+                features={sprintFeatures}
+                footerLabel="Production turnaround"
+                footerValue={`${SPRINT.turnaroundBusinessDays} business days, starting once concepts and scripts are approved.`}
                 ctaLabel="Discuss Your Sprint"
               />
 
               <PackageCard
                 variant="plus"
                 badge="Deeper Testing"
-                name="Creative Testing Sprint Plus"
-                price="From €4,500"
+                name={SPRINT_PLUS.name}
+                price={formatMoney(SPRINT_PLUS.monthly)}
                 priceSuffix="/month"
                 supportingLine="For brands that need more concepts, creators, and testing depth."
-                deliverable={{ count: '20', label: 'Video Ad Variations', note: 'Final ad variations, built from 8 distinct creative concepts.' }}
-                features={PLUS_FEATURES}
-                timeline="Approximately 15 business days after script approval."
+                deliverable={{
+                  count: String(SPRINT_PLUS.variations),
+                  label: 'Ad Variations',
+                  note: 'Final ad variations, built from the concepts in your sprint.',
+                }}
+                features={plusFeatures}
+                footerLabel="Production turnaround"
+                footerValue={`${SPRINT_PLUS.turnaroundBusinessDays} business days, starting once concepts and scripts are approved.`}
                 ctaLabel="Discuss Your Sprint"
               />
             </div>
-          ) : (
-            <div
-              key="organic"
-              id="service-panel-organic"
-              role="tabpanel"
-              aria-labelledby="service-tab-organic"
-              className="pricing-panel-in grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-5 items-stretch"
-            >
+          </div>
+
+          <div id="service-panel-organic" role="tabpanel" aria-labelledby="service-tab-organic" hidden={service !== 'organic'}>
+            <div className="pricing-panel-in grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-5 items-stretch">
               <PackageCard
                 variant="standard"
-                name="Organic Light"
-                price="€1,500"
+                name={ORGANIC.light.name}
+                price={formatMoney(ORGANIC.light.monthly)}
                 priceSuffix="/month"
                 supportingLine="Full-service organic content, from strategy and production to editing and publishing."
-                cadenceLine="2 posts per week, approximately 9 original posts per month, adapted and distributed across your selected platforms"
+                cadenceLine={`${ORGANIC.light.cadence}, adapted and distributed across your selected platforms`}
                 features={ORGANIC_LIGHT_FEATURES}
                 footerLabel="Platforms"
                 footerValue="Distribution across up to 3 selected platforms"
@@ -150,11 +162,11 @@ export default function CreativeTestingOffer({ service, onServiceChange }) {
               <PackageCard
                 variant="plus"
                 badge="Recommended"
-                name="Organic Growth"
-                price="€2,000"
+                name={ORGANIC.growth.name}
+                price={formatMoney(ORGANIC.growth.monthly)}
                 priceSuffix="/month"
                 supportingLine="Higher-cadence organic content production, with more room to test formats, hooks, and creative directions."
-                cadenceLine="3 posts per week, 13 original posts per month, adapted and distributed across your selected platforms"
+                cadenceLine={`${ORGANIC.growth.cadence}, adapted and distributed across your selected platforms`}
                 features={ORGANIC_GROWTH_FEATURES}
                 footerLabel="Platforms"
                 footerValue="Distribution across up to 3 selected platforms"
@@ -162,16 +174,25 @@ export default function CreativeTestingOffer({ service, onServiceChange }) {
                 ctaLabel="Discuss Your Plan"
               />
             </div>
-          )}
+          </div>
         </div>
 
-        <p className="mt-6 md:mt-8 mx-auto max-w-2xl text-center text-[13px] text-ink-muted leading-relaxed">
-          {service === 'paid'
-            ? 'Pricing is based on the confirmed production scope. Additional languages, creators, locations, raw footage, paid-media usage requirements, specialist production needs, and extensive revisions may affect the final quote.'
-            : 'Pricing covers the full organic content workflow: strategy, production, editing, publishing, and optimization, across your selected platforms.'}
-        </p>
+        <div hidden={service !== 'paid'}>
+          <CommercialTerms />
+          <p className="mt-6 md:mt-8 mx-auto max-w-2xl text-center text-[13px] text-ink-muted leading-relaxed">
+            Pricing is based on the confirmed production scope. Additional languages, creators, locations, long-form
+            videos, horizontal production, creator-account advertising permissions, extended usage rights and other
+            specialist production needs are quoted separately.
+          </p>
+        </div>
 
-        {service === 'organic' && <GraspoProof />}
+        <div hidden={service !== 'organic'}>
+          <p className="mt-6 md:mt-8 mx-auto max-w-2xl text-center text-[13px] text-ink-muted leading-relaxed">
+            Pricing covers the full organic content workflow: strategy, production, editing, publishing, and
+            optimization, across your selected platforms. {TAX.statement}
+          </p>
+          <GraspoProof />
+        </div>
       </div>
     </section>
   )
@@ -354,14 +375,13 @@ function PackageCard({
   deliverable,
   cadenceLine,
   features,
-  timeline,
-  footerLabel = 'Typical delivery',
+  footerLabel = 'Production turnaround',
   footerValue,
   footerNote,
   ctaLabel,
 }) {
   const isPlus = variant === 'plus'
-  const footerText = footerValue ?? timeline
+  const footerText = footerValue
 
   return (
     <div
@@ -399,7 +419,7 @@ function PackageCard({
           }`}
         >
           <div className="shrink-0 leading-none">
-            <span className="block text-[10px] font-bold uppercase tracking-[0.16em] opacity-70">Up to</span>
+            <span className="block text-[10px] font-bold uppercase tracking-[0.16em] opacity-70">Total</span>
             <span
               className={`mt-1 block font-display font-extrabold tabular-nums tracking-display ${
                 isPlus ? 'text-[56px] md:text-[64px]' : 'text-[48px] md:text-[56px]'

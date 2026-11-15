@@ -1,30 +1,5 @@
-const PAID_HEADING = 'From research to test-ready creative.'
-
-const PAID_STEPS = [
-  {
-    number: '01',
-    title: 'Research',
-    description:
-      'We study the product, audience, current ads, competitors, and creative opportunities.',
-  },
-  {
-    number: '02',
-    title: 'Concepts',
-    description: 'CONVRT develops genuinely different creative directions, not minor variations.',
-  },
-  {
-    number: '03',
-    title: 'Approval and production',
-    description: 'Your team approves the scripts before creators, filming, and editing begin.',
-  },
-  {
-    number: '04',
-    title: 'Delivery and testing',
-    description:
-      'You receive organized, platform-ready assets with clear testing recommendations.',
-  },
-]
-
+/* The paid-social process (eight managed steps) lives in pricing/ProductionProcess.jsx and reads from
+   src/seo/businessKnowledge.js. This component now covers the organic service only. */
 const ORGANIC_HEADING = 'From strategy to published content.'
 
 const ORGANIC_STEPS = [
@@ -52,9 +27,9 @@ const ORGANIC_STEPS = [
   },
 ]
 
-export default function CreativeTestingProcess({ service }) {
-  const heading = service === 'paid' ? PAID_HEADING : ORGANIC_HEADING
-  const steps = service === 'paid' ? PAID_STEPS : ORGANIC_STEPS
+export default function CreativeTestingProcess() {
+  const heading = ORGANIC_HEADING
+  const steps = ORGANIC_STEPS
 
   return (
     <section className="relative overflow-hidden py-14 md:py-20">
@@ -63,7 +38,7 @@ export default function CreativeTestingProcess({ service }) {
           {heading}
         </h2>
 
-        <div key={service} className="pricing-panel-in flex flex-col md:flex-row gap-8 md:gap-0">
+        <div className="pricing-panel-in flex flex-col md:flex-row gap-8 md:gap-0">
           {steps.map((step, i) => (
             <div key={step.number} className="relative flex-1 md:px-6">
               {i > 0 && (
