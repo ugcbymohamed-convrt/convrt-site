@@ -92,7 +92,7 @@ export const PRICING_FAQ = [
     id: 'raw-footage',
     q: 'Is raw footage available?',
     a: [
-      `We offer raw footage as an additional service for ${formatMoney(RAW_FOOTAGE.price)} per ${RAW_FOOTAGE.per}. Our packages are designed around complete, ready-to-use video production, so raw footage is available alongside your finished creatives rather than as a replacement for them.`,
+      `We offer raw footage exclusively as an optional add-on at ${formatMoney(RAW_FOOTAGE.price)} per ${RAW_FOOTAGE.per}. ${RAW_FOOTAGE.policy} Raw footage is available alongside your finished creatives, never as a replacement for them.`,
       'Buying raw footage does not by itself transfer copyright ownership, unlimited editing rights or perpetual usage rights. Those terms are set out in the applicable agreement.',
     ],
   },
@@ -118,8 +118,8 @@ export const PRICING_FAQ = [
     id: 'organic-included',
     q: 'What is included in the organic social media packages?',
     a: [
-      `${ORGANIC.light.name} is ${formatMoney(ORGANIC.light.monthly)}/month and ${ORGANIC.growth.name} is ${formatMoney(ORGANIC.growth.monthly)}/month. The service covers ${andList(ORGANIC.scope.map((s) => s.toLowerCase()))}, across ${andList(ORGANIC.platforms)}.`,
-      ORGANIC.excluded.join(' '),
+      `${ORGANIC.light.name} is ${formatMoney(ORGANIC.light.monthly)}/month and ${ORGANIC.growth.name} is ${formatMoney(ORGANIC.growth.monthly)}/month. Both packages include ${andList(ORGANIC.includedInBoth.map((s) => s.toLowerCase()))}. The service covers ${andList(ORGANIC.scope.map((s) => s.toLowerCase()))}, across ${andList(ORGANIC.platforms)}.`,
+      `${ORGANIC.communityManagement} ${ORGANIC.excluded.join(' ')}`,
     ],
   },
 ]

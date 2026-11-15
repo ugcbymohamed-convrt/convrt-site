@@ -12,7 +12,7 @@ export default function OrganicScope() {
           id="organic-scope-heading"
           eyebrow="Organic social service"
           title="What organic social covers."
-          intro="Community management here means social media engagement and brand relationship management."
+          intro={`Both packages include ${ORGANIC.includedInBoth.join(' and ').toLowerCase()}.`}
         />
         <div className="grid grid-cols-1 md:grid-cols-[1.3fr_1fr] gap-4 md:gap-5">
           <Card>
@@ -24,6 +24,11 @@ export default function OrganicScope() {
             </ul>
           </Card>
           <div className="flex flex-col gap-4 md:gap-5">
+            <Card>
+              <CardLabel>Community management</CardLabel>
+              <CardTitle>Included in both packages</CardTitle>
+              <Small className="mt-3">{ORGANIC.communityManagement}</Small>
+            </Card>
             <Card>
               <CardLabel>Platforms</CardLabel>
               <CardTitle>{ORGANIC.platforms.slice(0, -1).join(', ')} and {ORGANIC.platforms.at(-1)}</CardTitle>

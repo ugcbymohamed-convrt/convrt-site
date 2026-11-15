@@ -190,11 +190,17 @@ export const USAGE_RIGHTS = {
 
 /* ── raw footage ──────────────────────────────────────────────────────────────────────── */
 export const RAW_FOOTAGE = {
+  id: 'raw-footage-add-on',
+  name: 'Raw footage add-on',
   price: usd(250),
   per: 'creative concept',
   addOnOnly: true,
+  /* Every CONVRT video is a professionally edited, finished video. There is NO raw-only package, NO raw-instead-of-edited
+     option and NO raw-vs-edited selector: raw footage exists only as this optional add-on. */
+  policy:
+    'Every video CONVRT produces and delivers is a professionally edited, finished video. We do not offer raw-only production packages or raw footage in place of edited deliverables.',
   note:
-    'Raw footage is an add-on to a full-service production package and cannot replace the finished, edited videos. Buying it does not by itself transfer copyright ownership, unlimited editing rights or perpetual usage rights; derivative-editing and ownership terms are set out in the applicable agreement.',
+    'Raw footage is available exclusively as an optional add-on, alongside your finished, edited videos. Buying it does not by itself transfer copyright ownership, unlimited editing rights or perpetual usage rights; derivative-editing and ownership terms are set out in the applicable agreement.',
 }
 
 /* ── production ───────────────────────────────────────────────────────────────────────── */
@@ -255,10 +261,15 @@ export const ORGANIC = {
   growth: {
     id: 'organic-growth',
     name: 'Organic Growth',
-    monthly: usd(2000),
+    monthly: usd(2500),
     cadence: '3 posts per week, 13 original posts per month',
   },
   platforms: ['Facebook', 'Instagram', 'TikTok'],
+  /* Included in BOTH packages (owner-confirmed). No response-time guarantees, monitoring hours or platform
+     allowances: detailed community management scope is subject to the applicable agreement. */
+  includedInBoth: ['Content scheduling and posting', 'Organic community management'],
+  communityManagement:
+    'Organic community management covers social media engagement and brand relationship management. Detailed community management scope is subject to the applicable agreement.',
   scope: [
     'Content strategy and planning',
     'Video concepts and scripting',
@@ -283,5 +294,5 @@ export const ORGANIC_PACKAGES = [ORGANIC.light, ORGANIC.growth]
    silently; the delivery report prints it. */
 export const OWNER_REVIEW_FLAGS = [
   'Copyright, derivative-editing and ownership terms are deferred to the applicable agreement: no ownership transfer or unrestricted editing rights may be implied.',
-  'Detailed organic operational commitments (reporting schedule, response times, video counts) are deferred to the applicable agreement.',
+  'Detailed organic operational commitments (community management scope, reporting schedule, response times, monitoring hours, video counts) are deferred to the applicable agreement.',
 ]

@@ -68,7 +68,8 @@ export default function ProductionTerms() {
 
           <Card>
             <CardLabel>Raw footage add-on</CardLabel>
-            <CardTitle>{formatMoney(RAW_FOOTAGE.price)} per {RAW_FOOTAGE.per}</CardTitle>
+            <CardTitle>Optional: {formatMoney(RAW_FOOTAGE.price)} per {RAW_FOOTAGE.per}</CardTitle>
+            <Small className="mt-3">{RAW_FOOTAGE.policy}</Small>
             <Small className="mt-3">{RAW_FOOTAGE.note}</Small>
           </Card>
         </div>

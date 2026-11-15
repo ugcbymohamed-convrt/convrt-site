@@ -61,7 +61,8 @@ const ORGANIC_LIGHT_FEATURES = [
   'Planned monthly content production',
   'Short-form video editing',
   'Captions & platform adaptation',
-  'Publishing & scheduling',
+  ORGANIC.includedInBoth[0],
+  ORGANIC.includedInBoth[1],
   'Performance review & optimization',
 ]
 
@@ -72,7 +73,8 @@ const ORGANIC_GROWTH_FEATURES = [
   'Planned monthly content production',
   'Short-form video editing',
   'Captions & platform adaptation',
-  'Publishing & scheduling',
+  ORGANIC.includedInBoth[0],
+  ORGANIC.includedInBoth[1],
   'Higher creative testing cadence',
   'More formats, hooks & creative angles tested',
   'Performance review & optimization',

@@ -126,13 +126,30 @@ test('creator-account advertising (Spark Ads / partnership ads): separate, not a
   assert.match(a, /confirmed individually/)
 })
 
-test('raw footage: $250 per creative concept, add-on only, no ownership or perpetual-rights implication', () => {
+test('raw footage: ONLY an optional $250-per-concept add-on; every video is edited; no raw-only package or selector', () => {
   assert.deepEqual(RAW_FOOTAGE.price, { amount: 250, currency: 'USD' })
   assert.equal(RAW_FOOTAGE.per, 'creative concept')
   assert.equal(RAW_FOOTAGE.addOnOnly, true)
-  assert.equal(faq('raw-footage').split('\n')[0].startsWith('We offer raw footage as an additional service for $250 per creative concept.'), true)
-  assert.match(faq('raw-footage'), /rather than as a replacement/)
-  assert.match(faq('raw-footage'), /does not by itself transfer copyright ownership, unlimited editing rights or perpetual usage rights/)
+  assert.match(RAW_FOOTAGE.policy, /professionally edited, finished video/)
+  assert.match(RAW_FOOTAGE.policy, /do not offer raw-only production packages or raw footage in place of edited deliverables/)
+  const a = faq('raw-footage')
+  assert.ok(a.startsWith('We offer raw footage exclusively as an optional add-on at $250 per creative concept.'))
+  assert.match(a, /never as a replacement/)
+  assert.match(a, /does not by itself transfer copyright ownership, unlimited editing rights or perpetual usage rights/)
+  // Same policy on the page, in JSON-LD, with the same price; no selector UI and no second raw price.
+  const svc = graph().find((n) => n.name === 'Raw footage add-on')
+  assert.equal(svc.offers.length, 1)
+  assert.equal(svc.offers[0].priceSpecification.price, 250)
+  assert.equal(svc.offers[0].priceSpecification.priceCurrency, 'USD')
+  assert.equal(svc.offers[0].priceSpecification.referenceQuantity.unitText, 'creative concept')
+  assert.match(svc.description, /do not offer raw-only production packages/)
+  assert.deepEqual(svc.isRelatedTo.map((r) => r['@id'].split('#service-')[1]), ['creative-testing-sprint', 'creative-testing-sprint-plus'])
+  const ui = read('src/components/pricing/ProductionTerms.jsx') + read('src/components/CreativeTestingOffer.jsx')
+  assert.ok(!/type="(radio|checkbox)"|<select|raw-only|rawOnly|raw footage only/i.test(ui), 'no raw-vs-edited selector')
+  assert.match(read('src/components/pricing/ProductionTerms.jsx'), /RAW_FOOTAGE\.policy/)
+  const everything = JSON.stringify(graph()) + PRICING_FAQ.map(faqAnswerText).join(' ')
+  const rawPrices = [...everything.matchAll(/raw footage[^.]{0,60}?\$([\d,]+)/gi)].map((m) => m[1])
+  assert.ok(rawPrices.length >= 3 && rawPrices.every((p) => p === '250'), `raw footage prices found: ${rawPrices}`)
 })
 
 test('turnaround starts at concept/script approval, never at payment', () => {
@@ -177,8 +194,37 @@ test('production process: the 8 confirmed steps, in order; physical and SaaS pro
   assert.match(PRODUCT_REQUIREMENTS.saas, /test data/)
 })
 
+test('Organic Growth is $2,500/month (Light $1,500): old $2,000 price gone from data, FAQ and JSON-LD', () => {
+  assert.equal(ORGANIC.growth.monthly.amount, 2500)
+  assert.equal(ORGANIC.light.monthly.amount, 1500)
+  const all = JSON.stringify(ORGANIC) + PRICING_FAQ.map(faqAnswerText).join(' ') + JSON.stringify(graph())
+  assert.ok(!/\$2,000|2000/.test(all), 'previous Organic Growth price must not remain')
+  assert.match(faq('organic-included'), /Organic Growth is \$2,500\/month/)
+  assert.match(faq('organic-included'), /Organic Light is \$1,500\/month/)
+  const growth = graph().find((n) => n.name === 'Organic Growth')
+  assert.equal(growth.offers[0].priceSpecification.price, 2500)
+  assert.equal(growth.offers[0].priceSpecification.priceCurrency, 'USD')
+  assert.match(growth.offers[0].description, /^\$2,500 per month, excluding VAT/)
+})
+
+test('both organic packages include content scheduling and posting + organic community management, with no invented commitments', () => {
+  assert.deepEqual(ORGANIC.includedInBoth, ['Content scheduling and posting', 'Organic community management'])
+  assert.match(ORGANIC.communityManagement, /social media engagement and brand relationship management/)
+  assert.match(ORGANIC.communityManagement, /subject to the applicable agreement/)
+  const offer = read('src/components/CreativeTestingOffer.jsx')
+  assert.equal((offer.match(/ORGANIC\.includedInBoth\[0\]/g) || []).length, 2, 'in both cards')
+  assert.equal((offer.match(/ORGANIC\.includedInBoth\[1\]/g) || []).length, 2, 'in both cards')
+  for (const n of graph().filter((x) => /^Organic (Light|Growth)$/.test(x.name))) {
+    assert.match(n.description, /content scheduling and posting and organic community management/)
+  }
+  assert.match(faq('organic-included'), /Both packages include content scheduling and posting and organic community management/)
+  assert.match(faq('organic-included'), /Customer support is not part of the service/)
+  const copy = JSON.stringify(ORGANIC) + faq('organic-included') + read('src/components/pricing/OrganicScope.jsx').replace(/\/\*[\s\S]*?\*\//g, '')
+  assert.ok(!/response[- ]time|within \d+ hours?|monitoring hours|24\/7|replies? within|guarantee/i.test(copy), 'no response-time / monitoring-hours commitments')
+})
+
 test('organic: existing prices and post counts preserved; confirmed scope, platforms and exclusions', () => {
-  assert.deepEqual(ORGANIC_PACKAGES.map((p) => [p.name, p.monthly.amount, p.monthly.currency]), [['Organic Light', 1500, 'USD'], ['Organic Growth', 2000, 'USD']])
+  assert.deepEqual(ORGANIC_PACKAGES.map((p) => [p.name, p.monthly.amount, p.monthly.currency]), [['Organic Light', 1500, 'USD'], ['Organic Growth', 2500, 'USD']])
   assert.match(ORGANIC.light.cadence, /2 posts per week, approximately 9 original posts per month/)
   assert.match(ORGANIC.growth.cadence, /3 posts per week, 13 original posts per month/)
   assert.deepEqual(ORGANIC.platforms, ['Facebook', 'Instagram', 'TikTok'])
@@ -199,7 +245,7 @@ test('brand + talent + languages: verbatim confirmed information, nothing invent
 
 test('pricing page copy is data-driven: package prices are not typed into the components', () => {
   const offer = read('src/components/CreativeTestingOffer.jsx')
-  for (const literal of ['2,500', '4,500', '1,500', '2,000', '3,000', '5,400']) assert.ok(!offer.includes(literal), `hard-coded ${literal}`)
+  for (const literal of ['2,500', '4,500', '1,500', '3,000', '5,400']) assert.ok(!offer.includes(literal), `hard-coded ${literal}`)
   for (const f of ['UsageRights', 'CommercialTerms', 'ProductionTerms']) {
     assert.ok(!/[$$]\s?\d/.test(read(`src/components/pricing/${f}.jsx`)), `${f} hard-codes a price`)
   }
@@ -230,7 +276,7 @@ test('pricing JSON-LD: serialises to valid JSON; one @graph; expected node types
   assert.equal(doc['@context'], 'https://schema.org')
   const types = graph().map((n) => n['@type'])
   for (const t of ['Organization', 'WebPage', 'BreadcrumbList', 'Service', 'FAQPage']) assert.ok(types.includes(t), t)
-  assert.equal(types.filter((t) => t === 'Service').length, 7, '3 core services + 2 creative testing + 2 organic packages')
+  assert.equal(types.filter((t) => t === 'Service').length, 8, '3 core services + 2 creative testing + 2 organic packages + raw footage add-on')
   assert.ok(!types.includes('Product'), 'services must not be marked up as Product')
   assert.ok(!/aggregateRating|"review"|"address"|"award"|areaServed/.test(JSON.stringify(graph())), 'nothing invented')
 })
@@ -264,7 +310,7 @@ test('USD everywhere: no € / EUR / euro in pricing data, components, FAQ or JS
   const data = JSON.stringify({ SPRINT, SPRINT_PLUS, RAW_FOOTAGE, ORGANIC_PACKAGES }) + PRICING_FAQ.map(faqAnswerText).join(' ') + JSON.stringify(graph())
   assert.ok(!/€|\bEUR\b|euros?\b/i.test(data))
   const currencies = [...JSON.stringify(graph()).matchAll(/"priceCurrency":"([A-Z]+)"/g)].map((m) => m[1])
-  assert.equal(currencies.length, 6, '2 Sprint packages x (monthly + one-off) + 2 organic monthly')
+  assert.equal(currencies.length, 7, '2 Sprint packages x (monthly + one-off) + 2 organic monthly + raw footage add-on')
   assert.ok(currencies.every((c) => c === 'USD'))
   // Whole site: no € in any source file (the only "European" hits are a case-study description of Graspo).
   const walk = (d) => fs.readdirSync(d, { withFileTypes: true }).flatMap((e) => (e.isDirectory() ? walk(path.join(d, e.name)) : [path.join(d, e.name)]))
@@ -300,7 +346,7 @@ test('Offers: numeric prices, correct currencies, monthly vs one-off kept apart,
   assert.equal(spec(plus, 1).price, 5400); assert.equal(spec(plus, 1).priceCurrency, 'USD')
   for (const id of ['organic-light', 'organic-growth']) assert.equal(spec(svc(id), 0).unitCode, 'MON')
   assert.equal(spec(svc('organic-light'), 0).price, 1500)
-  assert.equal(spec(svc('organic-growth'), 0).price, 2000)
+  assert.equal(spec(svc('organic-growth'), 0).price, 2500)
   for (const n of graph().filter((x) => x.offers)) {
     for (const o of n.offers) {
       assert.equal(typeof o.priceSpecification.price, 'number')

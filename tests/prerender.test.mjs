@@ -256,7 +256,7 @@ test('/pricing HTML: title, description, ONE canonical, indexable, and the prici
 test('/pricing HTML: every confirmed price, term and policy is in the visible markup', () => {
   const text = unescape(visibleText(page('/pricing')))
   for (const needle of [
-    '$2,500', '$4,500', '$3,000', '$5,400', '$1,500', '$2,000', '8 distinct creative concepts', '8 complete scripts',
+    '$2,500', '$4,500', '$3,000', '$5,400', '$1,500', '$2,500', '8 distinct creative concepts', '8 complete scripts',
     '5 creative concepts. 10 opportunities to test.',
     'initial three-month commitment', "30 days' cancellation notice",
     'All prices exclude VAT. Applicable taxes will be calculated based on your business location and tax status.',
@@ -267,7 +267,7 @@ test('/pricing HTML: every confirmed price, term and policy is in the visible ma
     '$250 per creative concept', '10 business days', '15 business days',
     'not unlimited', 'charged in full', 'Horizontal 16:9 production counts as a separate video', 'Square 1:1 reframing',
     'Brand and product discovery', 'Delivery and revisions', 'ship the product to the selected creator', 'dedicated demo or dummy account',
-    'Customer support is not part of the service', 'Facebook, Instagram and TikTok',
+    'Customer support is not part of the service', 'Content scheduling and posting', 'Organic community management', 'exclusively as an optional add-on at $250 per creative concept', 'do not offer raw-only production packages', 'Facebook, Instagram and TikTok',
   ]) assert.ok(text.includes(needle), `missing in raw HTML: ${needle}`)
   assert.ok(!/LinkedIn/.test(text), 'LinkedIn is not a confirmed platform')
   assert.ok(!/€|\bEUR\b|\beuros?\b/i.test(text), 'no euro pricing anywhere on the page')
@@ -278,7 +278,7 @@ test('/pricing HTML: both service panels are present (inactive one only `hidden`
   assert.match(root, /id="service-panel-paid" role="tabpanel"[^>]*>/)
   assert.match(root, /id="service-panel-organic" role="tabpanel"[^>]*hidden=""/)
   assert.ok(!/id="service-panel-paid"[^>]*hidden/.test(root), 'paid is the default, visible panel')
-  assert.match(visibleText(page('/pricing')), /Organic Light[\s\S]*\$1,500[\s\S]*Organic Growth[\s\S]*\$2,000/)
+  assert.match(visibleText(page('/pricing')), /Organic Light[\s\S]*\$1,500[\s\S]*Organic Growth[\s\S]*\$2,500/)
 })
 
 test('/pricing HTML: the FAQ is visible content: every question and full answer is in the markup, and equals the JSON-LD', () => {
@@ -336,4 +336,29 @@ test('sitemap + robots unchanged: /pricing listed once, blog/offer rules intact'
   assert.equal(count(xml, new RegExp(`<loc>${SITE_URL}/pricing</loc>`, 'g')), 1)
   assert.ok(!/convrt-logo|#/.test(xml))
   assert.deepEqual([...read('public/robots.txt').matchAll(/^Disallow:\s*(.*)$/gm)].map((m) => m[1].trim()), ['/api/'])
+})
+
+// ── final pricing audit: every prerendered page and every JSON-LD block ────────────────────────────────────────────
+test('sitewide audit: no euro prices and no old $2,000 Organic Growth price in any prerendered page, 404 shell or structured data', () => {
+  const files = [...KNOWN_PATHS.map((p) => page(p)), fs.readFileSync(path.join(dist, '404.html'), 'utf8')]
+  for (const [i, h] of files.entries()) {
+    const label = KNOWN_PATHS[i] ?? '404'
+    assert.ok(!/€|&euro;|\bEUR\b/.test(h), `${label}: euro pricing`)
+    assert.ok(!/Organic Growth[^<]{0,300}\$2,000|\$2,000[^<]{0,300}Organic Growth/.test(h.replace(/<[^>]+>/g, ' ')), `${label}: old Organic Growth price`)
+    assert.ok(!/"price":2000\b/.test(h), `${label}: old price in JSON-LD`)
+  }
+  const bundle = fs.readdirSync(path.join(dist, 'assets')).filter((f) => f.endsWith('.js')).map((f) => fs.readFileSync(path.join(dist, 'assets', f), 'utf8')).join('\n')
+  assert.ok(!/€/.test(bundle), 'no € in the shipped JavaScript')
+})
+
+test('Organic Growth/Light on the pricing page (there is no separate organic URL): USD cards, copy, FAQ and JSON-LD agree', () => {
+  const h = page('/pricing')
+  const text = unescape(visibleText(h))
+  assert.match(text, /Organic Light \$1,500 \/month/)
+  assert.match(text, /Organic Growth \$2,500 \/month/)
+  assert.match(text, /Organic Growth is \$2,500\/month/, 'FAQ')
+  const nodes = ldScripts(h)[0]['@graph'].filter((n) => /^Organic (Light|Growth)$/.test(n.name))
+  assert.deepEqual(nodes.map((n) => [n.name, n.offers[0].priceSpecification.price, n.offers[0].priceSpecification.priceCurrency]), [['Organic Light', 1500, 'USD'], ['Organic Growth', 2500, 'USD']])
+  assert.equal(count(rootOf(h), /Organic community management/g) >= 3, true, 'cards x2 + scope section')
+  assert.ok(!KNOWN_PATHS.some((p) => /organic/i.test(p)), 'no separate organic route exists: update this test if one is added')
 })

@@ -15,7 +15,7 @@
 import { SITE_URL } from '../config.js'
 import {
   BRAND, CORE_SERVICES, PRODUCTION_LANGUAGES, SPRINT, SPRINT_PLUS, ORGANIC, COMMITMENT,
-  USAGE_RIGHTS, formatMoney,
+  USAGE_RIGHTS, RAW_FOOTAGE, formatMoney,
 } from './businessKnowledge.js'
 import { PRICING_FAQ, faqAnswerText } from './pricingFaq.js'
 
@@ -114,6 +114,23 @@ export function oneOffOffer(name, money) {
   }
 }
 
+/* Price per unit (here: per creative concept), a one-time add-on fee, not a recurring or total price. */
+export function perUnitOffer(name, money, unit) {
+  return {
+    '@type': 'Offer',
+    name: `${name} (per ${unit})`,
+    url: PACKAGES_URL,
+    priceSpecification: {
+      '@type': 'UnitPriceSpecification',
+      price: money.amount,
+      priceCurrency: money.currency,
+      valueAddedTaxIncluded: false,
+      referenceQuantity: { '@type': 'QuantitativeValue', value: 1, unitText: unit },
+    },
+    description: `${formatMoney(money)} per ${unit}, excluding VAT.`,
+  }
+}
+
 /* ── services ─────────────────────────────────────────────────────────────────────────── */
 export function coreServiceNodes() {
   return CORE_SERVICES.map((s) => ({
@@ -154,12 +171,23 @@ function packageNodes() {
     '@id': serviceId(p.id),
     name: p.name,
     serviceType: 'Organic social media content production and management',
-    description: `${p.cadence}, distributed across your selected platforms (${ORGANIC.platforms.slice(0, -1).join(', ')} and ${ORGANIC.platforms.at(-1)}).`,
+    description: `${p.cadence}, distributed across your selected platforms (${ORGANIC.platforms.slice(0, -1).join(', ')} and ${ORGANIC.platforms.at(-1)}). Includes ${ORGANIC.includedInBoth.map((x) => x.toLowerCase()).join(' and ')}; detailed community management scope is subject to the applicable agreement.`,
     provider: { '@id': ORG_ID },
     isRelatedTo: [{ '@id': serviceId('organic') }],
     offers: [monthlyOffer(p.name, p.monthly)],
   }))
-  return [sprint, plus, ...organic]
+  /* Optional add-on only: never a raw-only or raw-instead-of-edited package. Priced per creative concept. */
+  const rawFootage = {
+    '@type': 'Service',
+    '@id': serviceId(RAW_FOOTAGE.id),
+    name: RAW_FOOTAGE.name,
+    serviceType: 'Raw footage add-on for a finished video production package',
+    description: `${RAW_FOOTAGE.policy} Raw footage is an optional add-on at ${formatMoney(RAW_FOOTAGE.price)} per ${RAW_FOOTAGE.per}.`,
+    provider: { '@id': ORG_ID },
+    isRelatedTo: [{ '@id': serviceId(SPRINT.id) }, { '@id': serviceId(SPRINT_PLUS.id) }],
+    offers: [perUnitOffer(RAW_FOOTAGE.name, RAW_FOOTAGE.price, RAW_FOOTAGE.per)],
+  }
+  return [sprint, plus, ...organic, rawFootage]
 }
 
 /* ── FAQPage: generated from the exact Q&A the page renders ───────────────────────────── */
