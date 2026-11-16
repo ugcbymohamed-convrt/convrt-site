@@ -267,7 +267,8 @@ test('indexing: vercel.json X-Robots-Tag for /blog agrees with BLOG_INDEXABLE', 
 test('indexing: no other route is noindexed by the blog rule', () => {
   const vercel = JSON.parse(fs.readFileSync(path.join(ROOT, 'vercel.json'), 'utf8'))
   const sources = (vercel.headers ?? []).map((h) => h.source)
-  assert.deepEqual(sources, ['/blog'])
+  // The blog rule, plus the two header rules for the private creator pages (tests/creator-seo.test.mjs). Nothing else.
+  assert.deepEqual(sources, ['/blog', '/creator-onboarding/:path*', '/creator-admin/:path*'])
 })
 
 test('structured data: index CollectionPage lists nothing while there are no published articles', () => {

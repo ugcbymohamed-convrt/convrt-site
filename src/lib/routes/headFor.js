@@ -4,10 +4,12 @@
 import { BLOG_PATH } from '../../config.js'
 import { pageHead, canonicalPathFor } from '../../seo/siteSeo.js'
 import { articleHead, blogIndexHead } from '../blog/seo.js'
+import { isPrivatePath, privateHead } from '../../seo/privateSeo.js'
 
 /* @param {string} path           a path from allRoutePaths()
    @param {object[]} publishedMetas  metadata of PUBLISHED blog articles (see schema.js selectPublished) */
 export function headParamsFor(path, publishedMetas = []) {
+  if (isPrivatePath(path)) return privateHead(path)
   if (path === BLOG_PATH) return blogIndexHead(publishedMetas)
   if (path.startsWith(`${BLOG_PATH}/`)) {
     const slug = path.slice(BLOG_PATH.length + 1)
