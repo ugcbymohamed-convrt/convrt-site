@@ -237,7 +237,8 @@ export async function adminHandler(req, res, deps = buildDeps()) {
         return reply(res, 429, { ok: false, error: 'rate_limited' })
       }
       const body = await readJson(req, 2048)
-      if (!body || typeof body.password !== 'string' || !safeEqual(body.password, cfg.adminPassword)) {
+      // Surrounding whitespace is ignored (it is a common copy/paste artefact); the stored password is trimmed the same way.
+      if (!body || typeof body.password !== 'string' || !safeEqual(body.password.trim(), cfg.adminPassword)) {
         return reply(res, 401, { ok: false, error: 'invalid_credentials' })
       }
       const value = signSession({ role: 'owner', exp: deps.now() + ADMIN_SESSION_MS }, cfg.sessionSecret)

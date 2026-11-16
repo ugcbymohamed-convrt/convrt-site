@@ -431,6 +431,12 @@ test('owner API: cookie is HttpOnly + SameSite=Strict (+ Secure over https); log
   assert.equal(last.r.status, 429)
 })
 
+test('owner API: a pasted password with stray spaces or a trailing newline still signs in; a different password does not', async () => {
+  const h = makeHarness()
+  assert.equal((await adminLogin(h.deps, `  ${h.env.CREATOR_ADMIN_PASSWORD}\n`)).r.status, 200)
+  assert.equal((await adminLogin(h.deps, `${h.env.CREATOR_ADMIN_PASSWORD}x`)).r.status, 401)
+})
+
 test('owner API: refuses to run with a weak/missing password or session secret', async () => {
   const h = makeHarness({ env: { CREATOR_ADMIN_PASSWORD: 'short' } })
   assert.equal((await adminLogin(h.deps, 'short')).r.status, 503)
