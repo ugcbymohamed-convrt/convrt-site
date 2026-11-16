@@ -680,7 +680,11 @@ test('Roadmap card: approved copy and destination; right = three-mockup PITCH-BO
   // right: pitch-board
   const raw = philo
   const board = raw.slice(raw.indexOf('function PitchBoard'), raw.indexOf('function RoadmapCard'))
-  for (const t of ['SaaS product demo', 'creator-led lifestyle ad', 'bold product-focused ad', 'PRODUCT DEMO', 'CREATOR-LED', 'PRODUCT-LED', 'See it in action', 'It just works.', 'MADE', 'SEEN.', 'Illustrative concepts']) assert.ok(board.includes(t), t)
+  for (const t of ['SaaS product demo', 'creator-led lifestyle ad', 'bold product-focused ad', 'PRODUCT DEMO', 'CREATOR-LED', 'PRODUCT-LED', 'See it in action', 'It just works.', 'MADE', 'SEEN.']) assert.ok(board.includes(t), t)
+  assert.ok(!/Illustrative concepts/.test(board), 'no caption under the mockups; the on-mockup tags (CREATOR-LED, PRODUCT DEMO, PRODUCT-LED) mark them as examples')
+  // layered composition: the demo (B) is drawn first, so it sits behind the two side mockups, which are pulled toward it
+  assert.ok(board.indexOf('{/* B: ') < board.indexOf('{/* A: ') && board.indexOf('{/* A: ') < board.indexOf('{/* C: '), 'demo behind creator-led and product-led')
+  assert.match(board, /translate\(20 0\) rotate\(-5 62 104\)/); assert.match(board, /translate\(-12 0\) rotate\(5 290 120\)/)
   assert.equal((board.match(/\{\/\* [ABC]: /g) || []).length, 3, 'exactly three mock ads')
   assert.ok(!/ConceptAccents|#8b5cf6|#ff6a4d|#ec4899|#ffb547/.test(board), 'no rainbow card palette on the pitch-board')
   assert.ok(!/<img|https?:\/\/|<animate|animation|branch-draw|ANGLE_ICONS|Problem|Offer/.test(board), 'no external assets, animation, branching or five-icon idea cards')

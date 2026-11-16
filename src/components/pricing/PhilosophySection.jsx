@@ -137,7 +137,7 @@ function PitchBoard() {
         </g>
 
         {/* A: creator-led lifestyle ad (portrait, front left) */}
-        <g transform="rotate(-5 62 104)">
+        <g transform="translate(20 0) rotate(-5 62 104)">
           <rect x="17" y="24" width="98" height="172" rx="14" fill="#000" opacity="0.4" />
           <rect x="14" y="18" width="98" height="172" rx="14" fill="url(#pb-warm)" stroke="#fafafa" strokeOpacity="0.14" />
           <circle cx="76" cy="78" r="46" fill="url(#pb-glow)" />
@@ -153,7 +153,7 @@ function PitchBoard() {
         </g>
 
         {/* C: bold product-focused ad (front right) */}
-        <g transform="rotate(5 290 120)">
+        <g transform="translate(-12 0) rotate(5 290 120)">
           <rect x="235" y="50" width="116" height="150" rx="12" fill="#000" opacity="0.4" />
           <rect x="232" y="44" width="116" height="150" rx="12" fill="#f2f2ee" />
           <text x="244" y="78" fontSize="21" fontWeight="800" letterSpacing="-0.6" fill="#0a0a0b">MADE</text>
@@ -169,7 +169,6 @@ function PitchBoard() {
           <text x="244" y="58" fontSize="6.5" fontWeight="600" letterSpacing="1.1" fill="#0a0a0b" opacity="0.55">PRODUCT-LED</text>
         </g>
       </svg>
-      <p className="mt-1 text-center text-[11px] text-ink-subtle">Illustrative concepts</p>
     </div>
   )
 }
