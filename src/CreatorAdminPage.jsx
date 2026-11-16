@@ -92,6 +92,7 @@ function SetupCheck() {
         <Row ok={checks.cloudflareAccountId} label="CLOUDFLARE_ACCOUNT_ID" detail={checks.cloudflareAccountId ? 'Set' : 'Missing on this deployment'} />
         <Row ok={checks.cloudflareToken} label="CLOUDFLARE_STREAM_API_TOKEN" detail={checks.cloudflareToken ? 'Set' : 'Missing on this deployment'} />
         <Row ok={cf === 'ok'} label="Cloudflare Stream connection" detail={CF_HELP[cf] || `Cloudflare answered ${cf}.`} />
+        <Row ok={checks.functionRegion === 'fra1'} label="Where the server functions run" detail={checks.functionRegion ? `${checks.functionRegion}${checks.functionRegion === 'fra1' ? ' (Frankfurt, Germany)' : ': not Frankfurt. The privacy notice must match where it really runs.'}` : 'Unknown (not running on Vercel)'} />
         <Row ok={checks.ownerEmail} label="Owner email alerts (email service key)" detail={checks.ownerEmail ? 'Set' : 'Missing: you will not get an email for new submissions'} />
       </ul>
       {OWNER_REVIEW_BLOCKERS.length > 0 && (

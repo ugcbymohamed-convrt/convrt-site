@@ -148,7 +148,7 @@ test('abandoned uploads and drafts are purged 14 days after the invitation expir
   assert.equal(t.cfake.videos.has(uid), false)
   const inv = await t.store.get(`cr:invite:${created.json.invite.id}`)
   assert.equal(inv.status, 'purged')
-  assert.deepEqual([inv.videos, inv.photo, inv.draft], [{}, null, {}])
+  assert.deepEqual([inv.videos, inv.photo, inv.draft, inv.label], [{}, null, {}, ''], 'including the owner’s free-text note')
   assert.equal((await C('session')).status, 401, 'the old link no longer works')
   assert.ok(await t.getSub(submitted.ref), 'a submitted invitation is not affected')
 })

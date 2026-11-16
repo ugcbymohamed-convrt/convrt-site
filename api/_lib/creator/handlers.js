@@ -286,6 +286,8 @@ export async function adminHandler(req, res, deps = buildDeps()) {
             cloudflareToken: Boolean(cfg.streamToken),
             cloudflare,
             ownerEmail: cfg.resendConfigured,
+            // The region this very function is running in (Vercel sets VERCEL_REGION at runtime), e.g. "fra1".
+            functionRegion: process.env.VERCEL_REGION || null,
             environment: cfg.isProduction ? 'production' : 'preview/development',
           },
         })

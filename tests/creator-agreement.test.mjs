@@ -329,7 +329,7 @@ test('privacy notice: all the required sections are present, each once, with no 
   const sentences = privacyText().split(/(?<=[.!?])\s+/).map((x) => x.trim()).filter((x) => x.length > 30)
   const dupes = sentences.filter((x, i) => sentences.indexOf(x) !== i)
   assert.deepEqual(dupes, [], 'no sentence is repeated')
-  assert.ok(privacyText().length < 6500, 'the notice stays short')
+  assert.ok(privacyText().length < 7500, 'the notice stays short')
 })
 
 test('privacy notice: what is (not) published, marketing, Fiverr, and the verified infrastructure are stated', () => {
@@ -344,7 +344,7 @@ test('privacy notice: what is (not) published, marketing, Fiverr, and the verifi
   assert.ok(text.includes('Resend stores its data in the United States'))
   assert.ok(text.includes('CONVRT does not request automatic captions, transcription or any other AI analysis of your videos'))
   assert.ok(!/GDPR-compliant|certified|ISO ?27001|SOC ?2|guarantee|routine backups/i.test(text), 'no invented certifications, guarantees or backup claims')
-  assert.ok(!/\b(?!90 |14 )\d+ (days|months|years)\b/.test(text), 'only the owner-chosen retention periods appear')
+  assert.ok(!/\b(?!90 |14 |30 )\d+ (days|months|years)\b/.test(text), 'only the owner-chosen retention periods appear')
 })
 
 test('privacy notice: every open point is a tracked item with a row in the launch checklist; none is silently removable', () => {

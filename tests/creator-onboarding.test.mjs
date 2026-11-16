@@ -476,9 +476,10 @@ test('owner setup check: owner only, reports presence and Cloudflare reachabilit
   assert.equal((await admin(t.deps, '')('health')).status, 401)
   const r = await t.A('health')
   assert.equal(r.status, 200)
-  assert.deepEqual(Object.keys(r.json.checks).sort(), ['cloudflare', 'cloudflareAccountId', 'cloudflareToken', 'database', 'environment', 'ownerEmail'])
+  assert.deepEqual(Object.keys(r.json.checks).sort(), ['cloudflare', 'cloudflareAccountId', 'cloudflareToken', 'database', 'environment', 'functionRegion', 'ownerEmail'])
   assert.equal(r.json.checks.cloudflareAccountId, true)
   assert.equal(r.json.checks.cloudflareToken, true)
+  assert.equal(r.json.checks.functionRegion, process.env.VERCEL_REGION || null, 'reports the real runtime region')
   const text = JSON.stringify(r.json)
   for (const secret of ['cf-token-secret', 'acct123', ENV_PASSWORD, 're_test_key']) assert.ok(!text.includes(secret), 'no secret value in the response')
 

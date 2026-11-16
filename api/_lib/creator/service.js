@@ -739,6 +739,7 @@ export function createService(ctx) {
       inv.videos = {}
       inv.photo = null
       inv.draft = {}
+      inv.label = '' // the owner's note (often a Fiverr username) is personal data too
       inv.status = 'purged'
       delete inv.retention
       await store.del(keys.tok(inv.tokenHash))

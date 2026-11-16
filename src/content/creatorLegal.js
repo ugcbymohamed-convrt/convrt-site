@@ -276,14 +276,14 @@ export const PRIVACY = {
         'If your submission is rejected, we delete its videos and photo 90 days after the decision.',
         'Uploads you started but never submitted are deleted 14 days after your invitation expires.',
         `Your signed agreement and consent record never includes your media files, is kept private and is never published. We keep it while your portfolio is approved and for six years after a submission is rejected or withdrawn, so we can evidence what you agreed. ${tbc('six-year retention period')}`,
-        `Copies held in our providers' backups, if any, are removed when those backups expire. ${tbc('provider backup retention')}`,
+        `Copies held in our providers' backups and logs are removed when those expire: for example, Upstash keeps disaster-recovery snapshots and deletes them on its backup schedule, and Resend keeps the notification emails described above in its logs for up to 30 days according to its documentation. We cannot delete from provider backups ourselves, so deletion there is not immediate. ${tbc('provider backup retention')}`,
       ],
     },
     {
       id: 'transfers',
       heading: 'International transfers',
       paragraphs: [
-        `Some of these providers process information outside your country. Submissions are currently handled on servers in the USA, and Resend stores its data in the United States. ${tbc('transfer safeguards')}`,
+        `Some of these providers process information outside your country. Submissions are currently handled on servers in the USA, and Resend stores its data in the United States. We cannot restrict Cloudflare Stream to a single region, so videos may be processed outside Europe even though our database is in Frankfurt. ${tbc('transfer safeguards')}`,
       ],
     },
     {
