@@ -21,7 +21,7 @@ export function readInviteToken() {
 }
 
 async function request(token, path, { method = 'GET', body, raw, headers = {} } = {}) {
-  const init = { method, headers: { Authorization: `Bearer ${token}`, ...headers }, cache: 'no-store', credentials: 'omit' }
+  const init = { method, headers: { Authorization: `Bearer ${token}`, ...headers }, cache: 'no-store', credentials: 'same-origin' }  // same-origin cookies are harmless (the API only reads the Authorization header) and let Vercel Preview protection pass
   if (raw !== undefined) init.body = raw
   else if (body !== undefined) {
     init.headers['Content-Type'] = 'application/json'
