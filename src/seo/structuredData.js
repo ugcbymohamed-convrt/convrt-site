@@ -14,7 +14,7 @@
 
 import { SITE_URL } from '../config.js'
 import {
-  BRAND, CORE_SERVICES, PRODUCTION_LANGUAGES, SPRINT, SPRINT_PLUS, ORGANIC, COMMITMENT,
+  BRAND, CORE_SERVICES, PRODUCTION_LANGUAGES, SPRINT, SPRINT_PLUS, ORGANIC, COMMITMENT, ORGANIC_COMMITMENT,
   USAGE_RIGHTS, RAW_FOOTAGE, CUSTOM_PACKAGES, formatMoney,
 } from './businessKnowledge.js'
 import { PRICING_FAQ, faqAnswerText } from './pricingFaq.js'
@@ -81,7 +81,7 @@ export function breadcrumbNode(trail, id) {
 const PACKAGES_URL = `${abs('/pricing')}#packages`
 
 /* Recurring monthly fee: price PER MONTH, with the commitment terms in the description. Not a contract total. */
-export function monthlyOffer(name, money) {
+export function monthlyOffer(name, money, terms = COMMITMENT.summary) {
   return {
     '@type': 'Offer',
     name: `${name} (monthly)`,
@@ -94,7 +94,7 @@ export function monthlyOffer(name, money) {
       unitCode: 'MON',
       referenceQuantity: { '@type': 'QuantitativeValue', value: 1, unitCode: 'MON' },
     },
-    description: `${formatMoney(money)} per month, excluding VAT. ${COMMITMENT.summary}`,
+    description: `${formatMoney(money)} per month, excluding VAT. ${terms}`,
   }
 }
 
@@ -171,10 +171,10 @@ function packageNodes() {
     '@id': serviceId(p.id),
     name: p.name,
     serviceType: 'Organic social media content production and management',
-    description: `${p.cadence}, distributed across your selected platforms (${ORGANIC.platforms.slice(0, -1).join(', ')} and ${ORGANIC.platforms.at(-1)}). Includes ${ORGANIC.includedInBoth.map((x) => x.toLowerCase()).join(' and ')}; detailed community management scope is subject to the applicable agreement.`,
+    description: `${p.cadence}, distributed across your selected platforms (${ORGANIC.platforms.slice(0, -1).join(', ')} and ${ORGANIC.platforms.at(-1)}). Includes ${ORGANIC.includedInBoth.map((x) => x.toLowerCase()).join(' and ')}; detailed community management scope is subject to the applicable agreement. ${ORGANIC_COMMITMENT.summary}`,
     provider: { '@id': ORG_ID },
     isRelatedTo: [{ '@id': serviceId('organic') }],
-    offers: [monthlyOffer(p.name, p.monthly)],
+    offers: [monthlyOffer(p.name, p.monthly, `${ORGANIC_COMMITMENT.summary} ${ORGANIC_COMMITMENT.afterInitial}`)],
   }))
   /* Optional add-on only: never a raw-only or raw-instead-of-edited package. Priced per creative concept. */
   const rawFootage = {

@@ -6,7 +6,7 @@
 
 import {
   formatMoney, SPRINT, SPRINT_PLUS, COMMITMENT, SINGLE_VIDEOS, TAX, USAGE_RIGHTS, RAW_FOOTAGE,
-  RESHOOTS, FORMATS, TURNAROUND, REVISIONS, ORGANIC, PRODUCT_REQUIREMENTS,
+  RESHOOTS, FORMATS, TURNAROUND, REVISIONS, ORGANIC, PRODUCT_REQUIREMENTS, ORGANIC_COMMITMENT, CUSTOM_TERMS,
 } from './businessKnowledge.js'
 
 /* ['a','b','c'] → 'a, b and c' */
@@ -46,8 +46,9 @@ export const PRICING_FAQ = [
     category: 'packages',
     q: 'Is there a minimum commitment?',
     a: [
-      COMMITMENT.summary,
-      COMMITMENT.rationale,
+      `Paid Social monthly partnerships: ${COMMITMENT.summary} One-off projects are available separately, without a recurring commitment.`,
+      `Organic Social partnerships: ${ORGANIC_COMMITMENT.rationale} ${ORGANIC_COMMITMENT.afterInitial}`,
+      `${COMMITMENT.rationale} ${CUSTOM_TERMS}`,
     ],
   },
   {
@@ -142,6 +143,12 @@ export const PRICING_FAQ = [
     category: 'packages',
     q: 'Are prices inclusive of VAT?',
     a: [TAX.statement],
+  },
+  {
+    id: 'organic-commitment',
+    category: 'organic',
+    q: 'Why is there a six-month minimum commitment for organic social media?',
+    a: [ORGANIC_COMMITMENT.faqAnswer, ORGANIC_COMMITMENT.afterInitial],
   },
   {
     id: 'organic-included',

@@ -1,6 +1,6 @@
 import { OFFER_PATHS } from '../../config.js'
 import {
-  SPRINT, SPRINT_PLUS, ORGANIC, CUSTOM_PACKAGES, BILLING_OPTIONS, formatMoney,
+  SPRINT, SPRINT_PLUS, ORGANIC, ORGANIC_COMMITMENT, CUSTOM_PACKAGES, BILLING_OPTIONS, formatMoney,
 } from '../../seo/businessKnowledge.js'
 
 /* The three-column pricing cards (Paid Social: Sprint / Sprint Plus / Custom; Organic: Light / Growth / Custom).
@@ -60,26 +60,26 @@ function PricingCard({ tone, id, label, badge, description, price, sub, features
   return (
     <article
       aria-labelledby={`${id}-label`}
-      className={`relative flex h-full flex-col rounded-[26px] md:rounded-[30px] p-6 md:p-7 lg:p-8 transition-transform duration-300 hover:-translate-y-1 ${t.root} ${className}`}
+      className={`relative flex h-full flex-col rounded-[26px] md:rounded-[30px] p-5 md:p-6 lg:p-7 transition-transform duration-300 hover:-translate-y-1 ${t.root} ${className}`}
       style={tone === 'dark' ? DARK_STYLE : undefined}
     >
       <div className="flex min-h-[32px] items-center justify-between gap-3">
-        <h3 id={`${id}-label`} className={`inline-flex items-center rounded-full px-4 py-1.5 font-display text-[15px] font-bold tracking-snug ${t.pill}`}>
+        <h2 id={`${id}-label`} className={`inline-flex items-center rounded-full px-4 py-1.5 font-display text-[15px] font-bold tracking-snug ${t.pill}`}>
           {label}
-        </h3>
+        </h2>
         {badge && (
           <span className={`rounded-full border px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.14em] ${t.badge}`}>{badge}</span>
         )}
       </div>
 
-      <p className={`mt-5 text-[14px] leading-relaxed lg:min-h-[69px] ${t.muted}`}>{description}</p>
+      <p className={`mt-4 text-[14px] leading-relaxed lg:min-h-[69px] ${t.muted}`}>{description}</p>
 
-      <div className="mt-6 flex min-h-[56px] items-end font-display font-bold leading-none tracking-display">{price}</div>
-      <div className={`mt-4 ${tallSub ? 'lg:min-h-[60px]' : 'min-h-[34px]'}`}>{sub}</div>
+      <div className="mt-5 flex min-h-[56px] items-end font-display font-bold leading-none tracking-display">{price}</div>
+      <div className={`mt-3 ${tallSub ? 'lg:min-h-[60px]' : 'min-h-[34px]'}`}>{sub}</div>
 
-      <div className={`mt-6 h-px ${t.divider}`} />
+      <div className={`mt-5 h-px ${t.divider}`} />
 
-      <ul className="mt-6 flex-1 space-y-3">
+      <ul className="mt-5 flex-1 space-y-2.5">
         {features.map((f) => (
           <li key={f} className="flex items-start gap-3 text-[14px] leading-snug">
             <CheckIcon className={t.check} />
@@ -194,6 +194,7 @@ export function OrganicCards() {
     ORGANIC.includedInBoth[0],
     ORGANIC.includedInBoth[1],
     'Performance review & optimization',
+    `${ORGANIC_COMMITMENT.initialMonths}-month initial commitment`,
     `Adapted and distributed across your selected platforms: ${ORGANIC.platforms.slice(0, -1).join(', ')} and ${ORGANIC.platforms.at(-1)}`,
   ]
   const custom = CUSTOM_PACKAGES.organic
@@ -224,7 +225,8 @@ export function OrganicCards() {
   )
 }
 
-/* Segmented billing selector for the Paid Social cards. A radio group (arrow keys move the selection). */
+/* Compact billing selector (Paid Social only), a secondary control in the header row above the cards.
+   A radio group: arrow keys move the selection. */
 export function BillingSwitch({ value, onChange }) {
   const idx = BILLING_OPTIONS.findIndex((o) => o.id === value)
   const onKeyDown = (e) => {
@@ -236,26 +238,24 @@ export function BillingSwitch({ value, onChange }) {
     document.getElementById(`billing-${next.id}`)?.focus()
   }
   return (
-    <div className="mb-5 md:mb-6 flex justify-center">
-      <div
-        role="radiogroup" aria-label="Billing option" onKeyDown={onKeyDown}
-        className="inline-grid grid-cols-2 rounded-full border border-hairline bg-surface-1/70 p-1 backdrop-blur-md"
-      >
-        {BILLING_OPTIONS.map((o) => {
-          const active = o.id === value
-          return (
-            <button
-              key={o.id} id={`billing-${o.id}`} type="button" role="radio" aria-checked={active}
-              tabIndex={active ? 0 : -1} onClick={() => onChange(o.id)}
-              className={`whitespace-nowrap rounded-full px-4 sm:px-7 py-2.5 text-[13px] sm:text-sm font-semibold transition-all duration-300 ${
-                active ? 'bg-lime text-canvas shadow-[0_0_22px_rgba(213,255,64,0.3)]' : 'text-ink-muted hover:text-ink'
-              }`}
-            >
-              {o.label}
-            </button>
-          )
-        })}
-      </div>
+    <div
+      role="radiogroup" aria-label="Billing option" onKeyDown={onKeyDown}
+      className="inline-grid grid-cols-2 rounded-full border border-hairline bg-surface-1/70 p-0.5"
+    >
+      {BILLING_OPTIONS.map((o) => {
+        const active = o.id === value
+        return (
+          <button
+            key={o.id} id={`billing-${o.id}`} type="button" role="radio" aria-checked={active}
+            tabIndex={active ? 0 : -1} onClick={() => onChange(o.id)}
+            className={`whitespace-nowrap rounded-full px-4 py-1.5 text-[12.5px] font-semibold transition-colors duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-lime/60 ${
+              active ? 'bg-lime text-canvas' : 'text-ink-muted hover:text-ink'
+            }`}
+          >
+            {o.label}
+          </button>
+        )
+      })}
     </div>
   )
 }

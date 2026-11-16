@@ -1,54 +1,38 @@
 import { useState } from 'react'
-import CreativeTestingHero from './components/CreativeTestingHero.jsx'
-import CreativeTestingOffer from './components/CreativeTestingOffer.jsx'
-import CreativeTestingProcess from './components/CreativeTestingProcess.jsx'
-import CreativeTestingNextStep from './components/CreativeTestingNextStep.jsx'
-import ConceptExplainer from './components/pricing/ConceptExplainer.jsx'
-import UsageRights from './components/pricing/UsageRights.jsx'
-import ProductionProcess from './components/pricing/ProductionProcess.jsx'
-import ProductionTerms from './components/pricing/ProductionTerms.jsx'
-import OrganicScope from './components/pricing/OrganicScope.jsx'
+import PricingStage from './components/pricing/PricingStage.jsx'
+import PhilosophySection from './components/pricing/PhilosophySection.jsx'
+import InfoPanels from './components/pricing/InfoPanels.jsx'
 import PricingFAQ from './components/pricing/PricingFAQ.jsx'
+import PricingFinalCTA from './components/pricing/PricingFinalCTA.jsx'
 import SectionDivider from './components/SectionDivider.jsx'
 import { useDocumentHead } from './lib/useDocumentHead.js'
 import { pageHead } from './seo/siteSeo.js'
 
+/* The pricing page: five main sections.
+     1. PricingStage     unified hero + goal selector + the three pricing cards (Paid / Organic)
+     2. PhilosophySection creative philosophy + free Roadmap offer + credibility stats
+     3. InfoPanels        one consolidated, expandable package-information section
+     4. PricingFAQ        categorized FAQs
+     5. PricingFinalCTA   compact closing invitation
+   The selected goal (`service`) only controls presentation: both Paid Social and Organic Social content is always in the
+   prerendered HTML. Default: Paid Social ("Scale my ads"). */
 export default function CreativeTestingSprintPage() {
   const [service, setService] = useState('paid')
 
   // Title, description, canonical, robots and JSON-LD all come from the SEO manifest (src/seo/siteSeo.js).
   useDocumentHead(pageHead('/pricing'))
 
-  /* Both services' sections are always in the DOM; the inactive group carries `hidden`. That keeps every price,
-     term and FAQ answer in the prerendered HTML while visitors still see one service at a time. */
   return (
     <>
-      <CreativeTestingHero />
+      <PricingStage service={service} onServiceChange={setService} />
       <SectionDivider />
-      <CreativeTestingOffer service={service} onServiceChange={setService} />
-
-      <div hidden={service !== 'paid'}>
-        <SectionDivider />
-        <ConceptExplainer />
-        <SectionDivider />
-        <UsageRights />
-        <SectionDivider />
-        <ProductionProcess />
-        <SectionDivider />
-        <ProductionTerms />
-      </div>
-
-      <div hidden={service !== 'organic'}>
-        <SectionDivider />
-        <OrganicScope />
-        <SectionDivider />
-        <CreativeTestingProcess />
-      </div>
-
+      <PhilosophySection service={service} />
+      <SectionDivider />
+      <InfoPanels service={service} />
       <SectionDivider />
       <PricingFAQ />
       <SectionDivider />
-      <CreativeTestingNextStep service={service} />
+      <PricingFinalCTA />
     </>
   )
 }

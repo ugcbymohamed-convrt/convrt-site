@@ -257,28 +257,29 @@ test('/pricing HTML: every confirmed price, term and policy is in the visible ma
   const text = unescape(visibleText(page('/pricing')))
   for (const needle of [
     '$2,500', '$4,500', '$3,000', '$5,400', '$1,500', '$2,500', '8 distinct creative concepts', '8 complete scripts',
-    'Different concepts. Not just different hooks.', 'Five distinct advertising ideas, each with two variations to test.', '5 concepts → 10 ad variations',
-    'A creative concept is a distinct advertising idea or angle.', 'An ad variation changes the hook or CTA within a concept.',
+    'Different concepts. Not just different hooks.', '5 original concepts → 10 ad variations',
+    'A concept is a distinct advertising idea or angle.', 'A variation changes the hook or CTA within a concept.',
     'initial three-month commitment', "30 days' cancellation notice",
     'All prices exclude VAT. Applicable taxes will be calculated based on your business location and tax status.',
-    'Your videos. Worldwide usage.', 'Need more time?', 'Extend the usage rights for your entire creative batch.', 'The important details.', 'From idea to ready-to-launch creative.', '6 months of worldwide usage rights', 'date each video is delivered',
+    'Everything you need to know.', 'Clear deliverables. Flexible options. No surprises.', 'Usage rights & licensing', 'Extend your 6 months', 'How we work', 'Production details & extras', '6 months of worldwide usage rights', 'date each video is delivered',
+    'Your creative partner.', 'What are you looking to achieve?', 'Scale my ads', 'Grow my socials', 'Consistency. Content. Real connections.', 'Strategy', 'Publishing & engagement', 'Not sure where to start?', 'Ready to create something that converts?',
+    'Organic partnerships begin with an initial six-month commitment', 'Why is there a six-month minimum commitment for organic social media?', 'Terms after the initial six-month period are set out in the applicable agreement.', 'Custom project terms are agreed individually.',
     '$625', '$1,000', '$1,750', '$1,125', '$1,800', '$3,150', 'Perpetual usage',
     'Paid advertising use must stop', 'Existing organic social media posts may remain published',
     'TikTok Spark Ads', 'Meta partnership ads', 'separate from the standard usage rights',
     '$250 per creative concept', '10 business days', '15 business days',
     'not unlimited', 'charged in full', 'Horizontal 16:9 production counts as a separate video', 'Square 1:1 reframing',
     'Brand discovery, audience research and creative concepts.', 'Creator selection, scripts and your approval.', 'Filming, editing, captions and creative variations.', 'Finished videos, revisions and testing recommendations.', 'ship the product to the selected creator', 'dedicated demo or dummy account',
-    'Customer support is not part of the service', 'Content scheduling and posting', 'Organic community management', 'exclusively as an optional add-on at $250 per creative concept', 'do not offer raw-only production packages', 'Facebook, Instagram and TikTok',
+    'Customer support is not part of the service', 'Content scheduling and posting', '6-month initial commitment', 'Organic community management', 'exclusively as an optional add-on at $250 per creative concept', 'do not offer raw-only production packages', 'Facebook, Instagram and TikTok',
   ]) assert.ok(text.includes(needle), `missing in raw HTML: ${needle}`)
   assert.ok(!/LinkedIn/.test(text), 'LinkedIn is not a confirmed platform')
   assert.ok(!/€|\bEUR\b|\beuros?\b/i.test(text), 'no euro pricing anywhere on the page')
 })
 
-test('/pricing HTML: both service panels are present (inactive one only `hidden`), organic prices included', () => {
+test('/pricing HTML: both service groups are present (inactive one parked, inert, aria-hidden), organic prices included', () => {
   const root = rootOf(page('/pricing'))
-  assert.match(root, /id="service-panel-paid" role="tabpanel"[^>]*>/)
-  assert.match(root, /id="service-panel-organic" role="tabpanel"[^>]*hidden=""/)
-  assert.ok(!/id="service-panel-paid"[^>]*hidden/.test(root), 'paid is the default, visible panel')
+  assert.match(root, /<div id="service-panel-paid" role="tabpanel" aria-labelledby="service-tab-paid" data-state="active" data-pos="left" class="pricing-slide">/)
+  assert.match(root, /<div id="service-panel-organic" role="tabpanel" aria-labelledby="service-tab-organic" data-state="inactive" data-pos="right" aria-hidden="true" inert="" class="pricing-slide">/)
   assert.match(visibleText(page('/pricing')), /Organic Light[\s\S]*\$1,500[\s\S]*Organic Growth[\s\S]*\$2,500/)
 })
 
@@ -299,11 +300,12 @@ test('/pricing HTML: the FAQ is visible content: every question and full answer 
 test('/pricing HTML: one h1, a logical heading order, extension prices in a real table', () => {
   const root = rootOf(page('/pricing'))
   assert.equal(count(root, /<h1[\s>]/g), 1)
-  assert.ok(count(root, /<h2[\s>]/g) >= 6)
+  assert.ok(count(root, /<h2[\s>]/g) >= 8)
   const levels = [...root.matchAll(/<h([1-4])[\s>]/g)].map((m) => Number(m[1]))
   levels.forEach((l, i) => { if (i) assert.ok(l <= levels[i - 1] + 1, `heading level jumps from h${levels[i - 1]} to h${l}`) })
   assert.match(root.replace(/<!-- -->/g, ''), /<table[\s\S]*Additional 3 months[\s\S]*\$625[\s\S]*\$1,125[\s\S]*<\/table>/)
   assert.equal(count(root, /<th scope="col"/g), 3)
+  assert.equal(count(root, /<table/g), 1)
 })
 
 test('/pricing HTML: conversion funnel intact: Roadmap CTAs, Free Video Production and the other offers still linked', () => {
@@ -364,145 +366,149 @@ test('Organic Growth/Light on the pricing page (there is no separate organic URL
   assert.ok(!KNOWN_PATHS.some((p) => /organic/i.test(p)), 'no separate organic route exists: update this test if one is added')
 })
 
-// ── three-card redesign, from the raw HTML ──────────────────────────────────────────────────────────────────────────
-const panel = (h, id) => { const r = rootOf(h); const i = r.indexOf(`id="service-panel-${id}"`); return r.slice(i, r.indexOf('</article>', r.lastIndexOf('<article', r.indexOf('Custom', i))) + 10) }
-const sec = (h, id, next) => { const r = rootOf(h).replace(/<!-- -->/g, ''); const i = r.indexOf(`id="service-panel-${id}"`); return r.slice(i, next ? r.indexOf(`id="service-panel-${next}"`, i) : r.indexOf('</section>', i)) }
+// ── final five-section page, from the raw HTML ───────────────────────────────────────────────────────────────────────
+const flat = (h) => unescape(rootOf(h).replace(/<!-- -->/g, '').replace(/<(script|style)[\s\S]*?<\/\1>/g, ' ').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' '))
+const main = (h) => { const r = rootOf(h).replace(/<!-- -->/g, ''); return r.slice(r.indexOf('<main'), r.indexOf('</main>')) }
+const group = (h, id) => { const m = main(h); const i = m.indexOf(`<div id="service-panel-${id}"`); const next = id === 'paid' ? m.indexOf('<div id="service-panel-organic"') : m.indexOf('</section>', i); return m.slice(i, next) }
 
-test('/pricing HTML: heading, two selectors, three cards per service in the right order', () => {
+test('/pricing HTML: exactly five main sections, in order, with the unified opening', () => {
   const h = page('/pricing')
-  const text = unescape(visibleText(h))
-  assert.match(text, /Choose your creative partnership\./)
-  assert.match(text, /Different brands\. Different creative needs\. Find the right production package for your next stage of growth\./)
-  const paid = sec(h, 'paid', 'organic')
-  const organic = sec(h, 'organic')
-  assert.equal(count(paid, /<article/g), 3)
-  assert.equal(count(organic, /<article/g), 3)
-  const labels = (s) => [...s.matchAll(/<h3 id="card-[a-z-]+-label"[^>]*>([^<]+)</g)].map((m) => m[1])
-  assert.deepEqual(labels(paid), ['Sprint', 'Sprint Plus', 'Custom'])
-  assert.deepEqual(labels(organic), ['Organic Light', 'Organic Growth', 'Custom'])
-  assert.equal(count(paid, /role="radio"/g), 2)
-  assert.match(paid, /id="billing-monthly" type="button" role="radio" aria-checked="true"/)
-  assert.match(paid, /id="billing-oneOff" type="button" role="radio" aria-checked="false"/)
-  assert.ok(!/role="radio"/.test(organic), 'the billing selector does not apply to Organic')
-})
-
-test('/pricing HTML: BOTH billing options and their prices are in the markup (inactive one hidden), Monthly default', () => {
-  const paid = sec(page('/pricing'), 'paid', 'organic')
-  const price = (billing, amt) => new RegExp(`<span ([^>]*)data-billing="${billing}"([^>]*)>\\${amt}`)
-  for (const [b, a, hidden] of [['monthly', '$2,500', false], ['monthly', '$4,500', false], ['oneOff', '$3,000', true], ['oneOff', '$5,400', true]]) {
-    const m = paid.match(new RegExp(`<span ([^>]*)>\\${a}<span[^>]*>/${b === 'monthly' ? 'month' : 'project'}`))
-    assert.ok(m, `${a} ${b} present`)
-    assert.equal(/hidden=""/.test(m[1]), hidden, `${a} ${b} hidden=${hidden}`)
-    assert.match(m[1], new RegExp(`data-billing="${b}"`))
-  }
-  assert.ok(count(paid, /\/project/g) === 2 && count(paid, /\/month/g) >= 2)
-})
-
-test('/pricing HTML: Custom cards say "Let\'s talk." with no number; CTAs all use the Roadmap flow', () => {
-  const h = page('/pricing')
-  for (const id of ['paid', 'organic']) {
-    const s = sec(h, id, id === 'paid' ? 'organic' : undefined)
-    const custom = s.slice(s.indexOf('id="card-' + (id === 'paid' ? 'custom' : 'organic-custom') + '-label"') - 200)
-    const card = custom.slice(0, custom.indexOf('</article>'))
-    assert.match(card, /Let(’|&#x27;|')s talk\./)
-    assert.match(card, /Tailored to your needs/)
-    assert.match(card, /Discuss your project/)
-    assert.ok(!/\$\s?\d/.test(card.replace(/<[^>]+>/g, ' ')), 'no price on a Custom card')
-    assert.ok(card.includes(`href="${OFFER_PATHS.roadmap}"`))
-  }
-  const articles = [...sec(h, 'paid', 'organic').matchAll(/<article[\s\S]*?<\/article>/g), ...sec(h, 'organic').matchAll(/<article[\s\S]*?<\/article>/g)].map((m) => m[0])
-  assert.equal(articles.length, 6)
-  for (const a of articles) assert.match(a, new RegExp(`<a href="${OFFER_PATHS.roadmap}"`))
-  assert.equal(count(articles.join(''), /Get started/g), 4)
-  assert.equal(count(articles.join(''), /Discuss your project/g), 2)
-})
-
-test('/pricing HTML: compact terms, shared benefits, no dollar sign mangling, no internal flags', () => {
-  const h = page('/pricing')
-  const text = unescape(visibleText(h))
-  for (const n of [
-    "Initial 3-month commitment, followed by a flexible month-to-month agreement with 30 days' cancellation notice.",
-    'One creative production batch, without a recurring commitment.',
-    'Every Sprint includes full creative production.',
-    'Creative research and strategy', 'Concepts, scripts and client approval', 'Square and 4:5 reframing', 'Agreed creative variations and testing recommendations',
-    'Custom packages have separately agreed production scopes',
-    'Includes expanded creative research and expanded testing recommendations.',
-    'customer support is not included',
-  ]) assert.ok(text.includes(n), n)
-  assert.ok(!/OWNER_REVIEW|deferred to the applicable agreement/.test(text))
-  assert.ok(!/<meta[^>]*\$[12]/.test('') && !/<title>[^<]*<meta/.test(headOf(h)), 'head intact')
-  // The dollar-sign regression: prices survive intact in the JSON-LD block of the built page.
-  const ld = JSON.stringify(ldScripts(h)[0])
-  for (const p of ['$2,500 per month', '$4,500 per month', '$3,000 one-off', '$5,400 one-off', '$1,500 per month', '$2,500 per month']) assert.ok(ld.includes(p), p)
-})
-
-// ── remaining redesign, from the raw HTML ───────────────────────────────────────────────────────────────────────────
-test('/pricing HTML: compact hero copy, CTAs and the four stats', () => {
-  const h = page('/pricing')
-  const text = unescape(visibleText(h))
-  const hero = rootOf(h).slice(rootOf(h).indexOf('id="top"'), rootOf(h).indexOf('id="packages"'))
-  assert.match(unescape(hero.replace(/<!-- -->/g, '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ')), /UGC & video production pricing More concepts\. Better creative\. Clear pricing\. Human-led video ads and social content/)
-  assert.match(hero, /<h1[^>]*>More concepts\. Better creative\. <span class="text-lime">Clear pricing\.<\/span><\/h1>/)
-  assert.ok(hero.includes(`href="${OFFER_PATHS.roadmap}"`) && /Get 5 Free Ad Concepts/.test(hero))
-  assert.ok(/href="#packages"[^>]*>Explore Packages/.test(hero))
-  for (const s of ['40M+', '1,200+', '500+', 'Core production languages']) assert.ok(hero.includes(s), s)
-  assert.match(text, /Full production, transparent pricing and no surprises\./)
-})
-
-test('/pricing HTML: sections appear in the approved order', () => {
-  const r = unescape(rootOf(page('/pricing')).replace(/<!-- -->/g, ''))
-  const marks = ['id="top"', 'Choose your creative', 'Every Sprint includes', 'Different concepts.', 'Your videos.', 'From idea to ready-to-launch creative.', 'The important details.', 'Pricing questions,', 'Start with a sprint.']
-  const at = marks.map((m) => r.indexOf(m))
-  at.forEach((p, i) => assert.ok(p >= 0, `missing ${marks[i]}`))
+  const m = main(h)
+  assert.equal(count(m, /<section\b/g), 5, 'five main content sections')
+  const ids = [...m.matchAll(/<section\b[^>]*>/g)].map((x) => (x[0].match(/ id="([^"]+)"/) || [])[1])
+  assert.deepEqual(ids, ['top', 'philosophy', 'package-info', 'pricing-faq', 'contact'])
+  const t = flat(h)
+  const marks = ['UGC & video production pricing', 'Your creative partner. On your terms.', 'What are you looking to achieve?', 'Different concepts. Not just different hooks.', 'Everything you need to know.', 'Pricing questions, answered.', 'Ready to create something that converts?']
+  const at = marks.map((x) => t.indexOf(x)); at.forEach((p, i) => assert.ok(p >= 0, marks[i]))
   assert.deepEqual([...at].sort((a, b) => a - b), at)
+  assert.equal(count(m, /<h1[\s>]/g), 1)
+  assert.ok(!/More concepts\. Better creative|Choose your creative partnership|Explore Packages/.test(t), 'the competing headlines and hero CTAs are gone')
+  assert.match(t, /From performance-driven video ads to consistent organic content, find the right creative partnership for your brand\./)
+  const opening = flat(`<div id="root">${m.slice(0, m.indexOf('id="philosophy"'))}`)
+  assert.ok(!/40M\+|Free Creative Growth Roadmap/.test(opening), 'stats and the Roadmap offer sit below the pricing section')
+  const hCount = count(m.slice(0, m.indexOf('id="philosophy"')), /<h[1-6][\s>]/g)
+  assert.equal(hCount, 1 + 6, 'one h1 plus the six card labels: no other heading before the cards')
 })
 
-test('/pricing HTML: usage rights: both extension price sets with totals, the long terms inside <details>, all in the markup', () => {
-  const r = rootOf(page('/pricing')).replace(/<!-- -->/g, '')
-  const usage = r.slice(r.indexOf('id="usage-rights"'), r.indexOf('From idea to ready-to-launch creative.'))
-  const t = unescape(usage.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' '))
-  for (const n of ['$625', '$1,000', '$1,750', '$1,125', '$1,800', '$3,150', '9 months in total', '12 months in total', '18 months in total', 'Custom quote, subject to agreement with the featured creators', 'All prices exclude VAT', 'Paid advertising', 'Organic social media publishing', 'Website usage']) assert.ok(t.includes(n), n)
-  assert.match(usage, /<details[\s\S]*<summary[\s\S]*Full usage-rights terms[\s\S]*Existing organic social media posts may remain published[\s\S]*Paid advertising use must stop[\s\S]*cannot be reshared or republished[\s\S]*not a transfer of copyright ownership[\s\S]*TikTok Spark Ads[\s\S]*<\/details>/)
-  assert.equal(count(usage, /<table/g), 1)
+test('/pricing HTML: goal selector tabs (Scale my ads default) and the parked organic group', () => {
+  const m = main(page('/pricing'))
+  assert.equal(count(m, /role="tab"/g) >= 2, true)
+  assert.match(m, /id="service-tab-paid" type="button" role="tab" aria-selected="true" aria-controls="service-panel-paid" tabindex="0"/)
+  assert.match(m, /id="service-tab-organic" type="button" role="tab" aria-selected="false" aria-controls="service-panel-organic" tabindex="-1"/)
+  for (const t of ['Scale my ads', 'UGC, spokesperson videos and creative testing.', 'Grow my socials', 'Content, publishing and organic community growth.']) assert.ok(m.includes(t), t)
 })
 
-test('/pricing HTML: four stages, icon rows for the details, no leftovers of the old eight-step grid or six-card layout', () => {
-  const r = rootOf(page('/pricing')).replace(/<!-- -->/g, '')
-  const stages = r.slice(r.indexOf('id="process-heading"'), r.indexOf('id="production-terms"'))
-  assert.equal(count(stages, /<li /g), 4)
-  for (const s of ['Strategy', 'Preparation', 'Production', 'Delivery']) assert.ok(stages.includes(`>${s}</h3>`), s)
-  const from = r.indexOf('id="terms-heading"')
-  const details = r.slice(from, r.indexOf('</section>', from))
-  assert.equal(count(details, /<li /g), 6)
-  assert.match(details.replace(/<[^>]+>/g, ' '), /Optional add-on at \$250 per creative concept\. Raw footage is only available alongside finished, professionally edited videos\. It cannot replace them\./)
-})
-
-test('/pricing HTML: categorized FAQ: 4 tabs, 4 panels, only the default panel visible, ALL answers present', () => {
-  const r = rootOf(page('/pricing'))
-  const faqHtml = r.slice(r.indexOf('id="pricing-faq"'))
-  assert.equal(count(faqHtml, /role="tab"/g), 4)
-  assert.match(faqHtml, /id="faq-tab-packages" type="button" role="tab" aria-selected="true"/)
-  assert.equal(count(faqHtml, /role="tabpanel"/g), 4)
-  assert.ok(!/id="faq-panel-packages"[^>]*hidden/.test(faqHtml))
-  for (const c of ['production', 'usage', 'organic']) assert.match(faqHtml, new RegExp(`id="faq-panel-${c}"[^>]*hidden=""`))
-  for (const label of ['Packages &amp; pricing', 'Production &amp; delivery', 'Usage rights &amp; add-ons', 'Organic social']) assert.ok(faqHtml.includes(label), label)
-  for (const f of PRICING_FAQ) assert.ok(faqHtml.includes(`id="faq-a-${f.id}"`), f.id)
-  assert.equal(count(faqHtml, /aria-expanded="false"/g), PRICING_FAQ.length)
-})
-
-test('/pricing HTML: three-card redesign is intact (cards, billing, Custom, terms, shared benefits)', () => {
+test('/pricing HTML: three cards per group; Paid has the compact billing selector with BOTH price sets; Organic has none', () => {
   const h = page('/pricing')
-  const paid = sec(h, 'paid', 'organic')
-  assert.equal(count(paid, /<article/g), 3)
-  assert.equal(count(sec(h, 'organic'), /<article/g), 3)
-  assert.equal(count(paid, /role="radio"/g), 2)
-  assert.match(paid, /Every Sprint includes/)
-  assert.ok(/data-billing="oneOff" hidden=""/.test(paid.replace(/<!-- -->/g, '')) || /hidden="" data-billing="oneOff"/.test(paid))
+  const paid = group(h, 'paid'); const organic = group(h, 'organic')
+  assert.equal(count(paid, /<article/g), 3); assert.equal(count(organic, /<article/g), 3)
+  const labels = (s) => [...s.matchAll(/<h2 id="card-[a-z-]+-label"[^>]*>([^<]+)</g)].map((x) => x[1])
+  assert.deepEqual(labels(paid), ['Sprint', 'Sprint Plus', 'Custom']); assert.deepEqual(labels(organic), ['Organic Light', 'Organic Growth', 'Custom'])
+  assert.equal(count(paid, /role="radio"/g), 2); assert.ok(!/role="radio"/.test(organic))
+  assert.match(paid, /id="billing-monthly" type="button" role="radio" aria-checked="true"[^>]*>Monthly</)
+  assert.match(paid, /id="billing-oneOff" type="button" role="radio" aria-checked="false"[^>]*>One-off</)
+  for (const [b, a, hidden] of [['monthly', '$2,500', false], ['monthly', '$4,500', false], ['oneOff', '$3,000', true], ['oneOff', '$5,400', true]]) {
+    const mm = paid.match(new RegExp(`<span ([^>]*)>\\${a}<span[^>]*>/${b === 'monthly' ? 'month' : 'project'}`))
+    assert.ok(mm, `${a} ${b} present`); assert.equal(/hidden=""/.test(mm[1]), hidden); assert.match(mm[1], new RegExp(`data-billing="${b}"`))
+  }
+  assert.match(flat(`<div id="root">${organic}`), /Organic Social packages are ongoing content partnerships, billed monthly, with an initial 6-month commitment\./)
+  assert.ok(!/One-off|\/project/.test(flat(`<div id="root">${organic}`).replace(/Initial 3-month[^.]*\./, '')), 'no one-off pricing in the Organic group')
 })
 
-test('Organic Social group carries no Paid-only terms: usage rights, extension table and concept diagram live in the Paid group', () => {
-  const r = rootOf(page('/pricing')).replace(/<!-- -->/g, '')
-  const organicGroup = r.slice(r.indexOf('What organic social covers.'), r.indexOf('id="pricing-faq"'))
-  assert.ok(!/Need more time\?|Additional 3 months|Different concepts\./.test(organicGroup))
-  assert.ok(r.indexOf('Need more time?') > 0 && r.indexOf('Need more time?') < r.indexOf('What organic social covers.'), 'usage rights sit in the Paid group, before the Organic group')
+test('/pricing HTML: commitments: Paid 3 months (+ one-off), Organic 6 months with later terms per agreement; Custom agreed individually', () => {
+  const h = page('/pricing')
+  const paid = flat(`<div id="root">${group(h, 'paid')}`); const organic = flat(`<div id="root">${group(h, 'organic')}`)
+  assert.match(paid, /Monthly: Initial 3-month commitment, followed by a flexible month-to-month agreement with 30 days' cancellation notice\. One-off: One creative production batch, without a recurring commitment\./)
+  assert.match(organic, /Organic partnerships: Organic partnerships begin with an initial six-month commitment, giving us time to build a consistent social media presence, learn what resonates with your audience and assess performance\. Terms after the initial six-month period are set out in the applicable agreement\./)
+  assert.ok(!/three-month|3-month commitment|month-to-month|30 days/.test(organic.replace('with an initial 6-month commitment', '')), 'Paid terms are never shown on Organic')
+  assert.ok(paid.includes('Custom project terms are agreed individually.') && organic.includes('Custom project terms are agreed individually.'))
+  assert.ok(paid.includes('All prices exclude VAT.') && organic.includes('All prices exclude VAT.'))
+})
+
+test('/pricing HTML: Custom cards say "Let\'s talk." with no number; every card CTA is the Roadmap flow', () => {
+  const h = page('/pricing')
+  const arts = [...group(h, 'paid').matchAll(/<article[\s\S]*?<\/article>/g), ...group(h, 'organic').matchAll(/<article[\s\S]*?<\/article>/g)].map((x) => x[0])
+  assert.equal(arts.length, 6)
+  for (const a of arts) assert.match(a, new RegExp(`<a href="${OFFER_PATHS.roadmap}"`))
+  const customs = arts.filter((a) => /<h2 id="card-(organic-)?custom-label"/.test(a))
+  assert.equal(customs.length, 2)
+  for (const c of customs) {
+    const t = unescape(c.replace(/<!-- -->/g, '').replace(/<[^>]+>/g, ' '))
+    assert.match(t, /Let(’|')s talk\./); assert.match(t, /Tailored to your needs/); assert.match(t, /Discuss your project/); assert.ok(!/\$\s?\d/.test(t))
+  }
+  assert.equal(count(arts.join(''), /Get started/g), 4)
+})
+
+test('/pricing HTML: Section 2 holds the philosophy (both variants), the Roadmap offer and the stats, below the cards', () => {
+  const h = page('/pricing')
+  const m = main(h)
+  const sec = m.slice(m.indexOf('id="philosophy"'), m.indexOf('id="package-info"'))
+  const t = flat(`<div id="root">${sec}`)
+  for (const n of ['Different concepts. Not just different hooks.', 'We develop genuinely different creative angles, then create variations designed for structured testing.', '5 original concepts → 10 ad variations', 'Standard Sprint shown.', 'Sprint Plus distributes its variations across its concepts according to the creative testing strategy.', 'Consistency. Content. Real connections.', 'A consistent, video-first approach to organic social growth.', 'Publishing & engagement', 'Optimization', 'Not sure where to start?', 'Get 5 personalized ad concepts for your brand, completely free.', 'Get 5 Free Ad Concepts', '40M+', '1,200+', '500+', 'Core production languages']) assert.ok(t.includes(n), n)
+  assert.equal(count(sec, /<li class="flex flex-col items-center"/g), 5, 'five concept columns')
+  assert.ok(sec.includes(`href="${OFFER_PATHS.roadmap}"`))
+  assert.match(sec, /<div hidden=""><div><h2[^>]*>Consistency\./, 'the organic variant is in the HTML, hidden by default')
+})
+
+test('/pricing HTML: Section 3 panels: four buttons, first open, all content (both services) in the markup', () => {
+  const h = page('/pricing')
+  const m = main(h)
+  const sec = m.slice(m.indexOf('id="package-info"'), m.indexOf('id="pricing-faq"'))
+  assert.equal(count(sec, /<button id="info-q-/g), 4)
+  assert.equal(count(sec, /role="region" aria-labelledby="info-q-/g), 4)
+  assert.match(sec, /id="info-q-included"[^>]*aria-expanded="true"/)
+  for (const id of ['usage', 'how', 'details']) assert.match(sec, new RegExp(`id="info-q-${id}"[^>]*aria-expanded="false"`))
+  const t = flat(`<div id="root">${sec}`)
+  for (const n of [
+    'Full production, from strategy to finished videos.', '6 months worldwide, with flexible extensions.', 'Four simple stages. One accountable team.', 'Turnaround, formats, revisions and add-ons.',
+    'Creative research and strategy', 'Concepts, scripts and client approval', 'Creator selection', 'Filming and professional editing', 'Captions, B-roll and motion graphics as agreed', 'Square and 4:5 reframing', 'Agreed creative variations and testing recommendations',
+    'Production in one selected core language: English, Spanish, French or Arabic', 'Additional languages available on request, subject to availability', 'Custom packages have separately agreed production scopes',
+    'Strategy and planning', 'Concepts and scripts', 'Post copywriting and captions', 'Scheduling and publishing', 'Organic community engagement and brand relationship management', 'Supported platforms: Facebook, Instagram and TikTok.', 'Customer support is not part of the service.',
+    '6 months of worldwide usage rights from the date each video is delivered', 'Paid advertising', 'Organic social media publishing', 'Website usage',
+    '$625', '$1,000', '$1,750', '$1,125', '$1,800', '$3,150', '9 months in total', '12 months in total', '18 months in total', 'Custom quote, subject to agreement with the featured creators',
+    'apply to the entire relevant creative batch', 'All prices exclude VAT',
+    'Existing organic social media posts may remain published.', 'Existing website video placements may remain online.', 'Paid advertising use must stop unless the usage rights are extended.', 'cannot be reshared or republished without extending the usage rights', 'not a transfer of copyright ownership', 'TikTok Spark Ads', 'Meta partnership ads', 'separate from the standard usage rights',
+    'Content usage terms for Organic Social partnerships are set out in the applicable agreement.',
+    'Brand discovery, audience research and creative concepts.', 'Creator selection, scripts and your approval.', 'Filming, editing, captions and creative variations.', 'Finished videos, revisions and testing recommendations.',
+    'Content planning and brand objectives.', 'Concepts, scripts, filming and editing.', 'Scheduling, distribution and organic engagement.', 'Monitoring performance and refining the content approach.',
+    'Sprint: 10 business days. Sprint Plus: 15 business days. Production turnaround starts after concepts and scripts are approved.', 'Two rounds per creative concept.', 'Standard performance videos up to 60 seconds.', 'Long-form creatives of 1–3 minutes are available at custom pricing.',
+    'Vertical production, with square 1:1 and portrait 4:5 reframing included.', 'Horizontal 16:9 production counts as a separate video', 'Available at $250 extra per creative concept.', 'Raw footage is only available alongside finished, professionally edited videos. It cannot replace them.',
+    'you ship the product to the selected creator and cover the shipping costs', 'dedicated demo or dummy account',
+    'The Paid Social Sprint terms do not automatically apply.',
+  ]) assert.ok(t.includes(n), `panel content missing: ${n}`)
+  assert.equal(count(sec, /<table/g), 1)
+  assert.ok(!/<details/.test(sec) && !/Separate from usage rights/.test(t), 'no leftover collapsed-details or standalone creator-account card')
+})
+
+test('/pricing HTML: organic panel variants never carry Sprint licensing, extension prices, raw footage or paid turnaround', () => {
+  const h = page('/pricing')
+  const m = main(h); const sec = m.slice(m.indexOf('id="package-info"'), m.indexOf('id="pricing-faq"'))
+  // The Usage panel's organic variant is just the agreement reference.
+  const usage = sec.slice(sec.indexOf('id="info-a-usage"'), sec.indexOf('id="info-q-how"'))
+  const orgPart = usage.slice(usage.lastIndexOf('<div hidden="">'))
+  const t = flat(`<div id="root">${orgPart}`)
+  assert.match(t, /set out in the applicable agreement/)
+  assert.ok(!/\$\d|Spark|extension prices.*Sprint Plus/.test(t.replace('The usage rights and extension prices listed for the Paid Social Creative Testing packages do not automatically apply to Organic Social.', '')))
+})
+
+test('/pricing HTML: FAQ section is four categories, all 17 answers in the markup, organic six-month answer included', () => {
+  const h = page('/pricing')
+  const faqHtml = rootOf(h).slice(rootOf(h).indexOf('id="pricing-faq"'))
+  assert.equal(count(faqHtml, /role="tab"/g), 4); assert.equal(count(faqHtml, /role="tabpanel"/g), 4)
+  assert.equal(PRICING_FAQ.length, 17)
+  for (const f of PRICING_FAQ) { assert.ok(faqHtml.includes(`id="faq-a-${f.id}"`), f.id); assert.ok(unescape(faqHtml).includes(f.q.replace(/&/g, '&'))) }
+  assert.match(unescape(faqHtml.replace(/<!-- -->/g, '')), /Building a meaningful social media presence takes consistency\. Our organic partnerships begin with a six-month commitment/)
+  assert.match(faqHtml, /id="faq-panel-organic"[^>]*hidden=""/)
+})
+
+test('/pricing HTML: Section 5 compact CTA; no stale JSON-LD; sections removed from the old layout are gone', () => {
+  const h = page('/pricing')
+  const t = flat(h)
+  assert.match(t, /Ready to create something that converts\? Let’s find the right creative approach for your brand\. Get 5 Free Ad Concepts/)
+  for (const gone of ['Every Sprint includes full creative production.', 'Your videos. Worldwide usage.', 'The important details.', 'From idea to ready-to-launch creative.', 'Start with a sprint. Scale what works.']) assert.ok(!t.includes(gone), `old section heading still present: ${gone}`)
+  assert.equal(ldScripts(h).length, 1)
+  const ld = JSON.stringify(ldScripts(h)[0])
+  for (const p of ['$2,500 per month', '$4,500 per month', '$3,000 one-off', '$5,400 one-off', '$1,500 per month', '$250 per creative concept']) assert.ok(ld.includes(p), p)
+  assert.match(ld, /Initial six-month commitment\. Terms after the initial six-month period/)
+  assert.ok(!/OWNER_REVIEW|deferred to the applicable agreement/.test(t))
 })

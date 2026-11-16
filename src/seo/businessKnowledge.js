@@ -149,14 +149,36 @@ export const COMMITMENT = {
 /* Billing options for the Paid Social cards (Sprint and Sprint Plus only; Custom is always "Let's talk"; Organic has no
    one-off option). Prices live on SPRINT / SPRINT_PLUS (`monthly`, `oneOff`). */
 export const BILLING_OPTIONS = [
-  { id: 'monthly', label: 'Monthly partnership', unit: '/month' },
-  { id: 'oneOff', label: 'One-off project', unit: '/project' },
+  { id: 'monthly', label: 'Monthly', unit: '/month' },
+  { id: 'oneOff', label: 'One-off', unit: '/project' },
 ]
 
 export const PARTNERSHIP_TERMS = {
   monthly: `Initial ${COMMITMENT.initialMonths}-month commitment, followed by a flexible month-to-month agreement with ${COMMITMENT.cancellationNoticeDays} days' cancellation notice.`,
   oneOff: 'One creative production batch, without a recurring commitment.',
 }
+
+/* Organic Social partnerships: a SIX-month initial commitment (owner-confirmed). The Paid Social three-month terms above
+   do NOT apply. What happens after the initial six months is NOT confirmed: it is "set out in the applicable agreement";
+   never assume the Paid month-to-month / 30-day terms for Organic. No guaranteed growth or results. */
+export const ORGANIC_COMMITMENT = {
+  initialMonths: 6,
+  summary: 'Initial six-month commitment.',
+  rationale:
+    'Organic partnerships begin with an initial six-month commitment, giving us time to build a consistent social media presence, learn what resonates with your audience and assess performance.',
+  afterInitial: 'Terms after the initial six-month period are set out in the applicable agreement.',
+  faqAnswer:
+    'Building a meaningful social media presence takes consistency. Our organic partnerships begin with a six-month commitment, giving us time to develop your content strategy, publish consistently, learn what resonates with your audience and assess performance before making longer-term decisions.',
+}
+
+/* Custom projects: terms are agreed individually. */
+export const CUSTOM_TERMS = 'Custom project terms are agreed individually.'
+
+/* The goal-based selector at the top of the page. `id` is the service group it selects. */
+export const GOALS = [
+  { id: 'paid', label: 'Scale my ads', description: 'UGC, spokesperson videos and creative testing.' },
+  { id: 'organic', label: 'Grow my socials', description: 'Content, publishing and organic community growth.' },
+]
 
 export const SINGLE_VIDEOS = {
   sold: false,
@@ -218,9 +240,11 @@ export const SHARED_SPRINT_BENEFITS = [
   { id: 'extras', label: 'Captions, B-roll and motion graphics as agreed' },
   { id: 'reframing', label: 'Square and 4:5 reframing' },
   { id: 'testing', label: 'Agreed creative variations and testing recommendations' },
+  { id: 'language', label: 'Production in one selected core language: English, Spanish, French or Arabic' },
+  { id: 'languages-extra', label: 'Additional languages available on request, subject to availability' },
 ]
 export const SHARED_SPRINT_NOTE =
-  'Included in Creative Testing Sprint and Sprint Plus. Custom packages have separately agreed production scopes. Production is in one selected language: English, Spanish, French or Arabic.'
+  'Included in Creative Testing Sprint and Sprint Plus. Custom packages have separately agreed production scopes.'
 
 /* ── usage rights ─────────────────────────────────────────────────────────────────────── */
 export const USAGE_RIGHTS = {
@@ -349,6 +373,17 @@ export const ORGANIC = {
   includedInBoth: ['Content scheduling and posting', 'Organic community management'],
   communityManagement:
     'Organic community management covers social media engagement and brand relationship management. Detailed community management scope is subject to the applicable agreement.',
+  /* What the Organic "What's included" panel lists (same approved scope as `scope`, grouped for display). */
+  panelInclusions: [
+    'Strategy and planning',
+    'Concepts and scripts',
+    'Filming and editing',
+    'Post copywriting and captions',
+    'Scheduling and publishing',
+    'Content distribution',
+    'Performance reporting and optimization',
+    'Organic community engagement and brand relationship management',
+  ],
   scope: [
     'Content strategy and planning',
     'Video concepts and scripting',
@@ -367,6 +402,14 @@ export const ORGANIC = {
 }
 
 export const ORGANIC_PACKAGES = [ORGANIC.light, ORGANIC.growth]
+
+/* Organic approach, shown as a four-step sequence and as the "How we work" stages for Organic Social. */
+export const ORGANIC_STAGES = [
+  { id: 'strategy', title: 'Strategy', sequenceLabel: 'Strategy', description: 'Content planning and brand objectives.' },
+  { id: 'production', title: 'Production', sequenceLabel: 'Production', description: 'Concepts, scripts, filming and editing.' },
+  { id: 'publishing', title: 'Publishing', sequenceLabel: 'Publishing & engagement', description: 'Scheduling, distribution and organic engagement.' },
+  { id: 'optimization', title: 'Optimization', sequenceLabel: 'Optimization', description: 'Monitoring performance and refining the content approach.' },
+]
 
 /* ── owner review flags ───────────────────────────────────────────────────────────────── */
 /* Things the owner must confirm before production. The tests assert this list exists so it cannot be dropped
