@@ -52,7 +52,7 @@ function Login({ onDone }) {
     const r = await call('login', { method: 'POST', body: { password } })
     setBusy(false)
     if (r.ok) { setPassword(''); onDone() }
-    else setError(r.status === 429 ? 'Too many attempts. Try again in a few minutes.' : r.error === 'admin_not_configured' || r.error === 'not_configured' ? 'The review area is not configured yet (see docs/creator-onboarding-setup.md).' : 'Incorrect password.')
+    else setError(r.status === 429 ? 'Too many attempts. Try again in a few minutes.' : r.error === 'not_configured' ? 'This deployment has no database connection. Check that KV_REST_API_URL and KV_REST_API_TOKEN exist for this environment, then redeploy.' : r.error === 'admin_not_configured' ? 'The owner login settings are missing or too short on this deployment. CREATOR_ADMIN_PASSWORD needs 16+ characters and CREATOR_ADMIN_SESSION_SECRET 32+. Check them, then redeploy.' : 'Incorrect password.')
   }
   return (
     <form onSubmit={submit} className="mx-auto max-w-sm py-24">
