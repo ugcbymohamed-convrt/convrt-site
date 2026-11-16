@@ -9,7 +9,7 @@ function DraftNotice() {
   if (LEGAL_STATUS.approved) return null
   return (
     <p className="mb-6 rounded-xl border border-amber/30 bg-amber/10 px-4 py-2.5 text-sm text-amber">
-      <strong className="font-semibold">Draft awaiting final approval.</strong> {LEGAL_STATUS.note} Items marked “To be confirmed” are not final.
+      <strong className="font-semibold">Draft awaiting final approval.</strong> {LEGAL_STATUS.note}
     </p>
   )
 }

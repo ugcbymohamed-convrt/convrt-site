@@ -10,7 +10,7 @@ import { PDFDocument } from 'pdf-lib'
 import { makeHarness, creator, admin, adminLogin, validProfile } from './helpers/creatorHarness.mjs'
 import { ACCEPTANCES } from '../src/lib/creator/constants.js'
 import {
-  AGREEMENT_VERSION, PRIVACY_VERSION, LEGAL_STATUS, LEGAL_ENTITY, OWNER_FLAG, OWNER_REVIEW_BLOCKERS, PRIVACY, PRIVACY_TBC_ITEMS,
+  AGREEMENT_VERSION, PRIVACY_VERSION, LEGAL_STATUS, LEGAL_ENTITY, OWNER_FLAG, OWNER_REVIEW_BLOCKERS, OWNER_APPROVAL_ITEMS, PRIVACY, PRIVACY_TBC_ITEMS,
   AGREEMENT_SECTIONS, longDate, buildAgreementDocument, agreementDocumentText, privacyText,
 } from '../src/content/creatorLegal.js'
 import { renderAgreementPdf } from '../api/_lib/creator/agreementPdf.js'
@@ -347,37 +347,38 @@ test('privacy notice: what is (not) published, marketing, Fiverr, and the verifi
   assert.ok(!/\b(?!90 |14 |30 )\d+ (days|months|years)\b/.test(text), 'only the owner-chosen retention periods appear')
 })
 
-test('privacy notice: every open point is a tracked item with a row in the launch checklist; none is silently removable', () => {
-  const text = privacyText()
-  const checklist = fs.readFileSync(path.join(ROOT, 'docs/creator-privacy-launch-checklist.md'), 'utf8')
-  assert.equal(LEGAL_STATUS.approved, false)
-  assert.equal(PRIVACY_TBC_ITEMS.length, 4)
-  for (const item of PRIVACY_TBC_ITEMS) {
-    assert.ok(text.includes(`${OWNER_FLAG}: ${item}]`), `the notice carries the "${item}" marker`)
-    assert.ok(checklist.includes(item), `the checklist has a row for "${item}"`)
+test('privacy notice: no unresolved markers remain, and every statement that still rests on the owner is listed, tied to the exact text, and approved only by the owner', () => {
+  const texts = { privacy: norm(privacyText()), agreement: norm(agreementDocumentText(buildAgreementDocument())) }
+  assert.equal(LEGAL_STATUS.approved, false, 'the gate stays closed until the owner approves')
+  assert.equal(PRIVACY_TBC_ITEMS.length, 0)
+  assert.ok(!privacyText().includes(OWNER_FLAG), 'no [OWNER TO CONFIRM] markers are left in the text')
+  const ids = OWNER_APPROVAL_ITEMS.map((i) => i.id)
+  assert.equal(new Set(ids).size, ids.length, 'unique ids')
+  assert.ok(ids.length >= 15)
+  for (const i of OWNER_APPROVAL_ITEMS) {
+    assert.ok(['factual', 'legal', 'policy', 'commitment'].includes(i.kind), `${i.id} kind`)
+    assert.ok(['privacy', 'agreement'].includes(i.where), `${i.id} where`)
+    assert.ok(texts[i.where].includes(i.match), `${i.id}: "${i.match}" is in the ${i.where} text`)
+    for (const f of ['statement', 'evidence', 'needs']) assert.ok(i[f] && i[f].length > 5, `${i.id} has ${f}`)
   }
-  assert.equal((text.match(/OWNER TO CONFIRM/g) || []).length, PRIVACY_TBC_ITEMS.length, 'no untracked marker')
-  // Every tag has its own section with the five things the owner needs: what is verified, what is unknown, their action, legal review, blocking.
-  for (const item of PRIVACY_TBC_ITEMS) {
-    const start = checklist.search(new RegExp(`^## \\d\\. ${item}`, 'm'))
-    assert.ok(start >= 0, `a numbered section for "${item}"`)
-    const next = checklist.slice(start + 5).search(/^## /m)
-    const section = checklist.slice(start, next < 0 ? undefined : start + 5 + next)
-    for (const part of ['**Verified', '**Unknown', 'Your action', '**Legal review:**', 'Blocks Production']) assert.ok(section.includes(part), `"${item}" section has ${part}`)
+  assert.ok(OWNER_REVIEW_BLOCKERS.length >= 4, 'the non-text launch steps are listed too')
+  // The annotated review document marks every id (so the list the owner approves is the list in the text).
+  const review = fs.readFileSync(path.join(ROOT, 'docs/creator-final-documents.md'), 'utf8')
+  for (const i of OWNER_APPROVAL_ITEMS) assert.ok(review.includes(`⟦${i.id}⟧`) && review.includes(`| **${i.id}** |`), `docs/creator-final-documents.md marks ${i.id}`)
+  assert.ok(review.includes(privacyText().split('\n')[2]), 'and contains the current privacy text')
+  // The risky/legal claims must each be listed.
+  for (const phrase of ['We have data-processing agreements', 'We rely on: steps taken', "rely on the safeguards in each provider's data-processing agreement", 'for six years after', '90 days after the decision', 'Signed for CONVRT Studio']) {
+    assert.ok(OWNER_APPROVAL_ITEMS.some((i) => i.match.includes(phrase)), `"${phrase}" needs an approval entry`)
   }
-  assert.ok(/## Owner checklist/.test(checklist), 'and a short list of the actions only the owner can take')
-  assert.ok(OWNER_REVIEW_BLOCKERS.length >= 6)
-  // The only way to ship without markers is for the owner to approve: markers may not coexist with an approved flag.
-  assert.ok(!LEGAL_STATUS.approved || !text.includes(OWNER_FLAG), 'approved documents contain no unresolved markers')
 })
 
-test('creators see "To be confirmed" tags, never developer markers or placeholder identifiers (checked in the built page)', { skip: !fs.existsSync(path.join(ROOT, 'dist/creator-onboarding/privacy/index.html')) && 'dist/ not built' }, () => {
+test('the built privacy page shows no developer markers or placeholder identifiers, and a clear draft status while approval is pending', { skip: !fs.existsSync(path.join(ROOT, 'dist/creator-onboarding/privacy/index.html')) && 'dist/ not built' }, () => {
   const html = fs.readFileSync(path.join(ROOT, 'dist/creator-onboarding/privacy/index.html'), 'utf8')
   const visible = html.replace(/<script[\s\S]*?<\/script>|<style[\s\S]*?<\/style>/g, '').replace(/<[^>]+>/g, ' ').replace(/&#x27;|&#39;/g, "'").replace(/\s+/g, ' ')
-  for (const item of PRIVACY_TBC_ITEMS) assert.ok(visible.includes(`To be confirmed: ${item}`), item)
-  assert.ok(!/OWNER TO CONFIRM|TODO|FIXME|placeholder|\[\s*\]/i.test(visible), 'no developer notes')
+  assert.ok(!/OWNER TO CONFIRM|To be confirmed|TODO|FIXME|placeholder/i.test(visible), 'no developer notes or unresolved tags')
   assert.ok(visible.includes('Draft awaiting final approval'), 'a clear draft status is shown while approval is pending')
   assert.ok(!/0\.1-draft|privacy-2026|agreement-2026/i.test(visible), 'no internal revision ids')
+  assert.ok(visible.includes('Calle Gibraltar Español 9'))
 })
 
 test('the agreement and the privacy notice make the same commitments', () => {

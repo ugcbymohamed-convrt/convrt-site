@@ -6,8 +6,7 @@ repository on **16 Nov 2026**; anything else is listed as unknown. Provider page
 
 **What is required vs optional, and the shortest path to launch: [creator-launch-minimum.md](creator-launch-minimum.md).** This file is the detailed evidence behind it.
 
-The notice still shows four small **"To be confirmed: …"** tags. A test fails if one of them has no row here: **provider data-processing and AI
-terms**, **transfer safeguards**, **six-year retention period**, **provider backup retention**.
+**Update (final wording prepared):** the four "To be confirmed" tags were replaced by proposed final wording, kept behind the closed gate. Every statement that still rests on you or on a provider document is marked in [creator-final-documents.md](creator-final-documents.md) and listed in the owner review page. The sections below remain the evidence behind those statements; their "blocks Production" lines are superseded by [creator-launch-minimum.md](creator-launch-minimum.md) and [creator-production-runbook.md](creator-production-runbook.md).
 
 ## Summary
 

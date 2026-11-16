@@ -6,7 +6,7 @@ import { useDocumentHead } from './lib/useDocumentHead.js'
 import { privateHead } from './seo/privateSeo.js'
 import { PRIVATE_PATHS } from './routes.js'
 import { STATUS_LABELS } from './lib/creator/constants.js'
-import { OWNER_REVIEW_BLOCKERS } from './content/creatorLegal.js'
+import { OWNER_REVIEW_BLOCKERS, OWNER_APPROVAL_ITEMS } from './content/creatorLegal.js'
 
 /* /creator-admin — the owner's minimal review page. Everything here is authorised on the SERVER: the page itself
    holds no secret. Signing in posts the owner password to /api/creator-admin/login, which sets an HttpOnly,
@@ -97,9 +97,16 @@ function SetupCheck() {
       </ul>
       {OWNER_REVIEW_BLOCKERS.length > 0 && (
         <div className="mt-5 border-t border-hairline pt-4">
-          <h3 className="text-sm font-semibold text-ink">Before real creators sign: your review is needed</h3>
+          <h3 className="text-sm font-semibold text-ink">Before real creators sign: your steps</h3>
           <ul className="mt-2 list-disc space-y-1.5 pl-5 text-sm text-ink-muted marker:text-amber">
             {OWNER_REVIEW_BLOCKERS.map((b) => <li key={b}>{b}</li>)}
+          </ul>
+          <h3 className="mt-5 text-sm font-semibold text-ink">Statements awaiting your approval</h3>
+          <p className="mt-1 text-xs text-ink-subtle">Each is marked in the full text (docs/creator-final-documents.md). Kind: factual, legal, policy or commitment.</p>
+          <ul className="mt-2 space-y-2 text-sm text-ink-muted">
+            {OWNER_APPROVAL_ITEMS.map((i) => (
+              <li key={i.id}><span className="mr-2 rounded bg-surface-3 px-1.5 py-0.5 font-mono text-xs text-ink">{i.id}</span><span className="mr-2 text-xs uppercase tracking-wide text-amber">{i.kind}</span>{i.statement} <span className="text-ink-subtle">Needs: {i.needs}</span></li>
+            ))}
           </ul>
         </div>
       )}

@@ -26,6 +26,8 @@ Not legal advice. "Required" below means I could not find a defensible way to la
 
 Automatic deletion (daily job), the owner Setup check, the signed PDF, the personalised agreement, backups-honest wording. If you would rather drop the **automatic deletion**, say so and I remove it and reword the retention line to "we delete on request"; keeping it costs only the `CRON_SECRET` variable.
 
+Exact variables and deployment steps: [creator-production-runbook.md](creator-production-runbook.md). Full final text with every approval point marked: [creator-final-documents.md](creator-final-documents.md).
+
 ## Minimum steps for you
 
 1. **Vercel:** upgrade the team to **Pro** ([Billing](https://vercel.com/convrt-s-projects/~/settings/billing)); then Team Settings → Data Preferences: AI training **opted out**. Keep the DPA PDF.

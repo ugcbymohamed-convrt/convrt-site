@@ -97,8 +97,6 @@ test('privacy notice: covers every required topic; unverified facts are flagged,
     assert.ok(headings.some((h) => h.includes(topic)), topic)
   }
   const text = privacyText()
-  assert.ok(text.includes(OWNER_FLAG), 'owner-confirmation markers present')
-  assert.ok((text.match(/OWNER TO CONFIRM/g) || []).length >= 4)
   assert.ok(/Cloudflare/.test(text) && /Vercel/.test(text) && /Resend/.test(text))
   assert.ok(/will not add you to any marketing email list without a separate lawful basis/.test(text))
   assert.ok(!/\b(?!90 |14 |30 )\d+ (days|months|years)\b/.test(text), 'only the owner-chosen periods (90 / 14 days; six years spelled out) and the documented 30-day Resend log window appear')
