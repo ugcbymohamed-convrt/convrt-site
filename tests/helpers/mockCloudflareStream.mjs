@@ -30,6 +30,7 @@ http.createServer(async (req, res) => {
     v.uploadedAt = Date.now()
     res.writeHead(200, CORS); return res.end()
   }
+  if (url.pathname.endsWith('/stream/storage-usage') && req.method === 'GET') return json(res, 200, { success: true, result: { totalStorageMinutes: 0, videoCount: videos.size } })
   if ((m = url.pathname.match(/\/stream\/([^/]+)\/token$/)) && req.method === 'POST') {
     return videos.has(m[1]) ? json(res, 200, { success: true, result: { token: `tok.${m[1]}` } }) : json(res, 404, { success: false })
   }

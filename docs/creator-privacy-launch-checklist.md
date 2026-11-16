@@ -4,6 +4,8 @@ Status: **draft, not approved** (`LEGAL_STATUS.approved = false` in `src/content
 until it is `true`; Previews keep working. Nothing here is legal advice. "Verified" means read in an official provider document or in this
 repository on **16 Nov 2026**; anything else is listed as unknown. Provider pages change: re-check before relying on them.
 
+**What is required vs optional, and the shortest path to launch: [creator-launch-minimum.md](creator-launch-minimum.md).** This file is the detailed evidence behind it.
+
 The notice still shows four small **"To be confirmed: …"** tags. A test fails if one of them has no row here: **provider data-processing and AI
 terms**, **transfer safeguards**, **six-year retention period**, **provider backup retention**.
 
