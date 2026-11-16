@@ -16,7 +16,11 @@ function textToHtml(text) {
     }
     if (inList) out.push('</ul>')
     inList = false
-    if (line.trim()) out.push(`<p>${esc(line)}</p>`)
+    const t = line.trim()
+    if (!t) continue
+    // The stored text writes section headings in capitals (e.g. PURPOSE): show them as headings.
+    const isHeading = t.length <= 60 && t === t.toUpperCase() && /\p{L}/u.test(t)
+    out.push(isHeading ? `<h3>${esc(t)}</h3>` : `<p>${esc(line)}</p>`)
   }
   if (inList) out.push('</ul>')
   return out.join('\n')
@@ -34,7 +38,8 @@ export function renderReceipt(sub) {
 body{font:15px/1.55 -apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:#111;max-width:760px;margin:32px auto;padding:0 20px}
 h1{font-size:22px}h2{font-size:15px;margin:22px 0 6px;text-transform:uppercase;letter-spacing:.04em}
 .box{border:1px solid #ccc;border-radius:8px;padding:14px 16px;margin:16px 0;background:#fafafa}
-dt{font-weight:600;float:left;clear:left;width:200px}dd{margin:0 0 6px 210px}
+dt{font-weight:600;float:left;clear:left;width:200px}dd{margin:0 0 6px 210px;overflow-wrap:anywhere;word-break:break-word}
+li{overflow-wrap:anywhere}h3{font-size:14px;margin:18px 0 4px;letter-spacing:.03em}
 ul{padding-left:20px;margin:6px 0}
 .sig{font:italic 22px Georgia,serif;margin:6px 0}
 @media print{.box{background:#fff}}

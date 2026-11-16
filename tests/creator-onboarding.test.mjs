@@ -386,6 +386,8 @@ test('receipt: the creator can download their OWN signed agreement after submitt
   assert.match(r.headers['content-disposition'], /attachment; filename="CONVRT-creator-agreement-CRX-/)
   assert.ok(r.text.includes('Test Creator Dummy') && r.text.includes(t.ref) && /Limited website-display permission/i.test(r.text))
   assert.ok(r.text.includes(uids[0]))
+  assert.match(r.text, /<h3>PURPOSE<\/h3>/, 'section headings are real headings')
+  assert.match(r.text, /overflow-wrap:anywhere/, 'long hashes and ids wrap inside their boxes')
   assert.equal((await other.C('agreement')).status, 404, 'another creator gets nothing of this submission')
   assert.equal((await creator(t.deps, '')('agreement')).status, 401)
 })
