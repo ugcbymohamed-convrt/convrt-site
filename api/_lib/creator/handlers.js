@@ -49,7 +49,7 @@ export function buildDeps(env = process.env, { fetchImpl = globalThis.fetch, now
   const log = (kind, detail) => console.error(`[creator] ${kind}`, detail || '') // eslint-disable-line no-console
   const notify = (alert) => sendOwnerAlert(alert, { env, fetchImpl, log })
   const service = store ? createService({ store, cf, cfg, notify, log, now, env, waitUntil }) : null
-  return { cfg, store, cf, service, log, now: now || (() => Date.now()) }
+  return { cfg, store, cf, service, log, env, now: now || (() => Date.now()) }
 }
 
 const opOf = (req) => new URL(req.url || '/', 'http://x').pathname.replace(/\/+$/, '').split('/').pop()
@@ -328,6 +328,23 @@ export async function adminHandler(req, res, deps = buildDeps()) {
       default:
         return reply(res, 404, { ok: false, error: 'not_found' })
     }
+  } catch (err) {
+    return failure(res, err, deps)
+  }
+}
+
+/* ───────────── daily retention job ───────────── */
+
+/* GET /api/creator-cron, called once a day by Vercel Cron (vercel.json "crons"). Vercel sends
+   "Authorization: Bearer $CRON_SECRET" when the CRON_SECRET environment variable is set; without it the job refuses to run. */
+export async function cronHandler(req, res, deps = buildDeps()) {
+  try {
+    if (req.method !== 'GET') return reply(res, 405, { ok: false, error: 'method_not_allowed' }, { Allow: 'GET' })
+    const secret = String(process.env.CRON_SECRET || (deps.env && deps.env.CRON_SECRET) || '')
+    if (secret.length < 16) return reply(res, 503, { ok: false, error: 'cron_not_configured' })
+    if (!safeEqual(String(req.headers.authorization || ''), `Bearer ${secret}`)) return reply(res, 401, { ok: false, error: 'unauthorized' })
+    if (!deps.service) return reply(res, 503, { ok: false, error: 'not_configured' })
+    return reply(res, 200, { ok: true, report: await deps.service.runRetention() })
   } catch (err) {
     return failure(res, err, deps)
   }

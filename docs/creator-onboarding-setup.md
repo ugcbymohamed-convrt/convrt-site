@@ -22,6 +22,7 @@ and send `Referrer-Policy: no-referrer` and `Cache-Control: no-store`.
 | `KV_REST_API_URL`, `KV_REST_API_TOKEN` | the database (below). Injected automatically by the Vercel integration. |
 | `CREATOR_ADMIN_PASSWORD` | owner sign-in. 16+ characters; a long random passphrase from a password manager |
 | `CREATOR_ADMIN_SESSION_SECRET` | 32+ random characters (`openssl rand -base64 48`). Changing it signs everyone out. |
+| `CRON_SECRET` | 16+ random characters. Lets Vercel's daily cron run the retention clean-up (below). Production only. |
 | `RESEND_API_KEY` (existing) | owner email alert. `NOTIFY_EMAIL_TO` already defaults to mohamed@convrt.studio. |
 
 Set them for **Preview** (to test) and later **Production**. Redeploy after adding variables.
@@ -82,6 +83,18 @@ agreement (30 days), and cannot submit or change anything.
 send it back to **Pending**. Approval only flags it `publishable`; **nothing is published automatically** and there is no
 public showcase yet. You also get an email (display name, languages, specialization, reference, review link: no legal name,
 no media) via the existing Resend setup.
+
+## 4b. Automatic retention clean-up
+`vercel.json` schedules `/api/creator-cron` daily (03:17 UTC; Vercel Cron runs on **Production** deployments only). It needs `CRON_SECRET`.
+* **Withdrawn** submissions: any media still stored is deleted at the next run (no waiting period).
+* **Rejected** submissions: media deleted 90 days after the decision.
+* **Never-submitted uploads and drafts:** deleted 14 days after the invitation expired or was revoked.
+* **Signed records** of rejected/withdrawn submissions: deleted 6 years after the decision, only once their media is confirmed gone. The 6 years is a
+  period the owner chose, **not a verified legal requirement**. Approved and pending submissions are never touched.
+* **Safeguards:** every Cloudflare deletion is verified (the video must then answer "not found"). A failed deletion keeps the media and the record,
+  is retried at the next run, and you get an email listing the references (no personal data). Records are never deleted while media remains.
+* **Backups:** the app makes no copies of its own. Whether Upstash/Cloudflare keep backups, and for how long, is an open point in the privacy checklist.
+* Adjust the numbers in `src/lib/creator/constants.js` (`RETENTION`) together with the Privacy Notice wording.
 
 ## 5. Removal / withdrawal requests
 Open the submission → **Removal / withdrawal request** → record how it was requested (Fiverr, email…) and choose whether to delete

@@ -339,18 +339,19 @@ test('privacy notice: what is (not) published, marketing, Fiverr, and the verifi
   assert.ok(text.includes('we will not add you to any marketing email list without a separate lawful basis'))
   assert.ok(text.includes('communication and commercial transactions stay on Fiverr'))
   for (const provider of ['Cloudflare Stream', 'Vercel', 'Upstash', 'Resend', 'Fiverr']) assert.ok(text.includes(provider), provider)
-  assert.ok(text.includes('Washington, D.C., USA') && text.includes('Frankfurt, Germany'), 'verified processing locations are disclosed')
+  assert.ok(text.includes('Washington, D.C., USA') && text.includes('hosted in Frankfurt, Germany'), 'verified processing locations are disclosed')
+  assert.ok(text.includes('Calle Gibraltar Español 9, 04007 Almería, Spain'), 'the controller address the owner supplied')
   assert.ok(text.includes('Resend stores its data in the United States'))
   assert.ok(text.includes('CONVRT does not request automatic captions, transcription or any other AI analysis of your videos'))
   assert.ok(!/GDPR-compliant|certified|ISO ?27001|SOC ?2|guarantee|routine backups/i.test(text), 'no invented certifications, guarantees or backup claims')
-  assert.ok(!/\b\d+ (days|months|years)\b/.test(text), 'no invented retention periods')
+  assert.ok(!/\b(?!90 |14 )\d+ (days|months|years)\b/.test(text), 'only the owner-chosen retention periods appear')
 })
 
 test('privacy notice: every open point is a tracked item with a row in the launch checklist; none is silently removable', () => {
   const text = privacyText()
   const checklist = fs.readFileSync(path.join(ROOT, 'docs/creator-privacy-launch-checklist.md'), 'utf8')
   assert.equal(LEGAL_STATUS.approved, false)
-  assert.equal(PRIVACY_TBC_ITEMS.length, 6)
+  assert.equal(PRIVACY_TBC_ITEMS.length, 4)
   for (const item of PRIVACY_TBC_ITEMS) {
     assert.ok(text.includes(`${OWNER_FLAG}: ${item}]`), `the notice carries the "${item}" marker`)
     assert.ok(checklist.includes(item), `the checklist has a row for "${item}"`)

@@ -319,6 +319,7 @@ function Detail({ id, onBack, reload }) {
             <input className={input} value={wd.via} onChange={(e) => setWd({ ...wd, via: e.target.value })} placeholder="How was it requested? (Fiverr, email…)" aria-label="Requested via" />
             <input className={input} value={wd.note} onChange={(e) => setWd({ ...wd, note: e.target.value })} placeholder="Note" aria-label="Withdrawal note" />
             <label className="flex items-center gap-2 text-sm text-ink"><input type="checkbox" checked={wd.deleteFiles} onChange={(e) => setWd({ ...wd, deleteFiles: e.target.checked })} />Delete the videos and photo now (the signed agreement record is kept)</label>
+            <p className="text-xs text-ink-subtle">If you keep the files for now, the daily clean-up deletes them automatically at its next run.</p>
             <div className="flex gap-3"><button className={btnPrimary} disabled={busy} onClick={() => withdraw()}>Record withdrawal</button><button className={btn} onClick={() => setWd({ ...wd, open: false })}>Cancel</button></div>
           </div>
         )}

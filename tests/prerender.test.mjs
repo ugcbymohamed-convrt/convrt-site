@@ -220,5 +220,9 @@ test('production bundle: hydration wiring present, nothing server-only shipped t
   const all = assets.map((f) => fs.readFileSync(path.join(dist, 'assets', f), 'utf8')).join('\n')
   assert.ok(/data-ssr-path|ssrPath/.test(all) || /ssrPath/.test(all), 'main entry must read the ssr path')
   assert.ok(!/renderToPipeableStream/.test(all), 'react-dom/server must not reach the browser bundle')
-  assert.ok(!fs.existsSync(path.join(ROOT, 'node_modules', '.convrt-ssr')) || fs.readdirSync(path.join(ROOT, 'node_modules', '.convrt-ssr')).length === 0, 'temporary SSR build output must be cleaned up')
+  // Each build writes to node_modules/.convrt-ssr/<pid>-<time>. Other test files run in parallel processes and may have a build in flight,
+  // so only THIS process's folders count as leftovers.
+  const ssrRoot = path.join(ROOT, 'node_modules', '.convrt-ssr')
+  const mine = fs.existsSync(ssrRoot) ? fs.readdirSync(ssrRoot).filter((d) => d.startsWith(`${process.pid}-`)) : []
+  assert.deepEqual(mine, [], 'temporary SSR build output must be cleaned up')
 })

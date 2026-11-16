@@ -36,6 +36,9 @@ export const LEGAL_ENTITY = { name: 'Mohamed Doukkali Azizi', taxId: 'Y6755743J'
    authorisation by the owner, recorded inside each agreement's accepted text; set to false to leave CONVRT's side blank. */
 export const CONVRT_PRESIGN = true
 
+/* Contact address for the privacy notice (supplied by the owner, 16 Nov 2026). */
+export const CONVRT_ADDRESS = 'Calle Gibraltar Español 9, 04007 Almería, Spain'
+
 export const CONTRACTING_PARTY = {
   tradeName: 'CONVRT Studio',
   website: 'www.convrt.studio',
@@ -47,13 +50,11 @@ export const OWNER_FLAG = '[OWNER TO CONFIRM'
 /* What is still open before real creators may see these documents (shown to the owner in the review page). */
 /* Full detail, verified facts and sources: docs/creator-privacy-launch-checklist.md */
 export const OWNER_REVIEW_BLOCKERS = [
-  'Registered address (and confirmation of the legal name and NIF printed in the agreement and privacy notice).',
-  'Legal bases for processing, confirmed with legal advice for your jurisdiction.',
-  'Upstash database region: confirm it is Frankfurt in the Upstash console.',
   'Provider terms: accept/confirm the data-processing agreements with Cloudflare, Vercel, Upstash and Resend, and confirm no AI or analysis features are enabled for creator files.',
-  'Retention periods for media files, agreement records and backups.',
-  'International transfers: Vercel functions run in Washington, D.C. (iad1) and Resend stores data in the US. Decide on EU function region and confirm the transfer safeguards for each provider.',
-  'Have both documents reviewed (ideally by a lawyer), then set LEGAL_STATUS.approved to true.',
+  'International transfers: confirm the transfer safeguards for each US provider (Resend stores data in the US; check the Vercel log shows Frankfurt, fra1, after the region change).',
+  'Six-year record retention: a period you chose, not a verified legal requirement. Confirm it with legal advice.',
+  'Provider backups: find out whether Upstash and Cloudflare keep backups and for how long.',
+  'Legal bases were accepted as written (not lawyer-verified); have both documents reviewed (ideally by a lawyer), then set LEGAL_STATUS.approved to true.',
   'Fiverr: confirm Fiverr’s terms allow directing creators to this external onboarding page.',
 ]
 
@@ -167,12 +168,10 @@ export const PRIVACY_TITLE = 'Creator Privacy Notice'
    text) and is rendered to creators as a small "To be confirmed" tag. Every item has a row in
    docs/creator-privacy-launch-checklist.md (a test enforces it): none may be deleted until the owner has decided it. */
 export const PRIVACY_TBC_ITEMS = [
-  'registered address',
-  'legal bases',
-  'database region',
   'provider data-processing and AI terms',
-  'retention periods',
   'transfer safeguards',
+  'six-year retention period',
+  'provider backup retention',
 ]
 const tbc = (item) => `${OWNER_FLAG}: ${item}]`
 
@@ -219,7 +218,7 @@ export const PRIVACY = {
       id: 'controller',
       heading: 'Who is responsible for your information',
       paragraphs: [
-        `CONVRT Studio (legal contracting name: ${LEGAL_ENTITY.name}, NIF ${LEGAL_ENTITY.taxId}), www.convrt.studio, decides how and why your information is used. Registered address: ${tbc('registered address')}`,
+        `CONVRT Studio (legal contracting name: ${LEGAL_ENTITY.name}, NIF ${LEGAL_ENTITY.taxId}), www.convrt.studio, decides how and why your information is used. Address: ${CONVRT_ADDRESS}.`,
       ],
     },
     {
@@ -251,7 +250,7 @@ export const PRIVACY = {
       id: 'bases',
       heading: 'Legal bases',
       paragraphs: [
-        `We expect to rely on: steps taken at your request before a possible collaboration; your consent to display your videos, image, voice and public profile (you can withdraw it at any time); our legitimate interests in running the network securely and keeping records of permissions; and legal obligations. ${tbc('legal bases')}`,
+        'We rely on: steps taken at your request before a possible collaboration; your consent to display your videos, image, voice and public profile (you can withdraw it at any time); our legitimate interests in running the network securely and keeping records of permissions; and legal obligations.',
       ],
     },
     {
@@ -261,7 +260,7 @@ export const PRIVACY = {
       bullets: [
         'Cloudflare Stream hosts, encodes and plays back your videos. Videos are private: playback needs a short-lived signed link until they are reviewed.',
         'Vercel hosts the website and runs the submission service, currently on servers in Washington, D.C., USA.',
-        `Upstash (a Redis database, through the Vercel integration) stores submission records and profile photos. It was set up in Frankfurt, Germany. ${tbc('database region')}`,
+        'Upstash (a Redis database, through the Vercel integration) stores submission records and profile photos. It is hosted in Frankfurt, Germany.',
         'Resend emails CONVRT a notification with your display name, languages, specializations and submission reference. It contains no videos and not your legal name.',
         'Fiverr is where orders, payments and communication stay for creators introduced through Fiverr.',
       ],
@@ -272,8 +271,12 @@ export const PRIVACY = {
     {
       id: 'retention',
       heading: 'How long we keep it',
-      paragraphs: [
-        `Retention periods: ${tbc('retention periods')} Today, uploaded files are deleted when a removal or withdrawal request is processed, and a record of the agreement you signed (without your media files) is kept as evidence of the permission and the withdrawal, and to meet legal obligations.`,
+      bullets: [
+        'Approved portfolio materials stay only while your display permission is active. If you withdraw it, we remove them from public display promptly and delete the stored files without undue delay, subject to any legal obligation.',
+        'If your submission is rejected, we delete its videos and photo 90 days after the decision.',
+        'Uploads you started but never submitted are deleted 14 days after your invitation expires.',
+        `Your signed agreement and consent record never includes your media files, is kept private and is never published. We keep it while your portfolio is approved and for six years after a submission is rejected or withdrawn, so we can evidence what you agreed. ${tbc('six-year retention period')}`,
+        `Copies held in our providers' backups, if any, are removed when those backups expire. ${tbc('provider backup retention')}`,
       ],
     },
     {

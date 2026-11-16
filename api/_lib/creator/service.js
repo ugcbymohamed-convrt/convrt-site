@@ -11,7 +11,7 @@
 
 import {
   VIDEO_SLOTS, VIDEO_MAX_SECONDS, VIDEO_MAX_BYTES, PHOTO_MAX_BYTES, LIMITS, MAX_UPLOAD_AUTHORIZATIONS,
-  INVITE_SOURCES, INVITE_DEFAULT_DAYS, INVITE_MAX_DAYS, RECEIPT_ACCESS_DAYS, ACCEPTANCES,
+  INVITE_SOURCES, INVITE_DEFAULT_DAYS, INVITE_MAX_DAYS, RECEIPT_ACCESS_DAYS, RETENTION, ACCEPTANCES,
 } from '../../../src/lib/creator/constants.js'
 import {
   clean, sanitizeProfile, validateProfile, validateAcceptance, validateVideoFile,
@@ -139,6 +139,7 @@ export function createService(ctx) {
     if (!inv) throw new CreatorError('not_found', 404)
     if (inv.status === 'completed') throw new CreatorError('already_submitted', 409)
     inv.status = 'revoked'
+    inv.revokedAt = now()
     await store.set(keys.invite(id), inv)
     await store.del(keys.tok(inv.tokenHash))
     return inviteView(inv)
@@ -631,7 +632,134 @@ export function createService(ctx) {
     return { ...subSummary(s), withdrawal: s.withdrawal }
   }
 
+  /* Daily retention clean-up (see RETENTION). Idempotent: safe to re-run, and a run that fails halfway resumes next time.
+     • WITHDRAWN submission: any stored media still present is deleted at the next run (no waiting period): withdrawal
+       means delete without undue delay.
+     • REJECTED submission: media deleted 90 days after the decision.
+     • Uploads/drafts of an invitation never submitted: deleted 14 days after it expired or was revoked.
+     • The signed record of a rejected/withdrawn submission: deleted 6 years after the decision (a period the owner set,
+       not a verified legal minimum), and ONLY once its media is confirmed gone.
+     Approved and pending submissions are never touched: they are kept while approved / under review.
+     Safeguards: every Cloudflare deletion is VERIFIED (the video must then answer "not found"); a failure keeps the
+     media and the record, is counted on the submission, retried at the next run, and emailed to the owner (references
+     only, no personal data). */
+  async function runRetention() {
+    const t = now()
+    const DAYS = 86_400_000
+    const report = { mediaDeleted: 0, abandonedPurged: 0, recordsDeleted: 0, failures: 0, pendingDeletions: [] }
+
+    /* Deletes a Cloudflare video and checks that it is really gone. @returns {Promise<boolean>} */
+    async function removeVideo(uid) {
+      try {
+        await cf.deleteVideo(uid)
+        try {
+          await cf.getVideo(uid)
+          return false // still there: treat as a failure
+        } catch (err) {
+          return err instanceof CloudflareError && err.status === 404
+        }
+      } catch (err) {
+        log('retention_delete_failed', { status: err?.status })
+        return false
+      }
+    }
+
+    const decisionTime = (s) => {
+      if (s.status === 'withdrawn') return Date.parse(s.withdrawal?.at || '') || null
+      const last = [...(s.history || [])].reverse().find((h) => h.action === 'rejected')
+      return last ? Date.parse(last.at) : null
+    }
+
+    const subIds = await store.smembers('cr:subs')
+    const subs = (await store.mget(subIds.map(keys.sub))).filter(Boolean)
+    for (const s of subs) {
+      if (s.status !== 'rejected' && s.status !== 'withdrawn') continue
+      const at = decisionTime(s)
+      if (!at) continue
+      const mediaPresent = () => s.assets.videos.some((v) => !v.deletedAt) || Boolean(s.assets.photo && !s.assets.photo.deletedAt)
+      const due = s.status === 'withdrawn' || t - at > RETENTION.mediaAfterDecisionDays * DAYS
+
+      if (mediaPresent() && due) {
+        const deletedAt = iso(t)
+        let ok = true
+        for (const v of s.assets.videos) {
+          if (v.deletedAt) continue
+          if (await removeVideo(v.uid)) v.deletedAt = deletedAt
+          else ok = false
+        }
+        if (s.assets.photo && !s.assets.photo.deletedAt) {
+          await store.del(keys.photo(s.id))
+          s.assets.photo.deletedAt = deletedAt
+        }
+        if (ok) {
+          if (s.status === 'withdrawn' && s.withdrawal) {
+            s.withdrawal.filesDeleted = true
+            s.withdrawal.pendingDeletion = []
+          }
+          delete s.retention
+          s.history.push({ at: deletedAt, action: 'media_deleted_by_retention' })
+          report.mediaDeleted++
+        } else {
+          s.retention = { failures: (s.retention?.failures || 0) + 1, lastFailureAt: deletedAt }
+          report.failures++
+          report.pendingDeletions.push(s.id)
+        }
+        await store.set(keys.sub(s.id), s)
+      }
+
+      // The record itself: only after the retention period AND with no media left to delete.
+      if (!mediaPresent() && t - at > RETENTION.recordYears * 365 * DAYS) {
+        await Promise.all([store.del(keys.sub(s.id)), store.del(keys.photo(s.id)), store.srem('cr:subs', s.id), store.srem('cr:invites', s.id), store.del(keys.invite(s.id))])
+        report.recordsDeleted++
+      }
+    }
+
+    const inviteIds = await store.smembers('cr:invites')
+    const invites = (await store.mget(inviteIds.map(keys.invite))).filter(Boolean)
+    for (const inv of invites) {
+      if (inv.status === 'completed' || inv.status === 'purged') continue
+      const end = inv.status === 'revoked' ? (inv.revokedAt || inv.expiresAt) : inv.expiresAt
+      if (t - end < RETENTION.abandonedAfterExpiryDays * DAYS) continue
+      const holds = Object.keys(inv.videos || {}).length > 0 || inv.photo || Object.keys(inv.draft || {}).length > 0
+      if (!holds) continue
+      let ok = true
+      for (const [slot, v] of Object.entries(inv.videos || {})) {
+        if (!v.uid) { delete inv.videos[slot]; continue }
+        if (await removeVideo(v.uid)) delete inv.videos[slot]
+        else ok = false
+      }
+      if (!ok) {
+        inv.retention = { failures: (inv.retention?.failures || 0) + 1, lastFailureAt: iso(t) }
+        await store.set(keys.invite(inv.id), inv)
+        report.failures++
+        report.pendingDeletions.push(inv.id)
+        continue
+      }
+      await store.del(keys.photo(inv.id))
+      inv.videos = {}
+      inv.photo = null
+      inv.draft = {}
+      inv.status = 'purged'
+      delete inv.retention
+      await store.del(keys.tok(inv.tokenHash))
+      await store.set(keys.invite(inv.id), inv)
+      report.abandonedPurged++
+    }
+
+    // Deletion failures are never silent: the owner is emailed the references (no personal data) every run until fixed.
+    if (report.failures > 0 && ctx.notify) {
+      await ctx.notify({
+        subject: 'CONVRT creator data: some files could not be deleted',
+        title: 'Retention clean-up: deletion failed',
+        rows: [['Items still to delete', report.pendingDeletions.join(', ')], ['Next attempt', 'tomorrow’s daily run (or withdraw/delete them by hand in the review page)']],
+        footer: 'The files and records were kept, not lost. Nothing was deleted without being verified.',
+      }).catch(() => {})
+    }
+    return report
+  }
+
   return {
+    runRetention,
     createInvite, rotateInvite, revokeInvite, resolve,
     session, saveDraft, videoUpload, videoStatus, videoPreview, videoRemove,
     photoPut, photoGet, photoRemove, submit, receipt,

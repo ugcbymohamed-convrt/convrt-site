@@ -66,3 +66,10 @@ export const ACCEPTANCES = [
 export const FIVERR_STATEMENT = "We'll keep you updated through Fiverr."
 
 export const humanBytes = (n) => (n >= 1024 * 1024 ? `${Math.round(n / (1024 * 1024))} MB` : `${Math.round(n / 1024)} KB`)
+
+/* Retention policy (owner decision, Nov 2026). Enforced daily by api/creator-cron.js; the privacy notice states the same numbers. */
+export const RETENTION = {
+  mediaAfterDecisionDays: 90, // media of a rejected or withdrawn submission
+  abandonedAfterExpiryDays: 14, // uploads/drafts of an invitation that was never submitted, counted from its expiry
+  recordYears: 6, // the signed agreement record of a rejected or withdrawn submission
+}

@@ -41,6 +41,9 @@ export function memoryStore(nowFn = () => Date.now()) {
       if (!sets.has(set)) sets.set(set, new Set())
       sets.get(set).add(member)
     },
+    async srem(set, member) {
+      sets.get(set)?.delete(member)
+    },
     async smembers(set) {
       return [...(sets.get(set) || [])]
     },
@@ -104,6 +107,9 @@ export function upstashStore({ url, token, fetchImpl = globalThis.fetch }) {
     },
     async sadd(set, member) {
       await cmd(['SADD', set, member])
+    },
+    async srem(set, member) {
+      await cmd(['SREM', set, member])
     },
     async smembers(set) {
       return (await cmd(['SMEMBERS', set])) || []
