@@ -195,7 +195,7 @@ export function OrganicCards() {
     ORGANIC.includedInBoth[1],
     'Performance review & optimization',
     `${ORGANIC_COMMITMENT.initialMonths}-month initial commitment`,
-    `Adapted and distributed across your selected platforms: ${ORGANIC.platforms.slice(0, -1).join(', ')} and ${ORGANIC.platforms.at(-1)}`,
+    `${ORGANIC.platforms.slice(0, -1).join(', ')} & ${ORGANIC.platforms.at(-1)} distribution`,
   ]
   const custom = CUSTOM_PACKAGES.organic
   const Cadence = ({ tone, text }) => <Supporting tone={tone}>{text}</Supporting>

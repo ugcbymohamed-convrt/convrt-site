@@ -123,7 +123,7 @@ export const SPRINT_PLUS = {
   concepts: { value: 8, status: 'confirmed' },
   variationsDistribution: 'Variations are distributed across the concepts according to the creative testing strategy, with changes to hooks or CTAs. Concepts do not necessarily have the same number of variations.',
   cardDescription: 'For brands looking for greater creative diversity and deeper testing.',
-  extraDetail: 'Includes expanded creative research and expanded testing recommendations.',
+  extraDetail: 'Includes expanded research and testing recommendations.',
   turnaroundBusinessDays: 15,
   revisionRoundsPerConcept: 2,
   usageMonthsIncluded: USAGE_MONTHS_INCLUDED,
@@ -210,7 +210,7 @@ export const CUSTOM_PACKAGES = {
       'Long-form video production',
       'Custom licensing options',
     ],
-    note: 'These are custom production possibilities, not deliverables included in every project. Final scope, pricing and commercial terms are agreed individually.',
+    note: 'Scope, pricing and terms are tailored to your project.',
     cta: 'Discuss your project',
   },
   organic: {
@@ -226,25 +226,32 @@ export const CUSTOM_PACKAGES = {
       'Custom engagement requirements',
       'Facebook, Instagram and TikTok',
     ],
-    note: 'Final scope, pricing and commercial terms are agreed individually.',
+    note: 'Scope, pricing and terms are tailored to your project.',
     cta: 'Discuss your project',
   },
 }
 
 /* Shown once under the Paid Social cards, for the STANDARD Sprint packages only. */
 export const SHARED_SPRINT_BENEFITS = [
-  { id: 'research', label: 'Creative research and strategy' },
-  { id: 'approval', label: 'Concepts, scripts and client approval' },
+  { id: 'research', label: 'Creative research & strategy' },
+  { id: 'approval', label: 'Concepts, scripts & approval' },
   { id: 'creators', label: 'Creator selection' },
-  { id: 'production', label: 'Filming and professional editing' },
-  { id: 'extras', label: 'Captions, B-roll and motion graphics as agreed' },
-  { id: 'reframing', label: 'Square and 4:5 reframing' },
-  { id: 'testing', label: 'Agreed creative variations and testing recommendations' },
-  { id: 'language', label: 'Production in one selected core language: English, Spanish, French or Arabic' },
-  { id: 'languages-extra', label: 'Additional languages available on request, subject to availability' },
+  { id: 'production', label: 'Filming & editing' },
+  { id: 'extras', label: 'Captions, B-roll & graphics' },
+  { id: 'reframing', label: 'Square & 4:5 reframing' },
+  { id: 'variations', label: 'Creative variations' },
+  { id: 'testing', label: 'Testing recommendations' },
 ]
-export const SHARED_SPRINT_NOTE =
-  'Included in Creative Testing Sprint and Sprint Plus. Custom packages have separately agreed production scopes.'
+/* Short notes shown under the grid. Additional languages are available on request, never implied as free. */
+export const SHARED_SPRINT_LANGUAGE_NOTE =
+  'One production language included: English, Spanish, French or Arabic. Additional languages on request.'
+export const SHARED_SPRINT_NOTE = 'Included in Sprint and Sprint Plus. Custom scopes are agreed individually.'
+
+/* Concise notes under the pricing cards (the full policies live in the panels, the FAQ and the config above). */
+export const CARD_NOTES = {
+  paid: `Monthly plans start with a ${COMMITMENT.initialMonths}-month commitment, then become month-to-month with ${COMMITMENT.cancellationNoticeDays} days’ notice. One-off projects are also available. All prices exclude VAT.`,
+  organic: `A ${ORGANIC_COMMITMENT.initialMonths}-month initial partnership to build a consistent social presence and assess results. All prices exclude VAT.`,
+}
 
 /* ── usage rights ─────────────────────────────────────────────────────────────────────── */
 export const USAGE_RIGHTS = {
@@ -266,6 +273,17 @@ export const USAGE_RIGHTS = {
       'Paid advertising use must stop unless the usage rights are extended.',
       'The content cannot be reshared or republished without extending the usage rights.',
     ],
+  },
+  /* Compact copy for the Usage rights panel. The long-form wording below (afterExpiry, notOwnership, creatorAccountAds) stays
+     in the FAQ. */
+  panel: {
+    headline: '6 months of worldwide usage included.',
+    fromDelivery: 'From the date each video is delivered.',
+    shortUses: ['Paid ads', 'Organic social', 'Website use'],
+    expirySummary: 'Existing organic posts and website placements may stay live. Paid advertising, resharing and republishing require an extension.',
+    creatorNote: 'Creator-account advertising, including Spark Ads and Meta partnership ads, is arranged and priced separately.',
+    batchNote: 'Extensions apply to the entire creative batch. Prices exclude VAT.',
+    organic: 'Content usage terms are set out in your agreement. Paid Social usage rights and extension prices do not automatically apply.',
   },
   perpetual:
     'Perpetual usage is subject to agreement with the featured creator or creators and is priced individually.',
@@ -293,6 +311,7 @@ export const RAW_FOOTAGE = {
     'Every video CONVRT produces and delivers is a professionally edited, finished video. We do not offer raw-only production packages or raw footage in place of edited deliverables.',
   /* Short form shown in the page's details list. */
   summary: 'Raw footage is only available alongside finished, professionally edited videos. It cannot replace them.',
+  shortNote: 'Optional add-on to finished videos.',
   note:
     'Raw footage is available exclusively as an optional add-on, alongside your finished, edited videos. Buying it does not by itself transfer copyright ownership, unlimited editing rights or perpetual usage rights; derivative-editing and ownership terms are set out in the applicable agreement.',
 }
@@ -312,10 +331,10 @@ export const PRODUCTION_PROCESS = [
 /* The page shows four stages; each maps to the original eight steps above (indexes into PRODUCTION_PROCESS), so the full
    process is preserved without repeating each step's description. */
 export const PRODUCTION_STAGES = [
-  { id: 'strategy', title: 'Strategy', description: 'Brand discovery, audience research and creative concepts.', steps: [0, 1, 2] },
-  { id: 'preparation', title: 'Preparation', description: 'Creator selection, scripts and your approval.', steps: [3, 4, 5] },
-  { id: 'production', title: 'Production', description: 'Filming, editing, captions and creative variations.', steps: [6] },
-  { id: 'delivery', title: 'Delivery', description: 'Finished videos, revisions and testing recommendations.', steps: [7] },
+  { id: 'strategy', title: 'Strategy', description: 'Research & creative concepts.', steps: [0, 1, 2] },
+  { id: 'preparation', title: 'Preparation', description: 'Creators, scripts & approval.', steps: [3, 4, 5] },
+  { id: 'production', title: 'Production', description: 'Filming, editing & variations.', steps: [6] },
+  { id: 'delivery', title: 'Delivery', description: 'Finished videos, revisions & recommendations.', steps: [7] },
 ]
 
 export const PRODUCT_REQUIREMENTS = {
@@ -375,15 +394,16 @@ export const ORGANIC = {
     'Organic community management covers social media engagement and brand relationship management. Detailed community management scope is subject to the applicable agreement.',
   /* What the Organic "What's included" panel lists (same approved scope as `scope`, grouped for display). */
   panelInclusions: [
-    'Strategy and planning',
-    'Concepts and scripts',
-    'Filming and editing',
-    'Post copywriting and captions',
-    'Scheduling and publishing',
-    'Content distribution',
-    'Performance reporting and optimization',
-    'Organic community engagement and brand relationship management',
+    'Content strategy & planning',
+    'Concepts & scripting',
+    'Filming & editing',
+    'Captions & post copy',
+    'Scheduling & publishing',
+    'Cross-platform distribution',
+    'Performance optimization',
+    'Community engagement',
   ],
+  panelNote: 'Facebook, Instagram and TikTok. Community management excludes customer support.',
   scope: [
     'Content strategy and planning',
     'Video concepts and scripting',
@@ -405,10 +425,10 @@ export const ORGANIC_PACKAGES = [ORGANIC.light, ORGANIC.growth]
 
 /* Organic approach, shown as a four-step sequence and as the "How we work" stages for Organic Social. */
 export const ORGANIC_STAGES = [
-  { id: 'strategy', title: 'Strategy', sequenceLabel: 'Strategy', description: 'Content planning and brand objectives.' },
-  { id: 'production', title: 'Production', sequenceLabel: 'Production', description: 'Concepts, scripts, filming and editing.' },
-  { id: 'publishing', title: 'Publishing', sequenceLabel: 'Publishing & engagement', description: 'Scheduling, distribution and organic engagement.' },
-  { id: 'optimization', title: 'Optimization', sequenceLabel: 'Optimization', description: 'Monitoring performance and refining the content approach.' },
+  { id: 'strategy', title: 'Strategy', sequenceLabel: 'Strategy', description: 'Content planning & objectives.' },
+  { id: 'production', title: 'Production', sequenceLabel: 'Production', description: 'Concepts, filming & editing.' },
+  { id: 'publishing', title: 'Publishing', sequenceLabel: 'Publishing & engagement', description: 'Distribution & engagement.' },
+  { id: 'optimization', title: 'Optimization', sequenceLabel: 'Optimization', description: 'Performance review & refinement.' },
 ]
 
 /* ── owner review flags ───────────────────────────────────────────────────────────────── */

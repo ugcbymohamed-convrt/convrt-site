@@ -1,15 +1,14 @@
 import { useEffect, useState } from 'react'
 import {
-  SPRINT, SPRINT_PLUS, USAGE_RIGHTS, TAX, SHARED_SPRINT_BENEFITS, SHARED_SPRINT_NOTE, PRODUCTION_STAGES, ORGANIC_STAGES,
-  ORGANIC, ORGANIC_COMMITMENT, FORMATS, RAW_FOOTAGE, REVISIONS, PRODUCT_REQUIREMENTS, formatMoney,
+  SPRINT, SPRINT_PLUS, USAGE_RIGHTS, SHARED_SPRINT_BENEFITS, SHARED_SPRINT_LANGUAGE_NOTE, SHARED_SPRINT_NOTE, PRODUCTION_STAGES,
+  ORGANIC_STAGES, ORGANIC, ORGANIC_COMMITMENT, FORMATS, RAW_FOOTAGE, REVISIONS, formatMoney,
 } from '../../seo/businessKnowledge.js'
-import { SectionHeader, Check, Cross } from './shared.jsx'
+import { SectionHeader, Check } from './shared.jsx'
 
-/* SECTION 3: "Everything you need to know." ONE section with four expandable panels (one open at a time) that
-   replaces the former standalone sections for inclusions, usage rights and extension prices, process and production details.
-   Every panel's content is always in the DOM (collapsed = grid-rows 0fr + `visibility`), so the prerendered HTML carries
-   all of it; the open state is presentation only. Paid Social and Organic Social variants are both in the DOM; `hidden`
-   picks the visible one. Sprint licensing/turnaround/revision terms are never presented as applying to Organic Social. */
+/* SECTION 3: "The details." One section, four panels, ALL CLOSED on load (one open at a time; switching goal closes them).
+   Every panel's content is always in the DOM (collapsed = grid-rows 0fr + `visibility`), so the prerendered HTML carries all of
+   it; the open state is presentation only. Paid Social and Organic Social variants are both in the DOM; `hidden` picks the visible
+   one. Long-form policies (reshoots, shipping and SaaS access, copyright, expiry details, organic renewal) live in the FAQ. */
 
 const Icon = ({ children, className = 'h-5 w-5' }) => (
   <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -29,64 +28,67 @@ const BENEFIT_ICONS = {
   production: <><rect x="3" y="6" width="14" height="12" rx="2" /><path d="M17 10.5l4-2.5v8l-4-2.5" /></>,
   extras: <><path d="M4 7h16M4 12h10M4 17h13" /></>,
   reframing: <><rect x="3" y="5" width="11" height="11" rx="1.5" /><rect x="10" y="9" width="11" height="11" rx="1.5" /></>,
+  variations: <><rect x="4" y="4" width="10" height="13" rx="2" /><path d="M8 20h9a3 3 0 003-3V9" /></>,
   testing: <><path d="M4 20V10M10 20V4M16 20v-7M22 20H2" /></>,
-  language: <><circle cx="12" cy="12" r="8.5" /><path d="M3.5 12h17M12 3.5c2.5 2.5 2.5 14.5 0 17M12 3.5c-2.5 2.5-2.5 14.5 0 17" /></>,
-  'languages-extra': <><circle cx="12" cy="12" r="8.5" /><path d="M12 8v8M8 12h8" /></>,
 }
+const USE_ICONS = [
+  <><path d="M3 11v3a1 1 0 001 1h2l5 4V6L6 10H4a1 1 0 00-1 1z" /><path d="M15 9a4 4 0 010 6M18 6.5a8 8 0 010 11" /></>,
+  <><rect x="7" y="2.5" width="10" height="19" rx="2.5" /><path d="M11 18.5h2" /></>,
+  <><rect x="3" y="4" width="18" height="14" rx="2" /><path d="M3 8.5h18M8 21h8" /></>,
+]
 
-const Note = ({ children, className = '' }) => <p className={`text-[12.5px] leading-relaxed text-ink-subtle ${className}`}>{children}</p>
+const Note = ({ children, className = '' }) => <p className={`text-[13px] leading-relaxed text-ink-muted ${className}`}>{children}</p>
 
 /* ── Panel 1: what's included ─────────────────────────────────────────────────────────── */
 function IncludedPaid() {
   return (
     <>
-      <ul className="grid grid-cols-1 gap-x-6 gap-y-3 sm:grid-cols-2 lg:grid-cols-3">
+      <ul className="grid grid-cols-2 gap-x-5 gap-y-3 lg:grid-cols-4">
         {SHARED_SPRINT_BENEFITS.map((b) => (
-          <li key={b.id} className="flex items-center gap-3">
+          <li key={b.id} className="flex items-center gap-2.5">
             <Tile>{BENEFIT_ICONS[b.id]}</Tile>
             <span className="text-[13.5px] leading-snug text-ink">{b.label}</span>
           </li>
         ))}
       </ul>
-      <Note className="mt-4">{SHARED_SPRINT_NOTE}</Note>
+      <Note className="mt-4">{SHARED_SPRINT_LANGUAGE_NOTE} {SHARED_SPRINT_NOTE}</Note>
     </>
   )
 }
 function IncludedOrganic() {
   return (
     <>
-      <ul className="grid grid-cols-1 gap-x-6 gap-y-2.5 sm:grid-cols-2">
+      <ul className="grid grid-cols-2 gap-x-5 gap-y-2.5 lg:grid-cols-4">
         {ORGANIC.panelInclusions.map((t) => (
           <li key={t} className="flex items-start gap-2.5 text-[13.5px] leading-snug text-ink"><Check />{t}</li>
         ))}
       </ul>
-      <p className="mt-4 text-[13px] leading-relaxed text-ink-muted">
-        Supported platforms: {ORGANIC.platforms.slice(0, -1).join(', ')} and {ORGANIC.platforms.at(-1)}.
-      </p>
-      <ul className="mt-2 space-y-1.5">
-        {ORGANIC.excluded.map((t) => (
-          <li key={t} className="flex items-start gap-2.5 text-[13px] leading-snug text-ink-muted"><Cross />{t}</li>
-        ))}
-      </ul>
-      <Note className="mt-3">{ORGANIC.communityManagement}</Note>
+      <Note className="mt-4">{ORGANIC.panelNote}</Note>
     </>
   )
 }
 
-/* ── Panel 2: usage rights & licensing ────────────────────────────────────────────────── */
+/* ── Panel 2: usage rights ────────────────────────────────────────────────────────────── */
 function UsagePaid() {
+  const u = USAGE_RIGHTS.panel
   return (
     <>
-      <p className="text-[14px] leading-relaxed text-ink-muted">
-        Every Creative Testing package includes {USAGE_RIGHTS.includedMonths} months of {USAGE_RIGHTS.scope.toLowerCase()} usage rights from the date each video is delivered, for:
-      </p>
-      <ul className="mt-3 flex flex-wrap gap-2">
-        {USAGE_RIGHTS.includedUses.slice(0, 3).map((u) => (
-          <li key={u} className="rounded-full border border-hairline-strong bg-surface-2 px-3.5 py-1.5 text-[13px] font-medium text-ink">{u}</li>
-        ))}
-      </ul>
+      <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-2.5">
+        <div>
+          <p className="font-display text-[17px] font-semibold leading-snug text-ink">{u.headline}</p>
+          <p className="mt-0.5 text-[12.5px] text-ink-subtle">{u.fromDelivery}</p>
+        </div>
+        <ul className="flex flex-wrap gap-2">
+          {u.shortUses.map((t, i) => (
+            <li key={t} className="flex items-center gap-2 rounded-full border border-hairline-strong bg-surface-2 py-1 pl-1.5 pr-3.5 text-[13px] font-medium text-ink">
+              <span className="flex h-6 w-6 items-center justify-center rounded-full bg-lime/10 text-lime"><Icon className="h-3.5 w-3.5">{USE_ICONS[i]}</Icon></span>
+              {t}
+            </li>
+          ))}
+        </ul>
+      </div>
 
-      <div className="mt-5 overflow-hidden rounded-2xl border border-hairline">
+      <div className="mt-4 overflow-hidden rounded-2xl border border-hairline">
         <table className="w-full text-left text-[13px] md:text-sm">
           <caption className="sr-only">Usage rights extension prices per package, for the entire creative batch, excluding VAT</caption>
           <thead className="bg-surface-2 text-ink">
@@ -99,47 +101,32 @@ function UsagePaid() {
           <tbody className="text-ink-muted">
             {SPRINT.usageExtensions.map((e, i) => (
               <tr key={e.months} className="border-t border-hairline">
-                <th scope="row" className="px-3 py-2.5 font-medium text-ink md:px-4">
+                <th scope="row" className="px-3 py-2 font-medium text-ink md:px-4">
                   Additional {e.months} months
                   <span className="block text-[11.5px] font-normal text-ink-subtle">{USAGE_RIGHTS.includedMonths + e.months} months in total</span>
                 </th>
-                <td className="px-3 py-2.5 font-display font-bold tabular-nums text-ink md:px-4">{formatMoney(e.price)}</td>
-                <td className="px-3 py-2.5 font-display font-bold tabular-nums text-ink md:px-4">{formatMoney(SPRINT_PLUS.usageExtensions[i].price)}</td>
+                <td className="px-3 py-2 font-display font-bold tabular-nums text-ink md:px-4">{formatMoney(e.price)}</td>
+                <td className="px-3 py-2 font-display font-bold tabular-nums text-ink md:px-4">{formatMoney(SPRINT_PLUS.usageExtensions[i].price)}</td>
               </tr>
             ))}
             <tr className="border-t border-hairline">
-              <th scope="row" className="px-3 py-2.5 font-medium text-ink md:px-4">Perpetual usage</th>
-              <td className="px-3 py-2.5 md:px-4" colSpan={2}>Custom quote, subject to agreement with the featured creators</td>
+              <th scope="row" className="px-3 py-2 font-medium text-ink md:px-4">Perpetual usage</th>
+              <td className="px-3 py-2 md:px-4" colSpan={2}>Custom quote, subject to agreement with the featured creators</td>
             </tr>
           </tbody>
         </table>
       </div>
-      <Note className="mt-2.5">
-        Extension prices apply to the entire relevant creative batch, not per video. {TAX.pricesExcludeVat ? 'All prices exclude VAT.' : ''}
-      </Note>
 
-      <div className="mt-4 grid grid-cols-1 gap-x-8 gap-y-1.5 md:grid-cols-2">
-        {USAGE_RIGHTS.afterExpiry.mayRemain.map((t) => (
-          <p key={t} className="flex items-start gap-2.5 text-[13px] leading-snug text-ink-muted"><Check />{t}</p>
-        ))}
-        {USAGE_RIGHTS.afterExpiry.mustStop.map((t) => (
-          <p key={t} className="flex items-start gap-2.5 text-[13px] leading-snug text-ink-muted"><Cross />{t}</p>
-        ))}
+      <div className="mt-3 space-y-1.5">
+        <Note>{u.batchNote}</Note>
+        <Note>{u.expirySummary}</Note>
+        <Note>{u.creatorNote}</Note>
       </div>
-      <p className="mt-3 text-[13px] leading-relaxed text-ink-muted">{USAGE_RIGHTS.creatorAccountAds.summary} {USAGE_RIGHTS.creatorAccountAds.notIncluded}</p>
-      <Note className="mt-2">{USAGE_RIGHTS.notOwnership}</Note>
     </>
   )
 }
 function UsageOrganic() {
-  return (
-    <>
-      <p className="text-[14px] leading-relaxed text-ink-muted">
-        Content usage terms for Organic Social partnerships are set out in the applicable agreement.
-      </p>
-      <Note className="mt-3">The usage rights and extension prices listed for the Paid Social Creative Testing packages do not automatically apply to Organic Social.</Note>
-    </>
-  )
+  return <Note>{USAGE_RIGHTS.panel.organic}</Note>
 }
 
 /* ── Panel 3: how we work ─────────────────────────────────────────────────────────────── */
@@ -173,45 +160,48 @@ function Stages({ stages, icons }) {
   )
 }
 
-/* ── Panel 4: production details & extras ─────────────────────────────────────────────── */
-function DetailsPaid() {
-  const rows = [
-    ['Turnaround', `Sprint: ${SPRINT.turnaroundBusinessDays} business days. Sprint Plus: ${SPRINT_PLUS.turnaroundBusinessDays} business days. Production turnaround starts after concepts and scripts are approved.`],
-    ['Revisions', `${REVISIONS.roundsPerConcept === 2 ? 'Two' : REVISIONS.roundsPerConcept} rounds per creative concept.`],
-    ['Video length', `Standard performance videos up to ${FORMATS.standardMaxSeconds} seconds. Long-form creatives of 1–3 minutes are available at custom pricing.`],
-    ['Formats', 'Vertical production, with square 1:1 and portrait 4:5 reframing included. Horizontal 16:9 production counts as a separate video, because we film for the intended orientation.'],
-    ['Raw footage', `Available at ${formatMoney(RAW_FOOTAGE.price)} extra per ${RAW_FOOTAGE.per}. ${RAW_FOOTAGE.summary}`],
-    ['Reshoots & logistics', `${PRODUCT_REQUIREMENTS.physical} ${PRODUCT_REQUIREMENTS.saas} Reshoot policy: see the FAQs below.`],
-  ]
+/* ── Panel 4: production & extras ─────────────────────────────────────────────────────── */
+function Rows({ rows }) {
   return (
-    <dl className="grid grid-cols-1 gap-x-8 gap-y-3 md:grid-cols-2">
-      {rows.map(([t, d]) => (
-        <div key={t} className="border-t border-hairline pt-3">
+    <dl className="grid grid-cols-1 gap-x-8 gap-y-2.5 md:grid-cols-2">
+      {rows.map(([t, d, sub]) => (
+        <div key={t} className="border-t border-hairline pt-2.5">
           <dt className="font-display text-[14px] font-semibold text-ink">{t}</dt>
-          <dd className="mt-0.5 text-[13px] leading-relaxed text-ink-muted">{d}</dd>
+          <dd className="mt-0.5 text-[13.5px] leading-snug text-ink-muted">
+            {d}
+            {sub && <span className="block text-[12.5px] text-ink-subtle">{sub}</span>}
+          </dd>
         </div>
       ))}
     </dl>
   )
 }
-function DetailsOrganic() {
-  const rows = [
-    ['Post volume', `${ORGANIC.light.name}: ${ORGANIC.light.cadence}. ${ORGANIC.growth.name}: ${ORGANIC.growth.cadence}.`],
-    ['Platforms', `${ORGANIC.platforms.slice(0, -1).join(', ')} and ${ORGANIC.platforms.at(-1)}, adapted and distributed across your selected platforms.`],
-    ['Initial commitment', `${ORGANIC_COMMITMENT.rationale} ${ORGANIC_COMMITMENT.afterInitial}`],
-    ['Community management', ORGANIC.communityManagement],
-    ['Not included', `${ORGANIC.excluded.join(' ')}`],
-    ['Operational terms', 'Turnaround, revisions and reporting for organic partnerships are set out in the applicable agreement. The Paid Social Sprint terms do not automatically apply.'],
-  ]
+function DetailsPaid() {
   return (
-    <dl className="grid grid-cols-1 gap-x-8 gap-y-3 md:grid-cols-2">
-      {rows.map(([t, d]) => (
-        <div key={t} className="border-t border-hairline pt-3">
-          <dt className="font-display text-[14px] font-semibold text-ink">{t}</dt>
-          <dd className="mt-0.5 text-[13px] leading-relaxed text-ink-muted">{d}</dd>
-        </div>
-      ))}
-    </dl>
+    <Rows
+      rows={[
+        ['Turnaround', `${SPRINT.turnaroundBusinessDays} business days — Sprint. ${SPRINT_PLUS.turnaroundBusinessDays} business days — Sprint Plus.`, 'Starts after concept and script approval.'],
+        ['Revisions', `${REVISIONS.roundsPerConcept} rounds per creative concept.`],
+        ['Video length', `Up to ${FORMATS.standardMaxSeconds} seconds. Custom 1–3 minute videos available.`],
+        ['Formats', 'Vertical, square and 4:5.'],
+        ['Horizontal production', '16:9 counts as a separate video.'],
+        ['Raw footage', `${formatMoney(RAW_FOOTAGE.price)} per ${RAW_FOOTAGE.per}. ${RAW_FOOTAGE.shortNote}`],
+      ]}
+    />
+  )
+}
+function DetailsOrganic() {
+  return (
+    <Rows
+      rows={[
+        ['Post volume', `${ORGANIC.light.name}: ${ORGANIC.light.cadence}. ${ORGANIC.growth.name}: ${ORGANIC.growth.cadence}.`],
+        ['Platforms', `${ORGANIC.platforms.slice(0, -1).join(', ')} & ${ORGANIC.platforms.at(-1)}.`],
+        ['Initial commitment', `${ORGANIC_COMMITMENT.initialMonths} months. ${ORGANIC_COMMITMENT.afterInitial}`],
+        ['Community management', 'Social media engagement and brand relationship management, per the applicable agreement.'],
+        ['Not included', 'Customer support and paid advertising management.'],
+        ['Operational terms', 'Turnaround, revisions and reporting are set out in the applicable agreement. Sprint terms do not automatically apply.'],
+      ]}
+    />
   )
 }
 
@@ -220,28 +210,28 @@ const PANELS = [
   {
     id: 'included',
     title: "What's included",
-    summary: { paid: 'Full production, from strategy to finished videos.', organic: 'Strategy, production, publishing and community engagement.' },
+    summary: { paid: 'Full creative production.', organic: 'Content, publishing and engagement.' },
     icon: <><path d="M5 12.5l4.5 4.5L19 7" /></>,
     paid: <IncludedPaid />, organic: <IncludedOrganic />,
   },
   {
     id: 'usage',
-    title: 'Usage rights & licensing',
-    summary: { paid: '6 months worldwide, with flexible extensions.', organic: 'Usage terms are set out in the applicable agreement.' },
+    title: 'Usage rights',
+    summary: { paid: '6 months worldwide. Flexible extensions.', organic: 'Terms set out in your agreement.' },
     icon: <><rect x="3" y="4" width="18" height="14" rx="2" /><path d="M3 8.5h18M8 21h8" /></>,
     paid: <UsagePaid />, organic: <UsageOrganic />,
   },
   {
     id: 'how',
     title: 'How we work',
-    summary: { paid: 'Four simple stages. One accountable team.', organic: 'Four simple stages. One accountable team.' },
+    summary: { paid: 'From strategy to delivery.', organic: 'From strategy to delivery.' },
     icon: <><circle cx="6" cy="6" r="2" /><circle cx="18" cy="12" r="2" /><circle cx="6" cy="18" r="2" /><path d="M8 6h4a4 4 0 014 4M8 18h4a4 4 0 004-4" /></>,
     paid: <Stages stages={PRODUCTION_STAGES} icons={PAID_STAGE_ICONS} />, organic: <Stages stages={ORGANIC_STAGES} icons={ORG_STAGE_ICONS} />,
   },
   {
     id: 'details',
-    title: 'Production details & extras',
-    summary: { paid: 'Turnaround, formats, revisions and add-ons.', organic: 'Post volume, platforms and what is outside the scope.' },
+    title: 'Production & extras',
+    summary: { paid: 'Revisions, formats and add-ons.', organic: 'Post volume, platforms and scope.' },
     icon: <><circle cx="12" cy="12" r="8.5" /><path d="M12 7v5l3 2" /></>,
     paid: <DetailsPaid />, organic: <DetailsOrganic />,
   },
@@ -303,16 +293,14 @@ function Panel({ panel, open, onToggle, service }) {
 }
 
 export default function InfoPanels({ service }) {
-  // First panel open by default (server and first client render are identical). On phones, collapse after hydration.
-  const [openId, setOpenId] = useState(PANELS[0].id)
-  useEffect(() => {
-    if (typeof window.matchMedia === 'function' && window.matchMedia('(max-width: 767px)').matches) setOpenId(null)
-  }, [])
+  // Every panel starts closed (server and client alike). Switching the goal returns the section to that clean state.
+  const [openId, setOpenId] = useState(null)
+  useEffect(() => { setOpenId(null) }, [service])
 
   return (
     <section id="package-info" aria-labelledby="info-heading" className="relative overflow-hidden py-9 md:py-12">
       <div className="relative mx-auto max-w-4xl px-5 md:px-8">
-        <SectionHeader id="info-heading" title="Everything you need to know." intro="Clear deliverables. Flexible options. No surprises." />
+        <SectionHeader id="info-heading" title="The details." intro="Everything you need to know before getting started." />
         <div className="space-y-3">
           {PANELS.map((p) => (
             <Panel key={p.id} panel={p} service={service} open={openId === p.id} onToggle={() => setOpenId((cur) => (cur === p.id ? null : p.id))} />

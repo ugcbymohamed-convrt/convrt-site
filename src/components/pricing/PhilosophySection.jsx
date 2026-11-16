@@ -1,6 +1,6 @@
 import { OFFER_PATHS } from '../../config.js'
 import { CONVRT_STATS } from '../../lib/siteStats.js'
-import { SPRINT, ORGANIC_STAGES, PRODUCTION_LANGUAGES } from '../../seo/businessKnowledge.js'
+import { SPRINT, SPRINT_PLUS, ORGANIC_STAGES, PRODUCTION_LANGUAGES } from '../../seo/businessKnowledge.js'
 import { ConceptAccents } from './shared.jsx'
 
 /* SECTION 2: creative philosophy + credibility + the free Roadmap offer, as one cohesive block.
@@ -51,7 +51,7 @@ function PaidPhilosophy() {
         Different concepts. <span className="text-lime">Not just different hooks.</span>
       </h2>
       <p className="mt-2.5 max-w-xl text-[14.5px] leading-relaxed text-ink-muted">
-        We develop genuinely different creative angles, then create variations designed for structured testing.
+        We develop distinct creative angles, then create variations for structured testing.
       </p>
       <ol className="mt-6 grid grid-cols-5 gap-1.5 md:gap-3" aria-label="Creative Testing Sprint structure (illustrative)">
         {ConceptAccents.map((accent, i) => <ConceptColumn key={accent} index={i} accent={accent} />)}
@@ -59,13 +59,12 @@ function PaidPhilosophy() {
       <p className="mt-5 font-display text-base font-bold tracking-snug text-lime md:text-lg">
         {SPRINT.concepts} original concepts <span aria-hidden="true">&rarr;</span> {SPRINT.variations} ad variations
       </p>
-      <p className="mt-1.5 text-[13px] leading-relaxed text-ink-muted">
-        <span className="font-semibold text-ink">A concept</span> is a distinct advertising idea or angle.{' '}
-        <span className="font-semibold text-ink">A variation</span> changes the hook or CTA within a concept.
+      <p className="mt-1.5 text-[13.5px] leading-relaxed text-ink-muted">
+        <span className="font-semibold text-ink">A concept</span> is a unique ad idea.{' '}
+        <span className="font-semibold text-ink">A variation</span> changes its hook or CTA.
       </p>
-      <p className="mt-1.5 text-[12px] leading-relaxed text-ink-subtle">
-        Standard Sprint shown. Your concepts are tailored to your brand. Sprint Plus distributes its variations across its
-        concepts according to the creative testing strategy.
+      <p className="mt-1 text-[12.5px] leading-relaxed text-ink-subtle">
+        Standard Sprint shown. Sprint Plus includes {SPRINT_PLUS.concepts.value} concepts and {SPRINT_PLUS.variations} strategically distributed variations.
       </p>
     </div>
   )
@@ -78,7 +77,7 @@ function OrganicPhilosophy() {
         Consistency. Content. <span className="text-lime">Real connections.</span>
       </h2>
       <p className="mt-2.5 max-w-xl text-[14.5px] leading-relaxed text-ink-muted">
-        A consistent, video-first approach to organic social growth.
+        A video-first approach to building your organic presence.
       </p>
       <ol className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4" aria-label="Our organic approach">
         {ORGANIC_STAGES.map((st, i) => (
@@ -102,24 +101,53 @@ function OrganicPhilosophy() {
   )
 }
 
+/* Five overlapping vertical video cards in the concept palette: five distinct ideas. Lightweight inline SVG; a very gentle
+   float only when motion is allowed (see .roadmap-float in index.css). */
+const CARD_ROT = [-9, -4.5, 0, 4.5, 9]
+const DRAW_ORDER = [0, 4, 1, 3, 2] // outer cards first, so the centre card sits on top
+
+function ConceptCards() {
+  return (
+    <svg viewBox="0 0 300 126" className="mx-auto h-auto w-full max-w-[360px]" aria-hidden="true">
+      {DRAW_ORDER.map((i) => {
+        const x = 15 + 52 * i
+        const c = ConceptAccents[i]
+        return (
+          <g key={c} transform={`rotate(${CARD_ROT[i]} ${x + 31} 63)`}>
+            <g className="roadmap-float" style={{ '--d': `${i * 260}ms` }}>
+              <rect x={x} y="8" width="62" height="104" rx="12" fill="#161614" stroke={c} strokeWidth="2.5" />
+              <rect x={x + 9} y="17" width="44" height="46" rx="8" fill={c} fillOpacity="0.16" />
+              <path d={`M${x + 25} 30l17 10-17 10z`} fill={c} />
+              <rect x={x + 9} y="72" width="38" height="6.5" rx="3.25" fill={c} fillOpacity="0.8" />
+              <rect x={x + 9} y="85" width="26" height="5.5" rx="2.75" fill="#8a8a86" fillOpacity="0.7" />
+            </g>
+          </g>
+        )
+      })}
+    </svg>
+  )
+}
+
 function RoadmapCard() {
   return (
-    <div className="flex h-full flex-col justify-between rounded-[24px] border border-lime/25 bg-gradient-to-br from-lime/[0.09] via-surface-1/60 to-surface-1/40 p-5 md:p-6">
-      <div className="flex items-start justify-between gap-4">
-        <div>
-          <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-lime">Your free Creative Growth Roadmap</p>
-          <h3 className="mt-2 font-display text-xl font-bold leading-tight tracking-display text-ink md:text-2xl">Not sure where to start?</h3>
-        </div>
-        <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-lime/10 text-lime">
-          <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-            <path d="M9 18h6M10 21h4M12 3a6 6 0 00-3.5 10.9c.6.5 1 1.2 1 2V16h5v-.1c0-.8.4-1.5 1-2A6 6 0 0012 3z" />
-          </svg>
-        </span>
-      </div>
-      <p className="mt-3 text-[14.5px] leading-relaxed text-ink-muted">Get 5 personalized ad concepts for your brand, completely free.</p>
+    <div className="rounded-[24px] border border-lime/25 bg-gradient-to-br from-lime/[0.09] via-surface-1/60 to-surface-1/40 p-5 md:p-6">
+      <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-lime">Your free Creative Growth Roadmap</p>
+      <h3 className="mt-2 font-display text-[22px] font-bold leading-tight tracking-display text-ink md:text-[26px]">
+        Your next <span className="text-lime">5 winning ad concepts.</span>
+      </h3>
+      <div className="mt-4"><ConceptCards /></div>
+      <p className="mt-4 text-[14.5px] leading-relaxed text-ink-muted">
+        Five personalized creative ideas for your brand, built around your product and audience.
+      </p>
+      <p className="mt-2.5 flex items-center gap-2 text-[13px] text-ink-muted">
+        <svg viewBox="0 0 16 16" className="h-4 w-4 shrink-0 text-lime" fill="none" aria-hidden="true">
+          <circle cx="8" cy="8" r="6.5" stroke="currentColor" strokeWidth="1.4" /><path d="M5 8.2l2 2L11 6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+        Completely free. No obligation.
+      </p>
       <a
         href={OFFER_PATHS.roadmap}
-        className="cta-gradient group mt-5 inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-semibold text-canvas"
+        className="cta-gradient group mt-4 flex items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-semibold text-canvas"
       >
         Get 5 Free Ad Concepts
         <svg viewBox="0 0 12 12" className="h-3.5 w-3.5 transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" fill="none" aria-hidden="true">
@@ -141,7 +169,7 @@ export default function PhilosophySection({ service }) {
   return (
     <section id="philosophy" aria-label="Our creative approach" className="relative overflow-hidden py-9 md:py-12">
       <div className="relative mx-auto max-w-6xl px-5 md:px-8">
-        <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1.35fr_1fr] lg:gap-12 lg:items-stretch">
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1.35fr_1fr] lg:items-center lg:gap-12">
           <div>
             <div hidden={service !== 'paid'}><PaidPhilosophy /></div>
             <div hidden={service !== 'organic'}><OrganicPhilosophy /></div>

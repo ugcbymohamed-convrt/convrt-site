@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import { GOALS, ORGANIC_COMMITMENT } from '../../seo/businessKnowledge.js'
+import { GOALS } from '../../seo/businessKnowledge.js'
 import { PaidCards, OrganicCards, BillingSwitch } from './PricingCards.jsx'
 import { PaidTerms, OrganicTerms } from './PartnershipTerms.jsx'
 import { useState } from 'react'
@@ -136,10 +136,9 @@ export default function PricingStage({ service, onServiceChange }) {
 
         <GoalSelector value={service} onChange={select} />
 
-        <div ref={stageRef} className="pricing-stage mt-6 md:mt-7">
+        <div ref={stageRef} className="pricing-stage mt-5 md:mt-6">
           <SlidePanel id="paid" pos="left" active={service === 'paid'}>
-            <div className="mb-4 flex flex-wrap items-center justify-between gap-x-4 gap-y-2.5">
-              <p className="text-[13px] text-ink-muted">Creative production packages. Choose how you would like to work together.</p>
+            <div className="mb-3 flex justify-end">
               <BillingSwitch value={billing} onChange={setBilling} />
             </div>
             <PaidCards billing={billing} />
@@ -147,11 +146,6 @@ export default function PricingStage({ service, onServiceChange }) {
           </SlidePanel>
 
           <SlidePanel id="organic" pos="right" active={service === 'organic'}>
-            <div className="mb-4 flex min-h-[34px] items-center">
-              <p className="text-[13px] text-ink-muted">
-                Organic Social packages are ongoing content partnerships, billed monthly, with an initial {ORGANIC_COMMITMENT.initialMonths}-month commitment.
-              </p>
-            </div>
             <OrganicCards />
             <OrganicTerms />
           </SlidePanel>

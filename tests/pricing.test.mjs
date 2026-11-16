@@ -60,8 +60,11 @@ test('Sprint Plus: 8 concepts / 8 scripts / 20 variations, distributed (not even
   assert.ok(!/\b10 (distinct )?(creative )?concepts/i.test(everyClaim), 'no invented 10-concept Sprint Plus')
   assert.ok(!/(two and a half|2\.5 variations|same number of variations|equal(ly)? (split|distributed)|each concept (has|gets|includes) \d+ variations)/i.test(everyClaim.replace(/not necessarily have the same number of variations/gi, '')), 'no even-split claim')
   // The 5 x 2 concept diagram stays about the standard Sprint only.
-  assert.match(read('src/components/pricing/PhilosophySection.jsx'), /SPRINT\.concepts/)
-  assert.ok(!/SPRINT_PLUS/.test(read('src/components/pricing/PhilosophySection.jsx')))
+  const philoSrc = read('src/components/pricing/PhilosophySection.jsx')
+  assert.match(philoSrc, /SPRINT\.concepts/)
+  assert.ok(!/SPRINT_PLUS/.test(philoSrc.slice(philoSrc.indexOf('function ConceptColumn'), philoSrc.indexOf('const SEQ_ICONS'))), 'the diagram columns are the standard Sprint only')
+  assert.match(philoSrc, /Sprint Plus includes \{SPRINT_PLUS\.concepts\.value\} concepts and \{SPRINT_PLUS\.variations\} strategically distributed variations/)
+  assert.ok(!/every concept|each concept/i.test(philoSrc), 'no identical-per-concept implication')
 })
 
 test('monthly commitment: 3 months, then month-to-month, 30 days notice; no guaranteed results', () => {
@@ -147,7 +150,8 @@ test('raw footage: ONLY an optional $250-per-concept add-on; every video is edit
   const ui = read('src/components/pricing/InfoPanels.jsx') + read('src/components/pricing/PricingStage.jsx') + read('src/components/pricing/PricingCards.jsx')
   assert.ok(!/type="(radio|checkbox)"|<select|raw-only|rawOnly|raw footage only/i.test(ui), 'no raw-vs-edited selector')
   assert.match(RAW_FOOTAGE.summary, /only available alongside finished, professionally edited videos\. It cannot replace them\./)
-  assert.match(read('src/components/pricing/InfoPanels.jsx'), /RAW_FOOTAGE\.summary/)
+  assert.match(RAW_FOOTAGE.shortNote, /Optional add-on to finished videos\./)
+  assert.match(read('src/components/pricing/InfoPanels.jsx'), /RAW_FOOTAGE\.shortNote/)
   const everything = JSON.stringify(graph()) + PRICING_FAQ.map(faqAnswerText).join(' ')
   const rawPrices = [...everything.matchAll(/raw footage[^.]{0,60}?\$([\d,]+)/gi)].map((m) => m[1])
   assert.ok(rawPrices.length >= 3 && rawPrices.every((p) => p === '250'), `raw footage prices found: ${rawPrices}`)
@@ -426,7 +430,7 @@ test('crawler policy is unchanged: everything crawlable, only /api/ blocked, no 
 // ── final five-section structure ──────────────────────────────────────────────────────────────────────────────────────
 import {
   BILLING_OPTIONS, PARTNERSHIP_TERMS, CUSTOM_PACKAGES, SHARED_SPRINT_BENEFITS, SHARED_SPRINT_NOTE, PRODUCTION_STAGES, ORGANIC_STAGES,
-  ORGANIC_COMMITMENT, CUSTOM_TERMS, GOALS,
+  ORGANIC_COMMITMENT, CUSTOM_TERMS, GOALS, CARD_NOTES, SHARED_SPRINT_LANGUAGE_NOTE,
 } from '../src/seo/businessKnowledge.js'
 import { FAQ_CATEGORIES } from '../src/seo/pricingFaq.js'
 import { OFFER_PATHS } from '../src/config.js'
@@ -486,7 +490,8 @@ test('billing: compact Monthly / One-off selector for Paid only; prices from con
   const organicPanel = stage.slice(stage.indexOf('id="organic"'))
   assert.match(paidPanel, /<BillingSwitch/)
   assert.ok(!/BillingSwitch/.test(organicPanel), 'no billing selector on Organic')
-  assert.match(organicPanel, /ongoing content partnerships/)
+  assert.ok(!/ongoing content partnerships|Creative production packages/.test(stage), 'no introductory line above the cards')
+  assert.match(paidPanel, /<div className="mb-3 flex justify-end">\s*<BillingSwitch/, 'billing control right-aligned, no intro text')
   assert.ok(!/oneOff|one-off/i.test(cardsSrc.slice(cardsSrc.indexOf('export function OrganicCards'), cardsSrc.indexOf('export function BillingSwitch'))), 'no organic one-off prices')
   assert.ok(!/discount|save \d|% off|savings?/i.test(strip(cardsSrc) + JSON.stringify(PARTNERSHIP_TERMS)), 'no discount or savings claims')
   assert.match(cardsSrc, /<BillingPrice pkg=\{SPRINT\} billing=\{billing\} \/>/)
@@ -550,27 +555,29 @@ test('cards keep the approved design: three per group, tones, Custom has no pric
 test('Section 2: philosophy (standard Sprint diagram / organic sequence) + Roadmap offer + credibility stats in one block', () => {
   const s = strip(philo)
   assert.match(s, /Different concepts\. <span className="text-lime">Not just different hooks\.<\/span>/)
-  assert.match(s, /We develop genuinely different creative angles, then create variations designed for structured testing\./)
+  assert.match(s, /We develop distinct creative angles, then create variations for structured testing\./)
   assert.match(s, /SPRINT\.concepts\} original concepts[\s\S]*SPRINT\.variations\} ad variations/)
-  assert.ok(!/SPRINT_PLUS/.test(s), 'diagram is for the standard Sprint only')
-  assert.match(s, /Sprint Plus distributes its variations across its\s+concepts according to the creative testing strategy/)
+  assert.match(s, /A concept<\/span> is a unique ad idea\./); assert.match(s, /A variation<\/span> changes its hook or CTA\./)
+  assert.match(s, /Standard Sprint shown\. Sprint Plus includes \{SPRINT_PLUS\.concepts\.value\} concepts and \{SPRINT_PLUS\.variations\} strategically distributed variations\./)
+  assert.match(s, /A video-first approach to building your organic presence\./)
   assert.match(s, /Consistency\. Content\. <span className="text-lime">Real connections\.<\/span>/)
   assert.match(s, /ORGANIC_STAGES\.map/)
   assert.deepEqual(ORGANIC_STAGES.map((x) => x.sequenceLabel), ['Strategy', 'Production', 'Publishing & engagement', 'Optimization'])
-  for (const t of ['Not sure where to start?', 'Get 5 personalized ad concepts for your brand, completely free.', 'Get 5 Free Ad Concepts', 'OFFER_PATHS.roadmap', 'CONVRT_STATS.views', 'CONVRT_STATS.videos', 'CONVRT_STATS.clients', 'PRODUCTION_LANGUAGES.core.length']) assert.ok(s.includes(t), t)
+  for (const t of ['Your free Creative Growth Roadmap', 'Your next <span className="text-lime">5 winning ad concepts.</span>', 'Five personalized creative ideas for your brand, built around your product and audience.', 'Completely free. No obligation.', 'Get 5 Free Ad Concepts', 'OFFER_PATHS.roadmap', 'CONVRT_STATS.views', 'CONVRT_STATS.videos', 'CONVRT_STATS.clients', 'PRODUCTION_LANGUAGES.core.length']) assert.ok(s.includes(t), t)
   const css = read('src/index.css'); const b = css.slice(css.indexOf('.branch-draw') - 200)
   assert.match(b, /@media \(prefers-reduced-motion: no-preference\)[\s\S]*\.branch-draw/)
 })
 
 test('Section 3: four expandable panels; one open at a time; all content in the DOM; paid and organic variants', () => {
   const s = strip(panels)
-  assert.match(s, /Everything you need to know\./); assert.match(s, /Clear deliverables\. Flexible options\. No surprises\./)
-  for (const t of ["title: \"What's included\"", "title: 'Usage rights & licensing'", "title: 'How we work'", "title: 'Production details & extras'",
-    'Full production, from strategy to finished videos.', '6 months worldwide, with flexible extensions.', 'Four simple stages. One accountable team.', 'Turnaround, formats, revisions and add-ons.']) assert.ok(s.includes(t), t)
+  assert.match(s, /title="The details\."/); assert.match(s, /intro="Everything you need to know before getting started\."/)
+  for (const t of ["title: \"What's included\"", "title: 'Usage rights'", "title: 'How we work'", "title: 'Production & extras'",
+    "paid: 'Full creative production.'", "paid: '6 months worldwide. Flexible extensions.'", "paid: 'From strategy to delivery.'", "paid: 'Revisions, formats and add-ons.'"]) assert.ok(s.includes(t), t)
   assert.match(s, /aria-expanded=\{open\}/); assert.match(s, /aria-controls=\{bodyId\}/)
   assert.match(s, /setOpenId\(\(cur\) => \(cur === p\.id \? null : p\.id\)\)/, 'one open at a time')
-  assert.match(s, /useState\(PANELS\[0\]\.id\)/, 'first panel open by default (same on server and client)')
-  assert.match(s, /max-width: 767px/, 'collapsed on phones after hydration')
+  assert.match(s, /useState\(null\)/, 'every panel is closed on load, on desktop and mobile alike')
+  assert.match(s, /useEffect\(\(\) => \{ setOpenId\(null\) \}, \[service\]\)/, 'switching goal returns to a clean, closed state')
+  assert.ok(!/matchMedia/.test(s))
   assert.ok(!/fetch\(|import\(/.test(s))
   // separate standalone sections are gone
   for (const gone of ['ConceptExplainer', 'SharedBenefits', 'UsageRights', 'ProductionProcess', 'ProductionTerms', 'OrganicScope', 'CommercialTerms']) {
@@ -578,32 +585,88 @@ test('Section 3: four expandable panels; one open at a time; all content in the 
   }
 })
 
-test('panel content: inclusions, usage rights + extension prices + licensing rules, stages, production details (paid) and organic equivalents', () => {
-  assert.equal(SHARED_SPRINT_BENEFITS.length, 9)
-  assert.deepEqual(SHARED_SPRINT_BENEFITS.slice(0, 7).map((b) => b.label), ['Creative research and strategy', 'Concepts, scripts and client approval', 'Creator selection', 'Filming and professional editing', 'Captions, B-roll and motion graphics as agreed', 'Square and 4:5 reframing', 'Agreed creative variations and testing recommendations'])
-  assert.match(SHARED_SPRINT_BENEFITS[7].label, /one selected core language/); assert.match(SHARED_SPRINT_BENEFITS[8].label, /Additional languages available on request/)
-  assert.match(SHARED_SPRINT_NOTE, /Custom packages have separately agreed production scopes/)
+test('panel content: concise inclusions, usage rights + extension prices, stages, production rows; long-form policies live in the FAQ', () => {
+  assert.deepEqual(SHARED_SPRINT_BENEFITS.map((b) => b.label), ['Creative research & strategy', 'Concepts, scripts & approval', 'Creator selection', 'Filming & editing', 'Captions, B-roll & graphics', 'Square & 4:5 reframing', 'Creative variations', 'Testing recommendations'])
+  assert.equal(SHARED_SPRINT_LANGUAGE_NOTE, 'One production language included: English, Spanish, French or Arabic. Additional languages on request.')
+  assert.ok(!/free|included at no|no extra/i.test(SHARED_SPRINT_LANGUAGE_NOTE.replace('included: English', '')), 'additional languages are never implied to be free')
+  assert.match(SHARED_SPRINT_NOTE, /Custom scopes are agreed individually/)
   assert.deepEqual(PRODUCTION_STAGES.map((x) => [x.title, x.description]), [
-    ['Strategy', 'Brand discovery, audience research and creative concepts.'], ['Preparation', 'Creator selection, scripts and your approval.'],
-    ['Production', 'Filming, editing, captions and creative variations.'], ['Delivery', 'Finished videos, revisions and testing recommendations.'],
+    ['Strategy', 'Research & creative concepts.'], ['Preparation', 'Creators, scripts & approval.'],
+    ['Production', 'Filming, editing & variations.'], ['Delivery', 'Finished videos, revisions & recommendations.'],
   ])
   assert.deepEqual(PRODUCTION_STAGES.flatMap((x) => x.steps).sort(), PRODUCTION_PROCESS.map((_, i) => i), 'all eight original steps preserved')
   assert.deepEqual(ORGANIC_STAGES.map((x) => [x.title, x.description]), [
-    ['Strategy', 'Content planning and brand objectives.'], ['Production', 'Concepts, scripts, filming and editing.'],
-    ['Publishing', 'Scheduling, distribution and organic engagement.'], ['Optimization', 'Monitoring performance and refining the content approach.'],
+    ['Strategy', 'Content planning & objectives.'], ['Production', 'Concepts, filming & editing.'],
+    ['Publishing', 'Distribution & engagement.'], ['Optimization', 'Performance review & refinement.'],
   ])
-  assert.deepEqual(ORGANIC.panelInclusions, ['Strategy and planning', 'Concepts and scripts', 'Filming and editing', 'Post copywriting and captions', 'Scheduling and publishing', 'Content distribution', 'Performance reporting and optimization', 'Organic community engagement and brand relationship management'])
+  assert.deepEqual(ORGANIC.panelInclusions, ['Content strategy & planning', 'Concepts & scripting', 'Filming & editing', 'Captions & post copy', 'Scheduling & publishing', 'Cross-platform distribution', 'Performance optimization', 'Community engagement'])
+  assert.equal(ORGANIC.panelNote, 'Facebook, Instagram and TikTok. Community management excludes customer support.')
+  const u = USAGE_RIGHTS.panel
+  assert.equal(u.headline, '6 months of worldwide usage included.')
+  assert.deepEqual(u.shortUses, ['Paid ads', 'Organic social', 'Website use'])
+  assert.equal(u.expirySummary, 'Existing organic posts and website placements may stay live. Paid advertising, resharing and republishing require an extension.')
+  assert.equal(u.creatorNote, 'Creator-account advertising, including Spark Ads and Meta partnership ads, is arranged and priced separately.')
+  assert.match(u.batchNote, /entire creative batch.*exclude VAT/); assert.match(u.fromDelivery, /date each video is delivered/)
+  assert.match(u.organic, /set out in your agreement/); assert.match(u.organic, /do not automatically apply/)
   const s = strip(panels)
-  for (const t of ['USAGE_RIGHTS.afterExpiry.mayRemain', 'USAGE_RIGHTS.afterExpiry.mustStop', 'USAGE_RIGHTS.notOwnership', 'USAGE_RIGHTS.creatorAccountAds.summary', 'Custom quote, subject to agreement with the featured creators', 'formatMoney(e.price)', 'formatMoney(SPRINT_PLUS.usageExtensions[i].price)', 'USAGE_RIGHTS.includedMonths + e.months', 'RAW_FOOTAGE.summary', 'FORMATS.standardMaxSeconds', 'PRODUCT_REQUIREMENTS.physical', 'PRODUCT_REQUIREMENTS.saas']) assert.ok(s.includes(t), t)
-  assert.match(s, /Horizontal 16:9 production counts as a separate video, because we film for the intended orientation/)
-  assert.match(s, /Long-form creatives of 1–3 minutes are available at custom pricing/)
-  // Organic never inherits Sprint licensing / turnaround / revisions
+  for (const t of ['u.headline', 'u.shortUses', 'u.expirySummary', 'u.creatorNote', 'u.batchNote', 'Custom quote, subject to agreement with the featured creators', 'formatMoney(e.price)', 'formatMoney(SPRINT_PLUS.usageExtensions[i].price)', 'USAGE_RIGHTS.includedMonths + e.months', 'RAW_FOOTAGE.shortNote', 'FORMATS.standardMaxSeconds', 'SHARED_SPRINT_LANGUAGE_NOTE']) assert.ok(s.includes(t), t)
+  for (const t of ["'Vertical, square and 4:5.'", "'16:9 counts as a separate video.'", 'Custom 1–3 minute videos available.', "'Starts after concept and script approval.'", 'business days — Sprint.', 'business days — Sprint Plus.']) assert.ok(s.includes(t), t)
+  // Long-form policies were moved out of the panels, not dropped: they are in the FAQ.
+  assert.match(faq('usage-rights-expiry-extension'), /Existing organic social media posts may remain published/)
+  assert.match(faq('usage-rights-expiry-extension'), /Paid advertising use must stop unless the usage rights are extended/)
+  assert.match(faq('usage-rights-expiry-extension'), /cannot be reshared or republished without extending the usage rights/)
+  assert.match(faq('usage-rights-included'), /not a transfer of copyright ownership/)
+  assert.match(faq('spark-ads'), /separate from the standard usage rights/)
+  assert.match(faq('perpetual-usage'), /subject to agreement with the featured creator or creators/)
+  assert.match(faq('reshoots'), /charged in full/)
+  assert.match(faq('production-requirements'), /ship the product to the selected creator and cover the shipping costs/)
+  assert.match(faq('raw-footage'), /cannot|never as a replacement/)
+  // Organic never inherits Sprint licensing / turnaround / revisions / raw footage
   const organicUsage = s.slice(s.indexOf('function UsageOrganic'), s.indexOf('const PAID_STAGE_ICONS'))
-  assert.match(organicUsage, /set out in the applicable agreement/)
-  assert.ok(!/formatMoney|USAGE_RIGHTS\.included/.test(organicUsage))
+  assert.match(organicUsage, /USAGE_RIGHTS\.panel\.organic/)
+  assert.ok(!/formatMoney|USAGE_RIGHTS\.included|extension/i.test(organicUsage))
   const organicDetails = s.slice(s.indexOf('function DetailsOrganic'), s.indexOf('const PANELS'))
-  assert.match(organicDetails, /Paid Social Sprint terms do not automatically apply/)
+  assert.match(organicDetails, /Sprint terms do not automatically apply/)
   assert.ok(!/SPRINT\.|SPRINT_PLUS\.|REVISIONS|FORMATS|RAW_FOOTAGE/.test(organicDetails), 'no Sprint turnaround/revisions/raw footage on Organic')
+})
+
+test('concise notes under the cards, from the central config; full policies stay available', () => {
+  assert.equal(CARD_NOTES.paid, 'Monthly plans start with a 3-month commitment, then become month-to-month with 30 days’ notice. One-off projects are also available. All prices exclude VAT.')
+  assert.equal(CARD_NOTES.organic, 'A 6-month initial partnership to build a consistent social presence and assess results. All prices exclude VAT.')
+  assert.ok(!/three-month|month-to-month|30 days/.test(CARD_NOTES.organic), 'Paid terms never on the Organic note')
+  const terms = read('src/components/pricing/PartnershipTerms.jsx')
+  assert.match(terms, /CARD_NOTES\.paid/); assert.match(terms, /CARD_NOTES\.organic/)
+  assert.ok(!/<p[\s\S]*<p[\s\S]*<p/.test(terms.slice(terms.indexOf('function Note'), terms.indexOf('export const PaidTerms'))), 'one paragraph per note')
+  // the underlying approved policies are still in the knowledge base and the FAQ
+  assert.equal(PARTNERSHIP_TERMS.oneOff, 'One creative production batch, without a recurring commitment.')
+  assert.match(faq('minimum-commitment'), /Custom project terms are agreed individually/)
+  assert.match(faq('vat'), /Applicable taxes will be calculated/)
+  assert.match(faq('turnaround-start'), /not when payment is made/)
+  assert.match(faq('organic-commitment'), /six-month commitment/)
+  assert.match(ORGANIC_COMMITMENT.afterInitial, /applicable agreement/)
+})
+
+test('card copy is concise but complete: platform line, Custom note, Sprint Plus detail', () => {
+  assert.match(cardsSrc, /& \$\{ORGANIC\.platforms\.at\(-1\)\} distribution/)
+  assert.ok(!/Adapted and distributed across your selected platforms/.test(cardsSrc))
+  for (const pkg of Object.values(CUSTOM_PACKAGES)) assert.equal(pkg.note, 'Scope, pricing and terms are tailored to your project.')
+  assert.equal(SPRINT_PLUS.extraDetail, 'Includes expanded research and testing recommendations.')
+  for (const t of ['ORGANIC.includedInBoth[0]', 'ORGANIC.includedInBoth[1]', 'ORGANIC_COMMITMENT.initialMonths']) assert.ok(cardsSrc.includes(t), t)
+})
+
+test('Roadmap card: new copy, five-card SVG illustration in the concept palette, existing Roadmap destination, no external assets', () => {
+  const s = strip(philo)
+  assert.match(s, /Your free Creative Growth Roadmap/)
+  assert.match(s, /Your next <span className="text-lime">5 winning ad concepts\.<\/span>/)
+  assert.match(s, /Five personalized creative ideas for your brand, built around your product and audience\./)
+  assert.match(s, /Completely free\. No obligation\./)
+  assert.match(s, /href=\{OFFER_PATHS\.roadmap\}/)
+  const card = s.slice(s.indexOf('function RoadmapCard'), s.indexOf('const STATS'))
+  assert.ok(!/justify-between|h-full|min-h-\[/.test(card), 'content flows naturally, not stretched')
+  assert.match(s, /DRAW_ORDER\.map/); assert.match(s, /ConceptAccents\[i\]/)
+  assert.ok(!/<img|https?:\/\//.test(card), 'no external assets or footage')
+  const css = read('src/index.css')
+  assert.match(css.slice(css.indexOf('.roadmap-float') - 120), /@media \(prefers-reduced-motion: no-preference\)/)
 })
 
 test('page: five sections in order; paid/organic content is switched by presentation only', () => {
