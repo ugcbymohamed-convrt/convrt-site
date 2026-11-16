@@ -354,11 +354,83 @@ test('sitewide audit: no euro prices and no old $2,000 Organic Growth price in a
 test('Organic Growth/Light on the pricing page (there is no separate organic URL): USD cards, copy, FAQ and JSON-LD agree', () => {
   const h = page('/pricing')
   const text = unescape(visibleText(h))
-  assert.match(text, /Organic Light \$1,500 \/month/)
-  assert.match(text, /Organic Growth \$2,500 \/month/)
+  assert.match(text, /Organic Light[\s\S]*\$1,500 \/month/)
+  assert.match(text, /Organic Growth[\s\S]*\$2,500 \/month/)
   assert.match(text, /Organic Growth is \$2,500\/month/, 'FAQ')
   const nodes = ldScripts(h)[0]['@graph'].filter((n) => /^Organic (Light|Growth)$/.test(n.name))
   assert.deepEqual(nodes.map((n) => [n.name, n.offers[0].priceSpecification.price, n.offers[0].priceSpecification.priceCurrency]), [['Organic Light', 1500, 'USD'], ['Organic Growth', 2500, 'USD']])
-  assert.equal(count(rootOf(h), /Organic community management/g) >= 3, true, 'cards x2 + scope section')
+  assert.ok(count(rootOf(h), /Organic community management/g) >= 3, 'both cards + scope section')
   assert.ok(!KNOWN_PATHS.some((p) => /organic/i.test(p)), 'no separate organic route exists: update this test if one is added')
+})
+
+// ── three-card redesign, from the raw HTML ──────────────────────────────────────────────────────────────────────────
+const panel = (h, id) => { const r = rootOf(h); const i = r.indexOf(`id="service-panel-${id}"`); return r.slice(i, r.indexOf('</article>', r.lastIndexOf('<article', r.indexOf('Custom', i))) + 10) }
+const sec = (h, id, next) => { const r = rootOf(h).replace(/<!-- -->/g, ''); const i = r.indexOf(`id="service-panel-${id}"`); return r.slice(i, next ? r.indexOf(`id="service-panel-${next}"`, i) : r.indexOf('</section>', i)) }
+
+test('/pricing HTML: heading, two selectors, three cards per service in the right order', () => {
+  const h = page('/pricing')
+  const text = unescape(visibleText(h))
+  assert.match(text, /Choose your creative partnership\./)
+  assert.match(text, /Different brands\. Different creative needs\. Find the right production package for your next stage of growth\./)
+  const paid = sec(h, 'paid', 'organic')
+  const organic = sec(h, 'organic')
+  assert.equal(count(paid, /<article/g), 3)
+  assert.equal(count(organic, /<article/g), 3)
+  const labels = (s) => [...s.matchAll(/<h3 id="card-[a-z-]+-label"[^>]*>([^<]+)</g)].map((m) => m[1])
+  assert.deepEqual(labels(paid), ['Sprint', 'Sprint Plus', 'Custom'])
+  assert.deepEqual(labels(organic), ['Organic Light', 'Organic Growth', 'Custom'])
+  assert.equal(count(paid, /role="radio"/g), 2)
+  assert.match(paid, /id="billing-monthly" type="button" role="radio" aria-checked="true"/)
+  assert.match(paid, /id="billing-oneOff" type="button" role="radio" aria-checked="false"/)
+  assert.ok(!/role="radio"/.test(organic), 'the billing selector does not apply to Organic')
+})
+
+test('/pricing HTML: BOTH billing options and their prices are in the markup (inactive one hidden), Monthly default', () => {
+  const paid = sec(page('/pricing'), 'paid', 'organic')
+  const price = (billing, amt) => new RegExp(`<span ([^>]*)data-billing="${billing}"([^>]*)>\\${amt}`)
+  for (const [b, a, hidden] of [['monthly', '$2,500', false], ['monthly', '$4,500', false], ['oneOff', '$3,000', true], ['oneOff', '$5,400', true]]) {
+    const m = paid.match(new RegExp(`<span ([^>]*)>\\${a}<span[^>]*>/${b === 'monthly' ? 'month' : 'project'}`))
+    assert.ok(m, `${a} ${b} present`)
+    assert.equal(/hidden=""/.test(m[1]), hidden, `${a} ${b} hidden=${hidden}`)
+    assert.match(m[1], new RegExp(`data-billing="${b}"`))
+  }
+  assert.ok(count(paid, /\/project/g) === 2 && count(paid, /\/month/g) >= 2)
+})
+
+test('/pricing HTML: Custom cards say "Let\'s talk." with no number; CTAs all use the Roadmap flow', () => {
+  const h = page('/pricing')
+  for (const id of ['paid', 'organic']) {
+    const s = sec(h, id, id === 'paid' ? 'organic' : undefined)
+    const custom = s.slice(s.indexOf('id="card-' + (id === 'paid' ? 'custom' : 'organic-custom') + '-label"') - 200)
+    const card = custom.slice(0, custom.indexOf('</article>'))
+    assert.match(card, /Let(’|&#x27;|')s talk\./)
+    assert.match(card, /Tailored to your needs/)
+    assert.match(card, /Discuss your project/)
+    assert.ok(!/\$\s?\d/.test(card.replace(/<[^>]+>/g, ' ')), 'no price on a Custom card')
+    assert.ok(card.includes(`href="${OFFER_PATHS.roadmap}"`))
+  }
+  const articles = [...sec(h, 'paid', 'organic').matchAll(/<article[\s\S]*?<\/article>/g), ...sec(h, 'organic').matchAll(/<article[\s\S]*?<\/article>/g)].map((m) => m[0])
+  assert.equal(articles.length, 6)
+  for (const a of articles) assert.match(a, new RegExp(`<a href="${OFFER_PATHS.roadmap}"`))
+  assert.equal(count(articles.join(''), /Get started/g), 4)
+  assert.equal(count(articles.join(''), /Discuss your project/g), 2)
+})
+
+test('/pricing HTML: compact terms, shared benefits, no dollar sign mangling, no internal flags', () => {
+  const h = page('/pricing')
+  const text = unescape(visibleText(h))
+  for (const n of [
+    "Initial 3-month commitment, followed by a flexible month-to-month agreement with 30 days' cancellation notice.",
+    'One creative production batch, without a recurring commitment.',
+    'Every Sprint includes full creative production.',
+    'Creative research and strategy', 'Concepts, scripts and client approval', 'Square and 4:5 reframing', 'Agreed creative variations and testing recommendations',
+    'Custom packages have separately agreed production scopes',
+    'Includes expanded creative research and expanded testing recommendations.',
+    'customer support is not included',
+  ]) assert.ok(text.includes(n), n)
+  assert.ok(!/OWNER_REVIEW|deferred to the applicable agreement/.test(text))
+  assert.ok(!/<meta[^>]*\$[12]/.test('') && !/<title>[^<]*<meta/.test(headOf(h)), 'head intact')
+  // The dollar-sign regression: prices survive intact in the JSON-LD block of the built page.
+  const ld = JSON.stringify(ldScripts(h)[0])
+  for (const p of ['$2,500 per month', '$4,500 per month', '$3,000 one-off', '$5,400 one-off', '$1,500 per month', '$2,500 per month']) assert.ok(ld.includes(p), p)
 })

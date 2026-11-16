@@ -1,86 +1,16 @@
-import { OFFER_PATHS } from '../config.js'
+import { useState } from 'react'
 import { GRASPO_FOLLOWING } from '../lib/siteStats.js'
-import { SPRINT, SPRINT_PLUS, ORGANIC, TAX, formatMoney } from '../seo/businessKnowledge.js'
-import CommercialTerms from './pricing/CommercialTerms.jsx'
+import { TAX } from '../seo/businessKnowledge.js'
+import { PaidCards, OrganicCards, BillingSwitch } from './pricing/PricingCards.jsx'
+import PartnershipTerms from './pricing/PartnershipTerms.jsx'
+import SharedBenefits from './pricing/SharedBenefits.jsx'
 
 /* ─────────────────────────────────────────────
    PRICING — Paid Social + Organic Social
-   Service switcher above a shared package-card
-   architecture. Three-column composition for Paid
-   Social (editorial panel + 2 packages); two-column
-   composition for Organic Social (2 packages).
+   Heading, service switch, (paid) billing switch, then
+   three equal pricing cards per service. All figures
+   come from src/seo/businessKnowledge.js.
 ───────────────────────────────────────────── */
-
-const BUILT_FOR = [
-  'Apps',
-  'SaaS companies',
-  'Digital services',
-  'E-commerce brands',
-  'Teams actively running paid-social campaigns',
-]
-
-/* Figures and policies come from src/seo/businessKnowledge.js (the single source of truth). */
-const sprintFeatures = [
-  'Creative research and concept development',
-  `${SPRINT.concepts} distinct creative concepts`,
-  `${SPRINT.variationsPerConcept} variations per concept (a different hook or CTA)`,
-  `${SPRINT.concepts} complete scripts`,
-  'Scripts approved before filming',
-  '1 creator or spokesperson',
-  'Creator-led or spokesperson production',
-  'Full-service production: filming, editing, captions, B-roll and motion graphics as agreed',
-  'Square 1:1 and portrait 4:5 reframing included',
-  `${SPRINT.revisionRoundsPerConcept} rounds of revisions per creative concept`,
-  `${SPRINT.usageMonthsIncluded} months of worldwide usage rights included`,
-  'Production in one selected language: English, Spanish, French, or Arabic',
-  'Organized testing recommendations',
-]
-
-/* Sprint Plus: 8 concepts / 8 scripts (owner-confirmed). Variations are distributed across concepts, not evenly. */
-const plusFeatures = [
-  'Expanded creative research',
-  `${SPRINT_PLUS.concepts.value} distinct creative concepts`,
-  `${SPRINT_PLUS.concepts.value} complete scripts`,
-  'Scripts approved before filming',
-  'Additional hook, angle, and format variations',
-  'Up to 2 creators or spokespersons',
-  'Creator-led and spokesperson production',
-  'Full-service production: filming, editing, captions, B-roll and motion graphics as agreed',
-  'Square 1:1 and portrait 4:5 reframing included',
-  `${SPRINT_PLUS.revisionRoundsPerConcept} rounds of revisions per creative concept`,
-  `${SPRINT_PLUS.usageMonthsIncluded} months of worldwide usage rights included`,
-  'Production in one selected language: English, Spanish, French, or Arabic',
-  'Expanded testing recommendations',
-  'Priority production scheduling',
-]
-
-const ORGANIC_LIGHT_FEATURES = [
-  'Organic content strategy',
-  'Content research & ideation',
-  'Concepts & scripting',
-  'Planned monthly content production',
-  'Short-form video editing',
-  'Captions & platform adaptation',
-  ORGANIC.includedInBoth[0],
-  ORGANIC.includedInBoth[1],
-  'Performance review & optimization',
-]
-
-const ORGANIC_GROWTH_FEATURES = [
-  'Organic content strategy',
-  'Content research & ideation',
-  'Concepts & scripting',
-  'Planned monthly content production',
-  'Short-form video editing',
-  'Captions & platform adaptation',
-  ORGANIC.includedInBoth[0],
-  ORGANIC.includedInBoth[1],
-  'Higher creative testing cadence',
-  'More formats, hooks & creative angles tested',
-  'Performance review & optimization',
-]
-
-const PLATFORM_NOTE = `Supported platforms: ${ORGANIC.platforms.slice(0, -1).join(', ')} and ${ORGANIC.platforms.at(-1)}.`
 
 const SERVICES = [
   { id: 'paid', label: 'Paid Social' },
@@ -88,109 +18,51 @@ const SERVICES = [
 ]
 
 export default function CreativeTestingOffer({ service, onServiceChange }) {
+  /* Monthly is the default; both billing options' prices are always in the DOM (see PricingCards.jsx). */
+  const [billing, setBilling] = useState('monthly')
+
   /* BOTH service panels are always in the DOM (the inactive one carries `hidden`), so the prerendered HTML
-     contains every package and price; the tabs only decide which one a visitor sees. The `hidden` attribute is
-     on a plain wrapper: a Tailwind `grid` class on the same element would override it. */
+     contains every package and price; the tabs only decide which one a visitor sees. The `hidden` attribute
+     is on a plain wrapper: a Tailwind display class on the same element would override it. */
   return (
     <section id="packages" className="relative overflow-hidden py-14 md:py-20">
-      <div className="relative mx-auto max-w-7xl px-5 md:px-8">
-        <p className="mb-6 md:mb-8 text-center text-xs md:text-sm font-medium uppercase tracking-[0.14em] text-ink-subtle">
-          {service === 'paid'
-            ? 'A structured creative test, not another batch of minor variations.'
-            : 'Consistent social content built to earn attention, not fill a calendar.'}
-        </p>
+      <div className="relative mx-auto max-w-6xl px-5 md:px-8">
+        <div className="mx-auto mb-8 md:mb-10 max-w-4xl text-center">
+          <h2
+            className="font-display font-bold leading-[1.05] tracking-display text-ink"
+            style={{ fontSize: 'clamp(2rem, 4.4vw, 3.1rem)' }}
+          >
+            Choose your creative <span className="text-lime">partnership.</span>
+          </h2>
+          <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-ink-muted md:text-lg">
+            Different brands. Different creative needs. Find the right production package for your next stage of growth.
+          </p>
+        </div>
 
         <ServiceSwitch value={service} onChange={onServiceChange} />
 
-        <div className="rounded-[32px] md:rounded-[40px] border border-hairline bg-surface-1/60 backdrop-blur-md p-4 sm:p-5 md:p-6">
-          <div id="service-panel-paid" role="tabpanel" aria-labelledby="service-tab-paid" hidden={service !== 'paid'}>
-            <div className="pricing-panel-in grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[0.85fr_1fr_1fr] gap-4 md:gap-5 items-stretch">
-              <EditorialPanel className="md:col-span-2 lg:col-span-1" />
-
-              <PackageCard
-                variant="standard"
-                name={SPRINT.name}
-                price={formatMoney(SPRINT.monthly)}
-                priceSuffix="/month"
-                supportingLine="A focused first sprint for brands that need stronger creative diversity."
-                deliverable={{
-                  count: String(SPRINT.variations),
-                  label: 'Ad Variations',
-                  note: `${SPRINT.concepts} distinct creative concepts, ${SPRINT.variationsPerConcept} variations each. Variations change the hook or CTA.`,
-                }}
-                features={sprintFeatures}
-                footerLabel="Production turnaround"
-                footerValue={`${SPRINT.turnaroundBusinessDays} business days, starting once concepts and scripts are approved.`}
-                ctaLabel="Discuss Your Sprint"
-              />
-
-              <PackageCard
-                variant="plus"
-                badge="Deeper Testing"
-                name={SPRINT_PLUS.name}
-                price={formatMoney(SPRINT_PLUS.monthly)}
-                priceSuffix="/month"
-                supportingLine="For brands that need more concepts, creators, and testing depth."
-                deliverable={{
-                  count: String(SPRINT_PLUS.variations),
-                  label: 'Ad Variations',
-                  note: `${SPRINT_PLUS.concepts.value} distinct creative concepts. Variations are distributed across concepts, with hook or CTA changes.`,
-                }}
-                features={plusFeatures}
-                footerLabel="Production turnaround"
-                footerValue={`${SPRINT_PLUS.turnaroundBusinessDays} business days, starting once concepts and scripts are approved.`}
-                ctaLabel="Discuss Your Sprint"
-              />
-            </div>
+        <div id="service-panel-paid" role="tabpanel" aria-labelledby="service-tab-paid" hidden={service !== 'paid'}>
+          <div className="pricing-panel-in">
+            <BillingSwitch value={billing} onChange={setBilling} />
+            <PaidCards billing={billing} />
           </div>
-
-          <div id="service-panel-organic" role="tabpanel" aria-labelledby="service-tab-organic" hidden={service !== 'organic'}>
-            <div className="pricing-panel-in grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-5 items-stretch">
-              <PackageCard
-                variant="standard"
-                name={ORGANIC.light.name}
-                price={formatMoney(ORGANIC.light.monthly)}
-                priceSuffix="/month"
-                supportingLine="Full-service organic content, from strategy and production to editing and publishing."
-                cadenceLine={`${ORGANIC.light.cadence}, adapted and distributed across your selected platforms`}
-                features={ORGANIC_LIGHT_FEATURES}
-                footerLabel="Platforms"
-                footerValue="Distribution across up to 3 selected platforms"
-                footerNote={PLATFORM_NOTE}
-                ctaLabel="Discuss Your Plan"
-              />
-
-              <PackageCard
-                variant="plus"
-                badge="Recommended"
-                name={ORGANIC.growth.name}
-                price={formatMoney(ORGANIC.growth.monthly)}
-                priceSuffix="/month"
-                supportingLine="Higher-cadence organic content production, with more room to test formats, hooks, and creative directions."
-                cadenceLine={`${ORGANIC.growth.cadence}, adapted and distributed across your selected platforms`}
-                features={ORGANIC_GROWTH_FEATURES}
-                footerLabel="Platforms"
-                footerValue="Distribution across up to 3 selected platforms"
-                footerNote={PLATFORM_NOTE}
-                ctaLabel="Discuss Your Plan"
-              />
-            </div>
-          </div>
-        </div>
-
-        <div hidden={service !== 'paid'}>
-          <CommercialTerms />
-          <p className="mt-6 md:mt-8 mx-auto max-w-2xl text-center text-[13px] text-ink-muted leading-relaxed">
+          <PartnershipTerms />
+          <SharedBenefits />
+          <p className="mx-auto mt-8 max-w-2xl text-center text-[13px] leading-relaxed text-ink-muted">
             Pricing is based on the confirmed production scope. Additional languages, creators, locations, long-form
             videos, horizontal production, creator-account advertising permissions, extended usage rights and other
             specialist production needs are quoted separately.
           </p>
         </div>
 
-        <div hidden={service !== 'organic'}>
-          <p className="mt-6 md:mt-8 mx-auto max-w-2xl text-center text-[13px] text-ink-muted leading-relaxed">
-            Pricing covers the full organic content workflow: strategy, production, editing, publishing, and
-            optimization, across your selected platforms. {TAX.statement}
+        <div id="service-panel-organic" role="tabpanel" aria-labelledby="service-tab-organic" hidden={service !== 'organic'}>
+          <div className="pricing-panel-in">
+            <OrganicCards />
+          </div>
+          <p className="mx-auto mt-7 md:mt-9 max-w-3xl text-center text-[13px] leading-relaxed text-ink-muted">
+            Pricing covers the full organic content workflow: strategy, production, editing, scheduling, publishing,
+            community management and optimization, across your selected platforms. Community management means social
+            media engagement and brand relationship management; customer support is not included. {TAX.statement}
           </p>
           <GraspoProof />
         </div>
@@ -249,236 +121,6 @@ function ServiceSwitch({ value, onChange }) {
         })}
       </div>
     </div>
-  )
-}
-
-/* ─────────────────────────────────────────────
-   Editorial panel — offer framing + abstract visual
-───────────────────────────────────────────── */
-function EditorialPanel({ className = '' }) {
-  return (
-    <div
-      className={`rounded-[24px] md:rounded-[28px] bg-surface-2 border border-hairline p-7 md:p-8 flex flex-col h-full ${className}`}
-    >
-      <h2 className="font-display font-bold text-ink tracking-display leading-[1.08] text-2xl md:text-[28px]">
-        Stop testing the same ad in different clothes.
-      </h2>
-
-      <p className="mt-4 text-sm text-ink-muted leading-relaxed">
-        Changing the opening sentence, caption, or background does not create a genuinely new
-        test.
-      </p>
-      <p className="mt-3 text-sm text-ink-muted leading-relaxed">
-        CONVRT develops distinct creative directions built around different customer problems,
-        promises, formats, creators, and conversion angles.
-      </p>
-
-      <ConceptTree />
-
-      <div className="mt-6 md:mt-7">
-        <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-ink-subtle mb-3">
-          Built for
-        </p>
-        <ul className="space-y-2">
-          {BUILT_FOR.map((item) => (
-            <li key={item} className="flex items-start gap-2.5 text-sm text-ink-muted">
-              <span className="mt-2 h-1 w-1 shrink-0 rounded-full bg-lime" aria-hidden="true" />
-              {item}
-            </li>
-          ))}
-        </ul>
-      </div>
-    </div>
-  )
-}
-
-/* ─────────────────────────────────────────────
-   Abstract concept-testing visual
-   5 concept cards, each branching into two smaller
-   hook / angle / format variation chips
-───────────────────────────────────────────── */
-const ACCENTS = ['#8b5cf6', '#ff6a4d', '#d5ff40', '#ec4899', '#ffb547']
-const NODE_CENTERS = [40, 135, 230, 325, 420]
-
-function ConceptTree() {
-  return (
-    <div className="mt-7 rounded-2xl border border-hairline bg-black/25 px-4 pt-6 pb-5">
-      <svg viewBox="0 0 460 231" className="w-full h-auto" role="img" aria-hidden="true">
-        {NODE_CENTERS.map((cx, i) => {
-          const accent = ACCENTS[i]
-          return (
-            <g key={cx}>
-              <path
-                d={`M ${cx - 16} 50 C ${cx - 16} 115, ${cx - 22} 150, ${cx - 22} 197`}
-                stroke={accent}
-                strokeWidth="1.6"
-                strokeOpacity="0.5"
-                fill="none"
-              />
-              <path
-                d={`M ${cx + 16} 50 C ${cx + 16} 115, ${cx + 22} 150, ${cx + 22} 197`}
-                stroke={accent}
-                strokeWidth="1.6"
-                strokeOpacity="0.5"
-                fill="none"
-              />
-              <rect
-                x={cx - 32}
-                y="16"
-                width="64"
-                height="34"
-                rx="11"
-                fill={accent}
-                fillOpacity="0.14"
-                stroke={accent}
-                strokeWidth="1.8"
-              />
-              <circle cx={cx} cy="33" r="4" fill={accent} />
-              <rect
-                x={cx - 38}
-                y="197"
-                width="32"
-                height="16"
-                rx="6"
-                fill={accent}
-                fillOpacity="0.85"
-              />
-              <rect
-                x={cx + 6}
-                y="197"
-                width="32"
-                height="16"
-                rx="6"
-                fill={accent}
-                fillOpacity="0.85"
-              />
-            </g>
-          )
-        })}
-      </svg>
-      <p className="mt-3 text-center text-[13px] font-semibold text-ink">
-        5 concepts <span className="text-lime">&rarr;</span> 10 testable assets
-      </p>
-    </div>
-  )
-}
-
-/* ─────────────────────────────────────────────
-   Package card — standard (near-white) or plus (lime)
-───────────────────────────────────────────── */
-function PackageCard({
-  variant,
-  badge,
-  name,
-  price,
-  priceSuffix,
-  supportingLine,
-  deliverable,
-  cadenceLine,
-  features,
-  footerLabel = 'Production turnaround',
-  footerValue,
-  footerNote,
-  ctaLabel,
-}) {
-  const isPlus = variant === 'plus'
-  const footerText = footerValue
-
-  return (
-    <div
-      className={`relative rounded-[24px] md:rounded-[28px] p-7 md:p-8 flex flex-col h-full transition-transform duration-300 hover:-translate-y-1 ${
-        isPlus ? 'bg-lime text-canvas shadow-[0_25px_70px_-24px_rgba(213,255,64,0.55)]' : 'bg-ink text-canvas'
-      }`}
-    >
-      {badge && (
-        <span className="inline-flex w-fit items-center rounded-full bg-canvas/10 border border-canvas/25 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-canvas mb-4">
-          {badge}
-        </span>
-      )}
-
-      <h3 className="font-display font-bold tracking-display leading-[1.1] text-xl md:text-[22px]">
-        {name}
-      </h3>
-
-      <p className="mt-3 font-display font-bold tracking-display text-3xl md:text-4xl">
-        {price}
-        {priceSuffix && (
-          <span className="ml-1 text-base md:text-lg font-semibold tracking-display opacity-60">
-            {priceSuffix}
-          </span>
-        )}
-      </p>
-
-      {cadenceLine && (
-        <p className="mt-2 text-[13px] font-semibold leading-relaxed opacity-80">{cadenceLine}</p>
-      )}
-
-      {deliverable && (
-        <div
-          className={`mt-4 flex items-center gap-4 rounded-2xl px-4 py-3.5 md:px-5 ${
-            isPlus ? 'bg-canvas text-lime shadow-[0_14px_34px_-18px_rgba(0,0,0,0.7)]' : 'bg-canvas/[0.07] text-canvas ring-1 ring-inset ring-canvas/10'
-          }`}
-        >
-          <div className="shrink-0 leading-none">
-            <span className="block text-[10px] font-bold uppercase tracking-[0.16em] opacity-70">Total</span>
-            <span
-              className={`mt-1 block font-display font-extrabold tabular-nums tracking-display ${
-                isPlus ? 'text-[56px] md:text-[64px]' : 'text-[48px] md:text-[56px]'
-              }`}
-            >
-              {deliverable.count}
-            </span>
-          </div>
-          <div className="min-w-0">
-            <p className={`font-display font-bold leading-tight tracking-display text-[17px] md:text-lg ${isPlus ? 'text-ink' : ''}`}>
-              {deliverable.label}
-            </p>
-            <p className={`mt-1 text-[12.5px] leading-snug ${isPlus ? 'text-ink/70' : 'opacity-70'}`}>{deliverable.note}</p>
-          </div>
-        </div>
-      )}
-
-      <p className="mt-4 text-sm leading-relaxed opacity-70">{supportingLine}</p>
-
-      <div className="mt-6 h-px bg-canvas/12" />
-
-      <ul className="mt-6 space-y-3 flex-1">
-        {features.map((feature) => (
-          <li key={feature} className="flex items-start gap-2.5 text-[13.5px] leading-relaxed">
-            <CheckIcon className="mt-0.5 h-4 w-4 shrink-0 opacity-80" />
-            <span>{feature}</span>
-          </li>
-        ))}
-      </ul>
-
-      <div className="mt-7 pt-5 border-t border-canvas/12">
-        <p className="text-[11px] font-semibold uppercase tracking-[0.14em] opacity-60">
-          {footerLabel}
-        </p>
-        <p className="mt-1.5 text-[13px] leading-relaxed opacity-80">{footerText}</p>
-        {footerNote && (
-          <p className="mt-1 text-[11.5px] leading-relaxed opacity-55">{footerNote}</p>
-        )}
-      </div>
-
-      <a
-        href={OFFER_PATHS.roadmap}
-        className="mt-6 inline-flex items-center justify-center gap-2 rounded-full bg-canvas px-6 py-3.5 text-sm font-semibold text-ink transition-transform duration-150 active:scale-[0.98] hover:bg-[#1c1c20]"
-      >
-        {ctaLabel}
-        <svg viewBox="0 0 12 12" className="h-3.5 w-3.5" fill="none">
-          <path d="M3 9L9 3M9 3H4M9 3V8" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-      </a>
-    </div>
-  )
-}
-
-function CheckIcon({ className = '' }) {
-  return (
-    <svg viewBox="0 0 16 16" className={className} fill="none" aria-hidden="true">
-      <path d="M3 8.5l3 3 7-7" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
   )
 }
 

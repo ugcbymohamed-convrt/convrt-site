@@ -99,6 +99,7 @@ export const SPRINT = {
   concepts: 5,
   variationsPerConcept: 2,
   variations: 10,
+  cardDescription: 'For brands ready to discover new creative angles and find what resonates.',
   turnaroundBusinessDays: 10,
   revisionRoundsPerConcept: 2,
   usageMonthsIncluded: USAGE_MONTHS_INCLUDED,
@@ -121,6 +122,8 @@ export const SPRINT_PLUS = {
      variations, and do not derive a per-concept figure. */
   concepts: { value: 8, status: 'confirmed' },
   variationsDistribution: 'Variations are distributed across the concepts according to the creative testing strategy, with changes to hooks or CTAs. Concepts do not necessarily have the same number of variations.',
+  cardDescription: 'For brands looking for greater creative diversity and deeper testing.',
+  extraDetail: 'Includes expanded creative research and expanded testing recommendations.',
   turnaroundBusinessDays: 15,
   revisionRoundsPerConcept: 2,
   usageMonthsIncluded: USAGE_MONTHS_INCLUDED,
@@ -143,6 +146,18 @@ export const COMMITMENT = {
     'Ongoing creative production supports continued testing and creative development. We never guarantee specific results.',
 }
 
+/* Billing options for the Paid Social cards (Sprint and Sprint Plus only; Custom is always "Let's talk"; Organic has no
+   one-off option). Prices live on SPRINT / SPRINT_PLUS (`monthly`, `oneOff`). */
+export const BILLING_OPTIONS = [
+  { id: 'monthly', label: 'Monthly partnership', unit: '/month' },
+  { id: 'oneOff', label: 'One-off project', unit: '/project' },
+]
+
+export const PARTNERSHIP_TERMS = {
+  monthly: `Initial ${COMMITMENT.initialMonths}-month commitment, followed by a flexible month-to-month agreement with ${COMMITMENT.cancellationNoticeDays} days' cancellation notice.`,
+  oneOff: 'One creative production batch, without a recurring commitment.',
+}
+
 export const SINGLE_VIDEOS = {
   sold: false,
   statement: 'CONVRT does not sell individual paid videos as a standard service.',
@@ -153,6 +168,59 @@ export const TAX = {
   statement:
     'All prices exclude VAT. Applicable taxes will be calculated based on your business location and tax status.',
 }
+
+/* ── Custom packages ──────────────────────────────────────────────────────────────────── */
+/* Custom has NO numerical price anywhere (cards, FAQ, JSON-LD). The listed items are possibilities, not deliverables that
+   every custom project includes; scope, pricing and commercial terms are agreed individually. */
+export const CUSTOM_PACKAGES = {
+  paid: {
+    id: 'custom-creative-package',
+    name: 'Custom',
+    description: "Need something different? Let's build a creative package around your brand.",
+    priceLabel: "Let's talk.",
+    supportingLabel: 'Tailored to your needs',
+    features: [
+      'Custom creative strategy',
+      'Flexible production volume',
+      'Tailored creator selection',
+      'Multilingual campaigns',
+      'SaaS demos and explainers',
+      'Long-form video production',
+      'Custom licensing options',
+    ],
+    note: 'These are custom production possibilities, not deliverables included in every project. Final scope, pricing and commercial terms are agreed individually.',
+    cta: 'Discuss your project',
+  },
+  organic: {
+    id: 'custom-organic-package',
+    name: 'Custom',
+    description: "Need a different content system? Let's build an organic plan around your brand.",
+    priceLabel: "Let's talk.",
+    supportingLabel: 'Tailored to your needs',
+    features: [
+      'Tailored content strategy',
+      'Flexible production volume',
+      'Custom publishing requirements',
+      'Custom engagement requirements',
+      'Facebook, Instagram and TikTok',
+    ],
+    note: 'Final scope, pricing and commercial terms are agreed individually.',
+    cta: 'Discuss your project',
+  },
+}
+
+/* Shown once under the Paid Social cards, for the STANDARD Sprint packages only. */
+export const SHARED_SPRINT_BENEFITS = [
+  { id: 'research', label: 'Creative research and strategy' },
+  { id: 'approval', label: 'Concepts, scripts and client approval' },
+  { id: 'creators', label: 'Creator selection' },
+  { id: 'production', label: 'Filming and professional editing' },
+  { id: 'extras', label: 'Captions, B-roll and motion graphics as agreed' },
+  { id: 'reframing', label: 'Square and 4:5 reframing' },
+  { id: 'testing', label: 'Agreed creative variations and testing recommendations' },
+]
+export const SHARED_SPRINT_NOTE =
+  'Included in Creative Testing Sprint and Sprint Plus. Custom packages have separately agreed production scopes. Production is in one selected language: English, Spanish, French or Arabic.'
 
 /* ── usage rights ─────────────────────────────────────────────────────────────────────── */
 export const USAGE_RIGHTS = {

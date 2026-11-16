@@ -15,7 +15,7 @@
 import { SITE_URL } from '../config.js'
 import {
   BRAND, CORE_SERVICES, PRODUCTION_LANGUAGES, SPRINT, SPRINT_PLUS, ORGANIC, COMMITMENT,
-  USAGE_RIGHTS, RAW_FOOTAGE, formatMoney,
+  USAGE_RIGHTS, RAW_FOOTAGE, CUSTOM_PACKAGES, formatMoney,
 } from './businessKnowledge.js'
 import { PRICING_FAQ, faqAnswerText } from './pricingFaq.js'
 
@@ -187,7 +187,20 @@ function packageNodes() {
     isRelatedTo: [{ '@id': serviceId(SPRINT.id) }, { '@id': serviceId(SPRINT_PLUS.id) }],
     offers: [perUnitOffer(RAW_FOOTAGE.name, RAW_FOOTAGE.price, RAW_FOOTAGE.per)],
   }
-  return [sprint, plus, ...organic, rawFootage]
+  /* Custom packages: described, deliberately WITHOUT any Offer or price (scope, pricing and terms are agreed individually). */
+  const custom = [
+    { pkg: CUSTOM_PACKAGES.paid, name: 'Custom creative package', type: 'UGC and spokesperson video ad production', related: [serviceId('ugc'), serviceId('spokesperson')] },
+    { pkg: CUSTOM_PACKAGES.organic, name: 'Custom organic content package', type: 'Organic social media content production and management', related: [serviceId('organic')] },
+  ].map(({ pkg, name, type, related }) => ({
+    '@type': 'Service',
+    '@id': serviceId(pkg.id),
+    name,
+    serviceType: type,
+    description: `${pkg.description} Possibilities include: ${pkg.features.join('; ')}. Final scope, pricing and commercial terms are agreed individually.`,
+    provider: { '@id': ORG_ID },
+    isRelatedTo: related.map((id) => ({ '@id': id })),
+  }))
+  return [sprint, plus, ...organic, rawFootage, ...custom]
 }
 
 /* ── FAQPage: generated from the exact Q&A the page renders ───────────────────────────── */

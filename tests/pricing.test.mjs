@@ -49,7 +49,7 @@ test('Sprint Plus: 8 concepts / 8 scripts / 20 variations, distributed (not even
   assert.equal(SPRINT_PLUS.variations, 20)
   assert.match(SPRINT_PLUS.variationsDistribution, /distributed across the concepts according to the creative testing strategy/)
   assert.match(SPRINT_PLUS.variationsDistribution, /not necessarily have the same number of variations/)
-  const offer = read('src/components/CreativeTestingOffer.jsx')
+  const offer = read('src/components/pricing/PricingCards.jsx')
   assert.match(offer, /SPRINT_PLUS\.concepts\.value\} distinct creative concepts/)
   assert.match(offer, /SPRINT_PLUS\.concepts\.value\} complete scripts/)
   assert.match(faq('whats-included'), /8 distinct concepts and 20 ad variations in total, distributed across the concepts/)
@@ -88,7 +88,7 @@ test('VAT: every price excludes VAT, with the confirmed sentence', () => {
   assert.equal(TAX.pricesExcludeVat, true)
   assert.equal(TAX.statement, 'All prices exclude VAT. Applicable taxes will be calculated based on your business location and tax status.')
   assert.equal(faq('vat'), TAX.statement)
-  assert.ok(!/reverse.?charge|VAT (registration )?number/i.test(TAX.statement + read('src/components/pricing/CommercialTerms.jsx')), 'no invented tax treatment')
+  assert.ok(!/reverse.?charge|VAT (registration )?number/i.test(TAX.statement + read('src/components/pricing/PartnershipTerms.jsx')), 'no invented tax treatment')
 })
 
 test('usage rights: 6 months worldwide from delivery; expiry rules; not a copyright transfer', () => {
@@ -211,9 +211,10 @@ test('both organic packages include content scheduling and posting + organic com
   assert.deepEqual(ORGANIC.includedInBoth, ['Content scheduling and posting', 'Organic community management'])
   assert.match(ORGANIC.communityManagement, /social media engagement and brand relationship management/)
   assert.match(ORGANIC.communityManagement, /subject to the applicable agreement/)
-  const offer = read('src/components/CreativeTestingOffer.jsx')
-  assert.equal((offer.match(/ORGANIC\.includedInBoth\[0\]/g) || []).length, 2, 'in both cards')
-  assert.equal((offer.match(/ORGANIC\.includedInBoth\[1\]/g) || []).length, 2, 'in both cards')
+  const cards = read('src/components/pricing/PricingCards.jsx')
+  // One shared() builder feeds BOTH the Light and Growth cards, so neither can drop them.
+  assert.match(cards, /const shared = \(extra\) => \[[\s\S]*ORGANIC\.includedInBoth\[0\][\s\S]*ORGANIC\.includedInBoth\[1\]/)
+  assert.equal((cards.match(/features=\{shared\(/g) || []).length, 2, 'Light and Growth both use it')
   for (const n of graph().filter((x) => /^Organic (Light|Growth)$/.test(x.name))) {
     assert.match(n.description, /content scheduling and posting and organic community management/)
   }
@@ -244,9 +245,9 @@ test('brand + talent + languages: verbatim confirmed information, nothing invent
 })
 
 test('pricing page copy is data-driven: package prices are not typed into the components', () => {
-  const offer = read('src/components/CreativeTestingOffer.jsx')
-  for (const literal of ['2,500', '4,500', '1,500', '3,000', '5,400']) assert.ok(!offer.includes(literal), `hard-coded ${literal}`)
-  for (const f of ['UsageRights', 'CommercialTerms', 'ProductionTerms']) {
+  const offer = read('src/components/CreativeTestingOffer.jsx') + read('src/components/pricing/PricingCards.jsx')
+  for (const literal of ['2,500', '4,500', '1,500', '3,000', '5,400', '2,000', '250']) assert.ok(!offer.includes(literal), `hard-coded ${literal}`)
+  for (const f of ['UsageRights', 'PartnershipTerms', 'SharedBenefits', 'ProductionTerms']) {
     assert.ok(!/[$$]\s?\d/.test(read(`src/components/pricing/${f}.jsx`)), `${f} hard-codes a price`)
   }
 })
@@ -276,7 +277,7 @@ test('pricing JSON-LD: serialises to valid JSON; one @graph; expected node types
   assert.equal(doc['@context'], 'https://schema.org')
   const types = graph().map((n) => n['@type'])
   for (const t of ['Organization', 'WebPage', 'BreadcrumbList', 'Service', 'FAQPage']) assert.ok(types.includes(t), t)
-  assert.equal(types.filter((t) => t === 'Service').length, 8, '3 core services + 2 creative testing + 2 organic packages + raw footage add-on')
+  assert.equal(types.filter((t) => t === 'Service').length, 10, '3 core + 2 creative testing + 2 organic + raw footage add-on + 2 custom (no price)')
   assert.ok(!types.includes('Product'), 'services must not be marked up as Product')
   assert.ok(!/aggregateRating|"review"|"address"|"award"|areaServed/.test(JSON.stringify(graph())), 'nothing invented')
 })
@@ -419,4 +420,73 @@ test('crawler policy is unchanged: everything crawlable, only /api/ blocked, no 
   const txt = read('public/robots.txt')
   assert.deepEqual([...txt.matchAll(/^Disallow:\s*(.*)$/gm)].map((m) => m[1].trim()), ['/api/'])
   assert.ok(!/GPTBot|CCBot|Google-Extended|ClaudeBot|anthropic|OAI-SearchBot|PerplexityBot/i.test(txt))
+})
+
+// ── three-card redesign ─────────────────────────────────────────────────────────────────
+import { BILLING_OPTIONS, PARTNERSHIP_TERMS, CUSTOM_PACKAGES, SHARED_SPRINT_BENEFITS, SHARED_SPRINT_NOTE } from '../src/seo/businessKnowledge.js'
+import { OFFER_PATHS } from '../src/config.js'
+
+test('billing selector: Monthly partnership (default) and One-off project; prices come from the central config', () => {
+  assert.deepEqual(BILLING_OPTIONS.map((o) => [o.id, o.label, o.unit]), [['monthly', 'Monthly partnership', '/month'], ['oneOff', 'One-off project', '/project']])
+  assert.match(read('src/components/CreativeTestingOffer.jsx'), /useState\('monthly'\)/)
+  const cards = read('src/components/pricing/PricingCards.jsx')
+  assert.match(cards, /formatMoney\(pkg\[o\.id\]\)/, 'price = config[billing]')
+  assert.equal(SPRINT[BILLING_OPTIONS[0].id].amount, 2500); assert.equal(SPRINT[BILLING_OPTIONS[1].id].amount, 3000)
+  assert.equal(SPRINT_PLUS[BILLING_OPTIONS[0].id].amount, 4500); assert.equal(SPRINT_PLUS[BILLING_OPTIONS[1].id].amount, 5400)
+  assert.ok(!/BillingSwitch/.test(read('src/components/CreativeTestingOffer.jsx').split('service-panel-organic')[1]), 'no billing selector on Organic')
+  assert.ok(!/oneOff|one-off/i.test(cards.slice(cards.indexOf('export function OrganicCards'), cards.indexOf('export function BillingSwitch'))), 'no organic one-off prices')
+  assert.ok(!/discount|save \d|% off|savings?/i.test(cards + JSON.stringify(PARTNERSHIP_TERMS)), 'no discount or savings claims')
+})
+
+test('partnership terms: exact approved compact wording', () => {
+  assert.equal(PARTNERSHIP_TERMS.monthly, "Initial 3-month commitment, followed by a flexible month-to-month agreement with 30 days' cancellation notice.")
+  assert.equal(PARTNERSHIP_TERMS.oneOff, 'One creative production batch, without a recurring commitment.')
+})
+
+test('Custom packages: no numerical price anywhere, scope agreed individually, existing Roadmap CTA', () => {
+  for (const pkg of Object.values(CUSTOM_PACKAGES)) {
+    assert.equal(pkg.priceLabel, "Let's talk.")
+    assert.equal(pkg.supportingLabel, 'Tailored to your needs')
+    assert.equal(pkg.cta, 'Discuss your project')
+    assert.ok(!/[$€]|\d/.test(JSON.stringify(pkg)), 'no number in a custom package')
+    assert.match(pkg.note, /agreed individually/)
+  }
+  assert.deepEqual(CUSTOM_PACKAGES.paid.features, ['Custom creative strategy', 'Flexible production volume', 'Tailored creator selection', 'Multilingual campaigns', 'SaaS demos and explainers', 'Long-form video production', 'Custom licensing options'])
+  assert.match(CUSTOM_PACKAGES.paid.note, /not deliverables included in every project/)
+  assert.match(CUSTOM_PACKAGES.organic.features.join(' '), /Facebook, Instagram and TikTok/)
+  const nodes = graph().filter((n) => /^Custom /.test(n.name))
+  assert.equal(nodes.length, 2)
+  for (const n of nodes) {
+    assert.equal(n.offers, undefined, 'a Custom service carries no Offer')
+    assert.ok(!/\$\d/.test(JSON.stringify(n)), 'no price in a Custom service')
+    assert.match(n.description, /agreed individually/)
+    assert.equal(n.provider['@id'], ORG_ID)
+  }
+  const cards = read('src/components/pricing/PricingCards.jsx')
+  assert.match(cards, /OFFER_PATHS\.roadmap/)
+  assert.ok(!/calendly|mailto:|<form|BOOKING_URL/i.test(cards), 'no new booking integration or contact funnel')
+  assert.equal(OFFER_PATHS.roadmap, '/creative-growth-roadmap')
+})
+
+test('cards: Sprint 7 + Sprint Plus 8 approved features from the config; no identical-variations implication', () => {
+  const cards = read('src/components/pricing/PricingCards.jsx')
+  for (const needle of ['distinct creative concepts', 'complete scripts', 'variations per concept, changing the hook or CTA', '1 creator or spokesperson', 'Expanded creative variations', 'Up to 2 creators or spokespeople', 'Priority production scheduling', 'SPRINT_PLUS.extraDetail']) {
+    assert.ok(cards.includes(needle), needle)
+  }
+  assert.match(SPRINT.cardDescription, /^For brands ready to discover new creative angles and find what resonates\.$/)
+  assert.match(SPRINT_PLUS.cardDescription, /^For brands looking for greater creative diversity and deeper testing\.$/)
+  assert.match(SPRINT_PLUS.extraDetail, /expanded creative research and expanded testing recommendations/)
+  const plusBlock = cards.slice(cards.indexOf('const plusFeatures'), cards.indexOf('const custom = CUSTOM_PACKAGES.paid'))
+  assert.ok(!/per concept.*variation|variations? (per|for each|every) concept/i.test(plusBlock.replace(/revision rounds per creative concept/g, '')), 'Sprint Plus must not state a per-concept variation count')
+})
+
+test('shared benefits: the 7 approved items, for standard Sprints only', () => {
+  assert.deepEqual(SHARED_SPRINT_BENEFITS.map((b) => b.label), ['Creative research and strategy', 'Concepts, scripts and client approval', 'Creator selection', 'Filming and professional editing', 'Captions, B-roll and motion graphics as agreed', 'Square and 4:5 reframing', 'Agreed creative variations and testing recommendations'])
+  assert.match(SHARED_SPRINT_NOTE, /Custom packages have separately agreed production scopes/)
+  assert.match(read('src/components/pricing/SharedBenefits.jsx'), /Every Sprint includes/)
+})
+
+test('internal owner-review flags are never rendered', () => {
+  const ui = ['CreativeTestingOffer', 'pricing/PricingCards', 'pricing/UsageRights', 'pricing/ProductionTerms', 'pricing/OrganicScope', 'pricing/PartnershipTerms', 'pricing/SharedBenefits'].map((f) => read(`src/components/${f}.jsx`)).join('\n')
+  assert.ok(!/OWNER_REVIEW_FLAGS/.test(ui))
 })

@@ -15,8 +15,11 @@ export default function ConceptExplainer() {
           id="concepts-heading"
           eyebrow="How a sprint is built"
           title={`${SPRINT.concepts} creative concepts. ${SPRINT.variations} opportunities to test.`}
-          intro="You receive a structured creative batch, not a collection of unrelated videos."
+          intro="Changing the opening sentence, caption, or background does not create a genuinely new test. CONVRT develops distinct creative directions built around different customer problems, promises, formats, creators, and conversion angles. You receive a structured creative batch, not a collection of unrelated videos."
         />
+        <p className="-mt-6 mb-8 text-center text-[13px] leading-relaxed text-ink-subtle md:-mt-8 md:mb-10">
+          Built for apps, SaaS companies, digital services, e-commerce brands and teams actively running paid-social campaigns.
+        </p>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-5 mb-6 md:mb-8">
           <div className="rounded-[22px] border border-hairline bg-surface-1/60 p-5 md:p-6">
