@@ -357,7 +357,15 @@ test('privacy notice: every open point is a tracked item with a row in the launc
     assert.ok(checklist.includes(item), `the checklist has a row for "${item}"`)
   }
   assert.equal((text.match(/OWNER TO CONFIRM/g) || []).length, PRIVACY_TBC_ITEMS.length, 'no untracked marker')
-  for (const col of ['Confirmed now', 'What you need to do', 'Verify with', 'Blocks Production?']) assert.ok(checklist.includes(col), col)
+  // Every tag has its own section with the five things the owner needs: what is verified, what is unknown, their action, legal review, blocking.
+  for (const item of PRIVACY_TBC_ITEMS) {
+    const start = checklist.search(new RegExp(`^## \\d\\. ${item}`, 'm'))
+    assert.ok(start >= 0, `a numbered section for "${item}"`)
+    const next = checklist.slice(start + 5).search(/^## /m)
+    const section = checklist.slice(start, next < 0 ? undefined : start + 5 + next)
+    for (const part of ['**Verified', '**Unknown', 'Your action', '**Legal review:**', 'Blocks Production']) assert.ok(section.includes(part), `"${item}" section has ${part}`)
+  }
+  assert.ok(/## Owner checklist/.test(checklist), 'and a short list of the actions only the owner can take')
   assert.ok(OWNER_REVIEW_BLOCKERS.length >= 6)
   // The only way to ship without markers is for the owner to approve: markers may not coexist with an approved flag.
   assert.ok(!LEGAL_STATUS.approved || !text.includes(OWNER_FLAG), 'approved documents contain no unresolved markers')
