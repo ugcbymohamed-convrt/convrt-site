@@ -236,7 +236,7 @@ export function BillingSwitch({ value, onChange }) {
     document.getElementById(`billing-${next.id}`)?.focus()
   }
   return (
-    <div className="mb-7 md:mb-9 flex justify-center">
+    <div className="mb-5 md:mb-6 flex justify-center">
       <div
         role="radiogroup" aria-label="Billing option" onKeyDown={onKeyDown}
         className="inline-grid grid-cols-2 rounded-full border border-hairline bg-surface-1/70 p-1 backdrop-blur-md"

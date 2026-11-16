@@ -412,3 +412,20 @@ body {
   .ref-card:hover { transform: none; }
   .ref-faq-panel { transition: none; }
 }
+
+/* Concept diagram branches (pricing page). Static by default. Where scroll-driven animation is supported they draw in as
+   the section scrolls into view; never under prefers-reduced-motion. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .branch-draw {
+      stroke-dasharray: 1;
+      animation: branch-draw linear both;
+      animation-timeline: view();
+      animation-range: entry 5% entry 70%;
+    }
+    @keyframes branch-draw {
+      from { stroke-dashoffset: 1; }
+      to { stroke-dashoffset: 0; }
+    }
+  }
+}

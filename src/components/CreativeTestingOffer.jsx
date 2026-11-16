@@ -25,12 +25,12 @@ export default function CreativeTestingOffer({ service, onServiceChange }) {
      contains every package and price; the tabs only decide which one a visitor sees. The `hidden` attribute
      is on a plain wrapper: a Tailwind display class on the same element would override it. */
   return (
-    <section id="packages" className="relative overflow-hidden py-14 md:py-20">
+    <section id="packages" className="relative overflow-hidden py-8 md:py-12">
       <div className="relative mx-auto max-w-6xl px-5 md:px-8">
-        <div className="mx-auto mb-8 md:mb-10 max-w-4xl text-center">
+        <div className="mx-auto mb-6 md:mb-7 max-w-4xl text-center">
           <h2
             className="font-display font-bold leading-[1.05] tracking-display text-ink"
-            style={{ fontSize: 'clamp(2rem, 4.4vw, 3.1rem)' }}
+            style={{ fontSize: 'clamp(1.9rem, 3.8vw, 2.7rem)' }}
           >
             Choose your creative <span className="text-lime">partnership.</span>
           </h2>

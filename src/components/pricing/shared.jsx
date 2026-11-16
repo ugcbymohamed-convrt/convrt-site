@@ -3,7 +3,7 @@
 
 export function SectionHeader({ eyebrow, title, intro, id }) {
   return (
-    <div className="mx-auto max-w-3xl text-center mb-8 md:mb-12">
+    <div className="mx-auto max-w-3xl text-center mb-6 md:mb-8">
       {eyebrow && (
         <div className="inline-flex items-center gap-2.5 mb-4">
           <span className="h-px w-6 bg-lime" aria-hidden="true" />

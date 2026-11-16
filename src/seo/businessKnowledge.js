@@ -267,6 +267,8 @@ export const RAW_FOOTAGE = {
      option and NO raw-vs-edited selector: raw footage exists only as this optional add-on. */
   policy:
     'Every video CONVRT produces and delivers is a professionally edited, finished video. We do not offer raw-only production packages or raw footage in place of edited deliverables.',
+  /* Short form shown in the page's details list. */
+  summary: 'Raw footage is only available alongside finished, professionally edited videos. It cannot replace them.',
   note:
     'Raw footage is available exclusively as an optional add-on, alongside your finished, edited videos. Buying it does not by itself transfer copyright ownership, unlimited editing rights or perpetual usage rights; derivative-editing and ownership terms are set out in the applicable agreement.',
 }
@@ -281,6 +283,15 @@ export const PRODUCTION_PROCESS = [
   { title: 'Client approval', description: 'You approve the concepts and scripts. Production time starts from this approval.' },
   { title: 'Filming and editing', description: 'Creators film natively for each format, then CONVRT edits, captions and finishes.' },
   { title: 'Delivery and revisions', description: 'You receive organized, platform-ready videos, with revisions included in the package.' },
+]
+
+/* The page shows four stages; each maps to the original eight steps above (indexes into PRODUCTION_PROCESS), so the full
+   process is preserved without repeating each step's description. */
+export const PRODUCTION_STAGES = [
+  { id: 'strategy', title: 'Strategy', description: 'Brand discovery, audience research and creative concepts.', steps: [0, 1, 2] },
+  { id: 'preparation', title: 'Preparation', description: 'Creator selection, scripts and your approval.', steps: [3, 4, 5] },
+  { id: 'production', title: 'Production', description: 'Filming, editing, captions and creative variations.', steps: [6] },
+  { id: 'delivery', title: 'Delivery', description: 'Finished videos, revisions and testing recommendations.', steps: [7] },
 ]
 
 export const PRODUCT_REQUIREMENTS = {

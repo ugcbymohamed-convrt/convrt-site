@@ -4,7 +4,7 @@ export default function CreativeTestingNextStep({ service }) {
   const isPaid = service === 'paid'
 
   return (
-    <section id="contact" className="relative overflow-hidden py-20 md:py-28">
+    <section id="contact" className="relative overflow-hidden py-12 md:py-16">
       <div
         aria-hidden="true"
         className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-[700px] w-[700px] rounded-full"
@@ -13,7 +13,7 @@ export default function CreativeTestingNextStep({ service }) {
 
       <div key={service} className="pricing-panel-in relative mx-auto max-w-3xl px-5 md:px-8 text-center">
         <h2
-          className="font-display font-bold tracking-display leading-[1.05] mb-6"
+          className="font-display font-bold tracking-display leading-[1.05] mb-5"
           style={{ fontSize: 'clamp(2rem, 4.5vw, 3.25rem)' }}
         >
           {isPaid ? (

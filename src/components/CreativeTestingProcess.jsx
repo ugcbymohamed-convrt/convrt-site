@@ -32,7 +32,7 @@ export default function CreativeTestingProcess() {
   const steps = ORGANIC_STEPS
 
   return (
-    <section className="relative overflow-hidden py-14 md:py-20">
+    <section className="relative overflow-hidden py-8 md:py-12">
       <div className="relative mx-auto max-w-7xl px-5 md:px-8">
         <h2 className="text-center font-display font-bold text-ink tracking-display leading-[1.05] text-2xl md:text-[32px] mb-10 md:mb-14">
           {heading}

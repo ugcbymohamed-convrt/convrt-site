@@ -6,7 +6,7 @@ import { SectionHeader, Card, CardTitle, CardLabel, Check, Cross, Small } from '
    schedules, response times or video counts). */
 export default function OrganicScope() {
   return (
-    <section aria-labelledby="organic-scope-heading" className="relative overflow-hidden py-14 md:py-20">
+    <section aria-labelledby="organic-scope-heading" className="relative overflow-hidden py-8 md:py-12">
       <div className="relative mx-auto max-w-5xl px-5 md:px-8">
         <SectionHeader
           id="organic-scope-heading"

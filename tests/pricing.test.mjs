@@ -146,7 +146,8 @@ test('raw footage: ONLY an optional $250-per-concept add-on; every video is edit
   assert.deepEqual(svc.isRelatedTo.map((r) => r['@id'].split('#service-')[1]), ['creative-testing-sprint', 'creative-testing-sprint-plus'])
   const ui = read('src/components/pricing/ProductionTerms.jsx') + read('src/components/CreativeTestingOffer.jsx')
   assert.ok(!/type="(radio|checkbox)"|<select|raw-only|rawOnly|raw footage only/i.test(ui), 'no raw-vs-edited selector')
-  assert.match(read('src/components/pricing/ProductionTerms.jsx'), /RAW_FOOTAGE\.policy/)
+  assert.match(RAW_FOOTAGE.summary, /only available alongside finished, professionally edited videos\. It cannot replace them\./)
+  assert.match(read('src/components/pricing/ProductionTerms.jsx'), /RAW_FOOTAGE\.summary/)
   const everything = JSON.stringify(graph()) + PRICING_FAQ.map(faqAnswerText).join(' ')
   const rawPrices = [...everything.matchAll(/raw footage[^.]{0,60}?\$([\d,]+)/gi)].map((m) => m[1])
   assert.ok(rawPrices.length >= 3 && rawPrices.every((p) => p === '250'), `raw footage prices found: ${rawPrices}`)
@@ -253,8 +254,8 @@ test('pricing page copy is data-driven: package prices are not typed into the co
 })
 
 // ── FAQ ─────────────────────────────────────────────────────────────────────────────────
-test('FAQ: 12-15 unique, answered questions covering the commercially important topics', () => {
-  assert.ok(PRICING_FAQ.length >= 12 && PRICING_FAQ.length <= 15, `${PRICING_FAQ.length} questions`)
+test('FAQ: 12-16 unique, answered questions covering the commercially important topics', () => {
+  assert.ok(PRICING_FAQ.length >= 12 && PRICING_FAQ.length <= 16, `${PRICING_FAQ.length} questions`)
   assert.equal(new Set(PRICING_FAQ.map((f) => f.id)).size, PRICING_FAQ.length)
   assert.equal(new Set(PRICING_FAQ.map((f) => f.q)).size, PRICING_FAQ.length)
   for (const f of PRICING_FAQ) assert.ok(f.q.endsWith('?') && f.a.length >= 1 && f.a.every((p) => p.length > 20), f.id)
@@ -489,4 +490,92 @@ test('shared benefits: the 7 approved items, for standard Sprints only', () => {
 test('internal owner-review flags are never rendered', () => {
   const ui = ['CreativeTestingOffer', 'pricing/PricingCards', 'pricing/UsageRights', 'pricing/ProductionTerms', 'pricing/OrganicScope', 'pricing/PartnershipTerms', 'pricing/SharedBenefits'].map((f) => read(`src/components/${f}.jsx`)).join('\n')
   assert.ok(!/OWNER_REVIEW_FLAGS/.test(ui))
+})
+
+// ── remaining page redesign: hero, concepts, usage, stages, details, categorized FAQ ──────────────────────────────────
+import { PRODUCTION_STAGES } from '../src/seo/businessKnowledge.js'
+import { FAQ_CATEGORIES } from '../src/seo/pricingFaq.js'
+
+test('hero: approved copy, Roadmap + #packages CTAs, the four credibility stats', () => {
+  const hero = read('src/components/CreativeTestingHero.jsx')
+  for (const t of ['UGC &amp; video production pricing', 'More concepts. Better creative. <span className="text-lime">Clear pricing.</span>', 'Human-led video ads and social content, built around your brand and creative goals. Full production,', 'transparent pricing and no surprises.', 'Get 5 Free Ad Concepts', 'Explore Packages', 'Core production languages']) {
+    assert.ok(hero.replace(/\s+/g, ' ').includes(t.replace(/\s+/g, ' ')), t)
+  }
+  assert.match(hero, /href=\{OFFER_PATHS\.roadmap\}/)
+  assert.match(hero, /href="#packages"/)
+  for (const s of ['CONVRT_STATS.views', 'CONVRT_STATS.videos', 'CONVRT_STATS.clients', 'PRODUCTION_LANGUAGES.core.length']) assert.ok(hero.includes(s), s)
+})
+
+test('production stages: the four approved stages, covering all eight original steps exactly once', () => {
+  assert.deepEqual(PRODUCTION_STAGES.map((s) => [s.title, s.description]), [
+    ['Strategy', 'Brand discovery, audience research and creative concepts.'],
+    ['Preparation', 'Creator selection, scripts and your approval.'],
+    ['Production', 'Filming, editing, captions and creative variations.'],
+    ['Delivery', 'Finished videos, revisions and testing recommendations.'],
+  ])
+  assert.deepEqual(PRODUCTION_STAGES.flatMap((s) => s.steps).sort(), PRODUCTION_PROCESS.map((_, i) => i))
+  assert.match(read('src/components/pricing/ProductionProcess.jsx'), /From idea to ready-to-launch creative\./)
+})
+
+test('concepts section: one compact explanation of the standard Sprint only; motion respects reduced-motion', () => {
+  const src = read('src/components/pricing/ConceptExplainer.jsx')
+  assert.match(src, /Different concepts\. <span className="text-lime">Not just different hooks\.<\/span>/)
+  assert.match(src, /Five distinct advertising ideas, each with two variations to test\./)
+  assert.match(src, /is a distinct advertising idea or angle\./)
+  assert.match(src, /changes the hook or CTA within a concept\./)
+  assert.match(src, /SPRINT\.concepts\} concepts[\s\S]*SPRINT\.variations\} ad variations/)
+  assert.ok(!/SPRINT_PLUS/.test(src))
+  assert.match(src, /Sprint Plus distributes its variations across its concepts according to the\s+creative testing strategy/)
+  assert.ok(!/definition cards|Card/.test(src.replace(/\/\*[\s\S]*?\*\//g, '')), 'no oversized definition cards')
+  const css = read('src/index.css')
+  const block = css.slice(css.indexOf('.branch-draw') - 200)
+  assert.match(block, /@media \(prefers-reduced-motion: no-preference\)[\s\S]*\.branch-draw/, 'branch animation only runs when motion is allowed')
+  assert.match(block, /@supports \(animation-timeline: view\(\)\)/)
+})
+
+test('usage rights: compact benefits, both extension price sets with totals, longer terms kept (details + FAQ), no standalone creator-account card', () => {
+  const src = read('src/components/pricing/UsageRights.jsx')
+  for (const t of ['Your videos. <span className="text-lime">Worldwide usage.</span>', 'Every Creative Testing package includes six months of worldwide usage rights from delivery.', 'Need more time?', 'Extend the usage rights for your entire creative batch.', 'Custom quote, subject to agreement with the featured creators', 'USAGE_RIGHTS.afterExpiry.mayRemain', 'USAGE_RIGHTS.afterExpiry.mustStop', 'USAGE_RIGHTS.notOwnership', 'USAGE_RIGHTS.creatorAccountAds.summary', '<details']) assert.ok(src.includes(t), t)
+  assert.deepEqual(USAGE_RIGHTS.includedUses.slice(0, 3), ['Paid advertising', 'Organic social media publishing', 'Website usage'])
+  assert.ok(!/Separate from usage rights|creatorAccountAds\.title/.test(src), 'no oversized standalone creator-account card')
+  assert.match(src, /formatMoney\(e\.price\)[\s\S]*formatMoney\(SPRINT_PLUS\.usageExtensions\[i\]\.price\)/, 'both sets from config')
+  assert.match(src, /USAGE_RIGHTS\.includedMonths \+ m/, 'totals are derived: 6 included + additional')
+  // The same policies are in the FAQ.
+  assert.match(faq('usage-rights-expiry-extension'), /Paid advertising use must stop/)
+  assert.match(faq('usage-rights-included'), /not a transfer of copyright ownership/)
+})
+
+test('production details: the six approved rows; reshoot and logistics policies live in the FAQ', () => {
+  const src = read('src/components/pricing/ProductionTerms.jsx')
+  for (const t of ["'Turnaround'", "'Revisions'", "'Video length'", "'Video formats'", "'Horizontal production'", "'Raw footage'", 'Vertical production, with square 1:1 and portrait 4:5 reframing included.', '16:9 production counts as a separate video because we film for the intended orientation.', 'Long-form creatives of 1–3 minutes are available at custom pricing.', 'starting after concept and script approval']) assert.ok(src.includes(t), t)
+  assert.ok(!/Card/.test(src), 'no equal-height card grid')
+  assert.match(faq('reshoots'), /CONVRT covers the corrective production or reshoot/)
+  assert.match(faq('reshoots'), /charged in full/)
+  assert.match(faq('production-requirements'), /ship the product to the selected creator and cover the shipping costs/)
+  assert.match(faq('production-requirements'), /dedicated demo or dummy account/)
+})
+
+test('FAQ categories: four, every question belongs to one, nothing dropped, structured data covers all of them', () => {
+  assert.deepEqual(FAQ_CATEGORIES.map((c) => c.label), ['Packages & pricing', 'Production & delivery', 'Usage rights & add-ons', 'Organic social'])
+  for (const f of PRICING_FAQ) assert.ok(FAQ_CATEGORIES.some((c) => c.id === f.category), `${f.id} has no category`)
+  for (const c of FAQ_CATEGORIES) assert.ok(PRICING_FAQ.some((f) => f.category === c.id), c.id)
+  assert.equal(graph().find((n) => n['@type'] === 'FAQPage').mainEntity.length, PRICING_FAQ.length)
+  const src = read('src/components/pricing/PricingFAQ.jsx')
+  assert.match(src, /role="tablist"/); assert.match(src, /hidden=\{c\.id !== category\}/)
+  assert.match(src, /ArrowRight[\s\S]*Home[\s\S]*End/, 'keyboard navigation')
+  assert.match(src, /aria-expanded=\{open\}/)
+  assert.ok(!/fetch\(|import\(/.test(src), 'answers are never loaded on demand')
+})
+
+test('page order and service separation', () => {
+  const page = read('src/CreativeTestingSprintPage.jsx')
+  const order = ['<CreativeTestingHero', '<CreativeTestingOffer', '<ConceptExplainer', '<UsageRights', '<ProductionProcess', '<ProductionTerms', '<PricingFAQ', '<CreativeTestingNextStep']
+  const at = order.map((t) => page.indexOf(`${t} `) >= 0 ? page.indexOf(`${t} `) : page.indexOf(t, page.indexOf('return (')))
+  assert.deepEqual([...at].sort((a, b) => a - b), at, 'sections appear in the approved order')
+  const paid = page.slice(page.indexOf("hidden={service !== 'paid'}"), page.indexOf("hidden={service !== 'organic'}"))
+  const organic = page.slice(page.indexOf("hidden={service !== 'organic'}"), page.indexOf('<PricingFAQ'))
+  for (const c of ['ConceptExplainer', 'UsageRights', 'ProductionProcess', 'ProductionTerms']) {
+    assert.ok(paid.includes(`<${c}`), `${c} belongs to Paid Social`)
+    assert.ok(!organic.includes(`<${c}`), `${c} must not appear in the Organic Social group`)
+  }
 })

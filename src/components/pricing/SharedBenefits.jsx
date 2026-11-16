@@ -13,7 +13,7 @@ const ICONS = {
 
 export default function SharedBenefits() {
   return (
-    <div className="mt-10 md:mt-14 rounded-[26px] border border-hairline bg-surface-1/50 px-5 py-7 md:px-8 md:py-9">
+    <div className="mt-9 md:mt-12 rounded-[26px] border border-hairline bg-surface-1/50 px-5 py-6 md:px-8 md:py-7">
       <h3 className="text-center font-display text-xl font-bold leading-tight tracking-display text-ink md:text-2xl">
         Every Sprint includes <span className="text-lime">full creative production.</span>
       </h3>
