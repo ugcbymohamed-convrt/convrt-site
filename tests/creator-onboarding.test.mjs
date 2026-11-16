@@ -203,6 +203,28 @@ test('upload: removing a video clears the slot and deletes it at Cloudflare', as
   assert.equal((await t.C('session')).json.videos[3], undefined)
 })
 
+test('concurrency: three uploads, status polls and draft autosaves at the same moment never overwrite each other', async () => {
+  const t = await setup()
+  const slots = [1, 2, 3]
+  const mixed = await Promise.all([
+    ...slots.map((slot) => t.C('video-upload', { method: 'POST', body: { slot, filename: `clip${slot}.mp4`, type: 'video/mp4', size: 1000 } })),
+    ...[1, 2, 3, 4].map((i) => t.C('draft', { method: 'POST', body: validProfile({ displayName: `Draft ${i}` }) })),
+  ])
+  assert.ok(mixed.every((r) => r.status === 200), JSON.stringify(mixed.map((r) => r.status)))
+  assert.deepEqual(Object.keys((await t.C('session')).json.videos).sort(), ['1', '2', '3'], 'no slot was lost')
+
+  for (const r of mixed.slice(0, 3)) t.cfake.finish(r.json.uploadURL.split('/').pop())
+  await Promise.all([
+    ...slots.map((slot) => t.C('video-status', { method: 'POST', body: { slot } })),
+    ...[5, 6, 7].map((i) => t.C('draft', { method: 'POST', body: validProfile({ displayName: `Draft ${i}` }) })),
+    t.C('photo', { method: 'POST', raw: dummyJpeg(), headers: { 'content-type': 'image/jpeg' } }),
+  ])
+  const after = (await t.C('session')).json
+  assert.deepEqual(slots.map((s) => after.videos[s].state), ['ready', 'ready', 'ready'])
+  assert.ok(after.photo, 'the photo survived the status polls')
+  assert.match(after.draft.displayName, /^Draft \d$/, 'and so did a draft')
+})
+
 test('upload: not configured Cloudflare → clear 503, no fake success', async () => {
   const t = await setup({ env: { CLOUDFLARE_STREAM_API_TOKEN: '' } })
   const r = await t.C('video-upload', { method: 'POST', body: { slot: 1, filename: 'a.mp4', type: 'video/mp4', size: 10 } })
@@ -257,7 +279,10 @@ test('submit: full happy path stores the complete record, defaults to Pending re
   assert.equal(s.acceptance.agreement.version, AGREEMENT_VERSION)
   assert.equal(s.acceptance.privacy.version, PRIVACY_VERSION)
   assert.equal(s.acceptance.agreement.sha256, sha256(s.acceptance.agreement.text))
-  assert.match(s.acceptance.agreement.text, /LIMITED WEBSITE-DISPLAY PERMISSION/)
+  assert.match(s.acceptance.agreement.text, /01 Purpose and permitted use/)
+  assert.ok(s.acceptance.agreement.text.includes('Test Creator Dummy'), 'the accepted text is personalised')
+  assert.ok(s.acceptance.agreement.document && s.acceptance.agreement.template === 'r2')
+  assert.equal(s.acceptance.privacy.sha256, sha256(s.acceptance.privacy.text), 'the privacy notice revision and its exact text are recorded')
   assert.deepEqual(s.acceptance.checkboxes.map((c) => c.key), ['rights', 'agreement', 'display', 'privacy'])
   assert.ok(s.acceptance.checkboxes.every((c) => c.accepted && c.text))
   assert.ok(Date.now() - Date.parse(s.acceptance.acceptedAt) < 5000, 'acceptance time comes from the server')
@@ -375,7 +400,7 @@ test('submit: unauthorised origin is refused', async () => {
   assert.equal(r.status, 403)
 })
 
-test('receipt: the creator can download their OWN signed agreement after submitting; others and strangers cannot', async () => {
+test('receipt: the creator can download their OWN signed agreement (a PDF) after submitting; others and strangers cannot', async () => {
   const t = await setup()
   const other = await setup()
   assert.equal((await t.C('agreement')).status, 404, 'nothing to download before submitting')
@@ -383,24 +408,29 @@ test('receipt: the creator can download their OWN signed agreement after submitt
   await t.C('submit', { method: 'POST', body: submission(uids) })
   const r = await t.C('agreement')
   assert.equal(r.status, 200)
-  assert.match(r.headers['content-disposition'], /attachment; filename="CONVRT-creator-agreement-CRX-/)
-  assert.ok(r.text.includes('Test Creator Dummy') && r.text.includes(t.ref) && /Limited website-display permission/i.test(r.text))
-  assert.ok(r.text.includes(uids[0]))
-  assert.match(r.text, /<h3>PURPOSE<\/h3>/, 'section headings are real headings')
-  assert.match(r.text, /overflow-wrap:anywhere/, 'long hashes and ids wrap inside their boxes')
+  assert.equal(r.headers['content-type'], 'application/pdf')
+  assert.match(r.headers['content-disposition'], /attachment; filename="Creator-Portfolio-Agreement-CRX-[A-Z0-9]+\.pdf"/)
+  assert.equal(r.buffer.subarray(0, 5).toString(), '%PDF-')
+  assert.equal(r.headers['cache-control'], 'no-store')
   assert.equal((await other.C('agreement')).status, 404, 'another creator gets nothing of this submission')
   assert.equal((await creator(t.deps, '')('agreement')).status, 401)
 })
 
-test('receipt: HTML is escaped (a hostile name cannot inject markup)', async () => {
+test('receipt: a hostile name is only ever drawn as text in the PDF; an unsupported script falls back to escaped HTML', async () => {
   const t = await setup()
   const uids = await uploadAll(t)
   const name = 'Evil <script>alert(1)</script>'
-  const r = await t.C('submit', { method: 'POST', body: submission(uids, { profile: validProfile({ legalName: name, displayName: 'x<b>y' }), signature: name }) })
-  assert.equal(r.status, 200)
-  const doc = await t.C('agreement')
-  assert.ok(!doc.text.includes('<script>alert'))
-  assert.ok(doc.text.includes('&lt;script&gt;'))
+  assert.equal((await t.C('submit', { method: 'POST', body: submission(uids, { profile: validProfile({ legalName: name, displayName: 'x<b>y' }), signature: name }) })).status, 200)
+  assert.equal((await t.C('agreement')).headers['content-type'], 'application/pdf')
+
+  const t2 = await setup()
+  const uids2 = await uploadAll(t2)
+  const arabic = 'محمد <script>alert(1)</script>'
+  assert.equal((await t2.C('submit', { method: 'POST', body: submission(uids2, { profile: validProfile({ legalName: arabic, displayName: 'Mo' }), signature: arabic }) })).status, 200)
+  const doc = await t2.C('agreement')
+  assert.match(doc.headers['content-type'], /text\/html/, 'fonts cannot draw this script: printable HTML copy instead of wrong glyphs')
+  assert.ok(!doc.text.includes('<script>alert') && doc.text.includes('&lt;script&gt;'))
+  assert.match(doc.headers['content-disposition'], /\.html"/)
 })
 
 // ───────────────────────── owner access ─────────────────────────
@@ -487,7 +517,8 @@ test('owner review: list, details, signed playback for all three videos, photo, 
   }
   assert.equal((await t.A(`photo?id=${t.ref}`)).headers['content-type'], 'image/jpeg')
   const ag = await t.A(`agreement?id=${t.ref}`)
-  assert.ok(ag.text.includes('Test Creator Dummy'))
+  assert.equal(ag.headers['content-type'], 'application/pdf')
+  assert.equal(ag.buffer.subarray(0, 5).toString(), '%PDF-')
 })
 
 test('owner download: Cloudflare prepares an MP4 first, then a short-lived signed download link; blocked once withdrawn; owner only', async () => {

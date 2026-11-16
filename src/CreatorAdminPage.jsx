@@ -6,6 +6,7 @@ import { useDocumentHead } from './lib/useDocumentHead.js'
 import { privateHead } from './seo/privateSeo.js'
 import { PRIVATE_PATHS } from './routes.js'
 import { STATUS_LABELS } from './lib/creator/constants.js'
+import { OWNER_REVIEW_BLOCKERS } from './content/creatorLegal.js'
 
 /* /creator-admin — the owner's minimal review page. Everything here is authorised on the SERVER: the page itself
    holds no secret. Signing in posts the owner password to /api/creator-admin/login, which sets an HttpOnly,
@@ -93,6 +94,14 @@ function SetupCheck() {
         <Row ok={cf === 'ok'} label="Cloudflare Stream connection" detail={CF_HELP[cf] || `Cloudflare answered ${cf}.`} />
         <Row ok={checks.ownerEmail} label="Owner email alerts (email service key)" detail={checks.ownerEmail ? 'Set' : 'Missing: you will not get an email for new submissions'} />
       </ul>
+      {OWNER_REVIEW_BLOCKERS.length > 0 && (
+        <div className="mt-5 border-t border-hairline pt-4">
+          <h3 className="text-sm font-semibold text-ink">Before real creators sign: your review is needed</h3>
+          <ul className="mt-2 list-disc space-y-1.5 pl-5 text-sm text-ink-muted marker:text-amber">
+            {OWNER_REVIEW_BLOCKERS.map((b) => <li key={b}>{b}</li>)}
+          </ul>
+        </div>
+      )}
     </section>
   )
 }
@@ -241,7 +250,7 @@ function Detail({ id, onBack, reload }) {
         <dt className="text-ink-subtle">Languages</dt><dd className="text-ink">{list(p.languages, p.languagesOther)}</dd>
         <dt className="text-ink-subtle">Specialization</dt><dd className="text-ink">{list(p.specializations, p.specializationOther)}</dd>
         <dt className="text-ink-subtle">Signature</dt><dd className="text-ink">{sub.acceptance.signature} · {fmtDate(sub.acceptance.acceptedAt)}</dd>
-        <dt className="text-ink-subtle">Agreement version</dt><dd className="text-ink">{sub.acceptance.agreementVersion} · privacy {sub.acceptance.privacyVersion}</dd>
+        <dt className="text-ink-subtle">Accepted revision</dt><dd className="break-all text-ink">{sub.acceptance.agreementVersion} · {sub.acceptance.privacyVersion}</dd>
         <dt className="text-ink-subtle">Statements accepted</dt><dd className="text-ink">{sub.acceptance.checkboxes.filter((c) => c.accepted).length} of {sub.acceptance.checkboxes.length}</dd>
       </dl>
 
@@ -280,7 +289,7 @@ function Detail({ id, onBack, reload }) {
       )}
 
       <div className="mt-8 flex flex-wrap items-center gap-3">
-        <a className={btn} href={`/api/creator-admin/agreement?id=${encodeURIComponent(id)}`} download><DownloadIcon className="h-4 w-4" />Signed agreement</a>
+        <a className={btn} href={`/api/creator-admin/agreement?id=${encodeURIComponent(id)}`} download><DownloadIcon className="h-4 w-4" />Signed agreement (PDF)</a>
       </div>
 
       {!withdrawn && (
@@ -350,7 +359,7 @@ export default function CreatorAdminPage() {
           </div>
           {!data.legal.approved && (
             <p className="mb-8 rounded-2xl border border-amber/40 bg-amber/10 px-4 py-3 text-sm text-amber">
-              Legal documents are still a draft (v{data.legal.agreementVersion}). Invitations and submissions are blocked on Production until the owner approves them. Preview deployments work for testing.
+              Legal documents are still a draft. Invitations and submissions are blocked on Production until the owner approves them. Preview deployments work for testing.
             </p>
           )}
           {!openId && <SetupCheck />}

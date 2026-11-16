@@ -65,6 +65,15 @@ async function readRaw(req, maxBytes) {
   return Buffer.concat(chunks)
 }
 
+/* A signed agreement download: a PDF, or (legacy records / unsupported scripts) a printable HTML copy. */
+function sendAgreement(res, r) {
+  return reply(res, 200, r.body, {
+    'Content-Type': r.contentType,
+    'Content-Disposition': `attachment; filename="${r.filename}"`,
+    ...(r.contentType.startsWith('text/html') ? { 'Content-Security-Policy': "default-src 'none'; style-src 'unsafe-inline'" } : {}),
+  })
+}
+
 function guardMethod(req, res, allowed) {
   if (req.method === allowed) return true
   reply(res, 405, { ok: false, error: 'method_not_allowed' }, { Allow: allowed })
@@ -179,12 +188,7 @@ export async function creatorHandler(req, res, deps = buildDeps()) {
         return reply(res, 200, await service.submit(inv, body, { reviewBaseUrl: baseUrl(req, deps) }))
       }
       case 'agreement': {
-        const r = await service.receipt(inv)
-        return reply(res, 200, r.html, {
-          'Content-Type': 'text/html; charset=utf-8',
-          'Content-Disposition': `attachment; filename="${r.filename}"`,
-          'Content-Security-Policy': "default-src 'none'; style-src 'unsafe-inline'",
-        })
+        return sendAgreement(res, await service.receipt(inv))
       }
       default:
         return reply(res, 404, { ok: false, error: 'not_found' })
@@ -310,12 +314,7 @@ export async function adminHandler(req, res, deps = buildDeps()) {
         return reply(res, 200, p.bytes, { 'Content-Type': p.type })
       }
       case 'agreement': {
-        const r = await service.adminReceipt(id)
-        return reply(res, 200, r.html, {
-          'Content-Type': 'text/html; charset=utf-8',
-          'Content-Disposition': `attachment; filename="${r.filename}"`,
-          'Content-Security-Policy': "default-src 'none'; style-src 'unsafe-inline'",
-        })
+        return sendAgreement(res, await service.adminReceipt(id))
       }
       case 'set-status': {
         const b = await readBody()

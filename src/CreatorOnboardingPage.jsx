@@ -3,7 +3,7 @@ import CreatorShell from './components/creator/CreatorShell.jsx'
 import VideoCard from './components/creator/VideoCard.jsx'
 import PhotoUpload from './components/creator/PhotoUpload.jsx'
 import PlayerModal from './components/creator/PlayerModal.jsx'
-import LegalDocument from './components/creator/LegalDocument.jsx'
+import { AgreementView } from './components/creator/LegalDocument.jsx'
 import { VideoIcon, UsersIcon, ShieldCheckIcon, CheckIcon, ChevronIcon, AlertIcon, DownloadIcon, SpinnerIcon } from './components/creator/icons.jsx'
 import { useDocumentHead } from './lib/useDocumentHead.js'
 import { privateHead } from './seo/privateSeo.js'
@@ -16,7 +16,7 @@ import {
   EMPTY_PROFILE, validateProfile, validateAcceptance, validateVideoFile, videoDurationError,
 } from './lib/creator/validation.js'
 import { readInviteToken, creatorApi, uploadToCloudflare, readVideoDuration, prepareProfilePhoto } from './lib/creator/api.js'
-import { AGREEMENT, AGREEMENT_VERSION, PRIVACY_VERSION } from './content/creatorLegal.js'
+import { AGREEMENT_VERSION, PRIVACY_VERSION, buildAgreementDocument } from './content/creatorLegal.js'
 
 /* /creator-onboarding — private, invitation-only portfolio submission for freelance creators.
    Not linked from anywhere public, noindex, no analytics. The invitation token is read once from the URL, removed
@@ -403,13 +403,21 @@ export default function CreatorOnboardingPage() {
 
   async function downloadAgreement() {
     setDownloading(true)
-    await api.current.downloadAgreement(`CONVRT-creator-agreement-${session.ref}.html`)
+    await api.current.downloadAgreement()
     setDownloading(false)
   }
 
   const setP = (k) => (v) => { setProfile((p) => ({ ...p, [k]: typeof v === 'function' ? v(p[k]) : v })); setErrors((e) => ({ ...e, [k]: undefined })) }
   const setAcc = (k) => (v) => { setAccepted((a) => ({ ...a, [k]: v })); setErrors((e) => ({ ...e, [k]: undefined })) }
   const legal = session?.legal
+  // The agreement as THIS creator will sign it: their legal name (as typed above) and the videos uploaded so far.
+  const agreementDoc = useMemo(
+    () => buildAgreementDocument({
+      creatorName: profile.legalName,
+      materials: VIDEO_SLOTS.filter((s) => slots[s].status === 'ready' && slots[s].filename).map((s) => ({ slot: s, label: slots[s].filename })),
+    }),
+    [profile.legalName, slots],
+  )
   const agreementLink = (
     <a href={PRIVATE_PATHS.creatorAgreement} target="_blank" rel="noopener noreferrer" className="text-lime underline underline-offset-2 hover:text-lime-light" onClick={(e) => e.stopPropagation()}>Creator Portfolio Agreement</a>
   )
@@ -542,7 +550,7 @@ export default function CreatorOnboardingPage() {
             </button>
             {agreementOpen && (
               <div id="agreement-full" className="max-h-[420px] overflow-y-auto border-t border-hairline px-5 py-5" tabIndex={0} aria-label="Full Creator Portfolio Agreement">
-                <LegalDocument doc={AGREEMENT} headingLevel={4} version={AGREEMENT_VERSION} />
+                <AgreementView document={agreementDoc} signature={signature} headingLevel={4} />
               </div>
             )}
           </div>

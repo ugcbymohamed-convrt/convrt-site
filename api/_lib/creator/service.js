@@ -17,11 +17,12 @@ import {
   clean, sanitizeProfile, validateProfile, validateAcceptance, validateVideoFile,
 } from '../../../src/lib/creator/validation.js'
 import {
-  AGREEMENT_VERSION, PRIVACY_VERSION, LEGAL_STATUS, agreementText, privacyText,
+  AGREEMENT_VERSION, PRIVACY_VERSION, LEGAL_STATUS, buildAgreementDocument, agreementDocumentText, privacyText,
 } from '../../../src/content/creatorLegal.js'
 import { randomToken, sha256, safeEqual, newReference } from './crypto.js'
 import { CloudflareError } from './cloudflare.js'
-import { renderReceipt } from './receipt.js'
+import { renderReceipt, renderAgreementHtml } from './receipt.js'
+import { renderAgreementPdf, UnsupportedTextError } from './agreementPdf.js'
 
 const DAY = 86_400_000
 
@@ -165,6 +166,29 @@ export function createService(ctx) {
 
   const save = (inv) => store.set(keys.invite(inv.id), inv)
 
+  /* Serialises every change to one invitation's record. The record holds all three video slots, the photo and the
+     draft, and each request reads it, changes its part and writes it back, so two requests at the same moment (three
+     files dropped together, the draft autosave during an upload, status polling) would overwrite each other's slot.
+     This takes a short per-invitation lock, re-reads the CURRENT record inside it, runs `fn`, and releases. */
+  const sleep = (ms) => new Promise((r) => setTimeout(r, ms))
+  async function mutate(id, fn) {
+    const lockKey = `cr:ilock:${id}`
+    for (let attempt = 0; attempt < 150; attempt++) {
+      if (await store.set(lockKey, 1, { nx: true, ttl: 20 })) {
+        try {
+          const fresh = await store.get(keys.invite(id))
+          if (!fresh) throw new CreatorError('invite_invalid', 401)
+          return await fn(fresh)
+        } finally {
+          await store.del(lockKey)
+        }
+      }
+      await sleep(30 + Math.floor(Math.random() * 40))
+    }
+    throw new CreatorError('busy', 503)
+  }
+  const serialized = (fn) => (inv, ...args) => mutate(inv.id, (fresh) => fn(fresh, ...args))
+
   /* ───────────── creator-facing state ───────────── */
 
   async function session(inv) {
@@ -188,15 +212,15 @@ export function createService(ctx) {
     }
   }
 
-  async function saveDraft(inv, body) {
+  const saveDraft = serialized(async (inv, body) => {
     inv.draft = sanitizeProfile(body)
     await save(inv)
     return { ok: true }
-  }
+  })
 
   /* ───────────── video uploads (direct to Cloudflare) ───────────── */
 
-  async function videoUpload(inv, body) {
+  const videoUpload = serialized(async (inv, body) => {
     if (!cf.configured) throw new CreatorError('uploads_unavailable', 503)
     const slot = slotOf(body?.slot)
     const fileError = validateVideoFile({ name: String(body?.filename || ''), type: String(body?.type || ''), size: Number(body?.size) })
@@ -223,10 +247,10 @@ export function createService(ctx) {
     if (previous?.uid) cf.deleteVideo(previous.uid).catch((e) => log('cf_delete_failed', { status: e?.status }))
     await save(inv)
     return { uploadURL: direct.uploadURL, slot: Number(slot), maxBytes: VIDEO_MAX_BYTES, maxSeconds: VIDEO_MAX_SECONDS }
-  }
+  })
 
   /* Asks Cloudflare where the video is, enforces our own limits, and remembers the result. */
-  async function videoStatus(inv, body) {
+  const videoStatus = serialized(async (inv, body) => {
     const slot = slotOf(body?.slot)
     const v = inv.videos[slot]
     if (!v) throw new CreatorError('no_video', 404)
@@ -276,7 +300,7 @@ export function createService(ctx) {
     }
     await save(inv)
     return publicVideo(v)
-  }
+  })
 
   const publicVideo = (v) => ({ uid: v.uid, state: v.state, filename: v.filename, size: v.size ?? null, duration: v.duration ?? null, pct: v.pct ?? null, error: v.error ?? null })
 
@@ -288,7 +312,7 @@ export function createService(ctx) {
     return { ...cf.playbackUrls(token), expiresAt: iso(expiresAt) }
   }
 
-  async function videoRemove(inv, body) {
+  const videoRemove = serialized(async (inv, body) => {
     const slot = slotOf(body?.slot)
     const v = inv.videos[slot]
     if (!v) return { ok: true }
@@ -296,14 +320,14 @@ export function createService(ctx) {
     await save(inv)
     if (v.uid) cf.deleteVideo(v.uid).catch((e) => log('cf_delete_failed', { status: e?.status }))
     return { ok: true }
-  }
+  })
 
   /* ───────────── profile photo ───────────── */
 
   const isJpeg = (b) => b.length > 4 && b[0] === 0xff && b[1] === 0xd8 && b[2] === 0xff
   const isPng = (b) => b.length > 8 && b.subarray(0, 8).equals(Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]))
 
-  async function photoPut(inv, buffer) {
+  const photoPut = serialized(async (inv, buffer) => {
     if (!Buffer.isBuffer(buffer) || buffer.length === 0) throw new CreatorError('invalid_photo')
     if (buffer.length > PHOTO_MAX_BYTES) throw new CreatorError('photo_too_large', 413)
     const type = isJpeg(buffer) ? 'image/jpeg' : isPng(buffer) ? 'image/png' : null
@@ -313,7 +337,7 @@ export function createService(ctx) {
     inv.photo = meta
     await save(inv)
     return { ok: true, photo: { size: meta.size, type, sha256: meta.sha256 } }
-  }
+  })
 
   async function photoGet(ref, { requirePresent = true } = {}) {
     const p = await store.get(keys.photo(ref))
@@ -321,12 +345,12 @@ export function createService(ctx) {
     return p ? { type: p.type, bytes: Buffer.from(p.b64, 'base64') } : null
   }
 
-  async function photoRemove(inv) {
+  const photoRemove = serialized(async (inv) => {
     inv.photo = null
     await save(inv)
     await store.del(keys.photo(inv.id))
     return { ok: true }
-  }
+  })
 
   /* ───────────── submission ───────────── */
 
@@ -388,7 +412,13 @@ export function createService(ctx) {
       if (Object.keys(errors).length) throw new CreatorError('validation_failed', 422, { errors })
 
       const submittedAt = iso(now())
-      const aText = agreementText()
+      // The agreement THIS creator accepts: the template personalised with their legal name and the three covered videos.
+      // The same object drives the online agreement, the stored record and the signed PDF.
+      const agreementDocument = buildAgreementDocument({
+        creatorName: profile.value.legalName,
+        materials: videos.map((v) => ({ slot: v.slot, label: v.filename })),
+      })
+      const aText = agreementDocumentText(agreementDocument)
       const pText = privacyText()
       const record = {
         id: inv.id,
@@ -405,8 +435,10 @@ export function createService(ctx) {
           displayName: profile.value.displayName,
           signature: clean(body.signature),
           signatureType: 'typed_name_simple_electronic_signature',
-          agreement: { version: AGREEMENT_VERSION, sha256: sha256(aText), text: aText },
-          privacy: { version: PRIVACY_VERSION, sha256: sha256(pText) },
+          // `version` is the INTERNAL revision id (never shown to creators). `text` is the exact accepted text,
+          // `document` the structured form the PDF is drawn from, `template` marks the record format.
+          agreement: { version: AGREEMENT_VERSION, template: 'r2', sha256: sha256(aText), text: aText, document: agreementDocument },
+          privacy: { version: PRIVACY_VERSION, sha256: sha256(pText), text: pText },
           checkboxes: ACCEPTANCES.map((a) => ({ key: a.key, text: a.text, accepted: true })),
           boundAssets: { videoUids: videos.map((v) => v.uid), photoSha256: photoSha },
         },
@@ -415,9 +447,11 @@ export function createService(ctx) {
       }
       await store.set(keys.sub(inv.id), record)
       await store.sadd('cr:subs', inv.id)
-      inv.status = 'completed'
-      inv.completedAt = now()
-      await save(inv)
+      await mutate(inv.id, async (latest) => {
+        latest.status = 'completed'
+        latest.completedAt = now()
+        await save(latest)
+      })
 
       if (ctx.notify) {
         // Best effort, and deliberately minimal: no legal name, no signature, no media.
@@ -444,7 +478,24 @@ export function createService(ctx) {
     if (inv.status !== 'completed') throw new CreatorError('not_submitted', 404)
     const sub = await store.get(keys.sub(inv.id))
     if (!sub) throw new CreatorError('not_found', 404)
-    return { filename: `CONVRT-creator-agreement-${sub.id}.html`, html: renderReceipt(sub) }
+    return buildReceipt(sub)
+  }
+
+  /* The creator's / owner's copy of a signed agreement. New records (with a stored `document`) become a PDF drawn from
+     exactly what was accepted. If a name uses a script the PDF fonts do not cover, a printable HTML copy is returned
+     instead (never wrong glyphs). Records signed before this format existed keep their original HTML copy. */
+  async function buildReceipt(sub) {
+    const base = `Creator-Portfolio-Agreement-${sub.id}`
+    if (!sub.acceptance.agreement.document) {
+      return { filename: `CONVRT-creator-agreement-${sub.id}.html`, contentType: 'text/html; charset=utf-8', body: renderReceipt(sub) }
+    }
+    try {
+      const { bytes } = await renderAgreementPdf(sub)
+      return { filename: `${base}.pdf`, contentType: 'application/pdf', body: Buffer.from(bytes) }
+    } catch (err) {
+      if (!(err instanceof UnsupportedTextError)) throw err
+      return { filename: `${base}.html`, contentType: 'text/html; charset=utf-8', body: renderAgreementHtml(sub) }
+    }
   }
 
   /* ───────────── owner (admin) operations ───────────── */
@@ -526,7 +577,7 @@ export function createService(ctx) {
   async function adminReceipt(id) {
     const s = await store.get(keys.sub(id))
     if (!s) throw new CreatorError('not_found', 404)
-    return { filename: `CONVRT-creator-agreement-${s.id}.html`, html: renderReceipt(s) }
+    return buildReceipt(s)
   }
 
   async function adminSetStatus(id, status, note) {

@@ -5,7 +5,7 @@ import {
   validateProfile, validateAcceptance, validateSignature, validateVideoFile, videoDurationError, normalizeFiverrUrl, sanitizeProfile, clean,
 } from '../src/lib/creator/validation.js'
 import { ACCEPTANCES, LANGUAGES, SPECIALIZATIONS, VIDEO_SLOTS, VIDEO_MAX_BYTES, VIDEO_MAX_SECONDS, LIMITS } from '../src/lib/creator/constants.js'
-import { AGREEMENT, PRIVACY, agreementText, privacyText, LEGAL_STATUS, LEGAL_ENTITY, OWNER_FLAG } from '../src/content/creatorLegal.js'
+import { PRIVACY, AGREEMENT_SECTIONS, agreementText, privacyText, LEGAL_STATUS, LEGAL_ENTITY, OWNER_FLAG } from '../src/content/creatorLegal.js'
 
 const ok = () => ({ legalName: 'Dummy Person', displayName: 'Dummy', fiverrUrl: 'fiverr.com/dummy', languages: ['English'], specializations: ['UGC videos'] })
 
@@ -78,28 +78,28 @@ test('video files: MP4/MOV only, size cap, limits published to the form match th
   assert.deepEqual(VIDEO_SLOTS, [1, 2, 3])
 })
 
-test('agreement: contains every required clause, prohibited use and the Fiverr terms; versioned; flagged as awaiting approval', () => {
+test('agreement: five numbered sections with the agreed commitments; no invented company details', () => {
   const text = agreementText()
-  for (const h of ['Purpose', 'Limited website-display permission', 'Ownership', 'Prohibited uses', 'Technical adjustments', 'Permissions', 'Removal rights', 'Independent relationship', 'Fiverr compensation', 'Privacy', 'Acceptance']) {
-    assert.ok(AGREEMENT.sections.some((s) => s.heading === h), h)
-  }
-  for (const phrase of ['AI or machine-learning training', 'Voice cloning or voice synthesis', 'Deepfakes', 'Social media reposting', '$25 showcase incentive', 'not a qualified or certified electronic signature', 'without providing a reason']) {
-    assert.ok(text.includes(phrase) || text.replace(/\s+/g, ' ').includes(phrase) || /qualified or certified/.test(text), phrase)
+  assert.deepEqual(AGREEMENT_SECTIONS.map((x) => `${x.n} ${x.heading}`), [
+    '01 Purpose and permitted use', '02 Ownership and permissions', '03 Prohibited uses', '04 Removal and withdrawal', '05 Compensation and future work',
+  ])
+  for (const phrase of ['AI or machine-learning training', 'face or voice cloning', 'deepfakes', 'paid advertising', 'social media reposting', '$25 showcase incentive', 'without giving a reason or incurring a penalty']) {
+    assert.ok(text.replace(/\s+/g, ' ').includes(phrase), phrase)
   }
   assert.equal(LEGAL_STATUS.approved, false, 'stays false until the owner approves the legal documents')
-  assert.equal(LEGAL_ENTITY, null, 'the legal entity is not invented')
-  assert.ok(!/\b(LLC|Ltd|Limited|GmbH|S\.A\.|Inc\.)\b/.test(text), 'no invented company form')
+  assert.equal(LEGAL_ENTITY.confirmed, false, 'the contracting name is taken from the owner reference but still needs confirmation')
+  assert.ok(!/\b(LLC|Ltd|GmbH|S\.A\.|Inc\.)\b/.test(text), 'no invented company form')
 })
 
 test('privacy notice: covers every required topic; unverified facts are flagged, never invented', () => {
   const headings = PRIVACY.sections.map((s) => s.heading.toLowerCase())
-  for (const topic of ['responsible', 'collect', 'why', 'legal bases', 'handles your information', 'how long', 'international', 'rights', 'removing', 'contact']) {
+  for (const topic of ['protect your content', 'removal at any time', 'responsible', 'collect', 'why', 'legal bases', 'handles your information', 'how long', 'international', 'rights', 'contact']) {
     assert.ok(headings.some((h) => h.includes(topic)), topic)
   }
   const text = privacyText()
   assert.ok(text.includes(OWNER_FLAG), 'owner-confirmation markers present')
   assert.ok((text.match(/OWNER TO CONFIRM/g) || []).length >= 4)
   assert.ok(/Cloudflare/.test(text) && /Vercel/.test(text) && /Resend/.test(text))
-  assert.ok(/MailerLite|marketing list/.test(text) && /do not add you to any marketing list/.test(text))
+  assert.ok(/will not add you to any marketing email list without a separate lawful basis/.test(text))
   assert.ok(!/\b\d+ (days|months|years)\b/.test(text), 'no invented retention periods')
 })

@@ -52,9 +52,11 @@ export const creatorApi = (token) => ({
     return r.ok ? URL.createObjectURL(await r.res.blob()) : null
   },
   submit: (payload) => request(token, 'submit', { method: 'POST', body: payload }),
-  downloadAgreement: async (filename) => {
+  downloadAgreement: async () => {
     const r = await request(token, 'agreement')
     if (!r.ok) return false
+    // The server names the file (a PDF; a printable HTML copy in the rare case the PDF fonts cannot draw a name).
+    const filename = /filename="([^"]+)"/.exec(r.res.headers.get('content-disposition') || '')?.[1] || 'Creator-Portfolio-Agreement.pdf'
     const url = URL.createObjectURL(await r.res.blob())
     const a = document.createElement('a')
     a.href = url

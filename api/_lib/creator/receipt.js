@@ -62,3 +62,44 @@ ul{padding-left:20px;margin:6px 0}
 <p><small>Your submission was received for review. Nothing is published until CONVRT approves it, and you can ask for removal at any time.</small></p>
 </body></html>`
 }
+
+/* Printable HTML copy of a NEW-format signed agreement. Used only when the PDF cannot be drawn (a name in a script the
+   embedded fonts do not cover). Same content as the PDF: parties, five sections, covered videos, acceptance, signatures. */
+export function renderAgreementHtml(sub) {
+  const a = sub.acceptance
+  const d = a.agreement.document
+  const date = (iso) => new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' })
+  const time = (iso) => `${new Date(iso).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', timeZone: 'UTC' })} UTC`
+  const sections = d.sections.map((s) => `<h2>${esc(s.n)} ${esc(s.heading)}</h2><p>${s.paragraphs.map(esc).join(' ')}</p>`).join('\n')
+  const videos = d.materials.length
+    ? `<h2>Covered videos</h2><ul>${d.materials.map((m) => `<li><strong>Video ${esc(m.slot)}</strong> ${esc(m.label)}</li>`).join('')}</ul>`
+    : ''
+  const counter = a.countersignature
+  return `<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="robots" content="noindex, nofollow">
+<title>${esc(d.title)}</title>
+<style>
+@page{size:A4;margin:16mm}
+body{font:11px/1.45 -apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:#111;max-width:720px;margin:24px auto;padding:0 18px;border-top:6px solid #d5ff40}
+h1{font-size:24px;margin:22px 0 2px}.sub{color:#555;margin:0 0 10px;font-size:12px}
+h2{font-size:12px;margin:14px 0 3px}p{margin:0 0 6px}ul{margin:4px 0 8px;padding-left:18px}
+.sign{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-top:18px;border-top:1px solid #ccc;padding-top:10px}
+.line{border-bottom:1px solid #999;min-height:24px;padding:2px 2px;overflow-wrap:anywhere}.lab{font-size:9px;color:#666;margin:2px 0 14px}
+.sig{font:italic 17px Georgia,serif}.foot{margin-top:22px;border-top:1px solid #ccc;padding-top:6px;color:#555;font-size:9px;display:flex;justify-content:space-between}
+</style></head><body>
+<h1>${esc(d.title)}</h1><p class="sub">${esc(d.subtitle)}</p>
+<p><strong>Parties:</strong> ${esc(d.parties)}</p>
+${sections}
+${videos}
+<p><strong>Acceptance:</strong> ${esc(d.acceptance)}</p>
+<div class="sign">
+<div><strong>CREATOR</strong><div class="line" style="margin-top:14px"><strong>${esc(a.legalName)}</strong></div><div class="lab">Full legal name</div>
+<div class="line sig">${esc(a.signature)}</div><div class="lab">Signature (typed electronic signature)</div>
+<div class="line">${esc(date(a.acceptedAt))}, ${esc(time(a.acceptedAt))}</div><div class="lab">Date</div></div>
+<div><strong>CONVRT STUDIO</strong><div class="line" style="margin-top:14px">${counter ? `<strong>${esc(counter.name)}</strong>` : ''}</div><div class="lab">Full legal name</div>
+<div class="line sig">${counter ? esc(counter.signature || counter.name) : ''}</div><div class="lab">Signature</div>
+<div class="line">${counter ? esc(date(counter.signedAt)) : ''}</div><div class="lab">Date</div></div>
+</div>
+<div class="foot"><span>CONVRT Studio | www.convrt.studio</span><span>Ref. ${esc(sub.id)} | ${esc(date(a.acceptedAt))}</span></div>
+</body></html>`
+}

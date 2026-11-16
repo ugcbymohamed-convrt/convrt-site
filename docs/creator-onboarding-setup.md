@@ -46,14 +46,25 @@ This feature adds one. Nothing else in the Stream account is touched.
 * The token endpoint used for signed playback is `POST /accounts/{id}/stream/{uid}/token`; no signing key is needed.
 
 ## 2. Legal documents: required before Production
-* `src/content/creatorLegal.js` holds the agreement (**v0.1-draft**) and privacy notice. They are **awaiting owner approval**.
-* The legal contracting identity of CONVRT Studio (entity name, address, registration/tax number) is **not in the repository** and has
-  not been invented. Privacy details that could not be verified (legal bases, retention periods, processor locations/transfer
-  safeguards, database region) are marked `[OWNER TO CONFIRM …]` and highlighted on the page.
-* On the **Production** deployment, creating invitations and submitting are **refused** while `LEGAL_STATUS.approved` is `false`.
-  Previews work for testing. To go live: get the texts reviewed, replace every marker, set `LEGAL_ENTITY`, bump the two version
-  strings, set `LEGAL_STATUS.approved = true`. Every submission stores the exact text it accepted and its SHA-256, so old
-  signatures stay valid when the wording changes.
+Source: `src/content/creatorLegal.js`. Both documents are **awaiting owner approval** (`LEGAL_STATUS.approved = false`).
+* **Creator Portfolio Agreement:** a short agreement (five numbered sections + acceptance + signature areas) modelled on the original one-page
+  PDF. It is **personalised for every submission**: CONVRT's legal contracting name, the creator's legal name, and the three covered videos by
+  filename. The same document drives the online agreement, the stored record and the signed A4 PDF (`api/_lib/creator/agreementPdf.js`).
+* **No visible version numbers.** Internally each document has a *revision id* (`AGREEMENT_REVISION`, `PRIVACY_REVISION`). Every submission stores
+  that revision, the **exact accepted text**, its SHA-256, the structured document, the privacy notice text and hash, the four consent records,
+  the server timestamp, the typed signature, the reference and the bound video/photo ids. **Changing wording = new text + new revision id**:
+  existing records are never rewritten, and new wording only applies to new submissions.
+* **Signed copy:** a PDF (one A4 page normally; a labelled "Record of materials" second page only if the video list needs room; body text never
+  below 9 pt). The CONVRT signature column stays **blank unless a countersignature is actually recorded** in the record (`acceptance.countersignature`:
+  `{ name, signature, signedAt }`; there is no screen to create one yet). Names in a script the embedded Inter fonts do not cover (e.g. Arabic,
+  Chinese, Greek) get a printable HTML copy instead of wrong glyphs. Agreements signed before this format keep their original HTML copy.
+* **Privacy Notice** opens with "How we protect your content" and "You can request removal at any time". The highlighted
+  `[OWNER TO CONFIRM …]` markers are real open points: they are **listed for you in `/creator-admin` (Setup check → "Before real creators sign")**
+  and in `OWNER_REVIEW_BLOCKERS`. Do not delete a marker until the point is decided; a test fails if an approved flag ships with markers left.
+* **Contracting name:** taken from your reference PDF (`LEGAL_ENTITY`, `confirmed: false`). The tax/registration number printed beside the
+  signature in that PDF has deliberately **not** been copied into creator agreements.
+* On **Production**, creating invitations and submitting are **refused** while `LEGAL_STATUS.approved` is `false`. Previews work for testing and
+  carry a "DRAFT" marking. To go live: resolve every blocker, remove the markers, set `LEGAL_ENTITY.confirmed = true` and `LEGAL_STATUS.approved = true`.
 
 ## 3. Generating a creator invitation link
 1. Open `/creator-admin` and sign in.
@@ -67,7 +78,7 @@ agreement (30 days), and cannot submit or change anything.
 
 ## 4. Reviewing submissions
 `/creator-admin` → **Submissions** → open one. You can read the profile and acceptance record, load and play all three videos
-(signed, 1-hour links), view the photo, download the signed agreement (HTML, printable to PDF), and **Approve**, **Reject** or
+(signed, 1-hour links), view the photo, download the signed agreement (PDF), download each video (Cloudflare prepares an MP4 first) and the photo, and **Approve**, **Reject** or
 send it back to **Pending**. Approval only flags it `publishable`; **nothing is published automatically** and there is no
 public showcase yet. You also get an email (display name, languages, specialization, reference, review link: no legal name,
 no media) via the existing Resend setup.
