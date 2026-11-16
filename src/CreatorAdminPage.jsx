@@ -166,6 +166,7 @@ function Detail({ id, onBack, reload }) {
   const [sub, setSub] = useState(null)
   const [player, setPlayer] = useState(null)
   const [thumbs, setThumbs] = useState({})
+  const [dl, setDl] = useState({}) // per slot: '' | 'preparing' | 'error'
   const [note, setNote] = useState('')
   const [wd, setWd] = useState({ open: false, via: 'Fiverr', note: '', deleteFiles: true })
   const [busy, setBusy] = useState(false)
@@ -181,6 +182,28 @@ function Detail({ id, onBack, reload }) {
     const r = await call(`video-token?id=${encodeURIComponent(id)}&slot=${slot}`)
     if (r.ok) setThumbs((t) => ({ ...t, [slot]: r }))
     else setError(r.error === 'withdrawn' ? 'Withdrawn: playback is disabled.' : 'Could not load the video.')
+  }
+  /* Cloudflare prepares an MP4 first (can take a while for long videos), so keep asking until it is ready. */
+  const download = async (slot) => {
+    setError('')
+    setDl((d) => ({ ...d, [slot]: 'preparing' }))
+    for (let i = 0; i < 120; i++) {
+      const r = await call(`video-download?id=${encodeURIComponent(id)}&slot=${slot}`)
+      if (!r.ok) { setDl((d) => ({ ...d, [slot]: 'error' })); setError('Could not prepare the download. Please try again.'); return }
+      if (r.status === 'ready' || r.url) {
+        const a = document.createElement('a')
+        a.href = r.url
+        a.download = r.filename || `video-${slot}.mp4`
+        a.rel = 'noopener'
+        a.target = '_blank'
+        document.body.appendChild(a); a.click(); a.remove()
+        setDl((d) => ({ ...d, [slot]: '' }))
+        return
+      }
+      await new Promise((res) => setTimeout(res, 3000))
+    }
+    setDl((d) => ({ ...d, [slot]: 'error' }))
+    setError('The download is still being prepared. Please try again in a minute.')
   }
   const setStatus = async (status) => {
     setBusy(true); setError('')
@@ -239,6 +262,11 @@ function Detail({ id, onBack, reload }) {
               )}
             </div>
             <p className="mt-2 truncate text-xs text-ink-muted">{v.filename} · {v.duration}s</p>
+            {!v.deletedAt && !withdrawn && (
+              <button className={`${btn} mt-2 w-full`} disabled={dl[v.slot] === 'preparing'} onClick={() => download(v.slot)}>
+                {dl[v.slot] === 'preparing' ? <><SpinnerIcon className="h-4 w-4" />Preparing…</> : <><DownloadIcon className="h-4 w-4" />Download</>}
+              </button>
+            )}
           </div>
         ))}
       </div>
@@ -247,6 +275,7 @@ function Detail({ id, onBack, reload }) {
         <div className="mt-6 flex items-center gap-4">
           <img src={`/api/creator-admin/photo?id=${encodeURIComponent(id)}`} alt="Profile" className="h-20 w-20 rounded-full object-cover" />
           <span className="text-sm text-ink-muted">Profile photo</span>
+          <a className={btn} href={`/api/creator-admin/photo?id=${encodeURIComponent(id)}`} download={`profile-photo-${id}.jpg`}><DownloadIcon className="h-4 w-4" />Download</a>
         </div>
       )}
 

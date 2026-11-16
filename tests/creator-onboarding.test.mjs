@@ -490,6 +490,31 @@ test('owner review: list, details, signed playback for all three videos, photo, 
   assert.ok(ag.text.includes('Test Creator Dummy'))
 })
 
+test('owner download: Cloudflare prepares an MP4 first, then a short-lived signed download link; blocked once withdrawn; owner only', async () => {
+  const t = await setup()
+  const uids = await uploadAll(t)
+  await t.C('submit', { method: 'POST', body: submission(uids) })
+  assert.equal((await admin(t.deps, '')(`video-download?id=${t.ref}&slot=1`)).status, 401)
+
+  const first = await t.A(`video-download?id=${t.ref}&slot=1`)
+  assert.equal(first.status, 200)
+  assert.equal(first.json.status, 'processing')
+  assert.equal(first.json.pct, 40)
+
+  t.cfake.videos.get(uids[0]).download.status = 'ready' // Cloudflare finished generating the MP4
+  const ready = await t.A(`video-download?id=${t.ref}&slot=1`)
+  assert.equal(ready.json.status, 'ready')
+  assert.match(ready.json.url, /^https:\/\/customer-abc\.cloudflarestream\.com\/signed-vid\d+-\d+\/downloads\/default\.mp4$/)
+  assert.ok(!ready.json.url.includes(`/${uids[0]}/`), 'the bare video id is replaced by the signed token')
+  const tokenCall = t.cfake.calls.filter((c) => c.path.endsWith('/token')).pop()
+  assert.equal(tokenCall.body.downloadable, true)
+  assert.ok(tokenCall.body.exp * 1000 - Date.now() <= 900_000 + 2000, 'download link lives 15 minutes at most')
+  assert.equal((await t.A(`video-download?id=${t.ref}&slot=9`)).status, 404)
+
+  await t.A('withdraw', { method: 'POST', body: { id: t.ref, requestedVia: 'email', deleteFiles: false } })
+  assert.equal((await t.A(`video-download?id=${t.ref}&slot=1`)).status, 409, 'no downloads for withdrawn submissions')
+})
+
 test('owner review: approve / reject / reopen — approval is the only thing that makes it publishable', async () => {
   const t = await setup()
   const uids = await uploadAll(t)

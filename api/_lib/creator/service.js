@@ -501,6 +501,22 @@ export function createService(ctx) {
     return { ...cf.playbackUrls(token), expiresAt: iso(expiresAt) }
   }
 
+  /* Owner download of one submitted video. Cloudflare first generates an MP4 (status 'processing' until it is ready); then a
+     short-lived signed link is returned. Never available for withdrawn submissions. */
+  async function adminVideoDownload(id, slotRaw) {
+    const s = await store.get(keys.sub(id))
+    if (!s) throw new CreatorError('not_found', 404)
+    if (s.status === 'withdrawn') throw new CreatorError('withdrawn', 409)
+    const v = s.assets.videos.find((x) => String(x.slot) === String(slotRaw))
+    if (!v || v.deletedAt) throw new CreatorError('no_video', 404)
+    let d = await cf.getDownload(v.uid).catch(() => null)
+    if (!d || !d.status) d = await cf.requestDownload(v.uid)
+    if (!d || d.status !== 'ready') return { status: 'processing', pct: Math.round(Number(d?.percentComplete) || 0) }
+    const { token } = await cf.signToken(v.uid, 900, now(), { downloadable: true })
+    const url = d.url && String(d.url).includes(v.uid) ? String(d.url).replace(v.uid, token) : `${cf.playbackBase}/${token}/downloads/default.mp4`
+    return { status: 'ready', url, filename: v.filename }
+  }
+
   async function adminPhoto(id) {
     const s = await store.get(keys.sub(id))
     if (!s || s.status === 'withdrawn' || !s.assets.photo || s.assets.photo.deletedAt) throw new CreatorError('no_photo', 404)
@@ -566,6 +582,6 @@ export function createService(ctx) {
     createInvite, rotateInvite, revokeInvite, resolve,
     session, saveDraft, videoUpload, videoStatus, videoPreview, videoRemove,
     photoPut, photoGet, photoRemove, submit, receipt,
-    adminOverview, adminSubmission, adminVideoToken, adminPhoto, adminReceipt, adminSetStatus, adminWithdraw,
+    adminOverview, adminSubmission, adminVideoToken, adminVideoDownload, adminPhoto, adminReceipt, adminSetStatus, adminWithdraw,
   }
 }

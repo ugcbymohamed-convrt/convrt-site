@@ -207,6 +207,7 @@ const ADMIN_OPS = {
   'invite-revoke': 'POST',
   submission: 'GET',
   'video-token': 'GET',
+  'video-download': 'GET',
   photo: 'GET',
   agreement: 'GET',
   'set-status': 'POST',
@@ -302,6 +303,8 @@ export async function adminHandler(req, res, deps = buildDeps()) {
         return reply(res, 200, { ok: true, submission: await service.adminSubmission(id) })
       case 'video-token':
         return reply(res, 200, { ok: true, ...(await service.adminVideoToken(id, url.searchParams.get('slot'))) })
+      case 'video-download':
+        return reply(res, 200, { ok: true, ...(await service.adminVideoDownload(id, url.searchParams.get('slot'))) })
       case 'photo': {
         const p = await service.adminPhoto(id)
         return reply(res, 200, p.bytes, { 'Content-Type': p.type })

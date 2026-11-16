@@ -30,6 +30,13 @@ export function fakeCloudflare() {
       videos.set(uid, { uid, requireSignedURLs: body.requireSignedURLs, meta: body.meta, creator: body.creator, maxDurationSeconds: body.maxDurationSeconds, status: { state: 'pendingupload' }, readyToStream: false, duration: -1, size: 0 })
       return ok({ uploadURL: `https://upload.example.test/${uid}`, uid })
     }
+    const dlm = u.pathname.match(/\/stream\/([^/]+)\/downloads$/)
+    if (dlm) {
+      const v = videos.get(dlm[1])
+      if (!v) return fail(404)
+      if (method === 'POST' && !v.download) v.download = { status: 'inprogress', percentComplete: 40, url: `https://customer-abc.cloudflarestream.com/${v.uid}/downloads/default.mp4` }
+      return ok(v.download ? { default: v.download } : {})
+    }
     if (u.pathname.endsWith('/stream/storage-usage') && method === 'GET') return ok({ totalStorageMinutes: 0, videoCount: videos.size })
     if (m?.[2] === 'token' && method === 'POST') {
       if (!videos.has(m[1])) return fail(404)
