@@ -64,6 +64,17 @@ export function upstashStore({ url, token, fetchImpl = globalThis.fetch }) {
     if (!res.ok || !json || json.error) throw new Error(`store_error_${res.status}`)
     return json.result
   }
+  /* Several commands in ONE round trip (Upstash REST /pipeline). */
+  async function pipeline(cmds) {
+    const res = await fetchImpl(`${url.replace(/\/$/, '')}/pipeline`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify(cmds),
+    })
+    const json = await res.json().catch(() => null)
+    if (!res.ok || !Array.isArray(json) || json.some((r) => r.error)) throw new Error(`store_error_${res.status}`)
+    return json.map((r) => r.result)
+  }
   const parse = (s) => (s === null || s === undefined ? null : JSON.parse(s))
   return {
     kind: 'upstash',
@@ -80,9 +91,16 @@ export function upstashStore({ url, token, fetchImpl = globalThis.fetch }) {
       await cmd(['DEL', key])
     },
     async incr(key, ttl) {
-      const n = Number(await cmd(['INCR', key]))
-      if (n === 1 && ttl) await cmd(['EXPIRE', key, String(ttl)])
-      return n
+      // INCR and "set the expiry only if there is none" in one request (a fixed window starting at the first hit).
+      try {
+        const out = await pipeline([['INCR', key], ...(ttl ? [['EXPIRE', key, String(ttl), 'NX']] : [])])
+        return Number(out[0])
+      } catch {
+        // A server without EXPIRE ... NX: fall back to the classic two-step form.
+        const n = Number(await cmd(['INCR', key]))
+        if (n === 1 && ttl) await cmd(['EXPIRE', key, String(ttl)])
+        return n
+      }
     },
     async sadd(set, member) {
       await cmd(['SADD', set, member])

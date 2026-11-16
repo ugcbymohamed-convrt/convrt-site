@@ -16,7 +16,7 @@
 import { PDFDocument, rgb, degrees } from 'pdf-lib'
 import fontkit from '@pdf-lib/fontkit'
 import { LOGO_PATHS } from '../../../src/lib/creator/logoPaths.js'
-import { LEGAL_STATUS, CONTRACTING_PARTY } from '../../../src/content/creatorLegal.js'
+import { LEGAL_STATUS, CONTRACTING_PARTY, longDate } from '../../../src/content/creatorLegal.js'
 import { FONT_DATA } from './fontData.js'
 
 export class UnsupportedTextError extends Error {
@@ -58,9 +58,7 @@ async function loadFamilies(pdf) {
 }
 
 /* Date/time text: always UTC (the server clock), so the copy never depends on where it is generated. */
-export function formatDate(iso) {
-  return new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' })
-}
+export const formatDate = longDate
 export function formatTime(iso) {
   return `${new Date(iso).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', timeZone: 'UTC' })} UTC`
 }
@@ -243,10 +241,12 @@ export async function renderAgreementPdf(record, { trace } = {}) {
     const gap = 26
     const colW = (innerW - gap) / 2
     const xs = [M.l, M.l + colW + gap]
-    const counter = acc.countersignature || null
+    // CONVRT's side: pre-filled (name, NIF, typed signature, date) when the document carries it; otherwise a recorded
+    // countersignature if there is one; otherwise blank.
+    const counter = doc.convrt ? { ...doc.convrt } : acc.countersignature || null
     const cols = [
       { head: 'CREATOR', name: acc.legalName, sig: acc.signature, date: acc.acceptedAt, time: true, sigLabel: 'Signature (typed electronic signature)' },
-      { head: 'CONVRT STUDIO', name: counter?.name || '', sig: counter?.signature || counter?.name || '', date: counter?.signedAt || '', time: false, sigLabel: 'Signature' },
+      { head: 'CONVRT STUDIO', name: counter?.name || '', nif: counter?.taxId || '', sig: counter?.signature || counter?.name || '', date: counter?.signedAt || '', time: false, sigLabel: 'Signature' },
     ]
     rule(y + 12)
     y -= 6
@@ -258,7 +258,7 @@ export async function renderAgreementPdf(record, { trace } = {}) {
       const rows = [
         { label: 'Full legal name', value: c.name, style: 'name' },
         { label: c.sigLabel, value: c.sig, style: 'sig' },
-        { label: 'Date', value: c.date ? `${formatDate(c.date)}${c.time ? `, ${formatTime(c.date)}` : ''}` : '', style: 'date' },
+        { label: 'Date', value: c.date ? `${longDate(c.date)}${c.time ? `, ${formatTime(c.date)}` : ''}` : '', style: 'date' },
       ]
       rows.forEach((r) => {
         if (r.value) {
@@ -268,6 +268,10 @@ export async function renderAgreementPdf(record, { trace } = {}) {
           let val = r.value
           while (widthOf(val, sz, false) > colW - 4 && val.length > 1) val = val.slice(0, -1)
           text(val === r.value ? val : `${val.slice(0, -1)}…`, { x: xs[i] + 2, size: sz, bold: r.style === 'name', skew: r.style === 'sig' ? 12 : 0 })
+          if (r.style === 'name' && c.nif) {
+            const nif = `NIF: ${c.nif}`
+            text(nif, { x: xs[i] + colW - widthOf(nif, 9, true) - 2, size: 9, bold: true })
+          }
         }
         page.drawLine({ start: { x: xs[i], y: yy }, end: { x: xs[i] + colW, y: yy }, thickness: 0.8, color: rgb(0.62, 0.62, 0.64) })
         y = yy - 11

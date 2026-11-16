@@ -10,8 +10,8 @@ import { PDFDocument } from 'pdf-lib'
 import { makeHarness, creator, admin, adminLogin, validProfile } from './helpers/creatorHarness.mjs'
 import { ACCEPTANCES } from '../src/lib/creator/constants.js'
 import {
-  AGREEMENT_VERSION, PRIVACY_VERSION, LEGAL_STATUS, LEGAL_ENTITY, OWNER_FLAG, OWNER_REVIEW_BLOCKERS, PRIVACY,
-  AGREEMENT_SECTIONS, buildAgreementDocument, agreementDocumentText, privacyText,
+  AGREEMENT_VERSION, PRIVACY_VERSION, LEGAL_STATUS, LEGAL_ENTITY, OWNER_FLAG, OWNER_REVIEW_BLOCKERS, PRIVACY, PRIVACY_TBC_ITEMS,
+  AGREEMENT_SECTIONS, longDate, buildAgreementDocument, agreementDocumentText, privacyText,
 } from '../src/content/creatorLegal.js'
 import { renderAgreementPdf } from '../api/_lib/creator/agreementPdf.js'
 import { sha256 } from '../api/_lib/creator/crypto.js'
@@ -78,7 +78,7 @@ test('personalisation: every submission carries its own creator name and its own
     assert.equal(a.document.creatorName, c.name)
     assert.deepEqual(a.document.materials, c.files.map((label, i) => ({ slot: i + 1, label })), 'the three covered videos are named')
     assert.deepEqual(record.acceptance.boundAssets.videoUids, uids, 'and bound to their exact asset ids')
-    assert.deepEqual(a.document, buildAgreementDocument({ creatorName: c.name, materials: c.files.map((label, i) => ({ slot: i + 1, label })) }), 'identical to what the online agreement renders')
+    assert.deepEqual(a.document, buildAgreementDocument({ creatorName: c.name, materials: c.files.map((label, i) => ({ slot: i + 1, label })), signedAt: record.submittedAt }), 'identical to what the online agreement renders')
     assert.equal(a.sha256, sha256(a.text))
   }
   const [one, two] = results
@@ -203,25 +203,46 @@ test('PDF layout: when the covered videos need room they go on a labelled supple
   for (const slot of [1, 2, 3]) assert.ok(drawn.includes(`${long} ${slot}`.slice(0, 40)))
 })
 
-test('signature block: the creator’s typed signature and server date appear; CONVRT’s side stays blank unless a countersignature was recorded', async () => {
+test('signature block: the creator’s typed signature and server date appear; CONVRT’s side arrives pre-filled (name, NIF, typed signature, date)', async () => {
   const t = await setup()
   const { record } = await submitAs(t, CREATORS[0].name, CREATORS[0].files)
   const entity = LEGAL_ENTITY.name
-  const count = (trace) => trace.filter((x) => x === entity).length
+  const acceptDate = longDate(record.acceptance.acceptedAt)
 
-  const plain = []
-  await renderAgreementPdf(record, { trace: plain })
-  const drawn = norm(plain.join(' '))
+  const trace = []
+  await renderAgreementPdf(record, { trace })
+  const drawn = norm(trace.join(' '))
   assert.ok(drawn.includes('CREATOR') && drawn.includes('CONVRT STUDIO'))
-  // The signature equals the legal name here, so the string is drawn twice: in the name row and in the signature row.
-  assert.equal(plain.filter((x) => x === record.acceptance.signature).length, 2, 'the typed signature is drawn in the creator column')
-  assert.ok(plain.some((x) => x.startsWith(new Date(record.acceptance.acceptedAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' }))), 'the acceptance date')
-  assert.equal(count(plain), 0, 'CONVRT’s name is not drawn as a signer (it appears only inside the parties sentence)')
+  // Creator column: name row + signature row (same string), plus the server acceptance date and time.
+  assert.equal(trace.filter((x) => x === record.acceptance.signature).length, 2)
+  assert.ok(trace.some((x) => x === `${acceptDate}, ${new Date(record.acceptance.acceptedAt).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', timeZone: 'UTC' })} UTC`))
+  // CONVRT column: legal name, NIF, typed signature (same name) and the date, all pre-filled.
+  assert.equal(trace.filter((x) => x === entity).length, 2, 'CONVRT name row + typed signature row')
+  assert.ok(trace.includes(`NIF: ${LEGAL_ENTITY.taxId}`))
+  assert.equal(trace.filter((x) => x === acceptDate).length, 1, 'CONVRT’s date (the acceptance date)')
 
-  const signed = []
-  await renderAgreementPdf({ ...record, acceptance: { ...record.acceptance, countersignature: { name: entity, signature: entity, signedAt: '2026-11-20T10:00:00.000Z' } } }, { trace: signed })
-  assert.ok(count(signed) >= 2, 'a recorded countersignature shows name and signature')
-  assert.ok(signed.some((x) => x.startsWith('20 November 2026')), 'with its own date, distinct from the acceptance date')
+  // The same facts are inside the exact accepted text and its hash, so the signed copy, the stored record and the online agreement agree.
+  const a = record.acceptance.agreement
+  assert.deepEqual(a.document.convrt, { name: entity, taxId: LEGAL_ENTITY.taxId, signature: entity, signedAt: record.submittedAt })
+  assert.ok(a.text.includes(`Signed for CONVRT Studio: ${entity} (NIF ${LEGAL_ENTITY.taxId}), signature: ${entity}, ${acceptDate}`))
+  assert.equal(a.sha256, sha256(a.text))
+})
+
+test('signature block: CONVRT’s side stays blank when the document carries no CONVRT signature; a recorded countersignature is shown instead', async () => {
+  const t = await setup()
+  const { record } = await submitAs(t, CREATORS[0].name, CREATORS[0].files)
+  const blankDoc = { ...record.acceptance.agreement.document, convrt: null }
+  const blank = { ...record, acceptance: { ...record.acceptance, agreement: { ...record.acceptance.agreement, document: blankDoc } } }
+  const t1 = []
+  await renderAgreementPdf(blank, { trace: t1 })
+  assert.equal(t1.filter((x) => x === LEGAL_ENTITY.name).length, 0, 'nothing is drawn as a CONVRT signer')
+  assert.ok(!t1.some((x) => x.startsWith('NIF')))
+
+  const counter = { ...blank, acceptance: { ...blank.acceptance, countersignature: { name: LEGAL_ENTITY.name, signature: LEGAL_ENTITY.name, signedAt: '2026-11-20T10:00:00.000Z' } } }
+  const t2 = []
+  await renderAgreementPdf(counter, { trace: t2 })
+  assert.equal(t2.filter((x) => x === LEGAL_ENTITY.name).length, 2)
+  assert.ok(t2.includes('20 November 2026'), 'a countersignature carries its own date, distinct from the acceptance date')
 })
 
 test('the draft strip is shown only while the documents are unapproved', async () => {
@@ -290,42 +311,94 @@ test('privacy notice: content protections and removal rights come first, in the 
     '- Paid advertising or promotional campaigns outside the agreed website showcase.', '- Redistribution, resale or unauthorized sublicensing.',
     '- Social media reposting without separate permission.',
     '- Material alterations to your appearance, voice, performance or creative work without your prior written approval.',
-    'These adjustments do not authorize us to materially change your performance or identity.',
+    'host and display approved content securely, such as encoding, compression, resizing and thumbnail generation',
+    'These do not authorize us to materially change your performance or identity.',
     'Any additional use requires your separate prior written agreement.',
-    'without providing a reason', 'Contact us through Fiverr or at mohamed@convrt.studio.',
-    'Requests to remove portfolio materials do not result in a penalty or repayment of the showcase incentive.',
+    'whenever you like, without giving a reason', 'Contact us through Fiverr or at mohamed@convrt.studio.',
+    'Removing your materials never results in a penalty or repayment of the showcase incentive.',
   ]) assert.ok(text.includes(phrase), phrase)
   assert.ok(!/delete (all|every)|immediately delet/i.test(text), 'removal does not promise immediate deletion of every legally retained record')
+  assert.ok(text.includes('Stored copies and necessary legal records are handled as described under'), 'retained legal records are acknowledged')
+})
+
+test('privacy notice: all the required sections are present, each once, with no repeated sentences', () => {
+  const headings = PRIVACY.sections.map((s) => s.heading)
+  for (const required of ['How we protect your content', 'You can request removal at any time', 'Who is responsible for your information', 'What we collect', 'Why we use it', 'Legal bases', 'Who handles your information for us', 'How long we keep it', 'International transfers', 'Your rights', 'Contact']) {
+    assert.equal(headings.filter((h) => h === required).length, 1, required)
+  }
+  const sentences = privacyText().split(/(?<=[.!?])\s+/).map((x) => x.trim()).filter((x) => x.length > 30)
+  const dupes = sentences.filter((x, i) => sentences.indexOf(x) !== i)
+  assert.deepEqual(dupes, [], 'no sentence is repeated')
+  assert.ok(privacyText().length < 6500, 'the notice stays short')
 })
 
 test('privacy notice: what is (not) published, marketing, Fiverr, and the verified infrastructure are stated', () => {
   const text = norm(privacyText())
   assert.ok(text.includes('Your legal name, signature and private agreement details are not published on your public portfolio.'))
   assert.ok(text.includes('Only approved public-facing details and materials may be displayed'))
-  assert.ok(text.includes('We will not add you to any marketing email list without a separate lawful basis'))
+  assert.ok(text.includes('we will not add you to any marketing email list without a separate lawful basis'))
   assert.ok(text.includes('communication and commercial transactions stay on Fiverr'))
   for (const provider of ['Cloudflare Stream', 'Vercel', 'Upstash', 'Resend', 'Fiverr']) assert.ok(text.includes(provider), provider)
-  assert.ok(text.includes('Washington, D.C., USA'), 'the verified US processing location is disclosed')
-  assert.ok(!/GDPR-compliant|certified|ISO ?27001|SOC ?2|guarantee/i.test(text), 'no invented certifications or guarantees')
+  assert.ok(text.includes('Washington, D.C., USA') && text.includes('Frankfurt, Germany'), 'verified processing locations are disclosed')
+  assert.ok(text.includes('Resend stores its data in the United States'))
+  assert.ok(text.includes('CONVRT does not request automatic captions, transcription or any other AI analysis of your videos'))
+  assert.ok(!/GDPR-compliant|certified|ISO ?27001|SOC ?2|guarantee|routine backups/i.test(text), 'no invented certifications, guarantees or backup claims')
   assert.ok(!/\b\d+ (days|months|years)\b/.test(text), 'no invented retention periods')
 })
 
-test('privacy notice: open legal points stay flagged and are listed for owner review, never silently removed', () => {
+test('privacy notice: every open point is a tracked item with a row in the launch checklist; none is silently removable', () => {
   const text = privacyText()
+  const checklist = fs.readFileSync(path.join(ROOT, 'docs/creator-privacy-launch-checklist.md'), 'utf8')
   assert.equal(LEGAL_STATUS.approved, false)
-  assert.ok((text.match(/OWNER TO CONFIRM/g) || []).length >= 6, 'markers are still in the text')
-  assert.ok(OWNER_REVIEW_BLOCKERS.length >= 6)
-  for (const topic of [/legal bases/i, /retention/i, /transfers/i, /region/i, /legal contracting name/i, /AI, analysis or training/i]) {
-    assert.ok(OWNER_REVIEW_BLOCKERS.some((b) => topic.test(b)), `blocker list covers ${topic}`)
+  assert.equal(PRIVACY_TBC_ITEMS.length, 6)
+  for (const item of PRIVACY_TBC_ITEMS) {
+    assert.ok(text.includes(`${OWNER_FLAG}: ${item}]`), `the notice carries the "${item}" marker`)
+    assert.ok(checklist.includes(item), `the checklist has a row for "${item}"`)
   }
+  assert.equal((text.match(/OWNER TO CONFIRM/g) || []).length, PRIVACY_TBC_ITEMS.length, 'no untracked marker')
+  for (const col of ['Confirmed now', 'What you need to do', 'Verify with', 'Blocks Production?']) assert.ok(checklist.includes(col), col)
+  assert.ok(OWNER_REVIEW_BLOCKERS.length >= 6)
   // The only way to ship without markers is for the owner to approve: markers may not coexist with an approved flag.
-  const approved = LEGAL_STATUS.approved
-  assert.ok(!approved || !text.includes(OWNER_FLAG), 'approved documents contain no unresolved markers')
+  assert.ok(!LEGAL_STATUS.approved || !text.includes(OWNER_FLAG), 'approved documents contain no unresolved markers')
 })
 
-test('the contracting name comes from the owner reference but the owner’s tax id is not copied into agreements', () => {
+test('creators see "To be confirmed" tags, never developer markers or placeholder identifiers (checked in the built page)', { skip: !fs.existsSync(path.join(ROOT, 'dist/creator-onboarding/privacy/index.html')) && 'dist/ not built' }, () => {
+  const html = fs.readFileSync(path.join(ROOT, 'dist/creator-onboarding/privacy/index.html'), 'utf8')
+  const visible = html.replace(/<script[\s\S]*?<\/script>|<style[\s\S]*?<\/style>/g, '').replace(/<[^>]+>/g, ' ').replace(/&#x27;|&#39;/g, "'").replace(/\s+/g, ' ')
+  for (const item of PRIVACY_TBC_ITEMS) assert.ok(visible.includes(`To be confirmed: ${item}`), item)
+  assert.ok(!/OWNER TO CONFIRM|TODO|FIXME|placeholder|\[\s*\]/i.test(visible), 'no developer notes')
+  assert.ok(visible.includes('Draft awaiting final approval'), 'a clear draft status is shown while approval is pending')
+  assert.ok(!/0\.1-draft|privacy-2026|agreement-2026/i.test(visible), 'no internal revision ids')
+})
+
+test('the agreement and the privacy notice make the same commitments', () => {
+  const agreement = norm(agreementDocumentText(buildAgreementDocument({ creatorName: 'Test Creator', materials: [] }))).toLowerCase()
+  const privacy = norm(privacyText()).toLowerCase()
+  const both = (agreementPhrase, privacyPhrase) => {
+    assert.ok(agreement.includes(agreementPhrase), `agreement: ${agreementPhrase}`)
+    assert.ok(privacy.includes(privacyPhrase), `privacy: ${privacyPhrase}`)
+  }
+  both('display the three approved edited portfolio videos', 'display approved portfolio examples on our website')   // limited website display
+  both('ai or machine-learning training', 'ai or machine-learning training')
+  both('face or voice cloning', 'face or voice cloning')
+  both('digital avatars', 'digital avatars')
+  both('deepfakes', 'deepfakes')
+  both('paid advertising', 'paid advertising')
+  both('redistribution', 'redistribution')
+  both('social media reposting', 'social media reposting')
+  both('without prior written approval', 'without your prior written approval')                                    // no unauthorised alteration
+  both('retains all rights they hold', 'remain yours')                                                             // ownership
+  both('without giving a reason or incurring a penalty', 'without giving a reason')                                // removal
+  both('through fiverr or by contacting mohamed@convrt.studio', 'through fiverr or at mohamed@convrt.studio')
+  both('does not require repayment of the agreed showcase incentive', 'repayment of the showcase incentive')
+  both('remain on fiverr', 'stay on fiverr')                                                                       // Fiverr stays
+})
+
+test('CONVRT’s identity is the one the owner supplied; the NIF appears only in the signature block, the accepted text and the controller line', () => {
   assert.equal(LEGAL_ENTITY.name, 'Mohamed Doukkali Azizi')
-  assert.equal(LEGAL_ENTITY.confirmed, false)
-  const everything = agreementDocumentText(buildAgreementDocument({ creatorName: 'X Y', materials: [] })) + privacyText()
-  assert.ok(!/NIF|Y6755743J|tax id/i.test(everything))
+  assert.equal(LEGAL_ENTITY.taxId, 'Y6755743J')
+  assert.equal(LEGAL_ENTITY.confirmed, false, 'still listed for the owner’s confirmation')
+  const generic = buildAgreementDocument({ creatorName: 'X Y', materials: [] })
+  assert.equal(generic.convrt.signedAt, null, 'the date is only known at acceptance')
+  assert.ok(!generic.parties.includes('Y6755743J'), 'the parties sentence names CONVRT but does not repeat the tax id')
 })

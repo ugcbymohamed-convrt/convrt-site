@@ -614,6 +614,28 @@ test('withdrawal: "keep files for now" is possible and recorded', async () => {
 })
 
 // ───────────────────────── configuration safety ─────────────────────────
+test('database: a rate-limit counter is ONE pipelined request; an old server without EXPIRE NX falls back to two commands', async () => {
+  const { upstashStore } = await import('../api/_lib/creator/store.js')
+  const calls = []
+  const fake = (rejectNx) => async (url, init) => {
+    const body = JSON.parse(init.body)
+    calls.push({ url, body })
+    if (String(url).endsWith('/pipeline')) {
+      if (rejectNx) return { ok: false, status: 400, json: async () => [{ error: 'ERR syntax' }] }
+      return { ok: true, status: 200, json: async () => body.map((c) => ({ result: c[0] === 'INCR' ? 3 : 1 })) }
+    }
+    return { ok: true, status: 200, json: async () => ({ result: body[0] === 'INCR' ? 1 : 1 }) }
+  }
+  let store = upstashStore({ url: 'https://db.example.test', token: 't', fetchImpl: fake(false) })
+  assert.equal(await store.incr('k', 900), 3)
+  assert.equal(calls.length, 1, 'one request, not two')
+  assert.deepEqual(calls[0].body, [['INCR', 'k'], ['EXPIRE', 'k', '900', 'NX']])
+  calls.length = 0
+  store = upstashStore({ url: 'https://db.example.test', token: 't', fetchImpl: fake(true) })
+  assert.equal(await store.incr('k', 900), 1)
+  assert.deepEqual(calls.slice(1).map((c) => c.body[0]), ['INCR', 'EXPIRE'], 'fell back to the two-step form')
+})
+
 test('not configured: without a database every creator/owner call says so instead of pretending', async () => {
   const { buildDeps } = await import('../api/_lib/creator/handlers.js')
   const { call } = await import('./helpers/creatorHarness.mjs')

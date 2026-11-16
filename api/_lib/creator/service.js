@@ -358,12 +358,10 @@ export function createService(ctx) {
     if (ctx.cfg?.isProduction && !LEGAL_STATUS.approved) throw new CreatorError('legal_not_approved', 409)
     if (!cf.configured) throw new CreatorError('uploads_unavailable', 503)
 
-    // One submission at a time per invitation (double clicks, two tabs, retries).
-    const locked = await store.set(`cr:lock:${inv.id}`, 1, { nx: true, ttl: 90 })
-    if (!locked) throw new CreatorError('submission_in_progress', 409)
-    try {
-      const fresh = await store.get(keys.invite(inv.id))
-      if (!fresh || fresh.status !== 'open') throw new CreatorError('already_submitted', 409)
+    // One submission at a time per invitation (double clicks, two tabs, retries): the whole submit runs inside the
+    // invitation lock, on the CURRENT record. A concurrent second submit waits, then sees the invitation completed.
+    return mutate(inv.id, async (fresh) => {
+      if (fresh.status !== 'open') throw new CreatorError('already_submitted', 409)
       if (now() > fresh.expiresAt) throw new CreatorError('invite_expired', 401)
       inv = fresh
 
@@ -374,20 +372,23 @@ export function createService(ctx) {
         throw new CreatorError('legal_version_changed', 409)
       }
 
-      // The three videos: each must be one this invitation was authorised to upload, distinct, and still verified by Cloudflare.
+      // The three videos: each must be one this invitation was authorised to upload, distinct, and still verified by
+      // Cloudflare (the three checks run in parallel).
       const videos = []
-      for (const s of VIDEO_SLOTS) {
+      const checks = await Promise.all(VIDEO_SLOTS.map(async (s) => {
         const v = inv.videos[s]
-        if (!v || v.state !== 'ready') {
-          errors[`video${s}`] = 'Please upload this video before submitting.'
-          continue
-        }
-        let info
+        if (!v || v.state !== 'ready') return { s, v, missing: true }
         try {
-          info = await cf.getVideo(v.uid)
+          return { s, v, info: await cf.getVideo(v.uid) }
         } catch (err) {
           log('cf_verify_failed', { status: err?.status })
           throw new CreatorError('uploads_unavailable', 502)
+        }
+      }))
+      for (const { s, v, info, missing } of checks) {
+        if (missing) {
+          errors[`video${s}`] = 'Please upload this video before submitting.'
+          continue
         }
         const okVideo =
           info?.status?.state === 'ready' && info.requireSignedURLs === true && info.meta?.submissionId === inv.id &&
@@ -417,6 +418,7 @@ export function createService(ctx) {
       const agreementDocument = buildAgreementDocument({
         creatorName: profile.value.legalName,
         materials: videos.map((v) => ({ slot: v.slot, label: v.filename })),
+        signedAt: submittedAt,
       })
       const aText = agreementDocumentText(agreementDocument)
       const pText = privacyText()
@@ -445,17 +447,16 @@ export function createService(ctx) {
         history: [{ at: submittedAt, action: 'submitted' }],
         withdrawal: null,
       }
-      await store.set(keys.sub(inv.id), record)
-      await store.sadd('cr:subs', inv.id)
-      await mutate(inv.id, async (latest) => {
-        latest.status = 'completed'
-        latest.completedAt = now()
-        await save(latest)
-      })
+      // The record first (together with the index), then the invitation is marked completed: a crash in between can
+      // never leave a "completed" invitation without its record.
+      await Promise.all([store.set(keys.sub(inv.id), record), store.sadd('cr:subs', inv.id)])
+      inv.status = 'completed'
+      inv.completedAt = now()
+      await save(inv)
 
       if (ctx.notify) {
         // Best effort, and deliberately minimal: no legal name, no signature, no media.
-        ctx.notify({
+        const alert = ctx.notify({
           subject: `New CONVRT creator portfolio submission — ${record.profile.displayName}`,
           title: 'New creator portfolio submission',
           rows: [
@@ -467,11 +468,12 @@ export function createService(ctx) {
           ],
           footer: 'Status: Pending review. Videos are private until you approve them in the review page. Nothing is published automatically.',
         }).catch(() => {})
+        // The response must not wait for the email, but the host may freeze the function once it responds: waitUntil
+        // keeps it alive until the email has been sent.
+        if (ctx.waitUntil) ctx.waitUntil(alert)
       }
       return { ok: true, ref: record.id, submittedAt }
-    } finally {
-      await store.del(`cr:lock:${inv.id}`)
-    }
+    })
   }
 
   async function receipt(inv) {

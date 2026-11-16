@@ -590,6 +590,15 @@ export default function CreatorOnboardingPage() {
   return (
     <CreatorShell>
       {body}
+      {submitting && (
+        <div role="status" aria-live="polite" className="fixed inset-0 z-40 flex items-center justify-center bg-canvas/85 p-6 backdrop-blur-sm">
+          <div className="max-w-sm rounded-3xl border border-hairline bg-surface-1 p-7 text-center">
+            <SpinnerIcon className="mx-auto h-8 w-8 text-lime" />
+            <p className="mt-4 text-lg font-semibold text-ink">Saving your submission…</p>
+            <p className="mt-2 text-sm leading-relaxed text-ink-muted">We’re checking your videos and recording your signed agreement. This takes a few seconds. Please keep this page open.</p>
+          </div>
+        </div>
+      )}
       {player && <PlayerModal src={player.src} title={`Video ${player.slot}`} onClose={() => setPlayer(null)} />}
     </CreatorShell>
   )

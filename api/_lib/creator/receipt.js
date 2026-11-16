@@ -74,7 +74,7 @@ export function renderAgreementHtml(sub) {
   const videos = d.materials.length
     ? `<h2>Covered videos</h2><ul>${d.materials.map((m) => `<li><strong>Video ${esc(m.slot)}</strong> ${esc(m.label)}</li>`).join('')}</ul>`
     : ''
-  const counter = a.countersignature
+  const counter = d.convrt || a.countersignature
   return `<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="robots" content="noindex, nofollow">
 <title>${esc(d.title)}</title>
@@ -96,7 +96,7 @@ ${videos}
 <div><strong>CREATOR</strong><div class="line" style="margin-top:14px"><strong>${esc(a.legalName)}</strong></div><div class="lab">Full legal name</div>
 <div class="line sig">${esc(a.signature)}</div><div class="lab">Signature (typed electronic signature)</div>
 <div class="line">${esc(date(a.acceptedAt))}, ${esc(time(a.acceptedAt))}</div><div class="lab">Date</div></div>
-<div><strong>CONVRT STUDIO</strong><div class="line" style="margin-top:14px">${counter ? `<strong>${esc(counter.name)}</strong>` : ''}</div><div class="lab">Full legal name</div>
+<div><strong>CONVRT STUDIO</strong><div class="line" style="margin-top:14px">${counter ? `<strong>${esc(counter.name)}</strong>${counter.taxId ? ` <span style="float:right"><strong>NIF: ${esc(counter.taxId)}</strong></span>` : ''}` : ''}</div><div class="lab">Full legal name</div>
 <div class="line sig">${counter ? esc(counter.signature || counter.name) : ''}</div><div class="lab">Signature</div>
 <div class="line">${counter ? esc(date(counter.signedAt)) : ''}</div><div class="lab">Date</div></div>
 </div>

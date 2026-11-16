@@ -8,6 +8,7 @@
 
    Both: same-origin only for anything that changes state, no caching, noindex, no referrer. */
 
+import { waitUntil } from '@vercel/functions'
 import { creatorConfig, MIN_ADMIN_PASSWORD, MIN_SESSION_SECRET } from './config.js'
 import { storeFromConfig } from './store.js'
 import { cloudflare } from './cloudflare.js'
@@ -47,7 +48,7 @@ export function buildDeps(env = process.env, { fetchImpl = globalThis.fetch, now
   const cf = cloudflare(cfg, fetchImpl)
   const log = (kind, detail) => console.error(`[creator] ${kind}`, detail || '') // eslint-disable-line no-console
   const notify = (alert) => sendOwnerAlert(alert, { env, fetchImpl, log })
-  const service = store ? createService({ store, cf, cfg, notify, log, now, env }) : null
+  const service = store ? createService({ store, cf, cfg, notify, log, now, env, waitUntil }) : null
   return { cfg, store, cf, service, log, now: now || (() => Date.now()) }
 }
 

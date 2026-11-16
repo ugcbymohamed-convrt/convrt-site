@@ -1,0 +1,43 @@
+# Creator onboarding: privacy and legal launch checklist
+
+Status: **draft, not approved** (`LEGAL_STATUS.approved = false` in `src/content/creatorLegal.js`). Production refuses invitations and
+submissions until it is `true`; Previews keep working for testing. Nothing here is legal advice, and nothing is marked "confirmed" that
+was not actually verified.
+
+Each open point appears in the Privacy Notice as a small **"To be confirmed: …"** tag (and as `[OWNER TO CONFIRM: …]` in the stored text). A
+test fails if one of the six tags below has no row in this file, so none can be removed without a decision.
+
+## Open items
+
+| # | Missing item | Confirmed now (source) | What you need to do | Verify with | Blocks Production? |
+|---|---|---|---|---|---|
+| 1 | **registered address** (controller identity) | Legal contracting name **Mohamed Doukkali Azizi** and **NIF Y6755743J**, taken from your own reference agreement PDF and your instruction (16 Nov 2026) to pre-fill them; both are printed in the agreement and the controller line. Contact email: mohamed@convrt.studio (repo `src/config.js`). **No address exists** in the repo or the reference PDF. | Confirm the name/NIF are exactly how you want to contract. Give the business address to publish, or confirm that email-only contact is acceptable. | Your tax registration document; legal advice | **Yes**, unless legal review accepts email-only contact |
+| 2 | **Registration information** (company/VAT/trade registration, if any) | Only the NIF above is known. | Say whether any other registration number applies and should appear. | Tax/business registration papers | No, unless legal advice requires it |
+| 3 | **legal bases** | The notice states the bases we *expect* to rely on: steps before a possible collaboration (GDPR Art. 6(1)(b)), consent to display image/voice/profile (Art. 6(1)(a), withdrawable at any time, Art. 7(3)), legitimate interests in running the network securely and keeping permission records (Art. 6(1)(f)), legal obligation (Art. 6(1)(c)). This is a proposal, **not verified for your jurisdiction**. | Have a lawyer confirm or change the bases, especially for consent to use of image and voice. | Legal advice; [GDPR text](https://gdpr-info.eu/art-6-gdpr/) | **Yes** |
+| 4 | **database region** (Upstash) | During setup the Upstash screen showed Primary Region **Frankfurt, Germany (West)**, no read regions, eviction off, **Free** plan, database `upstash-kv-champagne-harbor` (setup screenshots in this project). The region cannot be read from the app or env vars. | Open the database in the Upstash console → Details and confirm the primary region. Update the notice if it differs. | Upstash console; [Upstash replication docs](https://upstash.com/docs/redis/features/globaldatabase) | **Yes** (2-minute check) |
+| 5 | **provider data-processing and AI terms** | **Repo (verified):** CONVRT's code never requests captions, transcription or any AI feature: it only creates direct uploads, reads/deletes videos, mints signed tokens and requests MP4 downloads (`api/_lib/creator/cloudflare.js`). **Provider docs (found via web search, re-verify):** Vercel publishes a [DPA](https://vercel.com/legal/dpa) (the copy I found is dated March 2026) and a guide saying it relies on SCCs + UK Addendum; Cloudflare publishes a [Customer DPA](https://www.cloudflare.com/cloudflare-customer-dpa/), and Stream "Generated Captions" is a per-video action using Workers AI, with Cloudflare stating it does not train on customer content ([Cloudflare blog](https://blog.cloudflare.com/stream-automatic-captions-with-ai/)); Upstash publishes a [DPA](https://upstash.com/trust/dpa.pdf) (Upstash, Inc., Delaware) and a [compliance page](https://docs.upstash.com/redis/help/compliance); Resend states a pre-signed DPA applies to every account ([Resend GDPR page](https://resend.com/security/gdpr)). **Not verified:** that each DPA is in force for *your* accounts and covers Cloudflare *Stream* specifically. | Download/keep each provider's DPA for your account and confirm acceptance. In Cloudflare confirm no caption/AI features are used on creator videos. Keep the notice sentence "CONVRT does not request automatic captions, transcription or any other AI analysis" only while true. | Provider dashboards (legal/DPA pages), Cloudflare Stream settings | **Yes** (GDPR Art. 28 processors) |
+| 6 | **retention periods** | **Current behaviour (code):** a withdrawal request deletes the videos at Cloudflare and the photo from the database; the signed agreement record (profile, acceptance, signature, history) is **kept with no automatic expiry**; media of pending/rejected submissions is **not** auto-deleted; rate-limit counters expire after 15 min to 1 h; invitations expire after 1–30 days. **Unknown:** whether Upstash/Cloudflare keep backups (the old wording about "routine backups" was removed because it was unverified). | Decide how long to keep: media of rejected/pending submissions, signed agreement records, approved media after withdrawal. I can then build the clean-up (scheduled deletion). | Legal/accounting advice; Upstash console (backups) | **Yes** |
+| 7 | **International processing (US and other)** | **Vercel:** the request log shows functions routed to **Washington, D.C. (iad1)**; `vercel.json` sets no region; Vercel docs say the default is iad1 and it can be changed with `regions` in `vercel.json` or Settings → Functions ([docs](https://vercel.com/docs/functions/configuring-functions/region)). **Resend:** states customer data is stored in the **US** ([page](https://resend.com/security/gdpr)). **Upstash:** Frankfurt (item 4). **Cloudflare Stream:** global network; I found **no** Stream-specific statement of where files are stored. Creator data therefore passes through the US today. | Decide whether to move Function Region to Frankfurt (`fra1`) (also makes the database calls faster); the notice currently states the US processing openly. Ask Cloudflare where Stream stores files. | Vercel Settings → Functions; Cloudflare support | **Yes** (the disclosure must be accurate; moving the region is optional) |
+| 8 | **transfer safeguards** | **Per provider docs (secondary, re-verify):** Vercel relies on EU SCCs + UK Addendum (its DPF status is reported inconsistently: check the official list); Cloudflare relies on the EU-US Data Privacy Framework with SCCs as a fallback; Resend relies on SCCs and DPF participation; Upstash: see its DPA's transfer terms. | After checking each DPA/DPF listing, confirm which safeguard you rely on for each US transfer, then replace the tag with the confirmed wording. | [Data Privacy Framework list](https://www.dataprivacyframework.gov/list); each provider's DPA | **Yes** |
+
+## Other launch items (not tags in the notice)
+
+| Item | Status | Blocks Production? |
+|---|---|---|
+| Lawyer review of the agreement and privacy notice (image/voice/likeness) | Not done | **Yes** (recommended before real creators sign) |
+| Fiverr terms permit directing creators to an external onboarding page | Not verified | **Yes** |
+| Consistency between agreement and notice | **Verified by tests** (limited website display, no AI/cloning, no unauthorised alteration, no paid ads/redistribution, ownership stays with the creator, removal without penalty, Fiverr transactions stay on Fiverr) | No |
+| Signed-agreement audit trail | **Verified by tests** (exact accepted text, hash, internal revision, consents, timestamp, signature, asset ids; old records untouched) | No |
+
+## Verified facts used in the notice
+
+* Data collected, security counters (hashed IP, 15 min–1 h), no analytics/trackers, no marketing lists: **repo code and tests** (`api/_lib/creator/*`, `tests/creator-seo.test.mjs`).
+* Notification email contents (display name, languages, specializations, reference, review link; no legal name, no media): `api/_lib/creator/service.js`.
+* Videos private behind short-lived signed links: `requireSignedURLs: true` in `api/_lib/creator/cloudflare.js`.
+* Servers in Washington, D.C.: Vercel request log (iad1). Database set up in Frankfurt: Upstash setup screen (see item 4).
+
+## Going live
+
+1. Resolve rows 1–8 and the other launch items above.
+2. In `src/content/creatorLegal.js`: replace each `tbc(...)` marker with the confirmed wording, update `PRIVACY_REVISION` and (if the agreement changed) `AGREEMENT_REVISION`, set `LEGAL_ENTITY.confirmed = true` and `LEGAL_STATUS.approved = true`. The draft banner and "DRAFT" PDF strip disappear automatically. A test fails if the approved flag is set while any marker remains.
+3. Add the same environment variables to Production and connect the Upstash database to Production (see `creator-onboarding-setup.md`), then run one real submission.

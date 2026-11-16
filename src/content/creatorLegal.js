@@ -16,7 +16,7 @@ import { CONTACT_EMAIL } from '../config.js'
 
 export const LEGAL_STATUS = {
   approved: false,
-  note: 'The legal contracting identity and some privacy details are still to be confirmed by the owner.',
+  note: 'Some legal and privacy details are still being confirmed by CONVRT.',
 }
 
 /* Internal revision ids (never rendered to creators). Bump when the wording changes. */
@@ -26,11 +26,15 @@ export const PRIVACY_REVISION = 'privacy-2026-11-r2'
 export const AGREEMENT_VERSION = AGREEMENT_REVISION
 export const PRIVACY_VERSION = PRIVACY_REVISION
 
-/* CONVRT's legal contracting name. Taken from the owner's own reference agreement ("CONVRT Studio (legal contracting
-   name: …)"). It is NOT yet confirmed (confirmed: false): it is listed in OWNER_REVIEW_BLOCKERS. The tax/registration
-   number shown next to the signature in that reference is deliberately NOT included: it is the owner's personal
-   identifier and is not needed for this agreement unless the owner asks for it. */
-export const LEGAL_ENTITY = { name: 'Mohamed Doukkali Azizi', confirmed: false }
+/* CONVRT's legal contracting identity, taken from the owner's own reference agreement and instructions
+   (confirmed: false until the owner confirms it as part of legal review: see OWNER_REVIEW_BLOCKERS). `taxId` is the NIF
+   the owner asked to have printed beside the CONVRT signature. */
+export const LEGAL_ENTITY = { name: 'Mohamed Doukkali Azizi', taxId: 'Y6755743J', confirmed: false }
+
+/* Owner instruction (16 Nov 2026): CONVRT's side of every agreement arrives pre-filled: the legal name and NIF, a typed
+   signature identical to the name, and the date (the acceptance date recorded by the server). This is a standing
+   authorisation by the owner, recorded inside each agreement's accepted text; set to false to leave CONVRT's side blank. */
+export const CONVRT_PRESIGN = true
 
 export const CONTRACTING_PARTY = {
   tradeName: 'CONVRT Studio',
@@ -41,14 +45,15 @@ export const CONTRACTING_PARTY = {
 export const OWNER_FLAG = '[OWNER TO CONFIRM'
 
 /* What is still open before real creators may see these documents (shown to the owner in the review page). */
+/* Full detail, verified facts and sources: docs/creator-privacy-launch-checklist.md */
 export const OWNER_REVIEW_BLOCKERS = [
-  'Confirm CONVRT Studio’s legal contracting name used in the agreement and the privacy notice (currently taken from your reference PDF), and whether a registered address or tax/registration number should appear. The tax ID in the reference PDF has not been copied.',
-  'Privacy notice: legal bases for processing (to be confirmed with legal advice for your jurisdiction).',
-  'Privacy notice: retention periods, and what is kept after a removal request (signed agreement records, backups).',
-  'Privacy notice: confirm the database region (Upstash was set up in Frankfurt, Germany) and where Cloudflare Stream and Resend process data.',
-  'Privacy notice: international transfers. Vercel functions currently run in Washington, D.C., USA (per the request logs), so creator data passes through the US. Decide whether to move functions to an EU region, and confirm the transfer safeguards for each provider.',
-  'Confirm that no AI, analysis or training features are enabled for creator files with any provider, and the applicable data-processing terms (Cloudflare, Vercel, Upstash, Resend).',
-  'Have both documents reviewed (ideally by a lawyer) before real creators sign. Then set LEGAL_STATUS.approved to true.',
+  'Registered address (and confirmation of the legal name and NIF printed in the agreement and privacy notice).',
+  'Legal bases for processing, confirmed with legal advice for your jurisdiction.',
+  'Upstash database region: confirm it is Frankfurt in the Upstash console.',
+  'Provider terms: accept/confirm the data-processing agreements with Cloudflare, Vercel, Upstash and Resend, and confirm no AI or analysis features are enabled for creator files.',
+  'Retention periods for media files, agreement records and backups.',
+  'International transfers: Vercel functions run in Washington, D.C. (iad1) and Resend stores data in the US. Decide on EU function region and confirm the transfer safeguards for each provider.',
+  'Have both documents reviewed (ideally by a lawyer), then set LEGAL_STATUS.approved to true.',
   'Fiverr: confirm Fiverr’s terms allow directing creators to this external onboarding page.',
 ]
 
@@ -112,10 +117,13 @@ export const AGREEMENT_ACCEPTANCE =
 /* Shown before a creator is known (the standalone agreement page). */
 export const GENERIC_CREATOR = 'the independent freelance creator named in the signed submission record'
 
+/* "16 November 2026" in UTC: the same wording in the online agreement, the stored text and the PDF. */
+export const longDate = (iso) => new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' })
+
 /* Builds the agreement for ONE creator. Everything the creator accepts is in this object: the same object drives the
    online agreement, the stored acceptance record and the signed PDF.
    @param {{ creatorName?: string, materials?: { slot: number, label: string }[] }} input */
-export function buildAgreementDocument({ creatorName, materials = [] } = {}) {
+export function buildAgreementDocument({ creatorName, materials = [], signedAt = null } = {}) {
   const creator = String(creatorName || '').trim()
   return {
     title: AGREEMENT_TITLE,
@@ -126,6 +134,8 @@ export function buildAgreementDocument({ creatorName, materials = [] } = {}) {
     sections: AGREEMENT_SECTIONS,
     materials: materials.map((m) => ({ slot: m.slot, label: String(m.label) })),
     acceptance: AGREEMENT_ACCEPTANCE,
+    // CONVRT's pre-filled side (see CONVRT_PRESIGN). `signedAt` is the server acceptance time once known.
+    convrt: CONVRT_PRESIGN ? { name: LEGAL_ENTITY.name, taxId: LEGAL_ENTITY.taxId, signature: LEGAL_ENTITY.name, signedAt } : null,
   }
 }
 
@@ -143,6 +153,9 @@ export function agreementDocumentText(doc) {
     out.push('')
   }
   out.push(`Acceptance: ${doc.acceptance}`)
+  if (doc.convrt) {
+    out.push(`Signed for CONVRT Studio: ${doc.convrt.name} (NIF ${doc.convrt.taxId}), signature: ${doc.convrt.signature}${doc.convrt.signedAt ? `, ${longDate(doc.convrt.signedAt)}` : ''}`)
+  }
   return out.join('\n').trim() + '\n'
 }
 
@@ -150,15 +163,27 @@ export function agreementDocumentText(doc) {
 
 export const PRIVACY_TITLE = 'Creator Privacy Notice'
 
+/* The open points in the notice. Each appears in the text as "[OWNER TO CONFIRM: <item>]" (kept verbatim in the stored
+   text) and is rendered to creators as a small "To be confirmed" tag. Every item has a row in
+   docs/creator-privacy-launch-checklist.md (a test enforces it): none may be deleted until the owner has decided it. */
+export const PRIVACY_TBC_ITEMS = [
+  'registered address',
+  'legal bases',
+  'database region',
+  'provider data-processing and AI terms',
+  'retention periods',
+  'transfer safeguards',
+]
+const tbc = (item) => `${OWNER_FLAG}: ${item}]`
+
 export const PRIVACY = {
   title: PRIVACY_TITLE,
-  intro:
-    'This notice explains how CONVRT Studio handles the information you give us when you submit a creator portfolio. Points marked [OWNER TO CONFIRM] are still awaiting the owner’s confirmation and are shown openly rather than guessed.',
+  intro: 'This notice explains how CONVRT Studio handles the information you give us when you submit a creator portfolio.',
   sections: [
     {
       id: 'protect',
       heading: 'How we protect your content',
-      highlight: true,
+      panel: true,
       paragraphs: [
         'Your portfolio materials remain yours.',
         'CONVRT Studio collects your videos, profile image and professional information only to review your submission, document your permission and display approved portfolio examples on our website.',
@@ -174,28 +199,27 @@ export const PRIVACY = {
         'Social media reposting without separate permission.',
         'Material alterations to your appearance, voice, performance or creative work without your prior written approval.',
       ],
+      prohibit: true,
       after: [
-        'We may make technical adjustments necessary to securely host and display approved content, such as encoding, compression, resizing and thumbnail generation. These adjustments do not authorize us to materially change your performance or identity.',
+        'We may make technical adjustments needed to host and display approved content securely, such as encoding, compression, resizing and thumbnail generation. These do not authorize us to materially change your performance or identity.',
         'Any additional use requires your separate prior written agreement.',
       ],
     },
     {
       id: 'removal',
       heading: 'You can request removal at any time',
-      highlight: true,
+      panel: true,
       paragraphs: [
-        'You can request the removal of any approved video, image or profile information from CONVRT’s website at any time, without providing a reason.',
-        `Contact us through Fiverr or at ${CONTACT_EMAIL}.`,
-        'We will remove the relevant materials from public display without undue delay and stop using them for the agreed showcase.',
-        'Stored copies and necessary legal records will be handled in accordance with our data-retention obligations. Requests to remove portfolio materials do not result in a penalty or repayment of the showcase incentive.',
+        'Ask us to remove any approved video, image or profile information from CONVRT’s website whenever you like, without giving a reason. Contact us through Fiverr or at ' + CONTACT_EMAIL + '.',
+        'We will remove the materials from public display without undue delay and stop using them for the agreed showcase. Stored copies and necessary legal records are handled as described under “How long we keep it”.',
+        'Removing your materials never results in a penalty or repayment of the showcase incentive.',
       ],
     },
     {
       id: 'controller',
       heading: 'Who is responsible for your information',
       paragraphs: [
-        `CONVRT Studio (legal contracting name: ${LEGAL_ENTITY.name}), www.convrt.studio, decides how and why your information is processed. ${OWNER_FLAG}: registered address and any registration details to be shown here.]`,
-        `Privacy contact: ${CONTACT_EMAIL}`,
+        `CONVRT Studio (legal contracting name: ${LEGAL_ENTITY.name}, NIF ${LEGAL_ENTITY.taxId}), www.convrt.studio, decides how and why your information is used. Registered address: ${tbc('registered address')}`,
       ],
     },
     {
@@ -206,58 +230,57 @@ export const PRIVACY = {
         'Your Fiverr profile link, the languages you work in and your specializations.',
         'The three portfolio videos you upload, which may show your image and voice, and an optional profile photo.',
         'Your typed electronic signature and a record of your acceptance: the statements you ticked, the exact agreement and privacy notice text you accepted, the covered videos, the date and time recorded by our server and your submission reference.',
-        'Necessary security information: short-lived counters used to limit abuse, derived from a one-way hash of your IP address and deleted automatically after a short window.',
+        'Necessary security information: short-lived counters that limit abuse, derived from a one-way hash of your IP address and deleted automatically after a short window.',
       ],
       after: [
         'Your legal name, signature and private agreement details are not published on your public portfolio. Only approved public-facing details and materials may be displayed: your public display name, approved videos and, if approved, your profile image.',
-        'We do not ask for your email address or phone number if you come through Fiverr: communication and commercial transactions stay on Fiverr. We do not use analytics or advertising trackers on the onboarding page. We will not add you to any marketing email list without a separate lawful basis and any permission the law requires.',
+        'If you come through Fiverr we do not ask for your email address or phone number: communication and commercial transactions stay on Fiverr. We use no analytics or advertising trackers on the onboarding page, and we will not add you to any marketing email list without a separate lawful basis and any permission the law requires.',
       ],
     },
     {
       id: 'why',
-      heading: 'Why we collect it',
+      heading: 'Why we use it',
       bullets: [
-        'To review your submission.',
-        'To record the permissions you give us.',
-        'To administer our relationship with you as part of our freelance creator network.',
-        'To display your approved portfolio materials and public profile details on our website, if approved.',
-        'To keep the process secure and prevent abuse, and to meet legal obligations.',
+        'To review your submission and record the permissions you give us.',
+        'To run our relationship with you as part of our freelance creator network.',
+        'To display your approved portfolio materials and public profile details on our website.',
+        'To keep the process secure, prevent abuse and meet legal obligations.',
       ],
     },
     {
       id: 'bases',
       heading: 'Legal bases',
       paragraphs: [
-        `We expect to rely on: steps at your request before a possible collaboration; your consent to display your videos, image, voice and public profile (which you can withdraw at any time); our legitimate interests in running the network securely and keeping records of permissions; and legal obligations. ${OWNER_FLAG}: legal bases to be confirmed with legal advice for the owner’s jurisdiction.]`,
+        `We expect to rely on: steps taken at your request before a possible collaboration; your consent to display your videos, image, voice and public profile (you can withdraw it at any time); our legitimate interests in running the network securely and keeping records of permissions; and legal obligations. ${tbc('legal bases')}`,
       ],
     },
     {
       id: 'providers',
       heading: 'Who handles your information for us',
-      paragraphs: ['We use these services to run the onboarding page. They process files and records only as needed to provide that service to us:'],
+      paragraphs: ['These services help us run the onboarding page and process your information only to provide that service to us:'],
       bullets: [
-        'Cloudflare Stream hosts, encodes and plays back your videos. Uploaded videos are private: playback needs a short-lived signed link until they are reviewed.',
-        'Vercel hosts the website and runs the submission service. Its servers currently handling submissions are in Washington, D.C., USA.',
-        `Upstash (Redis database, through the Vercel integration) stores submission records and profile photos. The database was set up in Frankfurt, Germany. ${OWNER_FLAG}: that this region is final.]`,
-        'Resend sends CONVRT an email notification containing your display name, languages, specializations and submission reference. It does not contain your videos or legal name.',
+        'Cloudflare Stream hosts, encodes and plays back your videos. Videos are private: playback needs a short-lived signed link until they are reviewed.',
+        'Vercel hosts the website and runs the submission service, currently on servers in Washington, D.C., USA.',
+        `Upstash (a Redis database, through the Vercel integration) stores submission records and profile photos. It was set up in Frankfurt, Germany. ${tbc('database region')}`,
+        'Resend emails CONVRT a notification with your display name, languages, specializations and submission reference. It contains no videos and not your legal name.',
         'Fiverr is where orders, payments and communication stay for creators introduced through Fiverr.',
       ],
       after: [
-        `${OWNER_FLAG}: that no AI, analysis or training features are enabled for your files with any of these providers, and the data-processing terms that apply to each.]`,
+        `CONVRT does not request automatic captions, transcription or any other AI analysis of your videos. ${tbc('provider data-processing and AI terms')}`,
       ],
     },
     {
       id: 'retention',
       heading: 'How long we keep it',
       paragraphs: [
-        `${OWNER_FLAG}: retention periods have not been set yet.] Until they are, files are deleted when a removal or withdrawal request is processed, and a record of the agreement you signed (without your media files) may be kept as needed to evidence the permission and the withdrawal, and to meet legal obligations. Routine backups expire on their normal schedule.`,
+        `Retention periods: ${tbc('retention periods')} Today, uploaded files are deleted when a removal or withdrawal request is processed, and a record of the agreement you signed (without your media files) is kept as evidence of the permission and the withdrawal, and to meet legal obligations.`,
       ],
     },
     {
       id: 'transfers',
       heading: 'International transfers',
       paragraphs: [
-        `The providers above may process information in countries other than your own. In particular, submissions are currently processed on servers in the USA. ${OWNER_FLAG}: the safeguards relied on for each provider and whether processing should move to an EU region.]`,
+        `Some of these providers process information outside your country. Submissions are currently handled on servers in the USA, and Resend stores its data in the United States. ${tbc('transfer safeguards')}`,
       ],
     },
     {
