@@ -91,7 +91,7 @@ function SetupCheck() {
         <Row ok={checks.cloudflareAccountId} label="CLOUDFLARE_ACCOUNT_ID" detail={checks.cloudflareAccountId ? 'Set' : 'Missing on this deployment'} />
         <Row ok={checks.cloudflareToken} label="CLOUDFLARE_STREAM_API_TOKEN" detail={checks.cloudflareToken ? 'Set' : 'Missing on this deployment'} />
         <Row ok={cf === 'ok'} label="Cloudflare Stream connection" detail={CF_HELP[cf] || `Cloudflare answered ${cf}.`} />
-        <Row ok={checks.ownerEmail} label="Owner email alerts (RESEND_API_KEY)" detail={checks.ownerEmail ? 'Set' : 'Missing: you will not get an email for new submissions'} />
+        <Row ok={checks.ownerEmail} label="Owner email alerts (email service key)" detail={checks.ownerEmail ? 'Set' : 'Missing: you will not get an email for new submissions'} />
       </ul>
     </section>
   )
