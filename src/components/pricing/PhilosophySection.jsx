@@ -1,6 +1,6 @@
 import { OFFER_PATHS } from '../../config.js'
 import { CONVRT_STATS } from '../../lib/siteStats.js'
-import { SPRINT, SPRINT_PLUS, ORGANIC_STAGES, PRODUCTION_LANGUAGES } from '../../seo/businessKnowledge.js'
+import { SPRINT, SPRINT_PLUS, ORGANIC_STAGES, ORGANIC, ORGANIC_CTA, PRODUCTION_LANGUAGES } from '../../seo/businessKnowledge.js'
 import { ConceptAccents } from './shared.jsx'
 
 /* SECTION 2: creative philosophy + credibility + the free Roadmap offer, as one cohesive block.
@@ -64,7 +64,7 @@ function PaidPhilosophy() {
         <span className="font-semibold text-ink">A variation</span> changes its hook or CTA.
       </p>
       <p className="mt-1 text-[12.5px] leading-relaxed text-ink-subtle">
-        Standard Sprint shown. Sprint Plus includes {SPRINT_PLUS.concepts.value} concepts and {SPRINT_PLUS.variations} strategically distributed variations.
+        Standard Sprint shown. Sprint Plus includes {SPRINT_PLUS.concepts} concepts and {SPRINT_PLUS.variations} ad variations.
       </p>
     </div>
   )
@@ -101,30 +101,53 @@ function OrganicPhilosophy() {
   )
 }
 
-/* Five overlapping vertical video cards in the concept palette: five distinct ideas. Lightweight inline SVG; a very gentle
-   float only when motion is allowed (see .roadmap-float in index.css). */
-const CARD_ROT = [-9, -4.5, 0, 4.5, 9]
-const DRAW_ORDER = [0, 4, 1, 3, 2] // outer cards first, so the centre card sits on top
+/* A creative moodboard: five idea cards for five different ADVERTISING ANGLES (illustrative examples, not promised categories).
+   Deliberately unlike the concept diagram on the left: no play buttons, no branching, no video thumbnails. Static CSS + inline
+   SVG icons, no animation. */
+const ANGLE_ICONS = {
+  Problem: <><circle cx="12" cy="12" r="8.5" /><path d="M12 7.5v5M12 16v.01" /></>,
+  Product: <><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z" /><path d="M12 12l8-4.5M12 12v9M12 12L4 7.5" /></>,
+  Demo: <><rect x="3" y="4" width="18" height="13" rx="2" /><path d="M9 20.5h6" /><path d="M10 8.5l5 3-2.2.9-.9 2.2z" /></>,
+  Story: <><path d="M4 5h16v10H9l-4 4v-4H4z" /></>,
+  Offer: <><path d="M3 12V4h8l10 10-8 8z" /><circle cx="7.5" cy="8.5" r="1" /></>,
+}
+const ANGLES_BOARD = [
+  { label: 'Problem', span: 'col-span-2', rot: -1.6, bars: ['72%', '48%'] },
+  { label: 'Product', span: 'col-span-2', rot: 1.2, bars: ['58%', '80%'] },
+  { label: 'Demo', span: 'col-span-2', rot: -0.8, bars: ['84%', '40%'] },
+  { label: 'Story', span: 'col-span-3', rot: 1.4, bars: ['66%', '86%', '44%'] },
+  { label: 'Offer', span: 'col-span-3', rot: -1.2, bars: ['52%', '78%', '60%'] },
+]
 
-function ConceptCards() {
+function Moodboard() {
   return (
-    <svg viewBox="0 0 300 126" className="mx-auto h-auto w-full max-w-[360px]" aria-hidden="true">
-      {DRAW_ORDER.map((i) => {
-        const x = 15 + 52 * i
-        const c = ConceptAccents[i]
-        return (
-          <g key={c} transform={`rotate(${CARD_ROT[i]} ${x + 31} 63)`}>
-            <g className="roadmap-float" style={{ '--d': `${i * 260}ms` }}>
-              <rect x={x} y="8" width="62" height="104" rx="12" fill="#161614" stroke={c} strokeWidth="2.5" />
-              <rect x={x + 9} y="17" width="44" height="46" rx="8" fill={c} fillOpacity="0.16" />
-              <path d={`M${x + 25} 30l17 10-17 10z`} fill={c} />
-              <rect x={x + 9} y="72" width="38" height="6.5" rx="3.25" fill={c} fillOpacity="0.8" />
-              <rect x={x + 9} y="85" width="26" height="5.5" rx="2.75" fill="#8a8a86" fillOpacity="0.7" />
-            </g>
-          </g>
-        )
-      })}
-    </svg>
+    <div className="mx-auto max-w-[360px]">
+      <ul className="grid grid-cols-6 gap-2.5 px-1" aria-label="Example creative angles">
+        {ANGLES_BOARD.map((a, i) => {
+          const c = ConceptAccents[i]
+          return (
+            <li
+              key={a.label}
+              className={`${a.span} rounded-xl border p-2.5`}
+              style={{ borderColor: `${c}80`, background: `${c}14`, transform: `rotate(${a.rot}deg)` }}
+            >
+              <span className="flex h-7 w-7 items-center justify-center rounded-lg" style={{ background: c, color: '#0a0a0b' }}>
+                <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  {ANGLE_ICONS[a.label]}
+                </svg>
+              </span>
+              <p className="mt-2 text-[12px] font-semibold leading-none text-ink">{a.label}</p>
+              <div className="mt-2 space-y-1" aria-hidden="true">
+                {a.bars.map((w, j) => (
+                  <span key={j} className="block h-[5px] rounded-full" style={{ width: w, background: j === 0 ? c : '#8a8a86', opacity: j === 0 ? 0.75 : 0.35 }} />
+                ))}
+              </div>
+            </li>
+          )
+        })}
+      </ul>
+      <p className="mt-2.5 text-center text-[11px] text-ink-subtle">Example creative angles</p>
+    </div>
   )
 }
 
@@ -135,7 +158,7 @@ function RoadmapCard() {
       <h3 className="mt-2 font-display text-[22px] font-bold leading-tight tracking-display text-ink md:text-[26px]">
         Your next <span className="text-lime">5 winning ad concepts.</span>
       </h3>
-      <div className="mt-4"><ConceptCards /></div>
+      <div className="mt-4"><Moodboard /></div>
       <p className="mt-4 text-[14.5px] leading-relaxed text-ink-muted">
         Five personalized creative ideas for your brand, built around your product and audience.
       </p>
@@ -150,6 +173,33 @@ function RoadmapCard() {
         className="cta-gradient group mt-4 flex items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-semibold text-canvas"
       >
         Get 5 Free Ad Concepts
+        <svg viewBox="0 0 12 12" className="h-3.5 w-3.5 transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" fill="none" aria-hidden="true">
+          <path d="M3 9L9 3M9 3H4M9 3V8" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      </a>
+    </div>
+  )
+}
+
+/* Shown instead of the Roadmap card when Organic Social is selected: the Roadmap offers FREE AD concepts (a paid-ads offer), so it
+   is not presented as an organic deliverable. Route: the existing contact email (see ORGANIC_CTA in businessKnowledge.js). */
+function OrganicOfferCard() {
+  const o = ORGANIC_CTA.promo
+  return (
+    <div className="rounded-[24px] border border-lime/25 bg-gradient-to-br from-lime/[0.09] via-surface-1/60 to-surface-1/40 p-5 md:p-6">
+      <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-lime">{o.eyebrow}</p>
+      <h3 className="mt-2 font-display text-[22px] font-bold leading-tight tracking-display text-ink md:text-[26px]">{o.headline}</h3>
+      <ul className="mt-4 flex flex-wrap gap-2">
+        {ORGANIC.platforms.map((p) => (
+          <li key={p} className="rounded-full border border-hairline-strong bg-surface-2 px-3 py-1 text-[12.5px] font-medium text-ink">{p}</li>
+        ))}
+      </ul>
+      <p className="mt-4 text-[14.5px] leading-relaxed text-ink-muted">{o.text}</p>
+      <a
+        href={ORGANIC_CTA.href}
+        className="cta-gradient group mt-5 flex items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-semibold text-canvas"
+      >
+        {ORGANIC_CTA.label}
         <svg viewBox="0 0 12 12" className="h-3.5 w-3.5 transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" fill="none" aria-hidden="true">
           <path d="M3 9L9 3M9 3H4M9 3V8" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
@@ -174,7 +224,10 @@ export default function PhilosophySection({ service }) {
             <div hidden={service !== 'paid'}><PaidPhilosophy /></div>
             <div hidden={service !== 'organic'}><OrganicPhilosophy /></div>
           </div>
-          <RoadmapCard />
+          <div>
+            <div hidden={service !== 'paid'}><RoadmapCard /></div>
+            <div hidden={service !== 'organic'}><OrganicOfferCard /></div>
+          </div>
         </div>
 
         <ul className="mt-8 grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-hairline bg-hairline sm:grid-cols-4 md:mt-10">

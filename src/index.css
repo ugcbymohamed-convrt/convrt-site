@@ -457,15 +457,3 @@ body {
   .pricing-slide,
   .pricing-slide[data-state="inactive"] { transition: none; }
 }
-
-/* Roadmap card illustration: a very gentle float, only when motion is allowed. */
-@media (prefers-reduced-motion: no-preference) {
-  .roadmap-float {
-    animation: roadmap-float 5.5s ease-in-out infinite;
-    animation-delay: var(--d, 0ms);
-  }
-  @keyframes roadmap-float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-2.5px); }
-  }
-}

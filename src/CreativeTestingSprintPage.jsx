@@ -32,7 +32,7 @@ export default function CreativeTestingSprintPage() {
       <SectionDivider />
       <PricingFAQ />
       <SectionDivider />
-      <PricingFinalCTA />
+      <PricingFinalCTA service={service} />
     </>
   )
 }

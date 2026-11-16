@@ -97,6 +97,7 @@ export const SPRINT = {
   monthly: usd(2500),
   oneOff: usd(3000),
   concepts: 5,
+  scripts: 5,
   variationsPerConcept: 2,
   variations: 10,
   cardDescription: 'For brands ready to discover new creative angles and find what resonates.',
@@ -116,12 +117,14 @@ export const SPRINT_PLUS = {
   name: 'Creative Testing Sprint Plus',
   monthly: usd(4500),
   oneOff: usd(5400),
+  /* APPROVED OFFER (owner, Nov 2026): Sprint Plus = 10 distinct concepts, 10 complete scripts, 2 variations per concept,
+     20 finished ad variations. It supersedes the earlier 8-concept / unevenly distributed structure. */
+  concepts: 10,
+  scripts: 10,
+  variationsPerConcept: 2,
   variations: 20,
-  /* 8 distinct concepts / 8 scripts: confirmed by the owner. The 20 variations are distributed across the concepts
-     according to the creative testing strategy (hook or CTA changes). Do NOT imply every concept has the same number of
-     variations, and do not derive a per-concept figure. */
-  concepts: { value: 8, status: 'confirmed' },
-  variationsDistribution: 'Variations are distributed across the concepts according to the creative testing strategy, with changes to hooks or CTAs. Concepts do not necessarily have the same number of variations.',
+  /* Subtle supporting line on the Sprint Plus card. */
+  valueLine: 'Twice the creative concepts. Twice the ad variations.',
   cardDescription: 'For brands looking for greater creative diversity and deeper testing.',
   extraDetail: 'Includes expanded research and testing recommendations.',
   turnaroundBusinessDays: 15,
@@ -169,6 +172,19 @@ export const ORGANIC_COMMITMENT = {
   afterInitial: 'Terms after the initial six-month period are set out in the applicable agreement.',
   faqAnswer:
     'Building a meaningful social media presence takes consistency. Our organic partnerships begin with a six-month commitment, giving us time to develop your content strategy, publish consistently, learn what resonates with your audience and assess performance before making longer-term decisions.',
+}
+
+/* Organic Social visitors get an organic-specific conversation starter instead of the paid-ads Roadmap offer. The existing
+   Roadmap form asks about paid-ad spend and ad creative challenges, so it is not used for organic leads here. The route is the
+   existing contact email (no new form, funnel or page). Follow-up for the owner: a dedicated organic qualification route. */
+export const ORGANIC_CTA = {
+  label: 'Discuss Your Organic Strategy',
+  href: `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent('Organic social media strategy')}`,
+  promo: {
+    eyebrow: 'Your organic content partnership',
+    headline: "Let's build your brand's organic presence.",
+    text: 'Strategy, consistent video production, publishing and engagement — managed together.',
+  },
 }
 
 /* Custom projects: terms are agreed individually. */
@@ -241,10 +257,11 @@ export const SHARED_SPRINT_BENEFITS = [
   { id: 'reframing', label: 'Square & 4:5 reframing' },
   { id: 'variations', label: 'Creative variations' },
   { id: 'testing', label: 'Testing recommendations' },
+  { id: 'language', label: 'Multilingual production', detail: 'One core language included: English, Spanish, French or Arabic.' },
 ]
 /* Short notes shown under the grid. Additional languages are available on request, never implied as free. */
 export const SHARED_SPRINT_LANGUAGE_NOTE =
-  'One production language included: English, Spanish, French or Arabic. Additional languages on request.'
+  'Additional languages are available on request and may incur extra charges.'
 export const SHARED_SPRINT_NOTE = 'Included in Sprint and Sprint Plus. Custom scopes are agreed individually.'
 
 /* Concise notes under the pricing cards (the full policies live in the panels, the FAQ and the config above). */

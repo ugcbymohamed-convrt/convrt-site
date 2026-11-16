@@ -30,6 +30,7 @@ const BENEFIT_ICONS = {
   reframing: <><rect x="3" y="5" width="11" height="11" rx="1.5" /><rect x="10" y="9" width="11" height="11" rx="1.5" /></>,
   variations: <><rect x="4" y="4" width="10" height="13" rx="2" /><path d="M8 20h9a3 3 0 003-3V9" /></>,
   testing: <><path d="M4 20V10M10 20V4M16 20v-7M22 20H2" /></>,
+  language: <><circle cx="12" cy="12" r="8.5" /><path d="M3.5 12h17M12 3.5c2.5 2.5 2.5 14.5 0 17M12 3.5c-2.5 2.5-2.5 14.5 0 17" /></>,
 }
 const USE_ICONS = [
   <><path d="M3 11v3a1 1 0 001 1h2l5 4V6L6 10H4a1 1 0 00-1 1z" /><path d="M15 9a4 4 0 010 6M18 6.5a8 8 0 010 11" /></>,
@@ -43,11 +44,15 @@ const Note = ({ children, className = '' }) => <p className={`text-[13px] leadin
 function IncludedPaid() {
   return (
     <>
-      <ul className="grid grid-cols-2 gap-x-5 gap-y-3 lg:grid-cols-4">
+      {/* Nine items in a 3 x 3 grid on desktop (2 columns on tablet, 1 on phones). */}
+      <ul className="grid grid-cols-1 gap-x-6 gap-y-3.5 sm:grid-cols-2 lg:grid-cols-3">
         {SHARED_SPRINT_BENEFITS.map((b) => (
-          <li key={b.id} className="flex items-center gap-2.5">
+          <li key={b.id} className="flex items-start gap-3">
             <Tile>{BENEFIT_ICONS[b.id]}</Tile>
-            <span className="text-[13.5px] leading-snug text-ink">{b.label}</span>
+            <span className="min-w-0 pt-[7px]">
+              <span className="block text-[13.5px] leading-snug text-ink">{b.label}</span>
+              {b.detail && <span className="mt-0.5 block text-[12px] leading-snug text-ink-subtle">{b.detail}</span>}
+            </span>
           </li>
         ))}
       </ul>

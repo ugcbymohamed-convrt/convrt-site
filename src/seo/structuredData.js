@@ -161,7 +161,7 @@ function packageNodes() {
     '@id': serviceId(SPRINT_PLUS.id),
     name: SPRINT_PLUS.name,
     serviceType: 'UGC and spokesperson video ad production',
-    description: `${SPRINT_PLUS.concepts.value} distinct creative concepts and ${SPRINT_PLUS.variations} ad variations in total, distributed across the concepts according to the creative testing strategy; full-service production in ${SPRINT_PLUS.turnaroundBusinessDays} business days after concept and script approval, two rounds of revisions per concept and ${usageLine} included.`,
+    description: `${SPRINT_PLUS.concepts} distinct creative concepts with ${SPRINT_PLUS.variationsPerConcept} variations each (${SPRINT_PLUS.variations} ad variations), full-service production in ${SPRINT_PLUS.turnaroundBusinessDays} business days after concept and script approval, two rounds of revisions per concept and ${usageLine} included.`,
     provider: { '@id': ORG_ID },
     isRelatedTo: [{ '@id': serviceId('ugc') }, { '@id': serviceId('spokesperson') }],
     offers: [monthlyOffer(SPRINT_PLUS.name, SPRINT_PLUS.monthly), oneOffOffer(SPRINT_PLUS.name, SPRINT_PLUS.oneOff)],

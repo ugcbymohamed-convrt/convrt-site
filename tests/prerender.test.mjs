@@ -256,7 +256,7 @@ test('/pricing HTML: title, description, ONE canonical, indexable, and the prici
 test('/pricing HTML: every confirmed price, term and policy is in the visible markup', () => {
   const text = unescape(visibleText(page('/pricing')))
   for (const needle of [
-    '$2,500', '$4,500', '$3,000', '$5,400', '$1,500', '$2,500', '8 distinct creative concepts', '8 complete scripts',
+    '$2,500', '$4,500', '$3,000', '$5,400', '$1,500', '$2,500', '10 distinct creative concepts', '10 complete scripts', '2 variations per concept, changing the hook or CTA', 'Twice the creative concepts. Twice the ad variations.', '5 concepts × 2 variations each',
     'Different concepts. Not just different hooks.', '5 original concepts → 10 ad variations',
     'A concept is a unique ad idea.', 'A variation changes its hook or CTA.',
     'initial three-month commitment', "30 days' cancellation notice",
@@ -457,10 +457,13 @@ test('/pricing HTML: Section 2 holds the philosophy (both variants), the new Roa
   const m = main(h)
   const sec = m.slice(m.indexOf('id="philosophy"'), m.indexOf('id="package-info"'))
   const t = flat(`<div id="root">${sec}`)
-  for (const n of ['Different concepts. Not just different hooks.', 'We develop distinct creative angles, then create variations for structured testing.', '5 original concepts → 10 ad variations', 'A concept is a unique ad idea. A variation changes its hook or CTA.', 'Standard Sprint shown. Sprint Plus includes 8 concepts and 20 strategically distributed variations.', 'Consistency. Content. Real connections.', 'A video-first approach to building your organic presence.', 'Publishing & engagement', 'Optimization', 'See how we grew Graspo', 'YOUR FREE CREATIVE GROWTH ROADMAP'.toLowerCase().replace(/^./, (c) => c.toUpperCase()), 'Your next 5 winning ad concepts.', 'Five personalized creative ideas for your brand, built around your product and audience.', 'Completely free. No obligation.', 'Get 5 Free Ad Concepts', '40M+', '1,200+', '500+', 'Core production languages']) assert.ok(t.toLowerCase().includes(n.toLowerCase()), n)
+  for (const n of ['Different concepts. Not just different hooks.', 'We develop distinct creative angles, then create variations for structured testing.', '5 original concepts → 10 ad variations', 'A concept is a unique ad idea. A variation changes its hook or CTA.', 'Standard Sprint shown. Sprint Plus includes 10 concepts and 20 ad variations.', 'Consistency. Content. Real connections.', 'A video-first approach to building your organic presence.', 'Publishing & engagement', 'Optimization', 'See how we grew Graspo', 'YOUR FREE CREATIVE GROWTH ROADMAP'.toLowerCase().replace(/^./, (c) => c.toUpperCase()), 'Your next 5 winning ad concepts.', 'Five personalized creative ideas for your brand, built around your product and audience.', 'Completely free. No obligation.', 'Get 5 Free Ad Concepts', '40M+', '1,200+', '500+', 'Core production languages']) assert.ok(t.toLowerCase().includes(n.toLowerCase()), n)
   assert.equal(count(sec, /<li class="flex flex-col items-center"/g), 5, 'five concept columns')
   assert.ok(sec.includes(`href="${OFFER_PATHS.roadmap}"`))
-  assert.equal(count(sec, /class="roadmap-float"/g), 5, 'five illustrated video cards')
+  assert.equal(count(sec, /aria-label="Example creative angles"/g), 1)
+  for (const l of ['Problem', 'Product', 'Demo', 'Story', 'Offer']) assert.ok(t.includes(l), l)
+  assert.ok(t.includes('Example creative angles'))
+  assert.ok(!/roadmap-float/.test(sec), 'no animation classes')
   assert.ok(!/<img/.test(sec), 'no external imagery')
   assert.match(sec, /<div hidden=""><div><h2[^>]*>Consistency\./, 'the organic variant is in the HTML, hidden by default')
   assert.ok(!/Standard Sprint shown\. Your concepts are tailored|illustrative/i.test(t), 'repetitive qualifications removed')
@@ -479,8 +482,8 @@ test('/pricing HTML: Section 3 "The details.": four panels, ALL CLOSED on load, 
   for (const n of [
     'The details.', 'Everything you need to know before getting started.',
     "What's included", 'Full creative production.', 'Usage rights', '6 months worldwide. Flexible extensions.', 'How we work', 'From strategy to delivery.', 'Production & extras', 'Revisions, formats and add-ons.',
-    'Creative research & strategy', 'Concepts, scripts & approval', 'Creator selection', 'Filming & editing', 'Captions, B-roll & graphics', 'Square & 4:5 reframing', 'Creative variations', 'Testing recommendations',
-    'One production language included: English, Spanish, French or Arabic. Additional languages on request.', 'Custom scopes are agreed individually.',
+    'Creative research & strategy', 'Concepts, scripts & approval', 'Creator selection', 'Filming & editing', 'Captions, B-roll & graphics', 'Square & 4:5 reframing', 'Creative variations', 'Testing recommendations', 'Multilingual production', 'One core language included: English, Spanish, French or Arabic.',
+    'Additional languages are available on request and may incur extra charges.', 'Custom scopes are agreed individually.',
     'Content strategy & planning', 'Concepts & scripting', 'Captions & post copy', 'Scheduling & publishing', 'Cross-platform distribution', 'Performance optimization', 'Community engagement', 'Facebook, Instagram and TikTok. Community management excludes customer support.',
     '6 months of worldwide usage included.', 'From the date each video is delivered.', 'Paid ads', 'Organic social', 'Website use',
     '$625', '$1,000', '$1,750', '$1,125', '$1,800', '$3,150', '9 months in total', '12 months in total', '18 months in total', 'Custom quote, subject to agreement with the featured creators',
@@ -531,4 +534,53 @@ test('/pricing HTML: Section 5 compact CTA; no stale JSON-LD; sections removed f
   for (const p of ['$2,500 per month', '$4,500 per month', '$3,000 one-off', '$5,400 one-off', '$1,500 per month', '$250 per creative concept']) assert.ok(ld.includes(p), p)
   assert.match(ld, /Initial six-month commitment\. Terms after the initial six-month period/)
   assert.ok(!/OWNER_REVIEW|deferred to the applicable agreement/.test(t))
+})
+
+// ── Sprint Plus 10/10/20 update, service-aware CTAs, 3 x 3 inclusions ────────────────────────────────────────────────
+test('/pricing HTML: Sprint Plus card shows 10 concepts / 10 scripts / 2 variations per concept / 20 ads; Sprint stays 5 / 5 / 10; no 8-concept leftovers', () => {
+  const h = page('/pricing')
+  const arts = [...group(h, 'paid').matchAll(/<article[\s\S]*?<\/article>/g)].map((x) => flat(`<div id="root">${x[0]}`))
+  const [sprint, plus] = arts
+  for (const n of ['5 distinct creative concepts', '5 complete scripts', '2 variations per concept, changing the hook or CTA', '10 ad variations', '5 concepts × 2 variations each', '1 creator or spokesperson', '10 business days turnaround', '2 revision rounds per creative concept', '6 months of worldwide usage rights']) assert.ok(sprint.includes(n), `Sprint: ${n}`)
+  for (const n of ['10 distinct creative concepts', '10 complete scripts', '2 variations per concept, changing the hook or CTA', '20 ad variations', 'Twice the creative concepts. Twice the ad variations.', 'Up to 2 creators or spokespeople', '15 business days turnaround', '2 revision rounds per creative concept', '6 months of worldwide usage rights', 'Priority production scheduling', 'Includes expanded research and testing recommendations.']) assert.ok(plus.includes(n), `Sprint Plus: ${n}`)
+  assert.ok(sprint.includes('$2,500') && sprint.includes('$3,000') && plus.includes('$4,500') && plus.includes('$5,400'), 'monthly and one-off prices remain')
+  const t = flat(h)
+  assert.ok(!/\b8 (distinct )?(creative )?concepts|8 complete scripts|strategically distributed|Expanded creative variations/.test(t), 'no obsolete Sprint Plus wording in the prerendered page')
+  const ld = JSON.stringify(ldScripts(h)[0])
+  assert.ok(!/8 distinct|distributed across the concepts/.test(ld))
+  assert.match(ld, /10 distinct creative concepts with 2 variations each \(20 ad variations\)/)
+  assert.match(ld, /5 distinct creative concepts with 2 variations each \(10 ad variations\)/)
+})
+
+test('/pricing HTML: service-aware CTAs: Paid = Roadmap, Organic = "Discuss Your Organic Strategy" (hidden until Organic is selected)', () => {
+  const h = page('/pricing')
+  const m = main(h)
+  const phil = m.slice(m.indexOf('id="philosophy"'), m.indexOf('id="package-info"'))
+  const fin = m.slice(m.indexOf('id="contact"'))
+  const mail = 'mailto:mohamed@convrt.studio?subject=Organic%20social%20media%20strategy'
+  const orgAt = phil.indexOf('Your organic content partnership'); const paidAt = phil.indexOf('Your free Creative Growth Roadmap')
+  assert.ok(orgAt > 0 && paidAt > 0)
+  // the card wrapper right before each eyebrow: hidden="" for Organic, plain for Paid
+  assert.ok(/<div hidden="">\s*<div class="rounded-/.test(phil.slice(Math.max(0, orgAt - 330), orgAt)), 'organic offer card hidden by default')
+  assert.ok(/<div>\s*<div class="rounded-/.test(phil.slice(Math.max(0, paidAt - 330), paidAt)) && !/hidden=""/.test(phil.slice(paidAt - 120, paidAt)), 'Roadmap card visible by default')
+  assert.match(flat(`<div id="root">${phil}`), /Let's build your brand's organic presence\. Facebook Instagram TikTok Strategy, consistent video production, publishing and engagement — managed together\. Discuss Your Organic Strategy/)
+  assert.equal(count(phil, new RegExp(mail.replace(/[?.]/g, '\\$&'), 'g')), 1)
+  assert.equal(count(fin, new RegExp(mail.replace(/[?.]/g, '\\$&'), 'g')), 1)
+  assert.ok(fin.includes(`<div hidden=""><a href="${mail}"`) && fin.includes('Discuss Your Organic Strategy'))
+  assert.ok(fin.includes(`<div><a href="${OFFER_PATHS.roadmap}"`) && fin.includes('Get 5 Free Ad Concepts'), 'Paid CTA visible by default')
+  assert.ok(phil.includes(`href="${OFFER_PATHS.roadmap}"`))
+  assert.ok(rootOf(h).includes(`<a href="${OFFER_PATHS.roadmap}"`), 'the navigation CTA still goes to the Roadmap')
+})
+
+test('/pricing HTML: What\'s included: nine Paid items in the markup with the 3-column class, Organic list separate', () => {
+  const h = page('/pricing')
+  const m = main(h)
+  const panel = m.slice(m.indexOf('id="info-a-included"'), m.indexOf('id="info-q-usage"'))
+  const paidList = panel.match(/<ul class="grid grid-cols-1 gap-x-6 gap-y-3\.5 sm:grid-cols-2 lg:grid-cols-3">([\s\S]*?)<\/ul>/)
+  assert.ok(paidList, 'paid grid uses grid-cols-1 / sm:grid-cols-2 / lg:grid-cols-3')
+  assert.equal(count(paidList[1], /<li /g), 9)
+  const organicList = panel.match(/<ul class="grid grid-cols-2 gap-x-5 gap-y-2\.5 lg:grid-cols-4">([\s\S]*?)<\/ul>/)
+  assert.ok(organicList); assert.equal(count(organicList[1], /<li /g), 8)
+  assert.ok(flat(`<div id="root">${organicList[1]}`).includes('Community engagement'))
+  assert.ok(!flat(`<div id="root">${organicList[1]}`).includes('Multilingual'))
 })

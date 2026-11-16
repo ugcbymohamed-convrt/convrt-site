@@ -55,7 +55,7 @@ function CheckIcon({ className = '' }) {
 }
 
 /* One pricing card. `price` and `sub` are nodes so the paid cards can carry both billing variants. */
-function PricingCard({ tone, id, label, badge, description, price, sub, features, note, ctaLabel, tallSub = false, className = '' }) {
+function PricingCard({ tone, id, label, badge, description, price, sub, features, note, ctaLabel, tallSub = false, descMin = 'lg:min-h-[69px]', subMin, className = '' }) {
   const t = TONES[tone]
   return (
     <article
@@ -72,14 +72,14 @@ function PricingCard({ tone, id, label, badge, description, price, sub, features
         )}
       </div>
 
-      <p className={`mt-4 text-[14px] leading-relaxed lg:min-h-[69px] ${t.muted}`}>{description}</p>
+      <p className={`mt-4 text-[14px] leading-relaxed ${descMin} ${t.muted}`}>{description}</p>
 
       <div className="mt-5 flex min-h-[56px] items-end font-display font-bold leading-none tracking-display">{price}</div>
-      <div className={`mt-3 ${tallSub ? 'lg:min-h-[60px]' : 'min-h-[34px]'}`}>{sub}</div>
+      <div className={`mt-3 ${subMin ?? (tallSub ? 'lg:min-h-[60px]' : 'min-h-[34px]')}`}>{sub}</div>
 
-      <div className={`mt-5 h-px ${t.divider}`} />
+      <div className={`mt-4 h-px ${t.divider}`} />
 
-      <ul className="mt-5 flex-1 space-y-2.5">
+      <ul className="mt-4 flex-1 space-y-2.5">
         {features.map((f) => (
           <li key={f} className="flex items-start gap-3 text-[14px] leading-snug">
             <CheckIcon className={t.check} />
@@ -121,10 +121,13 @@ function BillingPrice({ pkg, billing }) {
 
 const LetsTalk = () => <span className="text-[40px] md:text-[46px]">Let&rsquo;s talk.</span>
 
-const Variations = ({ tone, count }) => (
-  <span className={`inline-flex items-center rounded-full px-3.5 py-1.5 text-sm font-bold ${TONES[tone].chip}`}>
-    {count} ad variations
-  </span>
+const Variations = ({ tone, count, line }) => (
+  <>
+    <span className={`inline-flex items-center rounded-full px-3.5 py-1.5 text-sm font-bold ${TONES[tone].chip}`}>
+      {count} ad variations
+    </span>
+    {line && <p className={`mt-1.5 text-[12.5px] leading-snug ${TONES[tone].muted}`}>{line}</p>}
+  </>
 )
 
 const Supporting = ({ tone, children }) => (
@@ -145,37 +148,38 @@ export function PaidCards({ billing }) {
     usage(SPRINT.usageMonthsIncluded),
     revisions(SPRINT.revisionRoundsPerConcept),
   ]
-  /* 8 concepts / 8 scripts are owner-confirmed. The 20 variations are distributed across them by testing strategy:
-     never imply the same number per concept. */
+  /* Sprint Plus (approved offer): 10 concepts, 10 scripts, 2 variations per concept = 20 ad variations. */
   const plusFeatures = [
-    `${SPRINT_PLUS.concepts.value} distinct creative concepts`,
-    `${SPRINT_PLUS.concepts.value} complete scripts`,
-    'Expanded creative variations',
+    `${SPRINT_PLUS.concepts} distinct creative concepts`,
+    `${SPRINT_PLUS.scripts} complete scripts`,
+    `${SPRINT_PLUS.variationsPerConcept} variations per concept, changing the hook or CTA`,
     'Up to 2 creators or spokespeople',
     days(SPRINT_PLUS.turnaroundBusinessDays),
     usage(SPRINT_PLUS.usageMonthsIncluded),
     revisions(SPRINT_PLUS.revisionRoundsPerConcept),
     'Priority production scheduling',
   ]
+  const PAID_DESC = 'lg:min-h-[46px]'
+  const PAID_SUB = 'lg:min-h-[76px]'
   const custom = CUSTOM_PACKAGES.paid
   return (
     <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3 lg:gap-6">
       <PricingCard
         tone="light" id="card-sprint" label="Sprint" description={SPRINT.cardDescription}
         price={<BillingPrice pkg={SPRINT} billing={billing} />}
-        sub={<Variations tone="light" count={SPRINT.variations} />}
-        features={sprintFeatures} ctaLabel="Get started"
+        sub={<Variations tone="light" count={SPRINT.variations} line={`${SPRINT.concepts} concepts × ${SPRINT.variationsPerConcept} variations each`} />}
+        features={sprintFeatures} ctaLabel="Get started" descMin={PAID_DESC} subMin={PAID_SUB}
       />
       <PricingCard
         tone="lime" id="card-sprint-plus" label="Sprint Plus" badge="Deeper testing" description={SPRINT_PLUS.cardDescription}
         price={<BillingPrice pkg={SPRINT_PLUS} billing={billing} />}
-        sub={<Variations tone="lime" count={SPRINT_PLUS.variations} />}
-        features={plusFeatures} note={SPRINT_PLUS.extraDetail} ctaLabel="Get started"
+        sub={<Variations tone="lime" count={SPRINT_PLUS.variations} line={SPRINT_PLUS.valueLine} />}
+        features={plusFeatures} note={SPRINT_PLUS.extraDetail} ctaLabel="Get started" descMin={PAID_DESC} subMin={PAID_SUB}
       />
       <PricingCard
         tone="dark" id="card-custom" label={custom.name} description={custom.description}
         price={<LetsTalk />} sub={<Supporting tone="dark">{custom.supportingLabel}</Supporting>}
-        features={custom.features} note={custom.note} ctaLabel={custom.cta}
+        features={custom.features} note={custom.note} ctaLabel={custom.cta} descMin={PAID_DESC} subMin={PAID_SUB}
         className="md:col-span-2 lg:col-span-1"
       />
     </div>

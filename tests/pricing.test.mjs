@@ -43,28 +43,41 @@ test('Sprint Plus: $4,500/month, 20 variations, 15 business days, 2 revision rou
   assert.equal(SPRINT_PLUS.usageMonthsIncluded, 6)
 })
 
-test('Sprint Plus: 8 concepts / 8 scripts / 20 variations, distributed (not evenly) across concepts', () => {
-  assert.equal(SPRINT_PLUS.concepts.value, 8)
-  assert.equal(SPRINT_PLUS.concepts.status, 'confirmed')
-  assert.equal(SPRINT_PLUS.variations, 20)
-  assert.match(SPRINT_PLUS.variationsDistribution, /distributed across the concepts according to the creative testing strategy/)
-  assert.match(SPRINT_PLUS.variationsDistribution, /not necessarily have the same number of variations/)
+test('Sprint 5/5/2/10 and Sprint Plus 10/10/2/20 (approved offer): config, cards, FAQ, JSON-LD and diagram text agree', () => {
+  assert.deepEqual([SPRINT.concepts, SPRINT.scripts, SPRINT.variationsPerConcept, SPRINT.variations], [5, 5, 2, 10])
+  assert.deepEqual([SPRINT_PLUS.concepts, SPRINT_PLUS.scripts, SPRINT_PLUS.variationsPerConcept, SPRINT_PLUS.variations], [10, 10, 2, 20])
+  assert.equal(SPRINT_PLUS.variations, SPRINT_PLUS.concepts * SPRINT_PLUS.variationsPerConcept)
+  assert.equal(SPRINT.variations, SPRINT.concepts * SPRINT.variationsPerConcept)
+  assert.equal(SPRINT_PLUS.valueLine, 'Twice the creative concepts. Twice the ad variations.')
+  assert.equal(SPRINT_PLUS.turnaroundBusinessDays, 15); assert.equal(SPRINT_PLUS.revisionRoundsPerConcept, 2); assert.equal(SPRINT_PLUS.usageMonthsIncluded, 6)
+  assert.ok(!('variationsDistribution' in SPRINT_PLUS) && typeof SPRINT_PLUS.concepts === 'number', 'the uneven-distribution structure is gone')
   const offer = read('src/components/pricing/PricingCards.jsx')
-  assert.match(offer, /SPRINT_PLUS\.concepts\.value\} distinct creative concepts/)
-  assert.match(offer, /SPRINT_PLUS\.concepts\.value\} complete scripts/)
-  assert.match(faq('whats-included'), /8 distinct concepts and 20 ad variations in total, distributed across the concepts/)
+  assert.match(offer, /\$\{SPRINT_PLUS\.concepts\} distinct creative concepts/)
+  assert.match(offer, /\$\{SPRINT_PLUS\.scripts\} complete scripts/)
+  assert.match(offer, /\$\{SPRINT_PLUS\.variationsPerConcept\} variations per concept, changing the hook or CTA/)
+  assert.match(offer, /line=\{SPRINT_PLUS\.valueLine\}/)
+  assert.match(faq('whats-included'), /Creative Testing Sprint Plus is \$4,500\/month for 10 concepts and 20 ad variations/)
+  assert.match(faq('concept-vs-variation'), /Creative Testing Sprint Plus includes 10 concepts with 2 variations each, 20 ad variations in total/)
   const svc = graph().find((n) => n.name === 'Creative Testing Sprint Plus')
-  assert.match(svc.description, /8 distinct creative concepts and 20 ad variations in total, distributed across the concepts/)
-  // Never implies an even split or a different concept count.
-  const everyClaim = JSON.stringify(graph()) + PRICING_FAQ.map(faqAnswerText).join(' ') + offer
-  assert.ok(!/\b10 (distinct )?(creative )?concepts/i.test(everyClaim), 'no invented 10-concept Sprint Plus')
-  assert.ok(!/(two and a half|2\.5 variations|same number of variations|equal(ly)? (split|distributed)|each concept (has|gets|includes) \d+ variations)/i.test(everyClaim.replace(/not necessarily have the same number of variations/gi, '')), 'no even-split claim')
-  // The 5 x 2 concept diagram stays about the standard Sprint only.
+  assert.match(svc.description, /^10 distinct creative concepts with 2 variations each \(20 ad variations\)/)
+  const std = graph().find((n) => n.name === 'Creative Testing Sprint')
+  assert.match(std.description, /^5 distinct creative concepts with 2 variations each \(10 ad variations\)/)
+  // the visible package copy and the structured data say the same thing
+  for (const n of [svc, std]) assert.ok(n.offers.length === 2)
   const philoSrc = read('src/components/pricing/PhilosophySection.jsx')
   assert.match(philoSrc, /SPRINT\.concepts/)
   assert.ok(!/SPRINT_PLUS/.test(philoSrc.slice(philoSrc.indexOf('function ConceptColumn'), philoSrc.indexOf('const SEQ_ICONS'))), 'the diagram columns are the standard Sprint only')
-  assert.match(philoSrc, /Sprint Plus includes \{SPRINT_PLUS\.concepts\.value\} concepts and \{SPRINT_PLUS\.variations\} strategically distributed variations/)
-  assert.ok(!/every concept|each concept/i.test(philoSrc), 'no identical-per-concept implication')
+  assert.match(philoSrc, /Standard Sprint shown\. Sprint Plus includes \{SPRINT_PLUS\.concepts\} concepts and \{SPRINT_PLUS\.variations\} ad variations\./)
+})
+
+test('no obsolete 8-concept / uneven-distribution Sprint Plus wording anywhere in active source', () => {
+  const walk = (d) => fs.readdirSync(d, { withFileTypes: true }).flatMap((e) => (e.isDirectory() ? walk(path.join(d, e.name)) : [path.join(d, e.name)]))
+  const files = [...walk(path.join(ROOT, 'src')), ...walk(path.join(ROOT, 'docs')), path.join(ROOT, 'CLAUDE.md')].filter((f) => /\.(jsx?|md|html)$/.test(f) && !/case-studies|graspo|elyon|referral|blog/i.test(f))
+  for (const f of files) {
+    const t = fs.readFileSync(f, 'utf8')
+    assert.ok(!/\b8 (distinct )?(creative )?concepts|\b8 (complete )?scripts|eight (distinct )?(creative )?concepts/i.test(t), `${path.relative(ROOT, f)}: obsolete 8-concept reference`)
+    assert.ok(!/strategically distributed|variationsDistribution|distributed across (the|its) concepts|not necessarily have the same number/i.test(t), `${path.relative(ROOT, f)}: obsolete uneven-distribution wording`)
+  }
 })
 
 test('monthly commitment: 3 months, then month-to-month, 30 days notice; no guaranteed results', () => {
@@ -430,8 +443,9 @@ test('crawler policy is unchanged: everything crawlable, only /api/ blocked, no 
 // ── final five-section structure ──────────────────────────────────────────────────────────────────────────────────────
 import {
   BILLING_OPTIONS, PARTNERSHIP_TERMS, CUSTOM_PACKAGES, SHARED_SPRINT_BENEFITS, SHARED_SPRINT_NOTE, PRODUCTION_STAGES, ORGANIC_STAGES,
-  ORGANIC_COMMITMENT, CUSTOM_TERMS, GOALS, CARD_NOTES, SHARED_SPRINT_LANGUAGE_NOTE,
+  ORGANIC_COMMITMENT, CUSTOM_TERMS, GOALS, CARD_NOTES, SHARED_SPRINT_LANGUAGE_NOTE, ORGANIC_CTA,
 } from '../src/seo/businessKnowledge.js'
+import { CONTACT_EMAIL } from '../src/config.js'
 import { FAQ_CATEGORIES } from '../src/seo/pricingFaq.js'
 import { OFFER_PATHS } from '../src/config.js'
 
@@ -558,7 +572,7 @@ test('Section 2: philosophy (standard Sprint diagram / organic sequence) + Roadm
   assert.match(s, /We develop distinct creative angles, then create variations for structured testing\./)
   assert.match(s, /SPRINT\.concepts\} original concepts[\s\S]*SPRINT\.variations\} ad variations/)
   assert.match(s, /A concept<\/span> is a unique ad idea\./); assert.match(s, /A variation<\/span> changes its hook or CTA\./)
-  assert.match(s, /Standard Sprint shown\. Sprint Plus includes \{SPRINT_PLUS\.concepts\.value\} concepts and \{SPRINT_PLUS\.variations\} strategically distributed variations\./)
+  assert.match(s, /Standard Sprint shown\. Sprint Plus includes \{SPRINT_PLUS\.concepts\} concepts and \{SPRINT_PLUS\.variations\} ad variations\./)
   assert.match(s, /A video-first approach to building your organic presence\./)
   assert.match(s, /Consistency\. Content\. <span className="text-lime">Real connections\.<\/span>/)
   assert.match(s, /ORGANIC_STAGES\.map/)
@@ -586,9 +600,11 @@ test('Section 3: four expandable panels; one open at a time; all content in the 
 })
 
 test('panel content: concise inclusions, usage rights + extension prices, stages, production rows; long-form policies live in the FAQ', () => {
-  assert.deepEqual(SHARED_SPRINT_BENEFITS.map((b) => b.label), ['Creative research & strategy', 'Concepts, scripts & approval', 'Creator selection', 'Filming & editing', 'Captions, B-roll & graphics', 'Square & 4:5 reframing', 'Creative variations', 'Testing recommendations'])
-  assert.equal(SHARED_SPRINT_LANGUAGE_NOTE, 'One production language included: English, Spanish, French or Arabic. Additional languages on request.')
-  assert.ok(!/free|included at no|no extra/i.test(SHARED_SPRINT_LANGUAGE_NOTE.replace('included: English', '')), 'additional languages are never implied to be free')
+  assert.deepEqual(SHARED_SPRINT_BENEFITS.map((b) => b.label), ['Creative research & strategy', 'Concepts, scripts & approval', 'Creator selection', 'Filming & editing', 'Captions, B-roll & graphics', 'Square & 4:5 reframing', 'Creative variations', 'Testing recommendations', 'Multilingual production'])
+  assert.equal(SHARED_SPRINT_BENEFITS.length, 9)
+  assert.equal(SHARED_SPRINT_BENEFITS[8].detail, 'One core language included: English, Spanish, French or Arabic.')
+  assert.equal(SHARED_SPRINT_LANGUAGE_NOTE, 'Additional languages are available on request and may incur extra charges.')
+  assert.ok(!/free of charge|at no (extra )?cost/i.test(SHARED_SPRINT_LANGUAGE_NOTE), 'additional languages are never implied to be free')
   assert.match(SHARED_SPRINT_NOTE, /Custom scopes are agreed individually/)
   assert.deepEqual(PRODUCTION_STAGES.map((x) => [x.title, x.description]), [
     ['Strategy', 'Research & creative concepts.'], ['Preparation', 'Creators, scripts & approval.'],
@@ -654,19 +670,55 @@ test('card copy is concise but complete: platform line, Custom note, Sprint Plus
   for (const t of ['ORGANIC.includedInBoth[0]', 'ORGANIC.includedInBoth[1]', 'ORGANIC_COMMITMENT.initialMonths']) assert.ok(cardsSrc.includes(t), t)
 })
 
-test('Roadmap card: new copy, five-card SVG illustration in the concept palette, existing Roadmap destination, no external assets', () => {
+test('Roadmap card: approved copy and destination; the illustration is a five-idea MOODBOARD, distinct from the concept diagram', () => {
   const s = strip(philo)
   assert.match(s, /Your free Creative Growth Roadmap/)
   assert.match(s, /Your next <span className="text-lime">5 winning ad concepts\.<\/span>/)
   assert.match(s, /Five personalized creative ideas for your brand, built around your product and audience\./)
   assert.match(s, /Completely free\. No obligation\./)
   assert.match(s, /href=\{OFFER_PATHS\.roadmap\}/)
-  const card = s.slice(s.indexOf('function RoadmapCard'), s.indexOf('const STATS'))
+  const board = s.slice(s.indexOf('const ANGLE_ICONS'), s.indexOf('function RoadmapCard'))
+  for (const label of ['Problem', 'Product', 'Demo', 'Story', 'Offer']) assert.ok(board.includes(`label: '${label}'`), label)
+  assert.match(board, /ConceptAccents\[i\]/)
+  assert.match(board, /Example creative angles/)
+  assert.ok(!/<path d=\{?[`'"]M[^>]*l[^>]*z/.test(board.replace(/ANGLE_ICONS[\s\S]*?\n}\n/, '')), 'no play-button triangle in the moodboard')
+  assert.ok(!/<img|https?:\/\/|animation|roadmap-float|DRAW_ORDER|branch-draw/.test(board), 'no external assets, no animation, none of the left diagram\'s visual language')
+  const card = s.slice(s.indexOf('function RoadmapCard'), s.indexOf('function OrganicOfferCard'))
   assert.ok(!/justify-between|h-full|min-h-\[/.test(card), 'content flows naturally, not stretched')
-  assert.match(s, /DRAW_ORDER\.map/); assert.match(s, /ConceptAccents\[i\]/)
-  assert.ok(!/<img|https?:\/\//.test(card), 'no external assets or footage')
-  const css = read('src/index.css')
-  assert.match(css.slice(css.indexOf('.roadmap-float') - 120), /@media \(prefers-reduced-motion: no-preference\)/)
+  assert.ok(!fs.readFileSync(path.join(ROOT, 'src/index.css'), 'utf8').includes('roadmap-float'), 'the old float animation is removed')
+})
+
+test('service-aware CTAs: Paid keeps the Roadmap offer; Organic uses the organic conversation starter via the existing contact email', () => {
+  assert.equal(ORGANIC_CTA.label, 'Discuss Your Organic Strategy')
+  assert.equal(ORGANIC_CTA.promo.eyebrow.toUpperCase(), 'YOUR ORGANIC CONTENT PARTNERSHIP')
+  assert.equal(ORGANIC_CTA.promo.headline, "Let's build your brand's organic presence.")
+  assert.equal(ORGANIC_CTA.promo.text, 'Strategy, consistent video production, publishing and engagement — managed together.')
+  assert.equal(ORGANIC_CTA.href, `mailto:${CONTACT_EMAIL}?subject=Organic%20social%20media%20strategy`)
+  const s = strip(philo)
+  assert.match(s, /<div hidden=\{service !== 'paid'\}><RoadmapCard \/><\/div>/)
+  assert.match(s, /<div hidden=\{service !== 'organic'\}><OrganicOfferCard \/><\/div>/)
+  const organicCard = s.slice(s.indexOf('function OrganicOfferCard'), s.indexOf('const STATS'))
+  assert.ok(!/Free Ad Concepts|ad concepts|OFFER_PATHS/.test(organicCard), 'the five free ad concepts are not presented as an organic deliverable')
+  assert.match(organicCard, /ORGANIC_CTA\.href/)
+  const fin = strip(read('src/components/pricing/PricingFinalCTA.jsx'))
+  assert.match(fin, /<div hidden=\{service !== 'paid'\}>\s*<CtaLink href=\{OFFER_PATHS\.roadmap\}>Get 5 Free Ad Concepts<\/CtaLink>/)
+  assert.match(fin, /<div hidden=\{service !== 'organic'\}>\s*<CtaLink href=\{ORGANIC_CTA\.href\}>\{ORGANIC_CTA\.label\}<\/CtaLink>/)
+  assert.match(read('src/CreativeTestingSprintPage.jsx'), /<PricingFinalCTA service=\{service\} \/>/)
+  // The global navigation CTA is untouched.
+  assert.match(read('src/components/Nav.jsx'), /const ctaHref = onScalePage \? BOOKING_URL : onRoadmapPage \? '#apply' : OFFER_PATHS\.roadmap/)
+  assert.ok(!/mailto/.test(read('src/lib/routes/headFor.js')))
+})
+
+test('paid inclusions: nine items in a 3-column desktop grid (2 on tablet, 1 on phones); Organic keeps its own list', () => {
+  const s = strip(panels)
+  const paid = s.slice(s.indexOf('function IncludedPaid'), s.indexOf('function IncludedOrganic'))
+  assert.match(paid, /grid-cols-1[^"]*sm:grid-cols-2[^"]*lg:grid-cols-3/)
+  assert.ok(!/lg:grid-cols-4/.test(paid))
+  assert.match(paid, /SHARED_SPRINT_BENEFITS\.map/); assert.match(paid, /b\.detail/)
+  assert.match(paid, /SHARED_SPRINT_LANGUAGE_NOTE[\s\S]*SHARED_SPRINT_NOTE/)
+  const organic = s.slice(s.indexOf('function IncludedOrganic'), s.indexOf('/* '))
+  assert.match(organic, /ORGANIC\.panelInclusions\.map/)
+  assert.ok(!/SHARED_SPRINT_BENEFITS/.test(organic), 'Organic is not given the nine-item Paid grid')
 })
 
 test('page: five sections in order; paid/organic content is switched by presentation only', () => {
