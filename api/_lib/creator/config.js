@@ -13,6 +13,7 @@ export function creatorConfig(env = process.env) {
     useMemoryStore: s('CREATOR_STORE') === 'memory', // local development / tests only
     adminPassword: s('CREATOR_ADMIN_PASSWORD'),
     sessionSecret: s('CREATOR_ADMIN_SESSION_SECRET'),
+    resendConfigured: Boolean(s('RESEND_API_KEY')),
     isProduction: s('VERCEL_ENV') === 'production',
   }
 }

@@ -7,6 +7,8 @@ import { makeHarness, creator, admin, adminLogin, validProfile, dummyJpeg } from
 import { ACCEPTANCES } from '../src/lib/creator/constants.js'
 import { AGREEMENT_VERSION, PRIVACY_VERSION } from '../src/content/creatorLegal.js'
 import { sha256 } from '../api/_lib/creator/crypto.js'
+import { ENV } from './helpers/creatorHarness.mjs'
+const ENV_PASSWORD = ENV.CREATOR_ADMIN_PASSWORD
 
 const DAY = 86_400_000
 
@@ -435,6 +437,24 @@ test('owner API: a pasted password with stray spaces or a trailing newline still
   const h = makeHarness()
   assert.equal((await adminLogin(h.deps, `  ${h.env.CREATOR_ADMIN_PASSWORD}\n`)).r.status, 200)
   assert.equal((await adminLogin(h.deps, `${h.env.CREATOR_ADMIN_PASSWORD}x`)).r.status, 401)
+})
+
+test('owner setup check: owner only, reports presence and Cloudflare reachability, never any secret value', async () => {
+  const t = await setup()
+  assert.equal((await admin(t.deps, '')('health')).status, 401)
+  const r = await t.A('health')
+  assert.equal(r.status, 200)
+  assert.deepEqual(Object.keys(r.json.checks).sort(), ['cloudflare', 'cloudflareAccountId', 'cloudflareToken', 'database', 'environment', 'ownerEmail'])
+  assert.equal(r.json.checks.cloudflareAccountId, true)
+  assert.equal(r.json.checks.cloudflareToken, true)
+  const text = JSON.stringify(r.json)
+  for (const secret of ['cf-token-secret', 'acct123', ENV_PASSWORD, 're_test_key']) assert.ok(!text.includes(secret), 'no secret value in the response')
+
+  const missing = makeHarness({ env: { CLOUDFLARE_ACCOUNT_ID: '' } })
+  const { cookie } = await adminLogin(missing.deps)
+  const m = await admin(missing.deps, cookie)('health')
+  assert.equal(m.json.checks.cloudflareAccountId, false)
+  assert.equal(m.json.checks.cloudflare, 'not_configured')
 })
 
 test('owner API: refuses to run with a weak/missing password or session secret', async () => {

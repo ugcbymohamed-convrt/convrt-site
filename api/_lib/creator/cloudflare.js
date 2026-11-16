@@ -51,6 +51,9 @@ export function cloudflare(cfg, fetchImpl = globalThis.fetch) {
 
     getVideo: (uid) => call('GET', `/${encodeURIComponent(uid)}`),
 
+    /* Cheap read-only call used by the owner's Setup check: proves the account ID and token work together. */
+    ping: () => call('GET', '/storage-usage'),
+
     async deleteVideo(uid) {
       try {
         await call('DELETE', `/${encodeURIComponent(uid)}`)

@@ -201,6 +201,7 @@ const ADMIN_OPS = {
   logout: 'POST',
   me: 'GET',
   overview: 'GET',
+  health: 'GET',
   'invite-create': 'POST',
   'invite-rotate': 'POST',
   'invite-revoke': 'POST',
@@ -260,6 +261,29 @@ export async function adminHandler(req, res, deps = buildDeps()) {
     switch (op) {
       case 'overview':
         return reply(res, 200, { ok: true, ...(await service.adminOverview()) })
+      case 'health': {
+        // Owner-only setup check. Reports presence (yes/no) of settings, never their values.
+        let cloudflare = 'not_configured'
+        if (deps.cf.configured) {
+          try {
+            await deps.cf.ping()
+            cloudflare = 'ok'
+          } catch (err) {
+            cloudflare = `rejected_${err?.status ?? 'unreachable'}`
+          }
+        }
+        return reply(res, 200, {
+          ok: true,
+          checks: {
+            database: deps.store.kind,
+            cloudflareAccountId: Boolean(cfg.accountId),
+            cloudflareToken: Boolean(cfg.streamToken),
+            cloudflare,
+            ownerEmail: cfg.resendConfigured,
+            environment: cfg.isProduction ? 'production' : 'preview/development',
+          },
+        })
+      }
       case 'invite-create': {
         const b = await readBody()
         const r = await service.createInvite({ label: b.label, source: b.source, expiresInDays: b.expiresInDays })

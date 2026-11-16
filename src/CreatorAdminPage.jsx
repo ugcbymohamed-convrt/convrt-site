@@ -66,6 +66,37 @@ function Login({ onDone }) {
   )
 }
 
+const CF_HELP = {
+  ok: 'Connected: Cloudflare accepts the account ID and token.',
+  not_configured: 'Not set up: the account ID and/or token is missing on this deployment.',
+  rejected_401: 'Cloudflare rejected the token (401): it is wrong or incomplete. Create a new token.',
+  rejected_403: 'Cloudflare refused access (403): the token needs Stream: Edit on this account.',
+  rejected_404: 'Cloudflare could not find the account (404): check the account ID.',
+}
+
+function SetupCheck() {
+  const [checks, setChecks] = useState(null)
+  useEffect(() => { call('health').then((r) => r.ok && setChecks(r.checks)) }, [])
+  if (!checks) return null
+  const Row = ({ ok, label, detail }) => (
+    <li className="flex items-start gap-3 text-sm"><span className={`mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-xs font-bold ${ok ? 'bg-lime text-canvas' : 'bg-coral text-canvas'}`}>{ok ? '✓' : '!'}</span><span className="text-ink"><strong className="font-medium">{label}</strong>{detail && <span className="block text-ink-muted">{detail}</span>}</span></li>
+  )
+  const cf = checks.cloudflare
+  return (
+    <section aria-labelledby="setup" className="mb-10 rounded-3xl border border-hairline bg-surface-1 p-5">
+      <h2 id="setup" className="text-lg font-semibold text-ink">Setup check</h2>
+      <p className="mt-1 text-xs text-ink-subtle">Shows whether this deployment can see each setting (never the values). Environment: {checks.environment}.</p>
+      <ul className="mt-4 space-y-3">
+        <Row ok label="Database" detail={`Connected (${checks.database})`} />
+        <Row ok={checks.cloudflareAccountId} label="CLOUDFLARE_ACCOUNT_ID" detail={checks.cloudflareAccountId ? 'Set' : 'Missing on this deployment'} />
+        <Row ok={checks.cloudflareToken} label="CLOUDFLARE_STREAM_API_TOKEN" detail={checks.cloudflareToken ? 'Set' : 'Missing on this deployment'} />
+        <Row ok={cf === 'ok'} label="Cloudflare Stream connection" detail={CF_HELP[cf] || `Cloudflare answered ${cf}.`} />
+        <Row ok={checks.ownerEmail} label="Owner email alerts (RESEND_API_KEY)" detail={checks.ownerEmail ? 'Set' : 'Missing: you will not get an email for new submissions'} />
+      </ul>
+    </section>
+  )
+}
+
 function Invites({ data, reload }) {
   const [label, setLabel] = useState('')
   const [source, setSource] = useState('fiverr')
@@ -293,6 +324,7 @@ export default function CreatorAdminPage() {
               Legal documents are still a draft (v{data.legal.agreementVersion}). Invitations and submissions are blocked on Production until the owner approves them. Preview deployments work for testing.
             </p>
           )}
+          {!openId && <SetupCheck />}
           {openId ? (
             <Detail id={openId} onBack={() => { setOpenId(null); window.history.replaceState(null, '', PRIVATE_PATHS.creatorAdmin) }} reload={reload} />
           ) : (

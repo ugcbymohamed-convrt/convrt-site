@@ -30,6 +30,7 @@ export function fakeCloudflare() {
       videos.set(uid, { uid, requireSignedURLs: body.requireSignedURLs, meta: body.meta, creator: body.creator, maxDurationSeconds: body.maxDurationSeconds, status: { state: 'pendingupload' }, readyToStream: false, duration: -1, size: 0 })
       return ok({ uploadURL: `https://upload.example.test/${uid}`, uid })
     }
+    if (u.pathname.endsWith('/stream/storage-usage') && method === 'GET') return ok({ totalStorageMinutes: 0, videoCount: videos.size })
     if (m?.[2] === 'token' && method === 'POST') {
       if (!videos.has(m[1])) return fail(404)
       return ok({ token: `signed-${m[1]}-${body.exp}` })
