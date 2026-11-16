@@ -88,6 +88,8 @@ terms**, **transfer safeguards**, **six-year retention period**, **provider back
 
 ## Owner checklist: what only you can do
 
+Short version with direct dashboard links and support-message drafts (Cloudflare, Upstash, Fiverr): [creator-owner-checklist.md](creator-owner-checklist.md).
+
 1. **Vercel:** upgrade the team to **Pro** (Hobby is non-commercial and its DPA coverage is Pro/Enterprise). Then Team Settings → Data Preferences: confirm AI training is **opted out**. Keep the DPA.
 2. **After the next deploy**, open `/creator-admin` → Setup check: **"Where the server functions run" must read `fra1`**. Tell me what it says.
 3. **Cloudflare:** confirm your plan type; confirm no caption/AI features are on; send the support email above.
