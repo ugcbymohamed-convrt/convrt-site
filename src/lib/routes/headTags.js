@@ -36,7 +36,8 @@ export function injectPage(shell, { headHtml, bodyHtml, ssrPath }) {
   if (!viewport) throw new Error('injectPage: <meta name="viewport"> not found in index.html')
   if (!shell.includes('<div id="root"></div>')) throw new Error('injectPage: <div id="root"></div> not found in index.html')
   let html = stripManagedHead(shell)
-  html = html.replace(/(<meta\s+name="viewport"[^>]*?\/>)/, `$1\n${headHtml}`)
+  // Function replacer: head text may contain "$" (prices like "$1,500"), which a string replacement would read as $1, $&, ...
+  html = html.replace(/(<meta\s+name="viewport"[^>]*?\/>)/, (m) => `${m}\n${headHtml}`)
   html = html.replace('<div id="root"></div>', () => `<div id="root" data-ssr-path="${esc(ssrPath)}">${bodyHtml}</div>`)
   return html
 }

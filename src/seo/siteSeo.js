@@ -4,7 +4,7 @@
    • every page component, via pageHead(path) → useDocumentHead(...) (runtime <head>)
    • src/lib/seo/sitemap.js (which URLs go in sitemap.xml)
    • tests/seo.test.mjs (consistency guards)
-   • later phases: build-time static head, X-Robots-Tag headers, JSON-LD.
+   • src/seo/structuredData.js: JSON-LD per route (Organization/WebSite on '/', the pricing graph on '/pricing').
 
    Rules
    • Copy is exactly what each page used before this file existed. Changing wording is a copy
@@ -21,6 +21,7 @@ import {
   SITE_URL, OFFER_PATHS, REFERRALS_PATH,
   ROADMAP_INDEXABLE, FREE_HOOKS_INDEXABLE, RISK_FREE_INDEXABLE, REFERRALS_INDEXABLE,
 } from '../config.js'
+import { jsonLdFor } from './structuredData.js'
 
 export const SITE_SEO = {
   '/': {
@@ -33,9 +34,9 @@ export const SITE_SEO = {
     indexable: true,
   },
   '/pricing': {
-    title: 'Paid & Organic Social Pricing | CONVRT',
+    title: 'UGC & Video Production Pricing | CONVRT Studio',
     description:
-      'Explore CONVRT pricing for paid social creative testing and organic social media management, from strategy and production to publishing and optimization.',
+      "Explore CONVRT's UGC, video ad and social media production packages, with clear pricing, creative deliverables, usage rights and revision policies.",
     indexable: true,
   },
   '/case-studies/graspo': {
@@ -108,7 +109,14 @@ export function pageHead(path) {
     ...(e.ogTitle ? { ogTitle: e.ogTitle } : {}),
     ...(e.ogDescription ? { ogDescription: e.ogDescription } : {}),
     ...(e.robots ? { robots: e.robots } : { noindex: !e.indexable }),
+    // Structured data lives next to the head so the static HTML and the client hook always carry the same JSON-LD.
+    ...jsonLdParam(path, e),
   }
+}
+
+function jsonLdParam(path, entry) {
+  const jsonLd = jsonLdFor(path, entry)
+  return jsonLd ? { jsonLd } : {}
 }
 
 /* Routes that belong in sitemap.xml: indexable AND their own canonical. */

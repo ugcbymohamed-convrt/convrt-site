@@ -412,3 +412,48 @@ body {
   .ref-card:hover { transform: none; }
   .ref-faq-panel { transition: none; }
 }
+
+/* Concept diagram branches (pricing page). Static by default. Where scroll-driven animation is supported they draw in as
+   the section scrolls into view; never under prefers-reduced-motion. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .branch-draw {
+      stroke-dasharray: 1;
+      animation: branch-draw linear both;
+      animation-timeline: view();
+      animation-range: entry 5% entry 70%;
+    }
+    @keyframes branch-draw {
+      from { stroke-dashoffset: 1; }
+      to { stroke-dashoffset: 0; }
+    }
+  }
+}
+
+/* Pricing page: horizontal slide between the Paid Social and Organic Social card groups. Both groups are always in the
+   DOM; the inactive one is parked off to its side (Paid on the left, Organic on the right), invisible and inert. Presentation
+   only. Reduced-motion visitors get an instant switch. */
+.pricing-stage {
+  position: relative;
+  overflow-x: clip;
+  transition: height 0.42s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.pricing-slide {
+  position: relative;
+  transition: transform 0.42s cubic-bezier(0.22, 1, 0.36, 1), visibility 0s linear 0s;
+}
+.pricing-slide[data-state="inactive"] {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  visibility: hidden;
+  transition: transform 0.42s cubic-bezier(0.22, 1, 0.36, 1), visibility 0s linear 0.42s;
+}
+.pricing-slide[data-state="inactive"][data-pos="left"] { transform: translateX(-104%); }
+.pricing-slide[data-state="inactive"][data-pos="right"] { transform: translateX(104%); }
+@media (prefers-reduced-motion: reduce) {
+  .pricing-stage,
+  .pricing-slide,
+  .pricing-slide[data-state="inactive"] { transition: none; }
+}

@@ -8,6 +8,7 @@
 
 import { SITE_URL, BLOG_PATH, BLOG_INDEXABLE } from '../../config.js'
 import { articlePath } from './schema.js'
+import { organizationRef, websiteRef } from '../../seo/structuredData.js'
 
 export const BLOG_TITLE = 'CONVRT Blog | Video Ads, UGC & Creative Strategy'
 export const BLOG_DESCRIPTION =
@@ -19,7 +20,8 @@ export const robotsFor = (indexable) => (indexable ? 'index, follow' : 'noindex,
 
 const absolute = (urlOrPath) => (urlOrPath?.startsWith('/') ? `${SITE_URL}${urlOrPath}` : urlOrPath)
 
-const ORGANIZATION = { '@type': 'Organization', name: 'CONVRT', url: SITE_URL }
+/* The publisher is the Organization entity defined once in src/seo/structuredData.js (same @id everywhere). */
+const ORGANIZATION = organizationRef()
 
 export function blogIndexHead(published = []) {
   return {
@@ -38,7 +40,7 @@ export function blogIndexJsonLd(published = []) {
     name: 'CONVRT Blog',
     description: BLOG_DESCRIPTION,
     url: BLOG_URL,
-    isPartOf: { '@type': 'WebSite', name: 'CONVRT', url: SITE_URL },
+    isPartOf: websiteRef(),
     publisher: ORGANIZATION,
   }
   if (published.length) {
