@@ -1,37 +1,31 @@
 import { OFFER_PATHS } from '../../config.js'
 import { CONVRT_STATS } from '../../lib/siteStats.js'
 import { SPRINT, SPRINT_PLUS, ORGANIC_STAGES, ORGANIC, ORGANIC_CTA, PRODUCTION_LANGUAGES } from '../../seo/businessKnowledge.js'
-import { ConceptAccents } from './shared.jsx'
 
 /* SECTION 2: creative philosophy + credibility + the free Roadmap offer, as one cohesive block.
    Left: the philosophy for the selected goal (Paid: the concept-to-variation diagram for the STANDARD Sprint; Organic:
    the Strategy -> Production -> Publishing & engagement -> Optimization sequence). Right: the Free Creative Growth
    Roadmap card (existing flow, no new funnel). Below: the credibility statistics. Both goal variants are always in the
    HTML; `hidden` picks the visible one. */
-const ANGLES = ['Problem-led', 'Social proof', 'Product in use', 'Objection handling', 'Offer-led']
+/* LEFT: the creative testing SYSTEM, drawn as a technical diagram: monochrome (white and grey) with small lime junction points.
+   One concept node branches (right-angle connectors) into two variation nodes. Structure and precision, not illustration:
+   no colour coding, no video-player shapes. Lines draw in on scroll only where supported and motion is allowed (.branch-draw). */
+const GRID_BG = { backgroundImage: 'radial-gradient(rgba(250,250,250,0.075) 1px, transparent 1px)', backgroundSize: '14px 14px' }
 
-/* One concept: a play tile, a bracket that splits into two, and two variation chips (A, B). */
-function ConceptColumn({ index, accent }) {
+function ConceptColumn({ index }) {
   return (
-    <li className="flex flex-col items-center" title={ANGLES[index]}>
-      <svg viewBox="0 0 56 42" width="56" height="42" className="h-[38px] w-[50px] md:h-[42px] md:w-[56px]" aria-hidden="true">
-        <rect x="1.5" y="1.5" width="53" height="39" rx="10" fill={accent} fillOpacity="0.14" stroke={accent} strokeWidth="2" />
-        <path d="M23 12.5l17 8.5-17 8.5z" fill={accent} />
+    <li className="flex flex-col items-center">
+      <span className="whitespace-nowrap text-[10.5px] font-medium uppercase leading-none tracking-[0.1em] text-ink-muted md:tracking-[0.14em]"><span className="sr-only md:not-sr-only">Concept </span>{index + 1}</span>
+      <svg viewBox="0 0 80 74" className="mt-2 h-auto w-full max-w-[84px]" fill="none" aria-hidden="true">
+        <circle cx="40" cy="8" r="5.5" stroke="#fafafa" strokeOpacity="0.9" strokeWidth="1.4" fill="#0a0a0b" />
+        <path d="M40 13.5V38M20 38H60M20 38V57M60 38V57" pathLength="1" stroke="#a1a1aa" strokeOpacity="0.7" strokeWidth="1.2" strokeLinecap="square" className="branch-draw" style={{ '--d': `${index * 70}ms` }} />
+        <circle cx="40" cy="38" r="2.2" fill="#d5ff40" />
+        <rect x="14" y="57" width="12" height="12" rx="2.5" stroke="#fafafa" strokeOpacity="0.85" strokeWidth="1.3" fill="#fafafa" fillOpacity="0.07" />
+        <rect x="54" y="57" width="12" height="12" rx="2.5" stroke="#fafafa" strokeOpacity="0.85" strokeWidth="1.3" fill="#fafafa" fillOpacity="0.07" />
       </svg>
-      <span className="mt-1.5 text-[11.5px] font-medium leading-none text-ink md:text-[12.5px]">Concept {index + 1}</span>
-      <svg viewBox="0 0 64 24" preserveAspectRatio="none" className="mt-1.5 h-5 w-[58px] md:w-[64px]" fill="none" aria-hidden="true">
-        <path d="M32 0V8M16 8H48M16 8V24M48 8V24" pathLength="1" stroke={accent} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" vectorEffect="non-scaling-stroke" className="branch-draw" style={{ '--d': `${index * 70}ms` }} />
-      </svg>
-      <div className="flex gap-1.5">
-        {['A', 'B'].map((v) => (
-          <div key={v} className="flex flex-col items-center">
-            <svg viewBox="0 0 28 36" className="h-[32px] w-[25px] md:h-[36px] md:w-[28px]" aria-hidden="true">
-              <rect width="28" height="36" rx="7" fill={accent} />
-              <path d="M10 11l9 7-9 7z" fill="#0a0a0b" />
-            </svg>
-            <span className="mt-1 text-[11px] font-semibold leading-none text-ink-muted">{v}</span>
-          </div>
-        ))}
+      <div className="grid w-full max-w-[84px] grid-cols-2 text-center text-[11px] font-semibold leading-none text-ink-muted">
+        <span>A</span>
+        <span>B</span>
       </div>
     </li>
   )
@@ -53,9 +47,11 @@ function PaidPhilosophy() {
       <p className="mt-2.5 max-w-xl text-[14.5px] leading-relaxed text-ink-muted">
         We develop distinct creative angles, then create variations for structured testing.
       </p>
-      <ol className="mt-6 grid grid-cols-5 gap-1.5 md:gap-3" aria-label="Creative Testing Sprint structure (illustrative)">
-        {ConceptAccents.map((accent, i) => <ConceptColumn key={accent} index={i} accent={accent} />)}
-      </ol>
+      <div className="mt-6 rounded-2xl border border-white/[0.08] px-2 py-4 md:px-4 md:py-5" style={GRID_BG}>
+        <ol className="grid grid-cols-5 gap-1 md:gap-3" aria-label="Creative Testing Sprint structure (illustrative)">
+          {[0, 1, 2, 3, 4].map((i) => <ConceptColumn key={i} index={i} />)}
+        </ol>
+      </div>
       <p className="mt-5 font-display text-base font-bold tracking-snug text-lime md:text-lg">
         {SPRINT.concepts} original concepts <span aria-hidden="true">&rarr;</span> {SPRINT.variations} ad variations
       </p>
@@ -101,52 +97,79 @@ function OrganicPhilosophy() {
   )
 }
 
-/* A creative moodboard: five idea cards for five different ADVERTISING ANGLES (illustrative examples, not promised categories).
-   Deliberately unlike the concept diagram on the left: no play buttons, no branching, no video thumbnails. Static CSS + inline
-   SVG icons, no animation. */
-const ANGLE_ICONS = {
-  Problem: <><circle cx="12" cy="12" r="8.5" /><path d="M12 7.5v5M12 16v.01" /></>,
-  Product: <><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z" /><path d="M12 12l8-4.5M12 12v9M12 12L4 7.5" /></>,
-  Demo: <><rect x="3" y="4" width="18" height="13" rx="2" /><path d="M9 20.5h6" /><path d="M10 8.5l5 3-2.2.9-.9 2.2z" /></>,
-  Story: <><path d="M4 5h16v10H9l-4 4v-4H4z" /></>,
-  Offer: <><path d="M3 12V4h8l10 10-8 8z" /><circle cx="7.5" cy="8.5" r="1" /></>,
-}
-const ANGLES_BOARD = [
-  { label: 'Problem', span: 'col-span-2', rot: -1.6, bars: ['72%', '48%'] },
-  { label: 'Product', span: 'col-span-2', rot: 1.2, bars: ['58%', '80%'] },
-  { label: 'Demo', span: 'col-span-2', rot: -0.8, bars: ['84%', '40%'] },
-  { label: 'Story', span: 'col-span-3', rot: 1.4, bars: ['66%', '86%', '44%'] },
-  { label: 'Offer', span: 'col-span-3', rot: -1.2, bars: ['52%', '78%', '60%'] },
-]
-
-function Moodboard() {
+/* RIGHT: a creative PITCH-BOARD, deliberately the opposite of the left diagram: expressive, editorial, overlapping. Three
+   illustrative mock ads (creator-led lifestyle, SaaS product demo, bold product ad) drawn as lightweight inline SVG. They are
+   made-up mockups, not client work: no logos, no results, no testimonials. Static, no animation, no external assets. */
+function PitchBoard() {
   return (
-    <div className="mx-auto max-w-[360px]">
-      <ul className="grid grid-cols-6 gap-2.5 px-1" aria-label="Example creative angles">
-        {ANGLES_BOARD.map((a, i) => {
-          const c = ConceptAccents[i]
-          return (
-            <li
-              key={a.label}
-              className={`${a.span} rounded-xl border p-2.5`}
-              style={{ borderColor: `${c}80`, background: `${c}14`, transform: `rotate(${a.rot}deg)` }}
-            >
-              <span className="flex h-7 w-7 items-center justify-center rounded-lg" style={{ background: c, color: '#0a0a0b' }}>
-                <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                  {ANGLE_ICONS[a.label]}
-                </svg>
-              </span>
-              <p className="mt-2 text-[12px] font-semibold leading-none text-ink">{a.label}</p>
-              <div className="mt-2 space-y-1" aria-hidden="true">
-                {a.bars.map((w, j) => (
-                  <span key={j} className="block h-[5px] rounded-full" style={{ width: w, background: j === 0 ? c : '#8a8a86', opacity: j === 0 ? 0.75 : 0.35 }} />
-                ))}
-              </div>
-            </li>
-          )
-        })}
-      </ul>
-      <p className="mt-2.5 text-center text-[11px] text-ink-subtle">Example creative angles</p>
+    <div className="mx-auto max-w-[380px]">
+      <svg viewBox="0 0 360 214" className="h-auto w-full" aria-hidden="true" focusable="false">
+        <defs>
+          <linearGradient id="pb-warm" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stopColor="#4a3326" />
+            <stop offset="1" stopColor="#1d1511" />
+          </linearGradient>
+          <radialGradient id="pb-glow" cx="0.5" cy="0.5" r="0.5">
+            <stop offset="0" stopColor="#e0b080" stopOpacity="0.5" />
+            <stop offset="1" stopColor="#e0b080" stopOpacity="0" />
+          </radialGradient>
+        </defs>
+
+        {/* B: SaaS product demo (back, centre) */}
+        <g transform="rotate(1.5 182 70)">
+          <rect x="101" y="17" width="168" height="116" rx="10" fill="#000" opacity="0.35" />
+          <rect x="98" y="12" width="168" height="116" rx="10" fill="#15171c" stroke="#fafafa" strokeOpacity="0.14" />
+          <circle cx="109" cy="22" r="2" fill="#fafafa" opacity="0.35" /><circle cx="116" cy="22" r="2" fill="#fafafa" opacity="0.25" /><circle cx="123" cy="22" r="2" fill="#fafafa" opacity="0.15" />
+          <text x="258" y="24.5" textAnchor="end" fontSize="6.5" fontWeight="600" letterSpacing="1.1" fill="#fafafa" opacity="0.5">PRODUCT DEMO</text>
+          <rect x="105" y="33" width="28" height="88" rx="6" fill="#fafafa" opacity="0.05" />
+          <rect x="110" y="40" width="18" height="3.5" rx="1.75" fill="#fafafa" opacity="0.45" />
+          <rect x="110" y="49" width="14" height="3.5" rx="1.75" fill="#fafafa" opacity="0.2" />
+          <rect x="110" y="58" width="16" height="3.5" rx="1.75" fill="#fafafa" opacity="0.2" />
+          <rect x="142" y="36" width="58" height="6" rx="3" fill="#fafafa" opacity="0.7" />
+          <rect x="142" y="47" width="36" height="4" rx="2" fill="#fafafa" opacity="0.22" />
+          {[16, 24, 20, 32, 44].map((h, i) => (
+            <rect key={i} x={144 + i * 17} y={104 - h} width="11" height={h} rx="2.5" fill={i === 4 ? '#d5ff40' : '#fafafa'} opacity={i === 4 ? 1 : 0.14} />
+          ))}
+          <path d="M148 88C162 80 170 84 182 74S206 70 228 62" stroke="#fafafa" strokeOpacity="0.55" strokeWidth="1.4" strokeLinecap="round" fill="none" />
+          <text x="142" y="119" fontSize="8.5" fontWeight="600" fill="#fafafa" opacity="0.85">See it in action</text>
+          <circle cx="212" cy="84" r="10" stroke="#d5ff40" strokeOpacity="0.8" strokeWidth="1.3" fill="none" />
+          <path d="M208 76l11 7-4.6 1.4-2.2 4.4z" fill="#fafafa" />
+        </g>
+
+        {/* A: creator-led lifestyle ad (portrait, front left) */}
+        <g transform="rotate(-5 62 104)">
+          <rect x="17" y="24" width="98" height="172" rx="14" fill="#000" opacity="0.4" />
+          <rect x="14" y="18" width="98" height="172" rx="14" fill="url(#pb-warm)" stroke="#fafafa" strokeOpacity="0.14" />
+          <circle cx="76" cy="78" r="46" fill="url(#pb-glow)" />
+          <rect x="22" y="26" width="82" height="2.5" rx="1.25" fill="#fafafa" opacity="0.22" />
+          <rect x="22" y="26" width="34" height="2.5" rx="1.25" fill="#fafafa" opacity="0.9" />
+          <text x="22" y="42" fontSize="6.5" fontWeight="600" letterSpacing="1.1" fill="#fafafa" opacity="0.55">CREATOR-LED</text>
+          <path d="M28 160C28 128 45 116 63 116S98 128 98 160V170H28z" fill="#fafafa" opacity="0.16" />
+          <circle cx="63" cy="96" r="15" fill="#e0c3a8" />
+          <path d="M48 93C49 80 58 76 66 77S79 82 78 93C73 86 58 85 48 93z" fill="#3a2a22" />
+          <circle cx="102" cy="112" r="5.5" fill="#fafafa" opacity="0.16" /><circle cx="102" cy="130" r="5.5" fill="#fafafa" opacity="0.16" />
+          <rect x="22" y="152" width="82" height="24" rx="7" fill="#d5ff40" />
+          <text x="63" y="168" textAnchor="middle" fontSize="10" fontWeight="800" fill="#0a0a0b">It just works.</text>
+        </g>
+
+        {/* C: bold product-focused ad (front right) */}
+        <g transform="rotate(5 290 120)">
+          <rect x="235" y="50" width="116" height="150" rx="12" fill="#000" opacity="0.4" />
+          <rect x="232" y="44" width="116" height="150" rx="12" fill="#f2f2ee" />
+          <text x="244" y="78" fontSize="21" fontWeight="800" letterSpacing="-0.6" fill="#0a0a0b">MADE</text>
+          <text x="244" y="97" fontSize="21" fontWeight="800" letterSpacing="-0.6" fill="#0a0a0b">TO BE</text>
+          <rect x="240" y="102" width="68" height="22" rx="4" fill="#d5ff40" />
+          <text x="244" y="119" fontSize="21" fontWeight="800" letterSpacing="-0.6" fill="#0a0a0b">SEEN.</text>
+          <ellipse cx="316" cy="182" rx="20" ry="3.5" fill="#0a0a0b" opacity="0.18" />
+          <rect x="309" y="124" width="14" height="10" rx="3" fill="#0a0a0b" />
+          <rect x="301" y="132" width="30" height="50" rx="9" fill="#0a0a0b" />
+          <rect x="304" y="148" width="24" height="20" rx="4" fill="#d5ff40" />
+          <rect x="308" y="154" width="16" height="3" rx="1.5" fill="#0a0a0b" />
+          <rect x="308" y="160" width="10" height="3" rx="1.5" fill="#0a0a0b" opacity="0.5" />
+          <text x="244" y="58" fontSize="6.5" fontWeight="600" letterSpacing="1.1" fill="#0a0a0b" opacity="0.55">PRODUCT-LED</text>
+        </g>
+      </svg>
+      <p className="mt-1 text-center text-[11px] text-ink-subtle">Illustrative concepts</p>
     </div>
   )
 }
@@ -158,7 +181,7 @@ function RoadmapCard() {
       <h3 className="mt-2 font-display text-[22px] font-bold leading-tight tracking-display text-ink md:text-[26px]">
         Your next <span className="text-lime">5 winning ad concepts.</span>
       </h3>
-      <div className="mt-4"><Moodboard /></div>
+      <div className="mt-4"><PitchBoard /></div>
       <p className="mt-4 text-[14.5px] leading-relaxed text-ink-muted">
         Five personalized creative ideas for your brand, built around your product and audience.
       </p>

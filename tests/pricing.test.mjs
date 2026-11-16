@@ -670,22 +670,31 @@ test('card copy is concise but complete: platform line, Custom note, Sprint Plus
   for (const t of ['ORGANIC.includedInBoth[0]', 'ORGANIC.includedInBoth[1]', 'ORGANIC_COMMITMENT.initialMonths']) assert.ok(cardsSrc.includes(t), t)
 })
 
-test('Roadmap card: approved copy and destination; the illustration is a five-idea MOODBOARD, distinct from the concept diagram', () => {
+test('Roadmap card: approved copy and destination; right = three-mockup PITCH-BOARD, left = monochrome technical diagram (visibly different)', () => {
   const s = strip(philo)
   assert.match(s, /Your free Creative Growth Roadmap/)
   assert.match(s, /Your next <span className="text-lime">5 winning ad concepts\.<\/span>/)
   assert.match(s, /Five personalized creative ideas for your brand, built around your product and audience\./)
   assert.match(s, /Completely free\. No obligation\./)
   assert.match(s, /href=\{OFFER_PATHS\.roadmap\}/)
-  const board = s.slice(s.indexOf('const ANGLE_ICONS'), s.indexOf('function RoadmapCard'))
-  for (const label of ['Problem', 'Product', 'Demo', 'Story', 'Offer']) assert.ok(board.includes(`label: '${label}'`), label)
-  assert.match(board, /ConceptAccents\[i\]/)
-  assert.match(board, /Example creative angles/)
-  assert.ok(!/<path d=\{?[`'"]M[^>]*l[^>]*z/.test(board.replace(/ANGLE_ICONS[\s\S]*?\n}\n/, '')), 'no play-button triangle in the moodboard')
-  assert.ok(!/<img|https?:\/\/|animation|roadmap-float|DRAW_ORDER|branch-draw/.test(board), 'no external assets, no animation, none of the left diagram\'s visual language')
+  // right: pitch-board
+  const raw = philo
+  const board = raw.slice(raw.indexOf('function PitchBoard'), raw.indexOf('function RoadmapCard'))
+  for (const t of ['SaaS product demo', 'creator-led lifestyle ad', 'bold product-focused ad', 'PRODUCT DEMO', 'CREATOR-LED', 'PRODUCT-LED', 'See it in action', 'It just works.', 'MADE', 'SEEN.', 'Illustrative concepts']) assert.ok(board.includes(t), t)
+  assert.equal((board.match(/\{\/\* [ABC]: /g) || []).length, 3, 'exactly three mock ads')
+  assert.ok(!/ConceptAccents|#8b5cf6|#ff6a4d|#ec4899|#ffb547/.test(board), 'no rainbow card palette on the pitch-board')
+  assert.ok(!/<img|https?:\/\/|<animate|animation|branch-draw|ANGLE_ICONS|Problem|Offer/.test(board), 'no external assets, animation, branching or five-icon idea cards')
+  assert.ok(!/client|testimonial|results?\b|ROAS|\d+%|\d+x/i.test(board.replace(/\/\*[\s\S]*?\*\//g, '').replace(/\{\/\*[\s\S]*?\*\/\}/g, '')), 'no invented client names, results or testimonials in the mockups')
   const card = s.slice(s.indexOf('function RoadmapCard'), s.indexOf('function OrganicOfferCard'))
-  assert.ok(!/justify-between|h-full|min-h-\[/.test(card), 'content flows naturally, not stretched')
-  assert.ok(!fs.readFileSync(path.join(ROOT, 'src/index.css'), 'utf8').includes('roadmap-float'), 'the old float animation is removed')
+  assert.ok(!/justify-between|h-full|min-h-\[/.test(card), 'content flows naturally')
+  assert.match(card, /<PitchBoard \/>/)
+  // left: technical diagram
+  const col = raw.slice(raw.indexOf('function ConceptColumn'), raw.indexOf('const SEQ_ICONS'))
+  const colors = [...new Set((col.match(/#[0-9a-f]{6}/gi) || []).map((c) => c.toLowerCase()))].sort()
+  assert.deepEqual(colors, ['#0a0a0b', '#a1a1aa', '#d5ff40', '#fafafa'], 'monochrome: white, grey, near-black and lime junction dots only')
+  assert.ok(!/ConceptAccents|accent|<path d="M[^"]*l[^"]*z"/.test(col), 'no colour coding and no play-button shapes')
+  assert.match(col, /branch-draw/); assert.match(raw, /GRID_BG = \{ backgroundImage: 'radial-gradient/); assert.match(raw, /style=\{GRID_BG\}/)
+  assert.ok(!fs.readFileSync(path.join(ROOT, 'src/index.css'), 'utf8').includes('roadmap-float'))
 })
 
 test('service-aware CTAs: Paid keeps the Roadmap offer; Organic uses the organic conversation starter via the existing contact email', () => {
