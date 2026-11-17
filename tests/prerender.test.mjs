@@ -140,7 +140,7 @@ test('every public route: its own title, ONE canonical equal to the manifest, de
     assert.equal(count(head, /name="robots"/g), want.robots || want.noindex ? 1 : 0, `${p}: robots count`)
     const robots = (head.match(/name="robots" content="([^"]*)"/) || [])[1]
     assert.equal(robots, want.robots ?? (want.noindex ? 'noindex' : undefined), `${p}: robots value`)
-    assert.ok(!head.includes('Performance Creative Studio for Paid Social') || p === '/', `${p}: homepage title leaked into another route`)
+    assert.ok(!head.includes('Video Marketing Agency | UGC Ads') || p === '/', `${p}: homepage title leaked into another route`)
   }
 })
 
@@ -316,10 +316,10 @@ test('/pricing HTML: conversion funnel intact: Roadmap CTAs, Free Video Producti
   assert.ok(!/<form/.test(root.slice(root.indexOf('id="packages"'))), 'no form was added or moved into the pricing sections')
 })
 
-test('homepage HTML: Organization + WebSite JSON-LD once; no JSON-LD on noindex or offer pages', () => {
+test('homepage HTML: ONE JSON-LD block (Organization, WebSite, WebPage, 3 Services, FAQPage); none on noindex or offer pages', () => {
   const home = ldScripts(page('/'))
   assert.equal(home.length, 1)
-  assert.deepEqual(home[0]['@graph'].map((n) => n['@type']), ['Organization', 'WebSite'])
+  assert.deepEqual(home[0]['@graph'].map((n) => n['@type']), ['Organization', 'WebSite', 'WebPage', 'Service', 'Service', 'Service', 'FAQPage'])
   for (const p of [PATHS.roadmap, PATHS.hooks, PATHS.riskFree, PATHS.referrals, PATHS.scale]) {
     assert.equal(ldScripts(page(p)).length, 0, `${p} must not carry structured data`)
   }
@@ -586,4 +586,73 @@ test('/pricing HTML: What\'s included: nine Paid items in the markup with the 3-
   assert.ok(organicList); assert.equal(count(organicList[1], /<li /g), 8)
   assert.ok(flat(`<div id="root">${organicList[1]}`).includes('Community engagement'))
   assert.ok(!flat(`<div id="root">${organicList[1]}`).includes('Multilingual'))
+})
+
+// ── homepage SEO/GEO phase 1, from the raw HTML ──────────────────────────────────────────────────────────────────────
+import { HOME_FAQ } from '../src/seo/homeFaq.js'
+
+test('homepage HTML: approved title, description, ONE canonical, indexable, social tags intact', () => {
+  const h = page('/')
+  const head = headOf(h)
+  assert.ok(head.includes('<title>Video Marketing Agency | UGC Ads &amp; Organic Social | CONVRT</title>'))
+  assert.equal(count(head, /<title>/g), 1)
+  assert.ok(head.includes('<meta name="description" content="Human-led UGC ads, spokesperson videos and organic social video for SaaS, e-commerce and app brands, produced in English, Spanish, French and Arabic." />'))
+  assert.equal(count(head, /name="description"/g), 1)
+  assert.ok(head.includes(`<link rel="canonical" href="${SITE_URL}/" />`)); assert.equal(count(head, /rel="canonical"/g), 1)
+  assert.ok(!/name="robots"/.test(head), 'homepage stays indexable')
+  assert.match(head, /property="og:title" content="CONVRT — Performance creatives that convert\."/)
+  assert.match(head, /property="og:url" content="https:\/\/www\.convrt\.studio\/"/)
+  assert.equal(count(head, /application\/ld\+json/g), 1)
+})
+
+test('homepage HTML: the H1 reads cleanly (one word, spaces between lines) and the markup of the animation is intact', () => {
+  const root = rootOf(page('/')).replace(/<!-- -->/g, '')
+  const h1 = root.match(/<h1[\s\S]*?<\/h1>/)[0]
+  const text = unescape(h1.replace(/<[^>]+>/g, '|')).replace(/\|+/g, ' ').replace(/\s+/g, ' ').trim()
+  assert.equal(text, 'Performance creatives engineered to convert')
+  assert.match(h1, /<span class="block">Performance creatives<\/span> <span class="block">engineered to /)
+  assert.match(h1, /animate-word-in/); assert.match(h1, /data-word="resonate"/)
+  assert.equal(count(root, /<h1[\s>]/g), 1)
+})
+
+test('homepage HTML: services heading and cards, hero line, internal links', () => {
+  const h = page('/')
+  const t = unescape(visibleText(h))
+  for (const n of [
+    'Video creative for paid and organic social.', 'Creative strategy and full video production, from concept and creator casting to finished, platform-ready videos.',
+    'Human-led UGC video ads for Meta, TikTok and YouTube: concepts, creator casting, scripts, filming and editing.', 'Presenter-led video ads that explain your offer clearly and build trust, from casting to finished edit.',
+    'Organic short-form video for Instagram, TikTok and Facebook: strategy, production, publishing and community engagement.', 'Concepts, hooks, scripts and structured testing plans that show you what to make next.',
+    'Human-led UGC ads, spokesperson videos and organic social video for SaaS, e-commerce and app brands, in English, Spanish, French and Arabic.',
+    'Compare packages and pricing',
+  ]) assert.ok(t.includes(n), n)
+  assert.ok(!/Built for modern|Explore the Creative Testing Sprint|significantly better results|personally approved by the founder/.test(t))
+  const root = rootOf(h)
+  for (const href of ['/pricing', '/case-studies/graspo', '/case-studies/elyon', '/creative-growth-roadmap', '/free-hooks', '/risk-free-trial', '/blog']) assert.ok(root.includes(`href="${href}"`), href)
+  assert.ok(count(root, /href="\/pricing"/g) >= 4, 'nav, services link, footer and two FAQ answers link to /pricing')
+  assert.ok(!root.includes('case=elyon'))
+  // conversion CTAs unchanged
+  assert.ok(count(root, new RegExp(`href="${PATHS.roadmap}"`, 'g')) >= 6)
+})
+
+test('homepage HTML: every FAQ question and full answer is visible content, and equals the FAQPage JSON-LD', () => {
+  const h = page('/')
+  const t = unescape(visibleText(h))
+  for (const f of HOME_FAQ) {
+    assert.ok(t.includes(f.q), f.q)
+    for (const p of [].concat(f.a)) assert.ok(t.includes(p), `answer: ${f.q}`)
+    if (f.link) assert.ok(rootOf(h).includes(`href="${f.link.href}"`))
+  }
+  const ld = ldScripts(h)[0]['@graph']
+  const faqNode = ld.find((n) => n['@type'] === 'FAQPage')
+  assert.deepEqual(faqNode.mainEntity.map((q) => q.name), HOME_FAQ.map((f) => f.q))
+  faqNode.mainEntity.forEach((q, i) => assert.equal(q.acceptedAnswer.text, [].concat(HOME_FAQ[i].a).join(' ')))
+  assert.deepEqual(ld.map((n) => n['@type']), ['Organization', 'WebSite', 'WebPage', 'Service', 'Service', 'Service', 'FAQPage'])
+  assert.ok(JSON.stringify(ld).includes('"@id":"https://www.convrt.studio/#webpage"'))
+  assert.ok(!/\\u003c|<\/script/.test(JSON.stringify(ld)))
+})
+
+test('research files never reach the build output', () => {
+  const walk = (d) => fs.readdirSync(d, { withFileTypes: true }).flatMap((e) => (e.isDirectory() ? walk(path.join(d, e.name)) : [path.join(d, e.name)]))
+  const files = walk(dist).map((f) => path.relative(dist, f))
+  assert.ok(!files.some((f) => /research|keyword[ -_]?target|reddit|\.xlsx$/i.test(f)), 'no research artifact in dist')
 })

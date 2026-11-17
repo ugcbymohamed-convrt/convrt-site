@@ -22,7 +22,7 @@ const SERVICES = [
     number: '01',
     tag: 'CREATOR-LED',
     title: 'UGC Ads',
-    description: 'Creator-led ads built for Meta, TikTok, and paid social performance.',
+    description: 'Human-led UGC video ads for Meta, TikTok and YouTube: concepts, creator casting, scripts, filming and editing.',
     pills: ['Meta', 'TikTok', 'YouTube'],
     icon: IconUGC,
     colSpan: 'lg:col-span-7',
@@ -71,7 +71,7 @@ const SERVICES = [
     number: '02',
     tag: 'TRUST-DRIVEN',
     title: 'Spokesperson Ads',
-    description: 'Trust-driven talking creatives that simplify your offer and drive action.',
+    description: 'Presenter-led video ads that explain your offer clearly and build trust, from casting to finished edit.',
     pills: ['Authority', 'Retention', 'Action'],
     icon: IconSpokesperson,
     colSpan: 'lg:col-span-5',
@@ -112,7 +112,7 @@ const SERVICES = [
     number: '03',
     tag: 'ALWAYS-ON',
     title: 'Social Media Content & Management',
-    description: 'Organic content systems designed to build consistency, trust, and reach.',
+    description: 'Organic short-form video for Instagram, TikTok and Facebook: strategy, production, publishing and community engagement.',
     pills: ['Instagram', 'TikTok', 'Facebook'],
     icon: IconSocial,
     colSpan: 'lg:col-span-5',
@@ -153,7 +153,7 @@ const SERVICES = [
     number: '04',
     tag: 'PERFORMANCE-FIRST',
     title: 'Creative Strategy for Organic & Paid',
-    description: 'Hooks, angles, scripts, and testing frameworks built around performance psychology.',
+    description: 'Concepts, hooks, scripts and structured testing plans that show you what to make next.',
     pills: ['Hooks', 'Scripts', 'A/B Testing'],
     icon: IconStrategy,
     colSpan: 'lg:col-span-7',
@@ -242,12 +242,12 @@ export default function Services() {
           </div>
           <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-5">
             <h2 className="font-display font-bold text-ink tracking-display leading-[1.02] text-4xl md:text-5xl lg:text-[62px]">
-              Built for modern<br />
-              <span className="text-lime">paid social.</span>
+              Video creative for<br />
+              <span className="text-lime">paid and organic social.</span>
             </h2>
             <p className="text-[15px] text-ink-muted leading-relaxed max-w-sm mx-auto lg:mx-0 text-center lg:text-right pb-1">
-              We create content engineered for attention,<br className="hidden lg:block" />
-              retention, and conversion — from strategy to production.
+              Creative strategy and full video production,{' '}<br className="hidden lg:block" />
+              from concept and creator casting to finished, platform-ready videos.
             </p>
           </div>
         </div>
@@ -283,7 +283,7 @@ export default function Services() {
         <p className="mt-6 text-center lg:text-right text-xs text-ink-subtle">
           Need to test creative concepts first?{' '}
           <a href="/pricing" className="text-ink-muted hover:text-lime underline underline-offset-2 transition-colors">
-            Explore the Creative Testing Sprint
+            Compare packages and pricing
           </a>
         </p>
       </div>

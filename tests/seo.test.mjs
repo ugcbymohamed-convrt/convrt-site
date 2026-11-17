@@ -75,7 +75,7 @@ import { SITE_SEO, pageHead, canonicalPathFor, urlFor, sitemapRoutes } from '../
 
 test('manifest: "/" copy matches the static <head> in index.html (no drift)', () => {
   const html = read('index.html')
-  assert.ok(html.includes(`<title>${SITE_SEO['/'].title}</title>`))
+  assert.ok(html.includes(`<title>${SITE_SEO['/'].title.replace(/&/g, '&amp;')}</title>`))
   assert.ok(html.replace(/\s+/g, ' ').includes(`content="${SITE_SEO['/'].description}"`))
 })
 

@@ -25,9 +25,9 @@ import { jsonLdFor } from './structuredData.js'
 
 export const SITE_SEO = {
   '/': {
-    title: 'Performance Creative Studio for Paid Social | CONVRT',
+    title: 'Video Marketing Agency | UGC Ads & Organic Social | CONVRT',
     description:
-      'CONVRT creates performance-driven UGC, spokesperson ads and creator-led videos for apps, SaaS and e-commerce brands in English, Spanish, French and Arabic.',
+      'Human-led UGC ads, spokesperson videos and organic social video for SaaS, e-commerce and app brands, produced in English, Spanish, French and Arabic.',
     ogTitle: 'CONVRT — Performance creatives that convert.',
     ogDescription:
       'UGC ads, spokesperson videos, organic social content, and creative strategy — built to stop the scroll and drive action.',

@@ -1,55 +1,14 @@
 import { useRef, useEffect, useState, useCallback } from 'react'
 import { CONTACT_EMAIL } from '../config.js'
+import { HOME_FAQ } from '../seo/homeFaq.js'
 
 /* ─────────────────────────────────────────────
    SECTION — FAQ
    Place after Testimonials in App.jsx
 ───────────────────────────────────────────── */
 
-const FAQS = [
-  {
-    q: 'What does the process of working with you look like?',
-    a: 'Every project starts with understanding the brand, audience, and goals first. From there, we handle concepts, hooks, scripting, filming, editing, and revisions. Once we identify what works, we double down and iterate based on performance.',
-  },
-  {
-    q: 'Can you create content in multiple languages?',
-    a: 'Yes. We create content in English, Spanish, French, and Arabic, including Gulf and Moroccan dialects. We can also source creators for additional languages depending on the project.',
-  },
-  {
-    q: 'Do you focus on paid ads or organic content?',
-    a: 'Both. Some brands come to us for high-performing paid social creatives, while others need organic content that builds trust and attention over time. In many cases, the best strategy combines both.',
-  },
-  {
-    q: 'What types of brands do you work best with?',
-    a: 'We work especially well with ecommerce brands, apps, SaaS companies, AI tools, premium consumer products, and brands that understand the importance of modern attention and creative testing.',
-  },
-  {
-    q: 'Do you help with concepts and scripting?',
-    a: "Absolutely, and we strongly recommend it. Creative direction, hooks, and scripting are a huge part of performance. After producing hundreds of creatives, we've developed a strong understanding of what captures attention and what people instantly scroll past.",
-  },
-  {
-    q: 'How fast is delivery?',
-    a: 'It depends on the scope and production style of the project. However, once concepts are approved, production time for up to 5 videos is usually around 10 days.',
-  },
-  {
-    q: 'Do you offer monthly retainers?',
-    a: "Yes, that's actually our specialty. We've noticed significantly better results with brands that work with us long-term because it gives us enough testing, data, and iteration time to figure out what truly works for the brand.",
-  },
-  {
-    q: 'What makes CONVRT different?',
-    a: "We're not just another marketing agency trying to pump out content. CONVRT is led by a prolific creator who has personally produced hundreds of videos and deeply understands modern attention, retention, hooks, and paid social creative. Everything that comes out of CONVRT is either worked on or personally approved by the founder to ensure quality stays consistently high.",
-  },
-  {
-    q: "What's the difference between influencers and UGC creators?",
-    a: [
-      'Influencers get paid for access to their audience. UGC creators get paid for the content itself.',
-      'Influencers sell through credibility and reach. UGC creators sell through performance and psychology.',
-      "A brand doesn't always need more views, it needs content that actually converts.",
-      "That's why UGC creators don't need massive followings. They need to understand hooks, buyer psychology, retention, and what makes people click, trust, and buy.",
-      "The best UGC creators aren't trying to go viral. They're trying to make the brand money.",
-    ],
-  },
-]
+/* The questions and answers live in src/seo/homeFaq.js: the same list feeds this accordion and the homepage FAQPage JSON-LD. */
+const FAQS = HOME_FAQ
 
 /* ── Single accordion item ── */
 function FAQItem({ item, isOpen, onToggle }) {
@@ -143,6 +102,11 @@ function FAQItem({ item, isOpen, onToggle }) {
                 {para}
               </p>
             ))}
+            {item.link && (
+              <a href={item.link.href} className="w-fit text-[15px] text-lime underline underline-offset-2 hover:text-lime-light transition-colors">
+                {item.link.label} →
+              </a>
+            )}
           </div>
         </div>
       </div>

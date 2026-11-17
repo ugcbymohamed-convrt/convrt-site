@@ -4,3 +4,5 @@ public/videos/
 public/hero-ad.mp4
 .DS_Store
 *.local
+# Private SEO/GEO research (keyword workbook, Reddit exports). The repo is public: never commit these.
+research/

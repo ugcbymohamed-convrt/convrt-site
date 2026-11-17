@@ -18,6 +18,7 @@ import {
   USAGE_RIGHTS, RAW_FOOTAGE, CUSTOM_PACKAGES, formatMoney,
 } from './businessKnowledge.js'
 import { PRICING_FAQ, faqAnswerText } from './pricingFaq.js'
+import { HOME_FAQ, homeFaqText } from './homeFaq.js'
 
 const CONTEXT = 'https://schema.org'
 const abs = (path) => `${SITE_URL}${path === '/' ? '/' : path}`
@@ -219,8 +220,35 @@ export function faqNode(items = PRICING_FAQ, id) {
 /* ── page graphs ──────────────────────────────────────────────────────────────────────── */
 const graph = (nodes) => ({ '@context': CONTEXT, '@graph': nodes })
 
-export function homeGraph() {
-  return graph([organizationNode(), webSiteNode()])
+/* Homepage: Organization + WebSite, the WebPage itself, the three core services (same @ids as on /pricing, so they are one entity
+   described in two places) and an FAQPage generated from the exact FAQ shown on the page (src/seo/homeFaq.js). No ratings, no
+   addresses, no promised results; FAQPage is included for consistency with visible content, not as a promise of rich results. */
+export function homeGraph({ title, description } = {}) {
+  const url = abs('/')
+  return graph([
+    organizationNode(),
+    webSiteNode(),
+    {
+      '@type': 'WebPage',
+      '@id': pageId('/'),
+      url,
+      ...(title ? { name: title } : {}),
+      ...(description ? { description } : {}),
+      isPartOf: { '@id': WEBSITE_ID },
+      about: { '@id': ORG_ID },
+      inLanguage: 'en',
+    },
+    ...coreServiceNodes(),
+    {
+      '@type': 'FAQPage',
+      '@id': `${url}#faq`,
+      mainEntity: HOME_FAQ.map((f) => ({
+        '@type': 'Question',
+        name: f.q,
+        acceptedAnswer: { '@type': 'Answer', text: homeFaqText(f) },
+      })),
+    },
+  ])
 }
 
 export function pricingGraph({ title, description }) {
@@ -248,7 +276,7 @@ export function pricingGraph({ title, description }) {
 
 /* The JSON-LD for a route, or undefined when the route has none. `seo` is the route's SITE_SEO entry. */
 export function jsonLdFor(path, seo = {}) {
-  if (path === '/') return homeGraph()
+  if (path === '/') return homeGraph(seo)
   if (path === '/pricing') return pricingGraph(seo)
   return undefined
 }

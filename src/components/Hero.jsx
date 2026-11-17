@@ -62,14 +62,14 @@ export default function Hero() {
           <div className="contents lg:block lg:col-span-6 text-center lg:text-left">
             <div className="order-1 lg:order-none">
             <h1 className="font-display font-semibold text-ink tracking-display-xl leading-[1.02] text-[48px] sm:text-[50px] md:text-[54px] lg:text-[60px] xl:text-[70px]">
-              <span className="block">Performance creatives</span>
+              <span className="block">Performance creatives</span>{' '}
               <span className="block">
                 engineered to <RotatingWord words={ROTATING_WORDS} />
               </span>
             </h1>
 
             <p className="mt-6 md:mt-8 max-w-xl mx-auto lg:mx-0 text-base md:text-lg text-ink-muted leading-relaxed">
-              Multilingual, human-led UGC and spokesperson videos for paid ads and engaging content for your social channels.
+              Human-led UGC ads, spokesperson videos and organic social video for SaaS, e-commerce and app brands, in English, Spanish, French and Arabic.
             </p>
             </div>
 
@@ -214,7 +214,9 @@ function RotatingWord({ words }) {
   return (
     <span className="relative inline-block align-baseline overflow-hidden pb-[0.12em]">
       {/* Invisible sizing element — reserves space for the widest word + underline padding */}
-      <span className="invisible whitespace-pre">{widest}</span>
+      {/* The widest word is drawn by CSS (::after reads data-word), not as text, so the heading's text is
+          "Performance creatives engineered to <current word>" for search engines and screen readers, and nothing else changes. */}
+      <span aria-hidden="true" data-word={widest} className="invisible whitespace-pre after:content-[attr(data-word)]" />
 
       {/* Animated word + underline, both bound to the current word so the
           underline tracks the word's width and sits flush under it */}

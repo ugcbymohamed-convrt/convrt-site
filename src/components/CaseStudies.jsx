@@ -169,24 +169,16 @@ export default function CaseStudies() {
               </svg>
             </a>
 
-            {activeId === 'graspo' && (
-              <a
-                href="/case-studies"
-                className="cs-fade-up text-xs text-ink-subtle hover:text-lime underline underline-offset-2 transition-colors"
-                style={{ animationDelay: '220ms' }}
-              >
-                Read the full Graspo case study →
-              </a>
-            )}
-            {activeId === 'elyon' && (
-              <a
-                href="/case-studies?case=elyon"
-                className="cs-fade-up text-xs text-ink-subtle hover:text-lime underline underline-offset-2 transition-colors"
-                style={{ animationDelay: '220ms' }}
-              >
-                Read the full Elyon Dubai case study →
-              </a>
-            )}
+            {/* Always-present, crawlable links to the dedicated case-study pages (previously shown only while Graspo/Elyon was selected). */}
+            <p
+              className="cs-fade-up text-xs text-ink-subtle"
+              style={{ animationDelay: '220ms' }}
+            >
+              Read the full case studies:{' '}
+              <a href="/case-studies/graspo" className="hover:text-lime underline underline-offset-2 transition-colors">Graspo</a>
+              {' · '}
+              <a href="/case-studies/elyon" className="hover:text-lime underline underline-offset-2 transition-colors">Elyon Dubai</a>
+            </p>
           </div>
 
           {/* RIGHT — 3D phone carousel */}

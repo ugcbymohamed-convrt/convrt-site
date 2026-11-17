@@ -409,7 +409,7 @@ test('JSON-LD is attached only to the homepage and /pricing; the manifest suppli
   assert.equal(pageHead('/scale').jsonLd, undefined)
   assert.equal(pageHead('/pricing').jsonLd['@graph'].find((n) => n['@type'] === 'WebPage').url, `${SITE_URL}/pricing`)
   const home = homeGraph()['@graph']
-  assert.deepEqual(home.map((n) => n['@type']), ['Organization', 'WebSite'])
+  assert.deepEqual(home.map((n) => n['@type']), ['Organization', 'WebSite', 'WebPage', 'Service', 'Service', 'Service', 'FAQPage'])
   assert.equal(home[1].publisher['@id'], ORG_ID)
   assert.ok(!home[1].potentialAction, 'no SearchAction: the site has no search')
 })
