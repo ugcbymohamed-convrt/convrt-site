@@ -45,7 +45,7 @@ Exact variables and deployment steps: [creator-production-runbook.md](creator-pr
 | transfer safeguards | "When Cloudflare, Upstash or Resend process information outside the European Economic Area, we rely on the safeguards in their data-processing agreements: the EU Standard Contractual Clauses and/or the EU-US Data Privacy Framework. You can ask us for details." (No safeguard is stated for Vercel.) (The sentence about Stream not being limitable to one region stays.) | Each provider's DPA, read on 16 Nov 2026. The notice states the mechanism the providers document; it does not claim a legal assessment. |
 | six-year retention period | Remove the tag; the sentence stays: signed records are kept "while your portfolio is approved and for six years after a submission is rejected or withdrawn, so we can evidence what you agreed". | Your policy decision. The notice never claims six years is a legal requirement. |
 | provider backup retention | Remove the tag; add: "Upstash and Cloudflare do not publish a fixed period for such copies in the documentation we reviewed." The "not immediate" sentence stays. | Upstash/Cloudflare documents (no period published). |
-| (region sentence) | "currently on servers in **Frankfurt, Germany**" if step 3 says `fra1`; otherwise it stays "Washington, D.C., USA". | The Setup check. |
+| (region sentence) | Done: "currently on servers in **Frankfurt, Germany**" (the Production Setup check and the end-to-end test both reported `fra1`). | The Setup check. |
 
 On approval I also set `LEGAL_ENTITY.confirmed` and `LEGAL_STATUS.approved` to `true` and bump the privacy revision id. The draft banner and the DRAFT strip on the PDF disappear by themselves.
 

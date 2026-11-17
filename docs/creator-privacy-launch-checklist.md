@@ -50,7 +50,7 @@ repository on **16 Nov 2026**; anything else is listed as unknown. Provider page
 **Unknown:** the actual current function region (read the Setup check after the next deploy); where Cloudflare stores Stream files; the full transfer clauses of Upstash's DPA; whether each US recipient is currently on the DPF list.
 
 **Your actions:** read "Where the server functions run" in `/creator-admin` (should say `fra1`); check each US recipient on the [DPF list](https://www.dataprivacyframework.gov/list); ask Cloudflare where Stream stores files (draft below).
-**Notice:** it now says plainly that Stream cannot be limited to one region. It still says "Washington, D.C." for Vercel until `fra1` is verified, then I change it.
+**Notice:** it now says plainly that Stream cannot be limited to one region. It now says Frankfurt for Vercel: `fra1` was verified on Production on 17 Nov 2026 (Setup check and end-to-end test).
 **Legal review:** yes (reliance on SCCs/DPF, any transfer impact assessment). **Blocks Production: yes.**
 
 ## 3. six-year retention period

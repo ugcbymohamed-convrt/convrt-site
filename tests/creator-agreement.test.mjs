@@ -341,7 +341,7 @@ test('privacy notice: what is (not) published, marketing, Fiverr, and the verifi
   assert.ok(text.includes('we will not add you to any marketing email list without a separate lawful basis'))
   assert.ok(text.includes('communication and commercial transactions stay on Fiverr'))
   for (const provider of ['Cloudflare Stream', 'Vercel', 'Upstash', 'Resend', 'Fiverr']) assert.ok(text.includes(provider), provider)
-  assert.ok(text.includes('Washington, D.C., USA') && text.includes('hosted in Frankfurt, Germany'), 'verified processing locations are disclosed')
+  assert.ok(text.includes('currently on servers in Frankfurt, Germany') && text.includes('hosted in Frankfurt, Germany'), 'verified processing locations are disclosed')
   assert.ok(text.includes('Calle Gibraltar Español 9, 04007 Almería, Spain'), 'the controller address the owner supplied')
   assert.ok(text.includes('Resend stores its data in the United States'))
   assert.ok(text.includes('CONVRT does not request automatic captions, transcription or any other AI analysis of your videos'))

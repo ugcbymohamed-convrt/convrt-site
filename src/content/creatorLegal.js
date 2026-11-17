@@ -1,8 +1,8 @@
 /* Creator Portfolio Agreement + Creator Privacy Notice.
 
    APPROVED by the owner on 17 Nov 2026 (LEGAL_STATUS.approved === true): the 17 statements in OWNER_APPROVAL_ITEMS were approved as written
-   (A3, the Vercel region sentence, deliberately keeps the conservative "Washington, D.C." wording until the real region is read
-   from the Setup check). To withdraw approval, set LEGAL_STATUS.approved to false: Production then refuses invitations and
+   (A3, the Vercel region sentence, was changed to Frankfurt on 17 Nov 2026 after the Production Setup check and the end-to-end
+   test both reported the functions running in fra1). To withdraw approval, set LEGAL_STATUS.approved to false: Production then refuses invitations and
    submissions again and the draft banner/strip return.
 
    Visible text vs internal tracking
@@ -24,7 +24,7 @@ export const LEGAL_STATUS = {
 
 /* Internal revision ids (never rendered to creators). Bump when the wording changes. */
 export const AGREEMENT_REVISION = 'agreement-2026-11-r2'
-export const PRIVACY_REVISION = 'privacy-2026-11-r4'
+export const PRIVACY_REVISION = 'privacy-2026-11-r5'
 // Names the rest of the code already uses for "the revision a creator accepted".
 export const AGREEMENT_VERSION = AGREEMENT_REVISION
 export const PRIVACY_VERSION = PRIVACY_REVISION
@@ -54,7 +54,7 @@ export const OWNER_FLAG = '[OWNER TO CONFIRM'
 /* Everything that is not a sentence in the documents but must happen before real creators sign. Shown to the owner in the review page. */
 export const OWNER_REVIEW_BLOCKERS = [
   'Vercel stays on the Hobby plan (your decision): Vercel’s terms limit Hobby to non-commercial use and its DPA covers Pro/Enterprise, so no Vercel agreement is claimed (A2, A6). Do keep Team Settings → Data Preferences on AI training **opted out**.',
-  'Read "Where the server functions run" in the Setup check after a deploy. If it says fra1, change the Vercel sentence to Frankfurt (A3).',
+  'Read "Where the server functions run" in the Setup check after a deploy. The notice says Frankfurt (A3): it must still read fra1.',
   'Fiverr permits directing creators to this external onboarding page (their policy pages could not be read automatically).',
   'Production settings are added and the Upstash database is connected to Production (docs/creator-production-runbook.md).',
   'You approve every statement below (and the final documents), then LEGAL_STATUS.approved is set to true.',
@@ -66,7 +66,7 @@ export const OWNER_REVIEW_BLOCKERS = [
 export const OWNER_APPROVAL_ITEMS = [
   { id: 'A1', where: 'privacy', kind: 'factual', match: 'legal contracting name: Mohamed Doukkali Azizi, NIF Y6755743J', statement: 'CONVRT Studio’s legal contracting name, NIF and the address Calle Gibraltar Español 9, 04007 Almería, Spain.', evidence: 'Supplied by you (reference agreement and message).', needs: 'Confirm they are exactly how you want to contract and be contacted.' },
   { id: 'A2', where: 'privacy', kind: 'factual', match: 'We have data-processing agreements with Cloudflare, Upstash and Resend.', statement: 'Data-processing agreements exist with Cloudflare, Upstash and Resend. The notice does NOT claim one with Vercel.', evidence: 'Cloudflare (Self-Serve §6.1), Upstash and Resend incorporate theirs automatically. Vercel’s DPA covers Pro/Enterprise only and the team stays on Hobby by your decision.', needs: 'Nothing, as long as the sentence names only these three. Staying on Hobby is your decision (Hobby is non-commercial under Vercel’s terms).' },
-  { id: 'A3', where: 'privacy', kind: 'factual', match: 'currently on servers in Washington, D.C., USA', statement: 'Where Vercel runs the submission service.', evidence: 'Earlier request log (iad1); vercel.json now sets fra1 (not yet verified).', needs: 'If the Setup check says fra1, change this to Frankfurt, Germany.' },
+  { id: 'A3', where: 'privacy', kind: 'factual', match: 'currently on servers in Frankfurt, Germany', statement: 'Where Vercel runs the submission service.', evidence: 'Production Setup check and end-to-end test (17 Nov 2026): functions run in fra1; vercel.json sets fra1.', needs: 'Nothing, unless the region changes.' },
   { id: 'A4', where: 'privacy', kind: 'factual', match: 'It is hosted in Frankfurt, Germany.', statement: 'The Upstash database is in Frankfurt.', evidence: 'You confirmed it in the Upstash console.', needs: 'Nothing, unless it changes.' },
   { id: 'A5', where: 'privacy', kind: 'legal', match: 'We rely on: steps taken at your request', statement: 'The legal bases for processing (pre-contract steps, consent, legitimate interests, legal obligation).', evidence: 'Accepted as written by you; not verified by a lawyer.', needs: 'Your decision to publish them as written.' },
   { id: 'A6', where: 'privacy', kind: 'legal', match: "we rely on the safeguards in their data-processing agreements", statement: 'US transfers by Cloudflare, Upstash and Resend rest on their SCCs and/or the EU-US Data Privacy Framework. NO safeguard is stated for Vercel.', evidence: 'Their DPAs (Cloudflare: DPF + SCC fallback; Resend: SCCs + DPF; Upstash: DPF/SCCs). Vercel has no agreement for Hobby, so nothing is claimed for it; Vercel is a US company that hosts the site and runs the submission service.', needs: 'Your acceptance of that gap for Vercel; a lawyer could say whether it matters (optional).' },
@@ -279,7 +279,7 @@ export const PRIVACY = {
       paragraphs: ['These services help us run the onboarding page and process your information only to provide that service to us:'],
       bullets: [
         'Cloudflare Stream hosts, encodes and plays back your videos. Videos are private: playback needs a short-lived signed link until they are reviewed.',
-        'Vercel hosts the website and runs the submission service, currently on servers in Washington, D.C., USA.',
+        'Vercel hosts the website and runs the submission service, currently on servers in Frankfurt, Germany.',
         'Upstash (a Redis database, through the Vercel integration) stores submission records and profile photos. It is hosted in Frankfurt, Germany.',
         'Resend emails CONVRT a notification with your display name, languages, specializations and submission reference. It contains no videos and not your legal name.',
         'Fiverr is where orders, payments and communication stay for creators introduced through Fiverr.',
@@ -303,7 +303,7 @@ export const PRIVACY = {
       id: 'transfers',
       heading: 'International transfers',
       paragraphs: [
-        "Some of these providers process information outside your country. Submissions are currently handled on servers in the USA, and Resend stores its data in the United States. We cannot restrict Cloudflare Stream to a single region, so videos may be processed outside Europe even though our database is in Frankfurt. When Cloudflare, Upstash or Resend process information outside the European Economic Area, we rely on the safeguards in their data-processing agreements: the EU Standard Contractual Clauses and/or the EU-US Data Privacy Framework. You can ask us for details.",
+        "Some of these providers process information outside your country. Resend stores its data in the United States. We cannot restrict Cloudflare Stream to a single region, so videos may be processed outside Europe even though our database is in Frankfurt. When Cloudflare, Upstash or Resend process information outside the European Economic Area, we rely on the safeguards in their data-processing agreements: the EU Standard Contractual Clauses and/or the EU-US Data Privacy Framework. You can ask us for details.",
       ],
     },
     {

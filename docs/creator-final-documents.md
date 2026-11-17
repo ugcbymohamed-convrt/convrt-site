@@ -133,7 +133,7 @@ We rely on: steps taken at your request before a possible collaboration; your co
 These services help us run the onboarding page and process your information only to provide that service to us:
 
 - Cloudflare Stream hosts, encodes and plays back your videos. Videos are private: playback needs a short-lived signed link until they are reviewed.
-- Vercel hosts the website and runs the submission service, currently on servers in Washington, D.C., USA. **⟦A3⟧**
+- Vercel hosts the website and runs the submission service, currently on servers in Frankfurt, Germany. **⟦A3⟧**
 - Upstash (a Redis database, through the Vercel integration) stores submission records and profile photos. It is hosted in Frankfurt, Germany. **⟦A4⟧**
 - Resend emails CONVRT a notification with your display name, languages, specializations and submission reference. It contains no videos and not your legal name.
 - Fiverr is where orders, payments and communication stay for creators introduced through Fiverr.
@@ -150,7 +150,7 @@ CONVRT does not request automatic captions, transcription or any other AI analys
 
 ### International transfers
 
-Some of these providers process information outside your country. Submissions are currently handled on servers in the USA, and Resend stores its data in the United States. We cannot restrict Cloudflare Stream to a single region, so videos may be processed outside Europe even though our database is in Frankfurt. When Cloudflare, Upstash or Resend process information outside the European Economic Area, we rely on the safeguards in their data-processing agreements: the EU Standard Contractual Clauses and/or the EU-US Data Privacy Framework. You can ask us for details. **⟦A6⟧ ⟦A7⟧**
+Some of these providers process information outside your country. Resend stores its data in the United States. We cannot restrict Cloudflare Stream to a single region, so videos may be processed outside Europe even though our database is in Frankfurt. When Cloudflare, Upstash or Resend process information outside the European Economic Area, we rely on the safeguards in their data-processing agreements: the EU Standard Contractual Clauses and/or the EU-US Data Privacy Framework. You can ask us for details. **⟦A6⟧ ⟦A7⟧**
 
 ### Your rights
 
@@ -170,7 +170,7 @@ Reply **"approved"**, or list the ids you want changed. Kinds: **factual** (a fa
 |---|---|---|---|---|---|
 | **A1** | privacy | factual | CONVRT Studio’s legal contracting name, NIF and the address Calle Gibraltar Español 9, 04007 Almería, Spain. | Supplied by you (reference agreement and message). | Confirm they are exactly how you want to contract and be contacted. |
 | **A2** | privacy | factual | Data-processing agreements exist with Cloudflare, Upstash and Resend. The notice does NOT claim one with Vercel. | Cloudflare (Self-Serve §6.1), Upstash and Resend incorporate theirs automatically. Vercel’s DPA covers Pro/Enterprise only and the team stays on Hobby by your decision. | Nothing, as long as the sentence names only these three. Staying on Hobby is your decision (Hobby is non-commercial under Vercel’s terms). |
-| **A3** | privacy | factual | Where Vercel runs the submission service. | Earlier request log (iad1); vercel.json now sets fra1 (not yet verified). | If the Setup check says fra1, change this to Frankfurt, Germany. |
+| **A3** | privacy | factual | Where Vercel runs the submission service. | Production Setup check and end-to-end test (17 Nov 2026): functions run in fra1; vercel.json sets fra1. | Nothing, unless the region changes. |
 | **A4** | privacy | factual | The Upstash database is in Frankfurt. | You confirmed it in the Upstash console. | Nothing, unless it changes. |
 | **A5** | privacy | legal | The legal bases for processing (pre-contract steps, consent, legitimate interests, legal obligation). | Accepted as written by you; not verified by a lawyer. | Your decision to publish them as written. |
 | **A6** | privacy | legal | US transfers by Cloudflare, Upstash and Resend rest on their SCCs and/or the EU-US Data Privacy Framework. NO safeguard is stated for Vercel. | Their DPAs (Cloudflare: DPF + SCC fallback; Resend: SCCs + DPF; Upstash: DPF/SCCs). Vercel has no agreement for Hobby, so nothing is claimed for it; Vercel is a US company that hosts the site and runs the submission service. | Your acceptance of that gap for Vercel; a lawyer could say whether it matters (optional). |
@@ -189,11 +189,11 @@ Reply **"approved"**, or list the ids you want changed. Kinds: **factual** (a fa
 ### Not in the text but required before launch
 
 - Vercel stays on the Hobby plan (your decision): Vercel’s terms limit Hobby to non-commercial use and its DPA covers Pro/Enterprise, so no Vercel agreement is claimed (A2, A6). Do keep Team Settings → Data Preferences on AI training **opted out**.
-- Read "Where the server functions run" in the Setup check after a deploy. If it says fra1, change the Vercel sentence to Frankfurt (A3).
+- Read "Where the server functions run" in the Setup check after a deploy. The notice says Frankfurt (A3): it must still read fra1.
 - Fiverr permits directing creators to this external onboarding page (their policy pages could not be read automatically).
 - Production settings are added and the Upstash database is connected to Production (docs/creator-production-runbook.md).
 - You approve every statement below (and the final documents), then LEGAL_STATUS.approved is set to true.
 
 ### Gate
 
-- `LEGAL_STATUS.approved = true` on branch `creator-onboarding`. It reaches Production only when the branch is merged (on the owner's explicit "merge"). A3 keeps the conservative Washington, D.C. wording until the end-to-end test prints the real function region.
+- `LEGAL_STATUS.approved = true` on branch `creator-onboarding`. It reaches Production only when the branch is merged (on the owner's explicit "merge"). A3 now says Frankfurt: the Production Setup check and end-to-end test reported fra1.
