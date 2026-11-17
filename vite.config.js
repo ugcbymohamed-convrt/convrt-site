@@ -15,7 +15,20 @@ function devApi() {
     configureServer(server) {
       const env = loadEnv(server.config.mode, process.cwd(), '')
       for (const [k, v] of Object.entries(env)) {
-        if (k.startsWith('MAILERLITE_') && process.env[k] === undefined) process.env[k] = v
+        if (/^(MAILERLITE_|CREATOR_|CLOUDFLARE_|UPSTASH_|KV_)/.test(k) && process.env[k] === undefined) process.env[k] = v
+      }
+      // Creator onboarding (private, invitation-only): /api/creator/<op> and /api/creator-admin/<op>.
+      for (const [prefix, file] of [['/api/creator-admin', '/api/creator-admin/[op].js'], ['/api/creator', '/api/creator/[op].js']]) {
+        server.middlewares.use(prefix, async (req, res, next) => {
+          try {
+            // connect strips the prefix from req.url; the handlers read the full path.
+            req.url = `${prefix}${req.url === '/' ? '' : req.url}`
+            const { default: handler } = await server.ssrLoadModule(file)
+            await handler(req, res)
+          } catch (err) {
+            next(err)
+          }
+        })
       }
       for (const route of ['free-hooks-subscribe', 'risk-free-apply', 'referral-apply']) {
         server.middlewares.use(`/api/${route}`, async (req, res, next) => {

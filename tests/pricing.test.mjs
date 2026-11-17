@@ -490,7 +490,11 @@ test('horizontal transition: CSS transform slide (~420ms), inert inactive group,
   assert.match(stage, /aria-hidden=\{active \? undefined : 'true'\}/)
   assert.ok(!/framer-motion|react-spring|gsap|fetch\(/.test(stage + cardsSrc), 'presentation only: no animation library, no data fetching')
   const pkg = JSON.parse(read('package.json'))
-  assert.deepEqual(Object.keys(pkg.dependencies).sort(), ['hls.js', 'react', 'react-dom'])
+  // The point of this guard is "no animation/transition library for the pricing slide". (Other features may add their own
+  // runtime dependencies, e.g. the creator-onboarding PDF generator, so the list is not pinned exactly.)
+  const deps = Object.keys(pkg.dependencies)
+  for (const needed of ['hls.js', 'react', 'react-dom']) assert.ok(deps.includes(needed), needed)
+  assert.deepEqual(deps.filter((d) => /framer-motion|react-spring|gsap|motion|animejs|react-transition-group|react-flip/i.test(d)), [], 'no animation library')
   assert.match(css, /visibility 0s linear 0\.42s/, 'the leaving group becomes invisible (and unfocusable) only after it has slid away')
 })
 

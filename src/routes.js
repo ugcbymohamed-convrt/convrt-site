@@ -24,5 +24,17 @@ export const PATHS = {
 
 export const KNOWN_PATHS = Object.values(PATHS)
 
+/* Private, invitation-only pages (creator portfolio onboarding + the owner's review page). They are served as
+   real static files like every other route (the host 404s anything without one) but are deliberately NOT in
+   PATHS / KNOWN_PATHS: nothing public may link to them, the sitemap and the SEO manifest never see them, and
+   the "every public page" tests do not apply to them. Their head (noindex) lives in src/seo/privateSeo.js. */
+export const PRIVATE_PATHS = {
+  creatorOnboarding: '/creator-onboarding',
+  creatorAgreement: '/creator-onboarding/agreement',
+  creatorPrivacy: '/creator-onboarding/privacy',
+  creatorAdmin: '/creator-admin',
+}
+export const PRIVATE_PATH_LIST = Object.values(PRIVATE_PATHS)
+
 /* '/pricing/' → '/pricing', '' → '/'. Mirrors how App.jsx reads window.location.pathname. */
 export const normalizePath = (p) => p.replace(/\/$/, '') || '/'

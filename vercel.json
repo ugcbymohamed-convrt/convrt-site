@@ -1,11 +1,63 @@
 {
+  "regions": [
+    "fra1"
+  ],
   "redirects": [
-    { "source": "/creative-testing-sprint", "destination": "/pricing", "permanent": true }
+    {
+      "source": "/creative-testing-sprint",
+      "destination": "/pricing",
+      "permanent": true
+    }
   ],
   "headers": [
     {
       "source": "/blog",
-      "headers": [{ "key": "X-Robots-Tag", "value": "noindex, follow" }]
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, follow"
+        }
+      ]
+    },
+    {
+      "source": "/creator-onboarding/:path*",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow, noarchive"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "no-referrer"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "no-store"
+        }
+      ]
+    },
+    {
+      "source": "/creator-admin/:path*",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow, noarchive"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "no-referrer"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "no-store"
+        }
+      ]
+    }
+  ],
+  "crons": [
+    {
+      "path": "/api/creator-cron",
+      "schedule": "17 3 * * *"
     }
   ]
 }

@@ -11,7 +11,7 @@ import FinalCTA from './components/FinalCTA.jsx'
 import Footer from './components/Footer.jsx'
 import SectionDivider from './components/SectionDivider.jsx'
 import { BLOG_PATH, REFERRALS_PATH } from './config.js'
-import { PATHS } from './routes.js'
+import { PATHS, PRIVATE_PATHS } from './routes.js'
 import { scrollToHash } from './lib/scroll.js'
 
 /* Route-level code splitting: every non-home page is its own chunk, fetched only when
@@ -27,6 +27,10 @@ const ReferralsPage = lazy(() => import('./ReferralsPage.jsx'))
 const BlogPage = lazy(() => import('./BlogPage.jsx'))
 const BlogArticlePage = lazy(() => import('./BlogArticlePage.jsx'))
 const NotFoundPage = lazy(() => import('./NotFoundPage.jsx'))
+// Private, invitation-only creator pages (see PRIVATE_PATHS in src/routes.js). Standalone: no Nav, no Footer.
+const CreatorOnboardingPage = lazy(() => import('./CreatorOnboardingPage.jsx'))
+const CreatorLegalPage = lazy(() => import('./CreatorLegalPage.jsx'))
+const CreatorAdminPage = lazy(() => import('./CreatorAdminPage.jsx'))
 
 /* Every path here must also be listed in src/routes.js (tests enforce it): the build writes a real
    HTML file per listed path, and the host answers any other URL with HTTP 404. */
@@ -45,6 +49,13 @@ const ROUTES = {
   [REFERRALS_PATH]: ReferralsPage,
   // The Blog index. Individual articles live at /blog/<slug> (see resolvePage).
   [PATHS.blog]: BlogPage,
+}
+
+const PRIVATE_ROUTES = {
+  [PRIVATE_PATHS.creatorOnboarding]: CreatorOnboardingPage,
+  [PRIVATE_PATHS.creatorAgreement]: CreatorLegalPage,
+  [PRIVATE_PATHS.creatorPrivacy]: CreatorLegalPage,
+  [PRIVATE_PATHS.creatorAdmin]: CreatorAdminPage,
 }
 
 /* /blog/<slug> → the article template (the host only serves published slugs; anything else is a
@@ -91,6 +102,18 @@ const PageFallback = <div className="min-h-[100svh]" aria-hidden="true" />
 export default function App() {
   const path = typeof window !== 'undefined' ? window.location.pathname.replace(/\/$/, '') || '/' : '/'
   const Page = resolvePage(path)
+
+  // Private creator pages render their own minimal header: no site navigation, footer or sales CTA.
+  const PrivatePage = PRIVATE_ROUTES[path]
+  if (PrivatePage) {
+    return (
+      <div className="bg-canvas text-ink min-h-screen antialiased">
+        <Suspense fallback={PageFallback}>
+          <PrivatePage />
+        </Suspense>
+      </div>
+    )
+  }
 
   return (
     <div className="bg-canvas text-ink min-h-screen antialiased">
