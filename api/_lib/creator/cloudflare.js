@@ -22,13 +22,15 @@ export function cloudflare(cfg, fetchImpl = globalThis.fetch) {
   const configured = Boolean(cfg.accountId && cfg.streamToken)
   const base = `${cfg.apiBase}/accounts/${cfg.accountId}/stream`
 
-  async function call(method, path, body) {
+  async function call(method, path, body, { emptyOk = false } = {}) {
     const res = await fetchImpl(`${base}${path}`, {
       method,
       headers: { Authorization: `Bearer ${cfg.streamToken}`, 'Content-Type': 'application/json' },
       body: body === undefined ? undefined : JSON.stringify(body),
     })
     const json = await res.json().catch(() => null)
+    /* Cloudflare answers a successful video DELETE with HTTP 200 and an EMPTY body, so "ok + no JSON" is success there. */
+    if (emptyOk && res.ok && !json) return null
     if (!res.ok || !json || json.success === false) throw new CloudflareError(res.status, json?.errors?.[0]?.code)
     return json.result
   }
@@ -60,7 +62,7 @@ export function cloudflare(cfg, fetchImpl = globalThis.fetch) {
 
     async deleteVideo(uid) {
       try {
-        await call('DELETE', `/${encodeURIComponent(uid)}`)
+        await call('DELETE', `/${encodeURIComponent(uid)}`, undefined, { emptyOk: true })
       } catch (err) {
         if (err instanceof CloudflareError && err.status === 404) return // already gone
         throw err

@@ -213,3 +213,16 @@ test('vercel.json schedules the job daily; the policy numbers match the owner de
   assert.deepEqual(RETENTION, { mediaAfterDecisionDays: 90, abandonedAfterExpiryDays: 14, recordYears: 6 })
   assert.ok(fs.existsSync(path.join(ROOT, 'api/creator-cron.js')))
 })
+
+/* Regression (found on the first real Cloudflare run): Cloudflare answers a successful video DELETE with HTTP 200 and an
+   EMPTY body. That must count as deleted, not as a failure; a real error status must still fail. */
+test('Cloudflare delete: an empty 200 body is success, an error status or a 404 behaves as before', async () => {
+  const { cloudflare, CloudflareError } = await import('../api/_lib/creator/cloudflare.js')
+  const cfg = { accountId: 'acc', streamToken: 'tok', apiBase: 'https://cf.test/client/v4', playbackBase: 'https://p.test' }
+  const reply = (status, body) => async () => new Response(body, { status })
+  await cloudflare(cfg, reply(200, '')).deleteVideo('uid1') // empty 200: fine
+  await cloudflare(cfg, reply(200, JSON.stringify({ success: true, result: 'ok' }))).deleteVideo('uid1')
+  await cloudflare(cfg, reply(404, JSON.stringify({ success: false, errors: [{ code: 10003 }] }))).deleteVideo('uid1') // already gone
+  await assert.rejects(() => cloudflare(cfg, reply(403, JSON.stringify({ success: false, errors: [{ code: 10000 }] }))).deleteVideo('uid1'), CloudflareError)
+  await assert.rejects(() => cloudflare(cfg, reply(500, '')).deleteVideo('uid1'), CloudflareError)
+})
