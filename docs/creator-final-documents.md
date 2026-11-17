@@ -1,8 +1,8 @@
 # Final documents for your approval
 
-**Status: not approved. The Production gate is closed.** This is the exact text creators will see, generated from `src/content/creatorLegal.js`, with every statement that rests on you (or on a provider document) marked **⟦A#⟧** (privacy notice) or **⟦G#⟧** (agreement) and explained in the table at the end. Unmarked text is either your own brief, wording copied from it, or a description of what the software does (checked by tests).
+**Status: APPROVED by the owner on 2026-11-17 (all 17 statements as written).** This is the exact text creators will see, generated from `src/content/creatorLegal.js`, with every statement that rests on you (or on a provider document) marked **⟦A#⟧** (privacy notice) or **⟦G#⟧** (agreement) and explained in the table at the end. Unmarked text is either your own brief, wording copied from it, or a description of what the software does (checked by tests).
 
-Creators also see a "Draft awaiting final approval" banner on the page and a DRAFT strip on the PDF until the gate is opened. The agreement is personalised per creator (their legal name and their three video filenames); below it uses placeholders.
+The draft banner and the DRAFT strip are gone. The agreement is personalised per creator (their legal name and their three video filenames); below it uses placeholders.
 
 ---
 
@@ -194,6 +194,6 @@ Reply **"approved"**, or list the ids you want changed. Kinds: **factual** (a fa
 - Production settings are added and the Upstash database is connected to Production (docs/creator-production-runbook.md).
 - You approve every statement below (and the final documents), then LEGAL_STATUS.approved is set to true.
 
-### What I will not do
+### Gate
 
-- Set `LEGAL_STATUS.approved` to `true`, remove the draft banner, merge, or enable invitations on Production until you confirm both the wording and the Production configuration.
+- `LEGAL_STATUS.approved = true` on branch `creator-onboarding`. It reaches Production only when the branch is merged (on the owner's explicit "merge"). A3 keeps the conservative Washington, D.C. wording until the end-to-end test prints the real function region.

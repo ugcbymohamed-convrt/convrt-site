@@ -1,7 +1,9 @@
 /* Creator Portfolio Agreement + Creator Privacy Notice.
 
-   ⚠ AWAITING FINAL OWNER APPROVAL (LEGAL_STATUS.approved === false). Real creator submissions are refused on the
-   Production deployment until the owner approves; see OWNER_REVIEW_BLOCKERS below for what is still open.
+   APPROVED by the owner on 17 Nov 2026 (LEGAL_STATUS.approved === true): the 17 statements in OWNER_APPROVAL_ITEMS were approved as written
+   (A3, the Vercel region sentence, deliberately keeps the conservative "Washington, D.C." wording until the real region is read
+   from the Setup check). To withdraw approval, set LEGAL_STATUS.approved to false: Production then refuses invitations and
+   submissions again and the draft banner/strip return.
 
    Visible text vs internal tracking
    • Creators never see a version number. Internally every document has a REVISION id (AGREEMENT_REVISION /
@@ -9,14 +11,15 @@
      creator's name and the three covered videos), its SHA-256, and the structured document the PDF is drawn from.
      Old signed records are never rewritten: change the wording and the revision id together, and only NEW submissions
      use the new text.
-   • "[OWNER TO CONFIRM …]" markers in the Privacy Notice are real open legal/data-handling points, shown highlighted on
-     purpose. They are listed in OWNER_REVIEW_BLOCKERS and must be resolved by the owner, never silently deleted. */
+   • Wording changes need the owner's approval again: update OWNER_APPROVAL_ITEMS (a test keeps it tied to the text) and
+     docs/creator-final-documents.md. */
 
 import { CONTACT_EMAIL } from '../config.js'
 
 export const LEGAL_STATUS = {
-  approved: false,
-  note: 'Some legal and privacy details are still being confirmed by CONVRT.',
+  approved: true,
+  approvedOn: '2026-11-17',
+  note: 'Some legal and privacy details are still being confirmed by CONVRT.', // shown only while approved is false
 }
 
 /* Internal revision ids (never rendered to creators). Bump when the wording changes. */
@@ -27,9 +30,9 @@ export const AGREEMENT_VERSION = AGREEMENT_REVISION
 export const PRIVACY_VERSION = PRIVACY_REVISION
 
 /* CONVRT's legal contracting identity, taken from the owner's own reference agreement and instructions
-   (confirmed: false until the owner confirms it as part of legal review: see OWNER_REVIEW_BLOCKERS). `taxId` is the NIF
+   (confirmed by the owner on 17 Nov 2026). `taxId` is the NIF
    the owner asked to have printed beside the CONVRT signature. */
-export const LEGAL_ENTITY = { name: 'Mohamed Doukkali Azizi', taxId: 'Y6755743J', confirmed: false }
+export const LEGAL_ENTITY = { name: 'Mohamed Doukkali Azizi', taxId: 'Y6755743J', confirmed: true }
 
 /* Owner instruction (16 Nov 2026): CONVRT's side of every agreement arrives pre-filled: the legal name and NIF, a typed
    signature identical to the name, and the date (the acceptance date recorded by the server). This is a standing

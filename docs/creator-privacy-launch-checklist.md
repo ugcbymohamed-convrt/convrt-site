@@ -1,7 +1,6 @@
 # Creator onboarding: privacy and legal launch checklist
 
-Status: **draft, not approved** (`LEGAL_STATUS.approved = false` in `src/content/creatorLegal.js`). Production refuses invitations and submissions
-until it is `true`; Previews keep working. Nothing here is legal advice. "Verified" means read in an official provider document or in this
+Status: **approved by the owner on 17 Nov 2026** (`LEGAL_STATUS.approved = true` in `src/content/creatorLegal.js`; it reaches Production only when the branch is merged). The gate mechanism remains: setting it back to `false` makes Production refuse invitations and submissions again. Nothing here is legal advice. "Verified" means read in an official provider document or in this
 repository on **16 Nov 2026**; anything else is listed as unknown. Provider pages change: re-check before relying on them.
 
 **What is required vs optional, and the shortest path to launch: [creator-launch-minimum.md](creator-launch-minimum.md).** This file is the detailed evidence behind it.

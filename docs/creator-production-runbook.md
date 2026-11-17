@@ -1,7 +1,6 @@
 # Creator onboarding: Production settings and deployment steps
 
-Nothing here is applied yet. **Production stays closed** (the legal gate is `false`) and nothing is merged until you confirm the final wording
-([creator-final-documents.md](creator-final-documents.md)) **and** the Production configuration below.
+On 17 Nov 2026 the owner approved the final wording and confirmed the Production settings. `LEGAL_STATUS.approved` is `true` on branch `creator-onboarding`; **nothing reaches Production until the owner says "merge"**. After the merge, Production accepts invitations (only the owner can create them).
 **No secret appears in this file, in chat, or in any command output.** Create each secret so it only ever goes clipboard → password manager → Vercel.
 
 ## A. Production environment variables

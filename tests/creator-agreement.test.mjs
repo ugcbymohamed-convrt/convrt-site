@@ -245,19 +245,21 @@ test('signature block: CONVRT’s side stays blank when the document carries no 
   assert.ok(t2.includes('20 November 2026'), 'a countersignature carries its own date, distinct from the acceptance date')
 })
 
-test('the draft strip is shown only while the documents are unapproved', async () => {
+test('the draft strip is shown only while the documents are unapproved (approved: no strip)', async () => {
   const t = await setup()
   const { record } = await submitAs(t, CREATORS[0].name, CREATORS[0].files)
-  const draft = []
-  await renderAgreementPdf(record, { trace: draft })
-  assert.ok(draft.some((x) => /DRAFT/.test(x)))
-  LEGAL_STATUS.approved = true
+  const original = LEGAL_STATUS.approved
   try {
+    LEGAL_STATUS.approved = false
+    const draft = []
+    await renderAgreementPdf(record, { trace: draft })
+    assert.ok(draft.some((x) => /DRAFT/.test(x)), 'an unapproved agreement is marked DRAFT')
+    LEGAL_STATUS.approved = true
     const final = []
     await renderAgreementPdf(record, { trace: final })
     assert.ok(!final.some((x) => /DRAFT/.test(x)), 'an approved agreement carries no draft marking')
   } finally {
-    LEGAL_STATUS.approved = false
+    LEGAL_STATUS.approved = original
   }
 })
 
@@ -347,9 +349,10 @@ test('privacy notice: what is (not) published, marketing, Fiverr, and the verifi
   assert.ok(!/\b(?!90 |14 |30 )\d+ (days|months|years)\b/.test(text), 'only the owner-chosen retention periods appear')
 })
 
-test('privacy notice: no unresolved markers remain, and every statement that still rests on the owner is listed, tied to the exact text, and approved only by the owner', () => {
+test('privacy notice: no unresolved markers remain, and every statement the owner approved is listed and tied to the exact text', () => {
   const texts = { privacy: norm(privacyText()), agreement: norm(agreementDocumentText(buildAgreementDocument())) }
-  assert.equal(LEGAL_STATUS.approved, false, 'the gate stays closed until the owner approves')
+  assert.equal(LEGAL_STATUS.approved, true, 'approved by the owner')
+  assert.equal(LEGAL_STATUS.approvedOn, '2026-11-17')
   assert.equal(PRIVACY_TBC_ITEMS.length, 0)
   assert.ok(!privacyText().includes(OWNER_FLAG), 'no [OWNER TO CONFIRM] markers are left in the text')
   const ids = OWNER_APPROVAL_ITEMS.map((i) => i.id)
@@ -372,11 +375,11 @@ test('privacy notice: no unresolved markers remain, and every statement that sti
   }
 })
 
-test('the built privacy page shows no developer markers or placeholder identifiers, and a clear draft status while approval is pending', { skip: !fs.existsSync(path.join(ROOT, 'dist/creator-onboarding/privacy/index.html')) && 'dist/ not built' }, () => {
+test('the built privacy page shows no developer markers, placeholder identifiers or draft banner (approved)', { skip: !fs.existsSync(path.join(ROOT, 'dist/creator-onboarding/privacy/index.html')) && 'dist/ not built' }, () => {
   const html = fs.readFileSync(path.join(ROOT, 'dist/creator-onboarding/privacy/index.html'), 'utf8')
   const visible = html.replace(/<script[\s\S]*?<\/script>|<style[\s\S]*?<\/style>/g, '').replace(/<[^>]+>/g, ' ').replace(/&#x27;|&#39;/g, "'").replace(/\s+/g, ' ')
   assert.ok(!/OWNER TO CONFIRM|To be confirmed|TODO|FIXME|placeholder/i.test(visible), 'no developer notes or unresolved tags')
-  assert.ok(visible.includes('Draft awaiting final approval'), 'a clear draft status is shown while approval is pending')
+  assert.equal(visible.includes('Draft awaiting final approval'), !LEGAL_STATUS.approved, 'the draft banner shows only while unapproved')
   assert.ok(!/0\.1-draft|privacy-2026|agreement-2026/i.test(visible), 'no internal revision ids')
   assert.ok(visible.includes('Calle Gibraltar Español 9'))
 })
@@ -407,7 +410,7 @@ test('the agreement and the privacy notice make the same commitments', () => {
 test('CONVRT’s identity is the one the owner supplied; the NIF appears only in the signature block, the accepted text and the controller line', () => {
   assert.equal(LEGAL_ENTITY.name, 'Mohamed Doukkali Azizi')
   assert.equal(LEGAL_ENTITY.taxId, 'Y6755743J')
-  assert.equal(LEGAL_ENTITY.confirmed, false, 'still listed for the owner’s confirmation')
+  assert.equal(LEGAL_ENTITY.confirmed, true, 'confirmed by the owner')
   const generic = buildAgreementDocument({ creatorName: 'X Y', materials: [] })
   assert.equal(generic.convrt.signedAt, null, 'the date is only known at acceptance')
   assert.ok(!generic.parties.includes('Y6755743J'), 'the parties sentence names CONVRT but does not repeat the tax id')

@@ -6,7 +6,7 @@ import { useDocumentHead } from './lib/useDocumentHead.js'
 import { privateHead } from './seo/privateSeo.js'
 import { PRIVATE_PATHS } from './routes.js'
 import { STATUS_LABELS } from './lib/creator/constants.js'
-import { OWNER_REVIEW_BLOCKERS, OWNER_APPROVAL_ITEMS } from './content/creatorLegal.js'
+import { OWNER_REVIEW_BLOCKERS, OWNER_APPROVAL_ITEMS, LEGAL_STATUS } from './content/creatorLegal.js'
 
 /* /creator-admin — the owner's minimal review page. Everything here is authorised on the SERVER: the page itself
    holds no secret. Signing in posts the owner password to /api/creator-admin/login, which sets an HttpOnly,
@@ -95,7 +95,10 @@ function SetupCheck() {
         <Row ok={checks.functionRegion === 'fra1'} label="Where the server functions run" detail={checks.functionRegion ? `${checks.functionRegion}${checks.functionRegion === 'fra1' ? ' (Frankfurt, Germany)' : ': not Frankfurt. The privacy notice must match where it really runs.'}` : 'Unknown (not running on Vercel)'} />
         <Row ok={checks.ownerEmail} label="Owner email alerts (email service key)" detail={checks.ownerEmail ? 'Set' : 'Missing: you will not get an email for new submissions'} />
       </ul>
-      {OWNER_REVIEW_BLOCKERS.length > 0 && (
+      {LEGAL_STATUS.approved && (
+        <p className="mt-5 border-t border-hairline pt-4 text-sm text-ink-muted">Legal documents approved by the owner on {LEGAL_STATUS.approvedOn}. Changing their wording needs a new approval.</p>
+      )}
+      {!LEGAL_STATUS.approved && OWNER_REVIEW_BLOCKERS.length > 0 && (
         <div className="mt-5 border-t border-hairline pt-4">
           <h3 className="text-sm font-semibold text-ink">Before real creators sign: your steps</h3>
           <ul className="mt-2 list-disc space-y-1.5 pl-5 text-sm text-ink-muted marker:text-amber">

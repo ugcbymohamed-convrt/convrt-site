@@ -646,12 +646,22 @@ test('not configured: without a database every creator/owner call says so instea
   assert.equal((await call(adminHandler, deps, { path: '/api/creator-admin/overview' })).status, 503)
 })
 
-test('production: real submissions and invitations are blocked while the legal documents are awaiting owner approval', async () => {
-  const h = makeHarness({ env: { VERCEL_ENV: 'production' } })
-  const { cookie } = await adminLogin(h.deps)
-  const r = await admin(h.deps, cookie)('invite-create', { method: 'POST', body: { label: 'x' } })
-  assert.equal(r.status, 409)
-  assert.equal(r.json.error, 'legal_not_approved')
+test('production gate: invitations and submissions are blocked while the legal documents are unapproved, and open once approved', async () => {
+  const { LEGAL_STATUS } = await import('../src/content/creatorLegal.js')
+  const original = LEGAL_STATUS.approved
+  try {
+    const h = makeHarness({ env: { VERCEL_ENV: 'production' } })
+    const { cookie } = await adminLogin(h.deps)
+    const A = admin(h.deps, cookie)
+    LEGAL_STATUS.approved = false
+    const blocked = await A('invite-create', { method: 'POST', body: { label: 'x' } })
+    assert.equal(blocked.status, 409)
+    assert.equal(blocked.json.error, 'legal_not_approved')
+    LEGAL_STATUS.approved = true
+    assert.equal((await A('invite-create', { method: 'POST', body: { label: 'x' } })).status, 200, 'approved: Production creates invitations')
+  } finally {
+    LEGAL_STATUS.approved = original
+  }
 })
 
 test('responses are never cacheable and carry noindex / no-referrer headers', async () => {

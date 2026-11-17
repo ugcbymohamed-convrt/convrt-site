@@ -86,8 +86,8 @@ test('agreement: five numbered sections with the agreed commitments; no invented
   for (const phrase of ['AI or machine-learning training', 'face or voice cloning', 'deepfakes', 'paid advertising', 'social media reposting', '$25 showcase incentive', 'without giving a reason or incurring a penalty']) {
     assert.ok(text.replace(/\s+/g, ' ').includes(phrase), phrase)
   }
-  assert.equal(LEGAL_STATUS.approved, false, 'stays false until the owner approves the legal documents')
-  assert.equal(LEGAL_ENTITY.confirmed, false, 'the contracting name is taken from the owner reference but still needs confirmation')
+  assert.equal(LEGAL_STATUS.approved, true, 'approved by the owner on 17 Nov 2026')
+  assert.equal(LEGAL_ENTITY.confirmed, true, 'the contracting name is confirmed by the owner')
   assert.ok(!/\b(LLC|Ltd|GmbH|S\.A\.|Inc\.)\b/.test(text), 'no invented company form')
 })
 
