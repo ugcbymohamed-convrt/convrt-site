@@ -31,7 +31,7 @@ repository on **16 Nov 2026**; anything else is listed as unknown. Provider page
 * Whether any caption/AI feature was ever switched on in your Cloudflare Stream account.
 
 **Your actions** (details in the owner checklist at the end)
-* **Upgrade the Vercel team to Pro**, then confirm Team Settings → Data Preferences shows AI training **opted out**, and keep the Vercel DPA for your records.
+* **Decision (17 Nov 2026): stay on Vercel Hobby.** Confirm Team Settings → Data Preferences shows AI training **opted out**. The notice therefore claims data-processing agreements only with Cloudflare, Upstash and Resend, and states no transfer safeguard for Vercel.
 * In Cloudflare: confirm plan type and that no captions/AI are enabled on creator videos.
 * Ask Upstash support (draft below) about its AI sub-processors and customer data.
 
@@ -91,7 +91,7 @@ repository on **16 Nov 2026**; anything else is listed as unknown. Provider page
 
 Short version with direct dashboard links and support-message drafts (Cloudflare, Upstash, Fiverr): [creator-owner-checklist.md](creator-owner-checklist.md).
 
-1. **Vercel:** upgrade the team to **Pro** (Hobby is non-commercial and its DPA coverage is Pro/Enterprise). Then Team Settings → Data Preferences: confirm AI training is **opted out**. Keep the DPA.
+1. **Vercel:** stays on **Hobby** (your decision; non-commercial terms and no Vercel DPA are accepted). Team Settings → Data Preferences: confirm AI training is **opted out**.
 2. **After the next deploy**, open `/creator-admin` → Setup check: **"Where the server functions run" must read `fra1`**. Tell me what it says.
 3. **Cloudflare:** confirm your plan type; confirm no caption/AI features are on; send the support email above.
 4. **Upstash:** the Backups tab shows no backups; send the support email above.

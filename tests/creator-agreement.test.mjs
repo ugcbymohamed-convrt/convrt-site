@@ -367,7 +367,7 @@ test('privacy notice: no unresolved markers remain, and every statement that sti
   for (const i of OWNER_APPROVAL_ITEMS) assert.ok(review.includes(`⟦${i.id}⟧`) && review.includes(`| **${i.id}** |`), `docs/creator-final-documents.md marks ${i.id}`)
   assert.ok(review.includes(privacyText().split('\n')[2]), 'and contains the current privacy text')
   // The risky/legal claims must each be listed.
-  for (const phrase of ['We have data-processing agreements', 'We rely on: steps taken', "rely on the safeguards in each provider's data-processing agreement", 'for six years after', '90 days after the decision', 'Signed for CONVRT Studio']) {
+  for (const phrase of ['We have data-processing agreements with Cloudflare, Upstash and Resend', 'We rely on: steps taken', "we rely on the safeguards in their data-processing agreements", 'for six years after', '90 days after the decision', 'Signed for CONVRT Studio']) {
     assert.ok(OWNER_APPROVAL_ITEMS.some((i) => i.match.includes(phrase)), `"${phrase}" needs an approval entry`)
   }
 })

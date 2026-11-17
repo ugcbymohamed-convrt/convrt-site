@@ -5,13 +5,12 @@ Production stays **closed** and nothing is merged until you approve the final do
 
 Dashboard links use your team `convrt-s-projects` and project `convrt-site` (taken from your Preview URL). If a link does not open, use the click path beside it.
 
-## 1. Vercel (do first: the plan affects the DPA and AI settings)
+## 1. Vercel (stays on Hobby by your decision; the AI opt-out is the one required setting)
 
 | Check | Link | Click path / what you should see |
 |---|---|---|
-| Plan is **Pro** (Hobby is non-commercial and its DPA covers Pro/Enterprise) | [Billing](https://vercel.com/convrt-s-projects/~/settings/billing) | Team switcher → Settings → Billing → Upgrade to Pro |
-| AI training is **opted out** | [Team settings](https://vercel.com/convrt-s-projects/~/settings) | Team Settings (not Account Settings) → **Data Preferences** → "Opt-Out". Pro is opted out by default; check it anyway |
-| Keep a copy of the Vercel DPA | [vercel.com/legal/dpa](https://vercel.com/legal/dpa) | Applies automatically to Pro/Enterprise; save the PDF with the date |
+| Plan stays **Hobby** (your decision) | [Billing](https://vercel.com/convrt-s-projects/~/settings/billing) | Nothing to do. You accept: Hobby is non-commercial under Vercel's terms, and Vercel's DPA covers Pro/Enterprise only, so the notice claims **no** Vercel agreement |
+| AI training is **opted out** (keep this step) | [Team settings](https://vercel.com/convrt-s-projects/~/settings) | Team Settings (not Account Settings) → **Data Preferences** → "Opt-Out". Hobby is opted **in** by default; opting out now only stops future use. It covers your code and telemetry, not creator content |
 | Function region is Frankfurt | [Functions settings](https://vercel.com/convrt-s-projects/convrt-site/settings/functions) | Should read **Frankfurt (fra1)**. `vercel.json` also sets it |
 | **Real** region the functions run in | `/creator-admin` → Setup check | Row "Where the server functions run" must say **fra1**. Or [Logs](https://vercel.com/convrt-s-projects/convrt-site/logs) → open a recent `/api/creator…` request → "Routed to Frankfurt (fra1)" |
 | Production variables (later) | [Environment variables](https://vercel.com/convrt-s-projects/convrt-site/settings/environment-variables) | Add for **Production** only when you launch: Cloudflare, Upstash (`KV_*`), `CREATOR_ADMIN_*`, `RESEND_API_KEY`, **`CRON_SECRET`** |

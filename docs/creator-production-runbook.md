@@ -38,7 +38,7 @@ Preview and Production share one Upstash database (the Free plan allows one), so
 
 | Step | Who | What |
 |---|---|---|
-| 1 | You | Complete section A. Vercel on **Pro**, AI training opted out, Fiverr checked ([creator-launch-minimum.md](creator-launch-minimum.md)). Read **Setup check → "Where the server functions run"** on the Preview and tell me `fra1` or `iad1`. |
+| 1 | You | Complete section A. Vercel stays on **Hobby** by your decision with AI training opted out, Fiverr checked ([creator-launch-minimum.md](creator-launch-minimum.md)). Read **Setup check → "Where the server functions run"** on the Preview and tell me `fra1` or `iad1`. |
 | 2 | You | Reply **"approved"** to [the final documents](creator-final-documents.md), or list the ids to change, and say that the Production configuration is done. |
 | 3 | Me | Apply the approved wording, set `LEGAL_ENTITY.confirmed` and `LEGAL_STATUS.approved` to `true`, update the Vercel region sentence if needed, run the tests, push, and open a pull request to `main`. |
 | 4 | You | Read the pull request summary and say **"merge"**. I merge only then. |

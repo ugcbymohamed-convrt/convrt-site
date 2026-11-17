@@ -22,7 +22,7 @@ and send `Referrer-Policy: no-referrer` and `Cache-Control: no-store`.
 | `KV_REST_API_URL`, `KV_REST_API_TOKEN` | the database (below). Injected automatically by the Vercel integration. |
 | `CREATOR_ADMIN_PASSWORD` | owner sign-in. 16+ characters; a long random passphrase from a password manager |
 | `CREATOR_ADMIN_SESSION_SECRET` | 32+ random characters (`openssl rand -base64 48`). Changing it signs everyone out. |
-| **Vercel plan** | Use **Pro**, not Hobby: Vercel's terms limit Hobby to non-commercial use and its DPA covers Pro/Enterprise (see the privacy checklist). |
+| **Vercel plan** | Stays on **Hobby** by the owner's decision (17 Nov 2026): Vercel's terms limit Hobby to non-commercial use and its DPA covers Pro/Enterprise, so the privacy notice claims no Vercel agreement. Keep AI training **opted out** in Team Settings → Data Preferences. |
 | `CRON_SECRET` | 16+ random characters. Lets Vercel's daily cron run the retention clean-up (below). Production only. |
 | `RESEND_API_KEY` (existing) | owner email alert. `NOTIFY_EMAIL_TO` already defaults to mohamed@convrt.studio. |
 
