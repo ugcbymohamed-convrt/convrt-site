@@ -6,6 +6,8 @@
      and process answers match /pricing and src/seo/businessKnowledge.js.
    • CONVRT is a creative production and strategy partner: it does not buy media or manage clients' advertising accounts, and it
      does not present paid creators as genuine customers (both owner-confirmed).
+   • "Founder-led" is already published on the site (/scale meta description, founder video); the earlier "prolific creator who has
+     personally produced hundreds of videos" claim could not be substantiated from the business records and was replaced (Nov 2026).
    • No promised results, rankings, FAQ rich results or AI citations.
    • An answer is an array of paragraphs. `link` adds a final text link under the answer (not part of the structured-data text). */
 
@@ -66,7 +68,7 @@ export const HOME_FAQ = [
   },
   {
     q: 'What makes CONVRT different?',
-    a: "We're not just another marketing agency trying to pump out content. CONVRT is led by a prolific creator who has personally produced hundreds of videos and deeply understands modern attention, retention, hooks, and paid social creative. Every project goes through our internal creative quality review.",
+    a: "We're not just another marketing agency trying to pump out content. CONVRT is a founder-led creative studio focused on modern attention, retention, hooks, and paid social creative. Every project goes through our internal creative quality review.",
   },
   {
     q: "What's the difference between influencers and UGC creators?",

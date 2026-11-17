@@ -623,9 +623,9 @@ test('homepage HTML: services heading and cards, hero line, internal links', () 
     'Human-led UGC video ads for Meta, TikTok and YouTube: concepts, creator casting, scripts, filming and editing.', 'Presenter-led video ads that explain your offer clearly and build trust, from casting to finished edit.',
     'Organic short-form video for Instagram, TikTok and Facebook: strategy, production, publishing and community engagement.', 'Concepts, hooks, scripts and structured testing plans that show you what to make next.',
     'Human-led UGC ads, spokesperson videos and organic social video for SaaS, e-commerce and app brands, in English, Spanish, French and Arabic.',
-    'Compare packages and pricing',
+    'Explore packages and pricing',
   ]) assert.ok(t.includes(n), n)
-  assert.ok(!/Built for modern|Explore the Creative Testing Sprint|significantly better results|personally approved by the founder/.test(t))
+  assert.ok(!/Built for modern|Explore the Creative Testing Sprint|Compare packages and pricing|significantly better results|personally approved by the founder|prolific creator/.test(t))
   const root = rootOf(h)
   for (const href of ['/pricing', '/case-studies/graspo', '/case-studies/elyon', '/creative-growth-roadmap', '/free-hooks', '/risk-free-trial', '/blog']) assert.ok(root.includes(`href="${href}"`), href)
   assert.ok(count(root, /href="\/pricing"/g) >= 4, 'nav, services link, footer and two FAQ answers link to /pricing')
