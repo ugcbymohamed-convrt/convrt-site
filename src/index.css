@@ -317,8 +317,30 @@ body {
 @keyframes ugc-rise-y { from { transform: scaleY(0); } to { transform: scaleY(1); } }
 .ugc-rise { transform-origin: bottom center; animation: ugc-rise-y 0.7s cubic-bezier(0.22, 1, 0.36, 1) both; }
 
+/* ── UGC page — rotating headline word (slot-reel), drawn connectors, fades, soft glow ── */
+.ugc-reel { position: relative; display: inline-block; overflow: hidden; vertical-align: bottom; line-height: 1.14; height: 1.14em;
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 12%, #000 88%, transparent 100%); mask-image: linear-gradient(to bottom, transparent 0, #000 12%, #000 88%, transparent 100%); }
+/* the invisible sizer: reserves the width of the longest word (from a data attribute, so it is not page text) and the height of one line */
+.ugc-reel::before { content: attr(data-sizer); display: block; visibility: hidden; height: 1.14em; white-space: nowrap; }
+.ugc-reel-track { position: absolute; left: 0; top: 0; display: block; will-change: transform; }
+.ugc-reel-track > span { display: block; height: 1.14em; white-space: nowrap; }
+.ugc-reel-track.is-rolling { transform: translate3d(0, -50%, 0); transition: transform 640ms cubic-bezier(0.62, 0, 0.2, 1.1); }
+.ugc-draw { animation: ugc-fade-in 0.7s ease-out both; }
+@keyframes ugc-fade-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes ugc-fade-out { from { opacity: 1; } to { opacity: 0; } }
+.ugc-fade-out { animation: ugc-fade-out 0.4s ease both; }
+@keyframes ugc-ring { 0%, 100% { box-shadow: 0 0 0 0 rgba(213, 255, 64, 0.0); } 50% { box-shadow: 0 0 0 4px rgba(213, 255, 64, 0.28); } }
+.ugc-ring { animation: ugc-ring 2.2s ease-in-out infinite; }
+@keyframes ugc-breathe { 0%, 100% { opacity: 0.75; } 50% { opacity: 1; } }
+.ugc-breathe { animation: ugc-breathe 7s ease-in-out infinite; }
+@keyframes ugc-blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.25; } }
+.ugc-blink { animation: ugc-blink 1s steps(1, end) infinite; }
+
 @media (prefers-reduced-motion: reduce) {
   .ugc-rise { animation: none; }
+  .ugc-draw { animation: none; }
+  .ugc-fade-out, .ugc-ring, .ugc-breathe, .ugc-blink { animation: none; }
+  .ugc-reel-track.is-rolling { transition: none; }
   .ugc-word, .ugc-underline { animation: none; transform: none; }
   .ugc-nudge { animation: none; }
   .ugc-pop,

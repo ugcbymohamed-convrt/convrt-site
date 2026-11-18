@@ -45,3 +45,9 @@ or data-saver visitors, who press play); portfolio cards load a video only after
 The Free Creative Growth Roadmap is open to brands in every industry. `src/lib/roadmapQuestions.js` lists the industries;
 `src/lib/roadmapQualification.js` excludes only "Marketing agency" (not a brand buying creative for itself) and keeps the
 timeline and investment-readiness rules and the Calendly step unchanged.
+
+## Visual refinement (hero, How it works, creative testing)
+
+- **Headline:** "Human-led UGC ads. Built for paid social. to convrt." The last word is a slot-reel (convrt, resonate, sell, connect): it rolls vertically in ~640 ms, rests longer on "convrt", reserves the width of the longest word (no layout shift), and is off for reduced-motion / data-saver visitors. The server HTML contains only "to convrt.".
+- **Empty hero stage:** the three frames are built like short-form video screens, rotate by themselves every ~3.6 s (stops once a visitor interacts or hovers, off for reduced motion), can be clicked, swiped or driven with arrows and dots, and drift a few pixels toward the mouse. Decorative only (aria-hidden, nothing takes keyboard focus). With approved videos the real stage (no auto-advance) replaces it.
+- **How it works / testing scenes:** built from stylised vector creators in `illustrations.jsx` (illustrations, not photos, not real creators, not AI-generated people). No data or performance claims; step 3 of testing is labelled "Conceptual illustration, not real results".

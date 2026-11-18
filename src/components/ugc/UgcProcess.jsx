@@ -2,13 +2,14 @@ import { useEffect, useRef, useState } from 'react'
 import { SPRINT, SPRINT_PLUS, TURNAROUND, FORMATS } from '../../seo/businessKnowledge.js'
 import { ConceptAccents } from '../pricing/shared.jsx'
 import { Section, Head, Reveal } from './shared.jsx'
+import { Avatar, MiniPhone, CheckBadge, delay } from './illustrations.jsx'
 import { useAutoplayAllowed } from './creatorVideo.jsx'
 import TestingDiagram from './TestingDiagram.jsx'
 
 /* SECTION 3: how we create and test UGC ads. Four stages. All four titles and one-line explanations are always visible, so the
    process reads in seconds without touching anything; selecting a stage (mouse, touch or keyboard) swaps the illustration beside it.
    The stages also advance once, by themselves, when the section is on screen (never for reduced-motion visitors, never after the
-   visitor chooses, with a Pause button), then stay put. Detail that the FAQ already carries (revisions, usage rights, formats,
+   visitor chooses, with a Pause button), then stay put. The creators in the scenes are stylised illustrations, not real people. Detail that the FAQ already carries (revisions, usage rights, formats,
    languages) is not repeated here. The interactive testing illustration follows (TestingDiagram.jsx). */
 
 const STAGE_MS = 6000
@@ -20,36 +21,146 @@ const STAGES = [
   { id: 'delivery', title: 'Delivery & Creative Testing', text: 'You receive finished, platform-ready ad versions and guidance on what to test next.' },
 ]
 
-/* ── stage illustrations: small CSS/SVG scenes, decorative (the text beside them carries the meaning) ── */
+/* ── stage illustrations: small scenes built from CSS and SVG, with stylised illustrated creators (illustrations.jsx). They are
+   decorative (aria-hidden): the title and sentence beside them carry the meaning. Each plays once when its stage is selected. ── */
 const Skel = ({ w = 'w-full', className = '' }) => <span className={`block h-1.5 rounded-full bg-white/15 ${w} ${className}`} />
-const delay = (ms) => ({ animationDelay: `${ms}ms` })
-const Arrow = () => (
-  <svg viewBox="0 0 24 12" className="h-3 w-6 shrink-0 text-ink-muted" fill="none" aria-hidden="true"><path d="M1 6h20M16 1l5 5-5 5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" /></svg>
+const Tag = ({ children, color = '#d5ff40', className = '' }) => (
+  <span className={`inline-block rounded-md px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-[0.08em] ${className}`} style={{ background: color, color: '#0a0a0b' }}>{children}</span>
 )
-const Check = ({ className = '' }) => (
-  <span className={`flex h-6 w-6 items-center justify-center rounded-full bg-lime text-canvas ${className}`}>
-    <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" aria-hidden="true"><path d="M3 8.5l3 3 7-7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
-  </span>
+const Label = ({ n, children }) => (
+  <p className="flex items-center gap-1.5 whitespace-nowrap text-[10px] font-semibold uppercase tracking-[0.12em] text-ink-muted">
+    <span className="flex h-4 w-4 items-center justify-center rounded-full bg-lime text-[9px] font-bold text-canvas">{n}</span>{children}
+  </p>
 )
-const Person = ({ className = 'h-6 w-6' }) => (
-  <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="8" r="3.5" /><path d="M5 20c0-3.6 3.1-6 7-6s7 2.4 7 6" /></svg>
+const Icon = ({ children, className = 'h-4 w-4' }) => (
+  <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{children}</svg>
 )
 
-/* a brief becomes several concepts */
+const HOOKS = ['Problem → fix', 'Founder story', 'Before & after', 'Social proof', 'Unboxing']
+
+/* 1  one brief branches into several different concepts */
 function VisualResearch() {
+  const rows = SPRINT.concepts
+  const y = (i) => ((i + 0.5) / rows) * 100
   return (
-    <div className="flex h-full items-center justify-center gap-4 sm:gap-6">
-      <div className="ugc-pop flex w-[28%] flex-col gap-2 rounded-2xl border border-hairline-strong bg-surface-2 p-3">
-        <span className="whitespace-nowrap text-[10px] font-semibold uppercase tracking-[0.1em] text-lime">Brief</span>
-        <Skel /><Skel w="w-5/6" /><Skel w="w-2/3" />
+    <div className="flex h-full items-stretch">
+      <div className="flex w-[34%] shrink-0 flex-col justify-center gap-2">
+        <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-ink-muted">One brief</p>
+        <div className="ugc-pop rounded-2xl border border-lime/40 bg-surface-2 p-2.5 sm:p-3" style={{ boxShadow: '0 0 40px -18px rgba(213,255,64,0.5)' }}>
+          <div className="flex items-center gap-1.5 text-lime">
+            <Icon className="h-3.5 w-3.5"><path d="M7 3h7l4 4v14H7z" /><path d="M14 3v4h4M10 12h5M10 16h5" /></Icon>
+            <span className="text-[11px] font-bold uppercase tracking-[0.08em]">Brand brief</span>
+          </div>
+          {['Offer', 'Audience', 'Goal'].map((l) => (
+            <div key={l} className="mt-2.5">
+              <span className="text-[10px] font-medium text-ink-muted">{l}</span>
+              <Skel className="mt-1" w={l === 'Goal' ? 'w-2/3' : 'w-full'} />
+            </div>
+          ))}
+        </div>
       </div>
-      <Arrow />
-      <ul className="grid flex-1 grid-cols-1 gap-2">
-        {Array.from({ length: SPRINT.concepts }, (_, i) => (
-          <li key={i} className="cs-fade-up flex items-center gap-2.5 rounded-xl border border-hairline bg-canvas/50 px-3 py-2" style={delay(200 + i * 110)}>
-            <span className="h-2 w-2 shrink-0 rounded-full" style={{ background: ConceptAccents[i] }} />
-            <span className="whitespace-nowrap text-[11px] font-semibold uppercase tracking-[0.1em] text-ink">Concept {i + 1}</span>
-            <Skel w="w-1/3" className="ml-auto max-sm:hidden" />
+      <div aria-hidden="true" className="flex w-[11%] shrink-0 flex-col">
+        <span className="mb-2 block h-[12px]" />
+      <svg viewBox="0 0 40 100" preserveAspectRatio="none" aria-hidden="true" className="min-h-0 w-full flex-1">
+        {Array.from({ length: rows }, (_, i) => (
+          <path key={i} pathLength="1" d={`M0 50 C 22 50, 18 ${y(i)}, 40 ${y(i)}`} fill="none" stroke={ConceptAccents[i]} strokeWidth="1.6" strokeLinecap="round" vectorEffect="non-scaling-stroke" className="ugc-draw" style={delay(250 + i * 90)} />
+        ))}
+      </svg>
+      </div>
+      <div className="flex min-w-0 flex-1 flex-col">
+        <p className="mb-2 h-[12px] text-[10px] font-semibold uppercase leading-[12px] tracking-[0.12em] text-ink-muted">{rows} different concepts</p>
+        <ul className="flex flex-1 flex-col justify-between gap-1.5">
+          {Array.from({ length: rows }, (_, i) => (
+            <li key={i} className="cs-fade-up flex flex-1 items-center gap-2 rounded-xl border bg-canvas/50 px-2 py-1" style={{ ...delay(500 + i * 110), borderColor: `${ConceptAccents[i]}66` }}>
+              <MiniPhone variant={i} tone={ConceptAccents[i]} className="h-full max-h-[2.6rem] shrink-0 rounded-md" />
+              <span className="min-w-0">
+                <span className="block text-[11px] font-bold uppercase tracking-[0.08em] text-ink">Concept {i + 1}</span>
+                <span className="mt-0.5 inline-block max-w-full truncate rounded px-1.5 py-px text-[10px] font-bold" style={{ background: `${ConceptAccents[i]}26`, color: ConceptAccents[i] }}>{HOOKS[i % HOOKS.length]}</span>
+              </span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  )
+}
+
+/* 2  match a creator, write the script, you approve it */
+function VisualCreators() {
+  const creators = [['Relatable', 0, '#8b5cf6'], ['Expert', 1, '#d5ff40'], ['Energetic', 2, '#ff6a4d']]
+  return (
+    <div className="flex h-full flex-col justify-between gap-3">
+      <div>
+        <Label n="1">We match the right creator</Label>
+        <div className="mt-2 grid grid-cols-3 gap-2 sm:gap-3">
+          {creators.map(([tag, v, tone], i) => {
+            const chosen = i === 1
+            return (
+              <div key={tag} className={`cs-fade-up relative flex flex-col items-center gap-1 rounded-2xl border px-2 py-2.5 transition-opacity ${chosen ? 'border-lime/60 bg-lime/[0.06]' : 'border-hairline bg-canvas/40 opacity-70'}`} style={delay(i * 120)}>
+                <span className="relative h-12 w-12 overflow-hidden rounded-full border-2 sm:h-14 sm:w-14" style={{ borderColor: chosen ? '#d5ff40' : '#34343a', background: `linear-gradient(160deg, ${tone}88, #17171b)` }}>
+                  <Avatar variant={v} className="absolute inset-0 h-full w-full" />
+                </span>
+                <span className="text-[11px] font-semibold text-ink">Creator {i + 1}</span>
+                <span className="text-[10px] text-ink-muted">{tag}</span>
+                {chosen && <CheckBadge className="ugc-pop absolute -right-1.5 -top-1.5" size="h-5 w-5" />}
+              </div>
+            )
+          })}
+        </div>
+      </div>
+      <div>
+        <div className="flex items-center justify-between gap-2">
+          <Label n="2">We write the script</Label>
+          <span className="ugc-pop inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded-full bg-lime px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.08em] text-canvas" style={delay(1300)}>
+            <Icon className="h-3 w-3"><path d="M4 12.5l5 5L20 6" /></Icon>You approve
+          </span>
+        </div>
+        <div className="cs-fade-up relative mt-2 rounded-2xl border border-hairline-strong bg-surface-2 p-3" style={delay(750)}>
+          <div className="flex items-start gap-2.5"><Tag className="mt-0.5 shrink-0">Hook</Tag><p className="text-[12px] font-medium leading-snug text-ink">&ldquo;Wait, you&rsquo;re still doing it the hard way?&rdquo;</p></div>
+          <div className="mt-2.5 flex items-center gap-2.5"><Tag color="#8b5cf6" className="shrink-0 !text-white">Story</Tag><Skel w="w-4/5" /></div>
+          <div className="mt-2 flex items-center gap-2.5"><Tag color="#ff6a4d" className="shrink-0">Call</Tag><Skel w="w-3/5" /></div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+/* 3  filming, editing, captions, export: one video moving through production */
+function VisualFilming() {
+  const lanes = [
+    ['Filming', '#8b5cf6', <><rect x="3" y="7" width="13" height="10" rx="2" /><path d="M16 11l5-3v8l-5-3z" /></>],
+    ['Editing', '#d5ff40', <><path d="M4 8h10M18 8h2M4 16h2M10 16h10" /><circle cx="16" cy="8" r="2" /><circle cx="8" cy="16" r="2" /></>],
+    ['Captions', '#ff6a4d', <><rect x="3" y="5" width="18" height="14" rx="3" /><path d="M8 11h3M8 15h6M14 11h2" /></>],
+    ['Export', '#ec4899', <><path d="M12 3v12M7 8l5-5 5 5M5 21h14" /></>],
+  ]
+  const formats = ['9:16', ...FORMATS.included.map((f) => f.replace(/ reframing$/, '').replace(/^(Square|Portrait) /, ''))]
+  return (
+    <div className="flex h-full items-center gap-4 sm:gap-6">
+      <div className="ugc-pop relative aspect-[9/16] w-[6.2rem] shrink-0 sm:h-full sm:max-h-[17.5rem] sm:w-auto overflow-hidden rounded-[1.1rem] border border-white/15" style={{ background: 'linear-gradient(180deg, rgba(139,92,246,0.5), #121216 85%)', boxShadow: '0 0 50px -18px rgba(139,92,246,0.7)' }}>
+        <Avatar variant={2} className="absolute inset-x-0 bottom-0 h-[82%] w-full" />
+        <span className="ugc-fade-out absolute left-2 top-2.5 flex items-center gap-1 rounded-full bg-black/55 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-[0.08em] text-ink" style={delay(2300)}>
+          <span className="ugc-blink h-1.5 w-1.5 rounded-full bg-coral" />Rec
+        </span>
+        <span className="cs-fade-up absolute inset-x-2 bottom-7 rounded-md bg-black/60 px-1.5 py-1 text-center text-[11px] font-bold leading-tight text-ink" style={delay(2450)}>
+          Wait, you&rsquo;re <span className="text-lime">still</span> doing it&hellip;
+        </span>
+        <span className="absolute inset-x-2 bottom-3 h-[3px] rounded-full bg-white/20"><span className="ugc-bar block h-full rounded-full bg-lime" style={{ animationDuration: '3.4s', ...delay(200) }} /></span>
+      </div>
+      <ul className="min-w-0 flex-1 space-y-3.5 sm:space-y-5">
+        {lanes.map(([label, color, icon], i) => (
+          <li key={label} className="cs-fade-up flex items-center gap-2.5" style={delay(200 + i * 650)}>
+            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg" style={{ background: `${color}26`, color }}><Icon>{icon}</Icon></span>
+            <span className="min-w-0 flex-1">
+              <span className="flex items-center justify-between gap-2 text-xs font-semibold text-ink">{label}
+                <CheckBadge className="ugc-pop" size="h-4 w-4" />
+              </span>
+              <span className="mt-1 block h-1.5 rounded-full bg-white/[0.07]"><span className="ugc-bar block h-full rounded-full" style={{ background: color, animationDuration: '0.8s', ...delay(300 + i * 650) }} /></span>
+              {i === 3 && (
+                <span className="mt-1.5 flex flex-wrap gap-1">
+                  {formats.map((f, k) => <span key={f} className="cs-fade-up rounded-full border border-hairline-strong bg-surface-2 px-2 py-0.5 text-[10px] font-medium text-ink-muted" style={delay(2800 + k * 100)}>{f}</span>)}
+                </span>
+              )}
+            </span>
           </li>
         ))}
       </ul>
@@ -57,79 +168,29 @@ function VisualResearch() {
   )
 }
 
-/* choose the right creator, then approve the script */
-function VisualCreators() {
-  const tones = ['#8b5cf6', '#d5ff40', '#ff6a4d']
+/* 4  two finished versions, delivered, plus guidance on what to test */
+function VisualDelivery() {
+  const versions = [['Version A', 'Hook A', '#8b5cf6', '#8b5cf6'], ['Version B', 'Hook B', '#d5ff40', '#d5ff40']]
   return (
-    <div className="flex h-full flex-col items-center justify-center gap-5">
-      <div className="flex items-center gap-4 sm:gap-6">
-        {tones.map((t, i) => (
-          <div key={t} className="cs-fade-up relative flex flex-col items-center gap-1.5" style={delay(i * 120)}>
-            <span className="flex h-14 w-14 items-center justify-center rounded-full border-2 bg-surface-2 sm:h-16 sm:w-16" style={{ color: t, borderColor: i === 1 ? '#d5ff40' : '#34343a' }}>
-              <Person className="h-7 w-7" />
-            </span>
-            {i === 1 && <Check className="ugc-pop absolute -right-1 -top-1" />}
-            <span className="text-[11px] font-medium text-ink-muted">Creator {i + 1}</span>
+    <div className="flex h-full flex-col justify-between gap-3">
+      <div className="flex items-start justify-center gap-4 sm:gap-8">
+        {versions.map(([v, hook, tone], i) => (
+          <div key={v} className="flex items-start gap-4 sm:gap-8">
+            {i === 1 && <span className="cs-fade-up mt-16 text-xs font-semibold uppercase tracking-[0.16em] text-ink-muted" style={delay(500)}>vs</span>}
+            <div className="cs-fade-up flex flex-col items-center gap-1.5" style={delay(i * 220)}>
+              <span className="rounded-full px-2.5 py-0.5 text-[11px] font-bold" style={{ background: `${tone}26`, color: tone }}>{v}</span>
+              <MiniPhone variant={1} tone={tone} caption={hook} captionBg={tone} className="w-[5.2rem] sm:w-[7rem]" />
+              <span className="ugc-pop inline-flex items-center gap-1 rounded-full bg-lime/15 px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.06em] text-lime" style={delay(900 + i * 200)}>
+                <Icon className="h-3 w-3"><path d="M4 12.5l5 5L20 6" /></Icon>Delivered
+              </span>
+            </div>
           </div>
         ))}
       </div>
-      <div className="cs-fade-up relative w-[78%] max-w-[18rem] rounded-2xl border border-hairline-strong bg-surface-2 p-3.5" style={delay(700)}>
-        <span className="inline-block rounded-md bg-lime px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-[0.1em] text-canvas">Hook</span>
-        <Skel className="mt-2.5" /><Skel w="w-5/6" className="mt-1.5" /><Skel w="w-3/5" className="mt-1.5" />
-        <span className="ugc-pop absolute -right-2 -top-2 rounded-full bg-lime px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.08em] text-canvas" style={delay(1200)}>Approved</span>
+      <div className="cs-fade-up flex items-center gap-3 rounded-2xl border border-lime/30 bg-lime/[0.06] px-3 py-2.5" style={delay(1300)}>
+        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-lime/20 text-lime"><Icon><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z" /></Icon></span>
+        <span className="min-w-0"><span className="block text-[12px] font-bold text-ink">Ready to test</span><span className="block text-[11px] leading-snug text-ink-muted">Finished versions, plus guidance on what to test next.</span></span>
       </div>
-    </div>
-  )
-}
-
-/* shooting becomes editing */
-function VisualFilming() {
-  const tracks = [['Footage', 'w-full', '#8b5cf6'], ['Edit', 'w-4/5', '#d5ff40'], ['Captions', 'w-3/5', '#ff6a4d']]
-  return (
-    <div className="flex h-full items-center justify-center gap-4 sm:gap-6">
-      <div className="ugc-pop relative aspect-[9/16] h-[88%] max-h-[250px] overflow-hidden rounded-2xl border border-hairline-strong bg-surface-2">
-        <div className="absolute inset-0" style={{ background: 'radial-gradient(90% 60% at 50% 20%, rgba(139,92,246,0.45), transparent 70%)' }} />
-        <span className="absolute left-2.5 top-2.5 flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.1em] text-ink"><span className="h-1.5 w-1.5 rounded-full bg-coral" />Rec</span>
-      </div>
-      <Arrow />
-      <div className="min-w-0 flex-1">
-        <ul className="space-y-2.5">
-          {tracks.map(([label, w, color], i) => (
-            <li key={label} className="flex items-center gap-2.5">
-              <span className="w-[4.2rem] shrink-0 text-[11px] font-semibold text-ink-muted">{label}</span>
-              <span className="block h-2.5 flex-1 rounded-full bg-white/[0.06]">
-                <span className={`ugc-bar block h-full rounded-full ${w}`} style={{ background: color, ...delay(300 + i * 220) }} />
-              </span>
-            </li>
-          ))}
-        </ul>
-        <p className="mt-3.5 flex flex-wrap gap-1.5">
-          {['9:16', ...FORMATS.included.map((f) => f.replace(/ reframing$/, '').replace(/^(Square|Portrait) /, ''))].map((f, i) => (
-            <span key={f} className="cs-fade-up rounded-full border border-hairline-strong bg-surface-2 px-2.5 py-1 text-[11px] font-medium text-ink-muted" style={delay(1000 + i * 90)}>{f}</span>
-          ))}
-        </p>
-      </div>
-    </div>
-  )
-}
-
-/* two finished versions, compared */
-function VisualDelivery() {
-  return (
-    <div className="flex h-full items-center justify-center gap-4 sm:gap-6">
-      {[['Version A', 'Hook A', 0, '#8b5cf6'], ['Version B', 'Hook B', 1, '#d5ff40']].map(([v, h, i, c], idx) => (
-        <div key={v} className="flex items-center gap-4 sm:gap-6">
-          {idx === 1 && <span className="cs-fade-up text-xs font-semibold uppercase tracking-[0.16em] text-ink-muted" style={delay(450)}>vs</span>}
-          <div className="cs-fade-up flex flex-col items-center gap-2" style={delay(i * 200)}>
-            <div className="relative flex aspect-[9/14] w-[6.4rem] flex-col justify-between overflow-hidden rounded-2xl border border-hairline-strong bg-surface-2 p-2.5 sm:w-[7.4rem]" style={{ boxShadow: `0 0 36px -14px ${c}` }}>
-              <div className="absolute inset-0 opacity-50" style={{ background: `radial-gradient(100% 60% at 50% 0%, ${c}66, transparent 75%)` }} />
-              <span className="relative text-[10px] font-semibold uppercase tracking-[0.1em] text-ink-muted">{v}</span>
-              <span className="relative rounded-md bg-black/35 px-2 py-1 text-center text-[11px] font-semibold text-ink">{h}</span>
-            </div>
-            <Check className="ugc-pop" />
-          </div>
-        </div>
-      ))}
     </div>
   )
 }
@@ -174,7 +235,7 @@ export default function UgcProcess() {
         <div ref={rootRef} className="grid grid-cols-1 gap-5 lg:grid-cols-12 lg:items-center lg:gap-8">
           {/* desktop: the illustration sits beside the list. Phones get it inside the selected stage, next to what was tapped. */}
           <div className="hidden lg:order-2 lg:col-span-7 lg:block">
-            <div key={STAGES[active].id} aria-hidden="true" className="pricing-panel-in relative h-[360px] overflow-hidden rounded-3xl border border-hairline-strong bg-surface-1 p-7">
+            <div key={STAGES[active].id} aria-hidden="true" className="pricing-panel-in relative h-[400px] overflow-hidden rounded-3xl border border-hairline-strong bg-surface-1 p-6">
               <div className="pointer-events-none absolute -top-20 left-1/2 h-48 w-96 -translate-x-1/2 rounded-full bg-violet/[0.14] blur-[90px]" />
               <div className="relative h-full"><Visual /></div>
             </div>
@@ -205,7 +266,7 @@ export default function UgcProcess() {
                       </h3>
                       <p className="mt-1.5 pl-[2.1rem] text-[15px] leading-relaxed text-ink-muted">{s.text}</p>
                       {on && (
-                        <div key={`m-${s.id}`} aria-hidden="true" className="pricing-panel-in relative mt-4 h-[230px] overflow-hidden rounded-2xl border border-hairline bg-canvas/50 p-4 lg:hidden">
+                        <div key={`m-${s.id}`} aria-hidden="true" className="pricing-panel-in relative mt-4 h-[330px] overflow-hidden rounded-2xl border border-hairline bg-canvas/50 p-3.5 lg:hidden">
                           <Visual />
                         </div>
                       )}

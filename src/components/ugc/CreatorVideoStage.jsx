@@ -11,13 +11,14 @@ import { useAutoplayAllowed, useIdleAfterLoad, PlayGlyph, PauseGlyph, SoundGlyph
    phone takes the matching side position; position, scale, depth and opacity animate together in 560 ms.
 
    Media rules (every one is enforced here):
-   • Items are approved portfolio videos only (selectDisplayable). With none, <PhoneShowcaseFallback> shows the same frames empty.
+   • Items are approved portfolio videos only (selectDisplayable). With none, <PhoneShowcaseFallback> shows the same frames empty, rotating by itself.
    • Exactly one video can play: only the active phone is ever told to play; every other video is paused (and shows its own frame).
    • No audio by itself: videos start muted, and sound resets to muted whenever the active video changes.
    • Nothing downloads until needed: posters first; a video's source is attached only after it has been active AND the browser is idle,
      and never for reduced-motion / data-saver visitors until they press play. A paused phone keeps its source, so it can resume.
    • Playback pauses when the hero leaves the viewport and when the tab is hidden.
-   • Transitions are switched off for prefers-reduced-motion. There is no automatic advance. */
+   • Transitions are switched off for prefers-reduced-motion. There is no automatic advance (only the empty fallback demonstrates
+     the rotation by itself). Subtle mouse parallax (a few pixels) for mouse users only. */
 
 const MS = 560 // transition time (within the requested 400–650 ms)
 
@@ -55,32 +56,128 @@ export function PhoneShell({ active = false, className = '', children }) {
 function Lighting({ accent }) {
   return (
     <>
-      <div aria-hidden="true" className="pointer-events-none absolute left-1/2 top-1/2 h-[86%] w-[150%] -translate-x-1/2 -translate-y-1/2 transition-[background] duration-700 motion-reduce:transition-none" style={{ background: `radial-gradient(ellipse 50% 50% at 50% 50%, ${accent}, transparent 70%)` }} />
+      <div aria-hidden="true" className="pointer-events-none absolute left-1/2 top-1/2 h-[86%] w-[150%] -translate-x-1/2 -translate-y-1/2 ugc-breathe transition-[background] duration-700 motion-reduce:transition-none" style={{ background: `radial-gradient(ellipse 50% 50% at 50% 50%, ${accent}, transparent 70%)` }} />
       <div aria-hidden="true" className="pointer-events-none absolute -bottom-3 left-1/2 h-8 w-[110%] -translate-x-1/2 rounded-[50%] bg-black/60 blur-xl" />
     </>
   )
 }
 
-/* ── Fallback: the same three frames, empty. Not interactive, no play button, no stand-in footage and no creator claim. ── */
+/* Subtle pointer parallax for mouse users: the whole stage drifts a few pixels toward the cursor and eases back. No tilt, no float,
+   nothing for touch or reduced-motion visitors. It writes two CSS variables straight to the element (no React renders). */
+function useParallax(ref, enabled) {
+  useEffect(() => {
+    const el = ref.current
+    if (!el || !enabled) return undefined
+    const move = (e) => {
+      if (e.pointerType !== 'mouse') return
+      const r = el.getBoundingClientRect()
+      const x = ((e.clientX - r.left) / r.width - 0.5) * 2
+      const y = ((e.clientY - r.top) / r.height - 0.5) * 2
+      el.style.setProperty('--mx', `${(x * 9).toFixed(1)}px`)
+      el.style.setProperty('--my', `${(y * 5).toFixed(1)}px`)
+    }
+    const leave = () => { el.style.setProperty('--mx', '0px'); el.style.setProperty('--my', '0px') }
+    el.addEventListener('pointermove', move)
+    el.addEventListener('pointerleave', leave)
+    return () => { el.removeEventListener('pointermove', move); el.removeEventListener('pointerleave', leave) }
+  }, [ref, enabled])
+}
+const DRIFT = { transform: 'translate3d(var(--mx,0px), var(--my,0px), 0)', transition: 'transform 500ms cubic-bezier(0.22,1,0.36,1)' }
+
+const ChevronLeft = () => <svg viewBox="0 0 12 12" className="h-4 w-4" fill="none" aria-hidden="true"><path d="M8 2L4 6l4 4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
+const ChevronRight = () => <svg viewBox="0 0 12 12" className="h-4 w-4" fill="none" aria-hidden="true"><path d="M4 2l4 4-4 4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
+
+/* ── Fallback (no approved videos yet): the same three frames, empty, but alive. They are built like short-form video screens (profile
+   line, caption lines, side buttons as quiet outlines), the stage rotates by itself every few seconds so the switching is obvious,
+   and a visitor can click a side phone, swipe, or use the arrows and dots to bring any phone to the centre. No stand-in footage,
+   no play button and no creator claim. It is decoration, so it is hidden from assistive technology and none of it takes focus. ── */
 export function PhoneShowcaseFallback() {
-  const phones = [
-    { slot: 'left', tone: ACCENTS[1] },
-    { slot: 'right', tone: ACCENTS[2] },
-    { slot: 'center', tone: ACCENTS[0] },
-  ]
+  const [active, setActive] = useState(0)
+  const [taken, setTaken] = useState(false) // the visitor has taken over: stop rotating by itself
+  const [hover, setHover] = useState(false)
+  const autoplay = useAutoplayAllowed()
+  const stageRef = useRef(null)
+  const startX = useRef(null)
+  useParallax(stageRef, autoplay)
+
+  useEffect(() => {
+    if (!autoplay || taken || hover) return undefined
+    const t = window.setInterval(() => { if (!document.hidden) setActive((a) => (a + 1) % 3) }, 3600)
+    return () => window.clearInterval(t)
+  }, [autoplay, taken, hover])
+
+  const pick = (i) => { setTaken(true); setActive((i + 3) % 3) }
+  const tones = [ACCENTS[1], ACCENTS[0], ACCENTS[2]]
+
   return (
-    <div aria-hidden="true" className="relative mx-auto flex w-full justify-center py-5 [perspective:1400px]">
-      <div className={`relative aspect-[9/19.5] ${STAGE_SIZE}`}>
-        <Lighting accent={ACCENTS[0]} />
-        {phones.map(({ slot, tone }) => (
-          <div key={slot} className={`absolute left-1/2 top-1/2 w-full aspect-[9/19.5] ${slot === 'center' ? 'z-20' : 'z-10 opacity-80'}`} style={{ transform: SLOT[slot] }}>
-            <PhoneShell active={slot === 'center'}>
-              <div className="absolute inset-0" style={{ background: `radial-gradient(120% 70% at 50% 18%, ${tone}, transparent 70%), linear-gradient(180deg, #17171b 0%, #0b0b0d 100%)` }} />
-              <img src="/convrt-logo.svg" alt="" width="120" height="47" className="absolute left-1/2 top-1/2 w-[46%] -translate-x-1/2 -translate-y-1/2 opacity-30" style={{ filter: 'brightness(0) invert(1)' }} draggable="false" />
-            </PhoneShell>
-          </div>
-        ))}
+    <div aria-hidden="true" className="mx-auto w-full">
+      <div
+        ref={stageRef}
+        onMouseEnter={() => setHover(true)}
+        onMouseLeave={() => setHover(false)}
+        onPointerDown={(e) => { startX.current = e.clientX }}
+        onPointerUp={(e) => {
+          if (startX.current == null) return
+          const dx = e.clientX - startX.current
+          startX.current = null
+          if (Math.abs(dx) > 45) pick(active + (dx < 0 ? 1 : -1))
+        }}
+        className="relative mx-auto flex w-full touch-pan-y select-none justify-center py-5 [perspective:1400px]"
+      >
+        <div className={`relative aspect-[9/19.5] ${STAGE_SIZE}`} style={DRIFT}>
+          <Lighting accent={tones[active]} />
+          {tones.map((tone, i) => {
+            const rel = (i - active + 3) % 3
+            const slot = rel === 0 ? 'center' : rel === 1 ? 'right' : 'left'
+            const isActive = rel === 0
+            return (
+              <div
+                key={i}
+                onClick={isActive ? undefined : () => pick(i)}
+                className={`group absolute left-1/2 top-1/2 w-full aspect-[9/19.5] will-change-transform transition-[transform,opacity] ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none ${isActive ? 'z-20' : 'z-10 cursor-pointer opacity-90'}`}
+                style={{ transform: SLOT[slot], transitionDuration: `${MS}ms` }}
+              >
+                <PhoneShell active={isActive}>
+                  <div className="absolute inset-0 transition-[background] duration-700 motion-reduce:transition-none" style={{ background: `radial-gradient(120% 70% at 50% 18%, ${tone}, transparent 70%), linear-gradient(180deg, #17171b 0%, #0b0b0d 100%)` }} />
+                  <img src="/convrt-logo.svg" alt="" width="120" height="47" className="absolute left-1/2 top-[44%] w-[44%] -translate-x-1/2 -translate-y-1/2 opacity-30" style={{ filter: 'brightness(0) invert(1)' }} draggable="false" />
+                  {/* short-form video chrome, drawn as quiet skeletons */}
+                  <div className="absolute inset-x-[10%] bottom-[7%] flex items-end justify-between gap-3">
+                    <div className="min-w-0 flex-1 space-y-1.5">
+                      <div className="flex items-center gap-1.5"><span className="h-5 w-5 shrink-0 rounded-full bg-white/15" /><span className="h-1.5 w-1/3 rounded-full bg-white/20" /></div>
+                      <span className="block h-1.5 w-11/12 rounded-full bg-white/12" />
+                      <span className="block h-1.5 w-2/3 rounded-full bg-white/12" />
+                    </div>
+                    <div className="flex flex-col items-center gap-2.5">
+                      {[0, 1, 2].map((k) => <span key={k} className="h-5 w-5 rounded-full border border-white/20 bg-white/[0.07]" />)}
+                    </div>
+                  </div>
+                  <div className="absolute inset-x-[10%] bottom-[3%] h-[3px] overflow-hidden rounded-full bg-white/15">
+                    <span key={`${active}-${isActive}`} className={`block h-full rounded-full bg-lime/80 ${isActive && autoplay && !taken ? 'ugc-progress' : ''}`} style={isActive ? (autoplay && !taken ? { animationDuration: '3600ms' } : { width: '35%' }) : { width: '0%' }} />
+                  </div>
+                  {!isActive && <div className="pointer-events-none absolute inset-0 bg-black/35 transition-opacity duration-300 group-hover:opacity-0 motion-reduce:transition-none" />}
+                </PhoneShell>
+                {!isActive && <span className="pointer-events-none absolute inset-0 rounded-[34px] ring-2 ring-lime/0 transition-[box-shadow] duration-300 group-hover:ring-lime/60 md:rounded-[44px]" />}
+              </div>
+            )
+          })}
+        </div>
       </div>
+
+      <div className="mt-1 flex items-center justify-center gap-3">
+        <button type="button" tabIndex={-1} onClick={() => pick(active - 1)} className="flex h-10 w-10 items-center justify-center rounded-full border border-hairline-strong bg-surface-2 text-ink transition-colors hover:border-lime/60 hover:text-lime"><ChevronLeft /></button>
+        <div className="flex items-center">
+          {[0, 1, 2].map((i) => (
+            <button key={i} type="button" tabIndex={-1} onClick={() => pick(i)} className="flex h-10 w-8 items-center justify-center">
+              <span className={`block h-1.5 rounded-full transition-all duration-300 motion-reduce:transition-none ${i === active ? 'w-6 bg-lime' : 'w-1.5 bg-surface-3'}`} />
+            </button>
+          ))}
+        </div>
+        <button type="button" tabIndex={-1} onClick={() => pick(active + 1)} className="flex h-10 w-10 items-center justify-center rounded-full border border-hairline-strong bg-surface-2 text-ink transition-colors hover:border-lime/60 hover:text-lime"><ChevronRight /></button>
+      </div>
+      <p className="mx-auto mt-1 flex items-center justify-center gap-1.5 text-[13px] text-ink-muted">
+        <svg viewBox="0 0 24 24" className="h-3.5 w-3.5 text-lime" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M9 11V5.5a1.5 1.5 0 013 0V10m0-1.5a1.5 1.5 0 013 0V11m0-1a1.5 1.5 0 013 0v4.5c0 3-2 5.5-5 5.5h-1.5c-2 0-3.2-.8-4.3-2.3L5 14.5a1.4 1.4 0 012.2-1.7L9 14.5" /></svg>
+        Tap a side phone to bring it forward
+      </p>
     </div>
   )
 }
@@ -218,6 +315,7 @@ export default function CreatorVideoStage({ items }) {
   const startX = useRef(null)
   const autoplay = useAutoplayAllowed()
   const idle = useIdleAfterLoad()
+  useParallax(stageRef, autoplay)
 
   useEffect(() => {
     const el = stageRef.current
@@ -294,7 +392,7 @@ export default function CreatorVideoStage({ items }) {
         onPointerCancel={() => { startX.current = null }}
         className="relative mx-auto flex w-full touch-pan-y select-none justify-center rounded-3xl py-5 [perspective:1400px] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-lime"
       >
-        <div className={`relative aspect-[9/19.5] ${STAGE_SIZE}`}>
+        <div className={`relative aspect-[9/19.5] ${STAGE_SIZE}`} style={DRIFT}>
           <Lighting accent={ACCENTS[active % ACCENTS.length]} />
           {shown.map((it, i) => {
             const rel = (i - active + n) % n

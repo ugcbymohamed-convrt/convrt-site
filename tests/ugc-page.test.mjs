@@ -84,7 +84,7 @@ test('static HTML: breadcrumb, the approved H1, five main sections (the portfoli
   const root = rootOf(html)
   assert.equal((root.match(/<h1[\s>]/g) || []).length, 1)
   const h1 = decode(root.match(/<h1[^>]*>([\s\S]*?)<\/h1>/)[1].replace(/<[^>]+>/g, ' ')).replace(/\s+/g, ' ').trim()
-  assert.equal(h1, 'Human-led UGC ads. Built for paid social. Made to be tested.')
+  assert.equal(h1, 'Human-led UGC ads. Built for paid social. to convrt.')
   assert.match(root, /<nav aria-label="Breadcrumb"[\s\S]*?<a href="\/"[^>]*>Home<\/a>[\s\S]*?UGC Video Agency/)
   const portfolio = selectDisplayable().length > 0
   // hero (h1) + [work] + process + results + faq, then the final CTA
@@ -392,7 +392,8 @@ test('hero phone stage: three smartphone frames, one active video, switchable by
   const src = read('src/components/ugc/CreatorVideoStage.jsx') + read('src/components/ugc/creatorVideo.jsx')
   assert.ok(/prefers-reduced-motion: reduce/.test(src) && /saveData/.test(src), 'reduced motion and data saver are respected')
   assert.ok(/IntersectionObserver/.test(src) && /requestIdleCallback/.test(src), 'playback waits for idle and for the stage to be on screen')
-  assert.ok(!/setInterval|autoAdvance/.test(src), 'no automatic carousel advance')
+  const realStage = src.slice(src.indexOf('export default function CreatorVideoStage'))
+  assert.ok(!/setInterval|autoAdvance/.test(realStage + read('src/components/ugc/creatorVideo.jsx')), 'no automatic carousel advance with real videos (only the empty demo rotates by itself)')
   // playing rules: only the active phone may play; sound resets to muted on every switch; pauses off screen and in a hidden tab
   assert.ok(/active && wantPlay/.test(src) && /else v\.pause\(\)/.test(src), 'only the active video is told to play; every other video is paused')
   assert.ok(/setMuted\(true\)/.test(src), 'sound resets to muted when the active video changes')
@@ -428,16 +429,20 @@ test('hero: split layout in every state, the exact H1 in the HTML, a one-time he
   assert.match(hero, /lg:grid-cols-12/, 'two columns on desktop')
   assert.match(hero, /lg:col-span-6/, 'copy and phones share the width')
   const stage = renderToStaticMarkup(createElement(UgcHero.default, { items: [] }))
-  assert.ok(/aspect-\[9\/19\.5\]/.test(stage) && !/<video|<button|aria-label="Play|play button/i.test(stage), 'the empty state is three empty phone frames: no video, no play button')
+  assert.ok(/aspect-\[9\/19\.5\]/.test(stage) && !/<video|aria-label="Play|play button/i.test(stage), 'the empty state is three empty phone frames: no video, no play button')
   assert.equal((stage.match(/aspect-\[9\/19\.5\]/g) || []).length >= 4, true, 'three phones inside the stage')
-  assert.ok(/aria-hidden="true" class="relative mx-auto flex/.test(stage), 'the empty frames are hidden from assistive tech')
+  const fb = stage.slice(stage.indexOf('aria-hidden="true" class="mx-auto w-full"'))
+  assert.ok(fb.length > 100 && !/aria-label=/.test(fb), 'the empty stage is decoration, hidden from assistive tech, with nothing announced')
+  assert.ok((fb.match(/<button/g) || []).length === 5 && (fb.match(/<button[^>]*tabindex="-1"/g) || []).length === 5, 'its arrows and dots work with a mouse or touch but never take keyboard focus')
+  assert.ok(/Tap a side phone to bring it forward/.test(stage), 'the empty stage says how to use it')
   assert.ok(!/Illustration|creator video|coming soon/i.test(stage))
   // words are real text in the HTML at their final size; the animation is CSS only and switched off for reduced motion
-  assert.ok(/class="ugc-word"[^>]*>Human-led</.test(hero) && /class="ugc-word"[^>]*>tested\./.test(hero))
+  assert.ok(/class="ugc-word"[^>]*>Human-led</.test(hero) && /class="ugc-reel text-lime" data-sizer="resonate\."/.test(hero))
   const css = read('src/index.css')
   assert.match(css, /prefers-reduced-motion: reduce\) \{[\s\S]*?\.ugc-word, \.ugc-underline \{ animation: none; transform: none; \}/)
   assert.match(css, /\.ugc-nudge \{ animation: none; \}/)
-  assert.ok(!/setInterval|setTimeout/.test(read('src/components/ugc/UgcHero.jsx')), 'the headline never loops or changes')
+  const heroSrc = read('src/components/ugc/UgcHero.jsx')
+  assert.ok(/useAutoplayAllowed/.test(heroSrc) && /document\.hidden/.test(heroSrc), 'the rotating word is off for reduced-motion and data-saver visitors and waits while the tab is hidden')
   const stageSrc = read('src/components/ugc/CreatorVideoStage.jsx')
   assert.ok(/scrollY < 60/.test(stageSrc) && /passive: true/.test(stageSrc) && /ugc-nudge/.test(stageSrc), 'a passive, one-time scroll listener only highlights the play button (no hijacking, no scroll-driven seeking)')
   assert.ok(!/currentTime\s*=/.test(stageSrc), 'no scroll-driven video seeking')
@@ -496,7 +501,7 @@ test('readability: no low-contrast text colour in the UGC components; headings n
     const code = read(path.join('src/components/ugc', f))
     for (const line of code.split('\n').filter((l) => /text-ink-subtle/.test(l))) assert.ok(/aria-hidden="true"/.test(line), `${f}: secondary copy must use text-ink-muted (AA contrast), not ink-subtle: ${line.trim().slice(0, 80)}`)
     // the process visuals and the testing diagram are decorative (aria-hidden); the same words are in the readable text beside them
-    assert.ok(!/text-\[(9|10|11)px\]/.test(code.replace(/uppercase[^"']*/g, '')) || /UgcHero|UgcProcess|TestingDiagram|CreatorVideoStage/.test(f), `${f}: tiny text`)
+    assert.ok(!/text-\[(9|10|11)px\]/.test(code.replace(/uppercase[^"']*/g, '')) || /UgcHero|UgcProcess|TestingDiagram|CreatorVideoStage|illustrations/.test(f), `${f}: tiny text`)
   }
   const root = rootOf(page(PATH))
   const levels = [...root.matchAll(/<h([1-6])[\s>]/g)].map((m) => +m[1])
@@ -514,3 +519,49 @@ test('page length: tighter vertical rhythm, five sections, and no repeated block
   for (const c of ['UgcHero', 'UgcWork', 'UgcProcess', 'UgcResults', 'UgcFAQ', 'UgcFinalCTA']) assert.ok(page_.includes(`<${c}`), c)
 })
 
+
+
+// ── visual refinement: slot-reel headline, alive empty stage, richer process and testing scenes ──
+test('headline: "to convrt." with a slot-reel last word (convrt, resonate, sell, connect); the server HTML holds only the current word; fixed size; motion-safe', () => {
+  const hero = rootOf(page(PATH))
+  const h1 = hero.match(/<h1[^>]*>([\s\S]*?)<\/h1>/)[1]
+  assert.ok(!/resonate|>sell|connect/.test(h1.replace('data-sizer="resonate."', '')), 'only "convrt." is in the HTML; the other words appear only while a roll is in progress')
+  assert.equal((h1.match(/ugc-reel-track/g) || []).length, 1)
+  const src = read('src/components/ugc/UgcHero.jsx')
+  assert.match(src, /const ROTATING = \['convrt', 'resonate', 'sell', 'connect'\]/)
+  const roll = Number(src.match(/const ROLL_MS = (\d+)/)[1])
+  assert.ok(roll >= 400 && roll <= 800, `roll time ${roll} ms`)
+  const css = read('src/index.css')
+  assert.match(css, /\.ugc-reel::before \{ content: attr\(data-sizer\)/, 'the reel reserves the width and height of the longest word, so nothing shifts')
+  assert.match(css, /\.ugc-reel-track\.is-rolling \{ transform: translate3d\(0, -50%, 0\)/)
+  assert.match(css, /prefers-reduced-motion: reduce\) \{[\s\S]*?\.ugc-reel-track\.is-rolling \{ transition: none; \}/)
+})
+
+test('hero facts: four scannable pills from the business data', () => {
+  const hero = rootOf(page(PATH))
+  const facts = hero.match(/<ul aria-label="At a glance"[\s\S]*?<\/ul>/)[0]
+  assert.equal((facts.match(/<li /g) || []).length, 4)
+  for (const f of [`From ${formatMoney(SPRINT.monthly)}/month`, `${SPRINT.turnaroundBusinessDays}-day production`, `${USAGE_RIGHTS.includedMonths} months usage rights`, 'English · Spanish · French · Arabic']) assert.ok(facts.includes(f), f)
+})
+
+test('empty hero stage: rotates by itself, can be taken over, pauses on hover and in hidden tabs, off for reduced motion; mouse parallax only', () => {
+  const src = read('src/components/ugc/CreatorVideoStage.jsx')
+  const fb = src.slice(src.indexOf('export function PhoneShowcaseFallback'), src.indexOf('/* One phone.'))
+  assert.ok(/setInterval/.test(fb) && /!autoplay \|\| taken \|\| hover/.test(fb) && /document\.hidden/.test(fb), 'demo rotation')
+  assert.ok(/pointerType !== 'mouse'/.test(src) && /useParallax\(stageRef, autoplay\)/.test(src), 'parallax is for mouse pointers and motion-allowed visitors only')
+  assert.ok(/ugc-breathe/.test(src))
+})
+
+test('process scenes: richer illustrations built from stylised (not photographic, not AI) creators, aria-hidden, no invented facts; testing scenes cover one concept, the scale and the loop', () => {
+  const ill = read('src/components/ugc/illustrations.jsx')
+  assert.ok(/STYLISED ILLUSTRATIONS/.test(ill) && !/<img|photo|\.(jpg|png|webp)/i.test(ill.replace(/\/\*[\s\S]*?\*\//, '')), 'avatars are vector drawings')
+  const proc = read('src/components/ugc/UgcProcess.jsx')
+  assert.ok(/aria-hidden="true" className="pricing-panel-in/.test(proc) && /<Visual \/>/.test(proc))
+  for (const w of ['One brief', 'Brand brief', 'different concepts', 'We match the right creator', 'We write the script', 'You approve', 'Filming', 'Editing', 'Captions', 'Export', 'Delivered', 'Ready to test']) assert.ok(proc.includes(w), w)
+  const diag = read('src/components/ugc/TestingDiagram.jsx')
+  for (const w of ['Only the hook changes', 'SceneOne', 'SceneTwo', 'SceneThree', 'Learn what resonates', 'Repeat', 'Conceptual illustration, not real results']) assert.ok(diag.includes(w), w)
+  assert.ok(/SPRINT\.concepts/.test(diag) && /SPRINT\.variations/.test(diag), 'the 5 × 2 = 10 equation reads the package data')
+  // each scene renders without error in the static HTML (step 1 is the default)
+  const html = rootOf(page(PATH))
+  assert.ok(html.includes('Only the hook changes') && html.includes('Brand brief') && !html.includes('Learn what resonates') && !html.includes('We write the script'), 'only the first state of each interaction is in the static HTML')
+})
