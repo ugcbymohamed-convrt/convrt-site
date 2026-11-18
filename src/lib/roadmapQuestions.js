@@ -6,7 +6,16 @@
    here: Calendly's booking form handles name, email and booking details.
 ───────────────────────────────────────────── */
 
-export const BUSINESS_TYPE_OPTIONS = ['SaaS / Software', 'E-commerce / DTC', 'Marketing agency', 'Other']
+/* The Roadmap is open to brands and businesses in every industry. 'Marketing agency' is the one option that is not a brand
+   buying creative for itself; see src/lib/roadmapQualification.js. */
+export const BUSINESS_TYPE_OPTIONS = [
+  'SaaS / Software',
+  'E-commerce / DTC',
+  'App / Technology',
+  'Consumer products',
+  'Other brand or business',
+  'Marketing agency',
+]
 
 export const SPEND_OPTIONS = [
   'Not running paid ads yet',

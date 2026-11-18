@@ -22,6 +22,8 @@ import {
   ROADMAP_INDEXABLE, FREE_HOOKS_INDEXABLE, RISK_FREE_INDEXABLE, REFERRALS_INDEXABLE,
 } from '../config.js'
 import { jsonLdFor } from './structuredData.js'
+import { PATHS } from '../routes.js'
+import { formatMoney, SPRINT, USAGE_RIGHTS } from './businessKnowledge.js'
 
 export const SITE_SEO = {
   '/': {
@@ -37,6 +39,14 @@ export const SITE_SEO = {
     title: 'UGC & Video Production Pricing | CONVRT Studio',
     description:
       "Explore CONVRT's UGC, video ad and social media production packages, with clear pricing, creative deliverables, usage rights and revision policies.",
+    indexable: true,
+  },
+  [PATHS.ugcVideoAgency]: {
+    title: 'UGC Video Agency | Human-Led UGC Ads for Paid Social | CONVRT',
+    // The price and usage period come from the business data, so the description can never disagree with the page.
+    description: `Human-led, multilingual UGC ads for paid social, from concept to edit. Packages from ${formatMoney(SPRINT.monthly)}/month, with ${USAGE_RIGHTS.includedMonths} months of worldwide usage rights included.`,
+    ogTitle: 'CONVRT: UGC Ads Built for Paid Social',
+    ogDescription: 'Creator-led UGC video ads, produced end to end, with transparent pricing and usage rights.',
     indexable: true,
   },
   '/case-studies/graspo': {
@@ -70,7 +80,7 @@ export const SITE_SEO = {
   [OFFER_PATHS.roadmap]: {
     title: 'Free Creative Growth Roadmap | 5 Custom Ad Concepts | CONVRT',
     description:
-      'Apply for five personalized ad concepts tailored to your SaaS or e-commerce brand. Get creative angles, hooks, and testing recommendations from CONVRT.',
+      'Apply for five personalized ad concepts tailored to your brand. Get creative angles, hooks, and testing recommendations from CONVRT.',
     indexable: ROADMAP_INDEXABLE,
   },
   [OFFER_PATHS.hooks]: {

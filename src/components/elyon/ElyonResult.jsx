@@ -22,6 +22,11 @@ export default function ElyonResult() {
           Even during an early learning phase, individual creatives reached as high as 5.28x ROAS.
           The bigger win was building a system capable of producing and iterating more of them.
         </p>
+        <p className="mt-6 text-sm text-ink-subtle">
+          <a href="/ugc-video-agency" className="text-ink-muted underline underline-offset-2 transition-colors hover:text-lime">
+            See how our UGC video production works
+          </a>
+        </p>
       </div>
     </section>
   )

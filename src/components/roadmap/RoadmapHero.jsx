@@ -41,7 +41,7 @@ export default function RoadmapHero() {
             <div className="mt-8 flex flex-col items-stretch gap-4 sm:items-start">
               <ApplyButton location="hero" className="w-full sm:w-auto" />
               <div className="text-sm leading-relaxed text-ink-subtle">
-                <p>For qualifying SaaS and e-commerce brands. No obligation.</p>
+                <p>For brands in every industry. No obligation.</p>
                 <p>Takes about a minute. Qualifying brands can book right away.</p>
               </div>
             </div>

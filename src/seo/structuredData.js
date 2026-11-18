@@ -19,6 +19,8 @@ import {
 } from './businessKnowledge.js'
 import { PRICING_FAQ, faqAnswerText } from './pricingFaq.js'
 import { HOME_FAQ, homeFaqText } from './homeFaq.js'
+import { UGC_FAQ } from './ugcFaq.js'
+import { PATHS } from '../routes.js'
 
 const CONTEXT = 'https://schema.org'
 const abs = (path) => `${SITE_URL}${path === '/' ? '/' : path}`
@@ -68,6 +70,7 @@ export function webSiteNode() {
    breadcrumb would point at a non-canonical URL. Blog articles build their own trail in src/lib/blog/seo.js.) */
 export const BREADCRUMB_TRAILS = {
   '/pricing': [{ name: 'Home', path: '/' }, { name: 'Pricing', path: '/pricing' }],
+  [PATHS.ugcVideoAgency]: [{ name: 'Home', path: '/' }, { name: 'UGC Video Agency', path: PATHS.ugcVideoAgency }],
 }
 
 export function breadcrumbNode(trail, id) {
@@ -274,9 +277,53 @@ export function pricingGraph({ title, description }) {
   ])
 }
 
+/* UGC service page (/ugc-video-agency). Everything here is on the visible page: the Service description, the Sprint and Sprint Plus
+   prices (the same Offers as /pricing, built by the same functions from the same data) and the FAQ (generated from the exact Q&A
+   the page renders). No ratings, reviews, addresses, awards, creator counts, service areas or promised results. FAQPage and Service
+   markup are for consistency with visible content, not a promise of rich results or AI citations. */
+export function ugcGraph({ title, description }) {
+  const path = PATHS.ugcVideoAgency
+  const url = abs(path)
+  const trail = BREADCRUMB_TRAILS[path]
+  const ugc = CORE_SERVICES.find((s) => s.id === 'ugc')
+  return graph([
+    organizationNode(),
+    {
+      '@type': 'WebPage',
+      '@id': pageId(path),
+      url,
+      name: title,
+      description,
+      isPartOf: { '@id': WEBSITE_ID },
+      about: { '@id': `${url}#service` },
+      breadcrumb: { '@id': `${url}#breadcrumb` },
+      inLanguage: 'en',
+    },
+    breadcrumbNode(trail, `${url}#breadcrumb`),
+    {
+      '@type': 'Service',
+      '@id': `${url}#service`,
+      name: 'UGC video production',
+      serviceType: 'UGC video ad production',
+      description: `${ugc.description} UGC videos are created by real human creators.`,
+      url,
+      provider: { '@id': ORG_ID },
+      isRelatedTo: [{ '@id': serviceId('ugc') }, { '@id': serviceId(SPRINT.id) }, { '@id': serviceId(SPRINT_PLUS.id) }],
+      offers: [
+        monthlyOffer(SPRINT.name, SPRINT.monthly),
+        oneOffOffer(SPRINT.name, SPRINT.oneOff),
+        monthlyOffer(SPRINT_PLUS.name, SPRINT_PLUS.monthly),
+        oneOffOffer(SPRINT_PLUS.name, SPRINT_PLUS.oneOff),
+      ],
+    },
+    faqNode(UGC_FAQ, `${url}#faq`),
+  ])
+}
+
 /* The JSON-LD for a route, or undefined when the route has none. `seo` is the route's SITE_SEO entry. */
 export function jsonLdFor(path, seo = {}) {
   if (path === '/') return homeGraph(seo)
   if (path === '/pricing') return pricingGraph(seo)
+  if (path === PATHS.ugcVideoAgency) return ugcGraph(seo)
   return undefined
 }

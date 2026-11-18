@@ -24,7 +24,7 @@ import RoadmapBooking from './RoadmapBooking.jsx'
      booking form and confirmation emails handle everything from there.
    • Not ready (just exploring / only researching) → no calendar; points to
      the free 10-hooks library (/free-hooks).
-   • Different business type (agency / other) → no calendar; points to the
+   • Marketing agency (every other business type qualifies) → no calendar; points to the
      contact section. This outcome takes priority over "not ready".
    • "Change my answers" returns to the form with answers intact; the outcome
      is recomputed from scratch on every Continue.
@@ -231,7 +231,7 @@ const ALTERNATIVES = {
   different_business: {
     title: 'Looking for a Different Kind of Collaboration?',
     body: [
-      'Our Creative Growth Roadmap is currently designed for SaaS and E-commerce brands. If you’d like to explore another type of collaboration with CONVRT, we’d still love to hear from you.',
+      'Our Creative Growth Roadmap is designed for brands preparing to produce and test their own video ads. If you’re a marketing agency, or you’d like to explore another type of collaboration with CONVRT, we’d still love to hear from you.',
     ],
     cta: 'Contact CONVRT',
     href: '/#contact',

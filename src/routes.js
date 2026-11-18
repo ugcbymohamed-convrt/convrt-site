@@ -11,6 +11,7 @@ import { OFFER_PATHS, REFERRALS_PATH, BLOG_PATH } from './config.js'
 export const PATHS = {
   home: '/',
   pricing: '/pricing',
+  ugcVideoAgency: '/ugc-video-agency',
   caseStudies: '/case-studies',
   caseStudyGraspo: '/case-studies/graspo',
   caseStudyElyon: '/case-studies/elyon',

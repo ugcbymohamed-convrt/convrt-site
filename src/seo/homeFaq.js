@@ -43,6 +43,7 @@ export const HOME_FAQ = [
       'UGC ads use a natural, creator-led style. Spokesperson videos use a presenter to deliver a clear, scripted message with authority. We manage casting, scripting and production for both.',
       "We don't present paid creators as genuine customers.",
     ],
+    link: { label: 'Learn about our UGC video production', href: '/ugc-video-agency' },
   },
   {
     q: 'Do you make SaaS explainer and product demo videos?',

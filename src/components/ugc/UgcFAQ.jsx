@@ -1,0 +1,83 @@
+import { useState, useCallback } from 'react'
+import { UGC_FAQ } from '../../seo/ugcFaq.js'
+import { trackEvent } from '../../lib/analytics.js'
+import { Section, Head, Reveal } from './shared.jsx'
+
+/* SECTION 10: FAQ. EVERY question and answer is always in the DOM (and so in the prerendered HTML). Collapsed answers stay in
+   the document but are visibility:hidden, so they are out of the tab order and accessibility tree. The same UGC_FAQ array feeds
+   the FAQPage JSON-LD, so the markup can never differ from this text. Accordion pattern as on /pricing. */
+
+function Item({ item, open, onToggle }) {
+  const btnId = `ugc-faq-q-${item.id}`
+  const panelId = `ugc-faq-a-${item.id}`
+  return (
+    <div className="relative" style={{ borderLeft: open ? '2px solid #d5ff40' : '2px solid transparent', transition: 'border-color 0.35s ease' }}>
+      <h3>
+        <button
+          id={btnId}
+          type="button"
+          onClick={onToggle}
+          aria-expanded={open}
+          aria-controls={panelId}
+          className="flex w-full items-start gap-5 rounded-sm py-4 pl-5 pr-2 text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-lime/60 md:py-5 md:pl-6"
+        >
+          <span className="flex-1 font-semibold leading-snug transition-colors" style={{ fontSize: 'clamp(0.97rem, 1.9vw, 1.075rem)', color: open ? '#fafafa' : 'rgba(250,250,250,0.78)' }}>
+            {item.q}
+          </span>
+          <span
+            aria-hidden="true"
+            className="mt-1 flex h-5 w-5 shrink-0 items-center justify-center motion-reduce:transition-none"
+            style={{ transform: open ? 'rotate(45deg)' : 'none', transition: 'transform 0.35s cubic-bezier(0.22, 1, 0.36, 1)' }}
+          >
+            <svg viewBox="0 0 16 16" fill="none" className="h-4 w-4">
+              <path d="M8 2v12M2 8h12" stroke={open ? '#d5ff40' : 'rgba(255,255,255,0.4)'} strokeWidth="1.75" strokeLinecap="round" />
+            </svg>
+          </span>
+        </button>
+      </h3>
+      <div
+        id={panelId}
+        role="region"
+        aria-labelledby={btnId}
+        className="grid motion-reduce:transition-none"
+        style={{
+          gridTemplateRows: open ? '1fr' : '0fr',
+          visibility: open ? 'visible' : 'hidden',
+          transition: `grid-template-rows 0.4s cubic-bezier(0.22, 1, 0.36, 1), visibility 0s linear ${open ? '0s' : '0.4s'}`,
+        }}
+      >
+        <div className="min-h-0 overflow-hidden">
+          <div className="flex flex-col gap-3 pb-5 pl-5 pr-6 md:pl-6">
+            {item.a.map((para, i) => (
+              <p key={i} className="text-[15px] leading-[1.7] text-ink-muted">{para}</p>
+            ))}
+          </div>
+        </div>
+      </div>
+      <div className="ml-5 h-px bg-white/[0.06] md:ml-6" />
+    </div>
+  )
+}
+
+export default function UgcFAQ() {
+  const [openId, setOpenId] = useState(null)
+  const toggle = useCallback((id) => {
+    setOpenId((prev) => {
+      if (prev !== id) trackEvent('ugc_faq_open', { question: id })
+      return prev === id ? null : id
+    })
+  }, [])
+  return (
+    <Section id="ugc-faq" label="ugc-faq-heading">
+      <div className="mx-auto max-w-3xl">
+        <Reveal>
+          <Head id="ugc-faq-heading" eyebrow="FAQ" title={<>UGC video production, <span className="text-lime">answered.</span></>} />
+        </Reveal>
+        <div className="mt-10 h-px bg-white/[0.06]" />
+        {UGC_FAQ.map((item) => (
+          <Item key={item.id} item={item} open={openId === item.id} onToggle={() => toggle(item.id)} />
+        ))}
+      </div>
+    </Section>
+  )
+}

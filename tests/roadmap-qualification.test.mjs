@@ -24,7 +24,9 @@ const status = (over) => qualifyApplication(answers(over)).status
 
 test('option labels match what the page promises', () => {
   assert.deepEqual(INVESTMENT_OPTIONS, [YES, MAYBE, NOT_YET])
-  assert.deepEqual(BUSINESS_TYPE_OPTIONS, ['SaaS / Software', 'E-commerce / DTC', 'Marketing agency', 'Other'])
+  assert.deepEqual(BUSINESS_TYPE_OPTIONS, [
+    'SaaS / Software', 'E-commerce / DTC', 'App / Technology', 'Consumer products', 'Other brand or business', 'Marketing agency',
+  ])
 })
 
 test('1. SaaS, $0 ad spend, immediately, actively looking → qualified (Calendly)', () => {
@@ -47,8 +49,18 @@ test('5. Marketing agency, high ad spend, ready immediately → different busine
   assert.equal(status({ businessType: 'Marketing agency', adSpend: '$20,000+' }), 'different_business')
 })
 
-test('6. Other business type → different business (Contact)', () => {
-  assert.equal(status({ businessType: 'Other' }), 'different_business')
+test('6. Every brand or business type qualifies, whatever the industry (Calendly)', () => {
+  for (const businessType of ['SaaS / Software', 'E-commerce / DTC', 'App / Technology', 'Consumer products', 'Other brand or business']) {
+    assert.equal(status({ businessType }), 'qualified', businessType)
+  }
+  assert.deepEqual(QUALIFYING_BUSINESS_TYPES, BUSINESS_TYPE_OPTIONS.filter((t) => t !== 'Marketing agency'))
+})
+
+test('6b. The industry never changes the readiness rules: any industry still needs a near-term timeline and openness to invest', () => {
+  for (const businessType of QUALIFYING_BUSINESS_TYPES) {
+    assert.equal(status({ businessType, timeline: 'Just exploring options' }), 'not_ready', businessType)
+    assert.equal(status({ businessType, investment: NOT_YET }), 'not_ready', businessType)
+  }
 })
 
 test('7. incomplete answers → a validation error for every unanswered question', () => {
@@ -63,7 +75,7 @@ test('8. changing answers changes the outcome every time (no stale result)', () 
   const a = answers()
   assert.equal(qualifyApplication(a).status, 'qualified')
   assert.equal(qualifyApplication({ ...a, investment: NOT_YET }).status, 'not_ready')
-  assert.equal(qualifyApplication({ ...a, investment: NOT_YET, businessType: 'Other' }).status, 'different_business')
+  assert.equal(qualifyApplication({ ...a, investment: NOT_YET, businessType: 'Marketing agency' }).status, 'different_business')
   assert.equal(qualifyApplication({ ...a, businessType: 'E-commerce / DTC' }).status, 'qualified')
   assert.equal(qualifyApplication({ ...a, timeline: 'Just exploring options' }).status, 'not_ready')
   assert.equal(qualifyApplication({ ...a, timeline: 'Within 1–3 months' }).status, 'qualified')
@@ -71,7 +83,7 @@ test('8. changing answers changes the outcome every time (no stale result)', () 
 
 test('different business type wins when several conditions fail', () => {
   assert.equal(status({ businessType: 'Marketing agency', timeline: 'Just exploring options', investment: NOT_YET }), 'different_business')
-  assert.equal(status({ businessType: 'Other', timeline: 'Just exploring options' }), 'different_business')
+  assert.equal(status({ businessType: 'Marketing agency', timeline: 'Just exploring options' }), 'different_business')
 })
 
 test('ad spend never affects the outcome — not even the highest or lowest', () => {
@@ -80,7 +92,7 @@ test('ad spend never affects the outcome — not even the highest or lowest', ()
 
 test('creative challenge never affects the outcome', () => {
   for (const challenge of CHALLENGE_OPTIONS) assert.equal(status({ challenge }), 'qualified', challenge)
-  for (const challenge of CHALLENGE_OPTIONS) assert.equal(status({ challenge, businessType: 'Other' }), 'different_business', challenge)
+  for (const challenge of CHALLENGE_OPTIONS) assert.equal(status({ challenge, businessType: 'Marketing agency' }), 'different_business', challenge)
 })
 
 test('exhaustive: every combination yields exactly the expected outcome', () => {
@@ -96,7 +108,7 @@ test('exhaustive: every combination yields exactly the expected outcome', () => 
         assert.equal(status({ businessType, timeline, investment }), expected, `${businessType} | ${timeline} | ${investment}`)
         count++
       }
-  assert.equal(count, 4 * 3 * 3)
+  assert.equal(count, BUSINESS_TYPE_OPTIONS.length * 3 * 3)
 })
 
 test('every option of the rule-driving questions is classified (no answer can fall through)', () => {

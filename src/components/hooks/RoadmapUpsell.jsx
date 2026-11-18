@@ -31,7 +31,7 @@ export default function RoadmapUpsell() {
             Get My 5 Free Ad Concepts
             <span aria-hidden="true" className="transition-transform duration-200 group-hover:translate-x-0.5 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0">→</span>
           </a>
-          <p className="mt-4 text-sm text-ink-subtle">For qualifying SaaS and e-commerce brands. No obligation.</p>
+          <p className="mt-4 text-sm text-ink-subtle">For brands in every industry. No obligation.</p>
         </div>
       </Reveal>
     </section>

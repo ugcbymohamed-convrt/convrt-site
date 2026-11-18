@@ -1,0 +1,100 @@
+/* The creator portfolio on /ugc-video-agency. This file is the ONLY place portfolio videos live.
+
+   HOW TO ADD A VIDEO (no code changes needed): append an object to UGC_PORTFOLIO below.
+
+     {
+       id: 'creator-017-skincare-es',          // unique, lowercase, url-safe
+       creatorId: 'c017',                      // opaque internal identifier. Never displayed.
+       brand: 'Brand name',                    // optional. Only with the brand's permission.
+       category: 'Skincare · Paid social',     // optional label shown on the card (a sample category is fine)
+       industry: 'beauty',                     // filterable. Any lowercase slug; see INDUSTRY_LABELS.
+       languages: ['es'],                      // ISO 639-1 codes of the spoken language(s). Filterable.
+       caption: 'One honest sentence describing the video.',   // required. Also the accessible name.
+       source: { cloudflareId: '…' },          // Cloudflare Stream id (HLS)…  or  { mp4: '/videos/….mp4' }
+       poster: '/portfolio/….webp',            // required for mp4; optional for Cloudflare (a thumbnail is derived)
+       creator: { displayName: 'First name', showName: true },   // optional. The name is shown ONLY when showName is true.
+       caseStudyHref: '/case-studies/…',       // optional related case study
+       approval: {
+         status: 'approved',                   // anything else keeps the video off the site
+         portfolioUse: true,                   // the brand/owner approved this video for CONVRT's website portfolio
+         creatorConsent: true,                 // the creator agreed to portfolio display
+         approvedBy: 'Name of the CONVRT owner who confirmed it',
+         approvedOn: '2026-11-20',
+       },
+     }
+
+   RULES
+   • A video renders ONLY when approval.status === 'approved' AND approval.portfolioUse === true AND
+     approval.creatorConsent === true. Approval to produce or deliver a video is NOT portfolio permission.
+   • No placeholder, stock or unapproved material, ever. With no approved videos the page shows a brand-consistent
+     fallback instead (see UgcWork.jsx), so an empty list is a valid, fully working state.
+   • A creator's name is personal data: it is shown only when creator.showName is true.
+   • Filters (language, industry) are generated from this data and appear only when a facet has two or more values.
+   • tests/ugc-page.test.mjs validates every entry (unique ids, valid codes, source, permission flags). */
+
+export const UGC_PORTFOLIO = []
+
+/* Labels for filter chips and cards. Unknown codes or slugs still work (they fall back to the code / a title-cased slug). */
+export const LANGUAGE_LABELS = {
+  en: 'English', es: 'Spanish', fr: 'French', ar: 'Arabic', de: 'German', it: 'Italian', pt: 'Portuguese', nl: 'Dutch',
+  tr: 'Turkish', ru: 'Russian', pl: 'Polish', hi: 'Hindi', ur: 'Urdu', zh: 'Chinese', ja: 'Japanese', ko: 'Korean',
+  he: 'Hebrew', sv: 'Swedish', da: 'Danish', fi: 'Finnish', el: 'Greek', ro: 'Romanian', cs: 'Czech', id: 'Indonesian',
+}
+
+export const INDUSTRY_LABELS = {
+  saas: 'SaaS', ecommerce: 'E-commerce', app: 'Apps', technology: 'Technology', consumer: 'Consumer products',
+  beauty: 'Beauty', health: 'Health & wellness', fashion: 'Fashion', food: 'Food & drink', finance: 'Finance',
+  education: 'Education', travel: 'Travel', home: 'Home & lifestyle', services: 'Services',
+}
+
+const titleCase = (slug) => slug.replace(/[-_]+/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())
+export const languageLabel = (code) => LANGUAGE_LABELS[code] ?? code.toUpperCase()
+export const industryLabel = (slug) => INDUSTRY_LABELS[slug] ?? titleCase(slug)
+
+/* Problems with one entry (empty array = valid). Used by the tests and by isDisplayable. */
+export function portfolioProblems(item) {
+  const p = []
+  const a = item?.approval
+  if (!item || typeof item !== 'object') return ['not an object']
+  if (!/^[a-z0-9][a-z0-9-]*$/.test(item.id ?? '')) p.push('id must be lowercase letters, digits and hyphens')
+  if (!item.creatorId || typeof item.creatorId !== 'string') p.push('creatorId is required')
+  if (!item.caption || typeof item.caption !== 'string') p.push('caption is required')
+  if (!item.industry || !/^[a-z][a-z0-9-]*$/.test(item.industry)) p.push('industry must be a lowercase slug')
+  if (!Array.isArray(item.languages) || item.languages.length === 0 || !item.languages.every((l) => /^[a-z]{2}$/.test(l))) p.push('languages must be a non-empty list of 2-letter ISO 639-1 codes')
+  const hasCf = Boolean(item.source?.cloudflareId)
+  const hasMp4 = Boolean(item.source?.mp4)
+  if (hasCf === hasMp4) p.push('source needs exactly one of cloudflareId or mp4')
+  if (hasMp4 && !item.poster) p.push('an mp4 source needs a poster image')
+  if (!a || typeof a !== 'object') p.push('approval is required')
+  return p
+}
+
+/* The ONE gate between data and the public page. */
+export function isDisplayable(item) {
+  if (portfolioProblems(item).length) return false
+  const a = item.approval
+  return a.status === 'approved' && a.portfolioUse === true && a.creatorConsent === true
+}
+
+export const selectDisplayable = (items = UGC_PORTFOLIO) => items.filter(isDisplayable)
+
+/* Name shown on a card: only with explicit permission. */
+export const creatorLabel = (item) => (item.creator?.showName === true && item.creator?.displayName ? item.creator.displayName : null)
+
+export const posterUrl = (item) => item.poster ?? `https://videodelivery.net/${item.source.cloudflareId}/thumbnails/thumbnail.jpg?time=0s&height=720`
+export const hlsUrl = (item) => `https://videodelivery.net/${item.source.cloudflareId}/manifest/video.m3u8`
+
+/* Filter facets. A facet is offered only when it has two or more distinct values (a single value is nothing to filter by). */
+export function buildFacets(items) {
+  const count = (values) => values.reduce((m, v) => m.set(v, (m.get(v) ?? 0) + 1), new Map())
+  const langs = count(items.flatMap((i) => i.languages))
+  const inds = count(items.map((i) => i.industry))
+  const toList = (m, label) => [...m.entries()].map(([value, n]) => ({ value, label: label(value), count: n })).sort((a, b) => a.label.localeCompare(b.label))
+  return {
+    language: langs.size >= 2 ? toList(langs, languageLabel) : [],
+    industry: inds.size >= 2 ? toList(inds, industryLabel) : [],
+  }
+}
+
+export const matchesFilters = (item, { language = null, industry = null } = {}) =>
+  (!language || item.languages.includes(language)) && (!industry || item.industry === industry)

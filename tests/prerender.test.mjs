@@ -427,7 +427,9 @@ test('/pricing HTML: three cards per group; Paid has the compact billing selecto
 test('/pricing HTML: concise notes under the cards; commitments: Paid 3 months, Organic 6 months, later terms per agreement', () => {
   const h = page('/pricing')
   const paid = flat(`<div id="root">${group(h, 'paid')}`); const organic = flat(`<div id="root">${group(h, 'organic')}`)
-  assert.ok(paid.trim().endsWith('Monthly plans start with a 3-month commitment, then become month-to-month with 30 days’ notice. One-off projects are also available. All prices exclude VAT.'), 'paid note')
+  assert.ok(paid.trim().includes('Monthly plans start with a 3-month commitment, then become month-to-month with 30 days’ notice. One-off projects are also available. All prices exclude VAT.'), 'paid note')
+  // the note is still the last TERMS text; only a one-line link to the UGC service page follows it
+  assert.ok(paid.trim().endsWith('New to UGC? See how our UGC production works'), 'paid note is followed only by the UGC page link')
   assert.ok(organic.trim().endsWith('A 6-month initial partnership to build a consistent social presence and assess results. All prices exclude VAT.'), 'organic note')
   assert.ok(!/three-month|3-month commitment|month-to-month|30 days/.test(organic), 'Paid terms are never shown on Organic')
   assert.ok(!/Turnaround begins once you have reviewed|Custom project terms are agreed individually/.test(paid + organic), 'the long paragraphs are gone from under the cards')

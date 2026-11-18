@@ -18,6 +18,7 @@ import { scrollToHash } from './lib/scroll.js'
    that URL is opened, so the homepage no longer downloads (or parses) the roadmap,
    hooks, risk-free, case-study, pricing and /scale code. */
 const CreativeTestingSprintPage = lazy(() => import('./CreativeTestingSprintPage.jsx'))
+const UgcVideoAgencyPage = lazy(() => import('./UgcVideoAgencyPage.jsx'))
 const CaseStudiesPage = lazy(() => import('./CaseStudiesPage.jsx'))
 const ScalePage = lazy(() => import('./ScalePage.jsx'))
 const RoadmapPage = lazy(() => import('./RoadmapPage.jsx'))
@@ -36,6 +37,8 @@ const CreatorAdminPage = lazy(() => import('./CreatorAdminPage.jsx'))
    HTML file per listed path, and the host answers any other URL with HTTP 404. */
 const ROUTES = {
   [PATHS.pricing]: CreativeTestingSprintPage,
+  // UGC service page (SEO phase 2).
+  [PATHS.ugcVideoAgency]: UgcVideoAgencyPage,
   [PATHS.caseStudies]: CaseStudiesPage,
   [PATHS.caseStudyGraspo]: CaseStudiesPage,
   [PATHS.caseStudyElyon]: CaseStudiesPage,

@@ -13,8 +13,10 @@
    THREE OUTCOMES (checked in this order — the first that applies wins):
 
      1. 'different_business'  Business type is NOT in QUALIFYING_BUSINESS_TYPES
-                              (Marketing agency, Other) → "Looking for a
-                              Different Kind of Collaboration?" + contact CTA.
+                              (Marketing agency only: the Roadmap is for brands
+                              preparing their own video ads; every industry
+                              qualifies) → "Looking for a Different Kind of
+                              Collaboration?" + contact CTA.
                               Takes priority over everything else.
 
      2. 'not_ready'           Business type is fine, but EITHER the timeline is
@@ -39,9 +41,14 @@
    Bump RULES_VERSION whenever you change a rule.
 ═════════════════════════════════════════════════════════════════════ */
 
-export const RULES_VERSION = '2026-11-07.1'
+import { BUSINESS_TYPE_OPTIONS } from './roadmapQuestions.js'
 
-export const QUALIFYING_BUSINESS_TYPES = ['SaaS / Software', 'E-commerce / DTC']
+export const RULES_VERSION = '2026-11-18.1'
+
+/* Every industry qualifies (owner decision, Nov 2026: SaaS, e-commerce, apps, technology, consumer products and every other
+   brand or business). The one exclusion is a marketing agency, which is not a brand buying creative for itself. */
+export const NON_BRAND_BUSINESS_TYPES = ['Marketing agency']
+export const QUALIFYING_BUSINESS_TYPES = BUSINESS_TYPE_OPTIONS.filter((t) => !NON_BRAND_BUSINESS_TYPES.includes(t))
 
 export const QUALIFYING_TIMELINES = ['Immediately / This month', 'Within 1–3 months']
 
