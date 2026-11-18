@@ -53,14 +53,14 @@ function PaidPhilosophy() {
         </ol>
       </div>
       <p className="mt-5 font-display text-base font-bold tracking-snug text-lime md:text-lg">
-        {SPRINT.concepts} original concepts <span aria-hidden="true">&rarr;</span> {SPRINT.variations} ad variations
+        {SPRINT.concepts} original concepts <span aria-hidden="true">&rarr;</span> {SPRINT.variations} finished ad versions
       </p>
       <p className="mt-1.5 text-[13.5px] leading-relaxed text-ink-muted">
         <span className="font-semibold text-ink">A concept</span> is a unique ad idea.{' '}
         <span className="font-semibold text-ink">A variation</span> changes its hook or CTA.
       </p>
       <p className="mt-1 text-[12.5px] leading-relaxed text-ink-subtle">
-        Standard Sprint shown. Sprint Plus includes {SPRINT_PLUS.concepts} concepts and {SPRINT_PLUS.variations} ad variations.
+        Standard Sprint shown. Sprint Plus includes {SPRINT_PLUS.concepts} concepts and {SPRINT_PLUS.variations} finished ad versions.
       </p>
     </div>
   )

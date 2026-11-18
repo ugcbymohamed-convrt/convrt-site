@@ -19,9 +19,9 @@ export default function UgcRights() {
         />
       </Reveal>
 
-      <div className="mt-10 grid grid-cols-1 gap-5 md:mt-12 md:grid-cols-3">
+      <div className="mt-8 grid grid-cols-1 gap-4 md:mt-10 md:grid-cols-3 md:gap-5">
         <Reveal className="h-full">
-          <div className="h-full rounded-3xl border border-lime/30 bg-lime/[0.04] p-6 md:p-7">
+          <div className="h-full rounded-3xl border border-lime/30 bg-lime/[0.04] p-6">
             <p className="text-xs font-semibold uppercase tracking-[0.16em] text-lime">Included for {USAGE_RIGHTS.includedMonths} months</p>
             <p className="mt-3 text-[15px] leading-relaxed text-ink-muted">
               Paid advertising, organic social posts and your website, worldwide.
@@ -43,16 +43,16 @@ export default function UgcRights() {
             <p className="mt-3 text-[15px] leading-relaxed text-ink-muted">
               Extend usage for the whole creative batch.
             </p>
-            <dl className="mt-3 space-y-2 text-[14px] text-ink-muted">
+            <dl className="mt-3 space-y-2 text-[15px] text-ink-muted">
               <div><dt className="font-semibold text-ink">{SPRINT.name}</dt><dd>{tiers(SPRINT)}</dd></div>
               <div><dt className="font-semibold text-ink">{SPRINT_PLUS.name}</dt><dd>{tiers(SPRINT_PLUS)}</dd></div>
             </dl>
-            <p className="mt-3 text-[12px] text-ink-subtle">Prices exclude VAT.</p>
+            <p className="mt-3 text-sm text-ink-muted">Prices exclude VAT.</p>
           </div>
         </Reveal>
       </div>
 
-      <Reveal className="mt-6">
+      <Reveal className="mt-4 md:mt-5">
         <details className="group rounded-3xl border border-hairline bg-surface-1/60 p-6 backdrop-blur-md md:p-7">
           <summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-display text-lg font-semibold text-ink focus:outline-none focus-visible:ring-2 focus-visible:ring-lime/60 [&::-webkit-details-marker]:hidden">
             More on usage rights
@@ -67,7 +67,7 @@ export default function UgcRights() {
         </details>
       </Reveal>
 
-      <p className="mt-6 text-center text-sm text-ink-muted">
+      <p className="mt-5 text-center text-[15px] text-ink-muted">
         <TextLink href="/pricing#package-info" onClick={() => trackEvent('ugc_pricing_link_click', { location: 'rights' })}>Full usage-rights details on the Pricing page</TextLink>
       </p>
     </Section>

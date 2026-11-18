@@ -27,6 +27,17 @@ const group = (n) => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ',')
 export const formatMoney = (m) => `${SYMBOL[m.currency]}${group(m.amount)}`
 const usd = (amount) => ({ amount, currency: 'USD' })
 
+/* ── deliverable terminology ──────────────────────────────────────────────────────────────
+   A package delivers FINISHED AD VERSIONS: `concepts × versions per concept`. Sprint = 5 × 2 = 10; Sprint Plus = 10 × 2 = 20.
+   The two versions of a concept are alternatives (for example a different hook or call to action) and are INCLUDED in the total,
+   never extra videos on top of it. The quantities live on SPRINT / SPRINT_PLUS below (`concepts`, `variationsPerConcept`,
+   `variations`); every page, FAQ and JSON-LD phrases them through these helpers so the wording cannot drift. */
+export const AD_VERSIONS = { one: 'finished ad version', many: 'finished ad versions', perConcept: 'versions' }
+/** 10 → "10 finished ad versions" */
+export const adVersions = (n) => `${n} ${n === 1 ? AD_VERSIONS.one : AD_VERSIONS.many}`
+/** { concepts: 5, variationsPerConcept: 2, variations: 10 } → "5 concepts × 2 versions = 10 finished ad versions" */
+export const packageEquation = (pkg) => `${pkg.concepts} concepts × ${pkg.variationsPerConcept} ${AD_VERSIONS.perConcept} = ${adVersions(pkg.variations)}`
+
 /* ── brand ────────────────────────────────────────────────────────────────────────────── */
 export const BRAND = {
   name: 'CONVRT Studio',
@@ -118,13 +129,13 @@ export const SPRINT_PLUS = {
   monthly: usd(4500),
   oneOff: usd(5400),
   /* APPROVED OFFER (owner, Nov 2026): Sprint Plus = 10 distinct concepts, 10 complete scripts, 2 variations per concept,
-     20 finished ad variations. It supersedes the earlier 8-concept / unevenly distributed structure. */
+     20 finished ad versions. It supersedes the earlier 8-concept / unevenly distributed structure. */
   concepts: 10,
   scripts: 10,
   variationsPerConcept: 2,
   variations: 20,
   /* Subtle supporting line on the Sprint Plus card. */
-  valueLine: 'Twice the creative concepts. Twice the ad variations.',
+  valueLine: 'Twice the creative concepts. Twice the finished ad versions.',
   cardDescription: 'For brands looking for greater creative diversity and deeper testing.',
   extraDetail: 'Includes expanded research and testing recommendations.',
   turnaroundBusinessDays: 15,

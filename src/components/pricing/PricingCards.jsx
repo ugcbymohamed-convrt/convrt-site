@@ -124,7 +124,7 @@ const LetsTalk = () => <span className="text-[40px] md:text-[46px]">Let&rsquo;s 
 const Variations = ({ tone, count, line }) => (
   <>
     <span className={`inline-flex items-center rounded-full px-3.5 py-1.5 text-sm font-bold ${TONES[tone].chip}`}>
-      {count} ad variations
+      {count} finished ad versions
     </span>
     {line && <p className={`mt-1.5 text-[12.5px] leading-snug ${TONES[tone].muted}`}>{line}</p>}
   </>
@@ -142,17 +142,17 @@ export function PaidCards({ billing }) {
   const sprintFeatures = [
     `${SPRINT.concepts} distinct creative concepts`,
     `${SPRINT.concepts} complete scripts`,
-    `${SPRINT.variationsPerConcept} variations per concept, changing the hook or CTA`,
+    `${SPRINT.variationsPerConcept} versions per concept, changing the hook or CTA`,
     '1 creator or spokesperson',
     days(SPRINT.turnaroundBusinessDays),
     usage(SPRINT.usageMonthsIncluded),
     revisions(SPRINT.revisionRoundsPerConcept),
   ]
-  /* Sprint Plus (approved offer): 10 concepts, 10 scripts, 2 variations per concept = 20 ad variations. */
+  /* Sprint Plus (approved offer): 10 concepts, 10 scripts, 2 versions per concept = 20 finished ad versions. */
   const plusFeatures = [
     `${SPRINT_PLUS.concepts} distinct creative concepts`,
     `${SPRINT_PLUS.scripts} complete scripts`,
-    `${SPRINT_PLUS.variationsPerConcept} variations per concept, changing the hook or CTA`,
+    `${SPRINT_PLUS.variationsPerConcept} versions per concept, changing the hook or CTA`,
     'Up to 2 creators or spokespeople',
     days(SPRINT_PLUS.turnaroundBusinessDays),
     usage(SPRINT_PLUS.usageMonthsIncluded),
@@ -167,7 +167,7 @@ export function PaidCards({ billing }) {
       <PricingCard
         tone="light" id="card-sprint" label="Sprint" description={SPRINT.cardDescription}
         price={<BillingPrice pkg={SPRINT} billing={billing} />}
-        sub={<Variations tone="light" count={SPRINT.variations} line={`${SPRINT.concepts} concepts × ${SPRINT.variationsPerConcept} variations each`} />}
+        sub={<Variations tone="light" count={SPRINT.variations} line={`${SPRINT.concepts} concepts × ${SPRINT.variationsPerConcept} versions each`} />}
         features={sprintFeatures} ctaLabel="Get started" descMin={PAID_DESC} subMin={PAID_SUB}
       />
       <PricingCard

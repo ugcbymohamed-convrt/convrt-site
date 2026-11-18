@@ -19,7 +19,7 @@ function Item({ item, open, onToggle }) {
           onClick={onToggle}
           aria-expanded={open}
           aria-controls={panelId}
-          className="flex w-full items-start gap-5 rounded-sm py-4 pl-5 pr-2 text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-lime/60 md:py-5 md:pl-6"
+          className="flex w-full items-start gap-5 rounded-sm py-4 pl-5 pr-3 text-left transition-colors hover:bg-white/[0.03] focus:outline-none focus-visible:ring-2 focus-visible:ring-lime/60 md:pl-6"
         >
           <span className="flex-1 font-semibold leading-snug transition-colors" style={{ fontSize: 'clamp(0.97rem, 1.9vw, 1.075rem)', color: open ? '#fafafa' : 'rgba(250,250,250,0.78)' }}>
             {item.q}
@@ -73,7 +73,7 @@ export default function UgcFAQ() {
         <Reveal>
           <Head id="ugc-faq-heading" eyebrow="FAQ" title={<>UGC video production, <span className="text-lime">answered.</span></>} />
         </Reveal>
-        <div className="mt-10 h-px bg-white/[0.06]" />
+        <div className="mt-8 h-px bg-white/[0.06]" />
         {UGC_FAQ.map((item) => (
           <Item key={item.id} item={item} open={openId === item.id} onToggle={() => toggle(item.id)} />
         ))}

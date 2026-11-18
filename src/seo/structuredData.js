@@ -14,7 +14,7 @@
 
 import { SITE_URL } from '../config.js'
 import {
-  BRAND, CORE_SERVICES, PRODUCTION_LANGUAGES, SPRINT, SPRINT_PLUS, ORGANIC, COMMITMENT, ORGANIC_COMMITMENT,
+  adVersions, BRAND, CORE_SERVICES, PRODUCTION_LANGUAGES, SPRINT, SPRINT_PLUS, ORGANIC, COMMITMENT, ORGANIC_COMMITMENT,
   USAGE_RIGHTS, RAW_FOOTAGE, CUSTOM_PACKAGES, formatMoney,
 } from './businessKnowledge.js'
 import { PRICING_FAQ, faqAnswerText } from './pricingFaq.js'
@@ -155,7 +155,7 @@ function packageNodes() {
     '@id': serviceId(SPRINT.id),
     name: SPRINT.name,
     serviceType: 'UGC and spokesperson video ad production',
-    description: `${SPRINT.concepts} distinct creative concepts with ${SPRINT.variationsPerConcept} variations each (${SPRINT.variations} ad variations), full-service production in ${SPRINT.turnaroundBusinessDays} business days after concept and script approval, two rounds of revisions per concept and ${usageLine} included.`,
+    description: `${SPRINT.concepts} distinct creative concepts with ${SPRINT.variationsPerConcept} versions each (${adVersions(SPRINT.variations)}), full-service production in ${SPRINT.turnaroundBusinessDays} business days after concept and script approval, two rounds of revisions per concept and ${usageLine} included.`,
     provider: { '@id': ORG_ID },
     isRelatedTo: [{ '@id': serviceId('ugc') }, { '@id': serviceId('spokesperson') }],
     offers: [monthlyOffer(SPRINT.name, SPRINT.monthly), oneOffOffer(SPRINT.name, SPRINT.oneOff)],
@@ -165,7 +165,7 @@ function packageNodes() {
     '@id': serviceId(SPRINT_PLUS.id),
     name: SPRINT_PLUS.name,
     serviceType: 'UGC and spokesperson video ad production',
-    description: `${SPRINT_PLUS.concepts} distinct creative concepts with ${SPRINT_PLUS.variationsPerConcept} variations each (${SPRINT_PLUS.variations} ad variations), full-service production in ${SPRINT_PLUS.turnaroundBusinessDays} business days after concept and script approval, two rounds of revisions per concept and ${usageLine} included.`,
+    description: `${SPRINT_PLUS.concepts} distinct creative concepts with ${SPRINT_PLUS.variationsPerConcept} versions each (${adVersions(SPRINT_PLUS.variations)}), full-service production in ${SPRINT_PLUS.turnaroundBusinessDays} business days after concept and script approval, two rounds of revisions per concept and ${usageLine} included.`,
     provider: { '@id': ORG_ID },
     isRelatedTo: [{ '@id': serviceId('ugc') }, { '@id': serviceId('spokesperson') }],
     offers: [monthlyOffer(SPRINT_PLUS.name, SPRINT_PLUS.monthly), oneOffOffer(SPRINT_PLUS.name, SPRINT_PLUS.oneOff)],

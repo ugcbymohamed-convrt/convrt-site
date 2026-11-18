@@ -5,7 +5,7 @@
    An answer is an array of paragraphs. */
 
 import {
-  formatMoney, SPRINT, SPRINT_PLUS, COMMITMENT, SINGLE_VIDEOS, TAX, USAGE_RIGHTS, RAW_FOOTAGE,
+  formatMoney, adVersions, SPRINT, SPRINT_PLUS, COMMITMENT, SINGLE_VIDEOS, TAX, USAGE_RIGHTS, RAW_FOOTAGE,
   RESHOOTS, FORMATS, TURNAROUND, REVISIONS, ORGANIC, PRODUCT_REQUIREMENTS, ORGANIC_COMMITMENT, CUSTOM_TERMS,
 } from './businessKnowledge.js'
 
@@ -29,7 +29,7 @@ export const PRICING_FAQ = [
     q: 'What is the difference between a creative concept and an ad variation?',
     a: [
       'A creative concept is a distinct advertising angle or idea. A variation is an alternative version of that concept, such as a different hook or call to action.',
-      `The ${SPRINT.name} includes ${SPRINT.concepts} distinct concepts with ${SPRINT.variationsPerConcept} variations each, ${SPRINT.variations} ad variations in total. ${SPRINT_PLUS.name} includes ${SPRINT_PLUS.concepts} concepts with ${SPRINT_PLUS.variationsPerConcept} variations each, ${SPRINT_PLUS.variations} ad variations in total. You receive a structured creative batch built for testing, not a collection of unrelated videos.`,
+      `The ${SPRINT.name} includes ${SPRINT.concepts} distinct concepts with ${SPRINT.variationsPerConcept} versions each, ${adVersions(SPRINT.variations)} in total. ${SPRINT_PLUS.name} includes ${SPRINT_PLUS.concepts} concepts with ${SPRINT_PLUS.variationsPerConcept} versions each, ${adVersions(SPRINT_PLUS.variations)} in total. The versions are included in those totals, not extra videos on top. You receive a structured creative batch built for testing, not a collection of unrelated videos.`,
     ],
   },
   {
@@ -37,7 +37,7 @@ export const PRICING_FAQ = [
     category: 'packages',
     q: 'What is included in a Creative Testing package?',
     a: [
-      `Full-service creative production: research, concept and script development, creator selection, filming, editing and delivery. ${SPRINT.name} is ${formatMoney(SPRINT.monthly)}/month for ${SPRINT.concepts} concepts and ${SPRINT.variations} ad variations. ${SPRINT_PLUS.name} is ${formatMoney(SPRINT_PLUS.monthly)}/month for ${SPRINT_PLUS.concepts} concepts and ${SPRINT_PLUS.variations} ad variations.`,
+      `Full-service creative production: research, concept and script development, creator selection, filming, editing and delivery. ${SPRINT.name} is ${formatMoney(SPRINT.monthly)}/month for ${SPRINT.concepts} concepts and ${adVersions(SPRINT.variations)}. ${SPRINT_PLUS.name} is ${formatMoney(SPRINT_PLUS.monthly)}/month for ${SPRINT_PLUS.concepts} concepts and ${adVersions(SPRINT_PLUS.variations)}.`,
       `Both include ${REVISIONS.roundsPerConcept} rounds of revisions per creative concept and ${USAGE_RIGHTS.includedMonths} months of worldwide usage rights. Production includes ${andList(FORMATS.fullProductionIncludes.map((x) => (x === 'B-roll' ? x : x.toLowerCase())))}, ${FORMATS.scopeQualifier}.`,
     ],
   },

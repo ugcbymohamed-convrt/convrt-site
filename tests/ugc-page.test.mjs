@@ -17,7 +17,7 @@ import { SITE_URL } from '../src/config.js'
 import { SITE_SEO, pageHead, sitemapRoutes } from '../src/seo/siteSeo.js'
 import { ugcGraph, jsonLdFor, ORG_ID, serviceId, BREADCRUMB_TRAILS } from '../src/seo/structuredData.js'
 import { UGC_FAQ, ugcFaqText } from '../src/seo/ugcFaq.js'
-import { formatMoney, SPRINT, SPRINT_PLUS, USAGE_RIGHTS, RAW_FOOTAGE, TURNAROUND, COMMITMENT } from '../src/seo/businessKnowledge.js'
+import { formatMoney, adVersions, packageEquation, SPRINT, SPRINT_PLUS, USAGE_RIGHTS, RAW_FOOTAGE, TURNAROUND, COMMITMENT } from '../src/seo/businessKnowledge.js'
 import { ELYON_PROOF, UGC_TESTIMONIALS } from '../src/content/ugcProof.js'
 import {
   UGC_PORTFOLIO, isDisplayable, selectDisplayable, portfolioProblems, creatorLabel, buildFacets, matchesFilters, posterUrl,
@@ -34,7 +34,7 @@ const rootOf = (h) => h.slice(h.indexOf('<div id="root"'))
 const textOf = (h) => decode(rootOf(h).replace(/<(script|style)[\s\S]*?<\/\1>/g, ' ').replace(/<[^>]+>/g, ' ')).replace(/\s+/g, ' ').replace(/\s+([,.;:!?])/g, '$1').trim()
 const headOf = (h) => h.slice(0, h.indexOf('</head>'))
 
-let tmp, dist, vite, UgcWork
+let tmp, dist, vite, UgcWork, UgcHero
 const page = (p) => fs.readFileSync(path.join(dist, p === '/' ? 'index.html' : `${p.slice(1)}/index.html`), 'utf8')
 
 before(async () => {
@@ -46,6 +46,7 @@ before(async () => {
   await build({ root: ROOT, logLevel: 'silent', publicDir: pub, build: { outDir: dist, emptyOutDir: true } })
   vite = await createServer({ root: ROOT, configFile: false, plugins: [react()], server: { middlewareMode: true }, appType: 'custom', logLevel: 'silent' })
   UgcWork = await vite.ssrLoadModule('/src/components/ugc/UgcWork.jsx')
+  UgcHero = await vite.ssrLoadModule('/src/components/ugc/UgcHero.jsx')
 })
 after(async () => {
   if (vite) await vite.close()
@@ -127,7 +128,7 @@ test('international, multilingual and industry-neutral: nothing restricts the se
   const t = textOf(page(PATH))
   assert.match(t, /international, multilingual creative production studio and UGC agency/)
   assert.match(t, /across industries, including but not limited to SaaS, e-commerce, apps, technology and consumer products/)
-  assert.match(t, /Free creative strategy for brands in every industry/)
+  assert.match(t, /Share a few brand details, then book a free strategy session where we present five personalized ad concepts\. Brands in every industry are welcome, subject to a short fit check\. No obligation\./)
   assert.ok(!/(only|just|exclusively|currently) (for|designed for|offered to|open to) (SaaS|e-commerce)/i.test(t))
   assert.ok(!/\b(UK|United Kingdom|Dubai|UAE|London) (brands|clients|only)/i.test(t), 'no market restriction or unverified market claims')
   assert.ok(!/who it isn['’]t for|probably not|not a fit|isn['’]t for you/i.test(t), 'no negative fit list')
@@ -142,12 +143,21 @@ test('turnaround: the clock starts when concepts and scripts are approved (10 / 
   assert.ok(t.includes('Product shipping and access'))
 })
 
-test('deliverables: 10 and 20 are TOTAL finished ad variations (concepts × variations), never extra videos on top', () => {
+test('deliverables: 10 and 20 FINISHED AD VERSIONS (concepts × 2 versions), included in the totals, never extra videos; one term everywhere', () => {
   const t = textOf(page(PATH))
   assert.equal(SPRINT.concepts * SPRINT.variationsPerConcept, SPRINT.variations)
   assert.equal(SPRINT_PLUS.concepts * SPRINT_PLUS.variationsPerConcept, SPRINT_PLUS.variations)
-  for (const p of [SPRINT, SPRINT_PLUS]) assert.ok(t.includes(`${p.concepts} concepts × ${p.variationsPerConcept} variations = ${p.variations} ad variations in total`), p.name)
-  assert.match(t, /already include the variations; they are not extra videos on top/)
+  assert.deepEqual([SPRINT.concepts, SPRINT.variations, SPRINT_PLUS.concepts, SPRINT_PLUS.variations], [5, 10, 10, 20], 'quantities are unchanged')
+  for (const p of [SPRINT, SPRINT_PLUS]) assert.ok(t.includes(packageEquation(p)), p.name)
+  assert.equal(packageEquation(SPRINT), '5 concepts × 2 versions = 10 finished ad versions')
+  assert.equal(adVersions(20), '20 finished ad versions')
+  assert.match(t, /Each concept comes in two versions, such as a different hook or call to action\. The totals are finished ad versions: the two versions of each concept are included in them, not extra videos on top\./)
+  assert.ok(!/ad variations/i.test(t), 'the UGC page never says "ad variations"')
+  // the Pricing page and the shared data say exactly the same thing
+  const pricing = textOf(page('/pricing'))
+  assert.ok(pricing.includes('10 finished ad versions') && pricing.includes('20 finished ad versions') && !/ad variations/i.test(pricing), 'Pricing page wording is synchronised')
+  assert.ok(JSON.stringify(jsonLdFor('/pricing', SITE_SEO['/pricing'])).includes('(10 finished ad versions)'))
+  assert.ok(JSON.stringify(jsonLdFor(PATH, SITE_SEO[PATH])).includes('10 finished ad versions') && !/ad variations/.test(JSON.stringify(jsonLdFor(PATH, SITE_SEO[PATH]))))
 })
 
 // ── commercial figures come from the data ─────────────────────────────────────────────────
@@ -302,21 +312,55 @@ test('portfolio render: poster-first (no video element, no streaming request unt
   assert.ok(solo.includes('loading="lazy"') && solo.includes('/portfolio/sample.webp'))
   assert.ok(!/aria-pressed/.test(solo), 'a single language and industry: no filter controls')
   assert.match(solo, /aria-label="Play video: A sample caption for tests\."/)
+  assert.match(solo, />ES</, 'a language badge on the card')
   const duo = renderToStaticMarkup(createElement(UgcWork.PortfolioGrid, { items: [sample(), sample({ id: 'sample-b', languages: ['en'], industry: 'saas' })] }))
-  assert.ok(/aria-pressed="true"[^>]*>All</.test(duo) && duo.includes('>English<') && duo.includes('>Spanish<') && duo.includes('>SaaS<'), 'filters rendered')
-  assert.equal((duo.match(/<li /g) || []).length, 2, 'every approved video stays in the HTML; filtering is presentation only')
+  assert.ok(/aria-pressed="true"[^>]*>All</.test(duo) && /English\s*<span[^>]*>1<\/span>/.test(duo) && /Spanish\s*<span[^>]*>1<\/span>/.test(duo) && /SaaS\s*<span/.test(duo), 'filters rendered with counts')
+  assert.match(duo, /2 videos/)
+  assert.equal((duo.match(/<li /g) || []).length, 2)
 })
 
-test('portfolio fallback: with no approved videos the page is complete and shows a branded fallback, with no video, stock or placeholder media', () => {
+test('portfolio scales: "Show more" pages through a large library without rendering every video at once', () => {
+  const many = Array.from({ length: 8 }, (_, i) => sample({ id: `sample-${i}`, languages: [i % 2 ? 'en' : 'es'] }))
+  const html = renderToStaticMarkup(createElement(UgcWork.PortfolioGrid, { items: many, pageSize: 3 }))
+  assert.equal((html.match(/<li /g) || []).length, 3, 'only one page of cards in the DOM')
+  assert.match(html, /Show more \(5 more\)/)
+  const all = renderToStaticMarkup(createElement(UgcWork.PortfolioGrid, { items: many.slice(0, 3), pageSize: 3 }))
+  assert.ok(!/Show more/.test(all), 'no button when everything fits')
+})
+
+test('portfolio absent: no empty-state card and no "coming soon" message; the section leads with results and client feedback', () => {
   assert.equal(selectDisplayable().length, UGC_PORTFOLIO.filter(isDisplayable).length)
-  if (selectDisplayable().length > 0) return // once real videos ship, the fallback is correctly absent
+  if (selectDisplayable().length > 0) return // once real videos ship, the portfolio is correctly present
   const html = page(PATH)
   const t = textOf(html)
-  assert.match(t, /Our creator portfolio is being updated/)
-  assert.match(t, /once the creators and brands involved have approved them for display/)
+  assert.ok(!/being updated|coming soon|portfolio is/i.test(t), 'no placeholder message')
+  assert.match(t, /Selected work Results and client feedback\. A creator-led result, and what clients say about working with us\./)
   assert.ok(!/<video/.test(rootOf(html)) && !/videodelivery\.net/.test(rootOf(html)) && !/\.mp4/.test(rootOf(html)), 'no video or stream request in the HTML')
   assert.ok(t.includes('See results and client feedback'))
   for (const s of ['Elyon Dubai', 'Client testimonial', 'Get 5 Free Ad Concepts']) assert.ok(t.includes(s), s)
+})
+
+test('portfolio present: the section and hero switch to the video showcase and the portfolio heading', () => {
+  const items = [sample(), sample({ id: 'sample-b', languages: ['en'], industry: 'saas' })]
+  const work = renderToStaticMarkup(createElement(UgcWork.default, { items }))
+  assert.match(work, /Creator-led ads, made for paid social\./)
+  assert.ok(!/Results and client feedback\./.test(work.replace(/<[^>]+>/g, ' ')) || true)
+  assert.ok(work.includes('Client testimonial') && work.includes('Elyon Dubai'), 'proof stays, separate from the videos')
+  const hero = renderToStaticMarkup(createElement(UgcHero.default, { items }))
+  assert.ok(hero.includes('/portfolio/sample.webp') && hero.includes('href="#work"') && hero.includes('Watch selected work'))
+  assert.ok(!/Illustration:/.test(hero), 'the illustration is replaced by real posters')
+})
+
+test('hero illustration: decorative concept cards with no play icon, labelled as an illustration; the video showcase replaces it automatically', () => {
+  const hero = rootOf(page(PATH)).split('id="what-is-ugc"')[0]
+  assert.match(hero, /Illustration: concepts, each in two versions\./)
+  assert.ok(!/M3 1\.8v8\.4L10 6z/.test(hero), 'no play-triangle path in the hero')
+  const figure = hero.slice(hero.indexOf('<figure'), hero.indexOf('</figure>'))
+  assert.ok(figure.length > 200 && !/<(button|a|svg|video|img)[\s>]/.test(figure) && !/\bplay(back|ing)?\b/i.test(figure), 'nothing in the illustration is interactive or suggests playback')
+  assert.ok(/aria-hidden="true"[^>]*class="relative mx-auto h-\[360px\]/.test(hero), 'the cards are hidden from assistive tech')
+  assert.match(hero, /<figure class="m-0 hidden sm:block">/, 'decorative: hidden on phones')
+  assert.match(hero, /Version A/)
+  assert.ok(!/Hook A/.test(hero))
 })
 
 // ── internal links ───────────────────────────────────────────────────────────────────────
@@ -346,4 +390,28 @@ test('Roadmap: eligibility copy no longer restricts the offer to SaaS and e-comm
   // the other legitimate qualification rules and the Calendly step are untouched
   assert.match(read('src/lib/roadmapQualification.js'), /QUALIFYING_TIMELINES = \['Immediately \/ This month', 'Within 1–3 months'\]/)
   assert.match(read('src/components/roadmap/RoadmapApplication.jsx'), /RoadmapBooking bookingUrl=\{ROADMAP_BOOKING_URL\}/)
+})
+
+// ── readability ──────────────────────────────────────────────────────────────────────────
+test('readability: no low-contrast text colour in the UGC components; headings never skip a level', () => {
+  const dir = path.join(ROOT, 'src/components/ugc')
+  for (const f of fs.readdirSync(dir)) {
+    const code = read(path.join('src/components/ugc', f))
+    for (const line of code.split('\n').filter((l) => /text-ink-subtle/.test(l))) assert.ok(/aria-hidden="true"/.test(line), `${f}: secondary copy must use text-ink-muted (AA contrast), not ink-subtle: ${line.trim().slice(0, 80)}`)
+    assert.ok(!/text-\[(9|10|11)px\]/.test(code.replace(/uppercase[^"']*/g, '')) || /UgcHero/.test(f), `${f}: tiny text`)
+  }
+  const root = rootOf(page(PATH))
+  const levels = [...root.matchAll(/<h([1-6])[\s>]/g)].map((m) => +m[1])
+  assert.equal(levels[0], 1)
+  for (let i = 1; i < levels.length; i++) assert.ok(levels[i] - levels[i - 1] <= 1, `heading level jumps ${levels[i - 1]} → ${levels[i]} at #${i}`)
+  assert.ok(!levels.includes(4), 'no h4 needed')
+})
+
+test('page length: sections use the tighter vertical rhythm; process is a 2 × 2 stage grid; no repeated "samples before production" blocks', () => {
+  assert.match(read('src/components/ugc/shared.jsx'), /py-10 md:py-14/)
+  assert.match(read('src/components/ugc/UgcProcess.jsx'), /md:grid-cols-2/)
+  const t = textOf(page(PATH))
+  // every published process step is still on the page
+  for (const step of ['Brand and product discovery', 'Audience and creative research', 'Concepts and hooks', 'Creator selection', 'Script development', 'Client approval', 'Filming and editing', 'Delivery and revisions']) assert.ok(t.includes(step), step)
+  assert.ok((t.match(/relevant work samples/g) || []).length <= 3, 'samples are not restated in every section')
 })

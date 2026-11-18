@@ -260,8 +260,8 @@ test('/pricing HTML: title, description, ONE canonical, indexable, and the prici
 test('/pricing HTML: every confirmed price, term and policy is in the visible markup', () => {
   const text = unescape(visibleText(page('/pricing')))
   for (const needle of [
-    '$2,500', '$4,500', '$3,000', '$5,400', '$1,500', '$2,500', '10 distinct creative concepts', '10 complete scripts', '2 variations per concept, changing the hook or CTA', 'Twice the creative concepts. Twice the ad variations.', '5 concepts × 2 variations each',
-    'Different concepts. Not just different hooks.', '5 original concepts → 10 ad variations',
+    '$2,500', '$4,500', '$3,000', '$5,400', '$1,500', '$2,500', '10 distinct creative concepts', '10 complete scripts', '2 versions per concept, changing the hook or CTA', 'Twice the creative concepts. Twice the finished ad versions.', '5 concepts × 2 versions each',
+    'Different concepts. Not just different hooks.', '5 original concepts → 10 finished ad versions',
     'A concept is a unique ad idea.', 'A variation changes its hook or CTA.',
     'initial three-month commitment', "30 days' cancellation notice",
     'All prices exclude VAT. Applicable taxes will be calculated based on your business location and tax status.',
@@ -463,7 +463,7 @@ test('/pricing HTML: Section 2 holds the philosophy (both variants), the new Roa
   const m = main(h)
   const sec = m.slice(m.indexOf('id="philosophy"'), m.indexOf('id="package-info"'))
   const t = flat(`<div id="root">${sec}`)
-  for (const n of ['Different concepts. Not just different hooks.', 'We develop distinct creative angles, then create variations for structured testing.', '5 original concepts → 10 ad variations', 'A concept is a unique ad idea. A variation changes its hook or CTA.', 'Standard Sprint shown. Sprint Plus includes 10 concepts and 20 ad variations.', 'Consistency. Content. Real connections.', 'A video-first approach to building your organic presence.', 'Publishing & engagement', 'Optimization', 'See how we grew Graspo', 'YOUR FREE CREATIVE GROWTH ROADMAP'.toLowerCase().replace(/^./, (c) => c.toUpperCase()), 'Your next 5 winning ad concepts.', 'Five personalized creative ideas for your brand, built around your product and audience.', 'Completely free. No obligation.', 'Get 5 Free Ad Concepts', '40M+', '1,200+', '500+', 'Core production languages']) assert.ok(t.toLowerCase().includes(n.toLowerCase()), n)
+  for (const n of ['Different concepts. Not just different hooks.', 'We develop distinct creative angles, then create variations for structured testing.', '5 original concepts → 10 finished ad versions', 'A concept is a unique ad idea. A variation changes its hook or CTA.', 'Standard Sprint shown. Sprint Plus includes 10 concepts and 20 finished ad versions.', 'Consistency. Content. Real connections.', 'A video-first approach to building your organic presence.', 'Publishing & engagement', 'Optimization', 'See how we grew Graspo', 'YOUR FREE CREATIVE GROWTH ROADMAP'.toLowerCase().replace(/^./, (c) => c.toUpperCase()), 'Your next 5 winning ad concepts.', 'Five personalized creative ideas for your brand, built around your product and audience.', 'Completely free. No obligation.', 'Get 5 Free Ad Concepts', '40M+', '1,200+', '500+', 'Core production languages']) assert.ok(t.toLowerCase().includes(n.toLowerCase()), n)
   assert.equal(count(sec, /<li class="flex flex-col items-center"/g), 5, 'five concept columns')
   assert.ok(sec.includes(`href="${OFFER_PATHS.roadmap}"`))
   assert.ok(!t.includes('Illustrative concepts'), 'the caption under the mockups is removed')
@@ -550,15 +550,15 @@ test('/pricing HTML: Sprint Plus card shows 10 concepts / 10 scripts / 2 variati
   const h = page('/pricing')
   const arts = [...group(h, 'paid').matchAll(/<article[\s\S]*?<\/article>/g)].map((x) => flat(`<div id="root">${x[0]}`))
   const [sprint, plus] = arts
-  for (const n of ['5 distinct creative concepts', '5 complete scripts', '2 variations per concept, changing the hook or CTA', '10 ad variations', '5 concepts × 2 variations each', '1 creator or spokesperson', '10 business days turnaround', '2 revision rounds per creative concept', '6 months of worldwide usage rights']) assert.ok(sprint.includes(n), `Sprint: ${n}`)
-  for (const n of ['10 distinct creative concepts', '10 complete scripts', '2 variations per concept, changing the hook or CTA', '20 ad variations', 'Twice the creative concepts. Twice the ad variations.', 'Up to 2 creators or spokespeople', '15 business days turnaround', '2 revision rounds per creative concept', '6 months of worldwide usage rights', 'Priority production scheduling', 'Includes expanded research and testing recommendations.']) assert.ok(plus.includes(n), `Sprint Plus: ${n}`)
+  for (const n of ['5 distinct creative concepts', '5 complete scripts', '2 versions per concept, changing the hook or CTA', '10 finished ad versions', '5 concepts × 2 versions each', '1 creator or spokesperson', '10 business days turnaround', '2 revision rounds per creative concept', '6 months of worldwide usage rights']) assert.ok(sprint.includes(n), `Sprint: ${n}`)
+  for (const n of ['10 distinct creative concepts', '10 complete scripts', '2 versions per concept, changing the hook or CTA', '20 finished ad versions', 'Twice the creative concepts. Twice the finished ad versions.', 'Up to 2 creators or spokespeople', '15 business days turnaround', '2 revision rounds per creative concept', '6 months of worldwide usage rights', 'Priority production scheduling', 'Includes expanded research and testing recommendations.']) assert.ok(plus.includes(n), `Sprint Plus: ${n}`)
   assert.ok(sprint.includes('$2,500') && sprint.includes('$3,000') && plus.includes('$4,500') && plus.includes('$5,400'), 'monthly and one-off prices remain')
   const t = flat(h)
   assert.ok(!/\b8 (distinct )?(creative )?concepts|8 complete scripts|strategically distributed|Expanded creative variations/.test(t), 'no obsolete Sprint Plus wording in the prerendered page')
   const ld = JSON.stringify(ldScripts(h)[0])
   assert.ok(!/8 distinct|distributed across the concepts/.test(ld))
-  assert.match(ld, /10 distinct creative concepts with 2 variations each \(20 ad variations\)/)
-  assert.match(ld, /5 distinct creative concepts with 2 variations each \(10 ad variations\)/)
+  assert.match(ld, /10 distinct creative concepts with 2 versions each \(20 finished ad versions\)/)
+  assert.match(ld, /5 distinct creative concepts with 2 versions each \(10 finished ad versions\)/)
 })
 
 test('/pricing HTML: service-aware CTAs: Paid = Roadmap, Organic = "Discuss Your Organic Strategy" (hidden until Organic is selected)', () => {

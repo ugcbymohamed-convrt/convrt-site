@@ -19,10 +19,10 @@ const ROWS = [
 export default function UgcDefinition() {
   return (
     <Section id="what-is-ugc" label="ugc-what-heading" glow>
-      <div className="grid grid-cols-1 gap-10 lg:grid-cols-12 lg:gap-14">
+      <div className="grid grid-cols-1 gap-8 lg:grid-cols-12 lg:gap-12">
         <Reveal className="lg:col-span-7">
           <Head id="ugc-what-heading" align="left" eyebrow="What you're buying" title="A UGC agency, not a pile of videos." />
-          <div className="mt-6 max-w-2xl space-y-4 text-base leading-relaxed text-ink-muted md:text-lg">
+          <div className="mt-5 max-w-2xl space-y-3 text-base leading-relaxed text-ink-muted md:text-lg">
             <p>
               UGC ads are paid ads in a creator-led style: a real person on camera, speaking naturally to your audience. As a
               UGC agency, we commission and manage that content end to end: research, concepts, scripts, creator selection,
@@ -33,9 +33,9 @@ export default function UgcDefinition() {
         </Reveal>
 
         <Reveal delay={120} className="lg:col-span-5">
-          <div className="rounded-3xl border border-hairline-strong bg-surface-1 p-6 shadow-[0_40px_90px_-40px_rgba(0,0,0,0.8)] md:p-7">
+          <div className="rounded-3xl border border-hairline-strong bg-surface-1 p-6 shadow-[0_40px_90px_-40px_rgba(0,0,0,0.8)]">
             <p className="text-xs font-semibold uppercase tracking-[0.16em] text-lime">Human-created, from brief to edit</p>
-            <ul className="mt-5 space-y-5">
+            <ul className="mt-4 space-y-4">
               {ROWS.map((r) => (
                 <li key={r.title} className="flex gap-4">
                   <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-violet/40 bg-violet/15 text-[#c4b5fd]">
@@ -45,7 +45,7 @@ export default function UgcDefinition() {
                   </span>
                   <div>
                     <h3 className="font-display text-base font-semibold leading-snug tracking-snug text-ink">{r.title}</h3>
-                    <p className="mt-1 text-[14px] leading-relaxed text-ink-muted">{r.text}</p>
+                    <p className="mt-1 text-[15px] leading-relaxed text-ink-muted">{r.text}</p>
                   </div>
                 </li>
               ))}

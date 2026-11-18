@@ -10,7 +10,7 @@ export { Reveal, Eyebrow }
 
 export function Section({ id, label, className = '', glow = false, children }) {
   return (
-    <section id={id} aria-labelledby={label} className={`relative overflow-hidden py-14 md:py-20 scroll-mt-24 ${className}`}>
+    <section id={id} aria-labelledby={label} className={`relative overflow-hidden py-10 md:py-14 scroll-mt-24 ${className}`}>
       {glow && (
         <div
           aria-hidden="true"
@@ -34,11 +34,11 @@ export function Head({ id, eyebrow, title, intro, align = 'center', className = 
       </div>
       <h2
         id={id}
-        className="mt-5 font-display font-bold text-ink tracking-display leading-[1.06] text-[1.9rem] sm:text-4xl md:text-[2.6rem]"
+        className="mt-4 font-display font-bold text-ink tracking-display leading-[1.06] text-[1.9rem] sm:text-4xl md:text-[2.5rem]"
       >
         {title}
       </h2>
-      {intro && <p className="mt-4 text-base leading-relaxed text-ink-muted md:text-lg">{intro}</p>}
+      {intro && <p className="mt-3 text-base leading-relaxed text-ink-muted md:text-lg">{intro}</p>}
     </div>
   )
 }
