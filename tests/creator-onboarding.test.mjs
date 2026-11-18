@@ -94,6 +94,16 @@ test('invite: expiry is clamped to 1–30 days; unknown source rejected', async 
   assert.equal(bad.status, 400)
 })
 
+test('invite: links always use the official domain, never the request host or a Vercel deployment URL', async () => {
+  const t = await setup()
+  const created = await t.A('invite-create', { method: 'POST', body: { label: 'domain check', source: 'fiverr', expiresInDays: 7 } })
+  const rot = await t.A('invite-rotate', { method: 'POST', body: { id: created.json.invite.id } })
+  for (const url of [created.json.url, rot.json.url]) {
+    assert.ok(url.startsWith('https://www.convrt.studio/creator-onboarding?invite='), url)
+    assert.ok(!/vercel\.app/.test(url), url)
+  }
+})
+
 test('invite: revoked and rotated links stop working immediately', async () => {
   const t = await setup()
   const rot = await t.A('invite-rotate', { method: 'POST', body: { id: t.ref } })

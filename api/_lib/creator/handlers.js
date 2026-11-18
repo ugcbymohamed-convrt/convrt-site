@@ -99,6 +99,9 @@ function failure(res, err, deps) {
 const baseUrl = (req, deps) =>
   deps.cfg.isProduction ? SITE_URL : `https://${req.headers['x-forwarded-host'] || req.headers.host}`
 
+/* Creator-facing invitation links always use the official domain, never the request host / Vercel deployment URL. */
+const inviteUrl = (token) => `${SITE_URL}/creator-onboarding?invite=${token}`
+
 /* ───────────── creator API ───────────── */
 
 const CREATOR_OPS = {
@@ -295,12 +298,12 @@ export async function adminHandler(req, res, deps = buildDeps()) {
       case 'invite-create': {
         const b = await readBody()
         const r = await service.createInvite({ label: b.label, source: b.source, expiresInDays: b.expiresInDays })
-        return reply(res, 200, { ok: true, invite: r.invite, url: `${baseUrl(req, deps)}/creator-onboarding?invite=${r.token}` })
+        return reply(res, 200, { ok: true, invite: r.invite, url: inviteUrl(r.token) })
       }
       case 'invite-rotate': {
         const b = await readBody()
         const r = await service.rotateInvite(String(b.id))
-        return reply(res, 200, { ok: true, invite: r.invite, url: `${baseUrl(req, deps)}/creator-onboarding?invite=${r.token}` })
+        return reply(res, 200, { ok: true, invite: r.invite, url: inviteUrl(r.token) })
       }
       case 'invite-revoke': {
         const b = await readBody()
