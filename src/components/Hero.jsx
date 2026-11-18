@@ -69,7 +69,7 @@ export default function Hero() {
             </h1>
 
             <p className="mt-6 md:mt-8 max-w-xl mx-auto lg:mx-0 text-base md:text-lg text-ink-muted leading-relaxed">
-              Human-led UGC ads, spokesperson videos and organic social video for SaaS, e-commerce and app brands, in English, Spanish, French and Arabic.
+              Human-led UGC ads, spokesperson videos, and organic social content designed to capture attention, build trust, and drive conversions.
             </p>
             </div>
 

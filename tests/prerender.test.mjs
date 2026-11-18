@@ -626,7 +626,7 @@ test('homepage HTML: services heading and cards, hero line, internal links', () 
     'Video creative for paid and organic social.', 'Creative strategy and full video production, from concept and creator casting to finished, platform-ready videos.',
     'Human-led UGC video ads for Meta, TikTok and YouTube: concepts, creator casting, scripts, filming and editing.', 'Presenter-led video ads that explain your offer clearly and build trust, from casting to finished edit.',
     'Organic short-form video for Instagram, TikTok and Facebook: strategy, production, publishing and community engagement.', 'Concepts, hooks, scripts and structured testing plans that show you what to make next.',
-    'Human-led UGC ads, spokesperson videos and organic social video for SaaS, e-commerce and app brands, in English, Spanish, French and Arabic.',
+    'Human-led UGC ads, spokesperson videos, and organic social content designed to capture attention, build trust, and drive conversions.',
     'Explore packages and pricing',
   ]) assert.ok(t.includes(n), n)
   assert.ok(!/Built for modern|Explore the Creative Testing Sprint|Compare packages and pricing|significantly better results|personally approved by the founder|prolific creator/.test(t))

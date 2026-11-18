@@ -69,7 +69,7 @@ test('FAQ component renders the shared data (and its links); services/hero/foote
   for (const t of ['Human-led UGC video ads for Meta, TikTok and YouTube: concepts, creator casting, scripts, filming and editing.', 'Presenter-led video ads that explain your offer clearly and build trust, from casting to finished edit.', 'Organic short-form video for Instagram, TikTok and Facebook: strategy, production, publishing and community engagement.', 'Concepts, hooks, scripts and structured testing plans that show you what to make next.', 'Video creative for<br />', 'paid and organic social.', 'Creative strategy and full video production,{\' \'}<br', 'from concept and creator casting to finished, platform-ready videos.', 'Explore packages and pricing']) assert.ok(svc.includes(t), t)
   assert.ok(!/Built for modern|Explore the Creative Testing Sprint|Compare packages and pricing/.test(svc))
   assert.match(svc, /<a href="\/pricing"[^>]*>\s*Explore packages and pricing\s*<\/a>/, 'link keeps its /pricing destination')
-  assert.ok(read('src/components/Hero.jsx').includes('Human-led UGC ads, spokesperson videos and organic social video for SaaS, e-commerce and app brands, in English, Spanish, French and Arabic.'))
+  assert.ok(read('src/components/Hero.jsx').includes('Human-led UGC ads, spokesperson videos, and organic social content designed to capture attention, build trust, and drive conversions.'))
   assert.match(read('src/components/Footer.jsx'), /href="\/pricing">Pricing<\/a>/)
   const cs = read('src/components/CaseStudies.jsx')
   assert.ok(cs.includes('href="/case-studies/graspo"') && cs.includes('href="/case-studies/elyon"') && !cs.includes('case=elyon'), 'case-study links point at the canonical study pages')
@@ -111,4 +111,15 @@ test('research stays private: research/ is git-ignored and nothing from it is in
   assert.ok(!fs.existsSync(path.join(ROOT, 'public', 'research')))
   const tracked = fs.readdirSync(ROOT).filter((n) => /keyword|reddit|research/i.test(n) && n !== 'research')
   assert.deepEqual(tracked, [])
+})
+
+test('hero subtitle: general positioning only; industries and language lists live in the FAQ and case studies, not the hero', () => {
+  const hero = read('src/components/Hero.jsx')
+  assert.ok(hero.includes('Human-led UGC ads, spokesperson videos, and organic social content designed to capture attention, build trust, and drive conversions.'))
+  const sub = hero.slice(hero.indexOf('Human-led UGC ads'), hero.indexOf('</p>', hero.indexOf('Human-led UGC ads')))
+  assert.ok(!/SaaS|e-commerce|ecommerce|app brands|English|Spanish|French|Arabic|languages?/i.test(sub), 'no industry or language restriction in the hero')
+  // the specific capabilities are still published where they belong
+  assert.match(homeFaqText(HOME_FAQ.find((f) => f.q.includes('other languages'))), /English, Spanish, French and Arabic/)
+  // metadata is a separate decision and is unchanged
+  assert.equal(SITE_SEO['/'].description, 'Human-led UGC ads, spokesperson videos and organic social video for SaaS, e-commerce and app brands, produced in English, Spanish, French and Arabic.')
 })
