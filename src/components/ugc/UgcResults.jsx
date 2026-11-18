@@ -1,6 +1,8 @@
+import { useEffect, useRef, useState } from 'react'
 import { trackEvent } from '../../lib/analytics.js'
 import { ELYON_PROOF, UGC_TESTIMONIALS } from '../../content/ugcProof.js'
 import { Section, Head, Reveal, RoadmapCta, TextLink } from './shared.jsx'
+import { useAutoplayAllowed } from './creatorVideo.jsx'
 
 /* SECTION 4: results and client feedback, in one compact block.
    • Elyon 5.28x: ONE individual creator-led UGC video, client-reported, early learning phase, never typical or guaranteed (wording
@@ -14,6 +16,34 @@ const LOGOS = {
   elyon: { src: '/clients/elyon.png', alt: 'Elyon Dubai', w: 600, h: 226 },
 }
 const PROOF = '/case-studies/elyon/proof'
+
+/* One-time number reveal: the page text is always the final figure ("5.28x"); when it scrolls into view it counts up once, over about
+   a second, and settles on the same text. Skipped for reduced-motion visitors. */
+function RoasNumber({ value }) {
+  const [shown, setShown] = useState(null)
+  const ref = useRef(null)
+  const autoplay = useAutoplayAllowed()
+  useEffect(() => {
+    const el = ref.current
+    if (!autoplay || !el || typeof IntersectionObserver === 'undefined') return undefined
+    const target = parseFloat(value)
+    let raf = 0
+    const io = new IntersectionObserver(([e]) => {
+      if (!e.isIntersecting) return
+      io.disconnect()
+      const t0 = performance.now()
+      const tick = (now) => {
+        const p = Math.min((now - t0) / 1100, 1)
+        setShown(target * (1 - (1 - p) ** 3))
+        if (p < 1) raf = requestAnimationFrame(tick); else setShown(null)
+      }
+      raf = requestAnimationFrame(tick)
+    }, { threshold: 0.6 })
+    io.observe(el)
+    return () => { io.disconnect(); cancelAnimationFrame(raf) }
+  }, [autoplay, value])
+  return <span ref={ref} className="tabular-nums">{shown == null ? value : `${shown.toFixed(2)}x`}</span>
+}
 
 export default function UgcResults() {
   const e = ELYON_PROOF
@@ -30,7 +60,7 @@ export default function UgcResults() {
             <div className="relative">
               <p className="text-xs font-semibold uppercase tracking-[0.16em] text-lime">{e.brand} · {e.category}</p>
               <p className="mt-3 flex flex-wrap items-baseline gap-x-3">
-                <span className="font-display text-[4.25rem] font-bold leading-none tracking-display-xl text-lime sm:text-[5.5rem]">{e.roas}</span>
+                <span className="font-display text-[4.25rem] font-bold leading-none tracking-display-xl text-lime sm:text-[5.5rem]"><RoasNumber value={e.roas} /></span>
                 <span className="font-display text-xl font-semibold text-ink md:text-2xl">ROAS, one UGC video</span>
               </p>
               <p className="mt-4 max-w-xl text-base leading-relaxed text-ink-muted">

@@ -14,7 +14,6 @@ import { OFFER_PATHS } from '../config.js'
 
 const [S3, S6, S12] = SPRINT.usageExtensions
 const [P3, P6, P12] = SPRINT_PLUS.usageExtensions
-const ext = (pkg) => pkg.usageExtensions.map((e) => `${e.months} months for ${formatMoney(e.price)}`).join(', ')
 
 export const UGC_FAQ = [
   {
@@ -87,10 +86,10 @@ export const UGC_FAQ = [
     q: 'What usage rights are included, and can I run the videos as paid ads?',
     a: [
       `Yes. Every package includes ${USAGE_RIGHTS.includedMonths} months of ${USAGE_RIGHTS.scope.toLowerCase()} usage rights from the date each video is delivered, covering paid advertising, organic social media and your website.`,
-      `${USAGE_RIGHTS.afterExpiry.mayRemain.join(' ')} ${USAGE_RIGHTS.afterExpiry.mustStop.join(' ')} You can extend the usage rights for the whole creative batch: ${SPRINT.name}, ${ext(SPRINT)}; ${SPRINT_PLUS.name}, ${ext(SPRINT_PLUS)}. Extension prices exclude VAT.`,
+      `${USAGE_RIGHTS.afterExpiry.mayRemain.join(' ')} ${USAGE_RIGHTS.afterExpiry.mustStop.join(' ')} You can extend the usage rights for the whole creative batch.`,
       USAGE_RIGHTS.notOwnership,
     ],
-    links: [{ label: 'Full usage-rights details on the Pricing page', href: '/pricing#package-info' }],
+    links: [{ label: 'Extension prices and full usage-rights terms on the Pricing page', href: '/pricing#package-info' }],
   },
   {
     id: 'raw-footage-and-creator-accounts',

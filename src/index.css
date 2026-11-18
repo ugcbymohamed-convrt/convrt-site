@@ -303,7 +303,24 @@ body {
 .ugc-bar { transform-origin: left center; animation: ugc-grow 0.9s cubic-bezier(0.22, 1, 0.36, 1) both; }
 .ugc-progress { transform-origin: left center; animation: ugc-grow linear both; }
 
+/* ── UGC page — hero headline (one-time mask reveal), play-button invitation ── */
+.ugc-mask { display: inline-block; overflow: hidden; vertical-align: bottom; padding: 0 0.05em 0.16em; margin: 0 -0.05em -0.16em; }
+.ugc-word { position: relative; display: inline-block; transform: translateY(112%); animation: ugc-word-in 0.62s cubic-bezier(0.22, 1, 0.36, 1) both; }
+@keyframes ugc-word-in { from { transform: translateY(112%); } to { transform: translateY(0); } }
+.ugc-underline { position: absolute; left: 0; right: 0; bottom: 0.03em; height: 0.07em; border-radius: 9999px; background: #d5ff40; transform: scaleX(0); transform-origin: left center; animation: ugc-grow 0.6s cubic-bezier(0.22, 1, 0.36, 1) both; }
+@keyframes ugc-nudge-ring {
+  0%   { box-shadow: 0 0 0 0 rgba(213, 255, 64, 0.6); border-color: rgba(213, 255, 64, 0.9); }
+  100% { box-shadow: 0 0 0 20px rgba(213, 255, 64, 0); border-color: rgba(213, 255, 64, 0.9); }
+}
+.ugc-nudge { animation: ugc-nudge-ring 1.3s ease-out 2; background-color: rgba(213, 255, 64, 0.22); }
+
+@keyframes ugc-rise-y { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+.ugc-rise { transform-origin: bottom center; animation: ugc-rise-y 0.7s cubic-bezier(0.22, 1, 0.36, 1) both; }
+
 @media (prefers-reduced-motion: reduce) {
+  .ugc-rise { animation: none; }
+  .ugc-word, .ugc-underline { animation: none; transform: none; }
+  .ugc-nudge { animation: none; }
   .ugc-pop,
   .ugc-bar,
   .ugc-progress,

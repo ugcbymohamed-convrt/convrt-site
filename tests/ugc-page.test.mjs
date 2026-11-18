@@ -147,7 +147,7 @@ test('international, multilingual and industry-neutral: nothing restricts the se
   const t = textOf(page(PATH))
   assert.match(t, /international, multilingual UGC agency and creative production studio/)
   assert.match(t, /across industries, including but not limited to SaaS, e-commerce, apps, technology and consumer products/)
-  assert.match(t, /Share a few brand details, then book a free strategy session where we present five personalized ad concepts\. Brands in every industry are welcome, subject to a short fit check\. No obligation\./)
+  assert.match(t, /Share a few brand details and book a free strategy session where we present five personalized ad concepts\. Every industry welcome, subject to a short fit check\./)
   assert.ok(!/(only|just|exclusively|currently) (for|designed for|offered to|open to) (SaaS|e-commerce)/i.test(t))
   assert.ok(!/\b(UK|United Kingdom|Dubai|UAE|London) (brands|clients|only)/i.test(t), 'no market restriction or unverified market claims')
   assert.ok(!/who it isn['’]t for|probably not|not a fit|isn['’]t for you/i.test(t), 'no negative fit list')
@@ -185,7 +185,6 @@ test('pricing in the FAQ: recurring and one-off prices, commitment and extension
   assert.ok(t.includes(`Our UGC production packages start at ${formatMoney(SPRINT.monthly)} a month`))
   for (const p of [SPRINT, SPRINT_PLUS]) {
     assert.ok(t.includes(formatMoney(p.monthly)) && t.includes(formatMoney(p.oneOff)), p.name)
-    for (const e of p.usageExtensions) assert.ok(t.includes(formatMoney(e.price)), `${p.name} ${e.months}m extension`)
   }
   assert.ok(t.includes(formatMoney(RAW_FOOTAGE.price)))
   assert.ok(rootOf(page(PATH)).includes('href="/pricing#packages"') && rootOf(page(PATH)).includes('href="/pricing#package-info"'), 'complete pricing and contract detail stays on the Pricing page')
@@ -375,10 +374,12 @@ test('portfolio present: the portfolio section appears, and the hero becomes the
   assert.ok(!/<figure/.test(hero) && !/Illustration/.test(hero), 'no illustration')
 })
 
-test('hero video stage: posters first, one active video, switchable by button, dot, card and keyboard; no video loads in the static HTML', () => {
+test('hero phone stage: three smartphone frames, one active video, switchable by phone, button, dot, swipe and keyboard; nothing loads in the static HTML', () => {
   const items = [sample(), sample({ id: 'sample-b', languages: ['en'], industry: 'saas', caption: 'Second sample caption.' }), sample({ id: 'sample-c', languages: ['fr'], industry: 'app', caption: 'Third sample caption.' })]
   const html = renderToStaticMarkup(createElement(CreatorVideoStage.default, { items }))
-  assert.ok(!/<video/.test(html) && !/autoplay/i.test(html) && !/<source/.test(html), 'only posters until the browser is idle and the stage is on screen')
+  assert.equal((html.match(/<video /g) || []).length, 3, 'one video element per phone, so a paused phone keeps its frame')
+  assert.ok(!/<video[^>]*\ssrc=/.test(html) && !/<source/.test(html) && !/autoplay/i.test(html) && (html.match(/preload="none"/g) || []).length === 3, 'no source is attached, nothing downloads and nothing autoplays in the static HTML')
+  assert.ok((html.match(/<video[^>]*\smuted/g) || []).length === 3, 'every video starts muted')
   assert.equal((html.match(/<img /g) || []).length, 3, 'three posters')
   assert.ok(html.includes('fetchpriority="high"'), 'the active poster is the LCP image')
   assert.equal((html.match(/loading="lazy"/g) || []).length, 2, 'the two supporting posters are lazy')
@@ -392,20 +393,54 @@ test('hero video stage: posters first, one active video, switchable by button, d
   assert.ok(/prefers-reduced-motion: reduce/.test(src) && /saveData/.test(src), 'reduced motion and data saver are respected')
   assert.ok(/IntersectionObserver/.test(src) && /requestIdleCallback/.test(src), 'playback waits for idle and for the stage to be on screen')
   assert.ok(!/setInterval|autoAdvance/.test(src), 'no automatic carousel advance')
+  // playing rules: only the active phone may play; sound resets to muted on every switch; pauses off screen and in a hidden tab
+  assert.ok(/active && wantPlay/.test(src) && /else v\.pause\(\)/.test(src), 'only the active video is told to play; every other video is paused')
+  assert.ok(/setMuted\(true\)/.test(src), 'sound resets to muted when the active video changes')
+  assert.ok(/visibilitychange/.test(src) && /inView && tabVisible/.test(src), 'pauses when the hero leaves the viewport or the tab is hidden')
+  assert.ok(/loaded\.has\(it\.id\)/.test(src) && /mayLoad/.test(src), 'sources attach only after a video has been active and the browser is idle')
+  const ms = Number(src.match(/const MS = (\d+)/)[1])
+  assert.ok(ms >= 400 && ms <= 650, `transition time ${ms} ms`)
+  assert.ok(/perspective/.test(src) && /scale\(0\.8\)/.test(src) && /rotateY/.test(src), 'position, scale and depth animate together')
 })
 
-test('process: four stages with their explanations in the page text, an interactive testing diagram, no deliverables grid or eight-step timeline', () => {
+test('process: four stages readable without interaction, a simple three-step testing illustration, no deliverables grid or eight-step timeline', () => {
   const t = textOf(page(PATH))
   for (const title of ['Research & Concepts', 'Creators & Scripts', 'Filming & Editing', 'Delivery & Creative Testing']) assert.ok(t.includes(title), title)
-  // every stage explanation is in the static HTML even though only one is expanded
-  for (const phrase of ['develop genuinely different creative concepts', 'You approve concepts and scripts before anything is filmed', 'Creators film natively for each format', 'guidance on what to test next', 'Brand and product discovery', 'Script development', 'Editing and captions', 'internal creative quality review']) assert.ok(t.includes(phrase), phrase)
-  assert.ok(t.includes(`${REVISIONS.roundsPerConcept} rounds of revisions per concept`))
-  // the testing illustration: concepts, two versions, hook or call to action, learning; and it says it is only an illustration
-  for (const phrase of ['Distinct concepts', 'Two finished versions', 'One thing changed', 'Learn, then make more', 'the hook or the call to action', 'shapes the next batch of concepts', 'Illustration only, not real results']) assert.ok(t.includes(phrase), phrase)
+  // all four one-line explanations are visible text (nothing is hidden behind a click)
+  for (const phrase of ['develop distinct concepts, each with its own hooks', 'You approve both before anything is filmed', 'Creators film natively for each format', 'guidance on what to test next', 'quality-check every video']) assert.ok(t.includes(phrase), phrase)
+  assert.ok(!/visibility:\s*hidden/.test(rootOf(page(PATH)).slice(rootOf(page(PATH)).indexOf('id="how-it-works"'), rootOf(page(PATH)).indexOf('id="results"'))), 'no stage text is hidden')
+  // the testing illustration: one concept with two versions, then the scale, then compare and learn; conceptual only
+  for (const phrase of ['One concept, two versions', 'The pattern scales', 'Compare, learn, repeat', 'Two versions of every concept. Then you learn.', 'Illustration only']) assert.ok(t.includes(phrase), phrase)
+  assert.ok(t.includes('differ in one thing, such as the hook or the call to action'))
   assert.ok(t.includes(packageEquation(SPRINT)) && t.includes(packageEquation(SPRINT_PLUS)))
+  const diagram = read('src/components/ugc/TestingDiagram.jsx').replace(/\/\*[\s\S]*?\*\//g, '')
+  assert.ok(!/ROAS|conversion rate|winner|wins\b|outperform/i.test(diagram), 'no performance data or winner claims in the illustration')
+  assert.ok(/Conceptual illustration, not real results/.test(diagram))
   assert.ok(!/ugc-nine|nine-card|PRODUCTION_PROCESS\.map|steps\.map/.test(read('src/components/ugc/UgcProcess.jsx')), 'the eight-step timeline is not rebuilt')
-  const src = read('src/components/ugc/UgcProcess.jsx')
-  assert.ok(/useAutoplayAllowed/.test(src) && /Pause animation/.test(src), 'auto-advance respects reduced motion and can be paused')
+  for (const f of ['UgcProcess', 'TestingDiagram']) { const src = read(`src/components/ugc/${f}.jsx`); assert.ok(/useAutoplayAllowed/.test(src) && /Pause/.test(src), `${f}: auto-advance respects reduced motion and can be paused`) }
+  // the FAQ carries the detail the process no longer repeats
+  assert.ok(t.includes(`${REVISIONS.roundsPerConcept} rounds of revisions are included per creative concept`))
+})
+
+test('hero: split layout in every state, the exact H1 in the HTML, a one-time headline reveal and a lime play-button invitation, all motion-safe', () => {
+  const html = rootOf(page(PATH))
+  const hero = html.slice(0, html.indexOf('id="how-it-works"'))
+  assert.match(hero, /lg:grid-cols-12/, 'two columns on desktop')
+  assert.match(hero, /lg:col-span-6/, 'copy and phones share the width')
+  const stage = renderToStaticMarkup(createElement(UgcHero.default, { items: [] }))
+  assert.ok(/aspect-\[9\/19\.5\]/.test(stage) && !/<video|<button|aria-label="Play|play button/i.test(stage), 'the empty state is three empty phone frames: no video, no play button')
+  assert.equal((stage.match(/aspect-\[9\/19\.5\]/g) || []).length >= 4, true, 'three phones inside the stage')
+  assert.ok(/aria-hidden="true" class="relative mx-auto flex/.test(stage), 'the empty frames are hidden from assistive tech')
+  assert.ok(!/Illustration|creator video|coming soon/i.test(stage))
+  // words are real text in the HTML at their final size; the animation is CSS only and switched off for reduced motion
+  assert.ok(/class="ugc-word"[^>]*>Human-led</.test(hero) && /class="ugc-word"[^>]*>tested\./.test(hero))
+  const css = read('src/index.css')
+  assert.match(css, /prefers-reduced-motion: reduce\) \{[\s\S]*?\.ugc-word, \.ugc-underline \{ animation: none; transform: none; \}/)
+  assert.match(css, /\.ugc-nudge \{ animation: none; \}/)
+  assert.ok(!/setInterval|setTimeout/.test(read('src/components/ugc/UgcHero.jsx')), 'the headline never loops or changes')
+  const stageSrc = read('src/components/ugc/CreatorVideoStage.jsx')
+  assert.ok(/scrollY < 60/.test(stageSrc) && /passive: true/.test(stageSrc) && /ugc-nudge/.test(stageSrc), 'a passive, one-time scroll listener only highlights the play button (no hijacking, no scroll-driven seeking)')
+  assert.ok(!/currentTime\s*=/.test(stageSrc), 'no scroll-driven video seeking')
 })
 
 test('nothing contractual is lost: every policy the removed sections carried is still on the page (FAQ), from the business data', () => {
@@ -417,7 +452,10 @@ test('nothing contractual is lost: every policy the removed sections carried is 
   ]
   for (const m of must) assert.ok(t.includes(m), `missing: ${m.slice(0, 60)}`)
   for (const m of FORMATS.included) assert.ok(t.includes(m), m)
-  for (const p of [SPRINT, SPRINT_PLUS]) for (const e of p.usageExtensions) assert.ok(t.includes(`${e.months} months for ${formatMoney(e.price)}`), `${p.name} ${e.months}m extension`)
+  // extension prices live on the Pricing page, which the usage-rights answer links to
+  const pricing = textOf(page('/pricing'))
+  for (const p of [SPRINT, SPRINT_PLUS]) for (const e of p.usageExtensions) assert.ok(pricing.includes(formatMoney(e.price)), `${p.name} ${e.months}m extension is on /pricing`)
+  assert.ok(rootOf(page(PATH)).includes('href="/pricing#package-info"'))
 })
 
 

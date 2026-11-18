@@ -1,60 +1,204 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { posterUrl, languageLabel, industryLabel } from '../../content/ugcPortfolio.js'
+import { attachHls } from '../../lib/hls.js'
+import { posterUrl, hlsUrl, languageLabel, industryLabel } from '../../content/ugcPortfolio.js'
 import { trackEvent } from '../../lib/analytics.js'
-import {
-  useAttachSource, useAutoplayAllowed, useIdleAfterLoad, PlayGlyph, PauseGlyph, SoundGlyph,
-} from './creatorVideo.jsx'
+import { useAutoplayAllowed, useIdleAfterLoad, PlayGlyph, PauseGlyph, SoundGlyph } from './creatorVideo.jsx'
 
-/* HERO VIDEO STAGE. A reusable showcase of up to three approved creator videos (items come from selectDisplayable(), so every
-   one has portfolio permission and creator consent). The active video is large and plays (muted, looping); the others sit beside
-   it as supporting cards and switch in on tap, swipe, arrow key, the prev/next buttons or the dots.
+/* THE HERO PHONE STAGE (same visual language and the same rotate-on-click behaviour as the homepage's CaseStudies phone carousel).
 
-   Performance: only posters load at first. The active video's player is mounted after the browser is idle and only while the stage
-   is on screen, and a video that stops being active is unmounted (its stream is destroyed). Visitors who prefer reduced motion or
-   data saving get posters until they press play, and the transitions are switched off. No auto-advance (WCAG 2.2.2). */
+   Three overlapping smartphone frames: one large active video in the centre, two slightly smaller phones behind it on either side.
+   Click (or tap, swipe, or use the arrow keys / prev / next / dots) on a side phone and it moves to the centre while the old centre
+   phone takes the matching side position; position, scale, depth and opacity animate together in 560 ms.
 
-const ACCENTS = ['rgba(213,255,64,0.30)', 'rgba(139,92,246,0.34)', 'rgba(255,106,77,0.30)']
+   Media rules (every one is enforced here):
+   • Items are approved portfolio videos only (selectDisplayable). With none, <PhoneShowcaseFallback> shows the same frames empty.
+   • Exactly one video can play: only the active phone is ever told to play; every other video is paused (and shows its own frame).
+   • No audio by itself: videos start muted, and sound resets to muted whenever the active video changes.
+   • Nothing downloads until needed: posters first; a video's source is attached only after it has been active AND the browser is idle,
+     and never for reduced-motion / data-saver visitors until they press play. A paused phone keeps its source, so it can resume.
+   • Playback pauses when the hero leaves the viewport and when the tab is hidden.
+   • Transitions are switched off for prefers-reduced-motion. There is no automatic advance. */
+
+const MS = 560 // transition time (within the requested 400–650 ms)
 
 const SLOT = {
-  center: 'translate(-50%,0) scale(1)',
-  right: 'translate(-50%,0) translateX(64%) translateY(7%) scale(0.8) rotate(4deg)',
-  left: 'translate(-50%,0) translateX(-64%) translateY(7%) scale(0.8) rotate(-4deg)',
+  center: 'translate3d(-50%,-50%,0) scale(1) rotateY(0deg)',
+  right: 'translate3d(-50%,-50%,0) translateX(var(--off)) scale(0.8) rotateY(-15deg)',
+  left: 'translate3d(-50%,-50%,0) translateX(calc(var(--off) * -1)) scale(0.8) rotateY(15deg)',
+}
+/* Responsive size of the centre phone, and how far (as a share of one phone's width) the side phones sit from it. Sized so the three
+   phones never overflow their column or the viewport. */
+export const STAGE_SIZE = 'w-[192px] [--off:54%] min-[420px]:w-[214px] min-[420px]:[--off:52%] md:w-[250px] md:[--off:60%] lg:w-[224px] lg:[--off:56%] xl:w-[276px] xl:[--off:58%]'
+const ACCENTS = ['rgba(213,255,64,0.26)', 'rgba(139,92,246,0.32)', 'rgba(255,106,77,0.26)']
+
+/* Smartphone frame: same bezel, radius, island and glass edge as the homepage hero phones. */
+export function PhoneShell({ active = false, className = '', children }) {
+  return (
+    <div
+      className={`relative h-full w-full rounded-[34px] bg-[#0a0a0a] p-[7px] transition-shadow duration-500 motion-reduce:transition-none md:rounded-[44px] md:p-[10px] ${className}`}
+      style={{
+        boxShadow: active
+          ? '0 50px 90px -25px rgba(0,0,0,0.85), 0 0 0 1px rgba(255,255,255,0.09), 0 0 80px -24px rgba(213,255,64,0.32)'
+          : '0 30px 60px -20px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.06)',
+      }}
+    >
+      <div className="relative h-full w-full overflow-hidden rounded-[27px] bg-black md:rounded-[34px]">
+        {children}
+        <div aria-hidden="true" className="absolute left-1/2 top-1.5 z-20 h-[18px] w-[70px] -translate-x-1/2 rounded-full bg-black md:top-2 md:h-[22px] md:w-[88px]" />
+        <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-10 rounded-[27px] ring-1 ring-inset ring-white/10 md:rounded-[34px]" />
+      </div>
+    </div>
+  )
 }
 
-function StagePlayer({ item, wantPlay, muted, onPlaying, onProgress }) {
+/* Floor shadow and light under the phones: depth, not decoration that moves. */
+function Lighting({ accent }) {
+  return (
+    <>
+      <div aria-hidden="true" className="pointer-events-none absolute left-1/2 top-1/2 h-[86%] w-[150%] -translate-x-1/2 -translate-y-1/2 transition-[background] duration-700 motion-reduce:transition-none" style={{ background: `radial-gradient(ellipse 50% 50% at 50% 50%, ${accent}, transparent 70%)` }} />
+      <div aria-hidden="true" className="pointer-events-none absolute -bottom-3 left-1/2 h-8 w-[110%] -translate-x-1/2 rounded-[50%] bg-black/60 blur-xl" />
+    </>
+  )
+}
+
+/* ── Fallback: the same three frames, empty. Not interactive, no play button, no stand-in footage and no creator claim. ── */
+export function PhoneShowcaseFallback() {
+  const phones = [
+    { slot: 'left', tone: ACCENTS[1] },
+    { slot: 'right', tone: ACCENTS[2] },
+    { slot: 'center', tone: ACCENTS[0] },
+  ]
+  return (
+    <div aria-hidden="true" className="relative mx-auto flex w-full justify-center py-5 [perspective:1400px]">
+      <div className={`relative aspect-[9/19.5] ${STAGE_SIZE}`}>
+        <Lighting accent={ACCENTS[0]} />
+        {phones.map(({ slot, tone }) => (
+          <div key={slot} className={`absolute left-1/2 top-1/2 w-full aspect-[9/19.5] ${slot === 'center' ? 'z-20' : 'z-10 opacity-80'}`} style={{ transform: SLOT[slot] }}>
+            <PhoneShell active={slot === 'center'}>
+              <div className="absolute inset-0" style={{ background: `radial-gradient(120% 70% at 50% 18%, ${tone}, transparent 70%), linear-gradient(180deg, #17171b 0%, #0b0b0d 100%)` }} />
+              <img src="/convrt-logo.svg" alt="" width="120" height="47" className="absolute left-1/2 top-1/2 w-[46%] -translate-x-1/2 -translate-y-1/2 opacity-30" style={{ filter: 'brightness(0) invert(1)' }} draggable="false" />
+            </PhoneShell>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+/* One phone. The <video> element exists from the start (so a paused phone keeps its last frame and never flashes back to the poster),
+   but its source is attached only when `load` is true. */
+function StagePhone({ item, slot, n, index, active, load, wantPlay, muted, playing, nudge, onSelect, onPlaying, onProgress, onTogglePlay, onToggleMute, progress }) {
   const ref = useRef(null)
-  useAttachSource(ref, item)
+
+  useEffect(() => {
+    const v = ref.current
+    if (!v || !load) return undefined
+    if (item.source.cloudflareId) {
+      const hls = attachHls(v, hlsUrl(item))
+      return () => hls.destroy()
+    }
+    v.src = item.source.mp4
+    return () => { v.removeAttribute('src'); v.load() }
+  }, [load, item])
+
   useEffect(() => { if (ref.current) ref.current.muted = muted }, [muted])
   useEffect(() => {
     const v = ref.current
     if (!v) return undefined
-    const sync = () => { if (wantPlay) v.play().catch(() => {}); else v.pause() }
+    const sync = () => { if (active && wantPlay) v.play().catch(() => {}); else v.pause() }
     sync()
     v.addEventListener('canplay', sync)
     return () => v.removeEventListener('canplay', sync)
-  }, [wantPlay, item])
+  }, [active, wantPlay, load, item])
   useEffect(() => {
     const v = ref.current
-    if (!v) return undefined
-    const play = () => onPlaying(true)
-    const pause = () => onPlaying(false)
+    if (!v || !active) return undefined
+    const on = () => onPlaying(true)
+    const off = () => onPlaying(false)
     const time = () => onProgress(v.duration ? v.currentTime / v.duration : 0)
-    v.addEventListener('playing', play)
-    v.addEventListener('pause', pause)
+    v.addEventListener('playing', on)
+    v.addEventListener('pause', off)
     v.addEventListener('timeupdate', time)
-    return () => { v.removeEventListener('playing', play); v.removeEventListener('pause', pause); v.removeEventListener('timeupdate', time) }
-  }, [onPlaying, onProgress])
+    return () => { v.removeEventListener('playing', on); v.removeEventListener('pause', off); v.removeEventListener('timeupdate', time) }
+  }, [active, onPlaying, onProgress])
+
   return (
-    <video
-      ref={ref}
-      muted
-      loop
-      playsInline
-      preload="none"
-      poster={posterUrl(item)}
-      aria-label={item.caption}
-      className="absolute inset-0 h-full w-full bg-black object-cover"
-    />
+    <div
+      className={`absolute left-1/2 top-1/2 w-full aspect-[9/19.5] will-change-transform transition-[transform,opacity] ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none ${active ? 'z-20' : 'z-10 opacity-90'}`}
+      style={{ transform: SLOT[slot], transitionDuration: `${MS}ms` }}
+    >
+      <PhoneShell active={active}>
+        <img
+          src={posterUrl(item)}
+          alt=""
+          width="540"
+          height="1170"
+          decoding="async"
+          {...(active ? { fetchpriority: 'high' } : { loading: 'lazy' })}
+          className="absolute inset-0 h-full w-full object-cover"
+          draggable="false"
+        />
+        <video
+          ref={ref}
+          muted
+          loop
+          playsInline
+          preload="none"
+          aria-label={item.caption}
+          className="absolute inset-0 h-full w-full object-cover"
+        />
+        {/* the inactive phones are dimmed with an overlay (cheaper to animate than a filter) */}
+        <div aria-hidden="true" className={`pointer-events-none absolute inset-0 bg-black transition-opacity motion-reduce:transition-none ${active ? 'opacity-0' : 'opacity-40'}`} style={{ transitionDuration: `${MS}ms` }} />
+
+        {active ? (
+          <>
+            {!playing && (
+              <button
+                type="button"
+                onClick={onTogglePlay}
+                aria-label={`Play video: ${item.caption}`}
+                className="group absolute inset-0 z-10 flex items-center justify-center focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-4 focus-visible:outline-lime"
+              >
+                <span className={`flex h-14 w-14 items-center justify-center rounded-full border border-white/30 bg-black/45 text-ink backdrop-blur transition-transform duration-200 group-hover:scale-110 motion-reduce:transition-none ${nudge ? 'ugc-nudge' : ''}`}>
+                  <PlayGlyph />
+                </span>
+              </button>
+            )}
+            <div className="absolute inset-x-3 bottom-3.5 z-20 md:inset-x-4 md:bottom-5">
+              <div className="flex items-center gap-2 rounded-full bg-black/55 py-1.5 pl-1.5 pr-1.5 backdrop-blur-md">
+                <button
+                  type="button"
+                  onClick={onTogglePlay}
+                  aria-label={playing ? 'Pause video' : 'Play video'}
+                  className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-lime md:h-10 md:w-10"
+                >
+                  {playing ? <PauseGlyph /> : <PlayGlyph className="h-4 w-4" />}
+                </button>
+                <div aria-hidden="true" className="h-1 flex-1 overflow-hidden rounded-full bg-white/25">
+                  <div className="h-full rounded-full bg-white" style={{ width: `${Math.round(progress * 100)}%` }} />
+                </div>
+                <button
+                  type="button"
+                  onClick={onToggleMute}
+                  aria-label={muted ? 'Turn sound on' : 'Turn sound off'}
+                  aria-pressed={!muted}
+                  className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-lime md:h-10 md:w-10"
+                >
+                  <SoundGlyph muted={muted} />
+                </button>
+              </div>
+            </div>
+          </>
+        ) : (
+          <button
+            type="button"
+            onClick={onSelect}
+            aria-label={`Show video ${index + 1} of ${n}: ${item.caption}`}
+            className="absolute inset-0 z-10 cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-4 focus-visible:outline-lime"
+          />
+        )}
+      </PhoneShell>
+    </div>
   )
 }
 
@@ -62,11 +206,14 @@ export default function CreatorVideoStage({ items }) {
   const shown = items.slice(0, 3)
   const n = shown.length
   const [active, setActive] = useState(0)
-  const [userIntent, setUserIntent] = useState(null) // null = follow the default, true/false = the visitor pressed play/pause
+  const [userIntent, setUserIntent] = useState(null) // null = default, true / false = the visitor pressed play / pause
   const [muted, setMuted] = useState(true)
   const [playing, setPlaying] = useState(false)
   const [progress, setProgress] = useState(0)
-  const [inView, setInView] = useState(false)
+  const [inView, setInView] = useState(true) // the hero is above the fold: assume visible until the observer says otherwise
+  const [tabVisible, setTabVisible] = useState(true)
+  const [loaded, setLoaded] = useState(() => new Set())
+  const [nudge, setNudge] = useState(false)
   const stageRef = useRef(null)
   const startX = useRef(null)
   const autoplay = useAutoplayAllowed()
@@ -75,23 +222,53 @@ export default function CreatorVideoStage({ items }) {
   useEffect(() => {
     const el = stageRef.current
     if (!el || typeof IntersectionObserver === 'undefined') { setInView(true); return undefined }
-    const io = new IntersectionObserver(([e]) => setInView(e.isIntersecting), { threshold: 0.35 })
+    const io = new IntersectionObserver(([e]) => setInView(e.isIntersecting), { threshold: 0.3 })
     io.observe(el)
     return () => io.disconnect()
   }, [])
+  useEffect(() => {
+    const on = () => setTabVisible(!document.hidden)
+    document.addEventListener('visibilitychange', on)
+    return () => document.removeEventListener('visibilitychange', on)
+  }, [])
+
+  /* Attach a video's source only once it is the active video and the browser is idle (or the visitor pressed play). */
+  const mayLoad = userIntent !== null || (autoplay && idle)
+  const activeId = shown[active].id
+  useEffect(() => {
+    if (mayLoad) setLoaded((s) => (s.has(activeId) ? s : new Set(s).add(activeId)))
+  }, [mayLoad, activeId])
+
+  /* A single, one-time invitation: the first time the visitor scrolls a little while the video is still waiting for a press, the
+     play button glows lime for a moment. Not for reduced-motion visitors. No scroll hijacking: a passive listener, used once. */
+  useEffect(() => {
+    if (!autoplay || playing) return undefined
+    let done = false
+    let t = 0
+    const onScroll = () => {
+      if (done || window.scrollY < 60) return
+      done = true
+      setNudge(true)
+      t = window.setTimeout(() => setNudge(false), 2600)
+      window.removeEventListener('scroll', onScroll)
+    }
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => { window.removeEventListener('scroll', onScroll); window.clearTimeout(t) }
+  }, [autoplay, playing])
 
   const select = useCallback((i, how) => {
     setActive((cur) => {
       const next = (i + n) % n
-      if (next !== cur) { setPlaying(false); setProgress(0); trackEvent('ugc_hero_video_switch', { how }) }
+      if (next !== cur) {
+        setPlaying(false); setProgress(0); setMuted(true); setUserIntent(null)
+        trackEvent('ugc_hero_video_switch', { how })
+      }
       return next
     })
   }, [n])
 
-  const mountPlayer = userIntent !== null || (autoplay && idle)
-  const wantPlay = inView && (userIntent ?? autoplay)
+  const wantPlay = inView && tabVisible && (userIntent ?? autoplay)
   const item = shown[active]
-
   const onKeyDown = (e) => {
     if (e.key === 'ArrowRight') { e.preventDefault(); select(active + 1, 'key') }
     if (e.key === 'ArrowLeft') { e.preventDefault(); select(active - 1, 'key') }
@@ -103,12 +280,11 @@ export default function CreatorVideoStage({ items }) {
     startX.current = null
     if (Math.abs(dx) > 45) select(active + (dx < 0 ? 1 : -1), 'swipe')
   }
-
-  const toggle = () => { const next = !playing; setUserIntent(next); trackEvent('ugc_hero_video_play', { state: next ? 'play' : 'pause' }) }
+  const togglePlay = () => { const next = !playing; setUserIntent(next); setNudge(false); trackEvent('ugc_hero_video_play', { state: next ? 'play' : 'pause' }) }
   const meta = [industryLabel(item.industry), item.languages.map(languageLabel).join(' · ')].filter(Boolean).join(' · ')
 
   return (
-    <div role="group" aria-roledescription="carousel" aria-label="Creator UGC videos" className="mx-auto w-full max-w-[520px]">
+    <div role="group" aria-roledescription="carousel" aria-label="Creator UGC videos" className="mx-auto w-full">
       <div
         ref={stageRef}
         tabIndex={0}
@@ -116,122 +292,59 @@ export default function CreatorVideoStage({ items }) {
         onPointerDown={onPointerDown}
         onPointerUp={onPointerUp}
         onPointerCancel={() => { startX.current = null }}
-        className="relative aspect-[10/11] w-full touch-pan-y select-none rounded-3xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-lime"
+        className="relative mx-auto flex w-full touch-pan-y select-none justify-center rounded-3xl py-5 [perspective:1400px] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-lime"
       >
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-0 transition-[background] duration-700 motion-reduce:transition-none"
-          style={{ background: `radial-gradient(ellipse 70% 55% at 50% 52%, ${ACCENTS[active % ACCENTS.length]}, transparent 70%)` }}
-        />
-        {shown.map((it, i) => {
-          const rel = (i - active + n) % n
-          const slot = rel === 0 ? 'center' : rel === 1 ? 'right' : 'left'
-          const isActive = rel === 0
-          return (
-            <div
-              key={it.id}
-              className={`absolute top-0 left-1/2 aspect-[9/16] w-[52%] transition-[transform,opacity,filter] duration-500 ease-out motion-reduce:transition-none ${isActive ? 'z-20' : 'z-10 opacity-60 brightness-75 hover:opacity-90 hover:brightness-90'}`}
-              style={{ transform: SLOT[slot] }}
-            >
-              <div className={`relative h-full w-full overflow-hidden rounded-[28px] border bg-surface-1 shadow-[0_40px_80px_-30px_rgba(0,0,0,0.9)] ${isActive ? 'border-lime/50 ring-1 ring-lime/30' : 'border-hairline-strong'}`}>
-                <img
-                  src={posterUrl(it)}
-                  alt=""
-                  width="405"
-                  height="720"
-                  decoding="async"
-                  {...(isActive ? { fetchpriority: 'high' } : { loading: 'lazy' })}
-                  className="absolute inset-0 h-full w-full object-cover"
-                />
-                {isActive && mountPlayer && (
-                  <StagePlayer key={it.id} item={it} wantPlay={wantPlay} muted={muted} onPlaying={setPlaying} onProgress={setProgress} />
-                )}
-                {isActive ? (
-                  <>
-                    <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/70 to-transparent" />
-                    {!playing && (
-                      <button
-                        type="button"
-                        onClick={toggle}
-                        aria-label={`Play video: ${it.caption}`}
-                        className="absolute inset-0 z-10 flex items-center justify-center focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-4 focus-visible:outline-lime"
-                      >
-                        <span className="flex h-14 w-14 items-center justify-center rounded-full border border-white/30 bg-black/45 text-ink backdrop-blur"><PlayGlyph /></span>
-                      </button>
-                    )}
-                    <div className="absolute inset-x-3 bottom-3 z-20 flex items-center gap-2">
-                      <button
-                        type="button"
-                        onClick={toggle}
-                        aria-label={playing ? 'Pause video' : 'Play video'}
-                        className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-black/55 text-ink backdrop-blur transition-colors hover:bg-black/75 focus-visible:outline focus-visible:outline-2 focus-visible:outline-lime"
-                      >
-                        {playing ? <PauseGlyph /> : <PlayGlyph className="h-4 w-4" />}
-                      </button>
-                      <div aria-hidden="true" className="h-1 flex-1 overflow-hidden rounded-full bg-white/25">
-                        <div className="h-full rounded-full bg-lime" style={{ width: `${Math.round(progress * 100)}%` }} />
-                      </div>
-                      <button
-                        type="button"
-                        onClick={() => setMuted((m) => !m)}
-                        aria-label={muted ? 'Turn sound on' : 'Turn sound off'}
-                        aria-pressed={!muted}
-                        className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-black/55 text-ink backdrop-blur transition-colors hover:bg-black/75 focus-visible:outline focus-visible:outline-2 focus-visible:outline-lime"
-                      >
-                        <SoundGlyph muted={muted} />
-                      </button>
-                    </div>
-                  </>
-                ) : (
-                  <button
-                    type="button"
-                    onClick={() => select(i, 'card')}
-                    aria-label={`Show video ${i + 1} of ${n}: ${it.caption}`}
-                    className="absolute inset-0 z-10 focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-4 focus-visible:outline-lime"
-                  />
-                )}
-              </div>
-            </div>
-          )
-        })}
+        <div className={`relative aspect-[9/19.5] ${STAGE_SIZE}`}>
+          <Lighting accent={ACCENTS[active % ACCENTS.length]} />
+          {shown.map((it, i) => {
+            const rel = (i - active + n) % n
+            const slot = rel === 0 ? 'center' : rel === 1 ? 'right' : 'left'
+            const isActive = rel === 0
+            return (
+              <StagePhone
+                key={it.id}
+                item={it}
+                slot={slot}
+                n={n}
+                index={i}
+                active={isActive}
+                load={loaded.has(it.id)}
+                wantPlay={wantPlay}
+                muted={muted}
+                playing={playing}
+                nudge={nudge}
+                progress={progress}
+                onSelect={() => select(i, 'phone')}
+                onPlaying={setPlaying}
+                onProgress={setProgress}
+                onTogglePlay={togglePlay}
+                onToggleMute={() => setMuted((m) => !m)}
+              />
+            )
+          })}
+        </div>
       </div>
 
       {n > 1 && (
-        <div className="mt-3 flex items-center justify-center gap-3">
-          <button
-            type="button"
-            onClick={() => select(active - 1, 'button')}
-            aria-label="Previous video"
-            className="flex h-11 w-11 items-center justify-center rounded-full border border-hairline-strong bg-surface-2 text-ink transition-colors hover:border-ink-subtle focus-visible:outline focus-visible:outline-2 focus-visible:outline-lime"
-          >
+        <div className="mt-1 flex items-center justify-center gap-3">
+          <button type="button" onClick={() => select(active - 1, 'button')} aria-label="Previous video" className="flex h-11 w-11 items-center justify-center rounded-full border border-hairline-strong bg-surface-2 text-ink transition-colors hover:border-ink-subtle focus-visible:outline focus-visible:outline-2 focus-visible:outline-lime">
             <svg viewBox="0 0 12 12" className="h-4 w-4" fill="none" aria-hidden="true"><path d="M8 2L4 6l4 4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
           </button>
           <ol className="flex items-center">
             {shown.map((it, i) => (
               <li key={it.id}>
-                <button
-                  type="button"
-                  onClick={() => select(i, 'dot')}
-                  aria-label={`Video ${i + 1} of ${n}`}
-                  aria-current={i === active ? 'true' : undefined}
-                  className="group flex h-11 w-8 items-center justify-center focus-visible:outline focus-visible:outline-2 focus-visible:outline-lime"
-                >
+                <button type="button" onClick={() => select(i, 'dot')} aria-label={`Video ${i + 1} of ${n}`} aria-current={i === active ? 'true' : undefined} className="group flex h-11 w-8 items-center justify-center focus-visible:outline focus-visible:outline-2 focus-visible:outline-lime">
                   <span className={`block h-1.5 rounded-full transition-all duration-300 motion-reduce:transition-none ${i === active ? 'w-6 bg-lime' : 'w-1.5 bg-surface-3 group-hover:bg-ink-subtle'}`} />
                 </button>
               </li>
             ))}
           </ol>
-          <button
-            type="button"
-            onClick={() => select(active + 1, 'button')}
-            aria-label="Next video"
-            className="flex h-11 w-11 items-center justify-center rounded-full border border-hairline-strong bg-surface-2 text-ink transition-colors hover:border-ink-subtle focus-visible:outline focus-visible:outline-2 focus-visible:outline-lime"
-          >
+          <button type="button" onClick={() => select(active + 1, 'button')} aria-label="Next video" className="flex h-11 w-11 items-center justify-center rounded-full border border-hairline-strong bg-surface-2 text-ink transition-colors hover:border-ink-subtle focus-visible:outline focus-visible:outline-2 focus-visible:outline-lime">
             <svg viewBox="0 0 12 12" className="h-4 w-4" fill="none" aria-hidden="true"><path d="M4 2l4 4-4 4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
           </button>
         </div>
       )}
-      <p aria-live="polite" className="mt-1 text-center text-sm leading-snug text-ink-muted">
+      <p aria-live="polite" className="mx-auto mt-1 max-w-[320px] text-center text-sm leading-snug text-ink-muted">
         <span className="font-medium text-ink">{item.caption}</span>
         {meta && <span className="block text-[13px]">{meta}</span>}
       </p>

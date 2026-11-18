@@ -27,7 +27,10 @@ function Player({ item }) {
     const play = () => { v.play().catch(() => {}) }
     play()
     v.addEventListener('canplay', play, { once: true })
-    return () => v.removeEventListener('canplay', play)
+    /* pause when the card scrolls off screen */
+    const io = typeof IntersectionObserver === 'undefined' ? null : new IntersectionObserver(([e]) => { if (!e.isIntersecting) v.pause() }, { threshold: 0.1 })
+    io?.observe(v)
+    return () => { v.removeEventListener('canplay', play); io?.disconnect() }
   }, [item])
   return (
     <video
@@ -121,7 +124,8 @@ export function PortfolioGrid({ items, pageSize = PAGE }) {
           <p className="text-sm text-ink-muted" aria-live="polite">{matching.length} {matching.length === 1 ? 'video' : 'videos'}</p>
         </div>
       )}
-      <ul className="-mx-5 flex snap-x snap-mandatory gap-4 overflow-x-auto px-5 pb-2 [scrollbar-width:none] md:mx-0 md:grid md:grid-cols-3 md:gap-6 md:overflow-visible md:px-0 lg:gap-8">
+      {/* keyed by the active filters, so the cards re-enter (staggered fade-rise) whenever a category or language changes */}
+      <ul key={`${filters.category}-${filters.language}`} className="-mx-5 flex snap-x snap-mandatory gap-4 overflow-x-auto px-5 pb-2 [scrollbar-width:none] md:mx-0 md:grid md:grid-cols-3 md:gap-6 md:overflow-visible md:px-0 lg:gap-8">
         {shown.map((item, i) => (
           <li key={item.id} className="w-[72%] shrink-0 snap-center sm:w-[44%] md:w-auto">
             <div className="cs-card-in h-full" style={{ animationDelay: `${(i % PAGE) * 70}ms` }}>
