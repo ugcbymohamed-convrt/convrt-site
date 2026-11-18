@@ -289,7 +289,24 @@ body {
   animation: pricing-panel-in 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
+/* ── UGC page — process visuals ── */
+@keyframes ugc-pop {
+  0%   { opacity: 0; transform: scale(0.6); }
+  70%  { opacity: 1; transform: scale(1.06); }
+  100% { opacity: 1; transform: scale(1); }
+}
+.ugc-pop { animation: ugc-pop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
+@keyframes ugc-grow {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}
+.ugc-bar { transform-origin: left center; animation: ugc-grow 0.9s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.ugc-progress { transform-origin: left center; animation: ugc-grow linear both; }
+
 @media (prefers-reduced-motion: reduce) {
+  .ugc-pop,
+  .ugc-bar,
+  .ugc-progress,
   .marquee-track,
   .marquee-track-reverse,
   .animate-fly-up,

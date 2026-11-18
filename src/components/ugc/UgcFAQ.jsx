@@ -1,9 +1,9 @@
 import { useState, useCallback } from 'react'
 import { UGC_FAQ } from '../../seo/ugcFaq.js'
 import { trackEvent } from '../../lib/analytics.js'
-import { Section, Head, Reveal } from './shared.jsx'
+import { Section, Head, Reveal, TextLink } from './shared.jsx'
 
-/* SECTION 10: FAQ. EVERY question and answer is always in the DOM (and so in the prerendered HTML). Collapsed answers stay in
+/* SECTION 5: FAQ (14 questions). EVERY question and answer is always in the DOM (and so in the prerendered HTML). Collapsed answers stay in
    the document but are visibility:hidden, so they are out of the tab order and accessibility tree. The same UGC_FAQ array feeds
    the FAQPage JSON-LD, so the markup can never differ from this text. Accordion pattern as on /pricing. */
 
@@ -50,6 +50,11 @@ function Item({ item, open, onToggle }) {
           <div className="flex flex-col gap-3 pb-5 pl-5 pr-6 md:pl-6">
             {item.a.map((para, i) => (
               <p key={i} className="text-[15px] leading-[1.7] text-ink-muted">{para}</p>
+            ))}
+            {item.links?.map((l) => (
+              <p key={l.href} className="text-[15px]">
+                <TextLink href={l.href} onClick={() => trackEvent('ugc_faq_link_click', { question: item.id, href: l.href })}>{l.label} <span aria-hidden="true">→</span></TextLink>
+              </p>
             ))}
           </div>
         </div>

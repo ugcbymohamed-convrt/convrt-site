@@ -27,9 +27,11 @@
    • A video renders ONLY when approval.status === 'approved' AND approval.portfolioUse === true AND
      approval.creatorConsent === true. Approval to produce or deliver a video is NOT portfolio permission.
    • No placeholder, stock or unapproved material, ever. With no approved videos the page shows a brand-consistent
-     fallback instead (see UgcWork.jsx), so an empty list is a valid, fully working state.
+     state of the page (no portfolio section, a text-led hero), so an empty list is a valid, fully working state.
    • A creator's name is personal data: it is shown only when creator.showName is true.
-   • Filters (language, industry) are generated from this data and appear only when a facet has two or more values.
+   • Filters are generated from this data and appear only when a facet has two or more values. The category toggles are
+     SaaS, E-commerce, Apps and Other (every other industry slug groups under Other; the card still shows the specific industry).
+     A category with no approved video never appears.
    • tests/ugc-page.test.mjs validates every entry (unique ids, valid codes, source, permission flags). */
 
 export const UGC_PORTFOLIO = []
@@ -84,17 +86,24 @@ export const creatorLabel = (item) => (item.creator?.showName === true && item.c
 export const posterUrl = (item) => item.poster ?? `https://videodelivery.net/${item.source.cloudflareId}/thumbnails/thumbnail.jpg?time=0s&height=720`
 export const hlsUrl = (item) => `https://videodelivery.net/${item.source.cloudflareId}/manifest/video.m3u8`
 
+/* Category toggles: SaaS, E-commerce, Apps and Other. Only categories that have at least one approved video are ever offered. */
+export const CATEGORY_LABELS = { saas: 'SaaS', ecommerce: 'E-commerce', app: 'Apps', other: 'Other' }
+const CATEGORY_ORDER = ['saas', 'ecommerce', 'app', 'other']
+const CATEGORY_OF_INDUSTRY = { saas: 'saas', ecommerce: 'ecommerce', app: 'app', technology: 'app' }
+export const categoryOf = (item) => CATEGORY_OF_INDUSTRY[item.industry] ?? 'other'
+
 /* Filter facets. A facet is offered only when it has two or more distinct values (a single value is nothing to filter by). */
 export function buildFacets(items) {
   const count = (values) => values.reduce((m, v) => m.set(v, (m.get(v) ?? 0) + 1), new Map())
   const langs = count(items.flatMap((i) => i.languages))
-  const inds = count(items.map((i) => i.industry))
-  const toList = (m, label) => [...m.entries()].map(([value, n]) => ({ value, label: label(value), count: n })).sort((a, b) => a.label.localeCompare(b.label))
+  const cats = count(items.map(categoryOf))
+  const languageList = [...langs.entries()].map(([value, n]) => ({ value, label: languageLabel(value), count: n })).sort((a, b) => a.label.localeCompare(b.label))
+  const categoryList = CATEGORY_ORDER.filter((c) => cats.has(c)).map((value) => ({ value, label: CATEGORY_LABELS[value], count: cats.get(value) }))
   return {
-    language: langs.size >= 2 ? toList(langs, languageLabel) : [],
-    industry: inds.size >= 2 ? toList(inds, industryLabel) : [],
+    language: langs.size >= 2 ? languageList : [],
+    category: cats.size >= 2 ? categoryList : [],
   }
 }
 
-export const matchesFilters = (item, { language = null, industry = null } = {}) =>
-  (!language || item.languages.includes(language)) && (!industry || item.industry === industry)
+export const matchesFilters = (item, { language = null, category = null } = {}) =>
+  (!language || item.languages.includes(language)) && (!category || categoryOf(item) === category)
