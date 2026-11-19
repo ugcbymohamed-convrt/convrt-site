@@ -141,8 +141,9 @@ function VisualFilming() {
         <span className="ugc-fade-out absolute left-2 top-2.5 flex items-center gap-1 rounded-full bg-black/55 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-[0.08em] text-ink" style={delay(2300)}>
           <span className="ugc-blink h-1.5 w-1.5 rounded-full bg-coral" />Rec
         </span>
-        <span className="cs-fade-up absolute inset-x-2 bottom-7 rounded-md bg-black/60 px-1.5 py-1 text-center text-[11px] font-bold leading-tight text-ink" style={delay(2450)}>
-          Wait, you&rsquo;re <span className="text-lime">still</span> doing it&hellip;
+        {/* captions, drawn as neutral lines (no words) */}
+        <span className="cs-fade-up absolute inset-x-3 bottom-8 flex flex-col items-center gap-1 rounded-lg bg-black/55 px-2 py-2" style={delay(2450)}>
+          <span className="h-1.5 w-full rounded-full bg-white/85" /><span className="h-1.5 w-3/5 rounded-full bg-lime" />
         </span>
         <span className="absolute inset-x-2 bottom-3 h-[3px] rounded-full bg-white/20"><span className="ugc-bar block h-full rounded-full bg-lime" style={{ animationDuration: '3.4s', ...delay(200) }} /></span>
       </div>
@@ -168,26 +169,24 @@ function VisualFilming() {
   )
 }
 
-/* 4  two finished versions, delivered, plus guidance on what to test */
+/* 4  three finished versions of the concept, delivered, plus guidance on what to test */
 function VisualDelivery() {
-  const versions = [['Version A', 'Hook A', '#8b5cf6', '#8b5cf6'], ['Version B', 'Hook B', '#d5ff40', '#d5ff40']]
+  const n = SPRINT.variationsPerConcept
+  const tones = ['#8b5cf6', '#d5ff40', '#ff6a4d']
   return (
     <div className="flex h-full flex-col justify-between gap-3">
-      <div className="flex items-start justify-center gap-4 sm:gap-8">
-        {versions.map(([v, hook, tone], i) => (
-          <div key={v} className="flex items-start gap-4 sm:gap-8">
-            {i === 1 && <span className="cs-fade-up mt-16 text-xs font-semibold uppercase tracking-[0.16em] text-ink-muted" style={delay(500)}>vs</span>}
-            <div className="cs-fade-up flex flex-col items-center gap-1.5" style={delay(i * 220)}>
-              <span className="rounded-full px-2.5 py-0.5 text-[11px] font-bold" style={{ background: `${tone}26`, color: tone }}>{v}</span>
-              <MiniPhone variant={1} tone={tone} caption={hook} captionBg={tone} className="w-[5.2rem] sm:w-[7rem]" />
-              <span className="ugc-pop inline-flex items-center gap-1 rounded-full bg-lime/15 px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.06em] text-lime" style={delay(900 + i * 200)}>
-                <Icon className="h-3 w-3"><path d="M4 12.5l5 5L20 6" /></Icon>Delivered
-              </span>
-            </div>
+      <div className="flex items-start justify-center gap-3 sm:gap-6">
+        {Array.from({ length: n }, (_, i) => (
+          <div key={i} className="cs-fade-up flex flex-col items-center gap-1.5" style={delay(i * 200)}>
+            <span className="rounded-full px-2.5 py-0.5 text-[11px] font-bold" style={{ background: `${tones[i]}26`, color: tones[i] }}>Version {'ABC'[i]}</span>
+            <MiniPhone variant={1} tone={tones[i]} caption={`Hook ${'ABC'[i]}`} captionBg={tones[i]} className="w-[4.4rem] sm:w-[6rem]" />
+            <span className="ugc-pop inline-flex items-center gap-1 rounded-full bg-lime/15 px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.06em] text-lime" style={delay(900 + i * 200)}>
+              <Icon className="h-3 w-3"><path d="M4 12.5l5 5L20 6" /></Icon>Delivered
+            </span>
           </div>
         ))}
       </div>
-      <div className="cs-fade-up flex items-center gap-3 rounded-2xl border border-lime/30 bg-lime/[0.06] px-3 py-2.5" style={delay(1300)}>
+      <div className="cs-fade-up flex items-center gap-3 rounded-2xl border border-lime/30 bg-lime/[0.06] px-3 py-2.5" style={delay(1400)}>
         <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-lime/20 text-lime"><Icon><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z" /></Icon></span>
         <span className="min-w-0"><span className="block text-[12px] font-bold text-ink">Ready to test</span><span className="block text-[11px] leading-snug text-ink-muted">Finished versions, plus guidance on what to test next.</span></span>
       </div>

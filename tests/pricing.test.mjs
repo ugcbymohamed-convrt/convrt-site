@@ -24,28 +24,28 @@ const faq = (id) => faqAnswerText(PRICING_FAQ.find((f) => f.id === id))
 const graph = () => pricingGraph({ title: SITE_SEO['/pricing'].title, description: SITE_SEO['/pricing'].description })['@graph']
 
 // ── confirmed commercial policy ─────────────────────────────────────────────────────────
-test('Sprint: $2,500/month, 5 concepts x 2 variations = 10, 10 business days, 2 revision rounds, 6 months usage', () => {
-  assert.deepEqual(SPRINT.monthly, { amount: 2500, currency: 'USD' })
+test('Sprint: $3,000/month, 5 concepts x 3 variations = 15, 10 business days, 2 revision rounds, 6 months usage', () => {
+  assert.deepEqual(SPRINT.monthly, { amount: 3000, currency: 'USD' })
   assert.equal(SPRINT.concepts, 5)
-  assert.equal(SPRINT.variationsPerConcept, 2)
+  assert.equal(SPRINT.variationsPerConcept, 3)
   assert.equal(SPRINT.variations, SPRINT.concepts * SPRINT.variationsPerConcept)
-  assert.equal(SPRINT.variations, 10)
+  assert.equal(SPRINT.variations, 15)
   assert.equal(SPRINT.turnaroundBusinessDays, 10)
   assert.equal(SPRINT.revisionRoundsPerConcept, 2)
   assert.equal(SPRINT.usageMonthsIncluded, 6)
 })
 
-test('Sprint Plus: $4,500/month, 20 variations, 15 business days, 2 revision rounds, 6 months usage', () => {
+test('Sprint Plus: $4,500/month, 30 variations, 15 business days, 2 revision rounds, 6 months usage', () => {
   assert.deepEqual(SPRINT_PLUS.monthly, { amount: 4500, currency: 'USD' })
-  assert.equal(SPRINT_PLUS.variations, 20)
+  assert.equal(SPRINT_PLUS.variations, 30)
   assert.equal(SPRINT_PLUS.turnaroundBusinessDays, 15)
   assert.equal(SPRINT_PLUS.revisionRoundsPerConcept, 2)
   assert.equal(SPRINT_PLUS.usageMonthsIncluded, 6)
 })
 
-test('Sprint 5/5/2/10 and Sprint Plus 10/10/2/20 (approved offer): config, cards, FAQ, JSON-LD and diagram text agree', () => {
-  assert.deepEqual([SPRINT.concepts, SPRINT.scripts, SPRINT.variationsPerConcept, SPRINT.variations], [5, 5, 2, 10])
-  assert.deepEqual([SPRINT_PLUS.concepts, SPRINT_PLUS.scripts, SPRINT_PLUS.variationsPerConcept, SPRINT_PLUS.variations], [10, 10, 2, 20])
+test('Sprint 5/5/3/15 and Sprint Plus 10/10/3/30 (approved offer): config, cards, FAQ, JSON-LD and diagram text agree', () => {
+  assert.deepEqual([SPRINT.concepts, SPRINT.scripts, SPRINT.variationsPerConcept, SPRINT.variations], [5, 5, 3, 15])
+  assert.deepEqual([SPRINT_PLUS.concepts, SPRINT_PLUS.scripts, SPRINT_PLUS.variationsPerConcept, SPRINT_PLUS.variations], [10, 10, 3, 30])
   assert.equal(SPRINT_PLUS.variations, SPRINT_PLUS.concepts * SPRINT_PLUS.variationsPerConcept)
   assert.equal(SPRINT.variations, SPRINT.concepts * SPRINT.variationsPerConcept)
   assert.equal(SPRINT_PLUS.valueLine, 'Twice the creative concepts. Twice the finished ad versions.')
@@ -56,12 +56,12 @@ test('Sprint 5/5/2/10 and Sprint Plus 10/10/2/20 (approved offer): config, cards
   assert.match(offer, /\$\{SPRINT_PLUS\.scripts\} complete scripts/)
   assert.match(offer, /\$\{SPRINT_PLUS\.variationsPerConcept\} versions per concept, changing the hook or CTA/)
   assert.match(offer, /line=\{SPRINT_PLUS\.valueLine\}/)
-  assert.match(faq('whats-included'), /Creative Testing Sprint Plus is \$4,500\/month for 10 concepts and 20 finished ad versions/)
-  assert.match(faq('concept-vs-variation'), /Creative Testing Sprint Plus includes 10 concepts with 2 versions each, 20 finished ad versions in total/)
+  assert.match(faq('whats-included'), /Creative Testing Sprint Plus is \$4,500\/month for 10 concepts and 30 finished ad versions/)
+  assert.match(faq('concept-vs-variation'), /Creative Testing Sprint Plus includes 10 concepts with 3 versions each, 30 finished ad versions in total/)
   const svc = graph().find((n) => n.name === 'Creative Testing Sprint Plus')
-  assert.match(svc.description, /^10 distinct creative concepts with 2 versions each \(20 finished ad versions\)/)
+  assert.match(svc.description, /^10 distinct creative concepts with 3 versions each \(30 finished ad versions\)/)
   const std = graph().find((n) => n.name === 'Creative Testing Sprint')
-  assert.match(std.description, /^5 distinct creative concepts with 2 versions each \(10 finished ad versions\)/)
+  assert.match(std.description, /^5 distinct creative concepts with 3 versions each \(15 finished ad versions\)/)
   // the visible package copy and the structured data say the same thing
   for (const n of [svc, std]) assert.ok(n.offers.length === 2)
   const philoSrc = read('src/components/pricing/PhilosophySection.jsx')
@@ -88,14 +88,14 @@ test('monthly commitment: 3 months, then month-to-month, 30 days notice; no guar
   assert.match(faq('minimum-commitment'), /three-month commitment/)
 })
 
-test('one-off prices are $3,000 and $5,400 in USD, monthly in EUR: currencies preserved, never converted', () => {
-  assert.deepEqual(SPRINT.oneOff, { amount: 3000, currency: 'USD' })
+test('one-off prices are $3,500 and $5,400 in USD, monthly in EUR: currencies preserved, never converted', () => {
+  assert.deepEqual(SPRINT.oneOff, { amount: 3500, currency: 'USD' })
   assert.deepEqual(SPRINT_PLUS.oneOff, { amount: 5400, currency: 'USD' })
-  assert.equal(formatMoney(SPRINT.oneOff), '$3,000')
+  assert.equal(formatMoney(SPRINT.oneOff), '$3,500')
   assert.equal(formatMoney(SPRINT_PLUS.oneOff), '$5,400')
-  assert.equal(formatMoney(SPRINT.monthly), '$2,500')
+  assert.equal(formatMoney(SPRINT.monthly), '$3,000')
   assert.ok(!OWNER_REVIEW_FLAGS.some((f) => /currency/i.test(f)), 'currency question is closed')
-  assert.match(faq('one-off-and-single-video'), /\$3,000.*\$5,400/)
+  assert.match(faq('one-off-and-single-video'), /\$3,500.*\$5,400/)
   assert.ok(!/euro|EUR|€/i.test(faq('one-off-and-single-video')), 'no currency mix-up text')
   assert.ok(SINGLE_VIDEOS.sold === false && /does not sell individual paid videos/.test(SINGLE_VIDEOS.statement))
 })
@@ -264,7 +264,7 @@ test('brand + talent + languages: verbatim confirmed information, nothing invent
 
 test('pricing page copy is data-driven: package prices are not typed into the components', () => {
   const offer = read('src/components/pricing/PricingStage.jsx') + read('src/components/pricing/PricingCards.jsx')
-  for (const literal of ['2,500', '4,500', '1,500', '3,000', '5,400', '2,000', '250']) assert.ok(!offer.includes(literal), `hard-coded ${literal}`)
+  for (const literal of ['2,500', '4,500', '1,500', '3,000', '3,500', '5,400', '2,000', '250']) assert.ok(!offer.includes(literal), `hard-coded ${literal}`)
   for (const f of ['InfoPanels', 'PartnershipTerms', 'PhilosophySection']) {
     assert.ok(!/[$$]\s?\d/.test(read(`src/components/pricing/${f}.jsx`)), `${f} hard-codes a price`)
   }
@@ -358,9 +358,9 @@ test('Offers: numeric prices, correct currencies, monthly vs one-off kept apart,
   const spec = (s, i) => s.offers[i].priceSpecification
   const sprint = svc('creative-testing-sprint')
   const plus = svc('creative-testing-sprint-plus')
-  assert.equal(spec(sprint, 0).price, 2500); assert.equal(spec(sprint, 0).priceCurrency, 'USD'); assert.equal(spec(sprint, 0).unitCode, 'MON')
+  assert.equal(spec(sprint, 0).price, 3000); assert.equal(spec(sprint, 0).priceCurrency, 'USD'); assert.equal(spec(sprint, 0).unitCode, 'MON')
   assert.equal(spec(sprint, 0)['@type'], 'UnitPriceSpecification')
-  assert.equal(spec(sprint, 1).price, 3000); assert.equal(spec(sprint, 1).priceCurrency, 'USD'); assert.equal(spec(sprint, 1).unitCode, undefined)
+  assert.equal(spec(sprint, 1).price, 3500); assert.equal(spec(sprint, 1).priceCurrency, 'USD'); assert.equal(spec(sprint, 1).unitCode, undefined)
   assert.equal(spec(plus, 0).price, 4500); assert.equal(spec(plus, 0).priceCurrency, 'USD')
   assert.equal(spec(plus, 1).price, 5400); assert.equal(spec(plus, 1).priceCurrency, 'USD')
   for (const id of ['organic-light', 'organic-growth']) assert.equal(spec(svc(id), 0).unitCode, 'MON')
@@ -502,7 +502,7 @@ test('billing: compact Monthly / One-off selector for Paid only; prices from con
   assert.deepEqual(BILLING_OPTIONS.map((o) => [o.id, o.label, o.unit]), [['monthly', 'Monthly', '/month'], ['oneOff', 'One-off', '/project']])
   assert.match(stage, /useState\('monthly'\)/)
   assert.match(cardsSrc, /formatMoney\(pkg\[o\.id\]\)/)
-  assert.equal(SPRINT.monthly.amount, 2500); assert.equal(SPRINT.oneOff.amount, 3000)
+  assert.equal(SPRINT.monthly.amount, 3000); assert.equal(SPRINT.oneOff.amount, 3500)
   assert.equal(SPRINT_PLUS.monthly.amount, 4500); assert.equal(SPRINT_PLUS.oneOff.amount, 5400)
   const paidPanel = stage.slice(stage.indexOf('id="paid"'), stage.indexOf('id="organic"'))
   const organicPanel = stage.slice(stage.indexOf('id="organic"'))

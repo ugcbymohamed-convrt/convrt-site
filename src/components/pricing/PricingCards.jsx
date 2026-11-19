@@ -148,7 +148,7 @@ export function PaidCards({ billing }) {
     usage(SPRINT.usageMonthsIncluded),
     revisions(SPRINT.revisionRoundsPerConcept),
   ]
-  /* Sprint Plus (approved offer): 10 concepts, 10 scripts, 2 versions per concept = 20 finished ad versions. */
+  /* Sprint Plus (approved offer): 10 concepts, 10 scripts, 3 versions per concept = 30 finished ad versions. */
   const plusFeatures = [
     `${SPRINT_PLUS.concepts} distinct creative concepts`,
     `${SPRINT_PLUS.scripts} complete scripts`,

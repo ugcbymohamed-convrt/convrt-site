@@ -162,21 +162,21 @@ test('turnaround: the clock starts when concepts and scripts are approved (10 / 
   assert.ok(t.includes(PRODUCT_REQUIREMENTS.physical) && t.includes(PRODUCT_REQUIREMENTS.saas), 'product shipping and access are explained separately from the clock')
 })
 
-test('deliverables: 10 and 20 FINISHED AD VERSIONS (concepts × 2 versions), included in the totals, never extra videos; one term everywhere', () => {
+test('deliverables: 15 and 30 FINISHED AD VERSIONS (concepts × 3 versions), included in the totals, never extra videos; one term everywhere', () => {
   const t = textOf(page(PATH))
   assert.equal(SPRINT.concepts * SPRINT.variationsPerConcept, SPRINT.variations)
   assert.equal(SPRINT_PLUS.concepts * SPRINT_PLUS.variationsPerConcept, SPRINT_PLUS.variations)
-  assert.deepEqual([SPRINT.concepts, SPRINT.variations, SPRINT_PLUS.concepts, SPRINT_PLUS.variations], [5, 10, 10, 20], 'quantities are unchanged')
+  assert.deepEqual([SPRINT.concepts, SPRINT.variations, SPRINT_PLUS.concepts, SPRINT_PLUS.variations], [5, 15, 10, 30], 'quantities follow the approved 3-version offer')
   for (const p of [SPRINT, SPRINT_PLUS]) assert.ok(t.includes(packageEquation(p)), p.name)
-  assert.equal(packageEquation(SPRINT), '5 concepts × 2 versions = 10 finished ad versions')
-  assert.equal(adVersions(20), '20 finished ad versions')
-  assert.match(t, /Each concept comes in 2 versions, such as a different hook or call to action\. The finished ad version totals in our packages already include them, so they are not extra videos on top\./)
+  assert.equal(packageEquation(SPRINT), '5 concepts × 3 versions = 15 finished ad versions')
+  assert.equal(adVersions(30), '30 finished ad versions')
+  assert.match(t, /Each concept comes in 3 versions, such as a different hook or call to action\. The finished ad version totals in our packages already include them, so they are not extra videos on top\./)
   assert.ok(!/ad variations/i.test(t), 'the UGC page never says "ad variations"')
   // the Pricing page and the shared data say exactly the same thing
   const pricing = textOf(page('/pricing'))
-  assert.ok(pricing.includes('10 finished ad versions') && pricing.includes('20 finished ad versions') && !/ad variations/i.test(pricing), 'Pricing page wording is synchronised')
-  assert.ok(JSON.stringify(jsonLdFor('/pricing', SITE_SEO['/pricing'])).includes('(10 finished ad versions)'))
-  assert.ok(JSON.stringify(jsonLdFor(PATH, SITE_SEO[PATH])).includes('10 finished ad versions') && !/ad variations/.test(JSON.stringify(jsonLdFor(PATH, SITE_SEO[PATH]))))
+  assert.ok(pricing.includes('15 finished ad versions') && pricing.includes('30 finished ad versions') && !/ad variations/i.test(pricing), 'Pricing page wording is synchronised')
+  assert.ok(JSON.stringify(jsonLdFor('/pricing', SITE_SEO['/pricing'])).includes('(15 finished ad versions)'))
+  assert.ok(JSON.stringify(jsonLdFor(PATH, SITE_SEO[PATH])).includes('15 finished ad versions') && !/ad variations/.test(JSON.stringify(jsonLdFor(PATH, SITE_SEO[PATH]))))
 })
 
 // ── commercial figures come from the data ─────────────────────────────────────────────────
@@ -410,8 +410,8 @@ test('process: four stages readable without interaction, a simple three-step tes
   // all four one-line explanations are visible text (nothing is hidden behind a click)
   for (const phrase of ['develop distinct concepts, each with its own hooks', 'You approve both before anything is filmed', 'Creators film natively for each format', 'guidance on what to test next', 'quality-check every video']) assert.ok(t.includes(phrase), phrase)
   assert.ok(!/visibility:\s*hidden/.test(rootOf(page(PATH)).slice(rootOf(page(PATH)).indexOf('id="how-it-works"'), rootOf(page(PATH)).indexOf('id="results"'))), 'no stage text is hidden')
-  // the testing illustration: one concept with two versions, then the scale, then compare and learn; conceptual only
-  for (const phrase of ['One concept, two versions', 'The pattern scales', 'Compare, learn, repeat', 'Two versions of every concept. Then you learn.', 'Illustration only']) assert.ok(t.includes(phrase), phrase)
+  // the testing illustration: one concept with three versions, then the scale, then compare and learn; conceptual only
+  for (const phrase of ['One concept, three versions', 'The pattern scales', 'Compare, learn, repeat', 'Three versions of every concept. Then you learn.', 'Illustration only']) assert.ok(t.includes(phrase), phrase)
   assert.ok(t.includes('differ in one thing, such as the hook or the call to action'))
   assert.ok(t.includes(packageEquation(SPRINT)) && t.includes(packageEquation(SPRINT_PLUS)))
   const diagram = read('src/components/ugc/TestingDiagram.jsx').replace(/\/\*[\s\S]*?\*\//g, '')
@@ -559,9 +559,32 @@ test('process scenes: richer illustrations built from stylised (not photographic
   assert.ok(/aria-hidden="true" className="pricing-panel-in/.test(proc) && /<Visual \/>/.test(proc))
   for (const w of ['One brief', 'Brand brief', 'different concepts', 'We match the right creator', 'We write the script', 'You approve', 'Filming', 'Editing', 'Captions', 'Export', 'Delivered', 'Ready to test']) assert.ok(proc.includes(w), w)
   const diag = read('src/components/ugc/TestingDiagram.jsx')
-  for (const w of ['Only the hook changes', 'SceneOne', 'SceneTwo', 'SceneThree', 'Learn what resonates', 'Repeat', 'Conceptual illustration, not real results']) assert.ok(diag.includes(w), w)
-  assert.ok(/SPRINT\.concepts/.test(diag) && /SPRINT\.variations/.test(diag), 'the 5 × 2 = 10 equation reads the package data')
+  for (const w of ['Only the hook changes', 'SceneOne', 'SceneTwo', 'SceneThree', 'Learn what resonates', 'then repeat', 'Conceptual illustration, not real results']) assert.ok(diag.includes(w), w)
+  assert.ok(/SPRINT\.concepts/.test(diag) && /SPRINT\.variations/.test(diag), 'the 5 × 3 = 15 equation reads the package data')
   // each scene renders without error in the static HTML (step 1 is the default)
   const html = rootOf(page(PATH))
   assert.ok(html.includes('Only the hook changes') && html.includes('Brand brief') && !html.includes('Learn what resonates') && !html.includes('We write the script'), 'only the first state of each interaction is in the static HTML')
+})
+
+test('3-version offer: no stale "two versions / 10 ads / 20 finished" wording or $2,500 / $3,000-one-off Sprint price anywhere on the UGC page, its FAQ or its components', () => {
+  const t = textOf(page(PATH))
+  const html = rootOf(page(PATH))
+  assert.ok(!/\b(two|2) versions\b|ten finished|\b10 finished ad versions|\b20 finished ad versions|10 ads\b|5 × 2\b|\bHook A \/ Hook B\b/i.test(t), 'no old structure in the visible text')
+  assert.ok(t.includes('From $3,000/month') && t.includes('15 finished ad versions') && t.includes('30 finished ad versions'))
+  assert.ok(!t.includes('$2,500') && !html.includes('$2,500'), 'the old monthly price is gone')
+  assert.ok(t.includes(`${formatMoney(SPRINT.oneOff)} one-off`) || t.includes(formatMoney(SPRINT.oneOff)), 'the one-off Sprint price is stated from the data')
+  assert.equal(formatMoney(SPRINT.monthly), '$3,000'); assert.equal(formatMoney(SPRINT.oneOff), '$3,500')
+  for (const f of fs.readdirSync(path.join(ROOT, 'src/components/ugc'))) {
+    const code = read(path.join('src/components/ugc', f)).replace(/\/\*[\s\S]*?\*\//g, '')
+    assert.ok(!/two versions|2 versions|ten finished|10 finished|Version B['"]\s*\]\s*\]/i.test(code), `${f}: old two-version wording`)
+  }
+  const ld = JSON.stringify(jsonLdFor(PATH, SITE_SEO[PATH]))
+  assert.ok(!/\b2 versions each|10 finished|20 finished/.test(ld) && ld.includes('3 versions each'), 'structured data follows the new offer')
+})
+
+test('Filming & Editing mock phone is clean: no dialogue or headline text, creator footage + editing + captions (as lines) + export formats only', () => {
+  const src = read('src/components/ugc/UgcProcess.jsx')
+  const filming = src.slice(src.indexOf('function VisualFilming'), src.indexOf('/* 4  three finished versions'))
+  assert.ok(!/Wait, you|doing it|still<|&rsquo;re/.test(filming), 'no spoken or headline text in the mock phone')
+  assert.ok(/Avatar variant/.test(filming) && /Captions/.test(filming) && /Export/.test(filming) && /formats/.test(filming))
 })

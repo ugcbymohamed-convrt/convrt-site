@@ -28,14 +28,14 @@ export const formatMoney = (m) => `${SYMBOL[m.currency]}${group(m.amount)}`
 const usd = (amount) => ({ amount, currency: 'USD' })
 
 /* ── deliverable terminology ──────────────────────────────────────────────────────────────
-   A package delivers FINISHED AD VERSIONS: `concepts × versions per concept`. Sprint = 5 × 2 = 10; Sprint Plus = 10 × 2 = 20.
-   The two versions of a concept are alternatives (for example a different hook or call to action) and are INCLUDED in the total,
+   A package delivers FINISHED AD VERSIONS: `concepts × versions per concept`. Sprint = 5 × 3 = 15; Sprint Plus = 10 × 3 = 30.
+   The three versions of a concept are alternatives (for example a different hook or call to action) and are INCLUDED in the total,
    never extra videos on top of it. The quantities live on SPRINT / SPRINT_PLUS below (`concepts`, `variationsPerConcept`,
    `variations`); every page, FAQ and JSON-LD phrases them through these helpers so the wording cannot drift. */
 export const AD_VERSIONS = { one: 'finished ad version', many: 'finished ad versions', perConcept: 'versions' }
-/** 10 → "10 finished ad versions" */
+/** 15 → "15 finished ad versions" */
 export const adVersions = (n) => `${n} ${n === 1 ? AD_VERSIONS.one : AD_VERSIONS.many}`
-/** { concepts: 5, variationsPerConcept: 2, variations: 10 } → "5 concepts × 2 versions = 10 finished ad versions" */
+/** { concepts: 5, variationsPerConcept: 3, variations: 15 } → "5 concepts × 3 versions = 15 finished ad versions" */
 export const packageEquation = (pkg) => `${pkg.concepts} concepts × ${pkg.variationsPerConcept} ${AD_VERSIONS.perConcept} = ${adVersions(pkg.variations)}`
 
 /* ── brand ────────────────────────────────────────────────────────────────────────────── */
@@ -105,12 +105,14 @@ const USAGE_MONTHS_INCLUDED = 6
 export const SPRINT = {
   id: 'creative-testing-sprint',
   name: 'Creative Testing Sprint',
-  monthly: usd(2500),
-  oneOff: usd(3000),
+  /* APPROVED OFFER (owner, Nov 2026, second revision): Sprint = 5 concepts, 5 scripts, 3 variations per concept, 15 finished ad
+     versions; $3,000 monthly, $3,500 one-off. */
+  monthly: usd(3000),
+  oneOff: usd(3500),
   concepts: 5,
   scripts: 5,
-  variationsPerConcept: 2,
-  variations: 10,
+  variationsPerConcept: 3,
+  variations: 15,
   cardDescription: 'For brands ready to discover new creative angles and find what resonates.',
   turnaroundBusinessDays: 10,
   revisionRoundsPerConcept: 2,
@@ -128,12 +130,13 @@ export const SPRINT_PLUS = {
   name: 'Creative Testing Sprint Plus',
   monthly: usd(4500),
   oneOff: usd(5400),
-  /* APPROVED OFFER (owner, Nov 2026): Sprint Plus = 10 distinct concepts, 10 complete scripts, 2 variations per concept,
-     20 finished ad versions. It supersedes the earlier 8-concept / unevenly distributed structure. */
+  /* Sprint Plus = 10 distinct concepts, 10 complete scripts, 3 variations per concept, 30 finished ad versions (kept in step with
+     the Sprint's 3-version model; the Plus PRICE below was NOT changed in that revision and is awaiting owner confirmation). It
+     supersedes the earlier 8-concept / unevenly distributed structure. */
   concepts: 10,
   scripts: 10,
-  variationsPerConcept: 2,
-  variations: 20,
+  variationsPerConcept: 3,
+  variations: 30,
   /* Subtle supporting line on the Sprint Plus card. */
   valueLine: 'Twice the creative concepts. Twice the finished ad versions.',
   cardDescription: 'For brands looking for greater creative diversity and deeper testing.',

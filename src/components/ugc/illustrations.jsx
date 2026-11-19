@@ -45,7 +45,7 @@ export function MiniPhone({ variant = 0, tone = '#8b5cf6', caption, captionBg, c
   return (
     <div
       className={`relative aspect-[9/16] overflow-hidden rounded-[0.8rem] border border-white/15 ${ring ? 'ugc-ring' : ''} ${className}`}
-      style={{ background: `linear-gradient(180deg, ${tone}66 0%, #121216 82%)`, boxShadow: `0 0 26px -12px ${tone}`, opacity: dim ? 0.5 : 1 }}
+      style={{ background: `linear-gradient(180deg, ${tone}66 0%, #121216 82%)`, boxShadow: `0 0 26px -12px ${tone}`, opacity: dim ? 0.42 : 1 }}
     >
       <Avatar variant={variant} className="absolute inset-x-0 bottom-0 h-[80%] w-full" />
       {caption && (
