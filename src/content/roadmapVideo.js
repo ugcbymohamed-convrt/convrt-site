@@ -8,7 +8,7 @@
 export const ROADMAP_VIDEO_ID = 'a37d5452f9c95a459c96f1a90a3a711d'
 export const ROADMAP_VIDEO_HLS = `https://videodelivery.net/${ROADMAP_VIDEO_ID}/manifest/video.m3u8`
 
-// Same-origin poster (a still from the video at 0.6 s): shows with the page, no third-party request.
+// Same-origin poster (a still from the video at 25.6 s, chosen for a warm, friendly expression): shows with the page, no third-party request.
 export const ROADMAP_VIDEO_POSTER = '/roadmap/roadmap-video-poster.webp'
 export const ROADMAP_VIDEO_POSTER_SMALL = '/roadmap/roadmap-video-poster-640.webp'
 export const ROADMAP_VIDEO_POSTER_SIZE = { width: 1280, height: 720 }

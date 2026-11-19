@@ -58,3 +58,14 @@ test('/scale is untouched: its hero still owns the scroll enlargement and the sh
   assert.match(hero, /VSL_VIDEO_ID = 'a5e60be52e693016bb47bed4c801eb5f'/)
   assert.ok(!hero.includes('RoadmapVideo'))
 })
+
+test('LED backlight: a static, decorative lime halo behind the frame (box-shadow layers, no border, no animation); poster button keeps the face clear', () => {
+  const raw = read('src/components/roadmap/RoadmapVideo.jsx')
+  assert.match(raw, /LED backlight/)
+  const glow = raw.slice(raw.indexOf('LED backlight'), raw.indexOf('relative aspect-video'))
+  assert.match(glow, /aria-hidden="true"/)
+  assert.match(glow, /pointer-events-none/)
+  assert.ok((glow.match(/rgba\(213,255,64,/g) || []).length >= 6, 'lime (#d5ff40) layers for mobile and desktop')
+  assert.ok(!/animate-|transition|@keyframes|blur-\[/.test(glow), 'no animation, no filter blur')
+  assert.match(player, /'bottom-0 top-\[28%\]'/)
+})

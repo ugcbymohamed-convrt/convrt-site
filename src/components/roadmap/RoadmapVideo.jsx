@@ -173,10 +173,19 @@ export default function RoadmapVideo() {
         {/* Fixed-size frame: 16:9 (the video's own ratio), capped by width and by viewport height so it
             always fits on screen with the header. No scroll-driven size, position or radius. */}
         <div
-          className="relative mx-auto aspect-video w-full overflow-hidden rounded-[20px] border border-hairline-strong bg-black shadow-[0_30px_80px_-24px_rgba(0,0,0,0.8)] ring-1 ring-lime/[0.07] md:rounded-[28px]"
+          className="relative mx-auto w-full"
           style={{ maxWidth: 'min(100%, 1040px, max(480px, calc((100svh - 230px) * 1.7778)))' }}
           onPointerEnter={warm}
         >
+          {/* LED backlight: a static, diffused lime halo behind the frame (three soft box-shadow layers, no
+              border, no animation, no filter). Painted behind the opaque frame, so it only shows outside it. */}
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-0 rounded-[20px] md:rounded-[28px]
+                       shadow-[0_0_30px_0_rgba(213,255,64,0.11),0_0_76px_8px_rgba(213,255,64,0.15),0_0_130px_24px_rgba(213,255,64,0.1)]
+                       md:shadow-[0_0_44px_0_rgba(213,255,64,0.11),0_0_110px_14px_rgba(213,255,64,0.16),0_0_230px_46px_rgba(213,255,64,0.11)]"
+          />
+          <div className="relative aspect-video w-full overflow-hidden rounded-[20px] border border-lime/25 bg-black ring-1 ring-black/60 md:rounded-[28px]">
           {!playing && (
             <>
               <img
@@ -263,8 +272,9 @@ export default function RoadmapVideo() {
               onFocus={warm}
               disabled={starting}
               aria-label={paused ? 'Resume the video' : 'Play the Free Creative Growth Roadmap video'}
+              // Poster state: centred horizontally, resting at ~64% of the frame height so the speaker's face stays clear.
               className={`group absolute inset-x-0 flex items-center justify-center focus-visible:outline-none ${
-                playing ? 'bottom-20 top-16' : 'bottom-14 top-0 md:bottom-16'
+                playing ? 'bottom-20 top-16' : 'bottom-0 top-[28%]'
               }`}
             >
               <span className="relative flex h-20 w-20 items-center justify-center rounded-full transition-transform duration-300 ease-out group-hover:scale-[1.06] group-active:scale-95 group-focus-visible:ring-2 group-focus-visible:ring-lime group-focus-visible:ring-offset-2 group-focus-visible:ring-offset-black motion-reduce:transition-none motion-reduce:group-hover:scale-100 md:h-24 md:w-24">
@@ -284,6 +294,7 @@ export default function RoadmapVideo() {
               </span>
             </button>
           )}
+          </div>
         </div>
       </div>
     </section>
