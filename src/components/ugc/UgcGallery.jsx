@@ -25,7 +25,28 @@ import { PORTRAITS } from './illustrations.jsx'
 
 const TOTAL = 10
 
-function Card({ item, index, playing, onPlay }) {
+/* CONFIGURATION-DRIVEN. UGC_GALLERY is this page's content and the default. /spokesperson-video-production passes its own: heading, badge, button, analytics
+   prefix and (importantly) NO stand-in portraits, so its preview-host layout cards are neutral empty frames, never creator imagery.
+     id, headingId, eyebrow, title, intro   the section and its heading
+     ariaLabel, badge                       the scroller's accessible name and the pill on each card ("UGC", "Spokesperson")
+     cta                                    { label, href } the button under the gallery
+     track                                  analytics prefix
+     samplePortraits                        portraits for the preview-only stand-in cards, or null for neutral empty frames */
+export const UGC_GALLERY = {
+  id: 'ugc-videos',
+  headingId: 'ugc-videos-heading',
+  eyebrow: 'How your videos could look',
+  title: 'Creator-led ads, made for paid social.',
+  intro: 'Real creators, made to stop the scroll. Watch the work.',
+  ariaLabel: 'UGC video examples. Scroll sideways to see more.',
+  badge: 'UGC',
+  cta: { label: 'See all UGC videos', href: OUR_WORK_PATH },
+  track: 'ugc',
+  samplePortraits: PORTRAITS,
+  sampleNote: 'Layout preview only: your ten approved videos replace these cards. This never shows on the live site.',
+}
+
+function Card({ item, index, playing, onPlay, config }) {
   const sample = item.sample
   const langs = sample ? 'EN' : item.languages.map((l) => l.toUpperCase()).join(' · ')
   return (
@@ -40,20 +61,24 @@ function Card({ item, index, playing, onPlay }) {
           disabled={sample}
           className="absolute inset-0 cursor-pointer text-left focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-lime disabled:cursor-default"
         >
-          <img
-            src={sample ? item.portrait : posterUrl(item)}
-            alt=""
-            width="405"
-            height="720"
-            loading="lazy"
-            decoding="async"
-            draggable="false"
-            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.04] motion-reduce:transition-none"
-            style={sample ? { objectPosition: '50% 28%' } : undefined}
-          />
+          {sample && !item.portrait ? (
+            <span aria-hidden="true" className="block h-full w-full" style={{ background: 'radial-gradient(120% 70% at 50% 0%, rgba(213,255,64,0.16), transparent 60%), linear-gradient(180deg, #17171b, #0c0c0f)' }} />
+          ) : (
+            <img
+              src={sample ? item.portrait : posterUrl(item)}
+              alt=""
+              width="405"
+              height="720"
+              loading="lazy"
+              decoding="async"
+              draggable="false"
+              className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.04] motion-reduce:transition-none"
+              style={sample ? { objectPosition: '50% 28%' } : undefined}
+            />
+          )}
           <span aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/35" />
           <span aria-hidden="true" className="absolute left-3 top-3 inline-flex items-center gap-1.5 rounded-full border border-lime/40 bg-black/55 px-2.5 py-1 text-xs font-bold uppercase tracking-[0.1em] text-lime backdrop-blur">
-            <span className="h-1.5 w-1.5 rounded-full bg-lime" />UGC · {langs}
+            <span className="h-1.5 w-1.5 rounded-full bg-lime" />{`${config.badge} · `}{langs}
           </span>
           <span aria-hidden="true" className="absolute left-1/2 top-1/2 flex h-14 w-14 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-lime/60 bg-lime/20 text-ink backdrop-blur transition-transform duration-200 group-hover:scale-110 motion-reduce:transition-none">
             <PlayGlyph />
@@ -68,11 +93,11 @@ const Chevron = ({ dir }) => (
   <svg viewBox="0 0 12 12" className="h-4 w-4" fill="none" aria-hidden="true"><path d={dir < 0 ? 'M8 2L4 6l4 4' : 'M4 2l4 4-4 4'} stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
 )
 
-export default function UgcGallery({ items }) {
+export default function UgcGallery({ items, config = UGC_GALLERY }) {
   const preview = usePreviewHost()
   const real = items.slice(0, TOTAL)
   const sample = real.length === 0 && preview
-  const cards = real.length ? real : sample ? Array.from({ length: TOTAL }, (_, i) => ({ id: `sample-${i}`, sample: true, portrait: PORTRAITS[i % PORTRAITS.length] })) : []
+  const cards = real.length ? real : sample ? Array.from({ length: TOTAL }, (_, i) => ({ id: `sample-${i}`, sample: true, portrait: config.samplePortraits ? config.samplePortraits[i % config.samplePortraits.length] : undefined })) : []
 
   const scroller = useRef(null)
   const drag = useRef({ down: false, x: 0, left: 0, moved: false })
@@ -103,7 +128,7 @@ export default function UgcGallery({ items }) {
     if (!el) return
     const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
     el.scrollBy({ left: dir * el.clientWidth * 0.8, behavior: reduce ? 'auto' : 'smooth' })
-    trackEvent('ugc_gallery_scroll', { how: 'button' })
+    trackEvent(`${config.track}_gallery_scroll`, { how: 'button' })
   }
   const onKeyDown = (e) => {
     if (e.key === 'ArrowRight') { e.preventDefault(); by(1) }
@@ -122,7 +147,7 @@ export default function UgcGallery({ items }) {
     if (d.moved) scroller.current.scrollLeft = d.left - dx
   }
   const end = () => {
-    if (drag.current.down && drag.current.moved) trackEvent('ugc_gallery_scroll', { how: 'drag' })
+    if (drag.current.down && drag.current.moved) trackEvent(`${config.track}_gallery_scroll`, { how: 'drag' })
     drag.current.down = false
     setDragging(false)
   }
@@ -131,18 +156,18 @@ export default function UgcGallery({ items }) {
   return (
     <>
     <SectionDivider />
-    <Section id="ugc-videos" label="ugc-videos-heading" glow>
+    <Section id={config.id} label={config.headingId} glow>
       <Reveal>
-        <Head id="ugc-videos-heading" eyebrow="How your videos could look" title="Creator-led ads, made for paid social." intro="Real creators, made to stop the scroll. Watch the work." />
+        <Head id={config.headingId} eyebrow={config.eyebrow} title={config.title} intro={config.intro} />
       </Reveal>
 
       <Reveal className="mt-8 md:mt-10">
-        {sample && <p className="mb-3 text-center text-xs font-medium text-ink-muted">Layout preview only: your ten approved videos replace these cards. This never shows on the live site.</p>}
+        {sample && <p className="mb-3 text-center text-xs font-medium text-ink-muted">{config.sampleNote}</p>}
         <div className="relative">
           <div
             ref={scroller}
             role="region"
-            aria-label="UGC video examples. Scroll sideways to see more."
+            aria-label={config.ariaLabel}
             tabIndex={0}
             onKeyDown={onKeyDown}
             onPointerDown={onPointerDown}
@@ -160,7 +185,8 @@ export default function UgcGallery({ items }) {
                     item={item}
                     index={i}
                     playing={activeId === item.id}
-                    onPlay={() => { setActiveId(item.id); trackEvent('ugc_gallery_play', { language: item.languages?.join(','), industry: item.industry }) }}
+                    config={config}
+                    onPlay={() => { setActiveId(item.id); trackEvent(`${config.track}_gallery_play`, { language: item.languages?.join(','), industry: item.industry }) }}
                   />
                 </li>
               ))}
@@ -193,8 +219,8 @@ export default function UgcGallery({ items }) {
       </Reveal>
 
       <div className="mt-9 flex justify-center">
-        <GhostCta href={OUR_WORK_PATH} onClick={() => trackEvent('ugc_see_all_videos_click', { location: 'gallery' })}>
-          See all UGC videos <span aria-hidden="true">→</span>
+        <GhostCta href={config.cta.href} onClick={() => trackEvent(`${config.track}_see_all_videos_click`, { location: 'gallery' })}>
+          {`${config.cta.label} `}<span aria-hidden="true">→</span>
         </GhostCta>
       </div>
     </Section>

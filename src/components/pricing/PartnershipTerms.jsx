@@ -13,6 +13,11 @@ export const PaidTerms = () => (
       <a href="/ugc-video-agency" className="text-ink-muted underline underline-offset-2 transition-colors hover:text-lime">
         See how our UGC production works
       </a>
+      {' · '}
+      Need a presenter?{' '}
+      <a href="/spokesperson-video-production" className="text-ink-muted underline underline-offset-2 transition-colors hover:text-lime">
+        See spokesperson video production
+      </a>
     </p>
   </>
 )

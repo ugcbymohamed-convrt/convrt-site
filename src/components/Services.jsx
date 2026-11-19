@@ -289,6 +289,10 @@ export default function Services() {
           <a href="/ugc-video-agency" className="text-ink-muted hover:text-lime underline underline-offset-2 transition-colors">
             See how our UGC video production works
           </a>
+          {' · '}
+          <a href="/spokesperson-video-production" className="text-ink-muted hover:text-lime underline underline-offset-2 transition-colors">
+            Explore spokesperson video production
+          </a>
         </p>
       </div>
     </section>

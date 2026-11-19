@@ -24,7 +24,7 @@ import {
 import { jsonLdFor } from './structuredData.js'
 import { PATHS } from '../routes.js'
 import { formatMoney, SPRINT, USAGE_RIGHTS } from './businessKnowledge.js'
-import { selectOurWork } from '../content/portfolio.js'
+import { selectOurWork, selectSpokespersonHero, selectSpokespersonGallery } from '../content/portfolio.js'
 
 export const SITE_SEO = {
   '/': {
@@ -49,6 +49,16 @@ export const SITE_SEO = {
     ogTitle: 'CONVRT: UGC Ads Built for Paid Social',
     ogDescription: 'Creator-led UGC video ads, produced end to end, with transparent pricing and usage rights.',
     indexable: true,
+  },
+  [PATHS.spokespersonVideoProduction]: {
+    title: 'Spokesperson Video Production | Professional Video Presenters | CONVRT',
+    description:
+      'Professional spokesperson videos featuring real human presenters. Multilingual video production for websites, product demos, apps and paid advertising.',
+    ogTitle: 'CONVRT: Professional Spokesperson Video Production',
+    ogDescription: 'Human-led, multilingual spokesperson videos for websites, product demos, apps and paid advertising, from script to finished edit.',
+    // Indexable (and in the sitemap) once at least one spokesperson video is approved for this page, so the page is not promoted to search while
+    // its showcase is still empty. It flips by itself when the first approved spokesperson video is added to src/content/portfolio.js.
+    indexable: selectSpokespersonHero().length + selectSpokespersonGallery().length > 0,
   },
   [PATHS.ourWork]: {
     title: 'Our Work | UGC Ads & Video Production Portfolio | CONVRT',

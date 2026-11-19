@@ -7,6 +7,7 @@ video is added **once**, in `src/content/portfolio.js` (the file header document
 | --- | --- | --- |
 | `/our-work` | every fully approved video, filterable by industry | `selectOurWork()` |
 | `/ugc-video-agency` | approved videos with `type: 'ugc'`: hero stage (`placement: 'hero'`, max 3) + gallery (max 10) | `selectHero()` / `selectGallery()` |
+| `/spokesperson-video-production` | approved videos with `type: 'spokesperson'`: hero stage (`placement: 'hero'`, max 3) + gallery (max 10); never shares a video with the UGC page | `selectSpokespersonHero()` / `selectSpokespersonGallery()` |
 | Homepage client panels (Adscale, Elyon, Graspo) | the videos tagged `showcase: '<panel id>'` (three per panel) | `selectShowcase(id)` |
 
 ## Adding a video

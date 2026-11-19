@@ -102,11 +102,11 @@ function FAQItem({ item, isOpen, onToggle }) {
                 {para}
               </p>
             ))}
-            {item.link && (
-              <a href={item.link.href} className="w-fit text-[15px] text-lime underline underline-offset-2 hover:text-lime-light transition-colors">
-                {item.link.label} →
+            {[item.link, ...(item.moreLinks ?? [])].filter(Boolean).map((l) => (
+              <a key={l.href} href={l.href} className="w-fit text-[15px] text-lime underline underline-offset-2 hover:text-lime-light transition-colors">
+                {l.label} →
               </a>
-            )}
+            ))}
           </div>
         </div>
       </div>

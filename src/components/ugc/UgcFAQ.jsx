@@ -7,9 +7,9 @@ import { Section, Head, Reveal, TextLink } from './shared.jsx'
    the document but are visibility:hidden, so they are out of the tab order and accessibility tree. The same UGC_FAQ array feeds
    the FAQPage JSON-LD, so the markup can never differ from this text. Accordion pattern as on /pricing. */
 
-function Item({ item, open, onToggle }) {
-  const btnId = `ugc-faq-q-${item.id}`
-  const panelId = `ugc-faq-a-${item.id}`
+function Item({ item, open, onToggle, prefix, track }) {
+  const btnId = `${prefix}-faq-q-${item.id}`
+  const panelId = `${prefix}-faq-a-${item.id}`
   return (
     <div className="relative" style={{ borderLeft: open ? '2px solid #d5ff40' : '2px solid transparent', transition: 'border-color 0.35s ease' }}>
       <h3>
@@ -53,7 +53,7 @@ function Item({ item, open, onToggle }) {
             ))}
             {item.links?.map((l) => (
               <p key={l.href} className="text-[15px]">
-                <TextLink href={l.href} onClick={() => trackEvent('ugc_faq_link_click', { question: item.id, href: l.href })}>{l.label} <span aria-hidden="true">→</span></TextLink>
+                <TextLink href={l.href} onClick={() => trackEvent(`${track}_faq_link_click`, { question: item.id, href: l.href })}>{l.label} <span aria-hidden="true">→</span></TextLink>
               </p>
             ))}
           </div>
@@ -64,23 +64,32 @@ function Item({ item, open, onToggle }) {
   )
 }
 
-export default function UgcFAQ() {
+/* Configuration-driven: UGC_FAQ_CONFIG is this page's content and the default. The Spokesperson page passes its own list (the same list feeds its
+   FAQPage JSON-LD), heading and id/analytics prefix. */
+export const UGC_FAQ_CONFIG = {
+  items: UGC_FAQ,
+  prefix: 'ugc',
+  title: <>UGC video production, <span className="text-lime">answered.</span></>,
+}
+
+export default function UgcFAQ({ config = UGC_FAQ_CONFIG }) {
+  const { items, prefix, title } = config
   const [openId, setOpenId] = useState(null)
   const toggle = useCallback((id) => {
     setOpenId((prev) => {
-      if (prev !== id) trackEvent('ugc_faq_open', { question: id })
+      if (prev !== id) trackEvent(`${prefix}_faq_open`, { question: id })
       return prev === id ? null : id
     })
-  }, [])
+  }, [prefix])
   return (
-    <Section id="ugc-faq" label="ugc-faq-heading">
+    <Section id={`${prefix}-faq`} label={`${prefix}-faq-heading`}>
       <div className="mx-auto max-w-3xl">
         <Reveal>
-          <Head id="ugc-faq-heading" eyebrow="FAQ" title={<>UGC video production, <span className="text-lime">answered.</span></>} />
+          <Head id={`${prefix}-faq-heading`} eyebrow="FAQ" title={title} />
         </Reveal>
         <div className="mt-8 h-px bg-white/[0.06]" />
-        {UGC_FAQ.map((item) => (
-          <Item key={item.id} item={item} open={openId === item.id} onToggle={() => toggle(item.id)} />
+        {items.map((item) => (
+          <Item key={item.id} item={item} open={openId === item.id} onToggle={() => toggle(item.id)} prefix={prefix} track={prefix} />
         ))}
       </div>
     </Section>

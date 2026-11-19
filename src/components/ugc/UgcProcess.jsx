@@ -197,7 +197,41 @@ function VisualDelivery() {
 
 const VISUALS = [VisualResearch, VisualCreators, VisualFilming, VisualDelivery]
 
+/* The UGC page's content for the shared four-stage section. /spokesperson-video-production supplies its own `config` (stages, scenes, heading,
+   footer note) and its own section after the stages (`children`), and gets the same layout, the same stage-switching behaviour and the same
+   auto-advance rules. `config.stages` = [{ id, title, text }] x4, `config.visuals` = one scene component per stage. */
+export const UGC_PROCESS = {
+  id: 'how-it-works',
+  headingId: 'ugc-process-heading',
+  eyebrow: 'How it works',
+  title: 'How we create and test UGC ads.',
+  intro: 'Four stages, with your approval before anything is filmed.',
+  stages: STAGES,
+  visuals: VISUALS,
+}
+
 export default function UgcProcess() {
+  return (
+    <ProcessSection config={UGC_PROCESS} footer={<UgcProcessFooter />}>
+      <TestingDiagram />
+    </ProcessSection>
+  )
+}
+
+function UgcProcessFooter() {
+  return (
+    <>
+      <p className="mx-auto max-w-3xl text-center text-[15px] leading-relaxed text-ink-muted">
+        <span className="font-semibold text-ink">Production turnaround:</span> {SPRINT.turnaroundBusinessDays} business days for the {SPRINT.name} and{' '}
+        {SPRINT_PLUS.turnaroundBusinessDays} for {SPRINT_PLUS.name}, counted from the moment you approve concepts and scripts. {TURNAROUND.note}
+      </p>
+      <p className="mx-auto mt-2 max-w-3xl text-center text-xs text-ink-muted">Scenes are illustrative. The portraits are for illustration only.</p>
+    </>
+  )
+}
+
+export function ProcessSection({ config, footer, children }) {
+  const { stages: STAGES, visuals: VISUALS } = config
   const [active, setActive] = useState(0)
   const [running, setRunning] = useState(false)
   const [inView, setInView] = useState(false)
@@ -226,9 +260,9 @@ export default function UgcProcess() {
   const Visual = VISUALS[active]
 
   return (
-    <Section id="how-it-works" label="ugc-process-heading" glow>
+    <Section id={config.id} label={config.headingId} glow>
       <Reveal>
-        <Head id="ugc-process-heading" eyebrow="How it works" title="How we create and test UGC ads." intro="Four stages, with your approval before anything is filmed." />
+        <Head id={config.headingId} eyebrow={config.eyebrow} title={config.title} intro={config.intro} />
       </Reveal>
 
       <Reveal className="mt-8 md:mt-10">
@@ -289,17 +323,9 @@ export default function UgcProcess() {
         </div>
       </Reveal>
 
-      <Reveal className="mt-5 md:mt-6">
-        <p className="mx-auto max-w-3xl text-center text-[15px] leading-relaxed text-ink-muted">
-          <span className="font-semibold text-ink">Production turnaround:</span> {SPRINT.turnaroundBusinessDays} business days for the {SPRINT.name} and{' '}
-          {SPRINT_PLUS.turnaroundBusinessDays} for {SPRINT_PLUS.name}, counted from the moment you approve concepts and scripts. {TURNAROUND.note}
-        </p>
-        <p className="mx-auto mt-2 max-w-3xl text-center text-xs text-ink-muted">Scenes are illustrative. The portraits are for illustration only.</p>
-      </Reveal>
+      <Reveal className="mt-5 md:mt-6">{footer}</Reveal>
 
-      <Reveal className="mt-10 md:mt-12">
-        <TestingDiagram />
-      </Reveal>
+      <Reveal className="mt-10 md:mt-12">{children}</Reveal>
     </Section>
   )
 }

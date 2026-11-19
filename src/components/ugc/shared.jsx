@@ -58,12 +58,12 @@ export function Tick({ className = 'text-lime' }) {
 }
 
 /* Primary lime CTA → the Free Creative Growth Roadmap. */
-export function RoadmapCta({ location, className = '', hero = false, children = 'Get 5 Free Ad Concepts' }) {
+export function RoadmapCta({ location, className = '', hero = false, children = 'Get 5 Free Ad Concepts', track = 'ugc_page_cta_click' }) {
   const press = usePressFeedback()
   return (
     <a
       href={OFFER_PATHS.roadmap}
-      onClick={() => trackEvent('ugc_page_cta_click', { location })}
+      onClick={() => trackEvent(track, { location })}
       {...(hero ? press : {})}
       className={`${hero ? 'hero-cta ' : ''}cta-gradient group inline-flex min-h-[52px] items-center justify-center gap-2 rounded-full px-7 py-3.5 text-[15px] font-semibold text-canvas focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-lime ${className}`}
     >

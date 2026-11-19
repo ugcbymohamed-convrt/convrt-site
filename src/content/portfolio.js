@@ -4,6 +4,7 @@
 
      /our-work           every approved video, filterable by industry (SaaS, E-commerce, Services, Other)   selectOurWork()
      /ugc-video-agency   the approved UGC videos: the three-phone hero stage + the gallery under it          selectHero() / selectGallery()
+     /spokesperson-video-production   the approved SPOKESPERSON videos, same two slots                       selectSpokespersonHero() / selectSpokespersonGallery()
      homepage showcase   the client panels (Adscale, Elyon, Graspo): the videos tagged with that client        selectShowcase('elyon')
 
    HOW TO ADD A VIDEO (no code changes needed): add an object at the TOP of PORTFOLIO below (newest first: /our-work and the UGC gallery
@@ -14,6 +15,8 @@
        title: 'Short title shown on the card', // optional. Falls back to caption. Keep it short: it is the headline of the card.
        caption: 'One honest sentence describing the video.',   // required. Also the accessible name.
        type: 'ugc',                            // ugc | spokesperson | demo | testimonial | interview | social | ad  (see TYPE_LABELS). Default 'ugc'.
+                                               // type decides which SERVICE page may show the video: 'ugc' only on the UGC page, 'spokesperson' only on the
+                                               // Spokesperson page. A video is never shown on a service page because someone speaks on camera in it.
        industry: 'saas',                       // saas | ecommerce | services | any other slug. This is what files the video under a category.
        languages: ['en'],                      // ISO 639-1 codes of the spoken language(s). Required for portfolio videos.
        source: { cloudflareId: '…' },          // Cloudflare Stream id (HLS)…  or  { mp4: '/videos/….mp4' } (an mp4 needs a poster)
@@ -22,7 +25,7 @@
        brand: 'Brand name',                    // optional. Shown on the card, so add it ONLY with the brand's permission.
        creator: { displayName: 'First name', showName: true },   // optional. The name is shown ONLY when showName is true.
        category: 'UGC · Paid social',          // optional free label (the UGC hero stage uses it)
-       placement: 'gallery',                   // UGC page only: 'hero' = the three-phone stage (first hero item = the large centre phone, at most 3),
+       placement: 'gallery',                   // UGC and Spokesperson pages: 'hero' = the three-phone stage (first hero item = the large centre phone, at most 3),
                                                // 'gallery' (default) = the horizontal gallery under it (at most 10)
        showcase: 'elyon',                      // homepage only: tag a video with a client panel ('adscale' | 'elyon' | 'graspo') to show it there
        caseStudyHref: '/case-studies/…',       // optional related case study
@@ -40,7 +43,8 @@
    WHERE A VIDEO APPEARS
    • /our-work and the UGC page need the FULL approval: status 'approved' AND portfolioUse === true AND creatorConsent === true.
      Approval to produce or deliver a video is NOT portfolio permission.
-   • /our-work shows every approved video. /ugc-video-agency shows the approved videos whose type is 'ugc'. Nothing else to do.
+   • /our-work shows every approved video. /ugc-video-agency shows the approved videos whose type is 'ugc'; /spokesperson-video-production shows
+     the approved videos whose type is 'spokesperson'. Nothing else to do. The two service pages never share a video.
    • A homepage client panel shows the videos tagged with its `showcase` key whose status is 'approved' (the client case studies are
      brand-approved, not creator-portfolio material). A video with portfolioUse false therefore stays OFF /our-work and the UGC page.
    • A new video classified by industry reaches /our-work and (if it is UGC) the UGC page on its own. The homepage panels are per
@@ -503,6 +507,12 @@ export const selectOurWork = selectDisplayable
 const selectUgc = (items) => selectDisplayable(items).filter((i) => typeOf(i) === 'ugc')
 export const selectHero = (items = PORTFOLIO) => selectUgc(items).filter((i) => i.placement === 'hero')
 export const selectGallery = (items = PORTFOLIO) => selectUgc(items).filter((i) => i.placement !== 'hero')
+
+/* /spokesperson-video-production: approved videos whose type is explicitly 'spokesperson', split the same way (hero stage / gallery). A UGC video can never
+   appear here and a spokesperson video can never appear on the UGC page: the type is the only switch, and there is no fallback to the other list. */
+const selectSpokesperson = (items) => selectDisplayable(items).filter((i) => typeOf(i) === 'spokesperson')
+export const selectSpokespersonHero = (items = PORTFOLIO) => selectSpokesperson(items).filter((i) => i.placement === 'hero')
+export const selectSpokespersonGallery = (items = PORTFOLIO) => selectSpokesperson(items).filter((i) => i.placement !== 'hero')
 
 /* Homepage client panel `id` ('adscale' | 'elyon' | 'graspo'). */
 export const selectShowcase = (id, items = PORTFOLIO) => items.filter((i) => isShowcaseable(i) && i.showcase === id)

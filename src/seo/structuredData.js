@@ -20,6 +20,7 @@ import {
 import { PRICING_FAQ, faqAnswerText } from './pricingFaq.js'
 import { HOME_FAQ, homeFaqText } from './homeFaq.js'
 import { UGC_FAQ } from './ugcFaq.js'
+import { SPOKESPERSON_FAQ } from './spokespersonFaq.js'
 import { PATHS } from '../routes.js'
 import { selectOurWork, isDisplayable, posterUrl, hlsUrl, titleOf } from '../content/portfolio.js'
 
@@ -72,6 +73,7 @@ export function webSiteNode() {
 export const BREADCRUMB_TRAILS = {
   '/pricing': [{ name: 'Home', path: '/' }, { name: 'Pricing', path: '/pricing' }],
   [PATHS.ugcVideoAgency]: [{ name: 'Home', path: '/' }, { name: 'UGC Video Agency', path: PATHS.ugcVideoAgency }],
+  [PATHS.spokespersonVideoProduction]: [{ name: 'Home', path: '/' }, { name: 'Spokesperson Video Production', path: PATHS.spokespersonVideoProduction }],
   [PATHS.ourWork]: [{ name: 'Home', path: '/' }, { name: 'Our Work', path: PATHS.ourWork }],
 }
 
@@ -322,6 +324,43 @@ export function ugcGraph({ title, description }) {
   ])
 }
 
+/* Spokesperson service page (/spokesperson-video-production). Same shape as ugcGraph, with the differences that matter: the Service is the existing
+   'spokesperson' core service (same @id as on /pricing), described from the business data, and it carries NO Offer: no spokesperson-specific price is
+   published, and the package prices already live on /pricing (the Service is related to those packages, not priced here). The FAQPage is generated from the
+   exact Q&A the page renders. No ratings, reviews, addresses, awards, presenter counts, service areas, results or VideoObject. */
+export function spokespersonGraph({ title, description }) {
+  const path = PATHS.spokespersonVideoProduction
+  const url = abs(path)
+  const trail = BREADCRUMB_TRAILS[path]
+  const core = CORE_SERVICES.find((s) => s.id === 'spokesperson')
+  return graph([
+    organizationNode(),
+    {
+      '@type': 'WebPage',
+      '@id': pageId(path),
+      url,
+      name: title,
+      description,
+      isPartOf: { '@id': WEBSITE_ID },
+      about: { '@id': `${url}#service` },
+      breadcrumb: { '@id': `${url}#breadcrumb` },
+      inLanguage: 'en',
+    },
+    breadcrumbNode(trail, `${url}#breadcrumb`),
+    {
+      '@type': 'Service',
+      '@id': `${url}#service`,
+      name: 'Spokesperson video production',
+      serviceType: 'Spokesperson video production',
+      description: `${core.description} Spokesperson videos feature real human presenters and can be produced in several languages.`,
+      url,
+      provider: { '@id': ORG_ID },
+      isRelatedTo: [{ '@id': serviceId('spokesperson') }, { '@id': serviceId(SPRINT.id) }, { '@id': serviceId(SPRINT_PLUS.id) }, { '@id': serviceId(CUSTOM_PACKAGES.paid.id) }],
+    },
+    faqNode(SPOKESPERSON_FAQ, `${url}#faq`),
+  ])
+}
+
 /* One VideoObject for an approved portfolio video, or undefined. Only a video with a real, verified uploadDate gets one (Google requires
    it, and the site must not invent it): the data file's `uploadDate` is the opt-in. Never emitted for anything that is not displayable. */
 export function videoObjectNode(item) {
@@ -371,6 +410,7 @@ export function jsonLdFor(path, seo = {}) {
   if (path === '/') return homeGraph(seo)
   if (path === '/pricing') return pricingGraph(seo)
   if (path === PATHS.ugcVideoAgency) return ugcGraph(seo)
+  if (path === PATHS.spokespersonVideoProduction) return spokespersonGraph(seo)
   if (path === PATHS.ourWork) return ourWorkGraph(seo)
   return undefined
 }

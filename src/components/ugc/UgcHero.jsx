@@ -25,17 +25,37 @@ import { useAutoplayAllowed } from './creatorVideo.jsx'
 
    MOBILE ORDER (as on the homepage): headline and description, the phones, then the CTAs. */
 
-const LINES = [
-  ['Human-led', 'UGC', 'ads.'],
-  ['Built', 'for', 'paid', 'social.'],
-]
-const ROTATING = ['convrt', 'resonate', 'sell', 'connect']
+/* THE HERO IS CONFIGURATION-DRIVEN. UGC_HERO is this page's content and the default; /spokesperson-video-production passes its own (src/content/spokespersonPage.js)
+   and gets the same layout, headline animation, CTA styles, offer cards and phone stage. A config supplies:
+     id, lines, lead, words, sizer          the H1: fixed lines, the words before the rolling word, the rolling words and the width-reserving word
+     description                           the paragraph under the headline
+     primary / secondary                   the two CTAs ({ label, href }); secondary may also name an element id to scroll to when the page has it
+     track                                 analytics event names
+     stageLabel / stagePrefix              the phone stage's accessible name and analytics prefix
+     previewPortraits                      whether preview hosts show stand-in portraits in the empty phones (UGC: yes) */
+export const UGC_HERO = {
+  id: 'ugc-h1',
+  lines: [
+    ['Human-led', 'UGC', 'ads.'],
+    ['Built', 'for', 'paid', 'social.'],
+  ],
+  lead: ['to'],
+  words: ['convrt', 'resonate', 'sell', 'connect'],
+  sizer: 'resonate.',
+  description: 'CONVRT is an international, multilingual UGC agency and creative production studio. We script, film and edit human-created UGC ads with real creators, built for paid social.',
+  primary: { label: 'Get 5 Free Ad Concepts', href: OFFER_PATHS.roadmap },
+  secondary: { label: 'See Our Work', href: OUR_WORK_PATH, scrollTo: 'ugc-videos' },
+  track: { cta: 'ugc_page_cta_click', work: 'ugc_see_our_work_click' },
+  stageLabel: 'Creator UGC videos',
+  stagePrefix: 'ugc',
+  previewPortraits: true,
+}
 const ROLL_MS = 640
 const HOLD_MS = 2300
 const HOLD_BRAND_MS = 3400
 
 /* The last word of the H1. Until it first rolls, it is plain text. */
-function ReelWord() {
+function ReelWord({ words: ROTATING, sizer }) {
   const allowed = useAutoplayAllowed()
   const [cur, setCur] = useState(0)
   const [rolling, setRolling] = useState(false)
@@ -61,7 +81,7 @@ function ReelWord() {
   }, [allowed])
 
   return (
-    <span className="ugc-reel text-lime" data-sizer="resonate.">
+    <span className="ugc-reel text-lime" data-sizer={sizer}>
       <span className={`ugc-reel-track ${rolling ? 'is-rolling' : ''}`}>
         <span>{`${ROTATING[cur]}.`}</span>
         {rolling && <span aria-hidden="true">{`${ROTATING[next]}.`}</span>}
@@ -70,7 +90,8 @@ function ReelWord() {
   )
 }
 
-function Headline() {
+function Headline({ config }) {
+  const { id, lines: LINES, lead, words, sizer } = config
   let i = 0
   const word = (w, key) => {
     const delay = 80 + i++ * 55
@@ -82,7 +103,7 @@ function Headline() {
   }
   return (
     <h1
-      id="ugc-h1"
+      id={id}
       className="font-display font-semibold text-ink tracking-display-xl leading-[1.05] text-[2rem] min-[400px]:text-[2.5rem] sm:text-[3rem] md:text-[3.4rem] lg:text-[2.4rem] xl:text-[3.35rem]"
     >
       {LINES.map((words) => (
@@ -93,8 +114,8 @@ function Headline() {
         </span>
       ))}
       <span className="block">
-        {word('to', 'to')}{' '}
-        <span className="ugc-mask"><span className="ugc-word" style={{ animationDelay: `${80 + i * 55}ms` }}><ReelWord /></span></span>
+        {lead.flatMap((w) => [word(w, w), ' '])}
+        <span className="ugc-mask"><span className="ugc-word" style={{ animationDelay: `${80 + i * 55}ms` }}><ReelWord words={words} sizer={sizer} /></span></span>
       </span>
     </h1>
   )
@@ -113,13 +134,13 @@ const Arrow = ({ cls }) => (
   </svg>
 )
 
-export default function UgcHero({ items }) {
+export default function UgcHero({ items, config = UGC_HERO }) {
   const hasWork = items.length > 0
   const primaryPress = usePressFeedback()
   const ghostPress = usePressFeedback()
   const preview = usePreviewHost()
   return (
-    <section aria-labelledby="ugc-h1" className="relative overflow-hidden">
+    <section aria-labelledby={config.id} className="relative overflow-hidden">
       <div aria-hidden="true" className="pointer-events-none absolute -top-40 left-1/2 h-[560px] w-[1100px] -translate-x-1/2 rounded-full bg-lime/10 blur-[160px]" />
       <div aria-hidden="true" className="pointer-events-none absolute top-[40%] left-1/2 h-[420px] w-[820px] -translate-x-1/2 rounded-full bg-lime/[0.07] blur-[140px]" />
 
@@ -129,10 +150,9 @@ export default function UgcHero({ items }) {
               Below lg its wrapper is `display: contents`, so the two groups can be ordered around the phones. */}
           <div className="contents text-center lg:col-span-6 lg:block lg:text-left">
             <div className="order-1 lg:order-none">
-              <Headline />
+              <Headline config={config} />
               <p className="cs-fade-up mx-auto mt-6 max-w-xl text-base leading-relaxed text-ink-muted md:mt-8 md:text-lg lg:mx-0" style={{ animationDelay: '520ms' }}>
-                CONVRT is an international, multilingual UGC agency and creative production studio. We script, film and edit human-created UGC ads
-                with real creators, built for paid social.
+                {config.description}
               </p>
             </div>
 
@@ -142,16 +162,16 @@ export default function UgcHero({ items }) {
                   Your next 5 ad concepts. Tailored to your brand. <span className="text-lime">On us.</span>
                 </p>
                 <div className="flex flex-col items-stretch gap-3 sm:flex-row sm:items-center sm:justify-center lg:justify-start">
-                  <a href={OFFER_PATHS.roadmap} onClick={() => trackEvent('ugc_page_cta_click', { location: 'hero' })} {...primaryPress} className={PRIMARY_CTA}>
-                    Get 5 Free Ad Concepts
+                  <a href={config.primary.href} onClick={() => trackEvent(config.track.cta, { location: 'hero' })} {...primaryPress} className={PRIMARY_CTA}>
+                    {config.primary.label}
                     <Arrow cls="h-4 w-4 md:h-[18px] md:w-[18px]" />
                   </a>
                   <a
-                    href={OUR_WORK_PATH}
+                    href={config.secondary.href}
                     onClick={(e) => {
-                      trackEvent('ugc_see_our_work_click', { location: 'hero' })
+                      trackEvent(config.track.work, { location: 'hero' })
                       if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return
-                      const target = document.getElementById('ugc-videos')
+                      const target = config.secondary.scrollTo ? document.getElementById(config.secondary.scrollTo) : null
                       if (!target) return // no gallery on this page yet: follow the link
                       e.preventDefault()
                       scrollToElement(target)
@@ -159,7 +179,7 @@ export default function UgcHero({ items }) {
                     {...ghostPress}
                     className={GHOST_CTA}
                   >
-                    See Our Work
+                    {config.secondary.label}
                     <Arrow cls="h-3.5 w-3.5 md:h-4 md:w-4" />
                   </a>
                 </div>
@@ -175,7 +195,7 @@ export default function UgcHero({ items }) {
           </div>
 
           <div className="order-2 min-w-0 lg:order-none lg:col-span-6">
-            {hasWork ? <CreatorVideoStage items={items} /> : <PhoneShowcaseFallback portraits={preview} />}
+            {hasWork ? <CreatorVideoStage items={items} label={config.stageLabel} trackPrefix={config.stagePrefix} /> : <PhoneShowcaseFallback portraits={config.previewPortraits && preview} />}
           </div>
         </div>
       </div>

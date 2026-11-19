@@ -335,7 +335,9 @@ function StagePhone({ item, slot, n, index, active, load, wantPlay, muted, playi
   )
 }
 
-export default function CreatorVideoStage({ items }) {
+/* `label` names the carousel for assistive technology; `trackPrefix` namespaces its analytics events (the UGC page and the homepage keep the
+   defaults, the Spokesperson page passes its own). */
+export default function CreatorVideoStage({ items, label = 'Creator UGC videos', trackPrefix = 'ugc' }) {
   const shown = items.slice(0, 3)
   const n = shown.length
   const [active, setActive] = useState(0)
@@ -395,11 +397,11 @@ export default function CreatorVideoStage({ items }) {
       const next = (i + n) % n
       if (next !== cur) {
         setPlaying(false); setProgress(0); setUserIntent(null)
-        trackEvent('ugc_hero_video_switch', { how })
+        trackEvent(`${trackPrefix}_hero_video_switch`, { how })
       }
       return next
     })
-  }, [n])
+  }, [n, trackPrefix])
 
   const soundBlocked = useCallback(() => setMuted(true), [])
   const wantPlay = inView && tabVisible && (userIntent ?? autoplay)
@@ -415,11 +417,11 @@ export default function CreatorVideoStage({ items }) {
     startX.current = null
     if (Math.abs(dx) > 45) select(active + (dx < 0 ? 1 : -1), 'swipe')
   }
-  const togglePlay = () => { const next = !playing; setUserIntent(next); setNudge(false); trackEvent('ugc_hero_video_play', { state: next ? 'play' : 'pause' }) }
+  const togglePlay = () => { const next = !playing; setUserIntent(next); setNudge(false); trackEvent(`${trackPrefix}_hero_video_play`, { state: next ? 'play' : 'pause' }) }
   const meta = [industryLabel(item.industry), item.languages.map(languageLabel).join(' · ')].filter(Boolean).join(' · ')
 
   return (
-    <div role="group" aria-roledescription="carousel" aria-label="Creator UGC videos" className="mx-auto w-full">
+    <div role="group" aria-roledescription="carousel" aria-label={label} className="mx-auto w-full">
       <div
         ref={stageRef}
         tabIndex={0}

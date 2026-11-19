@@ -9,7 +9,7 @@
    • "Founder-led" is already published on the site (/scale meta description, founder video); the earlier "prolific creator who has
      personally produced hundreds of videos" claim could not be substantiated from the business records and was replaced (Nov 2026).
    • No promised results, rankings, FAQ rich results or AI citations.
-   • An answer is an array of paragraphs. `link` adds a final text link under the answer (not part of the structured-data text). */
+   • An answer is an array of paragraphs. `link` adds a final text link under the answer and `moreLinks` any further ones (neither is part of the structured-data text). */
 
 export const HOME_FAQ = [
   {
@@ -44,6 +44,7 @@ export const HOME_FAQ = [
       "We don't present paid creators as genuine customers.",
     ],
     link: { label: 'Learn about our UGC video production', href: '/ugc-video-agency' },
+    moreLinks: [{ label: 'Learn about our spokesperson video production', href: '/spokesperson-video-production' }],
   },
   {
     q: 'Do you make SaaS explainer and product demo videos?',
