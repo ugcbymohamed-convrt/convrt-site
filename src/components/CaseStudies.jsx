@@ -2,25 +2,24 @@ import { useState, useRef, useEffect, useCallback } from 'react'
 import { attachHls } from '../lib/hls.js'
 import { OFFER_PATHS } from '../config.js'
 import { GRASPO_FOLLOWING } from '../lib/siteStats.js'
+import { selectShowcase } from '../content/portfolio.js'
 
 /* ─────────────────────────────────────────────
    SECTION 3 — CASE STUDIES / CREATIVE SHOWCASE
    Videos hosted on YouTube (Shorts)
 ───────────────────────────────────────────── */
-const CASES = [
+/* A panel's three phones. The videos live in src/content/portfolio.js: tag a video with `showcase: '<panel id>'` there (and keep it approved)
+   to show it in a panel; the first three are used, in file order. A panel with fewer than three is left out rather than shown broken. */
+const panelVideos = (id) => selectShowcase(id).slice(0, 3).map((v) => (v.source.mp4 ? { mp4: v.source.mp4, poster: v.poster } : { id: v.source.cloudflareId, poster: v.poster }))
+
+const ALL_CASES = [
   {
     id: 'adscale',
     tab: 'SaaS',
     logo: { src: '/clients/adscale.png', alt: 'Adscale', w: 531, h: 149 },
     title: "Long-form creatives\nthat can't be skipped.",
     body: 'If you think long creatives are not a thing, check these out. These are not just creatives, they build trust, they scream confidence, and they show "we know what we\'re doing". Aesthetic transitions, catchy visuals and a delivery so engaging that it makes it almost impossible to skip.',
-    videos: [
-      '8d4dbbeabac272bddb23068c91037af8',
-      // Adscale Agentic — Cloudflare stream, custom poster (computer with Facebook ads)
-      { id: '08abef50c734085f25f345cdde4b1e33', poster: '/showcase/adscale-agentic-poster.webp' },
-      // Female creator with a sun umbrella — self-hosted MP4 (720×1280, ~12 MB)
-      { mp4: '/showcase/adscale-creator.mp4', poster: '/showcase/adscale-creator-poster.webp' },
-    ],
+    videos: panelVideos('adscale'),
     accentColor: '#3b82f6',
   },
   {
@@ -29,7 +28,7 @@ const CASES = [
     logo: { src: '/clients/elyon.png', alt: 'Elyon Dubai', w: 600, h: 226 },
     title: '100+ creatives tested.\nMultiple winners found.',
     body: "We have created over 100 pieces of content with Elyon Dubai. Since their launch back in 2025, we have tested multiple concepts & variations. So far, we've already found many formats that are killing it for Elyon. When the product is of quality, it's so much easier to make genuine content that resonates with people.",
-    videos: ['fa02007b36fae2b3bb68c97cdd00e9fc', '0905b814e2ba3950197b5bfe1cefae38', '9e6cb8438c9b0c1ab8b55953718eddde'],
+    videos: panelVideos('elyon'),
     accentColor: '#f59e0b',
   },
   {
@@ -38,10 +37,11 @@ const CASES = [
     logo: { src: '/clients/graspo.png', alt: 'Graspo', w: 619, h: 279, height: 62 },
     title: '6 million views.\nIn less than 2 months.',
     body: `We have generated over 6 million views for Graspo in less than 2 months. And yes, it took 6 months of content testing beforehand to figure out what really clicks and what doesn't. Today, Graspo has ${GRASPO_FOLLOWING.combined} followers: ${GRASPO_FOLLOWING.facebook} on Facebook, ${GRASPO_FOLLOWING.instagram} on Instagram and ${GRASPO_FOLLOWING.tiktok} on TikTok.`,
-    videos: ['15dd5505109f6821ccdcb13fc3cdc1fd', '3616606e3ca6d1a85c8a57d7cc2f656f', 'c1379ace38f2fa19ef2a45de1bb5d4b1'],
+    videos: panelVideos('graspo'),
     accentColor: '#10b981',
   },
 ]
+const CASES = ALL_CASES.filter((c) => c.videos.length === 3)
 
 /* A video entry is either a Cloudflare Stream id (string) or an object:
    { id, poster? }  – Cloudflare Stream (HLS) with an optional custom poster
@@ -56,8 +56,9 @@ function videoSource(v) {
    Main section
 ───────────────────────────────────────────── */
 export default function CaseStudies() {
-  const [activeId, setActiveId] = useState('adscale')
+  const [activeId, setActiveId] = useState(CASES[0]?.id)
   const active = CASES.find((c) => c.id === activeId)
+  if (!active) return null
 
   return (
     <section id="showcase" tabIndex={-1} className="relative overflow-hidden py-14 md:py-20 scroll-mt-[72px] md:scroll-mt-24 focus:outline-none">

@@ -10,13 +10,13 @@ import { captureAttribution, trackEvent } from './lib/analytics.js'
 import { useDocumentHead } from './lib/useDocumentHead.js'
 import { pageHead } from './seo/siteSeo.js'
 import { PATHS } from './routes.js'
-import { selectHero, selectGallery } from './content/ugcPortfolio.js'
+import { selectHero, selectGallery } from './content/portfolio.js'
 
 /* /ugc-video-agency: the UGC service page.
      1 Hero (with the approved-video stage) · 2 How we create and test UGC ads · 3 How your videos could look (a horizontal gallery of up to 10 approved
      videos, absent until videos exist) · 4 Results & client feedback · 5 FAQ · then a short final CTA. Complete pricing and contract detail lives on /pricing.
    Title, description, canonical, robots and JSON-LD all come from the SEO manifest (src/seo/siteSeo.js). Prices, terms and
-   FAQ answers come from src/seo/businessKnowledge.js; portfolio videos from src/content/ugcPortfolio.js (approved items only). */
+   FAQ answers come from src/seo/businessKnowledge.js; portfolio videos from src/content/portfolio.js (approved items only). */
 export default function UgcVideoAgencyPage() {
   useDocumentHead(pageHead(PATHS.ugcVideoAgency))
 

@@ -400,7 +400,7 @@ test('FAQPage JSON-LD is generated from exactly the visible Q&A', () => {
 test('BreadcrumbList: real hierarchy with canonical absolute URLs', () => {
   const bc = graph().find((n) => n['@type'] === 'BreadcrumbList')
   assert.deepEqual(bc.itemListElement.map((i) => [i.position, i.name, i.item]), [[1, 'Home', `${SITE_URL}/`], [2, 'Pricing', `${SITE_URL}/pricing`]])
-  assert.deepEqual(Object.keys(BREADCRUMB_TRAILS), ['/pricing', '/ugc-video-agency'])
+  assert.deepEqual(Object.keys(BREADCRUMB_TRAILS), ['/pricing', '/ugc-video-agency', '/our-work'])
 })
 
 test('JSON-LD is attached only to the homepage, /pricing and /ugc-video-agency; the manifest supplies it with the head', () => {

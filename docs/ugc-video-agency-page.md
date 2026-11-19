@@ -33,13 +33,14 @@ Complete pricing and contract detail lives on `/pricing`. The policies of the re
 raw footage, creator-account ads, commitments, revisions, reshoots, turnaround, shipping and access, formats, languages, best-suited
 brands) are answered in the FAQ, from the business data; a test checks each is still on the page.
 
-## The creator portfolio (`src/content/ugcPortfolio.js`)
-The list ships **empty**, which is a valid, fully working state. To add a video, append one object (the file header documents every
-field). A video renders only when `approval.status === 'approved'`, `approval.portfolioUse === true` **and**
-`approval.creatorConsent === true`. Approval to produce or deliver a video is NOT portfolio permission. A creator's name is shown
-only when `creator.showName === true`. The same list feeds the hero stage (first three videos) and the portfolio section.
+## The creator portfolio (`src/content/portfolio.js`)
+The videos live in **one shared file**, `src/content/portfolio.js`, which also feeds `/our-work` and the homepage client panels
+(see `docs/our-work-page.md`). This page shows the approved videos whose `type` is `'ugc'`: those with `placement: 'hero'` fill the
+three-phone stage (first = the large centre phone, at most 3) and the rest fill the horizontal gallery (at most 10). A video renders
+only when `approval.status === 'approved'`, `approval.portfolioUse === true` **and** `approval.creatorConsent === true`. Approval to
+produce or deliver a video is NOT portfolio permission. A creator's name is shown only when `creator.showName === true`.
 Playback: posters first; the hero's active video loads after the browser is idle and only while on screen (never for reduced-motion
-or data-saver visitors, who press play); portfolio cards load a video only after a tap, one at a time.
+or data-saver visitors, who press play); gallery cards load a video only after a tap, one at a time.
 
 ## Roadmap eligibility
 The Free Creative Growth Roadmap is open to brands in every industry. `src/lib/roadmapQuestions.js` lists the industries;

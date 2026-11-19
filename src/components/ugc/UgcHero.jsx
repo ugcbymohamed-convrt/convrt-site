@@ -14,7 +14,7 @@ import { useAutoplayAllowed } from './creatorVideo.jsx'
    THE PHONES. With approved creator videos (selectDisplayable) the right side is the interactive CreatorVideoStage (one large
    active video, two smaller phones behind it, click a side phone to bring it to the centre). With none it is the same three
    frames, empty (PhoneShowcaseFallback): no stand-in footage and no play button. Adding the first approved videos to
-   src/content/ugcPortfolio.js swaps the fallback for the stage with no other change.
+   src/content/portfolio.js swaps the fallback for the stage with no other change.
 
    THE HEADLINE. "Human-led UGC ads. / Built for paid social. / to convrt." Each word slides up from behind a mask once on load; then
    only the last word changes, like a slot reel: the current word rolls up and out while the next rolls up in from below

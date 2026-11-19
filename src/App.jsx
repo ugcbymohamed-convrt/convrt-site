@@ -19,6 +19,7 @@ import { scrollToHash } from './lib/scroll.js'
    hooks, risk-free, case-study, pricing and /scale code. */
 const CreativeTestingSprintPage = lazy(() => import('./CreativeTestingSprintPage.jsx'))
 const UgcVideoAgencyPage = lazy(() => import('./UgcVideoAgencyPage.jsx'))
+const OurWorkPage = lazy(() => import('./OurWorkPage.jsx'))
 const CaseStudiesPage = lazy(() => import('./CaseStudiesPage.jsx'))
 const ScalePage = lazy(() => import('./ScalePage.jsx'))
 const RoadmapPage = lazy(() => import('./RoadmapPage.jsx'))
@@ -39,6 +40,8 @@ const ROUTES = {
   [PATHS.pricing]: CreativeTestingSprintPage,
   // UGC service page (SEO phase 2).
   [PATHS.ugcVideoAgency]: UgcVideoAgencyPage,
+  // Our Work: the filterable video portfolio (src/content/portfolio.js).
+  [PATHS.ourWork]: OurWorkPage,
   [PATHS.caseStudies]: CaseStudiesPage,
   [PATHS.caseStudyGraspo]: CaseStudiesPage,
   [PATHS.caseStudyElyon]: CaseStudiesPage,

@@ -21,6 +21,7 @@ import { PRICING_FAQ, faqAnswerText } from './pricingFaq.js'
 import { HOME_FAQ, homeFaqText } from './homeFaq.js'
 import { UGC_FAQ } from './ugcFaq.js'
 import { PATHS } from '../routes.js'
+import { selectOurWork, isDisplayable, posterUrl, hlsUrl, titleOf } from '../content/portfolio.js'
 
 const CONTEXT = 'https://schema.org'
 const abs = (path) => `${SITE_URL}${path === '/' ? '/' : path}`
@@ -71,6 +72,7 @@ export function webSiteNode() {
 export const BREADCRUMB_TRAILS = {
   '/pricing': [{ name: 'Home', path: '/' }, { name: 'Pricing', path: '/pricing' }],
   [PATHS.ugcVideoAgency]: [{ name: 'Home', path: '/' }, { name: 'UGC Video Agency', path: PATHS.ugcVideoAgency }],
+  [PATHS.ourWork]: [{ name: 'Home', path: '/' }, { name: 'Our Work', path: PATHS.ourWork }],
 }
 
 export function breadcrumbNode(trail, id) {
@@ -320,10 +322,55 @@ export function ugcGraph({ title, description }) {
   ])
 }
 
+/* One VideoObject for an approved portfolio video, or undefined. Only a video with a real, verified uploadDate gets one (Google requires
+   it, and the site must not invent it): the data file's `uploadDate` is the opt-in. Never emitted for anything that is not displayable. */
+export function videoObjectNode(item) {
+  if (!isDisplayable(item) || !item.uploadDate) return undefined
+  const cf = item.source.cloudflareId
+  const thumb = posterUrl(item)
+  return {
+    '@type': 'VideoObject',
+    '@id': `${abs(PATHS.ourWork)}#video-${item.id}`,
+    name: titleOf(item),
+    description: item.description ?? item.caption,
+    thumbnailUrl: [thumb.startsWith('http') ? thumb : abs(thumb)],
+    uploadDate: item.uploadDate,
+    ...(item.languages?.length ? { inLanguage: item.languages[0] } : {}),
+    ...(cf ? { contentUrl: hlsUrl(item), embedUrl: `https://iframe.videodelivery.net/${cf}` } : { contentUrl: abs(item.source.mp4) }),
+    publisher: { '@id': ORG_ID },
+  }
+}
+
+/* /our-work: a CollectionPage + its breadcrumb, plus VideoObject markup only for the videos that qualify (see videoObjectNode). With
+   no verified videos there is no video markup at all, never a placeholder. */
+export function ourWorkGraph({ title, description }) {
+  const path = PATHS.ourWork
+  const url = abs(path)
+  const videos = selectOurWork().map(videoObjectNode).filter(Boolean)
+  return graph([
+    organizationNode(),
+    {
+      '@type': 'CollectionPage',
+      '@id': pageId(path),
+      url,
+      name: title,
+      description,
+      isPartOf: { '@id': WEBSITE_ID },
+      publisher: { '@id': ORG_ID },
+      breadcrumb: { '@id': `${url}#breadcrumb` },
+      inLanguage: 'en',
+      ...(videos.length ? { hasPart: videos.map((v) => ({ '@id': v['@id'] })) } : {}),
+    },
+    breadcrumbNode(BREADCRUMB_TRAILS[path], `${url}#breadcrumb`),
+    ...videos,
+  ])
+}
+
 /* The JSON-LD for a route, or undefined when the route has none. `seo` is the route's SITE_SEO entry. */
 export function jsonLdFor(path, seo = {}) {
   if (path === '/') return homeGraph(seo)
   if (path === '/pricing') return pricingGraph(seo)
   if (path === PATHS.ugcVideoAgency) return ugcGraph(seo)
+  if (path === PATHS.ourWork) return ourWorkGraph(seo)
   return undefined
 }

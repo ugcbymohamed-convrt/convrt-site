@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { attachHls } from '../../lib/hls.js'
-import { hlsUrl } from '../../content/ugcPortfolio.js'
+import { hlsUrl } from '../../content/portfolio.js'
 
 /* Shared video plumbing for the approved creator videos (hero stage and portfolio). Nothing here renders until an approved video
    exists, and no <video> element, stream or download is created until a component decides one is needed. */

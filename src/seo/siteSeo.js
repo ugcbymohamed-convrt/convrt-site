@@ -24,6 +24,7 @@ import {
 import { jsonLdFor } from './structuredData.js'
 import { PATHS } from '../routes.js'
 import { formatMoney, SPRINT, USAGE_RIGHTS } from './businessKnowledge.js'
+import { selectOurWork } from '../content/portfolio.js'
 
 export const SITE_SEO = {
   '/': {
@@ -48,6 +49,15 @@ export const SITE_SEO = {
     ogTitle: 'CONVRT: UGC Ads Built for Paid Social',
     ogDescription: 'Creator-led UGC video ads, produced end to end, with transparent pricing and usage rights.',
     indexable: true,
+  },
+  [PATHS.ourWork]: {
+    title: 'Our Work | UGC Ads & Video Production Portfolio | CONVRT',
+    description:
+      'Watch creator-led UGC ads and performance video creatives produced by CONVRT for paid social. Browse the portfolio and filter by industry.',
+    ogTitle: 'CONVRT Our Work: UGC Ads & Performance Creatives',
+    ogDescription: 'Watch human-led UGC ads, spokesperson videos and performance creatives produced by CONVRT.',
+    // Indexable (and in the sitemap) only while at least one video is approved for the portfolio, so an empty library is never promoted to search.
+    indexable: selectOurWork().length > 0,
   },
   '/case-studies/graspo': {
     title: 'Graspo Case Study: 10.7M Organic Views & Arabic Social Media Leads | CONVRT',

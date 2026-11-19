@@ -24,8 +24,8 @@ import {
 } from '../src/seo/businessKnowledge.js'
 import { ELYON_PROOF, UGC_TESTIMONIALS } from '../src/content/ugcProof.js'
 import {
-  UGC_PORTFOLIO, isDisplayable, selectDisplayable, selectGallery, selectHero, portfolioProblems, creatorLabel, buildFacets, matchesFilters, posterUrl, categoryOf,
-} from '../src/content/ugcPortfolio.js'
+  PORTFOLIO, isDisplayable, selectDisplayable, selectGallery, selectHero, portfolioProblems, creatorLabel, buildFacets, matchesFilters, posterUrl, categoryOf,
+} from '../src/content/portfolio.js'
 import { BUSINESS_TYPE_OPTIONS } from '../src/lib/roadmapQuestions.js'
 
 const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), '..')
@@ -247,7 +247,7 @@ test('JSON-LD: Organization, WebPage, BreadcrumbList, Service (+ Offers from the
   assert.equal(web.url, URL_)
   assert.equal(web.about['@id'], svc['@id'])
   assert.deepEqual(crumb.itemListElement.map((i) => [i.position, i.name, i.item]), [[1, 'Home', `${SITE_URL}/`], [2, 'UGC Video Agency', URL_]])
-  assert.deepEqual(Object.keys(BREADCRUMB_TRAILS), ['/pricing', PATH])
+  assert.deepEqual(Object.keys(BREADCRUMB_TRAILS), ['/pricing', PATH, PATHS.ourWork])
   assert.equal(svc.provider['@id'], ORG_ID)
   assert.ok(svc.isRelatedTo.some((r) => r['@id'] === serviceId('ugc')))
   const prices = svc.offers.map((o) => o.priceSpecification.price)
@@ -277,11 +277,11 @@ const sample = (over = {}) => ({
 })
 
 test('portfolio: the shipped list is valid, has unique ids, and only approved items would ever render', () => {
-  const ids = UGC_PORTFOLIO.map((i) => i.id)
+  const ids = PORTFOLIO.map((i) => i.id)
   assert.equal(new Set(ids).size, ids.length)
-  for (const i of UGC_PORTFOLIO) assert.deepEqual(portfolioProblems(i), [], i.id)
-  // the owner confirmed: the existing Adscale and Elyon clips are NOT portfolio material
-  assert.ok(UGC_PORTFOLIO.every((i) => !/adscale|elyon|graspo/i.test(JSON.stringify(i))), 'no Adscale / Elyon / Graspo clips in the portfolio')
+  for (const i of PORTFOLIO) assert.deepEqual(portfolioProblems(i), [], i.id)
+  // the owner confirmed: the existing Adscale, Elyon and Graspo clips are NOT portfolio material (they live in the file for the homepage panels only)
+  assert.ok(selectDisplayable(PORTFOLIO).every((i) => !/adscale|elyon|graspo/i.test(JSON.stringify(i))), 'no Adscale / Elyon / Graspo clip is displayable in the portfolio')
 })
 
 test('portfolio gate: renders only with status "approved" AND portfolio permission AND creator consent', () => {
@@ -314,20 +314,20 @@ test('portfolio: a creator name is shown only with explicit permission; the inte
   assert.ok(!html.includes('Ana') && !html.includes('c-test-1'))
 })
 
-test('portfolio filters: language and category (SaaS, E-commerce, Apps, Other) facets appear only with two or more values, and filtering matches either field', () => {
+test('portfolio filters: language and category (E-commerce, SaaS, Services, Other) facets appear only with two or more values, and filtering matches either field', () => {
   const one = [sample()]
   assert.deepEqual(buildFacets(one), { language: [], category: [] })
   const two = [sample(), sample({ id: 'sample-b', languages: ['ar', 'en'], industry: 'saas' })]
   const f = buildFacets(two)
   assert.deepEqual(f.language.map((x) => [x.value, x.label, x.count]), [['ar', 'Arabic', 1], ['en', 'English', 1], ['es', 'Spanish', 1]])
-  assert.deepEqual(f.category.map((x) => [x.value, x.label]), [['saas', 'SaaS'], ['other', 'Other']], 'SaaS, E-commerce, Apps and Other: only those with approved videos; beauty groups under Other')
+  assert.deepEqual(f.category.map((x) => [x.value, x.label]), [['saas', 'SaaS'], ['other', 'Other']], 'E-commerce, SaaS, Services and Other: only those with approved videos; beauty groups under Other')
   assert.equal(matchesFilters(two[1], { language: 'en' }), true)
   assert.equal(matchesFilters(two[0], { language: 'en' }), false)
   assert.equal(matchesFilters(two[1], { language: 'en', category: 'other' }), false)
   assert.equal(matchesFilters(two[0], { category: 'other' }), true)
-  assert.equal(categoryOf(sample({ industry: 'technology' })), 'app')
+  assert.equal(categoryOf(sample({ industry: 'technology' })), 'saas')
   assert.equal(categoryOf(sample({ industry: 'ecommerce' })), 'ecommerce')
-  assert.equal(buildFacets([sample({ industry: 'ecommerce' }), sample({ id: 'b', industry: 'app', languages: ['en'] }), sample({ id: 'c', industry: 'saas' })]).category.map((x) => x.label).join(), 'SaaS,E-commerce,Apps')
+  assert.equal(buildFacets([sample({ industry: 'ecommerce' }), sample({ id: 'b', industry: 'app', languages: ['en'] }), sample({ id: 'c', industry: 'saas' })]).category.map((x) => x.label).join(), 'E-commerce,SaaS,Other', 'apps group under Other')
   assert.equal(matchesFilters(two[0], {}), true)
 })
 
@@ -355,7 +355,7 @@ test('portfolio scales: "Show more" pages through a large library without render
 })
 
 test('portfolio absent: no section, no placeholder, no illustration and no video in the HTML; the hero is a clean text-led hero', () => {
-  assert.equal(selectDisplayable().length, UGC_PORTFOLIO.filter(isDisplayable).length)
+  assert.equal(selectDisplayable().length, PORTFOLIO.filter(isDisplayable).length)
   assert.equal(renderToStaticMarkup(createElement(UgcWork.default, { items: [] })), '', 'the portfolio section renders nothing without approved videos')
   if (selectDisplayable().length > 0) return // once real videos ship, the portfolio is correctly present
   const html = page(PATH)
@@ -666,7 +666,7 @@ test('final CTA: See Pricing and Email the Founder are real buttons; the address
 })
 
 test('thumbnails: every portfolio video has its own hand-picked thumbnail file (the creator in view), not the first frame', () => {
-  for (const v of UGC_PORTFOLIO) {
+  for (const v of selectDisplayable(PORTFOLIO)) {
     assert.ok(v.poster && /^\/portfolio\/[a-z0-9-]+\.webp$/.test(v.poster), `${v.id} has a local poster`)
     assert.ok(fs.existsSync(path.join(ROOT, 'public', v.poster)), `${v.id}: ${v.poster} exists`)
     assert.equal(posterUrl(v), v.poster)

@@ -1,5 +1,5 @@
 import Logo from './Logo.jsx'
-import { CONTACT_EMAIL, REFERRALS_PATH } from '../config.js'
+import { CONTACT_EMAIL, REFERRALS_PATH, OUR_WORK_PATH } from '../config.js'
 
 export default function Footer() {
   const year = new Date().getFullYear()
@@ -25,6 +25,7 @@ export default function Footer() {
             <ul className="mt-4 space-y-2.5 text-sm text-ink-muted">
               <li><a className="hover:text-ink transition-colors" href={`${homePrefix}#services`}>Services</a></li>
               <li><a className="hover:text-ink transition-colors" href="/ugc-video-agency">UGC Video Agency</a></li>
+              <li><a className="hover:text-ink transition-colors" href={OUR_WORK_PATH}>Our Work</a></li>
               <li><a className="hover:text-ink transition-colors" href="/case-studies">Case Studies</a></li>
               <li><a className="hover:text-ink transition-colors" href="/pricing">Pricing</a></li>
               <li><a className="hover:text-ink transition-colors" href="/blog">Blog</a></li>

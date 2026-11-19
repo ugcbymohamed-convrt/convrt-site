@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { attachHls } from '../../lib/hls.js'
-import { posterUrl, hlsUrl, languageLabel, industryLabel } from '../../content/ugcPortfolio.js'
+import { posterUrl, hlsUrl, languageLabel, industryLabel } from '../../content/portfolio.js'
 import { trackEvent } from '../../lib/analytics.js'
 import { useAutoplayAllowed, useIdleAfterLoad, PlayGlyph, PauseGlyph, SoundGlyph } from './creatorVideo.jsx'
 

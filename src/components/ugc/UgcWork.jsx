@@ -2,11 +2,11 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { trackEvent } from '../../lib/analytics.js'
 import {
   buildFacets, matchesFilters, posterUrl, creatorLabel, languageLabel, industryLabel,
-} from '../../content/ugcPortfolio.js'
+} from '../../content/portfolio.js'
 import { Section, Head, Reveal, RoadmapCta, TextLink } from './shared.jsx'
 import { useAttachSource, PlayGlyph } from './creatorVideo.jsx'
 
-/* SECTION 2: our best UGC work. A data-driven portfolio of approved vertical creator videos (src/content/ugcPortfolio.js).
+/* SECTION 2: our best UGC work. A data-driven portfolio of approved vertical creator videos (src/content/portfolio.js).
 
    • Only videos with approval, portfolio permission and creator consent ever render. With none, this whole section is absent
      (it returns null): no placeholder, no stock footage, no "coming soon" message. The hero and the page work without it.

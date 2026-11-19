@@ -1,8 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { attachHls } from '../lib/hls.js'
 import { usePressFeedback } from '../lib/usePressFeedback.js'
-import { OFFER_PATHS } from '../config.js'
-import { scrollToElement } from '../lib/scroll.js'
+import { OFFER_PATHS, OUR_WORK_PATH } from '../config.js'
 import { trackEvent } from '../lib/analytics.js'
 import { CONVRT_STATS } from '../lib/siteStats.js'
 
@@ -97,18 +96,8 @@ export default function Hero() {
                   </svg>
                 </a>
                 <a
-                  href="#showcase"
-                  onClick={(e) => {
-                    trackEvent('hero_see_our_work_click', { location: 'hero' })
-                    // Plain left-click: scroll to the portfolio section below (fast ease-out, see lib/scroll.js).
-                    // Modified clicks (new tab, etc.) and a missing target keep normal link behaviour.
-                    if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return
-                    const target = document.getElementById('showcase')
-                    if (!target) return
-                    e.preventDefault()
-                    scrollToElement(target)
-                    target.focus({ preventScroll: true })
-                  }}
+                  href={OUR_WORK_PATH}
+                  onClick={() => trackEvent('hero_see_our_work_click', { location: 'hero' })}
                   {...ghostPress}
                   className="hero-cta-ghost group inline-flex w-full sm:w-auto min-h-[48px] sm:min-h-[64px] md:min-h-[68px] items-center justify-center gap-2
                              rounded-full border border-hairline-strong bg-surface-2 px-6 md:px-7 lg:px-5 xl:px-7 py-3 sm:py-4 text-base md:text-[17px] font-semibold tracking-snug text-ink

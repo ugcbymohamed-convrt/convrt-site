@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { trackEvent } from '../../lib/analytics.js'
 import { OUR_WORK_PATH } from '../../config.js'
-import { posterUrl, languageLabel } from '../../content/ugcPortfolio.js'
+import { posterUrl, languageLabel } from '../../content/portfolio.js'
 import { usePreviewHost } from '../../lib/previewHost.js'
 import SectionDivider from '../SectionDivider.jsx'
 import { Section, Head, Reveal, GhostCta } from './shared.jsx'
@@ -11,7 +11,7 @@ import { PORTRAITS } from './illustrations.jsx'
 
 /* SECTION: a horizontal gallery of real UGC examples, shown before "Results & client feedback".
 
-   DATA. The approved portfolio videos (selectDisplayable, src/content/ugcPortfolio.js), at most TOTAL (10). Adding a video there is the
+   DATA. The approved portfolio videos (selectDisplayable, src/content/portfolio.js), at most TOTAL (10). Adding a video there is the
    only step needed: this section, the hero stage and the future "Our Work" page all read the same list. With none, the section is
    absent on the live site (no placeholder, no stock footage). On Vercel preview hosts only (usePreviewHost) it shows ten stand-in
    cards so the layout can be reviewed; those never reach the production domain.
