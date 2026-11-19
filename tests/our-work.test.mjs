@@ -180,13 +180,13 @@ test('data: the homepage client panels still show exactly the same videos, in th
   assert.ok(home.includes('/showcase/adscale-agentic-poster.webp') && home.includes('/showcase/adscale-creator-poster.webp'))
 })
 
-test('data: validation rejects bad entries; language is optional only for videos not approved for the portfolio', () => {
+test('data: validation rejects bad entries; language is optional until confirmed', () => {
   assert.deepEqual(portfolioProblems(sample()), [])
   assert.ok(portfolioProblems(sample({ id: 'Bad Id' })).length)
   assert.ok(portfolioProblems(sample({ type: 'Bad Type' })).length)
   assert.ok(portfolioProblems(sample({ uploadDate: '3 Feb 2026' })).length)
-  assert.ok(portfolioProblems(sample({ languages: undefined })).length, 'portfolio videos need a language')
-  assert.deepEqual(portfolioProblems(sample({ languages: undefined, approval: { status: 'approved', portfolioUse: false, creatorConsent: false } })), [])
+  assert.deepEqual(portfolioProblems(sample({ languages: undefined })), [], 'language is optional until confirmed')
+  assert.ok(portfolioProblems(sample({ languages: ['English'] })).length, 'but a given language must be a valid code')
   assert.equal(titleOf(sample({ title: undefined })), 'A sample caption.', 'title falls back to the caption')
   assert.equal(typeLabel(sample({ type: 'spokesperson' })), 'Spokesperson')
   assert.equal(typeLabel(sample({ type: undefined })), '', 'an unset type is unknown, not UGC')
@@ -382,19 +382,46 @@ test('regression: the nine homepage client videos stay homepage-only: not in /ou
   assert.ok(home.includes('id="showcase"') && home.includes('/showcase/adscale-creator-poster.webp'), 'the homepage client showcase is intact')
 })
 
-test('regression: the 11 existing portfolio entries are intact (ids, media, permissions) but their industry is unconfirmed, not "Other"', () => {
+test('regression: the 11 original portfolio entries are intact (ids, media, permissions); only the five that sit in the E-commerce folder were classified', () => {
   const ids = ['ugc-hero-1', 'ugc-hero-2', 'ugc-hero-3', 'ugc-gal-1', 'ugc-gal-8', 'ugc-gal-4', 'ugc-gal-3', 'ugc-gal-5', 'ugc-gal-7', 'ugc-gal-2', 'ugc-gal-6']
-  assert.deepEqual(PORTFOLIO.filter((v) => !v.showcase).map((v) => v.id), ids)
-  assert.deepEqual(PORTFOLIO.filter((v) => !v.showcase).map((v) => v.source.cloudflareId), [
+  const original = PORTFOLIO.filter((v) => ids.includes(v.id))
+  assert.deepEqual(original.map((v) => v.id), ids, 'same entries, same order')
+  assert.deepEqual(original.map((v) => v.source.cloudflareId), [
     '33a4063ee0e8dafe3379f0a97817036e', '63446474698139b4ac17c1f053212242', '1fc1374cdfe428d10bfc40ad4eff9693', 'c8914f7a0db3ac9f5ffd0721115dbe20',
     'b73842a409de5f4f6ae9d72733ea1152', '79b1cd5d22e9f13587ab547e438e29ef', '1188b4341860779830fa7365b1442959', '3a41e0f797a707576ff9af9fb9fb6a81',
     '749e2ad503f5db79d69086a47c59edd0', 'ff256a4643515d29b61c1f210c06476d', '8b15247d9a422614898b8bbb54591025'])
-  for (const v of PORTFOLIO.filter((x) => !x.showcase)) {
-    assert.deepEqual(v.approval, { status: 'approved', portfolioUse: true, creatorConsent: true, approvedBy: 'CONVRT owner (confirmed in chat)', approvedOn: '2026-11-19' }, `${v.id}: permission record untouched`)
-    assert.equal(v.industry, 'unclassified', `${v.id}: industry is unconfirmed`)
-    assert.ok(!isClassified(v) && categoryOf(v) === null)
+  for (const v of original) assert.deepEqual(v.approval, { status: 'approved', portfolioUse: true, creatorConsent: true, approvedBy: 'CONVRT owner (confirmed in chat)', approvedOn: '2026-11-19' }, `${v.id}: permission record untouched`)
+  const ecommerce = ['ugc-hero-3', 'ugc-gal-1', 'ugc-gal-8', 'ugc-gal-3', 'ugc-gal-7'] // byte-identical to files in the Creator Showcase "E-commerce" folder
+  for (const v of original) {
+    if (ecommerce.includes(v.id)) assert.equal(v.industry, 'ecommerce', `${v.id}: classified by its folder`)
+    else { assert.equal(v.industry, 'unclassified', `${v.id}: industry still unconfirmed`); assert.equal(categoryOf(v), null) }
   }
-  assert.equal(selectOurWork().length, 11)
+  assert.deepEqual(selectHero().map((v) => v.id), ['ugc-hero-1', 'ugc-hero-2', 'ugc-hero-3'], 'the UGC hero is still the three selected videos, in order')
+})
+
+test('Creator Showcase folder: 18 more videos, classified by folder, uploaded once, with their own local thumbnails; nothing guessed', () => {
+  const added = PORTFOLIO.filter((v) => /^creator-\d\d$/.test(v.id))
+  assert.equal(added.length, 18)
+  assert.deepEqual(added.map((v) => v.id), Array.from({ length: 18 }, (_, i) => `creator-${String(i + 1).padStart(2, '0')}`))
+  assert.deepEqual(added.reduce((m, v) => ({ ...m, [v.industry]: (m[v.industry] || 0) + 1 }), {}), { saas: 6, services: 8, ecommerce: 4 }, 'SaaS 6, Service 8, E-commerce 4 new (+5 already on the site = 9)')
+  const media = PORTFOLIO.map((v) => v.source.cloudflareId ?? v.source.mp4)
+  assert.equal(new Set(media).size, media.length, 'no duplicate upload')
+  for (const v of added) {
+    assert.ok(isDisplayable(v) && v.type === 'ugc')
+    assert.ok(/^[0-9a-f]{32}$/.test(v.source.cloudflareId), `${v.id}: Cloudflare id`)
+    assert.equal(v.poster, `/portfolio/${v.id}.webp`)
+    assert.ok(fs.existsSync(path.join(ROOT, 'public', v.poster)), `${v.id}: thumbnail file exists`)
+    assert.equal(v.languages, undefined, `${v.id}: language not guessed`)
+    assert.equal(v.brand, undefined, `${v.id}: no brand`)
+    assert.equal(v.production, undefined, `${v.id}: production unknown`)
+    assert.ok(/^UGC ad example \d+$/.test(v.title), `${v.id}: placeholder title, not invented`)
+  }
+  const ours = selectOurWork()
+  assert.equal(ours.length, 29)
+  assert.deepEqual(availableCategories(ours).map((c) => c.id), ['all', 'ecommerce', 'saas', 'services'], 'Other has no videos, so it has no tab')
+  assert.deepEqual(['ecommerce', 'saas', 'services'].map((c) => countIn(ours, c)), [9, 6, 8])
+  assert.equal(ours.filter((v) => categoryOf(v) === null).length, 6, 'the six still-unclassified videos are only in All Work')
+  assert.ok(selectGallery().length > 10 && selectGallery().slice(0, 10).length === 10, 'the UGC gallery still caps at 10')
 })
 
 test('regression: an unclassified video is in All Work only, never under Other or any industry tab, and shows no industry label', () => {

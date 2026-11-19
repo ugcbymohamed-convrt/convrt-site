@@ -631,7 +631,7 @@ test('gallery: a horizontal scroller of up to 10 approved videos before Results;
   else {
     assert.ok(html.includes('id="ugc-videos"'), 'the gallery is on the page')
     assert.equal((html.split('id="ugc-videos"')[1].split('</section>')[0].match(/Play video:/g) || []).length, Math.min(gallery.length, 10), 'one card per approved gallery video (max 10)')
-    assert.ok(gallery.every((v) => html.includes(posterUrl(v).replace(/&/g, '&amp;'))), 'every card has its thumbnail')
+    assert.ok(gallery.slice(0, 10).every((v) => html.includes(posterUrl(v).replace(/&/g, '&amp;'))), 'every shown card (max 10) has its thumbnail')
     assert.ok(!/<video/.test(html.split('id="ugc-videos"')[1].split('</section>')[0]), 'the gallery has no video element until a visitor presses play')
     assert.ok(!/\.m3u8|<source/.test(html), 'no stream is requested by the static HTML (the hero attaches its source only when idle)')
   }
