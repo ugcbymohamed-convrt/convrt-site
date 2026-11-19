@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import { trackEvent } from '../../lib/analytics.js'
 import { usePressFeedback } from '../../lib/usePressFeedback.js'
-import { scrollToElement } from '../../lib/scroll.js'
 import { usePreviewHost } from '../../lib/previewHost.js'
 import { OFFER_PATHS, OUR_WORK_PATH } from '../../config.js'
 import { SECONDARY_OFFERS, SecondaryOffer } from '../Hero.jsx'
@@ -148,14 +147,7 @@ export default function UgcHero({ items }) {
                   </a>
                   <a
                     href={OUR_WORK_PATH}
-                    onClick={(e) => {
-                      trackEvent('ugc_see_our_work_click', { location: 'hero' })
-                      if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return
-                      const target = document.getElementById('ugc-videos')
-                      if (!target) return // no gallery on this page yet: follow the link
-                      e.preventDefault()
-                      scrollToElement(target)
-                    }}
+                    onClick={() => trackEvent('ugc_see_our_work_click', { location: 'hero' })}
                     {...ghostPress}
                     className={GHOST_CTA}
                   >

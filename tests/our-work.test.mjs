@@ -497,3 +497,9 @@ test('order: no creator appears in two videos next to each other, in All Work or
   }
   assert.deepEqual(selectHero().map((v) => v.id), ['ugc-hero-1', 'ugc-hero-2', 'ugc-hero-3'], 'the UGC hero keeps its order')
 })
+
+test('UGC hero "Explore Videos" is a plain link to the Creator Showcase (it no longer scrolls to the page gallery)', () => {
+  const src = read('src/components/ugc/UgcHero.jsx')
+  assert.ok(!/scrollToElement|getElementById\('ugc-videos'\)|preventDefault/.test(src), 'no in-page scroll handler')
+  assert.match(rootOf(page(PATHS.ugcVideoAgency)), /<a href="\/our-work"[^>]*>\s*Explore Videos/)
+})
