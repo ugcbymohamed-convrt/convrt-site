@@ -147,30 +147,31 @@ function BillingPrice({ pkg, billing }) {
 
 const LetsTalk = () => <span className="text-[40px] md:text-[46px]">Let&rsquo;s talk.</span>
 
-/* Hierarchy under the card label: PRICE (display size) > TESTING CREATIVES (second headline, same family and weight, about 60% of the
-   price) > price per finished ad version (small, quiet). One glance gives: what you pay, how many testing creatives that buys, and what
-   one finished ad version works out to. The per-version figure is derived from the package price (not a price for single videos) and
-   follows the billing option shown; both variants are rendered (the inactive one is `hidden`), like the price. */
-const Creatives = ({ count }) => (
-  <p className="font-display text-[27px] font-bold leading-none tracking-display whitespace-nowrap md:text-[31px] lg:text-[25px] xl:text-[29px]">
-    {count} testing creatives
-  </p>
-)
+/* Under the price, one pill per line, both larger than before and in the same pill language as the earlier design:
+   1) the package size (testing creatives) in the neutral chip, the bigger of the two: what the price buys;
+   2) the price per finished ad version in the lime highlight (a black chip with lime text on the lime card): what one finished ad
+      version works out to. Derived from the package price, not a price for single videos; it follows the billing option shown, so both
+      variants are rendered (the inactive one is `hidden`), like the price. */
+const HIGHLIGHT = { light: 'bg-lime text-canvas', lime: 'bg-canvas text-lime' }
 const PerVariation = ({ tone, pkg, billing }) => (
-  <p className={`mt-2.5 text-[13px] leading-none ${TONES[tone].muted}`}>
+  <>
     {BILLING_OPTIONS.map((o) => (
       <span key={o.id} hidden={billing !== o.id} data-billing={o.id}>
-        <span className="font-semibold text-current">{pricePerVariation(pkg, o.id).text}</span> per {AD_VERSIONS.one}
+        <span className={`inline-flex items-baseline gap-1.5 whitespace-nowrap rounded-xl px-3 py-2.5 text-[13px] font-semibold leading-none xl:text-[14px] ${HIGHLIGHT[tone]}`}>
+          <span className="font-display text-[20px] font-bold tracking-snug xl:text-[22px]">{pricePerVariation(pkg, o.id).text}</span> per {AD_VERSIONS.one}
+        </span>
       </span>
     ))}
-  </p>
+  </>
 )
 
-const PackageSize = ({ tone, count, pkg, billing }) => (
-  <>
-    <Creatives count={count} />
-    <PerVariation tone={tone} pkg={pkg} billing={billing} />
-  </>
+const Variations = ({ tone, count, per }) => (
+  <div className="flex flex-col items-start gap-2">
+    <span className={`inline-flex items-center whitespace-nowrap rounded-full px-4 py-2.5 font-display text-[20px] font-bold leading-none tracking-snug lg:text-[18px] xl:text-[21px] ${TONES[tone].chip}`}>
+      {count} testing creatives
+    </span>
+    {per}
+  </div>
 )
 
 const Supporting = ({ tone, children }) => (
@@ -204,20 +205,20 @@ export function PaidCards({ billing }) {
     END_TO_END.checklistItem,
   ]
   const PAID_DESC = 'lg:min-h-[46px]'
-  const PAID_SUB = 'lg:min-h-[58px]'
+  const PAID_SUB = 'lg:min-h-[96px]'
   const custom = CUSTOM_PACKAGES.paid
   return (
     <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3 lg:gap-6">
       <PricingCard
         tone="light" id="card-sprint" label="Sprint" description={SPRINT.cardDescription}
         price={<BillingPrice pkg={SPRINT} billing={billing} />}
-        sub={<PackageSize tone="light" pkg={SPRINT} billing={billing} count={SPRINT.variations} />}
+        sub={<Variations tone="light" count={SPRINT.variations} per={<PerVariation tone="light" pkg={SPRINT} billing={billing} />} />}
         features={sprintFeatures} note={SPRINT.extraDetail} ctaLabel="Get started" descMin={PAID_DESC} subMin={PAID_SUB} endToEnd
       />
       <PricingCard
         tone="lime" id="card-sprint-plus" label="Sprint Plus" badge="Deeper testing" description={SPRINT_PLUS.cardDescription}
         price={<BillingPrice pkg={SPRINT_PLUS} billing={billing} />}
-        sub={<PackageSize tone="lime" pkg={SPRINT_PLUS} billing={billing} count={SPRINT_PLUS.variations} />}
+        sub={<Variations tone="lime" count={SPRINT_PLUS.variations} per={<PerVariation tone="lime" pkg={SPRINT_PLUS} billing={billing} />} />}
         features={plusFeatures} note={SPRINT_PLUS.extraDetail} ctaLabel="Get started" descMin={PAID_DESC} subMin={PAID_SUB} endToEnd
       />
       <PricingCard
