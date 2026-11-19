@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react'
 import SectionDivider from './components/SectionDivider.jsx'
+import RoadmapVideo from './components/roadmap/RoadmapVideo.jsx'
 import RoadmapHero from './components/roadmap/RoadmapHero.jsx'
 import RoadmapApplication from './components/roadmap/RoadmapApplication.jsx'
 import RoadmapFAQ from './components/roadmap/RoadmapFAQ.jsx'
@@ -21,6 +22,7 @@ export default function RoadmapPage() {
 
   return (
     <>
+      <RoadmapVideo />
       <RoadmapHero />
       <SectionDivider />
       <RoadmapApplication />

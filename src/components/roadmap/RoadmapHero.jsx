@@ -12,6 +12,8 @@ export default function RoadmapHero() {
       <div
         aria-hidden="true"
         className="pointer-events-none absolute -top-40 left-1/2 h-[560px] w-[1100px] -translate-x-1/2 rounded-full bg-lime/10 blur-[160px]"
+        // The video now sits above this section, so fade the glow in instead of letting the section edge cut it.
+        style={{ WebkitMaskImage: 'linear-gradient(to bottom, transparent 150px, #000 330px)', maskImage: 'linear-gradient(to bottom, transparent 150px, #000 330px)' }}
       />
 
       <div className="relative mx-auto max-w-7xl px-5 pt-8 pb-16 md:px-8 md:pt-12 md:pb-24">
