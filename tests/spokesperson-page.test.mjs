@@ -34,6 +34,7 @@ const rootOf = (h) => h.slice(h.indexOf('<div id="root"'))
 const textOf = (h) => decode(rootOf(h).replace(/<(script|style)[\s\S]*?<\/\1>/g, ' ').replace(/<[^>]+>/g, ' ')).replace(/\s+/g, ' ').replace(/\s+([,.;:!?])/g, '$1').trim()
 const headOf = (h) => h.slice(0, h.indexOf('</head>'))
 const section = (html, from, to) => html.split(from)[1].split(to)[0]
+const section_ = (html, id) => (html.includes(id) ? section(html, id, '</section>') : '')
 
 let tmp, dist, vite, Hero, Gallery, Proof, Stage
 const page = (p) => fs.readFileSync(path.join(dist, p === '/' ? 'index.html' : `${p.slice(1)}/index.html`), 'utf8')
@@ -116,15 +117,33 @@ test('headline reel: convrt, explain, connect, persuade; only "convrt." in the s
   assert.equal((h1.match(/ugc-reel-track/g) || []).length, 1)
 })
 
-test('empty hero: the three empty phone frames, no stand-in portraits, no video, no UGC imagery, anywhere on the live page', () => {
+test('empty hero: with no approved spokesperson videos the three phones stay empty (no stand-in portraits, no video, no UGC imagery)', () => {
+  const hero = renderToStaticMarkup(createElement(Hero.default, { items: [], config: SPOKESPERSON_HERO }))
+  assert.ok(/aspect-\[9\/19\.5\]/.test(hero), 'the three-phone stage is there')
+  assert.ok(!/<video|<source/.test(hero) && !/<img (?![^>]*convrt-logo\.svg)/.test(hero), 'no video and no image other than the CONVRT logo watermark in the empty phones')
+  assert.ok(!/Previous video|Play video/.test(hero))
+})
+
+test('live page: the stage and gallery show exactly the approved spokesperson videos and nothing from the UGC page or the homepage clients', () => {
   const html = rootOf(page(PATH))
   const hero = html.split('<section aria-labelledby="spokesperson-h1"')[1].split('id="how-it-works"')[0]
-  assert.ok(/aspect-\[9\/19\.5\]/.test(hero), 'the three-phone stage is there')
-  assert.ok(!/<video|<source/.test(hero) && !/<img (?![^>]*convrt-logo\.svg)/.test(hero), 'the empty hero has no video and no image other than the CONVRT logo watermark in the empty phones')
-  assert.ok(!/videodelivery\.net|\.m3u8|\.mp4/.test(html), 'no stream or file request in the HTML')
-  assert.ok(!/\/portfolio\/ugc-|\/creators\/portrait-\d.*(Play video|aria-label="Play)/.test(html), 'no UGC poster')
-  for (const v of PORTFOLIO.filter((x) => x.type === 'ugc' || x.showcase)) assert.ok(!html.includes(v.source.cloudflareId ?? 'no-id-xyz'), `${v.id} is not on the Spokesperson page`)
-  assert.equal((html.match(/Play video:/g) || []).length, selectSpokespersonGallery().length, 'one play card per approved spokesperson gallery video, and nothing else')
+  const heroItems = selectSpokespersonHero()
+  const galleryItems = selectSpokespersonGallery()
+  if (heroItems.length) {
+    assert.ok(hero.includes('aria-label="Spokesperson videos"') && hero.includes('aria-roledescription="carousel"'))
+    assert.equal((hero.match(/<video /g) || []).length, Math.min(heroItems.length, 3), 'one video element per phone (nothing attached until idle)')
+    assert.ok(heroItems.slice(0, 3).every((v) => hero.includes(v.poster)), 'each phone has its own hand-picked poster')
+  } else {
+    assert.ok(!/<video|<source/.test(hero))
+  }
+  assert.ok(!/<video[^>]*\ssrc=/.test(html) && !/<source|autoplay/i.test(html) && !/\.m3u8/.test(html), 'no stream is requested by the static HTML')
+  assert.equal((section_(html, 'id="spokesperson-videos"').match(/Play video:/g) || []).length, Math.min(galleryItems.length, 10), 'one card per approved gallery video (max 10)')
+  assert.ok(galleryItems.every((v) => html.includes(v.poster)))
+  for (const v of PORTFOLIO.filter((x) => x.type === 'ugc' || x.showcase)) assert.ok(!html.includes(v.source.cloudflareId ?? 'no-id-xyz') && !(v.poster && html.includes(v.poster)), `${v.id} is not on the Spokesperson page`)
+  assert.ok(!/\/portfolio\/ugc-/.test(html), 'no UGC poster')
+  assert.ok(heroItems.concat(galleryItems).every((v) => v.approval.portfolioUse === true && v.approval.creatorConsent === true && v.approval.status === 'approved'))
+  assert.equal(new Set(heroItems.concat(galleryItems).map((v) => v.source.cloudflareId)).size, heroItems.length + galleryItems.length, 'no video is used twice')
+  assert.ok(heroItems.length <= 3 && galleryItems.length <= 10)
   assert.ok(!/coming soon|being updated/i.test(textOf(page(PATH))), 'no placeholder message')
 })
 
