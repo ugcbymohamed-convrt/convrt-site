@@ -262,7 +262,7 @@ test('/pricing HTML: title, description, ONE canonical, indexable, and the prici
 test('/pricing HTML: every confirmed price, term and policy is in the visible markup', () => {
   const text = unescape(visibleText(page('/pricing')))
   for (const needle of [
-    '$3,000', '$5,000', '$3,500', '$6,000', '$1,500', '$2,500', '10 distinct creative concepts', '10 complete scripts', '3 versions per concept, changing the hook or CTA', '5 unique concepts with 3 hook or CTA variations per concept', 'Priority production scheduling', 'Includes expanded research and testing recommendations.',
+    '$3,000', '$5,000', '$3,500', '$6,000', '$1,500', '$2,500', '10 distinct creative concepts', '10 complete scripts', '3 versions per concept, changing the hook or CTA', '5 unique concepts with 3 hook or CTA variations per concept', 'Filming, editing, captions & final delivery', 'Includes expanded research and testing recommendations.',
     'Different concepts. Not just different hooks.', '5 original concepts → 15 finished ad versions',
     'A concept is a unique ad idea.', 'A variation changes its hook or CTA.',
     'initial three-month commitment', "30 days' cancellation notice",
@@ -547,13 +547,36 @@ test('/pricing HTML: Section 5 compact CTA; no stale JSON-LD; sections removed f
   assert.ok(!/OWNER_REVIEW|deferred to the applicable agreement/.test(t))
 })
 
+// ── End-to-end production message (Nov 2026) ────────────────────────────────────────────────────────────────────────
+test('/pricing HTML: both Creative Testing cards carry the end-to-end production note before the checklist; per-version badge says "finished ad version"; prices unchanged', () => {
+  const h = page('/pricing')
+  const arts = [...group(h, 'paid').matchAll(/<article[\s\S]*?<\/article>/g)].map((x) => x[0])
+  assert.equal(arts.length, 3)
+  const [sprint, plus, custom] = arts.map((a) => flat(`<div id="root">${a}`))
+  const note = 'End-to-end creative production Strategy, scripts, creator casting, filming and editing. All handled by CONVRT.'
+  for (const [name, c] of [['Sprint', sprint], ['Sprint Plus', plus]]) {
+    assert.equal(c.split('End-to-end creative production').length - 1, 1, `${name}: one note`)
+    assert.ok(c.includes(note), `${name}: note text`)
+    assert.ok(c.indexOf(note) < c.indexOf('distinct creative concepts'), `${name}: note sits before the checklist`)
+    assert.ok(c.includes('Filming, editing, captions & final delivery'), `${name}: checklist line`)
+    assert.ok(!c.includes('Priority production scheduling'), `${name}: retired line gone`)
+    assert.ok(!/per variation/.test(c), `${name}: no "per variation" wording`)
+    assert.ok(!/media buying|ad account|campaign optimi[sz]ation/i.test(c), `${name}: no media-buying claim`)
+  }
+  assert.ok(sprint.includes('$200 per finished ad version') && sprint.includes('$233 per finished ad version'), 'Sprint monthly and one-off')
+  assert.ok(plus.includes('$167 per finished ad version') && plus.includes('$200 per finished ad version'), 'Sprint Plus monthly and one-off')
+  assert.ok(!custom.includes('End-to-end creative production'), 'Custom card is unchanged')
+  const ld = JSON.stringify(ldScripts(h)[0])
+  assert.ok(!ld.includes('End-to-end creative production'), 'structured data is not touched by the card note')
+})
+
 // ── Sprint Plus 10/10/20 update, service-aware CTAs, 3 x 3 inclusions ────────────────────────────────────────────────
 test('/pricing HTML: Sprint Plus card shows 10 concepts / 10 scripts / 3 variations per concept / 30 ads; Sprint is 5 / 5 / 15; no 8-concept leftovers', () => {
   const h = page('/pricing')
   const arts = [...group(h, 'paid').matchAll(/<article[\s\S]*?<\/article>/g)].map((x) => flat(`<div id="root">${x[0]}`))
   const [sprint, plus] = arts
-  for (const n of ['5 distinct creative concepts', '5 complete scripts', '3 versions per concept, changing the hook or CTA', '15 testing creatives', '5 unique concepts with 3 hook or CTA variations per concept', 'Priority production scheduling', 'Includes expanded research and testing recommendations.', 'Up to 3 creators or spokespeople', '10 business days turnaround', '2 revision rounds per creative concept', '6 months of worldwide usage rights']) assert.ok(sprint.includes(n), `Sprint: ${n}`)
-  for (const n of ['10 distinct creative concepts', '10 complete scripts', '3 versions per concept, changing the hook or CTA', '30 testing creatives', 'Up to 5 creators or spokespeople', '15 business days turnaround', '2 revision rounds per creative concept', '6 months of worldwide usage rights', 'Priority production scheduling', 'Includes expanded research and testing recommendations.']) assert.ok(plus.includes(n), `Sprint Plus: ${n}`)
+  for (const n of ['5 distinct creative concepts', '5 complete scripts', '3 versions per concept, changing the hook or CTA', '15 testing creatives', '5 unique concepts with 3 hook or CTA variations per concept', 'Filming, editing, captions & final delivery', 'Includes expanded research and testing recommendations.', 'Up to 3 creators or spokespeople', '10 business days turnaround', '2 revision rounds per creative concept', '6 months of worldwide usage rights']) assert.ok(sprint.includes(n), `Sprint: ${n}`)
+  for (const n of ['10 distinct creative concepts', '10 complete scripts', '3 versions per concept, changing the hook or CTA', '30 testing creatives', 'Up to 5 creators or spokespeople', '15 business days turnaround', '2 revision rounds per creative concept', '6 months of worldwide usage rights', 'Filming, editing, captions & final delivery', 'Includes expanded research and testing recommendations.']) assert.ok(plus.includes(n), `Sprint Plus: ${n}`)
   assert.ok(sprint.includes('$3,000') && sprint.includes('$3,500') && plus.includes('$5,000') && plus.includes('$6,000'), 'monthly and one-off prices remain')
   const t = flat(h)
   assert.ok(!/\b8 (distinct )?(creative )?concepts|8 complete scripts|strategically distributed|Expanded creative variations/.test(t), 'no obsolete Sprint Plus wording in the prerendered page')
@@ -630,7 +653,7 @@ test('homepage HTML: services heading and cards, hero line, internal links', () 
     'Video creative for paid and organic social.', 'Creative strategy and full video production, from concept and creator casting to finished, platform-ready videos.',
     'Human-led UGC video ads for Meta, TikTok and YouTube: concepts, creator casting, scripts, filming and editing.', 'Presenter-led video ads that explain your offer clearly and build trust, from casting to finished edit.',
     'Organic short-form video for Instagram, TikTok and Facebook: strategy, production, publishing and community engagement.', 'Concepts, hooks, scripts and structured testing plans that show you what to make next.',
-    'Human-led UGC ads, spokesperson videos, and organic social content designed to capture attention, build trust, and drive conversions.',
+    'From creative strategy and scripting to creator casting, filming and editing. We produce human-led UGC ads, spokesperson videos and organic social content, ready to perform.',
     'Explore packages and pricing',
   ]) assert.ok(t.includes(n), n)
   assert.ok(!/Built for modern|Explore the Creative Testing Sprint|Compare packages and pricing|significantly better results|personally approved by the founder|prolific creator/.test(t))
