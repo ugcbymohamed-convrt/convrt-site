@@ -159,7 +159,7 @@ export default function UgcHero({ items }) {
                     {...ghostPress}
                     className={GHOST_CTA}
                   >
-                    See Our Work
+                    Explore Videos
                     <Arrow cls="h-3.5 w-3.5 md:h-4 md:w-4" />
                   </a>
                 </div>

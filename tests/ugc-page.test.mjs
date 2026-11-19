@@ -550,7 +550,7 @@ test('hero left side follows the homepage hero: headline, description, value lin
   const hero = rootOf(page(PATH))
   const left = hero.slice(0, hero.indexOf('id="how-it-works"'))
   assert.match(left, /Your next 5 ad concepts\. Tailored to your brand\. <span class="text-lime">On us\.<\/span>/)
-  assert.ok(left.includes('Get 5 Free Ad Concepts') && left.includes('See Our Work') && left.includes('href="/creative-growth-roadmap"'))
+  assert.ok(left.includes('Get 5 Free Ad Concepts') && left.includes('Explore Videos') && left.includes('href="/creative-growth-roadmap"'))
   assert.ok(left.includes('We&#x27;ve got two more FREE ways to start.') || left.includes("We've got two more FREE ways to start."))
   assert.ok(/1 <span class="text-lime">FREE<\/span> Video/.test(left) && /10 <span class="text-\[#F472B6\]">FREE<\/span> Ad Hooks/.test(left))
   assert.ok(left.includes('href="/risk-free-trial"') && left.includes('href="/free-hooks"'))
@@ -641,12 +641,12 @@ test('gallery: a horizontal scroller of up to 10 approved videos before Results;
   assert.match(src, /const TOTAL = 10/)
   assert.ok(/overflow-x-auto/.test(src) && /snap-x/.test(src) && /lg:w-\[calc\(\(100%-3rem\)\/4\)\]/.test(src), 'four cards visible on a laptop, native horizontal scrolling (trackpad swipe)')
   assert.ok(/ArrowRight/.test(src) && /Scroll videos left/.test(src) && /Scroll videos right/.test(src) && /pointerType !== 'mouse'/.test(src), 'keyboard, buttons and mouse drag')
-  assert.ok(/See all UGC videos/.test(src) && /OUR_WORK_PATH/.test(src), 'the button under the gallery')
+  assert.ok(/Explore UGC Videos/.test(src) && /OUR_WORK_PATH/.test(src), 'the button under the gallery')
   assert.ok(/usePreviewHost/.test(src) && /endsWith\('\.vercel\.app'\)/.test(read('src/lib/previewHost.js')) && !/convrt\.studio/.test(read('src/lib/previewHost.js')), 'stand-ins only on preview hosts')
   // with approved videos the gallery renders them
   const mod = await vite.ssrLoadModule('/src/components/ugc/UgcGallery.jsx')
   const out = renderToStaticMarkup(createElement(mod.default, { items: [sample(), sample({ id: 's2', caption: 'Second.' })] }))
-  assert.ok(out.includes('id="ugc-videos"') && out.includes('Play video: A sample caption for tests.') && out.includes('See all UGC videos'))
+  assert.ok(out.includes('id="ugc-videos"') && out.includes('Play video: A sample caption for tests.') && out.includes('Explore UGC Videos'))
   assert.equal((out.match(/<li /g) || []).length, 2)
 })
 

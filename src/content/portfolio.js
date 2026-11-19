@@ -2,7 +2,7 @@
 
    Three pages read it, each through its own selector (see "WHERE A VIDEO APPEARS" below), so a video is added here once:
 
-     /our-work           every approved video, filterable by industry (SaaS, E-commerce, Services, Other)   selectOurWork()
+     /our-work           the Creator Showcase: every approved video, filterable by industry (E-commerce, SaaS, Services, Other)   selectOurWork()
      /ugc-video-agency   the approved UGC videos: the three-phone hero stage + the gallery under it          selectHero() / selectGallery()
      homepage showcase   the client panels (Adscale, Elyon, Graspo): the videos tagged with that client        selectShowcase('elyon')
 
@@ -14,12 +14,19 @@
        title: 'Short title shown on the card', // optional. Falls back to caption. Keep it short: it is the headline of the card.
        caption: 'One honest sentence describing the video.',   // required. Also the accessible name.
        type: 'ugc',                            // ugc | spokesperson | demo | testimonial | interview | social | ad  (see TYPE_LABELS). Default 'ugc'.
-       industry: 'saas',                       // saas | ecommerce | services | any other slug. This is what files the video under a category.
+       industry: 'saas',                       // saas | ecommerce | services | other | 'unclassified'. This is what files the video under a tab. Only a
+                                               // CONFIRMED industry goes here; while it is unknown use 'unclassified' (or omit it): such a video is in All Work
+                                               // but under no tab, and never under Other. 'other' means "confirmed: none of the above". Any other slug
+                                               // (beauty, finance ...) is a confirmed industry that groups under the Other tab and shows its own name on the card.
        languages: ['en'],                      // ISO 639-1 codes of the spoken language(s). Required for portfolio videos.
+       production: 'independent',              // optional, and unknown unless confirmed: 'independent' = a creator's own example, supplied to show their
+                                               // capabilities (CONVRT did not necessarily produce it) | 'convrt' = produced through CONVRT. Leave it out when unknown.
+                                               // The Creator Showcase never calls a video CONVRT's work unless this is 'convrt'.
        source: { cloudflareId: '…' },          // Cloudflare Stream id (HLS)…  or  { mp4: '/videos/….mp4' } (an mp4 needs a poster)
        poster: '/portfolio/….webp',            // optional for Cloudflare (the 0 s frame is used); recommended: 540×960 webp of the best frame
        creatorId: 'c017',                      // required, opaque internal identifier. Never displayed.
-       brand: 'Brand name',                    // optional. Shown on the card, so add it ONLY with the brand's permission.
+       brand: 'Brand name',                    // optional. Shown ONLY when approval.brandDisplay === true (the brand's permission).
+       productionCredit: 'Credit line',        // optional. Shown ONLY when approval.creditDisplay === true. Never invent one.
        creator: { displayName: 'First name', showName: true },   // optional. The name is shown ONLY when showName is true.
        category: 'UGC · Paid social',          // optional free label (the UGC hero stage uses it)
        placement: 'gallery',                   // UGC page only: 'hero' = the three-phone stage (first hero item = the large centre phone, at most 3),
@@ -32,6 +39,8 @@
          status: 'approved',                   // anything else keeps the video off the site
          portfolioUse: true,                   // the brand/owner approved this video for CONVRT's website portfolio
          creatorConsent: true,                 // the creator agreed to portfolio display
+         brandDisplay: true,                   // optional: the brand agreed to being named next to the video
+         creditDisplay: true,                  // optional: the production credit may be shown
          approvedBy: 'Name of the CONVRT owner who confirmed it',
          approvedOn: '2026-11-20',
        },
@@ -58,7 +67,7 @@ export const PORTFOLIO = [
     title: 'Creator-led UGC ad example 1',
     caption: 'Creator-led UGC ad example 1.',
     type: 'ugc',
-    industry: 'other',
+    industry: 'unclassified',
     languages: ['en'],
     source: { cloudflareId: '33a4063ee0e8dafe3379f0a97817036e' },
     poster: '/portfolio/ugc-hero-1.webp',
@@ -78,7 +87,7 @@ export const PORTFOLIO = [
     title: 'Creator-led UGC ad example 2',
     caption: 'Creator-led UGC ad example 2.',
     type: 'ugc',
-    industry: 'other',
+    industry: 'unclassified',
     languages: ['en'],
     source: { cloudflareId: '63446474698139b4ac17c1f053212242' },
     poster: '/portfolio/ugc-hero-2.webp',
@@ -98,7 +107,7 @@ export const PORTFOLIO = [
     title: 'Creator-led UGC ad example 3',
     caption: 'Creator-led UGC ad example 3.',
     type: 'ugc',
-    industry: 'other',
+    industry: 'unclassified',
     languages: ['en'],
     source: { cloudflareId: '1fc1374cdfe428d10bfc40ad4eff9693' },
     poster: '/portfolio/ugc-hero-3.webp',
@@ -118,7 +127,7 @@ export const PORTFOLIO = [
     title: 'UGC ad example 1',
     caption: 'UGC ad example 1.',
     type: 'ugc',
-    industry: 'other',
+    industry: 'unclassified',
     languages: ['en'],
     source: { cloudflareId: 'c8914f7a0db3ac9f5ffd0721115dbe20' },
     poster: '/portfolio/ugc-gal-1.webp',
@@ -138,7 +147,7 @@ export const PORTFOLIO = [
     title: 'UGC ad example 8',
     caption: 'UGC ad example 8.',
     type: 'ugc',
-    industry: 'other',
+    industry: 'unclassified',
     languages: ['en'],
     source: { cloudflareId: 'b73842a409de5f4f6ae9d72733ea1152' },
     poster: '/portfolio/ugc-gal-8.webp',
@@ -158,7 +167,7 @@ export const PORTFOLIO = [
     title: 'UGC ad example 4',
     caption: 'UGC ad example 4.',
     type: 'ugc',
-    industry: 'other',
+    industry: 'unclassified',
     languages: ['en'],
     source: { cloudflareId: '79b1cd5d22e9f13587ab547e438e29ef' },
     poster: '/portfolio/ugc-gal-4.webp',
@@ -178,7 +187,7 @@ export const PORTFOLIO = [
     title: 'UGC ad example 3',
     caption: 'UGC ad example 3.',
     type: 'ugc',
-    industry: 'other',
+    industry: 'unclassified',
     languages: ['en'],
     source: { cloudflareId: '1188b4341860779830fa7365b1442959' },
     poster: '/portfolio/ugc-gal-3.webp',
@@ -198,7 +207,7 @@ export const PORTFOLIO = [
     title: 'UGC ad example 5',
     caption: 'UGC ad example 5.',
     type: 'ugc',
-    industry: 'other',
+    industry: 'unclassified',
     languages: ['en'],
     source: { cloudflareId: '3a41e0f797a707576ff9af9fb9fb6a81' },
     poster: '/portfolio/ugc-gal-5.webp',
@@ -218,7 +227,7 @@ export const PORTFOLIO = [
     title: 'UGC ad example 7',
     caption: 'UGC ad example 7.',
     type: 'ugc',
-    industry: 'other',
+    industry: 'unclassified',
     languages: ['en'],
     source: { cloudflareId: '749e2ad503f5db79d69086a47c59edd0' },
     poster: '/portfolio/ugc-gal-7.webp',
@@ -238,7 +247,7 @@ export const PORTFOLIO = [
     title: 'UGC ad example 2',
     caption: 'UGC ad example 2.',
     type: 'ugc',
-    industry: 'other',
+    industry: 'unclassified',
     languages: ['en'],
     source: { cloudflareId: 'ff256a4643515d29b61c1f210c06476d' },
     poster: '/portfolio/ugc-gal-2.webp',
@@ -258,7 +267,7 @@ export const PORTFOLIO = [
     title: 'UGC ad example 6',
     caption: 'UGC ad example 6.',
     type: 'ugc',
-    industry: 'other',
+    industry: 'unclassified',
     languages: ['en'],
     source: { cloudflareId: '8b15247d9a422614898b8bbb54591025' },
     poster: '/portfolio/ugc-gal-6.webp',
@@ -276,11 +285,10 @@ export const PORTFOLIO = [
   /* Homepage client panels. These videos were live in the homepage case-study showcase before this file existed, so they are recorded here
      with the same media. The owner decided they are NOT creator-portfolio material, so portfolioUse / creatorConsent are false: they stay
      off /our-work and the UGC page. To list one on /our-work, confirm the brand's and the creator's permission and set both flags to true
-     (then fill in its languages and a real title). type, industry and creatorId below are internal placeholders for the owner to review. */
+     (then fill in its languages and a real title). creatorId below is an internal placeholder; type and production are unconfirmed. Industry is the one on the homepage tab (Adscale SaaS, Elyon E-commerce); Graspo's is unconfirmed. */
   {
     id: 'showcase-adscale-1',
     caption: 'Adscale creative 1.',
-    type: 'ad',
     industry: 'saas',
     source: { cloudflareId: '8d4dbbeabac272bddb23068c91037af8' },
     creatorId: 'cs-adscale-1',
@@ -296,7 +304,6 @@ export const PORTFOLIO = [
   {
     id: 'showcase-adscale-2',
     caption: 'Adscale creative 2.',
-    type: 'ad',
     industry: 'saas',
     source: { cloudflareId: '08abef50c734085f25f345cdde4b1e33' },
     poster: '/showcase/adscale-agentic-poster.webp',
@@ -313,7 +320,6 @@ export const PORTFOLIO = [
   {
     id: 'showcase-adscale-3',
     caption: 'Adscale creative 3.',
-    type: 'ad',
     industry: 'saas',
     source: { mp4: '/showcase/adscale-creator.mp4' },
     poster: '/showcase/adscale-creator-poster.webp',
@@ -330,7 +336,6 @@ export const PORTFOLIO = [
   {
     id: 'showcase-elyon-1',
     caption: 'Elyon Dubai creative 1.',
-    type: 'ad',
     industry: 'ecommerce',
     source: { cloudflareId: 'fa02007b36fae2b3bb68c97cdd00e9fc' },
     creatorId: 'cs-elyon-1',
@@ -346,7 +351,6 @@ export const PORTFOLIO = [
   {
     id: 'showcase-elyon-2',
     caption: 'Elyon Dubai creative 2.',
-    type: 'ad',
     industry: 'ecommerce',
     source: { cloudflareId: '0905b814e2ba3950197b5bfe1cefae38' },
     creatorId: 'cs-elyon-2',
@@ -362,7 +366,6 @@ export const PORTFOLIO = [
   {
     id: 'showcase-elyon-3',
     caption: 'Elyon Dubai creative 3.',
-    type: 'ad',
     industry: 'ecommerce',
     source: { cloudflareId: '9e6cb8438c9b0c1ab8b55953718eddde' },
     creatorId: 'cs-elyon-3',
@@ -378,8 +381,7 @@ export const PORTFOLIO = [
   {
     id: 'showcase-graspo-1',
     caption: 'Graspo creative 1.',
-    type: 'social',
-    industry: 'services',
+    industry: 'unclassified',
     source: { cloudflareId: '15dd5505109f6821ccdcb13fc3cdc1fd' },
     creatorId: 'cs-graspo-1',
     brand: 'Graspo',
@@ -394,8 +396,7 @@ export const PORTFOLIO = [
   {
     id: 'showcase-graspo-2',
     caption: 'Graspo creative 2.',
-    type: 'social',
-    industry: 'services',
+    industry: 'unclassified',
     source: { cloudflareId: '3616606e3ca6d1a85c8a57d7cc2f656f' },
     creatorId: 'cs-graspo-2',
     brand: 'Graspo',
@@ -410,8 +411,7 @@ export const PORTFOLIO = [
   {
     id: 'showcase-graspo-3',
     caption: 'Graspo creative 3.',
-    type: 'social',
-    industry: 'services',
+    industry: 'unclassified',
     source: { cloudflareId: 'c1379ace38f2fa19ef2a45de1bb5d4b1' },
     creatorId: 'cs-graspo-3',
     brand: 'Graspo',
@@ -440,7 +440,7 @@ export const INDUSTRY_LABELS = {
   education: 'Education', travel: 'Travel', home: 'Home & lifestyle', services: 'Services',
 }
 
-/* What kind of video it is. Only 'ugc' videos reach the UGC page. */
+/* What kind of video it is. Only videos explicitly typed 'ugc' reach the UGC page (an unset type is unknown, not UGC). */
 export const TYPE_LABELS = {
   ugc: 'UGC', spokesperson: 'Spokesperson', demo: 'Product demo', testimonial: 'Testimonial', interview: 'Street interview',
   social: 'Organic social', ad: 'Ad creative',
@@ -448,10 +448,24 @@ export const TYPE_LABELS = {
 
 const titleCase = (slug) => slug.replace(/[-_]+/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())
 export const languageLabel = (code) => LANGUAGE_LABELS[code] ?? code.toUpperCase()
-export const industryLabel = (slug) => INDUSTRY_LABELS[slug] ?? titleCase(slug)
-export const typeOf = (item) => item.type ?? 'ugc'
-export const typeLabel = (item) => TYPE_LABELS[typeOf(item)] ?? titleCase(typeOf(item))
+
+/* An industry that has not been confirmed. It is internal: it is never shown as a label and never becomes a tab. */
+export const UNCLASSIFIED = 'unclassified'
+export const isClassified = (item) => Boolean(item.industry) && item.industry !== UNCLASSIFIED
+/* '' for an unconfirmed industry, so nothing is displayed (callers drop empty labels). */
+export const industryLabel = (slug) => (!slug || slug === UNCLASSIFIED ? '' : INDUSTRY_LABELS[slug] ?? titleCase(slug))
+export const typeOf = (item) => item.type
+export const typeLabel = (item) => (item.type ? TYPE_LABELS[item.type] ?? titleCase(item.type) : '')
 export const titleOf = (item) => item.title ?? item.caption
+
+/* PRODUCTION ATTRIBUTION. 'independent' = a creator's own example; 'convrt' = produced through CONVRT; unset = unknown (nothing is claimed). */
+export const PRODUCTION_LABELS = { independent: 'Independent creator', convrt: 'Produced by CONVRT' }
+export const productionLabel = (item) => PRODUCTION_LABELS[item.production] ?? ''
+export const isConvrtProduction = (item) => item.production === 'convrt'
+
+/* Brand name and credit line: shown only with the explicit permission recorded in the approval. */
+export const brandLabel = (item) => (item.brand && item.approval?.brandDisplay === true ? item.brand : null)
+export const creditLabel = (item) => (item.productionCredit && item.approval?.creditDisplay === true ? item.productionCredit : null)
 
 /* ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
    VALIDATION AND THE PERMISSION GATES
@@ -466,7 +480,9 @@ export function portfolioProblems(item) {
   if (!item.caption || typeof item.caption !== 'string') p.push('caption is required')
   if (item.title !== undefined && (typeof item.title !== 'string' || !item.title.trim())) p.push('title must be a non-empty string')
   if (item.type !== undefined && !/^[a-z][a-z0-9-]*$/.test(item.type)) p.push('type must be a lowercase slug')
-  if (!item.industry || !/^[a-z][a-z0-9-]*$/.test(item.industry)) p.push('industry must be a lowercase slug')
+  if (item.industry !== undefined && !/^[a-z][a-z0-9-]*$/.test(item.industry)) p.push("industry must be a lowercase slug (or 'unclassified')")
+  if (item.production !== undefined && !(item.production in PRODUCTION_LABELS)) p.push("production must be 'independent' or 'convrt' (leave it out when unknown)")
+  if (item.productionCredit !== undefined && (typeof item.productionCredit !== 'string' || !item.productionCredit.trim())) p.push('productionCredit must be a non-empty string')
   const langsOk = Array.isArray(item.languages) && item.languages.length > 0 && item.languages.every((l) => /^[a-z]{2}$/.test(l))
   if (item.languages !== undefined && !langsOk) p.push('languages must be a non-empty list of 2-letter ISO 639-1 codes')
   if (item.languages === undefined && a?.portfolioUse === true) p.push('languages is required for a portfolio video')
@@ -500,7 +516,7 @@ export const selectDisplayable = (items = PORTFOLIO) => items.filter(isDisplayab
 export const selectOurWork = selectDisplayable
 
 /* /ugc-video-agency: approved UGC videos, split into the hero stage (placement 'hero') and the gallery under it (everything else). */
-const selectUgc = (items) => selectDisplayable(items).filter((i) => typeOf(i) === 'ugc')
+const selectUgc = (items) => selectDisplayable(items).filter((i) => i.type === 'ugc')
 export const selectHero = (items = PORTFOLIO) => selectUgc(items).filter((i) => i.placement === 'hero')
 export const selectGallery = (items = PORTFOLIO) => selectUgc(items).filter((i) => i.placement !== 'hero')
 
@@ -517,7 +533,8 @@ export const hlsUrl = (item) => `https://videodelivery.net/${item.source.cloudfl
    CATEGORIES: the four industry groups of /our-work (All Work is the combined view, not a category).
    Colours reuse the site's tokens where one fits (tailwind.config.js: lime, magenta, amber); SaaS and Services use the lighter
    violet / turquoise the brief proposed, because the darker violet token is too dim for small labels on the dark canvas.
-   Any industry slug not listed in CATEGORY_OF_INDUSTRY groups under Other; the card still shows its specific industry.
+   An industry slug not listed in CATEGORY_OF_INDUSTRY (beauty, finance ...) is a confirmed industry that groups under Other; the card still
+   shows its specific name. An UNCLASSIFIED video (industry 'unclassified' or none) belongs to NO category: it is in All Work only, never Other.
    ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── */
 export const ALL_CATEGORY = { id: 'all', label: 'All Work', color: '#d5ff40' }
 export const CATEGORIES = [
@@ -529,9 +546,9 @@ export const CATEGORIES = [
 export const CATEGORY_LABELS = Object.fromEntries(CATEGORIES.map((c) => [c.id, c.label]))
 const CATEGORY_ORDER = CATEGORIES.map((c) => c.id)
 const CATEGORY_OF_INDUSTRY = { saas: 'saas', technology: 'saas', ecommerce: 'ecommerce', services: 'services' }
-export const categoryOf = (item) => CATEGORY_OF_INDUSTRY[item.industry] ?? 'other'
+export const categoryOf = (item) => (isClassified(item) ? CATEGORY_OF_INDUSTRY[item.industry] ?? 'other' : null)
 
-/* The tabs /our-work offers: All Work, then each category that has at least one video (an empty category is hidden). */
+/* The tabs /our-work offers: All Work, then each category that has at least one classified video (an empty category is hidden). */
 export const availableCategories = (items) => {
   const present = new Set(items.map(categoryOf))
   return [ALL_CATEGORY, ...CATEGORIES.filter((c) => present.has(c.id))]
@@ -543,7 +560,7 @@ export const filterByCategory = (items, categoryId) => (categoryId === 'all' ? i
 export function buildFacets(items) {
   const count = (values) => values.reduce((m, v) => m.set(v, (m.get(v) ?? 0) + 1), new Map())
   const langs = count(items.flatMap((i) => i.languages ?? []))
-  const cats = count(items.map(categoryOf))
+  const cats = count(items.map(categoryOf).filter(Boolean))
   const languageList = [...langs.entries()].map(([value, n]) => ({ value, label: languageLabel(value), count: n })).sort((a, b) => a.label.localeCompare(b.label))
   const categoryList = CATEGORY_ORDER.filter((c) => cats.has(c)).map((value) => ({ value, label: CATEGORY_LABELS[value], count: cats.get(value) }))
   return {

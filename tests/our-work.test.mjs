@@ -1,5 +1,5 @@
 // Run with: node --test tests/our-work.test.mjs
-// /our-work (the video portfolio) and the shared portfolio data (src/content/portfolio.js) that also feeds /ugc-video-agency and the homepage.
+// /our-work (the Creator Showcase: examples from independent creators) and the shared portfolio data (src/content/portfolio.js) that also feeds /ugc-video-agency and the homepage.
 // Checks the route, head, sitemap, structured data, the prerendered HTML, the permission gates, the per-page selectors, the category
 // tabs (an empty category has no tab), the grid structure, the empty state, the player's accessibility contract and the internal links.
 // Builds the site once into a temp dir and starts a Vite SSR loader to render components with sample data.
@@ -20,6 +20,7 @@ import { ourWorkGraph, videoObjectNode, jsonLdFor, BREADCRUMB_TRAILS } from '../
 import {
   PORTFOLIO, portfolioProblems, isDisplayable, isShowcaseable, selectOurWork, selectHero, selectGallery, selectShowcase, selectDisplayable,
   availableCategories, categoryOf, countIn, filterByCategory, CATEGORIES, ALL_CATEGORY, titleOf, typeLabel, posterUrl,
+  isClassified, industryLabel, productionLabel, brandLabel, creditLabel, buildFacets, matchesFilters,
 } from '../src/content/portfolio.js'
 
 const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), '..')
@@ -29,7 +30,7 @@ const URL_ = `${SITE_URL}${PATH}`
 
 const decode = (s) => s.replace(/&#x27;|&#39;|&apos;/g, "'").replace(/&quot;/g, '"').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>')
 const rootOf = (h) => h.slice(h.indexOf('<div id="root"'))
-const textOf = (h) => decode(rootOf(h).replace(/<(script|style)[\s\S]*?<\/\1>/g, ' ').replace(/<[^>]+>/g, ' ')).replace(/\s+/g, ' ').trim()
+const textOf = (h) => decode(rootOf(h).replace(/<(script|style)[\s\S]*?<\/\1>/g, ' ').replace(/<[^>]+>/g, ' ')).replace(/\s+/g, ' ').replace(/\s+([,.;:!?])/g, '$1').trim()
 const headOf = (h) => h.slice(0, h.indexOf('</head>'))
 
 let tmp, dist, vite, Library, Tabs
@@ -68,7 +69,7 @@ test('route: /our-work is a public path, and OUR_WORK_PATH (used by every link t
 
 test('head: approved title, description from the actual portfolio, self-canonical, indexable only with approved videos, in the sitemap accordingly', () => {
   const e = SITE_SEO[PATH]
-  assert.equal(e.title, 'Our Work | UGC Ads & Video Production Portfolio | CONVRT')
+  assert.equal(e.title, 'Creator Showcase | UGC Video Examples | CONVRT')
   assert.ok(e.title.length <= 62)
   assert.ok(e.description.length >= 120 && e.description.length <= 160, `description length ${e.description.length}`)
   assert.ok(!/\d/.test(e.description), 'no counts or figures in the description')
@@ -79,7 +80,7 @@ test('head: approved title, description from the actual portfolio, self-canonica
   assert.ok(!titles.includes(e.title), 'unique title')
   const html = page(PATH)
   const head = headOf(html)
-  assert.ok(head.includes('<title>Our Work | UGC Ads &amp; Video Production Portfolio | CONVRT</title>'))
+  assert.ok(head.includes('<title>Creator Showcase | UGC Video Examples | CONVRT</title>'))
   assert.ok(head.includes(`<link rel="canonical" href="${URL_}" />`))
   assert.equal((head.match(/rel="canonical"/g) || []).length, 1)
   assert.equal(/name="robots"/.test(head), !e.indexable)
@@ -90,10 +91,12 @@ test('head: approved title, description from the actual portfolio, self-canonica
 test('static HTML: breadcrumb, one H1, the approved intro, two sections, the first page of cards, no stream and no video element', () => {
   const html = rootOf(page(PATH))
   const t = textOf(page(PATH))
-  assert.match(html, /<nav aria-label="Breadcrumb"[\s\S]*?Home[\s\S]*?Our Work/)
+  assert.match(html, /<nav aria-label="Breadcrumb"[\s\S]*?Home[\s\S]*?Creator Showcase/)
   assert.equal((html.match(/<h1[\s>]/g) || []).length, 1)
-  assert.ok(t.includes('Creative that speaks for itself.'))
-  assert.ok(t.includes('Explore human-led UGC ads, spokesperson videos and performance creatives produced by CONVRT.'))
+  assert.ok(t.includes("See what's possible."))
+  assert.ok(t.includes('Explore real creator videos across e-commerce, SaaS, services and more.'))
+  assert.ok(t.includes('Featuring examples from independent creators. Not all videos were produced by CONVRT.'), 'the transparency note')
+  assert.ok(t.indexOf('Explore real creator videos') < t.indexOf('Featuring examples from independent creators'), 'the note sits beneath the description')
   assert.equal((html.match(/<section[\s>]/g) || []).length, 2, 'only two principal sections: the hero and the library')
   const shown = Math.min(selectOurWork().length, 12)
   assert.equal((html.match(/Play video:/g) || []).length, shown, 'the first page of approved videos is in the HTML (crawlable without the filter script)')
@@ -111,7 +114,7 @@ test('static HTML: structured data is a CollectionPage + BreadcrumbList; VideoOb
   const types = nodes.map((n) => n['@type'])
   assert.ok(types.includes('CollectionPage') && types.includes('BreadcrumbList') && types.includes('Organization'))
   const crumb = nodes.find((n) => n['@type'] === 'BreadcrumbList')
-  assert.deepEqual(crumb.itemListElement.map((i) => [i.position, i.name, i.item]), [[1, 'Home', `${SITE_URL}/`], [2, 'Our Work', URL_]])
+  assert.deepEqual(crumb.itemListElement.map((i) => [i.position, i.name, i.item]), [[1, 'Home', `${SITE_URL}/`], [2, 'Creator Showcase', URL_]])
   assert.deepEqual(BREADCRUMB_TRAILS[PATH].map((t) => t.path), ['/', PATH])
   const withDate = PORTFOLIO.filter((v) => v.uploadDate && isDisplayable(v)).length
   assert.equal(types.filter((x) => x === 'VideoObject').length, withDate, 'a VideoObject exists exactly for each displayable video that has a verified uploadDate')
@@ -187,7 +190,7 @@ test('data: validation rejects bad entries; language is optional only for videos
   assert.deepEqual(portfolioProblems(sample({ languages: undefined, approval: { status: 'approved', portfolioUse: false, creatorConsent: false } })), [])
   assert.equal(titleOf(sample({ title: undefined })), 'A sample caption.', 'title falls back to the caption')
   assert.equal(typeLabel(sample({ type: 'spokesperson' })), 'Spokesperson')
-  assert.equal(typeLabel(sample({ type: undefined })), 'UGC', 'legacy entries are UGC')
+  assert.equal(typeLabel(sample({ type: undefined })), '', 'an unset type is unknown, not UGC')
   assert.equal(posterUrl(sample({ source: { cloudflareId: 'zz' }, poster: undefined })).includes('videodelivery.net/zz/thumbnails'), true)
 })
 
@@ -245,7 +248,7 @@ test('grid: 2 columns on phones, 3 on tablets, 4 on desktop; portrait 9:16 cards
 
 test('card: title, industry, language and brand shown; creator name only with permission; the internal creator id never', () => {
   const html = renderToStaticMarkup(createElement(Library.default, { items: [
-    sample({ id: 'x', title: 'Skincare routine', industry: 'ecommerce', languages: ['en', 'es'], brand: 'Acme', creator: { displayName: 'Ana', showName: false }, creatorId: 'c-secret-42' }),
+    sample({ id: 'x', title: 'Skincare routine', industry: 'ecommerce', languages: ['en', 'es'], brand: 'Acme', creator: { displayName: 'Ana', showName: false }, creatorId: 'c-secret-42', approval: { ...APPROVED, brandDisplay: true } }),
   ] }))
   assert.ok(html.includes('Skincare routine') && html.includes('E-commerce') && html.includes('EN · ES') && html.includes('Acme'))
   assert.ok(!html.includes('Ana') && !html.includes('c-secret-42'))
@@ -303,21 +306,145 @@ test('motion: every animation honours prefers-reduced-motion', () => {
 test('links: nav, footer, homepage CTA and the UGC page all lead to /our-work, once each, without duplicates', () => {
   const home = rootOf(page('/'))
   assert.equal((home.match(/href="\/our-work"/g) || []).length, 3, 'desktop nav (the mobile menu is closed), footer and the hero button')
-  assert.match(home, /<a href="\/our-work"[^>]*>\s*See Our Work/, 'the homepage "See Our Work" button')
-  assert.equal((home.match(/>Our Work</g) || []).length, 2, 'one nav link and one footer link')
+  assert.match(home, /<a href="\/our-work"[^>]*>\s*Explore Videos/, 'the homepage "Explore Videos" button')
+  assert.equal((home.match(/>Creator Showcase</g) || []).length, 2, 'one nav link and one footer link')
+  assert.ok(!/>(See Our Work|Our Work)</.test(home), 'no "Our Work" label is left on the homepage')
   assert.ok(!/href="#showcase"/.test(home), 'the old in-page anchor is gone (the section itself stays on the page)')
   assert.ok(home.includes('id="showcase"'))
   const ugc = rootOf(page(PATHS.ugcVideoAgency))
-  assert.match(ugc, /<a href="\/our-work"[^>]*>\s*See Our Work/, 'UGC hero button')
-  assert.match(ugc, /<a href="\/our-work"[^>]*>\s*See all UGC videos/, 'the button under the UGC gallery')
-  assert.ok(!/href="\/case-studies"[^>]*>\s*See (all UGC videos|Our Work)/.test(ugc))
+  assert.match(ugc, /<a href="\/our-work"[^>]*>\s*Explore Videos/, 'UGC hero button')
+  assert.match(ugc, /<a href="\/our-work"[^>]*>\s*Explore UGC Videos/, 'the button under the UGC gallery')
+  assert.ok(!/See all UGC videos|See Our Work|>Our Work</.test(ugc))
   const our = rootOf(page(PATH))
-  assert.equal((our.match(/>Our Work</g) || []).length, 3, 'nav, breadcrumb and footer')
+  assert.equal((our.match(/>Creator Showcase</g) || []).length, 3, 'nav, breadcrumb and footer')
   assert.ok(home.includes('/creative-growth-roadmap') && ugc.includes('/creative-growth-roadmap'), 'the conversion paths are untouched')
 })
 
 test('docs: the data file header documents the one-file workflow and the new fields', () => {
-  const header = read('src/content/portfolio.js').slice(0, 5500)
-  for (const k of ['title', 'type', 'industry', 'languages', 'source', 'poster', 'creatorId', 'brand', 'placement', 'showcase', 'uploadDate', 'approval']) assert.ok(header.includes(k), `documents ${k}`)
+  const header = read('src/content/portfolio.js').slice(0, 9000)
+  for (const k of ['title', 'type', 'industry', 'languages', 'source', 'poster', 'creatorId', 'brand', 'production', 'productionCredit', 'brandDisplay', 'placement', 'showcase', 'uploadDate', 'approval', 'unclassified']) assert.ok(header.includes(k), `documents ${k}`)
   assert.ok(/ONE file/.test(header) && /selectOurWork/.test(header) && /selectGallery/.test(header) && /selectShowcase/.test(header))
+})
+
+// ── Creator Showcase positioning: independent creators, not CONVRT productions ──────────────────────
+const CLAIMS = /our productions?|client projects?|videos we (created|made|produced)|our campaign results?|CONVRT[- ]produced (ads|advertisements|videos)|produced by CONVRT for|our work\b/i
+
+test('regression: the page and its metadata never present the creator videos as CONVRT productions', () => {
+  const html = page(PATH)
+  const e = SITE_SEO[PATH]
+  const visible = textOf(html).replace('Not all videos were produced by CONVRT.', '')
+  assert.ok(!CLAIMS.test(visible), `visible copy: ${visible.match(CLAIMS)?.[0]}`)
+  assert.ok(!CLAIMS.test(`${e.title} ${e.description} ${e.ogTitle} ${e.ogDescription}`), 'SEO title and descriptions')
+  assert.ok(!CLAIMS.test(JSON.stringify(pageHead(PATH).jsonLd)), 'structured data')
+  assert.ok(/independent creators/.test(e.description) && /independent creators/.test(textOf(html)))
+  for (const v of selectOurWork()) assert.ok(!CLAIMS.test(`${titleOf(v)} ${v.caption}`), `${v.id}: caption`)
+  for (const f of ['VideoCard', 'VideoLightbox', 'PortfolioLibrary', 'OurWorkHero']) assert.ok(!CLAIMS.test(read(`src/components/ourwork/${f}.jsx`).replace(/Not all videos were produced by CONVRT\./, '')), `${f}: copy`)
+})
+
+test('regression: structured data names CONVRT as producer only for a video explicitly marked production "convrt"', () => {
+  const base = { uploadDate: '2026-02-03', source: { cloudflareId: 'abc123' } }
+  const independent = videoObjectNode(sample({ ...base, production: 'independent' }))
+  const unknown = videoObjectNode(sample({ ...base }))
+  const convrt = videoObjectNode(sample({ ...base, production: 'convrt' }))
+  for (const v of [independent, unknown]) {
+    assert.ok(!('producer' in v) && !('publisher' in v) && !('creator' in v) && !('author' in v), 'no producer, publisher, creator or author is invented')
+    assert.ok(!JSON.stringify(v).includes('#organization'), 'CONVRT is not referenced')
+  }
+  assert.deepEqual(convrt.producer, { '@id': `${SITE_URL}/#organization` })
+  // the page graph: CONVRT is the page's publisher (it runs the page), and no other video relationship exists
+  const g = ourWorkGraph({ title: 't', description: 'd' })['@graph']
+  assert.deepEqual(g.find((n) => n['@type'] === 'CollectionPage').publisher, { '@id': `${SITE_URL}/#organization` })
+  assert.ok(!g.some((n) => n['@type'] === 'VideoObject' && n.producer), 'no shipped video is declared as produced by CONVRT')
+})
+
+test('regression: production attribution is unknown unless confirmed, and a label appears only for a confirmed value', () => {
+  assert.ok(PORTFOLIO.every((v) => v.production === undefined), 'no entry claims who produced it yet')
+  assert.ok(portfolioProblems(sample({ production: 'agency' })).length, 'only independent | convrt')
+  assert.equal(productionLabel(sample()), '')
+  assert.equal(productionLabel(sample({ production: 'independent' })), 'Independent creator')
+  assert.equal(productionLabel(sample({ production: 'convrt' })), 'Produced by CONVRT')
+  const lb = read('src/components/ourwork/VideoLightbox.jsx')
+  assert.ok(/productionLabel\(item\)/.test(lb) && /\.filter\(Boolean\)/.test(lb), 'the player mentions production only when known')
+})
+
+test('regression: the nine homepage client videos stay homepage-only: not in /our-work, the UGC page or the sitemap data, permissions untouched', () => {
+  const clients = PORTFOLIO.filter((v) => v.showcase)
+  assert.equal(clients.length, 9)
+  assert.deepEqual([...new Set(clients.map((v) => v.showcase))].sort(), ['adscale', 'elyon', 'graspo'])
+  for (const v of clients) {
+    assert.equal(v.approval.portfolioUse, false, `${v.id}: portfolioUse stays false`)
+    assert.equal(v.approval.creatorConsent, false, `${v.id}: creatorConsent stays false`)
+    assert.ok(!selectOurWork().includes(v) && !selectGallery().includes(v) && !selectHero().includes(v), `${v.id} is not on /our-work or the UGC page`)
+  }
+  const our = rootOf(page(PATH))
+  for (const v of clients) assert.ok(!our.includes(v.source.cloudflareId ?? v.source.mp4), `${v.id} is not in the /our-work HTML`)
+  assert.ok(!/adscale|elyon|graspo/i.test(our.replace(/<script[\s\S]*?<\/script>/g, '')), 'no client name on /our-work')
+  const home = rootOf(page('/'))
+  assert.ok(home.includes('id="showcase"') && home.includes('/showcase/adscale-creator-poster.webp'), 'the homepage client showcase is intact')
+})
+
+test('regression: the 11 existing portfolio entries are intact (ids, media, permissions) but their industry is unconfirmed, not "Other"', () => {
+  const ids = ['ugc-hero-1', 'ugc-hero-2', 'ugc-hero-3', 'ugc-gal-1', 'ugc-gal-8', 'ugc-gal-4', 'ugc-gal-3', 'ugc-gal-5', 'ugc-gal-7', 'ugc-gal-2', 'ugc-gal-6']
+  assert.deepEqual(PORTFOLIO.filter((v) => !v.showcase).map((v) => v.id), ids)
+  assert.deepEqual(PORTFOLIO.filter((v) => !v.showcase).map((v) => v.source.cloudflareId), [
+    '33a4063ee0e8dafe3379f0a97817036e', '63446474698139b4ac17c1f053212242', '1fc1374cdfe428d10bfc40ad4eff9693', 'c8914f7a0db3ac9f5ffd0721115dbe20',
+    'b73842a409de5f4f6ae9d72733ea1152', '79b1cd5d22e9f13587ab547e438e29ef', '1188b4341860779830fa7365b1442959', '3a41e0f797a707576ff9af9fb9fb6a81',
+    '749e2ad503f5db79d69086a47c59edd0', 'ff256a4643515d29b61c1f210c06476d', '8b15247d9a422614898b8bbb54591025'])
+  for (const v of PORTFOLIO.filter((x) => !x.showcase)) {
+    assert.deepEqual(v.approval, { status: 'approved', portfolioUse: true, creatorConsent: true, approvedBy: 'CONVRT owner (confirmed in chat)', approvedOn: '2026-11-19' }, `${v.id}: permission record untouched`)
+    assert.equal(v.industry, 'unclassified', `${v.id}: industry is unconfirmed`)
+    assert.ok(!isClassified(v) && categoryOf(v) === null)
+  }
+  assert.equal(selectOurWork().length, 11)
+})
+
+test('regression: an unclassified video is in All Work only, never under Other or any industry tab, and shows no industry label', () => {
+  const unknown = [sample({ id: 'u1', industry: 'unclassified' }), sample({ id: 'u2', industry: undefined }), sample({ id: 'u3', industry: 'unclassified' })]
+  assert.deepEqual(availableCategories(unknown).map((c) => c.id), ['all'], 'no tab at all, and in particular no Other')
+  assert.equal(categoryOf(unknown[0]), null)
+  assert.equal(categoryOf(unknown[1]), null)
+  assert.equal(filterByCategory(unknown, 'other').length, 0)
+  assert.equal(filterByCategory(unknown, 'all').length, 3)
+  // mixed: a confirmed 'other' gets the Other tab with only itself in it
+  const mixed = [...unknown, sample({ id: 'c1', industry: 'other' }), sample({ id: 'c2', industry: 'saas' })]
+  assert.deepEqual(availableCategories(mixed).map((c) => c.id), ['all', 'saas', 'other'])
+  assert.deepEqual(filterByCategory(mixed, 'other').map((i) => i.id), ['c1'])
+  assert.equal(countIn(mixed, 'all'), 5)
+  assert.equal(countIn(mixed, 'other'), 1)
+  assert.ok(isDisplayable(unknown[0]) && isDisplayable(unknown[1]), 'permissions alone make it public; the industry is optional')
+  assert.equal(industryLabel('unclassified'), '')
+  assert.equal(industryLabel(undefined), '')
+  assert.equal(industryLabel('other'), 'Other')
+  // rendering: All Work only, a card without an industry badge, no word "Unclassified" anywhere
+  const html = renderToStaticMarkup(createElement(Library.default, { items: unknown }))
+  assert.ok(!/Unclassified|>Other</i.test(html), 'never exposed')
+  assert.equal((html.match(/aria-pressed=/g) || []).length, 1, 'only the All Work pill')
+  assert.equal((html.match(/aria-label="Play video: /g) || []).length, 3)
+  assert.ok(!/uppercase tracking-\[0\.08em\] text-ink backdrop-blur/.test(html), 'no industry badge on an unclassified card')
+  // the facets of the UGC grid ignore unclassified videos too
+  assert.deepEqual(buildFacets(unknown).category, [])
+  assert.equal(matchesFilters(unknown[0], { category: 'other' }), false)
+})
+
+test('brand name and production credit appear only with the recorded permission', () => {
+  const branded = sample({ brand: 'Acme', productionCredit: 'Edited by Jo' })
+  assert.equal(brandLabel(branded), null)
+  assert.equal(creditLabel(branded), null)
+  const allowed = sample({ brand: 'Acme', productionCredit: 'Edited by Jo', approval: { ...APPROVED, brandDisplay: true, creditDisplay: true } })
+  assert.equal(brandLabel(allowed), 'Acme')
+  assert.equal(creditLabel(allowed), 'Edited by Jo')
+  assert.ok(!renderToStaticMarkup(createElement(Library.default, { items: [branded] })).includes('Acme'))
+  assert.ok(renderToStaticMarkup(createElement(Library.default, { items: [allowed] })).includes('Acme'))
+  assert.ok(portfolioProblems(sample({ productionCredit: ' ' })).length)
+})
+
+test('Creator Showcase naming: nav, footer and homepage button use the approved labels while the route stays /our-work', () => {
+  const nav = read('src/components/Nav.jsx')
+  assert.match(nav, /label: 'Creator Showcase', href: OUR_WORK_PATH/)
+  assert.match(read('src/components/Footer.jsx'), />Creator Showcase<\/a>/)
+  assert.match(read('src/components/Hero.jsx'), /Explore Videos/)
+  assert.equal(OUR_WORK_PATH, '/our-work')
+  assert.ok(!KNOWN_PATHS.includes('/creator-showcase'), 'no second route')
+  assert.ok(!fs.readFileSync(path.join(ROOT, 'vercel.json'), 'utf8').includes('creator-showcase'), 'no redirect')
+  assert.equal(BREADCRUMB_TRAILS[PATH][1].name, 'Creator Showcase')
 })

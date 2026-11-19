@@ -12,7 +12,7 @@ import { PORTRAITS } from './illustrations.jsx'
 /* SECTION: a horizontal gallery of real UGC examples, shown before "Results & client feedback".
 
    DATA. The approved portfolio videos (selectDisplayable, src/content/portfolio.js), at most TOTAL (10). Adding a video there is the
-   only step needed: this section, the hero stage and the future "Our Work" page all read the same list. With none, the section is
+   only step needed: this section, the hero stage and the Creator Showcase page (/our-work) all read the same list. With none, the section is
    absent on the live site (no placeholder, no stock footage). On Vercel preview hosts only (usePreviewHost) it shows ten stand-in
    cards so the layout can be reviewed; those never reach the production domain.
 
@@ -194,7 +194,7 @@ export default function UgcGallery({ items }) {
 
       <div className="mt-9 flex justify-center">
         <GhostCta href={OUR_WORK_PATH} onClick={() => trackEvent('ugc_see_all_videos_click', { location: 'gallery' })}>
-          See all UGC videos <span aria-hidden="true">→</span>
+          Explore UGC Videos <span aria-hidden="true">→</span>
         </GhostCta>
       </div>
     </Section>

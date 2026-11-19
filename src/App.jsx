@@ -40,7 +40,7 @@ const ROUTES = {
   [PATHS.pricing]: CreativeTestingSprintPage,
   // UGC service page (SEO phase 2).
   [PATHS.ugcVideoAgency]: UgcVideoAgencyPage,
-  // Our Work: the filterable video portfolio (src/content/portfolio.js).
+  // Creator Showcase (route stays /our-work): the filterable video library (src/content/portfolio.js).
   [PATHS.ourWork]: OurWorkPage,
   [PATHS.caseStudies]: CaseStudiesPage,
   [PATHS.caseStudyGraspo]: CaseStudiesPage,

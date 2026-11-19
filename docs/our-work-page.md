@@ -1,11 +1,17 @@
-# Our Work (`/our-work`) and the shared portfolio data
+# Creator Showcase (`/our-work`) and the shared portfolio data
 
-`/our-work` is the video portfolio: a compact hero, then a filterable library of vertical videos. Three places read the same list, so a
+The visible name is **Creator Showcase** (nav, footer, breadcrumb, title); the route stays `/our-work` (no redirect, no second route).
+The H1 is "See what's possible.", with the note "Featuring examples from independent creators. Not all videos were produced by CONVRT."
+**The library shows examples from independent creators, not CONVRT productions.** Never describe it as "our work", "our productions", client
+projects or campaign results (a regression test enforces this for copy, metadata and structured data). The homepage client showcases
+(Adscale, Elyon, Graspo) are the separate demonstrations of actual CONVRT client work.
+
+The page is a compact hero, then a filterable library of vertical videos. Three places read the same list, so a
 video is added **once**, in `src/content/portfolio.js` (the file header documents every field).
 
 | Page | What it shows | Selector |
 | --- | --- | --- |
-| `/our-work` | every fully approved video, filterable by industry | `selectOurWork()` |
+| `/our-work` (Creator Showcase) | every fully approved video, filterable by industry | `selectOurWork()` |
 | `/ugc-video-agency` | approved videos with `type: 'ugc'`: hero stage (`placement: 'hero'`, max 3) + gallery (max 10) | `selectHero()` / `selectGallery()` |
 | Homepage client panels (Adscale, Elyon, Graspo) | the videos tagged `showcase: '<panel id>'` (three per panel) | `selectShowcase(id)` |
 
@@ -13,20 +19,29 @@ video is added **once**, in `src/content/portfolio.js` (the file header document
 1. Upload it to Cloudflare Stream and copy its video id (UID). Optionally add a 540x960 `.webp` thumbnail under `public/portfolio/`.
 2. Add an object at the **top** of `PORTFOLIO` (newest first). The minimum: `id`, `caption`, `industry`, `languages`, `source: { cloudflareId }`,
    `creatorId` and a full `approval` (status `approved`, `portfolioUse: true`, `creatorConsent: true`, who approved it and when).
-3. `industry: 'saas'`, `'ecommerce'` or `'services'` files it under that tab; any other slug groups under **Other**. `type` defaults to `'ugc'`.
+3. `industry: 'saas'`, `'ecommerce'` or `'services'` files it under that tab. `'other'` means *confirmed* "none of these"; any other
+   industry slug (beauty, finance ...) groups under **Other** and keeps its own name on the card. **Unknown industry is `'unclassified'`
+   (or omitted): the video is in All Work but under no tab, never under Other, and no label is shown.** Set `type: 'ugc'` for videos that
+   belong on the UGC page (an unset type is unknown, not UGC).
 4. Run the tests and the build, push the branch, check the Vercel Preview.
 
 That is all: it is now on `/our-work` and, if it is UGC, in the UGC gallery. Add `placement: 'hero'` for the UGC hero stage, or
 `showcase: 'elyon'` to put it in a homepage client panel (those panels are per client, each with its own story, so a video appears there
 only when tagged).
 
+## Attribution
+- `production: 'independent'` (a creator's own example) or `'convrt'` (produced through CONVRT). **Unset = unknown: nothing is claimed.**
+  A label ("Independent creator" / "Produced by CONVRT") appears in the player only when set, and structured data names CONVRT as
+  `producer` only for `'convrt'`.
+- `brand` is shown only when `approval.brandDisplay === true`; `productionCredit` only when `approval.creditDisplay === true`.
+
 ## Rules
 - A video needs `status: 'approved'` AND `portfolioUse: true` AND `creatorConsent: true` for `/our-work` and the UGC page. Nothing else
   makes it public there. The homepage panels need only `status: 'approved'` plus the `showcase` tag (the client case studies were already
   public before this file existed). The nine Adscale / Elyon / Graspo videos therefore have `portfolioUse: false`: they are on the homepage only.
-- `brand` is shown on the card: add it only with the brand's permission. A creator name is shown only with `creator.showName: true`;
+- A creator name is shown only with `creator.showName: true`;
   `creatorId` is never shown.
-- A category tab appears only while it has at least one video. With no approved videos the page shows a compact empty state, is `noindex`
+- A category tab appears only while it has at least one *classified* video. With no approved videos the page shows a compact empty state, is `noindex`
   and is left out of the sitemap (`SITE_SEO['/our-work'].indexable` follows the data).
 - `VideoObject` structured data is emitted only for a displayable video that has a real `uploadDate` (and optionally `description`).
   Without it, none is written. Never invent dates.
