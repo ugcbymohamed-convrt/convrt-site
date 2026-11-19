@@ -64,7 +64,8 @@ export default function UgcResults() {
                 <span className="font-display text-[4.25rem] font-bold leading-none tracking-display-xl text-lime sm:text-[5.5rem]"><RoasNumber value={e.roas} /></span>
                 <span className="font-display text-xl font-semibold text-ink md:text-2xl">ROAS, one UGC video</span>
               </p>
-              <dl className="mt-5 flex flex-wrap gap-x-8 gap-y-3">
+              {/* supporting metrics */}
+              <dl className="mt-5 flex flex-wrap gap-x-10 gap-y-3 border-t border-hairline pt-5">
                 {[[String(e.purchases), 'Purchases'], [e.revenue, 'Reported revenue']].map(([v, l]) => (
                   <div key={l} className="flex flex-col">
                     <dd className="order-1 font-display text-2xl font-bold tabular-nums text-ink">{v}</dd>
@@ -73,22 +74,21 @@ export default function UgcResults() {
                 ))}
               </dl>
 
-              {/* the client's own words, as two message cards */}
-              <figure className="mt-6 max-w-md">
-                <figcaption className="mb-2.5 flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.14em] text-ink-muted">
-                  <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-lime" />Client messages
+              {/* the client's own messages: ONE evidence container, messages stacked and aligned together */}
+              <figure className="mt-5 rounded-2xl border border-lime/25 bg-canvas/60 p-4">
+                <figcaption className="mb-3 flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.14em] text-lime">
+                  <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-lime" />Client-reported results
                 </figcaption>
-                <div className="space-y-2.5">
-                  <p className="relative max-w-[92%] rounded-2xl rounded-bl-md bg-lime px-4 py-3 font-display text-[15px] font-semibold leading-snug text-canvas shadow-[0_18px_40px_-22px_rgba(213,255,64,0.7)]">
-                    {CLIENT_MESSAGES[0]}
-                  </p>
-                  <p className="ml-auto w-fit max-w-[70%] rounded-2xl rounded-br-md border border-lime/45 bg-lime/[0.08] px-4 py-3 font-display text-[15px] font-semibold leading-snug text-lime">
-                    {CLIENT_MESSAGES[1]}
-                  </p>
-                </div>
+                <ul className="space-y-2">
+                  {CLIENT_MESSAGES.map((m) => (
+                    <li key={m} className="w-fit max-w-full rounded-2xl rounded-tl-md border border-white/10 bg-surface-2 px-4 py-2.5 text-[15px] font-medium leading-snug text-ink">
+                      {m}
+                    </li>
+                  ))}
+                </ul>
               </figure>
 
-              <p className="mt-5 max-w-xl text-[13px] leading-relaxed text-ink-muted">
+              <p className="mt-4 max-w-xl text-[13px] leading-relaxed text-ink-muted">
                 One individual creative, client-reported during an early learning phase. Not typical, not a guarantee. Results depend on brand, offer, audience and budget.
               </p>
               <p className="mt-2.5 text-[15px]">
