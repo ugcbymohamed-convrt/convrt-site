@@ -420,7 +420,7 @@ test('/pricing HTML: three cards per group; Paid has the compact billing selecto
   assert.ok(!/Organic Social packages are ongoing content partnerships/.test(op), 'no introductory line above the Organic cards')
   assert.ok(!/Creative production packages\. Choose how/.test(flat(`<div id="root">${paid}`)), 'no introductory line above the Paid cards')
   // the billing control sits alone in a right-aligned row above the cards
-  assert.match(paid, /<div class="mb-3 flex justify-end"><div role="radiogroup"/)
+  assert.match(paid, /<div class="mb-4 flex justify-center"><div role="radiogroup"/)
   assert.ok(organic.indexOf('<article') < 600, 'the Organic cards start immediately (no header row)')
 })
 

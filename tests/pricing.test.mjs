@@ -509,7 +509,7 @@ test('billing: compact Monthly / One-off selector for Paid only; prices from con
   assert.match(paidPanel, /<BillingSwitch/)
   assert.ok(!/BillingSwitch/.test(organicPanel), 'no billing selector on Organic')
   assert.ok(!/ongoing content partnerships|Creative production packages/.test(stage), 'no introductory line above the cards')
-  assert.match(paidPanel, /<div className="mb-3 flex justify-end">\s*<BillingSwitch/, 'billing control right-aligned, no intro text')
+  assert.match(paidPanel, /<div className="mb-4 flex justify-center">\s*<BillingSwitch/, 'billing control centred, no intro text')
   assert.ok(!/oneOff|one-off/i.test(cardsSrc.slice(cardsSrc.indexOf('export function OrganicCards'), cardsSrc.indexOf('export function BillingSwitch'))), 'no organic one-off prices')
   assert.ok(!/discount|save \d|% off|savings?/i.test(strip(cardsSrc) + JSON.stringify(PARTNERSHIP_TERMS)), 'no discount or savings claims')
   assert.match(cardsSrc, /<BillingPrice pkg=\{SPRINT\} billing=\{billing\} \/>/)

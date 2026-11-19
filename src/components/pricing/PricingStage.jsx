@@ -26,7 +26,7 @@ function GoalSelector({ value, onChange }) {
   }
   return (
     <div className="mx-auto mt-6 md:mt-7 max-w-2xl">
-      <p className="mb-2.5 text-center text-[11px] font-semibold uppercase tracking-[0.16em] text-ink-subtle">
+      <p className="mb-3 text-center text-[13px] font-bold uppercase tracking-[0.18em] text-lime sm:text-[15px]">
         What are you looking to achieve?
       </p>
       <div role="tablist" aria-label="What are you looking to achieve?" onKeyDown={onKeyDown} className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
@@ -138,7 +138,7 @@ export default function PricingStage({ service, onServiceChange }) {
 
         <div ref={stageRef} className="pricing-stage mt-5 md:mt-6">
           <SlidePanel id="paid" pos="left" active={service === 'paid'}>
-            <div className="mb-3 flex justify-end">
+            <div className="mb-4 flex justify-center">
               <BillingSwitch value={billing} onChange={setBilling} />
             </div>
             <PaidCards billing={billing} />
