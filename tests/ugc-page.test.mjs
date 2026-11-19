@@ -24,7 +24,7 @@ import {
 } from '../src/seo/businessKnowledge.js'
 import { ELYON_PROOF, UGC_TESTIMONIALS } from '../src/content/ugcProof.js'
 import {
-  UGC_PORTFOLIO, isDisplayable, selectDisplayable, portfolioProblems, creatorLabel, buildFacets, matchesFilters, posterUrl, categoryOf,
+  UGC_PORTFOLIO, isDisplayable, selectDisplayable, selectGallery, selectHero, portfolioProblems, creatorLabel, buildFacets, matchesFilters, posterUrl, categoryOf,
 } from '../src/content/ugcPortfolio.js'
 import { BUSINESS_TYPE_OPTIONS } from '../src/lib/roadmapQuestions.js'
 
@@ -87,11 +87,11 @@ test('static HTML: breadcrumb, the approved H1, five main sections (the portfoli
   const h1 = decode(root.match(/<h1[^>]*>([\s\S]*?)<\/h1>/)[1].replace(/<[^>]+>/g, ' ')).replace(/\s+/g, ' ').trim()
   assert.equal(h1, 'Human-led UGC ads. Built for paid social. to convrt.')
   assert.match(root, /<nav aria-label="Breadcrumb"[\s\S]*?<a href="\/"[^>]*>Home<\/a>[\s\S]*?UGC Video Agency/)
-  const portfolio = selectDisplayable().length > 0
-  // hero (h1) + [work] + process + results + faq, then the final CTA
-  assert.equal((root.match(/<h2[\s>]/g) || []).length, (portfolio ? 4 : 3) + 1, 'work (only with approved videos), process, results, faq, final CTA')
+  const portfolio = selectGallery().length > 0
+  // hero (h1) + [gallery] + process + results + faq, then the final CTA
+  assert.equal((root.match(/<h2[\s>]/g) || []).length, (portfolio ? 4 : 3) + 1, 'gallery (only with approved videos), process, results, faq, final CTA')
   for (const id of ['how-it-works', 'results', 'ugc-faq', 'get-started']) assert.ok(root.includes(`id="${id}"`), id)
-  assert.equal(root.includes('id="work"'), portfolio, 'the portfolio section exists only when approved videos exist')
+  assert.equal(root.includes('id="ugc-videos"'), portfolio, 'the gallery exists only when approved videos exist')
   // the redundant sections are gone
   for (const id of ['what-is-ugc', 'whats-included', 'creative-craft', 'pricing', 'usage-rights', 'best-suited', 'ugc-process-old']) assert.ok(!root.includes(`id="${id}"`), `${id} was removed`)
   for (const f of ['UgcDefinition', 'UgcBatch', 'UgcCraft', 'UgcPricing', 'UgcRights', 'UgcFit']) assert.ok(!fs.existsSync(path.join(ROOT, `src/components/ugc/${f}.jsx`)), `${f} was removed`)
@@ -618,7 +618,19 @@ test('gallery: a horizontal scroller of up to 10 approved videos before Results;
   const page_ = read('src/UgcVideoAgencyPage.jsx')
   assert.ok(page_.indexOf('<UgcGallery') > page_.indexOf('<UgcProcess') && page_.indexOf('<UgcGallery') < page_.indexOf('<UgcResults'), 'between How it works and Results')
   const html = rootOf(page(PATH))
-  assert.ok(!html.includes('id="ugc-videos"') && !html.includes('UGC example'), 'no gallery and no stand-ins in the static (live) HTML while there are no approved videos')
+  const gallery = selectGallery()
+  const hero = selectHero()
+  assert.ok(!html.includes('Sample card'), 'stand-in cards are never in the static (live) HTML')
+  if (gallery.length === 0) assert.ok(!html.includes('id="ugc-videos"'), 'no gallery while there are no approved gallery videos')
+  else {
+    assert.ok(html.includes('id="ugc-videos"'), 'the gallery is on the page')
+    assert.equal((html.split('id="ugc-videos"')[1].split('</section>')[0].match(/Play video:/g) || []).length, Math.min(gallery.length, 10), 'one card per approved gallery video (max 10)')
+    assert.ok(gallery.every((v) => html.includes(posterUrl(v).replace(/&/g, '&amp;'))), 'every card has its thumbnail')
+    assert.ok(!/<video/.test(html.split('id="ugc-videos"')[1].split('</section>')[0]), 'the gallery has no video element until a visitor presses play')
+    assert.ok(!/\.m3u8|<source/.test(html), 'no stream is requested by the static HTML (the hero attaches its source only when idle)')
+  }
+  assert.ok(hero.every((v) => v.placement === 'hero') && gallery.every((v) => v.placement !== 'hero') && hero.length <= 3, 'hero and gallery hold different videos; at most 3 in the hero')
+  assert.equal(new Set([...hero, ...gallery].map((v) => v.source.cloudflareId)).size, hero.length + gallery.length, 'no video is used twice')
   const src = read('src/components/ugc/UgcGallery.jsx')
   assert.match(src, /const TOTAL = 10/)
   assert.ok(/overflow-x-auto/.test(src) && /snap-x/.test(src) && /lg:w-\[calc\(\(100%-3rem\)\/4\)\]/.test(src), 'four cards visible on a laptop, native horizontal scrolling (trackpad swipe)')

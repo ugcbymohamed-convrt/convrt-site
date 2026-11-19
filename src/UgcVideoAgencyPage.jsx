@@ -10,7 +10,7 @@ import { captureAttribution, trackEvent } from './lib/analytics.js'
 import { useDocumentHead } from './lib/useDocumentHead.js'
 import { pageHead } from './seo/siteSeo.js'
 import { PATHS } from './routes.js'
-import { selectDisplayable } from './content/ugcPortfolio.js'
+import { selectHero, selectGallery } from './content/ugcPortfolio.js'
 
 /* /ugc-video-agency: the UGC service page.
      1 Hero (with the approved-video stage) · 2 How we create and test UGC ads · 3 Our best UGC work (a horizontal gallery of up to 10 approved
@@ -28,7 +28,8 @@ export default function UgcVideoAgencyPage() {
     trackEvent('ugc_page_view')
   }, [])
 
-  const items = selectDisplayable()
+  const heroItems = selectHero()
+  const galleryItems = selectGallery()
 
   return (
     <>
@@ -39,10 +40,10 @@ export default function UgcVideoAgencyPage() {
           <li aria-current="page" className="text-ink-muted">UGC Video Agency</li>
         </ol>
       </nav>
-      <UgcHero items={items} />
+      <UgcHero items={heroItems} />
       <SectionDivider />
       <UgcProcess />
-      <UgcGallery items={items} />
+      <UgcGallery items={galleryItems} />
       <SectionDivider />
       <UgcResults />
       <SectionDivider />

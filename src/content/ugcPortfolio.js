@@ -13,6 +13,8 @@
        source: { cloudflareId: '…' },          // Cloudflare Stream id (HLS)…  or  { mp4: '/videos/….mp4' }
        poster: '/portfolio/….webp',            // required for mp4; optional for Cloudflare (a thumbnail is derived)
        creator: { displayName: 'First name', showName: true },   // optional. The name is shown ONLY when showName is true.
+       placement: 'gallery',                   // 'hero' = the three-phone stage at the top (first hero item = the large centre phone,
+                                               // at most 3 shown); 'gallery' (the default) = the horizontal section below (at most 10)
        caseStudyHref: '/case-studies/…',       // optional related case study
        approval: {
          status: 'approved',                   // anything else keeps the video off the site
@@ -34,7 +36,195 @@
      A category with no approved video never appears.
    • tests/ugc-page.test.mjs validates every entry (unique ids, valid codes, source, permission flags). */
 
-export const UGC_PORTFOLIO = []
+export const UGC_PORTFOLIO = [
+  {
+    id: 'ugc-hero-1',
+    creatorId: 'cv-hero-1',
+    category: 'UGC · Paid social',
+    industry: 'other',
+    languages: ['en'],
+    caption: 'Creator-led UGC ad example 1.',
+    placement: 'hero',
+    source: { cloudflareId: '33a4063ee0e8dafe3379f0a97817036e' },
+    approval: {
+      status: 'approved',
+      portfolioUse: true,
+      creatorConsent: true,
+      approvedBy: 'CONVRT owner (confirmed in chat)',
+      approvedOn: '2026-11-19',
+    },
+  },
+  {
+    id: 'ugc-hero-2',
+    creatorId: 'cv-hero-2',
+    category: 'UGC · Paid social',
+    industry: 'other',
+    languages: ['en'],
+    caption: 'Creator-led UGC ad example 2.',
+    placement: 'hero',
+    source: { cloudflareId: '63446474698139b4ac17c1f053212242' },
+    approval: {
+      status: 'approved',
+      portfolioUse: true,
+      creatorConsent: true,
+      approvedBy: 'CONVRT owner (confirmed in chat)',
+      approvedOn: '2026-11-19',
+    },
+  },
+  {
+    id: 'ugc-hero-3',
+    creatorId: 'cv-hero-3',
+    category: 'UGC · Paid social',
+    industry: 'other',
+    languages: ['en'],
+    caption: 'Creator-led UGC ad example 3.',
+    placement: 'hero',
+    source: { cloudflareId: '1fc1374cdfe428d10bfc40ad4eff9693' },
+    approval: {
+      status: 'approved',
+      portfolioUse: true,
+      creatorConsent: true,
+      approvedBy: 'CONVRT owner (confirmed in chat)',
+      approvedOn: '2026-11-19',
+    },
+  },
+  {
+    id: 'ugc-gal-1',
+    creatorId: 'cv-gal-1',
+    category: 'UGC · Paid social',
+    industry: 'other',
+    languages: ['en'],
+    caption: 'UGC ad example 1.',
+    placement: 'gallery',
+    source: { cloudflareId: 'c8914f7a0db3ac9f5ffd0721115dbe20' },
+    approval: {
+      status: 'approved',
+      portfolioUse: true,
+      creatorConsent: true,
+      approvedBy: 'CONVRT owner (confirmed in chat)',
+      approvedOn: '2026-11-19',
+    },
+  },
+  {
+    id: 'ugc-gal-2',
+    creatorId: 'cv-gal-2',
+    category: 'UGC · Paid social',
+    industry: 'other',
+    languages: ['en'],
+    caption: 'UGC ad example 2.',
+    placement: 'gallery',
+    source: { cloudflareId: 'ff256a4643515d29b61c1f210c06476d' },
+    approval: {
+      status: 'approved',
+      portfolioUse: true,
+      creatorConsent: true,
+      approvedBy: 'CONVRT owner (confirmed in chat)',
+      approvedOn: '2026-11-19',
+    },
+  },
+  {
+    id: 'ugc-gal-3',
+    creatorId: 'cv-gal-3',
+    category: 'UGC · Paid social',
+    industry: 'other',
+    languages: ['en'],
+    caption: 'UGC ad example 3.',
+    placement: 'gallery',
+    source: { cloudflareId: '1188b4341860779830fa7365b1442959' },
+    approval: {
+      status: 'approved',
+      portfolioUse: true,
+      creatorConsent: true,
+      approvedBy: 'CONVRT owner (confirmed in chat)',
+      approvedOn: '2026-11-19',
+    },
+  },
+  {
+    id: 'ugc-gal-4',
+    creatorId: 'cv-gal-4',
+    category: 'UGC · Paid social',
+    industry: 'other',
+    languages: ['en'],
+    caption: 'UGC ad example 4.',
+    placement: 'gallery',
+    source: { cloudflareId: '79b1cd5d22e9f13587ab547e438e29ef' },
+    approval: {
+      status: 'approved',
+      portfolioUse: true,
+      creatorConsent: true,
+      approvedBy: 'CONVRT owner (confirmed in chat)',
+      approvedOn: '2026-11-19',
+    },
+  },
+  {
+    id: 'ugc-gal-5',
+    creatorId: 'cv-gal-5',
+    category: 'UGC · Paid social',
+    industry: 'other',
+    languages: ['en'],
+    caption: 'UGC ad example 5.',
+    placement: 'gallery',
+    source: { cloudflareId: '3a41e0f797a707576ff9af9fb9fb6a81' },
+    approval: {
+      status: 'approved',
+      portfolioUse: true,
+      creatorConsent: true,
+      approvedBy: 'CONVRT owner (confirmed in chat)',
+      approvedOn: '2026-11-19',
+    },
+  },
+  {
+    id: 'ugc-gal-6',
+    creatorId: 'cv-gal-6',
+    category: 'UGC · Paid social',
+    industry: 'other',
+    languages: ['en'],
+    caption: 'UGC ad example 6.',
+    placement: 'gallery',
+    source: { cloudflareId: '8b15247d9a422614898b8bbb54591025' },
+    approval: {
+      status: 'approved',
+      portfolioUse: true,
+      creatorConsent: true,
+      approvedBy: 'CONVRT owner (confirmed in chat)',
+      approvedOn: '2026-11-19',
+    },
+  },
+  {
+    id: 'ugc-gal-7',
+    creatorId: 'cv-gal-7',
+    category: 'UGC · Paid social',
+    industry: 'other',
+    languages: ['en'],
+    caption: 'UGC ad example 7.',
+    placement: 'gallery',
+    source: { cloudflareId: '749e2ad503f5db79d69086a47c59edd0' },
+    approval: {
+      status: 'approved',
+      portfolioUse: true,
+      creatorConsent: true,
+      approvedBy: 'CONVRT owner (confirmed in chat)',
+      approvedOn: '2026-11-19',
+    },
+  },
+  {
+    id: 'ugc-gal-8',
+    creatorId: 'cv-gal-8',
+    category: 'UGC · Paid social',
+    industry: 'other',
+    languages: ['en'],
+    caption: 'UGC ad example 8.',
+    placement: 'gallery',
+    source: { cloudflareId: 'b73842a409de5f4f6ae9d72733ea1152' },
+    approval: {
+      status: 'approved',
+      portfolioUse: true,
+      creatorConsent: true,
+      approvedBy: 'CONVRT owner (confirmed in chat)',
+      approvedOn: '2026-11-19',
+    },
+  },
+]
 
 /* Labels for filter chips and cards. Unknown codes or slugs still work (they fall back to the code / a title-cased slug). */
 export const LANGUAGE_LABELS = {
@@ -66,6 +256,7 @@ export function portfolioProblems(item) {
   const hasCf = Boolean(item.source?.cloudflareId)
   const hasMp4 = Boolean(item.source?.mp4)
   if (hasCf === hasMp4) p.push('source needs exactly one of cloudflareId or mp4')
+  if (item.placement !== undefined && item.placement !== 'hero' && item.placement !== 'gallery') p.push("placement must be 'hero' or 'gallery'")
   if (hasMp4 && !item.poster) p.push('an mp4 source needs a poster image')
   if (!a || typeof a !== 'object') p.push('approval is required')
   return p
@@ -79,6 +270,10 @@ export function isDisplayable(item) {
 }
 
 export const selectDisplayable = (items = UGC_PORTFOLIO) => items.filter(isDisplayable)
+
+/* Where an approved video appears: the hero stage (placement 'hero') or the gallery below it (everything else). */
+export const selectHero = (items = UGC_PORTFOLIO) => selectDisplayable(items).filter((i) => i.placement === 'hero')
+export const selectGallery = (items = UGC_PORTFOLIO) => selectDisplayable(items).filter((i) => i.placement !== 'hero')
 
 /* Name shown on a card: only with explicit permission. */
 export const creatorLabel = (item) => (item.creator?.showName === true && item.creator?.displayName ? item.creator.displayName : null)
