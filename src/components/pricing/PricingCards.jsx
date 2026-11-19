@@ -1,6 +1,6 @@
 import { OFFER_PATHS } from '../../config.js'
 import {
-  SPRINT, SPRINT_PLUS, ORGANIC, ORGANIC_COMMITMENT, CUSTOM_PACKAGES, BILLING_OPTIONS, formatMoney,
+  SPRINT, SPRINT_PLUS, ORGANIC, ORGANIC_COMMITMENT, CUSTOM_PACKAGES, BILLING_OPTIONS, formatMoney, pricePerVariation,
 } from '../../seo/businessKnowledge.js'
 
 /* The three-column pricing cards (Paid Social: Sprint / Sprint Plus / Custom; Organic: Light / Growth / Custom).
@@ -121,8 +121,25 @@ function BillingPrice({ pkg, billing }) {
 
 const LetsTalk = () => <span className="text-[40px] md:text-[46px]">Let&rsquo;s talk.</span>
 
-const Variations = ({ tone, count, line }) => (
+/* The value highlight directly under the total: what one finished ad version costs at the billing option shown. A small lime mark
+   (lime highlighter on the light card, black chip with lime text on the lime card): clearly more prominent than the supporting
+   copy, clearly smaller than the package price. Both billing variants are rendered (the inactive one is `hidden`), like the price. */
+const HIGHLIGHT = { light: 'bg-lime text-canvas', lime: 'bg-canvas text-lime' }
+const PerVariation = ({ tone, pkg, billing }) => (
+  <p className="mb-2">
+    {BILLING_OPTIONS.map((o) => (
+      <span key={o.id} hidden={billing !== o.id} data-billing={o.id}>
+        <span className={`inline-flex items-baseline gap-1.5 rounded-lg px-2.5 py-1.5 text-[13px] font-semibold leading-none ${HIGHLIGHT[tone]}`}>
+          Just <span className="font-display text-[17px] font-bold tracking-snug">{pricePerVariation(pkg, o.id).text}</span> per variation
+        </span>
+      </span>
+    ))}
+  </p>
+)
+
+const Variations = ({ tone, count, line, per }) => (
   <>
+    {per}
     <span className={`inline-flex items-center rounded-full px-3.5 py-1.5 text-sm font-bold ${TONES[tone].chip}`}>
       {count} finished ad versions
     </span>
@@ -160,20 +177,20 @@ export function PaidCards({ billing }) {
     'Priority production scheduling',
   ]
   const PAID_DESC = 'lg:min-h-[46px]'
-  const PAID_SUB = 'lg:min-h-[76px]'
+  const PAID_SUB = 'lg:min-h-[116px]'
   const custom = CUSTOM_PACKAGES.paid
   return (
     <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3 lg:gap-6">
       <PricingCard
         tone="light" id="card-sprint" label="Sprint" description={SPRINT.cardDescription}
         price={<BillingPrice pkg={SPRINT} billing={billing} />}
-        sub={<Variations tone="light" count={SPRINT.variations} line={`${SPRINT.concepts} concepts × ${SPRINT.variationsPerConcept} versions each`} />}
+        sub={<Variations tone="light" per={<PerVariation tone="light" pkg={SPRINT} billing={billing} />} count={SPRINT.variations} line={`${SPRINT.concepts} concepts × ${SPRINT.variationsPerConcept} versions each`} />}
         features={sprintFeatures} ctaLabel="Get started" descMin={PAID_DESC} subMin={PAID_SUB}
       />
       <PricingCard
         tone="lime" id="card-sprint-plus" label="Sprint Plus" badge="Deeper testing" description={SPRINT_PLUS.cardDescription}
         price={<BillingPrice pkg={SPRINT_PLUS} billing={billing} />}
-        sub={<Variations tone="lime" count={SPRINT_PLUS.variations} line={SPRINT_PLUS.valueLine} />}
+        sub={<Variations tone="lime" per={<PerVariation tone="lime" pkg={SPRINT_PLUS} billing={billing} />} count={SPRINT_PLUS.variations} line={SPRINT_PLUS.valueLine} />}
         features={plusFeatures} note={SPRINT_PLUS.extraDetail} ctaLabel="Get started" descMin={PAID_DESC} subMin={PAID_SUB}
       />
       <PricingCard

@@ -27,6 +27,14 @@ const group = (n) => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ',')
 export const formatMoney = (m) => `${SYMBOL[m.currency]}${group(m.amount)}`
 const usd = (amount) => ({ amount, currency: 'USD' })
 
+/** Price per finished ad version for a package at a billing option ('monthly' | 'oneOff'): Sprint $3,000 / 15 = "$200",
+ *  Sprint Plus $5,000 / 30 = "$166.67". Whole dollars are shown without cents; everything else to the cent. */
+export const pricePerVariation = (pkg, billing = 'monthly') => {
+  const v = pkg[billing].amount / pkg.variations
+  const [whole, cents] = v.toFixed(2).split('.')
+  return { amount: v, text: cents === '00' ? `$${group(whole)}` : `$${group(whole)}.${cents}` }
+}
+
 /* ── deliverable terminology ──────────────────────────────────────────────────────────────
    A package delivers FINISHED AD VERSIONS: `concepts × versions per concept`. Sprint = 5 × 3 = 15; Sprint Plus = 10 × 3 = 30.
    The three versions of a concept are alternatives (for example a different hook or call to action) and are INCLUDED in the total,
@@ -128,11 +136,12 @@ export const SPRINT = {
 export const SPRINT_PLUS = {
   id: 'creative-testing-sprint-plus',
   name: 'Creative Testing Sprint Plus',
-  monthly: usd(4500),
+  /* APPROVED (owner, Nov 2026, third revision): Sprint Plus is $5,000 monthly for 30 finished ad versions ($166.67 each). The
+     one-off price was NOT part of that revision and still awaits owner confirmation. */
+  monthly: usd(5000),
   oneOff: usd(5400),
-  /* Sprint Plus = 10 distinct concepts, 10 complete scripts, 3 variations per concept, 30 finished ad versions (kept in step with
-     the Sprint's 3-version model; the Plus PRICE below was NOT changed in that revision and is awaiting owner confirmation). It
-     supersedes the earlier 8-concept / unevenly distributed structure. */
+  /* Sprint Plus = 10 distinct concepts, 10 complete scripts, 3 variations per concept, 30 finished ad versions. It supersedes the
+     earlier 8-concept / unevenly distributed structure. */
   concepts: 10,
   scripts: 10,
   variationsPerConcept: 3,

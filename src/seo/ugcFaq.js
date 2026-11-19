@@ -7,7 +7,7 @@
    An answer is an array of paragraphs. */
 
 import {
-  formatMoney, adVersions, SPRINT, SPRINT_PLUS, COMMITMENT, SINGLE_VIDEOS, USAGE_RIGHTS, RAW_FOOTAGE, RESHOOTS, FORMATS, TURNAROUND,
+  formatMoney, pricePerVariation, adVersions, SPRINT, SPRINT_PLUS, COMMITMENT, SINGLE_VIDEOS, USAGE_RIGHTS, RAW_FOOTAGE, RESHOOTS, FORMATS, TURNAROUND,
   REVISIONS, PRODUCT_REQUIREMENTS, TALENT, PRODUCTION_LANGUAGES, PARTNERSHIP_TERMS,
 } from './businessKnowledge.js'
 import { OFFER_PATHS } from '../config.js'
@@ -52,7 +52,7 @@ export const UGC_FAQ = [
     id: 'ugc-cost',
     q: 'How much does UGC video production cost?',
     a: [
-      `Our UGC production packages start at ${formatMoney(SPRINT.monthly)} a month. The ${SPRINT.name} includes ${SPRINT.concepts} concepts in ${SPRINT.variationsPerConcept} versions each, ${adVersions(SPRINT.variations)} in total. ${SPRINT_PLUS.name} is ${formatMoney(SPRINT_PLUS.monthly)} a month and includes ${SPRINT_PLUS.concepts} concepts in ${SPRINT_PLUS.variationsPerConcept} versions each, ${adVersions(SPRINT_PLUS.variations)} in total.`,
+      `Our UGC production packages start at ${formatMoney(SPRINT.monthly)} a month. The ${SPRINT.name} includes ${SPRINT.concepts} concepts in ${SPRINT.variationsPerConcept} versions each, ${adVersions(SPRINT.variations)} in total. ${SPRINT_PLUS.name} is ${formatMoney(SPRINT_PLUS.monthly)} a month and includes ${SPRINT_PLUS.concepts} concepts in ${SPRINT_PLUS.variationsPerConcept} versions each, ${adVersions(SPRINT_PLUS.variations)} in total. At the monthly price that is ${pricePerVariation(SPRINT).text} per variation for the Sprint and ${pricePerVariation(SPRINT_PLUS).text} per variation for Sprint Plus.`,
       `${SINGLE_VIDEOS.statement} The price depends on the number of concepts, the creator and language, formats, usage duration and add-ons. Prices are in US dollars and exclude VAT.`,
     ],
     links: [{ label: 'Compare packages on the Pricing page', href: '/pricing#packages' }],

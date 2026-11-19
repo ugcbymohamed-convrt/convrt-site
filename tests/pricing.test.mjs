@@ -35,8 +35,8 @@ test('Sprint: $3,000/month, 5 concepts x 3 variations = 15, 10 business days, 2 
   assert.equal(SPRINT.usageMonthsIncluded, 6)
 })
 
-test('Sprint Plus: $4,500/month, 30 variations, 15 business days, 2 revision rounds, 6 months usage', () => {
-  assert.deepEqual(SPRINT_PLUS.monthly, { amount: 4500, currency: 'USD' })
+test('Sprint Plus: $5,000/month, 30 variations, 15 business days, 2 revision rounds, 6 months usage', () => {
+  assert.deepEqual(SPRINT_PLUS.monthly, { amount: 5000, currency: 'USD' })
   assert.equal(SPRINT_PLUS.variations, 30)
   assert.equal(SPRINT_PLUS.turnaroundBusinessDays, 15)
   assert.equal(SPRINT_PLUS.revisionRoundsPerConcept, 2)
@@ -56,7 +56,7 @@ test('Sprint 5/5/3/15 and Sprint Plus 10/10/3/30 (approved offer): config, cards
   assert.match(offer, /\$\{SPRINT_PLUS\.scripts\} complete scripts/)
   assert.match(offer, /\$\{SPRINT_PLUS\.variationsPerConcept\} versions per concept, changing the hook or CTA/)
   assert.match(offer, /line=\{SPRINT_PLUS\.valueLine\}/)
-  assert.match(faq('whats-included'), /Creative Testing Sprint Plus is \$4,500\/month for 10 concepts and 30 finished ad versions/)
+  assert.match(faq('whats-included'), /Creative Testing Sprint Plus is \$5,000\/month for 10 concepts and 30 finished ad versions/)
   assert.match(faq('concept-vs-variation'), /Creative Testing Sprint Plus includes 10 concepts with 3 versions each, 30 finished ad versions in total/)
   const svc = graph().find((n) => n.name === 'Creative Testing Sprint Plus')
   assert.match(svc.description, /^10 distinct creative concepts with 3 versions each \(30 finished ad versions\)/)
@@ -264,7 +264,7 @@ test('brand + talent + languages: verbatim confirmed information, nothing invent
 
 test('pricing page copy is data-driven: package prices are not typed into the components', () => {
   const offer = read('src/components/pricing/PricingStage.jsx') + read('src/components/pricing/PricingCards.jsx')
-  for (const literal of ['2,500', '4,500', '1,500', '3,000', '3,500', '5,400', '2,000', '250']) assert.ok(!offer.includes(literal), `hard-coded ${literal}`)
+  for (const literal of ['2,500', '4,500', '5,000', '1,500', '3,000', '3,500', '5,400', '2,000', '250']) assert.ok(!offer.includes(literal), `hard-coded ${literal}`)
   for (const f of ['InfoPanels', 'PartnershipTerms', 'PhilosophySection']) {
     assert.ok(!/[$$]\s?\d/.test(read(`src/components/pricing/${f}.jsx`)), `${f} hard-codes a price`)
   }
@@ -361,7 +361,7 @@ test('Offers: numeric prices, correct currencies, monthly vs one-off kept apart,
   assert.equal(spec(sprint, 0).price, 3000); assert.equal(spec(sprint, 0).priceCurrency, 'USD'); assert.equal(spec(sprint, 0).unitCode, 'MON')
   assert.equal(spec(sprint, 0)['@type'], 'UnitPriceSpecification')
   assert.equal(spec(sprint, 1).price, 3500); assert.equal(spec(sprint, 1).priceCurrency, 'USD'); assert.equal(spec(sprint, 1).unitCode, undefined)
-  assert.equal(spec(plus, 0).price, 4500); assert.equal(spec(plus, 0).priceCurrency, 'USD')
+  assert.equal(spec(plus, 0).price, 5000); assert.equal(spec(plus, 0).priceCurrency, 'USD')
   assert.equal(spec(plus, 1).price, 5400); assert.equal(spec(plus, 1).priceCurrency, 'USD')
   for (const id of ['organic-light', 'organic-growth']) assert.equal(spec(svc(id), 0).unitCode, 'MON')
   assert.equal(spec(svc('organic-light'), 0).price, 1500)
@@ -503,7 +503,7 @@ test('billing: compact Monthly / One-off selector for Paid only; prices from con
   assert.match(stage, /useState\('monthly'\)/)
   assert.match(cardsSrc, /formatMoney\(pkg\[o\.id\]\)/)
   assert.equal(SPRINT.monthly.amount, 3000); assert.equal(SPRINT.oneOff.amount, 3500)
-  assert.equal(SPRINT_PLUS.monthly.amount, 4500); assert.equal(SPRINT_PLUS.oneOff.amount, 5400)
+  assert.equal(SPRINT_PLUS.monthly.amount, 5000); assert.equal(SPRINT_PLUS.oneOff.amount, 5400)
   const paidPanel = stage.slice(stage.indexOf('id="paid"'), stage.indexOf('id="organic"'))
   const organicPanel = stage.slice(stage.indexOf('id="organic"'))
   assert.match(paidPanel, /<BillingSwitch/)
@@ -767,4 +767,15 @@ test('internal owner-review flags are never rendered', () => {
   for (const f of ['pricing/PricingStage', 'pricing/PricingCards', 'pricing/InfoPanels', 'pricing/PhilosophySection', 'pricing/PartnershipTerms', 'pricing/PricingFAQ', 'pricing/PricingFinalCTA']) {
     assert.ok(!/OWNER_REVIEW_FLAGS/.test(read(`src/components/${f}.jsx`)), f)
   }
+})
+
+test('price per variation: Sprint $200 and Sprint Plus $166.67 (monthly), from the data; both billing variants rendered under each total', async () => {
+  const { pricePerVariation } = await import('../src/seo/businessKnowledge.js')
+  assert.equal(pricePerVariation(SPRINT).text, '$200')
+  assert.equal(pricePerVariation(SPRINT_PLUS).text, '$166.67')
+  assert.equal(pricePerVariation(SPRINT, 'oneOff').text, '$233.33')
+  assert.equal(pricePerVariation(SPRINT_PLUS, 'oneOff').text, '$180')
+  const src = fs.readFileSync(path.join(ROOT, 'src/components/pricing/PricingCards.jsx'), 'utf8')
+  assert.ok(/pricePerVariation\(pkg, o\.id\)\.text/.test(src) && !/\$166|\$200\b/.test(src.replace(/\/\*[\s\S]*?\*\//g, '')), 'figures are computed, never typed in the component')
+  assert.match(faq('whats-included'), /\$200 per variation for the Creative Testing Sprint and \$166\.67 per variation for Creative Testing Sprint Plus/)
 })

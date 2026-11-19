@@ -260,7 +260,7 @@ test('/pricing HTML: title, description, ONE canonical, indexable, and the prici
 test('/pricing HTML: every confirmed price, term and policy is in the visible markup', () => {
   const text = unescape(visibleText(page('/pricing')))
   for (const needle of [
-    '$3,000', '$4,500', '$3,500', '$5,400', '$1,500', '$2,500', '10 distinct creative concepts', '10 complete scripts', '3 versions per concept, changing the hook or CTA', 'Twice the creative concepts. Twice the finished ad versions.', '5 concepts × 3 versions each',
+    '$3,000', '$5,000', '$3,500', '$5,400', '$1,500', '$2,500', '10 distinct creative concepts', '10 complete scripts', '3 versions per concept, changing the hook or CTA', 'Twice the creative concepts. Twice the finished ad versions.', '5 concepts × 3 versions each',
     'Different concepts. Not just different hooks.', '5 original concepts → 15 finished ad versions',
     'A concept is a unique ad idea.', 'A variation changes its hook or CTA.',
     'initial three-month commitment', "30 days' cancellation notice",
@@ -411,7 +411,7 @@ test('/pricing HTML: three cards per group; Paid has the compact billing selecto
   assert.equal(count(paid, /role="radio"/g), 2); assert.ok(!/role="radio"/.test(organic))
   assert.match(paid, /id="billing-monthly" type="button" role="radio" aria-checked="true"[^>]*>Monthly</)
   assert.match(paid, /id="billing-oneOff" type="button" role="radio" aria-checked="false"[^>]*>One-off</)
-  for (const [b, a, hidden] of [['monthly', '$3,000', false], ['monthly', '$4,500', false], ['oneOff', '$3,500', true], ['oneOff', '$5,400', true]]) {
+  for (const [b, a, hidden] of [['monthly', '$3,000', false], ['monthly', '$5,000', false], ['oneOff', '$3,500', true], ['oneOff', '$5,400', true]]) {
     const mm = paid.match(new RegExp(`<span ([^>]*)>\\${a}<span[^>]*>/${b === 'monthly' ? 'month' : 'project'}`))
     assert.ok(mm, `${a} ${b} present`); assert.equal(/hidden=""/.test(mm[1]), hidden); assert.match(mm[1], new RegExp(`data-billing="${b}"`))
   }
@@ -540,7 +540,7 @@ test('/pricing HTML: Section 5 compact CTA; no stale JSON-LD; sections removed f
   for (const gone of ['Every Sprint includes full creative production.', 'Your videos. Worldwide usage.', 'The important details.', 'From idea to ready-to-launch creative.', 'Start with a sprint. Scale what works.']) assert.ok(!t.includes(gone), `old section heading still present: ${gone}`)
   assert.equal(ldScripts(h).length, 1)
   const ld = JSON.stringify(ldScripts(h)[0])
-  for (const p of ['$3,000 per month', '$4,500 per month', '$3,500 one-off', '$5,400 one-off', '$1,500 per month', '$250 per creative concept']) assert.ok(ld.includes(p), p)
+  for (const p of ['$3,000 per month', '$5,000 per month', '$3,500 one-off', '$5,400 one-off', '$1,500 per month', '$250 per creative concept']) assert.ok(ld.includes(p), p)
   assert.match(ld, /Initial six-month commitment\. Terms after the initial six-month period/)
   assert.ok(!/OWNER_REVIEW|deferred to the applicable agreement/.test(t))
 })
@@ -552,7 +552,7 @@ test('/pricing HTML: Sprint Plus card shows 10 concepts / 10 scripts / 3 variati
   const [sprint, plus] = arts
   for (const n of ['5 distinct creative concepts', '5 complete scripts', '3 versions per concept, changing the hook or CTA', '15 finished ad versions', '5 concepts × 3 versions each', '1 creator or spokesperson', '10 business days turnaround', '2 revision rounds per creative concept', '6 months of worldwide usage rights']) assert.ok(sprint.includes(n), `Sprint: ${n}`)
   for (const n of ['10 distinct creative concepts', '10 complete scripts', '3 versions per concept, changing the hook or CTA', '30 finished ad versions', 'Twice the creative concepts. Twice the finished ad versions.', 'Up to 2 creators or spokespeople', '15 business days turnaround', '2 revision rounds per creative concept', '6 months of worldwide usage rights', 'Priority production scheduling', 'Includes expanded research and testing recommendations.']) assert.ok(plus.includes(n), `Sprint Plus: ${n}`)
-  assert.ok(sprint.includes('$3,000') && sprint.includes('$3,500') && plus.includes('$4,500') && plus.includes('$5,400'), 'monthly and one-off prices remain')
+  assert.ok(sprint.includes('$3,000') && sprint.includes('$3,500') && plus.includes('$5,000') && plus.includes('$5,400'), 'monthly and one-off prices remain')
   const t = flat(h)
   assert.ok(!/\b8 (distinct )?(creative )?concepts|8 complete scripts|strategically distributed|Expanded creative variations/.test(t), 'no obsolete Sprint Plus wording in the prerendered page')
   const ld = JSON.stringify(ldScripts(h)[0])
