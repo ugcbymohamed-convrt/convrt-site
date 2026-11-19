@@ -385,8 +385,8 @@ test('regression: the nine homepage client videos stay homepage-only: not in /ou
 test('regression: the 11 original portfolio entries are intact (ids, media, permissions); only the five that sit in the E-commerce folder were classified', () => {
   const ids = ['ugc-hero-1', 'ugc-hero-2', 'ugc-hero-3', 'ugc-gal-1', 'ugc-gal-8', 'ugc-gal-4', 'ugc-gal-3', 'ugc-gal-5', 'ugc-gal-7', 'ugc-gal-2', 'ugc-gal-6']
   const original = PORTFOLIO.filter((v) => ids.includes(v.id))
-  assert.deepEqual(original.map((v) => v.id), ids, 'same entries, same order')
-  assert.deepEqual(original.map((v) => v.source.cloudflareId), [
+  assert.deepEqual(original.map((v) => v.id).sort(), [...ids].sort(), 'same 11 entries (their order on the page is now mixed)')
+  assert.deepEqual(ids.map((id) => PORTFOLIO.find((v) => v.id === id).source.cloudflareId), [
     '33a4063ee0e8dafe3379f0a97817036e', '63446474698139b4ac17c1f053212242', '1fc1374cdfe428d10bfc40ad4eff9693', 'c8914f7a0db3ac9f5ffd0721115dbe20',
     'b73842a409de5f4f6ae9d72733ea1152', '79b1cd5d22e9f13587ab547e438e29ef', '1188b4341860779830fa7365b1442959', '3a41e0f797a707576ff9af9fb9fb6a81',
     '749e2ad503f5db79d69086a47c59edd0', 'ff256a4643515d29b61c1f210c06476d', '8b15247d9a422614898b8bbb54591025'])
@@ -402,7 +402,7 @@ test('regression: the 11 original portfolio entries are intact (ids, media, perm
 test('Creator Showcase folder: 18 more videos, classified by folder, uploaded once, with their own local thumbnails; nothing guessed', () => {
   const added = PORTFOLIO.filter((v) => /^creator-\d\d$/.test(v.id))
   assert.equal(added.length, 18)
-  assert.deepEqual(added.map((v) => v.id), Array.from({ length: 18 }, (_, i) => `creator-${String(i + 1).padStart(2, '0')}`))
+  assert.deepEqual(added.map((v) => v.id).sort(), Array.from({ length: 18 }, (_, i) => `creator-${String(i + 1).padStart(2, '0')}`))
   assert.deepEqual(added.reduce((m, v) => ({ ...m, [v.industry]: (m[v.industry] || 0) + 1 }), {}), { saas: 6, services: 8, ecommerce: 4 }, 'SaaS 6, Service 8, E-commerce 4 new (+5 already on the site = 9)')
   const media = PORTFOLIO.map((v) => v.source.cloudflareId ?? v.source.mp4)
   assert.equal(new Set(media).size, media.length, 'no duplicate upload')
@@ -473,4 +473,27 @@ test('Creator Showcase naming: nav, footer and homepage button use the approved 
   assert.ok(!KNOWN_PATHS.includes('/creator-showcase'), 'no second route')
   assert.ok(!fs.readFileSync(path.join(ROOT, 'vercel.json'), 'utf8').includes('creator-showcase'), 'no redirect')
   assert.equal(BREADCRUMB_TRAILS[PATH][1].name, 'Creator Showcase')
+})
+
+// ── display order: the same creator never twice in a row ───────────────────────────────────────────
+// Who appears in which video (best visual and file-name match, to be corrected by the owner). Videos of one creator share a letter.
+const SAME_CREATOR = [
+  ['ugc-gal-8', 'creator-01', 'creator-15', 'creator-16'],
+  ['ugc-hero-2', 'ugc-gal-2', 'creator-06', 'creator-14'],
+  ['ugc-gal-5', 'creator-18'],
+  ['ugc-gal-1', 'ugc-hero-3', 'creator-04'],
+  ['ugc-gal-3', 'creator-05'],
+  ['ugc-hero-1', 'ugc-gal-7', 'creator-03', 'creator-11'],
+  ['ugc-gal-4', 'ugc-gal-6', 'creator-02', 'creator-07', 'creator-08', 'creator-09', 'creator-10', 'creator-12', 'creator-13', 'creator-17'],
+]
+const creatorOf = (id) => SAME_CREATOR.findIndex((g) => g.includes(id))
+
+test('order: no creator appears in two videos next to each other, in All Work or in any industry tab, or in the UGC gallery', () => {
+  const ours = selectOurWork()
+  assert.ok(ours.every((v) => creatorOf(v.id) >= 0), 'every showcase video is assigned to a creator')
+  const views = [['All Work', ours], ...['ecommerce', 'saas', 'services'].map((c) => [c, filterByCategory(ours, c)]), ['UGC gallery', selectGallery()]]
+  for (const [name, list] of views) {
+    for (let i = 1; i < list.length; i++) assert.notEqual(creatorOf(list[i].id), creatorOf(list[i - 1].id), `${name}: ${list[i - 1].id} and ${list[i].id} are the same creator and adjacent`)
+  }
+  assert.deepEqual(selectHero().map((v) => v.id), ['ugc-hero-1', 'ugc-hero-2', 'ugc-hero-3'], 'the UGC hero keeps its order')
 })
