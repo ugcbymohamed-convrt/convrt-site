@@ -88,14 +88,14 @@ test('monthly commitment: 3 months, then month-to-month, 30 days notice; no guar
   assert.match(faq('minimum-commitment'), /three-month commitment/)
 })
 
-test('one-off prices are $3,500 and $5,400 in USD, monthly in EUR: currencies preserved, never converted', () => {
+test('one-off prices are $3,500 and $6,000 in USD, monthly in EUR: currencies preserved, never converted', () => {
   assert.deepEqual(SPRINT.oneOff, { amount: 3500, currency: 'USD' })
-  assert.deepEqual(SPRINT_PLUS.oneOff, { amount: 5400, currency: 'USD' })
+  assert.deepEqual(SPRINT_PLUS.oneOff, { amount: 6000, currency: 'USD' })
   assert.equal(formatMoney(SPRINT.oneOff), '$3,500')
-  assert.equal(formatMoney(SPRINT_PLUS.oneOff), '$5,400')
+  assert.equal(formatMoney(SPRINT_PLUS.oneOff), '$6,000')
   assert.equal(formatMoney(SPRINT.monthly), '$3,000')
   assert.ok(!OWNER_REVIEW_FLAGS.some((f) => /currency/i.test(f)), 'currency question is closed')
-  assert.match(faq('one-off-and-single-video'), /\$3,500.*\$5,400/)
+  assert.match(faq('one-off-and-single-video'), /\$3,500.*\$6,000/)
   assert.ok(!/euro|EUR|€/i.test(faq('one-off-and-single-video')), 'no currency mix-up text')
   assert.ok(SINGLE_VIDEOS.sold === false && /does not sell individual paid videos/.test(SINGLE_VIDEOS.statement))
 })
@@ -122,10 +122,10 @@ test('usage rights: 6 months worldwide from delivery; expiry rules; not a copyri
 
 test('usage-rights extensions (entire batch, excl. VAT): exact prices for both packages; perpetual is custom', () => {
   const table = (p) => p.usageExtensions.map((e) => [e.months, e.price.amount, e.price.currency])
-  assert.deepEqual(table(SPRINT), [[3, 625, 'USD'], [6, 1000, 'USD'], [12, 1750, 'USD']])
-  assert.deepEqual(table(SPRINT_PLUS), [[3, 1125, 'USD'], [6, 1800, 'USD'], [12, 3150, 'USD']])
+  assert.deepEqual(table(SPRINT), [[3, 937.5, 'USD'], [6, 1500, 'USD'], [12, 2625, 'USD']])
+  assert.deepEqual(table(SPRINT_PLUS), [[3, 1687.5, 'USD'], [6, 2700, 'USD'], [12, 4725, 'USD']])
   const a = faq('usage-rights-expiry-extension')
-  for (const p of ['$625', '$1,000', '$1,750', '$1,125', '$1,800', '$3,150']) assert.ok(a.includes(p), p)
+  for (const p of ['$937.50', '$1,500', '$2,625', '$1,687.50', '$2,700', '$4,725']) assert.ok(a.includes(p), p)
   assert.match(a, /entire creative batch/)
   assert.match(a, /exclude VAT/)
   assert.match(faq('perpetual-usage'), /subject to agreement with the featured creator or creators/)
@@ -264,7 +264,7 @@ test('brand + talent + languages: verbatim confirmed information, nothing invent
 
 test('pricing page copy is data-driven: package prices are not typed into the components', () => {
   const offer = read('src/components/pricing/PricingStage.jsx') + read('src/components/pricing/PricingCards.jsx')
-  for (const literal of ['2,500', '4,500', '5,000', '1,500', '3,000', '3,500', '5,400', '2,000', '250']) assert.ok(!offer.includes(literal), `hard-coded ${literal}`)
+  for (const literal of ['2,500', '4,500', '5,000', '1,500', '3,000', '3,500', '5,400', '6,000', '2,000', '250']) assert.ok(!offer.includes(literal), `hard-coded ${literal}`)
   for (const f of ['InfoPanels', 'PartnershipTerms', 'PhilosophySection']) {
     assert.ok(!/[$$]\s?\d/.test(read(`src/components/pricing/${f}.jsx`)), `${f} hard-codes a price`)
   }
@@ -362,7 +362,7 @@ test('Offers: numeric prices, correct currencies, monthly vs one-off kept apart,
   assert.equal(spec(sprint, 0)['@type'], 'UnitPriceSpecification')
   assert.equal(spec(sprint, 1).price, 3500); assert.equal(spec(sprint, 1).priceCurrency, 'USD'); assert.equal(spec(sprint, 1).unitCode, undefined)
   assert.equal(spec(plus, 0).price, 5000); assert.equal(spec(plus, 0).priceCurrency, 'USD')
-  assert.equal(spec(plus, 1).price, 5400); assert.equal(spec(plus, 1).priceCurrency, 'USD')
+  assert.equal(spec(plus, 1).price, 6000); assert.equal(spec(plus, 1).priceCurrency, 'USD')
   for (const id of ['organic-light', 'organic-growth']) assert.equal(spec(svc(id), 0).unitCode, 'MON')
   assert.equal(spec(svc('organic-light'), 0).price, 1500)
   assert.equal(spec(svc('organic-growth'), 0).price, 2500)
@@ -503,7 +503,7 @@ test('billing: compact Monthly / One-off selector for Paid only; prices from con
   assert.match(stage, /useState\('monthly'\)/)
   assert.match(cardsSrc, /formatMoney\(pkg\[o\.id\]\)/)
   assert.equal(SPRINT.monthly.amount, 3000); assert.equal(SPRINT.oneOff.amount, 3500)
-  assert.equal(SPRINT_PLUS.monthly.amount, 5000); assert.equal(SPRINT_PLUS.oneOff.amount, 5400)
+  assert.equal(SPRINT_PLUS.monthly.amount, 5000); assert.equal(SPRINT_PLUS.oneOff.amount, 6000)
   const paidPanel = stage.slice(stage.indexOf('id="paid"'), stage.indexOf('id="organic"'))
   const organicPanel = stage.slice(stage.indexOf('id="organic"'))
   assert.match(paidPanel, /<BillingSwitch/)
@@ -769,13 +769,25 @@ test('internal owner-review flags are never rendered', () => {
   }
 })
 
-test('price per variation: Sprint $200 and Sprint Plus $166.67 (monthly), from the data; both billing variants rendered under each total', async () => {
+test('price per variation: Sprint $200 and Sprint Plus $167 (monthly, rounded to whole dollars), from the data; both billing variants rendered under each total', async () => {
   const { pricePerVariation } = await import('../src/seo/businessKnowledge.js')
   assert.equal(pricePerVariation(SPRINT).text, '$200')
-  assert.equal(pricePerVariation(SPRINT_PLUS).text, '$166.67')
-  assert.equal(pricePerVariation(SPRINT, 'oneOff').text, '$233.33')
-  assert.equal(pricePerVariation(SPRINT_PLUS, 'oneOff').text, '$180')
+  assert.equal(pricePerVariation(SPRINT_PLUS).text, '$167')
+  assert.equal(pricePerVariation(SPRINT, 'oneOff').text, '$233')
+  assert.equal(pricePerVariation(SPRINT_PLUS, 'oneOff').text, '$200')
   const src = fs.readFileSync(path.join(ROOT, 'src/components/pricing/PricingCards.jsx'), 'utf8')
   assert.ok(/pricePerVariation\(pkg, o\.id\)\.text/.test(src) && !/\$166|\$200\b/.test(src.replace(/\/\*[\s\S]*?\*\//g, '')), 'figures are computed, never typed in the component')
-  assert.match(faq('whats-included'), /\$200 per variation for the Creative Testing Sprint and \$166\.67 per variation for Creative Testing Sprint Plus/)
+  assert.match(faq('whats-included'), /\$200 per variation for the Creative Testing Sprint and \$167 per variation for Creative Testing Sprint Plus/)
 })
+
+// ── sitewide consistency audit guard ──
+test('audit: no retired package price is typed anywhere in src/ (only the data file may mention them, in comments)', () => {
+  const stale = /\$(4,500|5,400|625|1,125|3,150|1,750)\b/
+  const walk = (d) => fs.readdirSync(d, { withFileTypes: true }).flatMap((e) => (e.isDirectory() ? (e.name === 'blog' && d.endsWith('content') ? [] : walk(path.join(d, e.name))) : [path.join(d, e.name)]))
+  for (const f of walk(path.join(ROOT, 'src')).filter((x) => /\.(jsx?|json|md)$/.test(x) && !x.endsWith('businessKnowledge.js'))) {
+    assert.ok(!stale.test(fs.readFileSync(f, 'utf8')), `${path.relative(ROOT, f)} contains a retired package price`)
+  }
+  const data = fs.readFileSync(path.join(ROOT, 'src/seo/businessKnowledge.js'), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '').replace(/^\s*\/\/.*$/gm, '')
+  assert.ok(!stale.test(data), 'the data file only mentions retired prices in comments')
+})
+

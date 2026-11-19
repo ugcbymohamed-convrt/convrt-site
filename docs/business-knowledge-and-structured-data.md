@@ -22,3 +22,9 @@ Rules
   prices are separate Offers in their own currency.
 - Blog articles keep `src/lib/blog/seo.js`; it points `publisher` at the Organization `@id` defined here.
 - `OWNER_REVIEW_FLAGS` lists the open business questions. Resolve them with the owner, then update the data and tests.
+
+## Package prices, per-variation prices and the audit (Nov 2026)
+
+- Creative Testing Sprint: $3,000/month ($3,500 one-off), 5 concepts × 3 versions = 15 finished ad versions. Sprint Plus: $5,000/month ($6,000 one-off), 10 × 3 = 30. Usage extensions are re-based to the 15- and 30-version batches (1.5× the earlier figures; $937.50 and $1,687.50 are exact).
+- `pricePerVariation(pkg, billing)` derives the "Just $X per variation" figure (rounded to whole dollars for marketing: $200 for the Sprint, $167 for Sprint Plus) from the same constants; never type it in a component. `formatMoney` shows cents only for non-integer amounts.
+- Everything that shows or encodes a price reads these constants: cards, details tables, FAQ answers, meta descriptions and JSON-LD. `tests/prerender.test.mjs` and `tests/pricing.test.mjs` fail if a retired price reappears, if a diagram contradicts the version count, or if the built JSON-LD stops matching the constants.

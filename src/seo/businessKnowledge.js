@@ -24,15 +24,19 @@ const SYMBOL = { USD: '$' }
 const group = (n) => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ',')
 
 /** @param {Money} m  e.g. {amount:2500,currency:'USD'} → "$2,500" */
-export const formatMoney = (m) => `${SYMBOL[m.currency]}${group(m.amount)}`
+export const formatMoney = (m) => {
+  if (Number.isInteger(m.amount)) return `${SYMBOL[m.currency]}${group(m.amount)}`
+  const [whole, cents] = m.amount.toFixed(2).split('.')
+  return `${SYMBOL[m.currency]}${group(whole)}.${cents}`
+}
 const usd = (amount) => ({ amount, currency: 'USD' })
 
-/** Price per finished ad version for a package at a billing option ('monthly' | 'oneOff'): Sprint $3,000 / 15 = "$200",
- *  Sprint Plus $5,000 / 30 = "$166.67". Whole dollars are shown without cents; everything else to the cent. */
+/** Price per finished ad version for a package at a billing option ('monthly' | 'oneOff'), rounded to whole dollars for marketing
+ *  clarity (owner decision): Sprint $3,000 / 15 = "$200"; Sprint Plus $5,000 / 30 = 166.67, shown as "$167". `amount` keeps the
+ *  exact figure. */
 export const pricePerVariation = (pkg, billing = 'monthly') => {
   const v = pkg[billing].amount / pkg.variations
-  const [whole, cents] = v.toFixed(2).split('.')
-  return { amount: v, text: cents === '00' ? `$${group(whole)}` : `$${group(whole)}.${cents}` }
+  return { amount: v, text: `$${group(Math.round(v))}` }
 }
 
 /* ── deliverable terminology ──────────────────────────────────────────────────────────────
@@ -125,21 +129,21 @@ export const SPRINT = {
   turnaroundBusinessDays: 10,
   revisionRoundsPerConcept: 2,
   usageMonthsIncluded: USAGE_MONTHS_INCLUDED,
-  /* Extension prices are for the ENTIRE creative batch, not per video. */
+  /* Extension prices are for the ENTIRE creative batch, not per video. Re-based (owner, Nov 2026) from the earlier 10-variation
+     batch to the current 15: each is 1.5 times the earlier figure ($625 / $1,000 / $1,750). */
   usageExtensions: [
-    { months: 3, price: usd(625) },
-    { months: 6, price: usd(1000) },
-    { months: 12, price: usd(1750) },
+    { months: 3, price: usd(937.5) },
+    { months: 6, price: usd(1500) },
+    { months: 12, price: usd(2625) },
   ],
 }
 
 export const SPRINT_PLUS = {
   id: 'creative-testing-sprint-plus',
   name: 'Creative Testing Sprint Plus',
-  /* APPROVED (owner, Nov 2026, third revision): Sprint Plus is $5,000 monthly for 30 finished ad versions ($166.67 each). The
-     one-off price was NOT part of that revision and still awaits owner confirmation. */
+  /* APPROVED (owner, Nov 2026, third revision): Sprint Plus is $5,000 monthly, $6,000 one-off, for 30 finished ad versions. */
   monthly: usd(5000),
-  oneOff: usd(5400),
+  oneOff: usd(6000),
   /* Sprint Plus = 10 distinct concepts, 10 complete scripts, 3 variations per concept, 30 finished ad versions. It supersedes the
      earlier 8-concept / unevenly distributed structure. */
   concepts: 10,
@@ -153,10 +157,11 @@ export const SPRINT_PLUS = {
   turnaroundBusinessDays: 15,
   revisionRoundsPerConcept: 2,
   usageMonthsIncluded: USAGE_MONTHS_INCLUDED,
+  /* Re-based (owner, Nov 2026) from the earlier 20-variation batch to the current 30: 1.5 times the earlier $1,125 / $1,800 / $3,150. */
   usageExtensions: [
-    { months: 3, price: usd(1125) },
-    { months: 6, price: usd(1800) },
-    { months: 12, price: usd(3150) },
+    { months: 3, price: usd(1687.5) },
+    { months: 6, price: usd(2700) },
+    { months: 12, price: usd(4725) },
   ],
 }
 

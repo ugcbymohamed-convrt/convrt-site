@@ -8,7 +8,7 @@ import { SPRINT, SPRINT_PLUS, ORGANIC_STAGES, ORGANIC, ORGANIC_CTA, PRODUCTION_L
    Roadmap card (existing flow, no new funnel). Below: the credibility statistics. Both goal variants are always in the
    HTML; `hidden` picks the visible one. */
 /* LEFT: the creative testing SYSTEM, drawn as a technical diagram: monochrome (white and grey) with small lime junction points.
-   One concept node branches (right-angle connectors) into two variation nodes. Structure and precision, not illustration:
+   One concept node branches (right-angle connectors) into three variation nodes (A, B, C; SPRINT.variationsPerConcept). Structure and precision, not illustration:
    no colour coding, no video-player shapes. Lines draw in on scroll only where supported and motion is allowed (.branch-draw). */
 const GRID_BG = { backgroundImage: 'radial-gradient(rgba(250,250,250,0.075) 1px, transparent 1px)', backgroundSize: '14px 14px' }
 
@@ -18,14 +18,16 @@ function ConceptColumn({ index }) {
       <span className="whitespace-nowrap text-[10.5px] font-medium uppercase leading-none tracking-[0.1em] text-ink-muted md:tracking-[0.14em]"><span className="sr-only md:not-sr-only">Concept </span>{index + 1}</span>
       <svg viewBox="0 0 80 74" className="mt-2 h-auto w-full max-w-[84px]" fill="none" aria-hidden="true">
         <circle cx="40" cy="8" r="5.5" stroke="#fafafa" strokeOpacity="0.9" strokeWidth="1.4" fill="#0a0a0b" />
-        <path d="M40 13.5V38M20 38H60M20 38V57M60 38V57" pathLength="1" stroke="#a1a1aa" strokeOpacity="0.7" strokeWidth="1.2" strokeLinecap="square" className="branch-draw" style={{ '--d': `${index * 70}ms` }} />
+        <path d="M40 13.5V38M14 38H66M14 38V57M40 38V57M66 38V57" pathLength="1" stroke="#a1a1aa" strokeOpacity="0.7" strokeWidth="1.2" strokeLinecap="square" className="branch-draw" style={{ '--d': `${index * 70}ms` }} />
         <circle cx="40" cy="38" r="2.2" fill="#d5ff40" />
-        <rect x="14" y="57" width="12" height="12" rx="2.5" stroke="#fafafa" strokeOpacity="0.85" strokeWidth="1.3" fill="#fafafa" fillOpacity="0.07" />
-        <rect x="54" y="57" width="12" height="12" rx="2.5" stroke="#fafafa" strokeOpacity="0.85" strokeWidth="1.3" fill="#fafafa" fillOpacity="0.07" />
+        {[8, 34, 60].map((x) => (
+          <rect key={x} x={x} y="57" width="12" height="12" rx="2.5" stroke="#fafafa" strokeOpacity="0.85" strokeWidth="1.3" fill="#fafafa" fillOpacity="0.07" />
+        ))}
       </svg>
-      <div className="grid w-full max-w-[84px] grid-cols-2 text-center text-[11px] font-semibold leading-none text-ink-muted">
+      <div className="grid w-full max-w-[84px] grid-cols-3 text-center text-[11px] font-semibold leading-none text-ink-muted">
         <span>A</span>
         <span>B</span>
+        <span>C</span>
       </div>
     </li>
   )

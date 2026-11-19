@@ -260,7 +260,7 @@ test('/pricing HTML: title, description, ONE canonical, indexable, and the prici
 test('/pricing HTML: every confirmed price, term and policy is in the visible markup', () => {
   const text = unescape(visibleText(page('/pricing')))
   for (const needle of [
-    '$3,000', '$5,000', '$3,500', '$5,400', '$1,500', '$2,500', '10 distinct creative concepts', '10 complete scripts', '3 versions per concept, changing the hook or CTA', 'Twice the creative concepts. Twice the finished ad versions.', '5 concepts × 3 versions each',
+    '$3,000', '$5,000', '$3,500', '$6,000', '$1,500', '$2,500', '10 distinct creative concepts', '10 complete scripts', '3 versions per concept, changing the hook or CTA', 'Twice the creative concepts. Twice the finished ad versions.', '5 concepts × 3 versions each',
     'Different concepts. Not just different hooks.', '5 original concepts → 15 finished ad versions',
     'A concept is a unique ad idea.', 'A variation changes its hook or CTA.',
     'initial three-month commitment', "30 days' cancellation notice",
@@ -268,7 +268,7 @@ test('/pricing HTML: every confirmed price, term and policy is in the visible ma
     'The details.', 'Everything you need to know before getting started.', 'Usage rights', 'Extend your 6 months', 'How we work', 'Production & extras', '6 months of worldwide usage rights', 'date each video is delivered',
     'Your creative partner.', 'What are you looking to achieve?', 'Scale my ads', 'Grow my socials', 'Consistency. Content. Real connections.', 'Strategy', 'Publishing & engagement', 'Your next 5 winning ad concepts.', 'Ready to create something that converts?',
     'Organic partnerships begin with an initial six-month commitment', 'Why is there a six-month minimum commitment for organic social media?', 'Terms after the initial six-month period are set out in the applicable agreement.', 'Custom project terms are agreed individually.',
-    '$625', '$1,000', '$1,750', '$1,125', '$1,800', '$3,150', 'Perpetual usage',
+    '$937.50', '$1,500', '$2,625', '$1,687.50', '$2,700', '$4,725', 'Perpetual usage',
     'Paid advertising use must stop', 'Existing organic social media posts may remain published',
     'TikTok Spark Ads', 'Meta partnership ads', 'separate from the standard usage rights',
     '$250 per creative concept', '10 business days', '15 business days',
@@ -307,7 +307,7 @@ test('/pricing HTML: one h1, a logical heading order, extension prices in a real
   assert.ok(count(root, /<h2[\s>]/g) >= 8)
   const levels = [...root.matchAll(/<h([1-4])[\s>]/g)].map((m) => Number(m[1]))
   levels.forEach((l, i) => { if (i) assert.ok(l <= levels[i - 1] + 1, `heading level jumps from h${levels[i - 1]} to h${l}`) })
-  assert.match(root.replace(/<!-- -->/g, ''), /<table[\s\S]*Additional 3 months[\s\S]*\$625[\s\S]*\$1,125[\s\S]*<\/table>/)
+  assert.match(root.replace(/<!-- -->/g, ''), /<table[\s\S]*Additional 3 months[\s\S]*\$937\.50[\s\S]*\$1,687\.50[\s\S]*<\/table>/)
   assert.equal(count(root, /<th scope="col"/g), 3)
   assert.equal(count(root, /<table/g), 1)
 })
@@ -411,7 +411,7 @@ test('/pricing HTML: three cards per group; Paid has the compact billing selecto
   assert.equal(count(paid, /role="radio"/g), 2); assert.ok(!/role="radio"/.test(organic))
   assert.match(paid, /id="billing-monthly" type="button" role="radio" aria-checked="true"[^>]*>Monthly</)
   assert.match(paid, /id="billing-oneOff" type="button" role="radio" aria-checked="false"[^>]*>One-off</)
-  for (const [b, a, hidden] of [['monthly', '$3,000', false], ['monthly', '$5,000', false], ['oneOff', '$3,500', true], ['oneOff', '$5,400', true]]) {
+  for (const [b, a, hidden] of [['monthly', '$3,000', false], ['monthly', '$5,000', false], ['oneOff', '$3,500', true], ['oneOff', '$6,000', true]]) {
     const mm = paid.match(new RegExp(`<span ([^>]*)>\\${a}<span[^>]*>/${b === 'monthly' ? 'month' : 'project'}`))
     assert.ok(mm, `${a} ${b} present`); assert.equal(/hidden=""/.test(mm[1]), hidden); assert.match(mm[1], new RegExp(`data-billing="${b}"`))
   }
@@ -495,7 +495,7 @@ test('/pricing HTML: Section 3 "The details.": four panels, ALL CLOSED on load, 
     'Additional languages are available on request and may incur extra charges.', 'Custom scopes are agreed individually.',
     'Content strategy & planning', 'Concepts & scripting', 'Captions & post copy', 'Scheduling & publishing', 'Cross-platform distribution', 'Performance optimization', 'Community engagement', 'Facebook, Instagram and TikTok. Community management excludes customer support.',
     '6 months of worldwide usage included.', 'From the date each video is delivered.', 'Paid ads', 'Organic social', 'Website use',
-    '$625', '$1,000', '$1,750', '$1,125', '$1,800', '$3,150', '9 months in total', '12 months in total', '18 months in total', 'Custom quote, subject to agreement with the featured creators',
+    '$937.50', '$1,500', '$2,625', '$1,687.50', '$2,700', '$4,725', '9 months in total', '12 months in total', '18 months in total', 'Custom quote, subject to agreement with the featured creators',
     'Extensions apply to the entire creative batch. Prices exclude VAT.',
     'Existing organic posts and website placements may stay live. Paid advertising, resharing and republishing require an extension.',
     'Creator-account advertising, including Spark Ads and Meta partnership ads, is arranged and priced separately.',
@@ -540,7 +540,7 @@ test('/pricing HTML: Section 5 compact CTA; no stale JSON-LD; sections removed f
   for (const gone of ['Every Sprint includes full creative production.', 'Your videos. Worldwide usage.', 'The important details.', 'From idea to ready-to-launch creative.', 'Start with a sprint. Scale what works.']) assert.ok(!t.includes(gone), `old section heading still present: ${gone}`)
   assert.equal(ldScripts(h).length, 1)
   const ld = JSON.stringify(ldScripts(h)[0])
-  for (const p of ['$3,000 per month', '$5,000 per month', '$3,500 one-off', '$5,400 one-off', '$1,500 per month', '$250 per creative concept']) assert.ok(ld.includes(p), p)
+  for (const p of ['$3,000 per month', '$5,000 per month', '$3,500 one-off', '$6,000 one-off', '$1,500 per month', '$250 per creative concept']) assert.ok(ld.includes(p), p)
   assert.match(ld, /Initial six-month commitment\. Terms after the initial six-month period/)
   assert.ok(!/OWNER_REVIEW|deferred to the applicable agreement/.test(t))
 })
@@ -552,7 +552,7 @@ test('/pricing HTML: Sprint Plus card shows 10 concepts / 10 scripts / 3 variati
   const [sprint, plus] = arts
   for (const n of ['5 distinct creative concepts', '5 complete scripts', '3 versions per concept, changing the hook or CTA', '15 finished ad versions', '5 concepts × 3 versions each', '1 creator or spokesperson', '10 business days turnaround', '2 revision rounds per creative concept', '6 months of worldwide usage rights']) assert.ok(sprint.includes(n), `Sprint: ${n}`)
   for (const n of ['10 distinct creative concepts', '10 complete scripts', '3 versions per concept, changing the hook or CTA', '30 finished ad versions', 'Twice the creative concepts. Twice the finished ad versions.', 'Up to 2 creators or spokespeople', '15 business days turnaround', '2 revision rounds per creative concept', '6 months of worldwide usage rights', 'Priority production scheduling', 'Includes expanded research and testing recommendations.']) assert.ok(plus.includes(n), `Sprint Plus: ${n}`)
-  assert.ok(sprint.includes('$3,000') && sprint.includes('$3,500') && plus.includes('$5,000') && plus.includes('$5,400'), 'monthly and one-off prices remain')
+  assert.ok(sprint.includes('$3,000') && sprint.includes('$3,500') && plus.includes('$5,000') && plus.includes('$6,000'), 'monthly and one-off prices remain')
   const t = flat(h)
   assert.ok(!/\b8 (distinct )?(creative )?concepts|8 complete scripts|strategically distributed|Expanded creative variations/.test(t), 'no obsolete Sprint Plus wording in the prerendered page')
   const ld = JSON.stringify(ldScripts(h)[0])
@@ -661,4 +661,31 @@ test('research files never reach the build output', () => {
   const walk = (d) => fs.readdirSync(d, { withFileTypes: true }).flatMap((e) => (e.isDirectory() ? walk(path.join(d, e.name)) : [path.join(d, e.name)]))
   const files = walk(dist).map((f) => path.relative(dist, f))
   assert.ok(!files.some((f) => /research|keyword[ -_]?target|reddit|\.xlsx$/i.test(f)), 'no research artifact in dist')
+})
+
+// ── sitewide consistency audit guards (built HTML) ─────────────────────────────────────────
+test('audit: /pricing draws SPRINT.variationsPerConcept (3) versions per concept, A B C, in every concept column', async () => {
+  const { SPRINT } = await import('../src/seo/businessKnowledge.js')
+  const cols = [...page('/pricing').matchAll(/<li class="flex flex-col items-center">[\s\S]*?<\/li>/g)].map((m) => m[0])
+  assert.equal(cols.length, SPRINT.concepts)
+  for (const col of cols) {
+    assert.equal((col.match(/<rect /g) || []).length, SPRINT.variationsPerConcept, 'three version nodes under each concept')
+    assert.match(col.replace(/<!-- -->/g, ''), /<span>A<\/span><span>B<\/span><span>C<\/span>/)
+  }
+})
+
+test('audit: every published offer price is USD and equals the constants; one JSON-LD block, one FAQPage, no duplicate nodes, on /pricing and /ugc-video-agency', async () => {
+  const { SPRINT, SPRINT_PLUS } = await import('../src/seo/businessKnowledge.js')
+  for (const route of ['/pricing', '/ugc-video-agency']) {
+    const blocks = ldScripts(page(route))
+    assert.equal(blocks.length, 1, `${route}: one JSON-LD block`)
+    const nodes = blocks[0]['@graph']
+    assert.equal(nodes.filter((n) => n['@type'] === 'FAQPage').length, 1, `${route}: one FAQPage`)
+    const keys = nodes.map((n) => JSON.stringify(n))
+    assert.equal(new Set(keys).size, keys.length, `${route}: no duplicate nodes`)
+    const ld = JSON.stringify(blocks[0])
+    assert.ok(!/"priceCurrency":"(?!USD)/.test(ld), `${route}: USD only`)
+    const prices = [...ld.matchAll(/"price":(\d+(?:\.\d+)?),"priceCurrency":"USD"/g)].map((m) => Number(m[1]))
+    for (const n of [SPRINT.monthly.amount, SPRINT.oneOff.amount, SPRINT_PLUS.monthly.amount, SPRINT_PLUS.oneOff.amount]) assert.ok(prices.includes(n), `${route}: JSON-LD carries ${n}`)
+  }
 })
