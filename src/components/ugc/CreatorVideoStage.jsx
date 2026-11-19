@@ -203,7 +203,7 @@ function StagePhone({ item, slot, n, index, active, load, wantPlay, muted, playi
     const v = ref.current
     if (!v || !load) return undefined
     if (item.source.cloudflareId) {
-      const hls = attachHls(v, hlsUrl(item))
+      const hls = attachHls(v, hlsUrl(item), { fastStart: true })
       return () => hls.destroy()
     }
     v.src = item.source.mp4

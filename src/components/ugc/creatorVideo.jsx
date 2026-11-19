@@ -12,7 +12,7 @@ export function useAttachSource(ref, item) {
     const v = ref.current
     if (!v) return undefined
     if (item.source.cloudflareId) {
-      const hls = attachHls(v, hlsUrl(item))
+      const hls = attachHls(v, hlsUrl(item), { fastStart: true })
       return () => hls.destroy()
     }
     v.src = item.source.mp4
