@@ -260,7 +260,7 @@ test('/pricing HTML: title, description, ONE canonical, indexable, and the prici
 test('/pricing HTML: every confirmed price, term and policy is in the visible markup', () => {
   const text = unescape(visibleText(page('/pricing')))
   for (const needle of [
-    '$3,000', '$5,000', '$3,500', '$6,000', '$1,500', '$2,500', '10 distinct creative concepts', '10 complete scripts', '3 versions per concept, changing the hook or CTA', 'Twice the creative concepts. Twice the finished ad versions.', '5 concepts × 3 versions each',
+    '$3,000', '$5,000', '$3,500', '$6,000', '$1,500', '$2,500', '10 distinct creative concepts', '10 complete scripts', '3 versions per concept, changing the hook or CTA', '5 unique concepts with 3 hook or CTA variations per concept', 'Priority production scheduling', 'Includes expanded research and testing recommendations.',
     'Different concepts. Not just different hooks.', '5 original concepts → 15 finished ad versions',
     'A concept is a unique ad idea.', 'A variation changes its hook or CTA.',
     'initial three-month commitment', "30 days' cancellation notice",
@@ -550,8 +550,8 @@ test('/pricing HTML: Sprint Plus card shows 10 concepts / 10 scripts / 3 variati
   const h = page('/pricing')
   const arts = [...group(h, 'paid').matchAll(/<article[\s\S]*?<\/article>/g)].map((x) => flat(`<div id="root">${x[0]}`))
   const [sprint, plus] = arts
-  for (const n of ['5 distinct creative concepts', '5 complete scripts', '3 versions per concept, changing the hook or CTA', '15 unique creatives', '5 concepts × 3 versions each', '1 creator or spokesperson', '10 business days turnaround', '2 revision rounds per creative concept', '6 months of worldwide usage rights']) assert.ok(sprint.includes(n), `Sprint: ${n}`)
-  for (const n of ['10 distinct creative concepts', '10 complete scripts', '3 versions per concept, changing the hook or CTA', '30 unique creatives', 'Twice the creative concepts. Twice the finished ad versions.', 'Up to 2 creators or spokespeople', '15 business days turnaround', '2 revision rounds per creative concept', '6 months of worldwide usage rights', 'Priority production scheduling', 'Includes expanded research and testing recommendations.']) assert.ok(plus.includes(n), `Sprint Plus: ${n}`)
+  for (const n of ['5 distinct creative concepts', '5 complete scripts', '3 versions per concept, changing the hook or CTA', '15 unique creatives', '5 unique concepts with 3 hook or CTA variations per concept', 'Priority production scheduling', 'Includes expanded research and testing recommendations.', '1 creator or spokesperson', '10 business days turnaround', '2 revision rounds per creative concept', '6 months of worldwide usage rights']) assert.ok(sprint.includes(n), `Sprint: ${n}`)
+  for (const n of ['10 distinct creative concepts', '10 complete scripts', '3 versions per concept, changing the hook or CTA', '30 unique creatives', 'Up to 2 creators or spokespeople', '15 business days turnaround', '2 revision rounds per creative concept', '6 months of worldwide usage rights', 'Priority production scheduling', 'Includes expanded research and testing recommendations.']) assert.ok(plus.includes(n), `Sprint Plus: ${n}`)
   assert.ok(sprint.includes('$3,000') && sprint.includes('$3,500') && plus.includes('$5,000') && plus.includes('$6,000'), 'monthly and one-off prices remain')
   const t = flat(h)
   assert.ok(!/\b8 (distinct )?(creative )?concepts|8 complete scripts|strategically distributed|Expanded creative variations/.test(t), 'no obsolete Sprint Plus wording in the prerendered page')

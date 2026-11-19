@@ -126,6 +126,8 @@ export const SPRINT = {
   variationsPerConcept: 3,
   variations: 15,
   cardDescription: 'For brands ready to discover new creative angles and find what resonates.',
+  /* Shared with Sprint Plus (owner, Nov 2026): the two packages differ in volume and price only. */
+  extraDetail: 'Includes expanded research and testing recommendations.',
   turnaroundBusinessDays: 10,
   revisionRoundsPerConcept: 2,
   usageMonthsIncluded: USAGE_MONTHS_INCLUDED,
