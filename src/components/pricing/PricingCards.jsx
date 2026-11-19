@@ -126,24 +126,27 @@ const LetsTalk = () => <span className="text-[40px] md:text-[46px]">Let&rsquo;s 
    copy, clearly smaller than the package price. Both billing variants are rendered (the inactive one is `hidden`), like the price. */
 const HIGHLIGHT = { light: 'bg-lime text-canvas', lime: 'bg-canvas text-lime' }
 const PerVariation = ({ tone, pkg, billing }) => (
-  <p className="mb-2">
+  <>
     {BILLING_OPTIONS.map((o) => (
       <span key={o.id} hidden={billing !== o.id} data-billing={o.id}>
-        <span className={`inline-flex items-baseline gap-1.5 rounded-lg px-2.5 py-1.5 text-[13px] font-semibold leading-none ${HIGHLIGHT[tone]}`}>
-          Just <span className="font-display text-[17px] font-bold tracking-snug">{pricePerVariation(pkg, o.id).text}</span> per variation
+        <span className={`inline-flex items-baseline gap-1 whitespace-nowrap rounded-lg px-1.5 py-[7px] text-[11.5px] font-semibold leading-none ${HIGHLIGHT[tone]}`}>
+          Just <span className="font-display text-[16px] font-bold tracking-snug">{pricePerVariation(pkg, o.id).text}</span> per variation
         </span>
       </span>
     ))}
-  </p>
+  </>
 )
 
+/* The per-variation highlight and the package size sit on one line (they wrap only when the card is too narrow for both). */
 const Variations = ({ tone, count, line, per }) => (
   <>
-    {per}
-    <span className={`inline-flex items-center rounded-full px-3.5 py-1.5 text-sm font-bold ${TONES[tone].chip}`}>
-      {count} finished ad versions
-    </span>
-    {line && <p className={`mt-1.5 text-[12.5px] leading-snug ${TONES[tone].muted}`}>{line}</p>}
+    <div className="flex flex-wrap items-center gap-1">
+      {per}
+      <span className={`inline-flex items-center whitespace-nowrap rounded-full px-2 py-[7px] text-[11.5px] font-bold leading-none ${TONES[tone].chip}`}>
+        {count} unique creatives
+      </span>
+    </div>
+    {line && <p className={`mt-2 text-[12.5px] leading-snug ${TONES[tone].muted}`}>{line}</p>}
   </>
 )
 
@@ -177,7 +180,7 @@ export function PaidCards({ billing }) {
     'Priority production scheduling',
   ]
   const PAID_DESC = 'lg:min-h-[46px]'
-  const PAID_SUB = 'lg:min-h-[116px]'
+  const PAID_SUB = 'lg:min-h-[96px]'
   const custom = CUSTOM_PACKAGES.paid
   return (
     <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3 lg:gap-6">
