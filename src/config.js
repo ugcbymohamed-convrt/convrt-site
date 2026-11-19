@@ -5,6 +5,10 @@ export const BOOKING_URL = 'https://calendly.com/mohamed-convrt/30min'
 export const CONTACT_EMAIL = 'mohamed@convrt.studio'
 
 // Homepage offer destinations. Each path is registered to its page in App.jsx.
+/* "See all UGC videos" / "See Our Work" destination. The dedicated "Our Work" page does not exist yet: until it does, these point at the
+   existing case studies page. Change this one constant when that page ships. */
+export const OUR_WORK_PATH = '/case-studies'
+
 export const OFFER_PATHS = {
   roadmap: '/creative-growth-roadmap',
   hooks: '/free-hooks',

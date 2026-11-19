@@ -2,6 +2,7 @@
 // SEO phase 2: the /ugc-video-agency service page. Checks its head, structured data, prerendered HTML, claims and positioning,
 // figures-from-data rule, proof wording, the portfolio data model and its permission gate, the internal links and the Roadmap
 // eligibility copy. Builds the site once into a temp dir and starts a Vite SSR loader to render components with sample data.
+import { CONTACT_EMAIL } from '../src/config.js'
 import test, { before, after } from 'node:test'
 import assert from 'node:assert/strict'
 import fs from 'node:fs'
@@ -147,7 +148,7 @@ test('international, multilingual and industry-neutral: nothing restricts the se
   const t = textOf(page(PATH))
   assert.match(t, /international, multilingual UGC agency and creative production studio/)
   assert.match(t, /across industries, including but not limited to SaaS, e-commerce, apps, technology and consumer products/)
-  assert.match(t, /Share a few brand details and book a free strategy session where we present five personalized ad concepts\. Every industry welcome, subject to a short fit check\./)
+  assert.match(t, /Free strategy session\. Every industry welcome, subject to a short fit check\. No obligation\./)
   assert.ok(!/(only|just|exclusively|currently) (for|designed for|offered to|open to) (SaaS|e-commerce)/i.test(t))
   assert.ok(!/\b(UK|United Kingdom|Dubai|UAE|London) (brands|clients|only)/i.test(t), 'no market restriction or unverified market claims')
   assert.ok(!/who it isn['’]t for|probably not|not a fit|isn['’]t for you/i.test(t), 'no negative fit list')
@@ -210,9 +211,11 @@ test('Elyon 5.28x: one creator-led UGC video, client-reported, early learning ph
   const src = read('src/components/elyon/ElyonPerformance.jsx')
   assert.ok(src.includes('value="5.28x"') && src.includes('value="9"') && src.includes('value="$3,421.25"'), 'figures match the Elyon case study')
   assert.equal((t.match(/5\.28x/g) || []).length >= 1, true)
-  assert.match(t, /a single creator-led UGC video reached 5\.28x ROAS, with 9 purchases and \$3,421\.25 in reported revenue/)
-  assert.match(t, /one individual creative, reported by the client during an early learning phase/)
-  assert.match(t, /not typical, not a guarantee and not representative of all campaigns/)
+  assert.match(t, /5\.28x ROAS, one UGC video/)
+  assert.match(t, /9 Purchases/) && assert.match(t, /\$3,421\.25 Reported revenue/)
+  assert.match(t, /One individual creative, client-reported during an early learning phase\. Not typical, not a guarantee\./)
+  assert.ok(t.includes('It has 9 sales with an revenue of 3421.25$') && t.includes('Roas 5.28'), "the client's own messages, verbatim, as cards")
+  assert.ok(!/proof-nine-sales|proof-roas-528/.test(rootOf(page(PATH))), 'no screenshot images of the messages')
   assert.ok(rootOf(page(PATH)).includes('href="/case-studies/elyon"'))
   const proof = t.slice(t.indexOf('ROAS, one UGC video'), t.indexOf('Read the full Elyon case study'))
   assert.ok(proof.length > 200, 'the proof block was found')
@@ -516,7 +519,7 @@ test('page length: tighter vertical rhythm, five sections, and no repeated block
   assert.ok((t.match(/relevant work samples/g) || []).length <= 3, 'samples are not restated in every section')
   assert.ok(t.length < 26000, `the page text is ${t.length} characters; it must stay lean`)
   const page_ = read('src/UgcVideoAgencyPage.jsx')
-  for (const c of ['UgcHero', 'UgcWork', 'UgcProcess', 'UgcResults', 'UgcFAQ', 'UgcFinalCTA']) assert.ok(page_.includes(`<${c}`), c)
+  for (const c of ['UgcHero', 'UgcProcess', 'UgcGallery', 'UgcResults', 'UgcFAQ', 'UgcFinalCTA']) assert.ok(page_.includes(`<${c}`), c)
 })
 
 
@@ -537,11 +540,17 @@ test('headline: "to convrt." with a slot-reel last word (convrt, resonate, sell,
   assert.match(css, /prefers-reduced-motion: reduce\) \{[\s\S]*?\.ugc-reel-track\.is-rolling \{ transition: none; \}/)
 })
 
-test('hero facts: four scannable pills from the business data', () => {
+test('hero left side follows the homepage hero: headline, description, value line, two CTAs, the two FREE offer cards; no extra pills or session paragraph', () => {
   const hero = rootOf(page(PATH))
-  const facts = hero.match(/<ul aria-label="At a glance"[\s\S]*?<\/ul>/)[0]
-  assert.equal((facts.match(/<li /g) || []).length, 4)
-  for (const f of [`From ${formatMoney(SPRINT.monthly)}/month`, `${SPRINT.turnaroundBusinessDays}-day production`, `${USAGE_RIGHTS.includedMonths} months usage rights`, 'English · Spanish · French · Arabic']) assert.ok(facts.includes(f), f)
+  const left = hero.slice(0, hero.indexOf('id="how-it-works"'))
+  assert.match(left, /Your next 5 ad concepts\. Tailored to your brand\. <span class="text-lime">On us\.<\/span>/)
+  assert.ok(left.includes('Get 5 Free Ad Concepts') && left.includes('See Our Work') && left.includes('href="/creative-growth-roadmap"'))
+  assert.ok(left.includes('We&#x27;ve got two more FREE ways to start.') || left.includes("We've got two more FREE ways to start."))
+  assert.ok(/1 <span class="text-lime">FREE<\/span> Video/.test(left) && /10 <span class="text-\[#F472B6\]">FREE<\/span> Ad Hooks/.test(left))
+  assert.ok(left.includes('href="/risk-free-trial"') && left.includes('href="/free-hooks"'))
+  assert.ok(!/aria-label="At a glance"/.test(left), 'the at-a-glance pills are gone from the hero')
+  const src = read('src/components/ugc/UgcHero.jsx')
+  assert.ok(/from '\.\.\/Hero\.jsx'/.test(src) && /SECONDARY_OFFERS/.test(src), 'the offer cards are the homepage hero\'s own')
 })
 
 test('empty hero stage: rotates by itself, can be taken over, pauses on hover and in hidden tabs, off for reduced motion; mouse parallax only', () => {
@@ -554,7 +563,9 @@ test('empty hero stage: rotates by itself, can be taken over, pauses on hover an
 
 test('process scenes: richer illustrations built from stylised (not photographic, not AI) creators, aria-hidden, no invented facts; testing scenes cover one concept, the scale and the loop', () => {
   const ill = read('src/components/ugc/illustrations.jsx')
-  assert.ok(/STYLISED ILLUSTRATIONS/.test(ill) && !/<img|photo|\.(jpg|png|webp)/i.test(ill.replace(/\/\*[\s\S]*?\*\//, '')), 'avatars are vector drawings')
+  for (let n = 1; n <= 5; n++) assert.ok(fs.existsSync(path.join(ROOT, `public/creators/portrait-${n}.webp`)), `portrait-${n}.webp`)
+  assert.ok(/portrait photographs supplied by the owner/.test(ill) && /<img /.test(ill) && !/<svg[^>]*viewBox="0 0 100 130"/.test(ill), 'realistic portraits replace the cartoon avatars')
+  assert.ok(!/ellipse|<circle cx="50" cy="62"/.test(ill), 'no cartoon drawing is left')
   const proc = read('src/components/ugc/UgcProcess.jsx')
   assert.ok(/aria-hidden="true" className="pricing-panel-in/.test(proc) && /<Visual \/>/.test(proc))
   for (const w of ['One brief', 'Brand brief', 'different concepts', 'We match the right creator', 'We write the script', 'You approve', 'Filming', 'Editing', 'Captions', 'Export', 'Delivered', 'Ready to test']) assert.ok(proc.includes(w), w)
@@ -570,7 +581,7 @@ test('3-version offer: no stale "two versions / 10 ads / 20 finished" wording or
   const t = textOf(page(PATH))
   const html = rootOf(page(PATH))
   assert.ok(!/\b(two|2) versions\b|ten finished|\b10 finished ad versions|\b20 finished ad versions|10 ads\b|5 × 2\b|\bHook A \/ Hook B\b/i.test(t), 'no old structure in the visible text')
-  assert.ok(t.includes('From $3,000/month') && t.includes('15 finished ad versions') && t.includes('30 finished ad versions'))
+  assert.ok(t.includes('start at $3,000 a month') && t.includes('15 finished ad versions') && t.includes('30 finished ad versions'))
   assert.ok(!t.includes('$2,500') && !html.includes('$2,500'), 'the old monthly price is gone')
   assert.ok(t.includes(`${formatMoney(SPRINT.oneOff)} one-off`) || t.includes(formatMoney(SPRINT.oneOff)), 'the one-off Sprint price is stated from the data')
   assert.equal(formatMoney(SPRINT.monthly), '$3,000'); assert.equal(formatMoney(SPRINT.oneOff), '$3,500')
@@ -600,4 +611,38 @@ test('creator limits: Sprint up to 3, Sprint Plus up to 5 (a maximum, not a guar
   assert.ok(ld.includes('up to 3 creators or spokespeople') && ld.includes('up to 5 creators or spokespeople'), 'package service descriptions in the pricing JSON-LD')
   assert.ok(ld.includes('How are creators selected and allocated?'), 'the new FAQ is in the FAQPage')
   assert.ok(!/1 creator or spokesperson|Up to 2 creators/i.test(t + ld), 'no outdated creator counts')
+})
+
+
+test('gallery: a horizontal scroller of up to 10 approved videos before Results; absent without videos (never a placeholder on the live site); preview-only stand-ins', async () => {
+  const page_ = read('src/UgcVideoAgencyPage.jsx')
+  assert.ok(page_.indexOf('<UgcGallery') > page_.indexOf('<UgcProcess') && page_.indexOf('<UgcGallery') < page_.indexOf('<UgcResults'), 'between How it works and Results')
+  const html = rootOf(page(PATH))
+  assert.ok(!html.includes('id="ugc-videos"') && !html.includes('UGC example'), 'no gallery and no stand-ins in the static (live) HTML while there are no approved videos')
+  const src = read('src/components/ugc/UgcGallery.jsx')
+  assert.match(src, /const TOTAL = 10/)
+  assert.ok(/overflow-x-auto/.test(src) && /snap-x/.test(src) && /lg:w-\[calc\(\(100%-3rem\)\/4\)\]/.test(src), 'four cards visible on a laptop, native horizontal scrolling (trackpad swipe)')
+  assert.ok(/ArrowRight/.test(src) && /Scroll videos left/.test(src) && /Scroll videos right/.test(src) && /pointerType !== 'mouse'/.test(src), 'keyboard, buttons and mouse drag')
+  assert.ok(/See all UGC videos/.test(src) && /OUR_WORK_PATH/.test(src), 'the button under the gallery')
+  assert.ok(/usePreviewHost/.test(src) && /endsWith\('\.vercel\.app'\)/.test(read('src/lib/previewHost.js')) && !/convrt\.studio/.test(read('src/lib/previewHost.js')), 'stand-ins only on preview hosts')
+  // with approved videos the gallery renders them
+  const mod = await vite.ssrLoadModule('/src/components/ugc/UgcGallery.jsx')
+  const out = renderToStaticMarkup(createElement(mod.default, { items: [sample(), sample({ id: 's2', caption: 'Second.' })] }))
+  assert.ok(out.includes('id="ugc-videos"') && out.includes('Play video: A sample caption for tests.') && out.includes('See all UGC videos'))
+  assert.equal((out.match(/<li /g) || []).length, 2)
+})
+
+test('results: positive heading, message cards instead of screenshots, shorter copy', () => {
+  const t = textOf(page(PATH))
+  assert.ok(t.includes('What clients see. What clients say.') && !/One creative that worked/.test(t))
+  assert.ok(!/Meta Ads Manager snapshot/.test(t), 'the long paragraph is gone')
+})
+
+test('final CTA: See Pricing and Email the Founder are real buttons; the address is not shown as text', () => {
+  const html = rootOf(page(PATH))
+  const cta = html.slice(html.indexOf('id="get-started"'))
+  assert.match(cta, /<a href="\/pricing#packages"[^>]*class="[^"]*hero-cta-ghost[^"]*"[^>]*>See Pricing<\/a>/)
+  assert.match(cta, /<a href="mailto:[^"]+"[^>]*class="[^"]*hero-cta-ghost[^"]*"[^>]*>[\s\S]*?Email the Founder<\/a>/)
+  const visible = cta.slice(0, cta.indexOf('</section>')).replace(/<a href="mailto:[^"]*"/g, '<a').replace(/<[^>]+>/g, ' ')
+  assert.ok(!visible.includes(CONTACT_EMAIL), 'no plain-text email address in the final CTA')
 })

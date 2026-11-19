@@ -6,16 +6,17 @@ import { useAutoplayAllowed } from './creatorVideo.jsx'
 
 /* SECTION 4: results and client feedback, in one compact block.
    • Elyon 5.28x: ONE individual creator-led UGC video, client-reported, early learning phase, never typical or guaranteed (wording
-     and figures: src/content/ugcProof.js, tested). The two small images are the client's own WhatsApp messages that the Elyon case
-     study already publishes (same files), shown as the source of those figures.
+     and figures: src/content/ugcProof.js, tested). The two client messages that source those figures are shown as clean message cards
+     (the text is the client's own, verbatim), not as screenshots.
    • Testimonials: verbatim, attributed exactly as on the homepage; logos are the ones the homepage already shows.
-   • No stars, ratings, repeat-order counts or other derived statistics. */
+   • No stars, ratings, repeat-order counts or other derived statistics. The left card is kept short on purpose. */
 
 const LOGOS = {
   adscale: { src: '/clients/adscale.png', alt: 'Adscale', w: 531, h: 149 },
   elyon: { src: '/clients/elyon.png', alt: 'Elyon Dubai', w: 600, h: 226 },
 }
-const PROOF = '/case-studies/elyon/proof'
+/* The client's own messages, word for word (as published in the Elyon case study). */
+const CLIENT_MESSAGES = ['It has 9 sales with an revenue of 3421.25$', 'Roas 5.28']
 
 /* One-time number reveal: the page text is always the final figure ("5.28x"); when it scrolls into view it counts up once, over about
    a second, and settles on the same text. Skipped for reduced-motion visitors. */
@@ -50,7 +51,7 @@ export default function UgcResults() {
   return (
     <Section id="results" label="ugc-results-heading" glow>
       <Reveal>
-        <Head id="ugc-results-heading" eyebrow="Results & client feedback" title="One creative that worked, and what clients say." />
+        <Head id="ugc-results-heading" eyebrow="Results & client feedback" title="What clients see. What clients say." />
       </Reveal>
 
       <div className="mt-8 grid grid-cols-1 gap-5 md:mt-10 lg:grid-cols-12 lg:gap-6">
@@ -63,10 +64,6 @@ export default function UgcResults() {
                 <span className="font-display text-[4.25rem] font-bold leading-none tracking-display-xl text-lime sm:text-[5.5rem]"><RoasNumber value={e.roas} /></span>
                 <span className="font-display text-xl font-semibold text-ink md:text-2xl">ROAS, one UGC video</span>
               </p>
-              <p className="mt-4 max-w-xl text-base leading-relaxed text-ink-muted">
-                In one client-reported Meta Ads Manager snapshot, a single creator-led UGC video reached {e.roas} ROAS, with {e.purchases} purchases
-                and {e.revenue} in reported revenue.
-              </p>
               <dl className="mt-5 flex flex-wrap gap-x-8 gap-y-3">
                 {[[String(e.purchases), 'Purchases'], [e.revenue, 'Reported revenue']].map(([v, l]) => (
                   <div key={l} className="flex flex-col">
@@ -76,19 +73,25 @@ export default function UgcResults() {
                 ))}
               </dl>
 
+              {/* the client's own words, as two message cards */}
               <figure className="mt-6 max-w-md">
-                <div className="space-y-2 rounded-2xl border border-hairline bg-canvas/50 p-2.5">
-                  <img src={`${PROOF}/proof-nine-sales.webp`} alt="Client message: It has 9 sales with an revenue of 3421.25$" width="700" height="145" loading="lazy" decoding="async" className="w-full rounded-xl" />
-                  <img src={`${PROOF}/proof-roas-528.webp`} alt="Client message: Roas 5.28" width="700" height="110" loading="lazy" decoding="async" className="w-full rounded-xl" />
+                <figcaption className="mb-2.5 flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.14em] text-ink-muted">
+                  <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-lime" />Client messages
+                </figcaption>
+                <div className="space-y-2.5">
+                  <p className="relative max-w-[92%] rounded-2xl rounded-bl-md bg-lime px-4 py-3 font-display text-[15px] font-semibold leading-snug text-canvas shadow-[0_18px_40px_-22px_rgba(213,255,64,0.7)]">
+                    {CLIENT_MESSAGES[0]}
+                  </p>
+                  <p className="ml-auto w-fit max-w-[70%] rounded-2xl rounded-br-md border border-lime/45 bg-lime/[0.08] px-4 py-3 font-display text-[15px] font-semibold leading-snug text-lime">
+                    {CLIENT_MESSAGES[1]}
+                  </p>
                 </div>
-                <figcaption className="mt-2 text-[13px] text-ink-muted">The client&rsquo;s own messages, as published in the case study.</figcaption>
               </figure>
 
-              <p className="mt-5 max-w-xl text-sm leading-relaxed text-ink-muted">
-                This is the result of one individual creative, reported by the client during an early learning phase. It is not typical, not
-                a guarantee and not representative of all campaigns. Results depend on the brand, offer, audience and budget.
+              <p className="mt-5 max-w-xl text-[13px] leading-relaxed text-ink-muted">
+                One individual creative, client-reported during an early learning phase. Not typical, not a guarantee. Results depend on brand, offer, audience and budget.
               </p>
-              <p className="mt-3 text-[15px]">
+              <p className="mt-2.5 text-[15px]">
                 <TextLink href={e.caseStudyHref} onClick={() => trackEvent('ugc_case_study_click', { location: 'results' })}>
                   Read the full Elyon case study <span aria-hidden="true">→</span>
                 </TextLink>

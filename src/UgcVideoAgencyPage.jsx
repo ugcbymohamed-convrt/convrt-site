@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react'
 import SectionDivider from './components/SectionDivider.jsx'
 import UgcHero from './components/ugc/UgcHero.jsx'
-import UgcWork from './components/ugc/UgcWork.jsx'
+import UgcGallery from './components/ugc/UgcGallery.jsx'
 import UgcProcess from './components/ugc/UgcProcess.jsx'
 import UgcResults from './components/ugc/UgcResults.jsx'
 import UgcFAQ from './components/ugc/UgcFAQ.jsx'
@@ -13,8 +13,8 @@ import { PATHS } from './routes.js'
 import { selectDisplayable } from './content/ugcPortfolio.js'
 
 /* /ugc-video-agency: the UGC service page.
-     1 Hero (with the approved-video stage) · 2 Our best UGC work (only when approved videos exist) · 3 How we create and test UGC ads ·
-     4 Results & client feedback · 5 FAQ · then a short final CTA. Complete pricing and contract detail lives on /pricing.
+     1 Hero (with the approved-video stage) · 2 How we create and test UGC ads · 3 Our best UGC work (a horizontal gallery of up to 10 approved
+     videos, absent until videos exist) · 4 Results & client feedback · 5 FAQ · then a short final CTA. Complete pricing and contract detail lives on /pricing.
    Title, description, canonical, robots and JSON-LD all come from the SEO manifest (src/seo/siteSeo.js). Prices, terms and
    FAQ answers come from src/seo/businessKnowledge.js; portfolio videos from src/content/ugcPortfolio.js (approved items only). */
 export default function UgcVideoAgencyPage() {
@@ -40,14 +40,9 @@ export default function UgcVideoAgencyPage() {
         </ol>
       </nav>
       <UgcHero items={items} />
-      {items.length > 0 && (
-        <>
-          <SectionDivider />
-          <UgcWork items={items} />
-        </>
-      )}
       <SectionDivider />
       <UgcProcess />
+      <UgcGallery items={items} />
       <SectionDivider />
       <UgcResults />
       <SectionDivider />

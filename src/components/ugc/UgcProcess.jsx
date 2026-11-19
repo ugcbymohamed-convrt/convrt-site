@@ -87,7 +87,7 @@ function VisualResearch() {
 
 /* 2  match a creator, write the script, you approve it */
 function VisualCreators() {
-  const creators = [['Relatable', 0, '#8b5cf6'], ['Expert', 1, '#d5ff40'], ['Energetic', 2, '#ff6a4d']]
+  const creators = [['Relatable', 0, '#8b5cf6'], ['Expert', 3, '#d5ff40'], ['Energetic', 2, '#ff6a4d']]
   return (
     <div className="flex h-full flex-col justify-between gap-3">
       <div>
@@ -97,8 +97,8 @@ function VisualCreators() {
             const chosen = i === 1
             return (
               <div key={tag} className={`cs-fade-up relative flex flex-col items-center gap-1 rounded-2xl border px-2 py-2.5 transition-opacity ${chosen ? 'border-lime/60 bg-lime/[0.06]' : 'border-hairline bg-canvas/40 opacity-70'}`} style={delay(i * 120)}>
-                <span className="relative h-12 w-12 overflow-hidden rounded-full border-2 sm:h-14 sm:w-14" style={{ borderColor: chosen ? '#d5ff40' : '#34343a', background: `linear-gradient(160deg, ${tone}88, #17171b)` }}>
-                  <Avatar variant={v} className="absolute inset-0 h-full w-full" />
+                <span className="relative h-12 w-12 overflow-hidden rounded-full border-2 sm:h-14 sm:w-14" style={{ borderColor: chosen ? '#d5ff40' : '#34343a', background: '#17171b' }}>
+                  <Avatar variant={v} className="absolute inset-0 h-full w-full" pos="50% 20%" />
                 </span>
                 <span className="text-[11px] font-semibold text-ink">Creator {i + 1}</span>
                 <span className="text-[10px] text-ink-muted">{tag}</span>
@@ -136,8 +136,9 @@ function VisualFilming() {
   const formats = ['9:16', ...FORMATS.included.map((f) => f.replace(/ reframing$/, '').replace(/^(Square|Portrait) /, ''))]
   return (
     <div className="flex h-full items-center gap-4 sm:gap-6">
-      <div className="ugc-pop relative aspect-[9/16] w-[6.2rem] shrink-0 sm:h-full sm:max-h-[17.5rem] sm:w-auto overflow-hidden rounded-[1.1rem] border border-white/15" style={{ background: 'linear-gradient(180deg, rgba(139,92,246,0.5), #121216 85%)', boxShadow: '0 0 50px -18px rgba(139,92,246,0.7)' }}>
-        <Avatar variant={2} className="absolute inset-x-0 bottom-0 h-[82%] w-full" />
+      <div className="ugc-pop relative aspect-[9/16] w-[6.2rem] shrink-0 sm:h-full sm:max-h-[17.5rem] sm:w-auto overflow-hidden rounded-[1.1rem] border border-white/15" style={{ boxShadow: '0 0 50px -18px rgba(139,92,246,0.7)' }}>
+        <Avatar variant={0} className="absolute inset-0 h-full w-full" pos="50% 22%" />
+        <span aria-hidden="true" className="absolute inset-0" style={{ background: 'linear-gradient(180deg, rgba(0,0,0,0.35) 0%, transparent 30%, transparent 55%, rgba(0,0,0,0.6) 100%)' }} />
         <span className="ugc-fade-out absolute left-2 top-2.5 flex items-center gap-1 rounded-full bg-black/55 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-[0.08em] text-ink" style={delay(2300)}>
           <span className="ugc-blink h-1.5 w-1.5 rounded-full bg-coral" />Rec
         </span>
@@ -293,6 +294,7 @@ export default function UgcProcess() {
           <span className="font-semibold text-ink">Production turnaround:</span> {SPRINT.turnaroundBusinessDays} business days for the {SPRINT.name} and{' '}
           {SPRINT_PLUS.turnaroundBusinessDays} for {SPRINT_PLUS.name}, counted from the moment you approve concepts and scripts. {TURNAROUND.note}
         </p>
+        <p className="mx-auto mt-2 max-w-3xl text-center text-xs text-ink-muted">Scenes are illustrative. The portraits are for illustration only.</p>
       </Reveal>
 
       <Reveal className="mt-10 md:mt-12">

@@ -1,11 +1,15 @@
 import { useEffect, useState } from 'react'
 import { trackEvent } from '../../lib/analytics.js'
-import { formatMoney, SPRINT, USAGE_RIGHTS } from '../../seo/businessKnowledge.js'
-import { RoadmapCta, GhostCta } from './shared.jsx'
+import { usePressFeedback } from '../../lib/usePressFeedback.js'
+import { scrollToElement } from '../../lib/scroll.js'
+import { usePreviewHost } from '../../lib/previewHost.js'
+import { OFFER_PATHS, OUR_WORK_PATH } from '../../config.js'
+import { SECONDARY_OFFERS, SecondaryOffer } from '../Hero.jsx'
 import CreatorVideoStage, { PhoneShowcaseFallback } from './CreatorVideoStage.jsx'
 import { useAutoplayAllowed } from './creatorVideo.jsx'
 
-/* SECTION 1: hero. The homepage's split layout: copy on the left, three overlapping smartphone frames on the right.
+/* SECTION 1: hero. The homepage hero's system: the left column has the same structure, type scale, CTA styles and the two free-offer
+   cards (reused from components/Hero.jsx); the right column is the three-phone stage.
 
    THE PHONES. With approved creator videos (selectDisplayable) the right side is the interactive CreatorVideoStage (one large
    active video, two smaller phones behind it, click a side phone to bring it to the centre). With none it is the same three
@@ -79,7 +83,7 @@ function Headline() {
   return (
     <h1
       id="ugc-h1"
-      className="font-display font-bold text-ink tracking-display-xl leading-[1.05] text-[2rem] min-[400px]:text-[2.5rem] sm:text-[3rem] md:text-[3.4rem] lg:text-[2.4rem] xl:text-[3.35rem]"
+      className="font-display font-semibold text-ink tracking-display-xl leading-[1.05] text-[2rem] min-[400px]:text-[2.5rem] sm:text-[3rem] md:text-[3.4rem] lg:text-[2.4rem] xl:text-[3.35rem]"
     >
       {LINES.map((words) => (
         <span key={words[0]} className="block">
@@ -96,73 +100,82 @@ function Headline() {
   )
 }
 
-const FACT_ICONS = {
-  price: <path d="M12 3v18M16.5 7.5c-.8-1.3-2.4-2-4.5-2-2.6 0-4.3 1.2-4.3 3.1 0 4.3 8.8 2.2 8.8 6.5 0 1.9-1.9 3.2-4.5 3.2-2.2 0-3.9-.8-4.8-2.2" />,
-  clock: <><circle cx="12" cy="12" r="8.5" /><path d="M12 7.5V12l3 2" /></>,
-  rights: <><path d="M12 3l7 3v5.5c0 4.5-3 7.8-7 9.5-4-1.7-7-5-7-9.5V6z" /><path d="M8.8 12.2l2.2 2.2 4.2-4.4" /></>,
-  globe: <><circle cx="12" cy="12" r="8.5" /><path d="M3.5 12h17M12 3.5c2.6 2.4 3.8 5.3 3.8 8.5s-1.2 6.1-3.8 8.5c-2.6-2.4-3.8-5.3-3.8-8.5S9.4 5.9 12 3.5z" /></>,
-}
-
-/* Four compact facts, from the business data. Pills, so the line scans instead of reading as a sentence. */
-function Facts({ facts }) {
-  return (
-    <ul aria-label="At a glance" className="cs-fade-up mt-5 flex flex-wrap justify-center gap-2 lg:justify-start" style={{ animationDelay: '720ms' }}>
-      {facts.map(([icon, text]) => (
-        <li key={text} className="inline-flex items-center gap-2 rounded-full border border-hairline bg-surface-1/70 px-3 py-1.5 text-[13px] font-medium leading-none text-ink-muted backdrop-blur">
-          <svg viewBox="0 0 24 24" className="h-3.5 w-3.5 shrink-0 text-lime" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{FACT_ICONS[icon]}</svg>
-          <span>{text}</span>
-        </li>
-      ))}
-    </ul>
-  )
-}
+const PRIMARY_CTA = `cta-gradient hero-cta group inline-flex w-full sm:w-auto min-h-[64px] md:min-h-[68px] items-center justify-center gap-2.5
+                             rounded-full px-6 md:px-7 lg:px-6 xl:px-7 py-4 text-base md:text-[17px] font-bold tracking-snug text-canvas
+                             focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-lime`
+const GHOST_CTA = `hero-cta-ghost group inline-flex w-full sm:w-auto min-h-[48px] sm:min-h-[64px] md:min-h-[68px] items-center justify-center gap-2
+                             rounded-full border border-hairline-strong bg-surface-2 px-6 md:px-7 lg:px-5 xl:px-7 py-3 sm:py-4 text-base md:text-[17px] font-semibold tracking-snug text-ink
+                             hover:border-ink-muted
+                             focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink`
+const Arrow = ({ cls }) => (
+  <svg viewBox="0 0 12 12" className={`${cls} transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0 motion-reduce:group-hover:translate-y-0`} fill="none" aria-hidden="true">
+    <path d="M3 9L9 3M9 3H4M9 3V8" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+)
 
 export default function UgcHero({ items }) {
   const hasWork = items.length > 0
-  const facts = [
-    ['price', `From ${formatMoney(SPRINT.monthly)}/month`],
-    ['clock', `${SPRINT.turnaroundBusinessDays}-day production`],
-    ['rights', `${USAGE_RIGHTS.includedMonths} months usage rights`],
-    ['globe', 'English · Spanish · French · Arabic'],
-  ]
+  const primaryPress = usePressFeedback()
+  const ghostPress = usePressFeedback()
+  const preview = usePreviewHost()
   return (
     <section aria-labelledby="ugc-h1" className="relative overflow-hidden">
       <div aria-hidden="true" className="pointer-events-none absolute -top-40 left-1/2 h-[560px] w-[1100px] -translate-x-1/2 rounded-full bg-lime/10 blur-[160px]" />
-      <div aria-hidden="true" className="pointer-events-none absolute top-[38%] left-1/2 h-[420px] w-[820px] -translate-x-1/2 rounded-full bg-violet/[0.08] blur-[140px]" />
+      <div aria-hidden="true" className="pointer-events-none absolute top-[40%] left-1/2 h-[420px] w-[820px] -translate-x-1/2 rounded-full bg-lime/[0.07] blur-[140px]" />
 
-      <div className="relative mx-auto max-w-7xl px-5 pt-4 pb-10 md:px-8 md:pt-6 lg:pb-16">
-        <div className="grid grid-cols-1 items-center gap-x-8 gap-y-4 lg:grid-cols-12 lg:gap-x-10">
-          {/* Left column. Below lg its wrapper is `display: contents`, so the two groups can be ordered around the phones. */}
+      <div className="relative mx-auto max-w-7xl px-5 pt-6 pb-14 md:px-8 md:pt-8 md:pb-16 lg:pt-10 lg:pb-20">
+        <div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-12 lg:gap-10">
+          {/* Left column: the homepage hero's structure (headline, description, one value line, two CTAs, two free offers).
+              Below lg its wrapper is `display: contents`, so the two groups can be ordered around the phones. */}
           <div className="contents text-center lg:col-span-6 lg:block lg:text-left">
             <div className="order-1 lg:order-none">
-              <div className="inline-flex max-w-full items-center gap-2 rounded-2xl border border-hairline bg-surface-1/60 px-3.5 py-1.5 backdrop-blur sm:rounded-full">
-                <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-lime" aria-hidden="true" />
-                <span className="text-[11px] font-medium uppercase tracking-[0.14em] text-ink-muted sm:text-xs sm:tracking-[0.18em]">UGC Video Agency · International &amp; Multilingual</span>
-              </div>
-              <div className="mt-4 lg:mt-5"><Headline /></div>
-              <p className="cs-fade-up mx-auto mt-4 max-w-xl text-base leading-relaxed text-ink-muted md:text-lg lg:mx-0 lg:mt-5" style={{ animationDelay: '520ms' }}>
+              <Headline />
+              <p className="cs-fade-up mx-auto mt-6 max-w-xl text-base leading-relaxed text-ink-muted md:mt-8 md:text-lg lg:mx-0" style={{ animationDelay: '520ms' }}>
                 CONVRT is an international, multilingual UGC agency and creative production studio. We script, film and edit human-created UGC ads
                 with real creators, built for paid social.
               </p>
             </div>
 
             <div className="order-3 lg:order-none">
-              <div className="cs-fade-up mt-1 flex flex-col items-stretch gap-3 sm:flex-row sm:items-center sm:justify-center lg:mt-7 lg:justify-start" style={{ animationDelay: '600ms' }}>
-                <RoadmapCta hero location="hero" className="w-full sm:w-auto" />
-                <GhostCta href="/pricing#packages" onClick={() => trackEvent('ugc_pricing_link_click', { location: 'hero' })} className="w-full sm:w-auto">
-                  See Pricing
-                </GhostCta>
+              <div className="cs-fade-up lg:mt-6" style={{ animationDelay: '600ms' }}>
+                <p className="mb-3 text-balance text-[15px] font-medium leading-snug text-ink md:text-base">
+                  Your next 5 ad concepts. Tailored to your brand. <span className="text-lime">On us.</span>
+                </p>
+                <div className="flex flex-col items-stretch gap-3 sm:flex-row sm:items-center sm:justify-center lg:justify-start">
+                  <a href={OFFER_PATHS.roadmap} onClick={() => trackEvent('ugc_page_cta_click', { location: 'hero' })} {...primaryPress} className={PRIMARY_CTA}>
+                    Get 5 Free Ad Concepts
+                    <Arrow cls="h-4 w-4 md:h-[18px] md:w-[18px]" />
+                  </a>
+                  <a
+                    href={OUR_WORK_PATH}
+                    onClick={(e) => {
+                      trackEvent('ugc_see_our_work_click', { location: 'hero' })
+                      if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return
+                      const target = document.getElementById('ugc-videos')
+                      if (!target) return // no gallery on this page yet: follow the link
+                      e.preventDefault()
+                      scrollToElement(target)
+                    }}
+                    {...ghostPress}
+                    className={GHOST_CTA}
+                  >
+                    See Our Work
+                    <Arrow cls="h-3.5 w-3.5 md:h-4 md:w-4" />
+                  </a>
+                </div>
               </div>
-              <p className="cs-fade-up mx-auto mt-4 max-w-md text-[15px] leading-relaxed text-ink-muted lg:mx-0" style={{ animationDelay: '660ms' }}>
-                Share a few brand details and book a free strategy session where we present five personalized ad concepts. Every industry welcome,
-                subject to a short fit check.
-              </p>
-              <Facts facts={facts} />
+
+              <div className="cs-fade-up mx-auto mt-8 max-w-xl md:mt-10 lg:mx-0" style={{ animationDelay: '680ms' }}>
+                <p className="text-left text-[13px] text-ink-muted">{"Not ready yet? We've got two more FREE ways to start."}</p>
+                <div className="mt-3 grid grid-cols-1 gap-2.5 text-left sm:grid-cols-2">
+                  {SECONDARY_OFFERS.map((offer) => <SecondaryOffer key={offer.id} offer={offer} />)}
+                </div>
+              </div>
             </div>
           </div>
 
           <div className="order-2 min-w-0 lg:order-none lg:col-span-6">
-            {hasWork ? <CreatorVideoStage items={items} /> : <PhoneShowcaseFallback />}
+            {hasWork ? <CreatorVideoStage items={items} /> : <PhoneShowcaseFallback portraits={preview} />}
           </div>
         </div>
       </div>

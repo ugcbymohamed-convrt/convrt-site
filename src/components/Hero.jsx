@@ -11,7 +11,7 @@ const ROTATING_WORDS = ['convert', 'resonate', 'sell', 'connect']
 /* Secondary offers — Level 2 in the hero's attention hierarchy. Each has its own
    accent (lime for the video offer, pink for the hooks library) so the
    two are recognisable at a glance, but both stay well below the primary CTA. */
-const SECONDARY_OFFERS = [
+export const SECONDARY_OFFERS = [
   {
     id: 'video',
     icon: IconClapper,
@@ -150,7 +150,7 @@ export default function Hero() {
    lines (short card); from sm up the icon shares a row with the title so two
    cards fit side by side in the left column without wrapping. */
 
-function SecondaryOffer({ offer }) {
+export function SecondaryOffer({ offer }) {
   const Icon = offer.icon
   return (
     <a

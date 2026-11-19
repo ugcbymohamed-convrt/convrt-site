@@ -18,7 +18,7 @@ import { useAttachSource, PlayGlyph } from './creatorVideo.jsx'
 const PAGE = 6
 const TONES = ['rgba(213,255,64,0.35)', 'rgba(139,92,246,0.38)', 'rgba(255,106,77,0.34)']
 
-function Player({ item }) {
+export function Player({ item }) {
   const ref = useRef(null)
   useAttachSource(ref, item)
   useEffect(() => {

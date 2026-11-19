@@ -82,6 +82,8 @@ function useParallax(ref, enabled) {
     return () => { el.removeEventListener('pointermove', move); el.removeEventListener('pointerleave', leave) }
   }, [ref, enabled])
 }
+/* Preview-host only (usePreviewHost): stand-in screens for reviewing the layout before the approved videos exist. */
+const PREVIEW_PORTRAITS = ['/creators/portrait-1.webp', '/creators/portrait-4.webp', '/creators/portrait-3.webp']
 const DRIFT = { transform: 'translate3d(var(--mx,0px), var(--my,0px), 0)', transition: 'transform 500ms cubic-bezier(0.22,1,0.36,1)' }
 
 const ChevronLeft = () => <svg viewBox="0 0 12 12" className="h-4 w-4" fill="none" aria-hidden="true"><path d="M8 2L4 6l4 4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
@@ -91,7 +93,7 @@ const ChevronRight = () => <svg viewBox="0 0 12 12" className="h-4 w-4" fill="no
    line, caption lines, side buttons as quiet outlines), the stage rotates by itself every few seconds so the switching is obvious,
    and a visitor can click a side phone, swipe, or use the arrows and dots to bring any phone to the centre. No stand-in footage,
    no play button and no creator claim. It is decoration, so it is hidden from assistive technology and none of it takes focus. ── */
-export function PhoneShowcaseFallback() {
+export function PhoneShowcaseFallback({ portraits = false }) {
   const [active, setActive] = useState(0)
   const [taken, setTaken] = useState(false) // the visitor has taken over: stop rotating by itself
   const [hover, setHover] = useState(false)
@@ -138,8 +140,17 @@ export function PhoneShowcaseFallback() {
                 style={{ transform: SLOT[slot], transitionDuration: `${MS}ms` }}
               >
                 <PhoneShell active={isActive}>
-                  <div className="absolute inset-0 transition-[background] duration-700 motion-reduce:transition-none" style={{ background: `radial-gradient(120% 70% at 50% 18%, ${tone}, transparent 70%), linear-gradient(180deg, #17171b 0%, #0b0b0d 100%)` }} />
-                  <img src="/convrt-logo.svg" alt="" width="120" height="47" className="absolute left-1/2 top-[44%] w-[44%] -translate-x-1/2 -translate-y-1/2 opacity-30" style={{ filter: 'brightness(0) invert(1)' }} draggable="false" />
+                  {portraits ? (
+                    <>
+                      <img src={PREVIEW_PORTRAITS[i]} alt="" width="600" height="750" decoding="async" className="absolute inset-0 h-full w-full object-cover" style={{ objectPosition: '50% 30%' }} draggable="false" />
+                      <div className="absolute inset-0" style={{ background: 'linear-gradient(180deg, rgba(0,0,0,0.35) 0%, transparent 30%, transparent 55%, rgba(0,0,0,0.7) 100%)' }} />
+                    </>
+                  ) : (
+                    <>
+                      <div className="absolute inset-0 transition-[background] duration-700 motion-reduce:transition-none" style={{ background: `radial-gradient(120% 70% at 50% 18%, ${tone}, transparent 70%), linear-gradient(180deg, #17171b 0%, #0b0b0d 100%)` }} />
+                      <img src="/convrt-logo.svg" alt="" width="120" height="47" className="absolute left-1/2 top-[44%] w-[44%] -translate-x-1/2 -translate-y-1/2 opacity-30" style={{ filter: 'brightness(0) invert(1)' }} draggable="false" />
+                    </>
+                  )}
                   {/* short-form video chrome, drawn as quiet skeletons */}
                   <div className="absolute inset-x-[10%] bottom-[7%] flex items-end justify-between gap-3">
                     <div className="min-w-0 flex-1 space-y-1.5">
