@@ -13,7 +13,7 @@ import { PATHS } from './routes.js'
 import { selectHero, selectGallery } from './content/ugcPortfolio.js'
 
 /* /ugc-video-agency: the UGC service page.
-     1 Hero (with the approved-video stage) · 2 How we create and test UGC ads · 3 Our best UGC work (a horizontal gallery of up to 10 approved
+     1 Hero (with the approved-video stage) · 2 How we create and test UGC ads · 3 How your videos could look (a horizontal gallery of up to 10 approved
      videos, absent until videos exist) · 4 Results & client feedback · 5 FAQ · then a short final CTA. Complete pricing and contract detail lives on /pricing.
    Title, description, canonical, robots and JSON-LD all come from the SEO manifest (src/seo/siteSeo.js). Prices, terms and
    FAQ answers come from src/seo/businessKnowledge.js; portfolio videos from src/content/ugcPortfolio.js (approved items only). */

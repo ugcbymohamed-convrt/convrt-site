@@ -387,7 +387,8 @@ test('hero phone stage: three smartphone frames, one active video, switchable by
   assert.ok(html.includes('fetchpriority="high"'), 'the active poster is the LCP image')
   assert.equal((html.match(/loading="lazy"/g) || []).length, 2, 'the two supporting posters are lazy')
   for (const label of ['Previous video', 'Next video', 'Video 1 of 3', 'Video 2 of 3', 'Video 3 of 3', 'Show video 2 of 3: Second sample caption.', 'Play video: A sample caption for tests.']) assert.ok(html.includes(`aria-label="${label}"`), label)
-  assert.ok(/aria-current="true"/.test(html) && /tabindex="0"/.test(html) && /aria-live="polite"/.test(html), 'current video, keyboard focus and a live caption')
+  assert.ok(/aria-current="true"/.test(html) && /tabindex="0"/.test(html) && /aria-live="polite"/.test(html), 'current video, keyboard focus and a live caption (visually hidden)')
+  assert.ok(/<p aria-live="polite" class="sr-only">/.test(html), 'no visible caption or language line under the phones')
   assert.ok(/touch-pan-y/.test(html), 'swipe-friendly')
   assert.ok(/motion-reduce:transition-none/.test(html), 'transitions off for reduced motion')
   const one = renderToStaticMarkup(createElement(CreatorVideoStage.default, { items: [sample()] }))
@@ -397,9 +398,13 @@ test('hero phone stage: three smartphone frames, one active video, switchable by
   assert.ok(/IntersectionObserver/.test(src) && /requestIdleCallback/.test(src), 'playback waits for idle and for the stage to be on screen')
   const realStage = src.slice(src.indexOf('export default function CreatorVideoStage'))
   assert.ok(!/setInterval|autoAdvance/.test(realStage + read('src/components/ugc/creatorVideo.jsx')), 'no automatic carousel advance with real videos (only the empty demo rotates by itself)')
-  // playing rules: only the active phone may play; sound resets to muted on every switch; pauses off screen and in a hidden tab
-  assert.ok(/active && wantPlay/.test(src) && /else v\.pause\(\)/.test(src), 'only the active video is told to play; every other video is paused')
-  assert.ok(/setMuted\(true\)/.test(src), 'sound resets to muted when the active video changes')
+  // playing rules: only the active phone may play; sound stays on between videos once enabled; pauses off screen and in a hidden tab
+  assert.ok(/active && wantPlay/.test(src) && /v\.pause\(\)/.test(src), 'only the active video is told to play; every other video is paused')
+  const selectFn = src.slice(src.indexOf('const select = useCallback'), src.indexOf('const soundBlocked'))
+  assert.ok(!/setMuted/.test(selectFn), 'sound is NOT reset when the active video changes')
+  assert.ok(/onSoundBlocked/.test(src) && /v\.muted = true/.test(src) && /NotAllowedError/.test(src), 'only if a browser refuses sound does the video play muted (and the button shows it); other play errors never change the sound')
+  assert.ok(/type="range"/.test(src) && /aria-label="Seek video"/.test(src) && /v\.currentTime = fraction \* v\.duration/.test(src), 'the viewer can jump anywhere in the video')
+  assert.ok(/onPointerDown=\{\(e\) => e\.stopPropagation\(\)\}/.test(src), 'dragging the seek bar is not a swipe to the next video')
   assert.ok(/visibilitychange/.test(src) && /inView && tabVisible/.test(src), 'pauses when the hero leaves the viewport or the tab is hidden')
   assert.ok(/loaded\.has\(it\.id\)/.test(src) && /mayLoad/.test(src), 'sources attach only after a video has been active and the browser is idle')
   const ms = Number(src.match(/const MS = (\d+)/)[1])
@@ -448,7 +453,8 @@ test('hero: split layout in every state, the exact H1 in the HTML, a one-time he
   assert.ok(/useAutoplayAllowed/.test(heroSrc) && /document\.hidden/.test(heroSrc), 'the rotating word is off for reduced-motion and data-saver visitors and waits while the tab is hidden')
   const stageSrc = read('src/components/ugc/CreatorVideoStage.jsx')
   assert.ok(/scrollY < 60/.test(stageSrc) && /passive: true/.test(stageSrc) && /ugc-nudge/.test(stageSrc), 'a passive, one-time scroll listener only highlights the play button (no hijacking, no scroll-driven seeking)')
-  assert.ok(!/currentTime\s*=/.test(stageSrc), 'no scroll-driven video seeking')
+  assert.equal((stageSrc.match(/currentTime\s*=[^=]/g) || []).length, 1, 'no scroll-driven video seeking: the only place the position is set is the viewer\'s own seek bar')
+  assert.ok(/const seek = \(fraction\) => \{[\s\S]*?v\.currentTime = fraction \* v\.duration/.test(stageSrc), 'that one place is the seek bar handler')
 })
 
 test('nothing contractual is lost: every policy the removed sections carried is still on the page (FAQ), from the business data', () => {
@@ -657,4 +663,12 @@ test('final CTA: See Pricing and Email the Founder are real buttons; the address
   assert.match(cta, /<a href="mailto:[^"]+"[^>]*class="[^"]*hero-cta-ghost[^"]*"[^>]*>[\s\S]*?Email the Founder<\/a>/)
   const visible = cta.slice(0, cta.indexOf('</section>')).replace(/<a href="mailto:[^"]*"/g, '<a').replace(/<[^>]+>/g, ' ')
   assert.ok(!visible.includes(CONTACT_EMAIL), 'no plain-text email address in the final CTA')
+})
+
+test('thumbnails: every portfolio video has its own hand-picked thumbnail file (the creator in view), not the first frame', () => {
+  for (const v of UGC_PORTFOLIO) {
+    assert.ok(v.poster && /^\/portfolio\/[a-z0-9-]+\.webp$/.test(v.poster), `${v.id} has a local poster`)
+    assert.ok(fs.existsSync(path.join(ROOT, 'public', v.poster)), `${v.id}: ${v.poster} exists`)
+    assert.equal(posterUrl(v), v.poster)
+  }
 })

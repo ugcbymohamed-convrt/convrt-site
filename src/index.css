@@ -513,3 +513,12 @@ body {
   .pricing-slide,
   .pricing-slide[data-state="inactive"] { transition: none; }
 }
+
+/* Seek bar in the hero phone's controls: a thin track with a visible handle, and a tall hit area for touch. */
+.ugc-seek { -webkit-appearance: none; appearance: none; background: transparent; height: 28px; margin: 0; cursor: pointer; touch-action: none; }
+.ugc-seek::-webkit-slider-runnable-track { height: 4px; border-radius: 9999px; background: linear-gradient(to right, #fff var(--p, 0%), rgba(255, 255, 255, 0.25) var(--p, 0%)); }
+.ugc-seek::-moz-range-track { height: 4px; border-radius: 9999px; background: rgba(255, 255, 255, 0.25); }
+.ugc-seek::-moz-range-progress { height: 4px; border-radius: 9999px; background: #fff; }
+.ugc-seek::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 14px; height: 14px; margin-top: -5px; border-radius: 9999px; background: #fff; box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.3); }
+.ugc-seek::-moz-range-thumb { width: 14px; height: 14px; border: 0; border-radius: 9999px; background: #fff; }
+.ugc-seek:focus-visible { outline: 2px solid #d5ff40; outline-offset: 2px; border-radius: 9999px; }

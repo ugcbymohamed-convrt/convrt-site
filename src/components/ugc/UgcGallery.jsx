@@ -28,7 +28,6 @@ const TOTAL = 10
 function Card({ item, index, playing, onPlay }) {
   const sample = item.sample
   const langs = sample ? 'EN' : item.languages.map((l) => l.toUpperCase()).join(' · ')
-  const label = sample ? `UGC example ${index + 1}` : item.caption
   return (
     <figure className="group relative aspect-[9/16] overflow-hidden rounded-3xl border border-lime/25 bg-surface-1 shadow-[0_26px_60px_-30px_rgba(0,0,0,0.9),0_0_44px_-26px_rgba(213,255,64,0.5)] transition-[transform,border-color,box-shadow] duration-300 hover:-translate-y-1 hover:border-lime/60 hover:shadow-[0_30px_64px_-28px_rgba(0,0,0,0.9),0_0_56px_-18px_rgba(213,255,64,0.55)] motion-reduce:transition-none motion-reduce:hover:translate-y-0">
       {playing ? (
@@ -59,7 +58,6 @@ function Card({ item, index, playing, onPlay }) {
           <span aria-hidden="true" className="absolute left-1/2 top-1/2 flex h-14 w-14 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-lime/60 bg-lime/20 text-ink backdrop-blur transition-transform duration-200 group-hover:scale-110 motion-reduce:transition-none">
             <PlayGlyph />
           </span>
-          <span aria-hidden="true" className="absolute inset-x-3 bottom-3 line-clamp-2 text-[13px] font-semibold leading-snug text-ink">{label}</span>
         </button>
       )}
     </figure>
@@ -135,7 +133,7 @@ export default function UgcGallery({ items }) {
     <SectionDivider />
     <Section id="ugc-videos" label="ugc-videos-heading" glow>
       <Reveal>
-        <Head id="ugc-videos-heading" eyebrow="Our best UGC work" title="Creator-led ads, made for paid social." intro="Real creators, made to stop the scroll. Watch the work." />
+        <Head id="ugc-videos-heading" eyebrow="How your videos could look" title="Creator-led ads, made for paid social." intro="Real creators, made to stop the scroll. Watch the work." />
       </Reveal>
 
       <Reveal className="mt-8 md:mt-10">

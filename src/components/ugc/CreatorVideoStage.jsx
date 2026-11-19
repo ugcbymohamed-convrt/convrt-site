@@ -13,7 +13,8 @@ import { useAutoplayAllowed, useIdleAfterLoad, PlayGlyph, PauseGlyph, SoundGlyph
    Media rules (every one is enforced here):
    • Items are approved portfolio videos only (selectDisplayable). With none, <PhoneShowcaseFallback> shows the same frames empty, rotating by itself.
    • Exactly one video can play: only the active phone is ever told to play; every other video is paused (and shows its own frame).
-   • No audio by itself: videos start muted, and sound resets to muted whenever the active video changes.
+   • No audio by itself: videos start muted. Once the visitor turns sound on it stays on as they move between videos (if a browser refuses
+     to start a video with sound, that video plays muted and the sound button shows it).
    • Nothing downloads until needed: posters first; a video's source is attached only after it has been active AND the browser is idle,
      and never for reduced-motion / data-saver visitors until they press play. A paused phone keeps its source, so it can resume.
    • Playback pauses when the hero leaves the viewport and when the tab is hidden.
@@ -195,7 +196,7 @@ export function PhoneShowcaseFallback({ portraits = false }) {
 
 /* One phone. The <video> element exists from the start (so a paused phone keeps its last frame and never flashes back to the poster),
    but its source is attached only when `load` is true. */
-function StagePhone({ item, slot, n, index, active, load, wantPlay, muted, playing, nudge, onSelect, onPlaying, onProgress, onTogglePlay, onToggleMute, progress }) {
+function StagePhone({ item, slot, n, index, active, load, wantPlay, muted, playing, nudge, onSelect, onPlaying, onProgress, onTogglePlay, onToggleMute, onSoundBlocked, progress }) {
   const ref = useRef(null)
 
   useEffect(() => {
@@ -210,14 +211,28 @@ function StagePhone({ item, slot, n, index, active, load, wantPlay, muted, playi
   }, [load, item])
 
   useEffect(() => { if (ref.current) ref.current.muted = muted }, [muted])
+  /* Jump to any point: the seek bar sets the position as a fraction of the duration (ignored until the video's length is known). */
+  const seek = (fraction) => {
+    const v = ref.current
+    if (!v || !Number.isFinite(v.duration) || v.duration <= 0) return
+    v.currentTime = fraction * v.duration
+    onProgress(fraction)
+  }
   useEffect(() => {
     const v = ref.current
     if (!v) return undefined
-    const sync = () => { if (active && wantPlay) v.play().catch(() => {}); else v.pause() }
+    const sync = () => {
+      if (!(active && wantPlay)) { v.pause(); return }
+      v.play().catch((err) => {
+        // Only when the browser refuses sound (e.g. Safari without a fresh tap): play this video muted and let the button show that.
+        // Any other failure (such as the play request being interrupted while the stream attaches) must not touch the sound setting.
+        if (err && err.name === 'NotAllowedError' && !v.muted) { v.muted = true; onSoundBlocked(); v.play().catch(() => {}) }
+      })
+    }
     sync()
     v.addEventListener('canplay', sync)
     return () => v.removeEventListener('canplay', sync)
-  }, [active, wantPlay, load, item])
+  }, [active, wantPlay, load, item, onSoundBlocked])
   useEffect(() => {
     const v = ref.current
     if (!v || !active) return undefined
@@ -252,6 +267,7 @@ function StagePhone({ item, slot, n, index, active, load, wantPlay, muted, playi
           loop
           playsInline
           preload="none"
+          poster={posterUrl(item)}
           aria-label={item.caption}
           className="absolute inset-0 h-full w-full object-cover"
         />
@@ -272,7 +288,7 @@ function StagePhone({ item, slot, n, index, active, load, wantPlay, muted, playi
                 </span>
               </button>
             )}
-            <div className="absolute inset-x-3 bottom-3.5 z-20 md:inset-x-4 md:bottom-5">
+            <div className="absolute inset-x-3 bottom-3.5 z-20 md:inset-x-4 md:bottom-5" onPointerDown={(e) => e.stopPropagation()}>
               <div className="flex items-center gap-2 rounded-full bg-black/55 py-1.5 pl-1.5 pr-1.5 backdrop-blur-md">
                 <button
                   type="button"
@@ -282,9 +298,18 @@ function StagePhone({ item, slot, n, index, active, load, wantPlay, muted, playi
                 >
                   {playing ? <PauseGlyph /> : <PlayGlyph className="h-4 w-4" />}
                 </button>
-                <div aria-hidden="true" className="h-1 flex-1 overflow-hidden rounded-full bg-white/25">
-                  <div className="h-full rounded-full bg-white" style={{ width: `${Math.round(progress * 100)}%` }} />
-                </div>
+                <input
+                  type="range"
+                  min="0"
+                  max="1000"
+                  step="1"
+                  value={Math.round(progress * 1000)}
+                  onChange={(e) => seek(Number(e.target.value) / 1000)}
+                  onKeyDown={(e) => e.stopPropagation()}
+                  aria-label="Seek video"
+                  className="ugc-seek min-w-0 flex-1"
+                  style={{ '--p': `${Math.round(progress * 1000) / 10}%` }}
+                />
                 <button
                   type="button"
                   onClick={onToggleMute}
@@ -369,13 +394,14 @@ export default function CreatorVideoStage({ items }) {
     setActive((cur) => {
       const next = (i + n) % n
       if (next !== cur) {
-        setPlaying(false); setProgress(0); setMuted(true); setUserIntent(null)
+        setPlaying(false); setProgress(0); setUserIntent(null)
         trackEvent('ugc_hero_video_switch', { how })
       }
       return next
     })
   }, [n])
 
+  const soundBlocked = useCallback(() => setMuted(true), [])
   const wantPlay = inView && tabVisible && (userIntent ?? autoplay)
   const item = shown[active]
   const onKeyDown = (e) => {
@@ -428,6 +454,7 @@ export default function CreatorVideoStage({ items }) {
                 onProgress={setProgress}
                 onTogglePlay={togglePlay}
                 onToggleMute={() => setMuted((m) => !m)}
+                onSoundBlocked={soundBlocked}
               />
             )
           })}
@@ -453,7 +480,7 @@ export default function CreatorVideoStage({ items }) {
           </button>
         </div>
       )}
-      <p aria-live="polite" className="mx-auto mt-1 max-w-[320px] text-center text-sm leading-snug text-ink-muted">
+      <p aria-live="polite" className="sr-only">
         <span className="font-medium text-ink">{item.caption}</span>
         {meta && <span className="block text-[13px]">{meta}</span>}
       </p>
