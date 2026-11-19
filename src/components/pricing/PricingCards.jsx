@@ -143,7 +143,7 @@ const Variations = ({ tone, count, line, per }) => (
     <div className="flex flex-wrap items-center gap-1">
       {per}
       <span className={`inline-flex items-center whitespace-nowrap rounded-full px-2 py-[7px] text-[11.5px] font-bold leading-none ${TONES[tone].chip}`}>
-        {count} unique creatives
+        {count} testing creatives
       </span>
     </div>
     {line && <p className={`mt-2 text-[12.5px] leading-snug ${TONES[tone].muted}`}>{line}</p>}
