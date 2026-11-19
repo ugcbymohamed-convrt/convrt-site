@@ -95,8 +95,7 @@ test('static HTML: breadcrumb, one H1, the approved intro, two sections, the fir
   assert.equal((html.match(/<h1[\s>]/g) || []).length, 1)
   assert.ok(t.includes("See what's possible."))
   assert.ok(t.includes('Explore real creator videos across e-commerce, SaaS, services and more.'))
-  assert.ok(t.includes('Featuring examples from independent creators. Not all videos were produced by CONVRT.'), 'the transparency note')
-  assert.ok(t.indexOf('Explore real creator videos') < t.indexOf('Featuring examples from independent creators'), 'the note sits beneath the description')
+  assert.ok(!t.includes('Featuring examples from independent creators'), 'the transparency note is intentionally not shown for now')
   assert.equal((html.match(/<section[\s>]/g) || []).length, 2, 'only two principal sections: the hero and the library')
   const shown = Math.min(selectOurWork().length, 12)
   assert.equal((html.match(/Play video:/g) || []).length, shown, 'the first page of approved videos is in the HTML (crawlable without the filter script)')
@@ -332,13 +331,13 @@ const CLAIMS = /our productions?|client projects?|videos we (created|made|produc
 test('regression: the page and its metadata never present the creator videos as CONVRT productions', () => {
   const html = page(PATH)
   const e = SITE_SEO[PATH]
-  const visible = textOf(html).replace('Not all videos were produced by CONVRT.', '')
+  const visible = textOf(html)
   assert.ok(!CLAIMS.test(visible), `visible copy: ${visible.match(CLAIMS)?.[0]}`)
   assert.ok(!CLAIMS.test(`${e.title} ${e.description} ${e.ogTitle} ${e.ogDescription}`), 'SEO title and descriptions')
   assert.ok(!CLAIMS.test(JSON.stringify(pageHead(PATH).jsonLd)), 'structured data')
-  assert.ok(/independent creators/.test(e.description) && /independent creators/.test(textOf(html)))
+  assert.ok(/independent creators/.test(e.description))
   for (const v of selectOurWork()) assert.ok(!CLAIMS.test(`${titleOf(v)} ${v.caption}`), `${v.id}: caption`)
-  for (const f of ['VideoCard', 'VideoLightbox', 'PortfolioLibrary', 'OurWorkHero']) assert.ok(!CLAIMS.test(read(`src/components/ourwork/${f}.jsx`).replace(/Not all videos were produced by CONVRT\./, '')), `${f}: copy`)
+  for (const f of ['VideoCard', 'VideoLightbox', 'PortfolioLibrary', 'OurWorkHero']) assert.ok(!CLAIMS.test(read(`src/components/ourwork/${f}.jsx`)), `${f}: copy`)
 })
 
 test('regression: structured data names CONVRT as producer only for a video explicitly marked production "convrt"', () => {

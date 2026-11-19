@@ -1,7 +1,7 @@
 # Creator Showcase (`/our-work`) and the shared portfolio data
 
 The visible name is **Creator Showcase** (nav, footer, breadcrumb, title); the route stays `/our-work` (no redirect, no second route).
-The H1 is "See what's possible.", with the note "Featuring examples from independent creators. Not all videos were produced by CONVRT."
+The H1 is "See what's possible." (the on-page note "Featuring examples from independent creators. Not all videos were produced by CONVRT." was removed on request; the SEO description still says they are examples from independent creators).
 **The library shows examples from independent creators, not CONVRT productions.** Never describe it as "our work", "our productions", client
 projects or campaign results (a regression test enforces this for copy, metadata and structured data). The homepage client showcases
 (Adscale, Elyon, Graspo) are the separate demonstrations of actual CONVRT client work.

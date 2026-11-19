@@ -1,8 +1,8 @@
-/* SECTION 1: a short, text-only hero. The H1, one sentence and one quiet line of transparency, then the library starts straight away:
-   no statistics, no service copy, no phone mock-ups. Dark canvas, white type, lime only on the last word and a faint glow.
+/* SECTION 1: a short, text-only hero. The H1 and one sentence, then the library starts straight away: no statistics, no service copy,
+   no phone mock-ups. Dark canvas, white type, lime only on the last word and a faint glow.
 
-   The note says what the page is: examples from independent creators. The videos here show creator styles and formats; they are not
-   all CONVRT productions, and the page never claims they are. */
+   There is deliberately no "independent creators" note for now. The page still never claims the videos are CONVRT productions
+   (see the regression tests); the SEO description says they are examples from independent creators. */
 export default function OurWorkHero() {
   return (
     <section aria-labelledby="our-work-heading" className="relative overflow-x-clip">
@@ -13,9 +13,6 @@ export default function OurWorkHero() {
         </h1>
         <p className="mt-4 max-w-2xl text-base leading-relaxed text-ink-muted md:mt-5 md:text-lg">
           Explore real creator videos across <span className="whitespace-nowrap">e-commerce</span>, SaaS, services and more.
-        </p>
-        <p className="mt-2.5 max-w-2xl text-[13px] leading-relaxed text-ink-muted/80 md:text-sm">
-          Featuring examples from independent creators. Not all videos were produced by CONVRT.
         </p>
       </div>
     </section>
