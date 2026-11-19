@@ -271,8 +271,8 @@ test('pricing page copy is data-driven: package prices are not typed into the co
 })
 
 // ── FAQ ─────────────────────────────────────────────────────────────────────────────────
-test('FAQ: 12-17 unique, answered questions covering the commercially important topics', () => {
-  assert.ok(PRICING_FAQ.length >= 12 && PRICING_FAQ.length <= 17, `${PRICING_FAQ.length} questions`)
+test('FAQ: 12-18 unique, answered questions covering the commercially important topics', () => {
+  assert.ok(PRICING_FAQ.length >= 12 && PRICING_FAQ.length <= 18, `${PRICING_FAQ.length} questions`)
   assert.equal(new Set(PRICING_FAQ.map((f) => f.id)).size, PRICING_FAQ.length)
   assert.equal(new Set(PRICING_FAQ.map((f) => f.q)).size, PRICING_FAQ.length)
   for (const f of PRICING_FAQ) assert.ok(f.q.endsWith('?') && f.a.length >= 1 && f.a.every((p) => p.length > 20), f.id)

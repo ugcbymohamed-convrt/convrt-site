@@ -28,3 +28,8 @@ Rules
 - Creative Testing Sprint: $3,000/month ($3,500 one-off), 5 concepts × 3 versions = 15 finished ad versions. Sprint Plus: $5,000/month ($6,000 one-off), 10 × 3 = 30. Usage extensions are re-based to the 15- and 30-version batches (1.5× the earlier figures; $937.50 and $1,687.50 are exact).
 - `pricePerVariation(pkg, billing)` derives the "Just $X per variation" figure (rounded to whole dollars for marketing: $200 for the Sprint, $167 for Sprint Plus) from the same constants; never type it in a component. `formatMoney` shows cents only for non-integer amounts.
 - Everything that shows or encodes a price reads these constants: cards, details tables, FAQ answers, meta descriptions and JSON-LD. `tests/prerender.test.mjs` and `tests/pricing.test.mjs` fail if a retired price reappears, if a diagram contradicts the version count, or if the built JSON-LD stops matching the constants.
+
+## Creator limits (Nov 2026)
+
+- Sprint includes up to 3 creators or spokespeople, Sprint Plus up to 5 (`SPRINT.maxCreators`, `SPRINT_PLUS.maxCreators`). They are maximums, not a guaranteed allocation, and never change the agreed concepts or finished ad versions; requests beyond the limit need a custom quote.
+- `CREATOR_ALLOCATION` in `businessKnowledge.js` is the single source for the pricing FAQ "How are creators selected and allocated?" (visible accordion and FAQPage JSON-LD), the "Creators" row in the Production & extras panel, the sentence in the UGC FAQ, and (via `maxCreators`) the card lines and the package Service descriptions in JSON-LD.

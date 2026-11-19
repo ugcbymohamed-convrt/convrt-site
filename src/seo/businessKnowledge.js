@@ -125,6 +125,8 @@ export const SPRINT = {
   scripts: 5,
   variationsPerConcept: 3,
   variations: 15,
+  /* Included creator limit (owner, Nov 2026): a MAXIMUM, not a guaranteed allocation. See CREATOR_ALLOCATION below. */
+  maxCreators: 3,
   cardDescription: 'For brands ready to discover new creative angles and find what resonates.',
   /* Shared with Sprint Plus (owner, Nov 2026): the two packages differ in volume and price only. */
   extraDetail: 'Includes expanded research and testing recommendations.',
@@ -152,6 +154,7 @@ export const SPRINT_PLUS = {
   scripts: 10,
   variationsPerConcept: 3,
   variations: 30,
+  maxCreators: 5,
   /* Subtle supporting line on the Sprint Plus card. */
   valueLine: 'Twice the creative concepts. Twice the finished ad versions.',
   cardDescription: 'For brands looking for greater creative diversity and deeper testing.',
@@ -168,6 +171,26 @@ export const SPRINT_PLUS = {
 }
 
 export const CREATIVE_TESTING_PACKAGES = [SPRINT, SPRINT_PLUS]
+
+/** 'Up to 3 creators or spokespeople': the card line. */
+export const creatorsLine = (pkg) => `Up to ${pkg.maxCreators} creators or spokespeople`
+
+/* How creators are selected and allocated (owner wording, Nov 2026). The numbers are MAXIMUMS. One source for the pricing FAQ (visible
+   accordion + FAQPage JSON-LD), the UGC FAQ sentence and the "Production & extras" row, so they cannot drift apart.
+   The limits never change the agreed number of concepts or finished ad versions. */
+export const CREATOR_ALLOCATION = {
+  question: 'How are creators selected and allocated?',
+  answer: [
+    'Creator selection is based on your campaign goals, target audience and approved creative concepts.',
+    `Sprint includes up to ${SPRINT.maxCreators} creators, while Sprint Plus includes up to ${SPRINT_PLUS.maxCreators}.`,
+    'The final number and allocation of creators are determined during creative planning, based on what makes the most sense for the campaign and creator availability.',
+    'Not every concept requires a different creator, and we prioritize effective creative testing over using the maximum number of creators.',
+    "Specific creators and demographics are subject to availability, and several creators aren't automatically assigned to the same concept. The creator limit doesn't change the number of concepts or finished ad versions in your package. If you'd like more creators than your package includes, we'll prepare a custom quote.",
+  ],
+  /* Concise version for the Production & extras panel and the UGC FAQ. */
+  summary: `Up to ${SPRINT.maxCreators} with Sprint, up to ${SPRINT_PLUS.maxCreators} with Sprint Plus, guided by your approved strategy. Allocation is confirmed during planning, subject to availability. It's a maximum, not a guarantee, and adds no concepts or ad versions. More creators need a custom quote.`,
+  sentence: `Sprint includes up to ${SPRINT.maxCreators} creators and Sprint Plus up to ${SPRINT_PLUS.maxCreators}; we confirm the final number during creative planning, based on your strategy and creator availability.`,
+}
 
 export const COMMITMENT = {
   initialMonths: 3,

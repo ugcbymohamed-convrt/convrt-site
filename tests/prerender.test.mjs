@@ -523,11 +523,11 @@ test('/pricing HTML: the Organic usage panel is only the agreement reference: no
   assert.ok(!/Raw footage|business days — Sprint|rounds per creative concept/.test(orgDetails), 'no paid-only production terms on Organic')
 })
 
-test('/pricing HTML: FAQ section is four categories, all 17 answers in the markup, organic six-month answer included', () => {
+test('/pricing HTML: FAQ section is four categories, all 18 answers in the markup, organic six-month answer included', () => {
   const h = page('/pricing')
   const faqHtml = rootOf(h).slice(rootOf(h).indexOf('id="pricing-faq"'))
   assert.equal(count(faqHtml, /role="tab"/g), 4); assert.equal(count(faqHtml, /role="tabpanel"/g), 4)
-  assert.equal(PRICING_FAQ.length, 17)
+  assert.equal(PRICING_FAQ.length, 18)
   for (const f of PRICING_FAQ) { assert.ok(faqHtml.includes(`id="faq-a-${f.id}"`), f.id); assert.ok(unescape(faqHtml).includes(f.q.replace(/&/g, '&'))) }
   assert.match(unescape(faqHtml.replace(/<!-- -->/g, '')), /Building a meaningful social media presence takes consistency\. Our organic partnerships begin with a six-month commitment/)
   assert.match(faqHtml, /id="faq-panel-organic"[^>]*hidden=""/)
@@ -550,8 +550,8 @@ test('/pricing HTML: Sprint Plus card shows 10 concepts / 10 scripts / 3 variati
   const h = page('/pricing')
   const arts = [...group(h, 'paid').matchAll(/<article[\s\S]*?<\/article>/g)].map((x) => flat(`<div id="root">${x[0]}`))
   const [sprint, plus] = arts
-  for (const n of ['5 distinct creative concepts', '5 complete scripts', '3 versions per concept, changing the hook or CTA', '15 testing creatives', '5 unique concepts with 3 hook or CTA variations per concept', 'Priority production scheduling', 'Includes expanded research and testing recommendations.', '1 creator or spokesperson', '10 business days turnaround', '2 revision rounds per creative concept', '6 months of worldwide usage rights']) assert.ok(sprint.includes(n), `Sprint: ${n}`)
-  for (const n of ['10 distinct creative concepts', '10 complete scripts', '3 versions per concept, changing the hook or CTA', '30 testing creatives', 'Up to 2 creators or spokespeople', '15 business days turnaround', '2 revision rounds per creative concept', '6 months of worldwide usage rights', 'Priority production scheduling', 'Includes expanded research and testing recommendations.']) assert.ok(plus.includes(n), `Sprint Plus: ${n}`)
+  for (const n of ['5 distinct creative concepts', '5 complete scripts', '3 versions per concept, changing the hook or CTA', '15 testing creatives', '5 unique concepts with 3 hook or CTA variations per concept', 'Priority production scheduling', 'Includes expanded research and testing recommendations.', 'Up to 3 creators or spokespeople', '10 business days turnaround', '2 revision rounds per creative concept', '6 months of worldwide usage rights']) assert.ok(sprint.includes(n), `Sprint: ${n}`)
+  for (const n of ['10 distinct creative concepts', '10 complete scripts', '3 versions per concept, changing the hook or CTA', '30 testing creatives', 'Up to 5 creators or spokespeople', '15 business days turnaround', '2 revision rounds per creative concept', '6 months of worldwide usage rights', 'Priority production scheduling', 'Includes expanded research and testing recommendations.']) assert.ok(plus.includes(n), `Sprint Plus: ${n}`)
   assert.ok(sprint.includes('$3,000') && sprint.includes('$3,500') && plus.includes('$5,000') && plus.includes('$6,000'), 'monthly and one-off prices remain')
   const t = flat(h)
   assert.ok(!/\b8 (distinct )?(creative )?concepts|8 complete scripts|strategically distributed|Expanded creative variations/.test(t), 'no obsolete Sprint Plus wording in the prerendered page')

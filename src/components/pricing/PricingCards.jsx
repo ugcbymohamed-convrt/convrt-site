@@ -1,6 +1,6 @@
 import { OFFER_PATHS } from '../../config.js'
 import {
-  SPRINT, SPRINT_PLUS, ORGANIC, ORGANIC_COMMITMENT, CUSTOM_PACKAGES, BILLING_OPTIONS, formatMoney, pricePerVariation,
+  SPRINT, SPRINT_PLUS, ORGANIC, ORGANIC_COMMITMENT, CUSTOM_PACKAGES, BILLING_OPTIONS, formatMoney, pricePerVariation, creatorsLine,
 } from '../../seo/businessKnowledge.js'
 
 /* The three-column pricing cards (Paid Social: Sprint / Sprint Plus / Custom; Organic: Light / Growth / Custom).
@@ -163,7 +163,7 @@ export function PaidCards({ billing }) {
     `${SPRINT.concepts} distinct creative concepts`,
     `${SPRINT.concepts} complete scripts`,
     `${SPRINT.variationsPerConcept} versions per concept, changing the hook or CTA`,
-    '1 creator or spokesperson',
+    creatorsLine(SPRINT),
     days(SPRINT.turnaroundBusinessDays),
     usage(SPRINT.usageMonthsIncluded),
     revisions(SPRINT.revisionRoundsPerConcept),
@@ -176,7 +176,7 @@ export function PaidCards({ billing }) {
     `${SPRINT_PLUS.concepts} distinct creative concepts`,
     `${SPRINT_PLUS.scripts} complete scripts`,
     `${SPRINT_PLUS.variationsPerConcept} versions per concept, changing the hook or CTA`,
-    'Up to 2 creators or spokespeople',
+    creatorsLine(SPRINT_PLUS),
     days(SPRINT_PLUS.turnaroundBusinessDays),
     usage(SPRINT_PLUS.usageMonthsIncluded),
     revisions(SPRINT_PLUS.revisionRoundsPerConcept),

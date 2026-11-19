@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import {
+  CREATOR_ALLOCATION,
   SPRINT, SPRINT_PLUS, USAGE_RIGHTS, SHARED_SPRINT_BENEFITS, SHARED_SPRINT_LANGUAGE_NOTE, SHARED_SPRINT_NOTE, PRODUCTION_STAGES,
   ORGANIC_STAGES, ORGANIC, ORGANIC_COMMITMENT, FORMATS, RAW_FOOTAGE, REVISIONS, formatMoney,
 } from '../../seo/businessKnowledge.js'
@@ -186,6 +187,7 @@ function DetailsPaid() {
     <Rows
       rows={[
         ['Turnaround', `${SPRINT.turnaroundBusinessDays} business days — Sprint. ${SPRINT_PLUS.turnaroundBusinessDays} business days — Sprint Plus.`, 'Starts after concept and script approval.'],
+        ['Creators', CREATOR_ALLOCATION.summary],
         ['Revisions', `${REVISIONS.roundsPerConcept} rounds per creative concept.`],
         ['Video length', `Up to ${FORMATS.standardMaxSeconds} seconds. Custom 1–3 minute videos available.`],
         ['Formats', 'Vertical, square and 4:5.'],

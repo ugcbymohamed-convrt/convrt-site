@@ -7,7 +7,7 @@
    An answer is an array of paragraphs. */
 
 import {
-  formatMoney, pricePerVariation, adVersions, SPRINT, SPRINT_PLUS, COMMITMENT, SINGLE_VIDEOS, USAGE_RIGHTS, RAW_FOOTAGE, RESHOOTS, FORMATS, TURNAROUND,
+  formatMoney, pricePerVariation, adVersions, CREATOR_ALLOCATION, SPRINT, SPRINT_PLUS, COMMITMENT, SINGLE_VIDEOS, USAGE_RIGHTS, RAW_FOOTAGE, RESHOOTS, FORMATS, TURNAROUND,
   REVISIONS, PRODUCT_REQUIREMENTS, TALENT, PRODUCTION_LANGUAGES, PARTNERSHIP_TERMS,
 } from './businessKnowledge.js'
 import { OFFER_PATHS } from '../config.js'
@@ -44,7 +44,7 @@ export const UGC_FAQ = [
     id: 'creators-and-approval',
     q: 'How do you choose creators, and can I approve them?',
     a: [
-      `${TALENT.model} We recommend the creator who best fits your brand and audience, chosen for on-camera delivery and product fit, not follower counts.`,
+      `${TALENT.model} We recommend the creator who best fits your brand and audience, chosen for on-camera delivery and product fit, not follower counts. ${CREATOR_ALLOCATION.sentence}`,
       'You see relevant work samples from the creator before production and can take part in creator selection when you want to. You can request the same creator for future projects, subject to availability.',
     ],
   },

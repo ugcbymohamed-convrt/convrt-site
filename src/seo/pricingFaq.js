@@ -5,7 +5,7 @@
    An answer is an array of paragraphs. */
 
 import {
-  formatMoney, pricePerVariation, adVersions, SPRINT, SPRINT_PLUS, COMMITMENT, SINGLE_VIDEOS, TAX, USAGE_RIGHTS, RAW_FOOTAGE,
+  formatMoney, pricePerVariation, adVersions, CREATOR_ALLOCATION, SPRINT, SPRINT_PLUS, COMMITMENT, SINGLE_VIDEOS, TAX, USAGE_RIGHTS, RAW_FOOTAGE,
   RESHOOTS, FORMATS, TURNAROUND, REVISIONS, ORGANIC, PRODUCT_REQUIREMENTS, ORGANIC_COMMITMENT, CUSTOM_TERMS,
 } from './businessKnowledge.js'
 
@@ -40,6 +40,12 @@ export const PRICING_FAQ = [
       `Full-service creative production: research, concept and script development, creator selection, filming, editing and delivery. ${SPRINT.name} is ${formatMoney(SPRINT.monthly)}/month for ${SPRINT.concepts} concepts and ${adVersions(SPRINT.variations)}. ${SPRINT_PLUS.name} is ${formatMoney(SPRINT_PLUS.monthly)}/month for ${SPRINT_PLUS.concepts} concepts and ${adVersions(SPRINT_PLUS.variations)}. At the monthly price that is ${pricePerVariation(SPRINT).text} per variation for the ${SPRINT.name} and ${pricePerVariation(SPRINT_PLUS).text} per variation for ${SPRINT_PLUS.name}.`,
       `Both include ${REVISIONS.roundsPerConcept} rounds of revisions per creative concept and ${USAGE_RIGHTS.includedMonths} months of worldwide usage rights. Production includes ${andList(FORMATS.fullProductionIncludes.map((x) => (x === 'B-roll' ? x : x.toLowerCase())))}, ${FORMATS.scopeQualifier}.`,
     ],
+  },
+  {
+    id: 'creator-allocation',
+    category: 'packages',
+    q: CREATOR_ALLOCATION.question,
+    a: CREATOR_ALLOCATION.answer,
   },
   {
     id: 'minimum-commitment',

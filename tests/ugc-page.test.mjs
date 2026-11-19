@@ -139,7 +139,7 @@ test('human-created positioning: 100% human-created UGC, no AI-assisted or AI-ge
 test('no unsupported claims: no rankings, superlatives or guarantees; every "guarantee" is a denial', () => {
   const t = textOf(page(PATH)).replace(/Our best UGC work/g, '') // the owner-specified section heading (shown only with approved videos)
   assert.ok(!/\b(the best|best (UGC|agency|studio|in)|#1|number one|top-rated|leading|award|ranked)\b/i.test(t), 'no superlatives or rankings')
-  assert.ok(!/\b\d[\d,]*\+?\s+(creators|brands|clients|customers)\b/i.test(t.replace(/\b0\d(?= [A-Z])/g, '§')), 'no creator / client counts (stage numerals like "02 Creators & Scripts" are not counts)')
+  assert.ok(!/\b\d[\d,]*\+?\s+(creators|brands|clients|customers)\b/i.test(t.replace(/\b0\d(?= [A-Z])/g, '§').replace(/up to \d+ creators/gi, '')), 'no creator / client counts (only the approved "up to N creators" package limits) (stage numerals like "02 Creators & Scripts" are not counts)')
   for (const s of t.split(/(?<=[.!?])\s+/).filter((x) => /guarant/i.test(x))) assert.ok(/never|not a|can['’]t|don['’]t|not typical/i.test(s), `guarantee only as a denial: ${s}`)
 })
 
@@ -587,4 +587,17 @@ test('Filming & Editing mock phone is clean: no dialogue or headline text, creat
   const filming = src.slice(src.indexOf('function VisualFilming'), src.indexOf('/* 4  three finished versions'))
   assert.ok(!/Wait, you|doing it|still<|&rsquo;re/.test(filming), 'no spoken or headline text in the mock phone')
   assert.ok(/Avatar variant/.test(filming) && /Captions/.test(filming) && /Export/.test(filming) && /formats/.test(filming))
+})
+
+test('creator limits: Sprint up to 3, Sprint Plus up to 5 (a maximum, not a guarantee) everywhere they appear; one source; prices and deliverables unchanged', () => {
+  assert.equal(SPRINT.maxCreators, 3); assert.equal(SPRINT_PLUS.maxCreators, 5)
+  assert.deepEqual([SPRINT.monthly.amount, SPRINT.concepts, SPRINT.variations, SPRINT.turnaroundBusinessDays], [3000, 5, 15, 10])
+  assert.deepEqual([SPRINT_PLUS.monthly.amount, SPRINT_PLUS.concepts, SPRINT_PLUS.variations, SPRINT_PLUS.turnaroundBusinessDays], [5000, 10, 30, 15])
+  const t = textOf(page(PATH))
+  assert.ok(t.includes('Sprint includes up to 3 creators and Sprint Plus up to 5'), 'UGC FAQ states the limits')
+  assert.ok(/final number during creative planning/.test(t) && /creator availability/.test(t))
+  const ld = JSON.stringify(jsonLdFor('/pricing', SITE_SEO['/pricing']))
+  assert.ok(ld.includes('up to 3 creators or spokespeople') && ld.includes('up to 5 creators or spokespeople'), 'package service descriptions in the pricing JSON-LD')
+  assert.ok(ld.includes('How are creators selected and allocated?'), 'the new FAQ is in the FAQPage')
+  assert.ok(!/1 creator or spokesperson|Up to 2 creators/i.test(t + ld), 'no outdated creator counts')
 })
