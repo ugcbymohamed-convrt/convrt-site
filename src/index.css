@@ -333,6 +333,9 @@ body {
 .ugc-ring { animation: ugc-ring 2.2s ease-in-out infinite; }
 @keyframes ugc-breathe { 0%, 100% { opacity: 0.75; } 50% { opacity: 1; } }
 .ugc-breathe { animation: ugc-breathe 7s ease-in-out infinite; }
+/* Organic content system: a finished video drops into its slot in the publishing calendar. */
+@keyframes org-drop { from { opacity: 0; transform: translateY(-1.4rem) scale(0.92); } to { opacity: 1; transform: none; } }
+.org-drop { animation: org-drop 0.65s cubic-bezier(0.22, 1, 0.36, 1) both; }
 @keyframes ugc-blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.25; } }
 .ugc-blink { animation: ugc-blink 1s steps(1, end) infinite; }
 
@@ -344,6 +347,7 @@ body {
   .ugc-word, .ugc-underline { animation: none; transform: none; }
   .ugc-nudge { animation: none; }
   .ugc-pop,
+  .org-drop,
   .ugc-bar,
   .ugc-progress,
   .marquee-track,

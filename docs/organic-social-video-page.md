@@ -50,5 +50,15 @@ organic video flips both with no other change. Do not flip anything else without
 - **Proof:** the only organic proof is the published Graspo case study (10.7M views, 3.4M accounts reached, 75 unique inbound leads; Meta Business Suite and Graspo's inbound tracker, 1 Jan to 19 Jun 2026), with its
   qualifiers. A test ties the figures to the case-study source. The UGC page's Elyon 5.28x (a paid result) and its testimonials are not used. There is no organic testimonial yet, so none is shown; add one to
   `ORGANIC_PROOF.testimonials` only when verified and permitted.
-- Hero and final CTAs go to the Free Creative Growth Roadmap, as briefed. (`ORGANIC_CTA` in `businessKnowledge.js`, a `mailto:` "Discuss Your Organic Strategy", is what the Pricing page uses for organic visitors because
-  the Roadmap form asks about paid-ad spend; this page follows the brief instead. See the open points in the delivery report.)
+- **CTAs (revision 2):** the hero's and final CTA's primary button is "Discuss Your Content Strategy" → `BOOKING_URL` (the existing site-wide Calendly discovery call that `/scale` and the Roadmap booking use),
+  opened in a new tab with the visitor's stored UTM parameters (`external: true` in `ORGANIC_HERO.primary` / `ORGANIC_PAGE_CTA.primary`; the markup is a plain link). The Roadmap ("Get 5 Free Ad Concepts") is a
+  paid-ads offer, so it is not the organic hero action; it stays in the global header and the proof section. Because "Your next 5 ad concepts. Tailored to your brand. On us." and "Free strategy session ... fit check"
+  describe the Roadmap, they are removed on this page (`leadIn: null`, `note: null`); the other pages keep them. The header CTA is unchanged.
+- **Package terms** were verified against the Pricing page and `businessKnowledge.js` (revision 2): prices, post cadence, platforms, six-month commitment, community-management scope and exclusions all agree. One nuance
+  is recorded in the delivery report (the scope says content is distributed "across agreed platforms" while the Pricing card, FAQ and panels say Facebook, Instagram and TikTok).
+
+## Content system visual (revision 2)
+Same component and interaction (`organic/ContentSystem.jsx`, three states, Plan / Produce / Publish & Learn), larger stage (`max-w-4xl`, up to 29rem tall; stacked below `lg`) and video-first scenes: Plan = pillars → four vertical
+video concepts → the calendar they land in; Produce = footage → Cut / Captions / Graphics → three overlapping finished vertical videos; Publish & Learn = finished videos drop (`org-drop`) into the publishing calendar, then a slim
+Review strip names Reach, Watch time and Engagement (names only, no numbers) and loops to the next plan. Thumbnails are the owner-supplied illustrative portraits. Swap them for real organic thumbnails only when approved
+organic videos exist.

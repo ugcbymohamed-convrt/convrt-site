@@ -14,7 +14,7 @@ import react from '@vitejs/plugin-react'
 import { createElement } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { PATHS, KNOWN_PATHS } from '../src/routes.js'
-import { SITE_URL, OFFER_PATHS, OUR_WORK_PATH } from '../src/config.js'
+import { SITE_URL, OFFER_PATHS, OUR_WORK_PATH, BOOKING_URL } from '../src/config.js'
 import { SITE_SEO, pageHead, sitemapRoutes } from '../src/seo/siteSeo.js'
 import { organicSocialGraph, jsonLdFor, ORG_ID, serviceId, BREADCRUMB_TRAILS } from '../src/seo/structuredData.js'
 import { ORGANIC_SOCIAL_FAQ, organicSocialFaqText } from '../src/seo/organicSocialFaq.js'
@@ -25,7 +25,7 @@ import {
   PORTFOLIO, ORGANIC_STYLES, selectHero, selectGallery, selectSpokespersonHero, selectSpokespersonGallery, selectOrganicHero, selectOrganicGallery,
   selectOurWork, isDisplayable, portfolioProblems,
 } from '../src/content/portfolio.js'
-import { ORGANIC_HERO, ORGANIC_PROOF, ORGANIC_PAGE_STAGES, ORGANIC_SYSTEM, ORGANIC_GALLERY, ORGANIC_PRICING_HREF } from '../src/content/organicSocialPage.js'
+import { ORGANIC_HERO, ORGANIC_PROOF, ORGANIC_PAGE_STAGES, ORGANIC_SYSTEM, ORGANIC_GALLERY, ORGANIC_PRICING_HREF, ORGANIC_PAGE_CTA } from '../src/content/organicSocialPage.js'
 
 const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), '..')
 const read = (p) => fs.readFileSync(path.join(ROOT, p), 'utf8')
@@ -101,9 +101,14 @@ test('static HTML: breadcrumb, ONE H1 reading "Organic social videos. Built to e
   assert.match(html, /<nav aria-label="Breadcrumb"[\s\S]*?Home[\s\S]*?Organic Social Video Production/)
   assert.equal((html.match(/<h1[\s>]/g) || []).length, 1)
   assert.equal(textOf(`<div id="root">${html.match(/<h1[\s\S]*?<\/h1>/)[0]}`), 'Organic social videos. Built to engage. Made to convrt.')
-  assert.ok(t.includes('Keep your brand visible with human-led social media videos built around your audience. From creative strategy and scripting to filming, editing, posting and community management, CONVRT helps you create content worth watching.'))
-  assert.match(html, new RegExp(`<a [^>]*href="${OFFER_PATHS.roadmap}"[^>]*>\\s*Get 5 Free Ad Concepts`), 'primary CTA → the Roadmap')
+  assert.ok(t.includes('Turn your brand into content worth following. We handle organic social video strategy, creator production, editing, posting and community management, so your brand shows up consistently.'))
+  assert.ok(!t.includes('Keep your brand visible with human-led'), 'the long description is gone')
+  const hero = html.split('<section aria-labelledby="organic-h1"')[1].split('</section>')[0]
+  assert.equal((hero.match(/<p class="cs-fade-up mx-auto mt-6/g) || []).length, 1, 'one description paragraph only')
+  assert.match(hero, new RegExp(`<a href="${BOOKING_URL.replace(/[.?]/g, '\\$&')}" target="_blank" rel="noopener noreferrer"[^>]*>\\s*Discuss Your Content Strategy`), 'primary CTA → the existing discovery-call booking link, in a new tab')
+  assert.ok(!/Get 5 Free Ad Concepts|Your next 5 ad concepts/.test(hero), 'the paid-ads Roadmap promise is not in the organic hero')
   assert.match(html, new RegExp(`<a [^>]*href="${OUR_WORK_PATH}"[^>]*>\\s*Explore Videos`), 'secondary CTA → /our-work')
+  assert.ok(html.includes(`href="${OFFER_PATHS.roadmap}"`) && /Get 5 Free Ad Concepts/.test(html), 'the Free Creative Growth Roadmap stays reachable (header and proof section)')
   assert.ok(/1 <span class="text-lime">FREE<\/span> Video/.test(html) && /10 <span class="text-\[#F472B6\]">FREE<\/span> Ad Hooks/.test(html), 'the two free-offer cards, reused from the homepage hero')
 })
 
@@ -228,6 +233,19 @@ test('"Not just more posts. A content system.": three states, the Strategy → P
   const src = read('src/components/organic/ContentSystem.jsx')
   assert.ok(/useAutoplayAllowed/.test(src) && />\s*Pause\s*</.test(src) && /aria-current/.test(src), 'auto-advance respects reduced motion / data saver, has a Pause button, and the buttons always work')
   assert.ok(/motion-reduce:transition-none/.test(src))
+})
+
+test('content system scenes: Plan shows pillars → video concepts → calendar; Produce is video-first; Publish & Learn drops finished videos into the calendar with metric NAMES only', () => {
+  const src = read('src/components/organic/ContentSystem.jsx')
+  for (const l of ['1 · Content pillars', '2 · Video concepts', '3 · Content calendar']) assert.ok(src.includes(l), l)
+  assert.ok(src.includes('Footage') && src.includes('Finished videos') && ['Cut', 'Captions', 'Graphics'].every((x) => src.includes(`'${x}'`)), 'footage → edit → finished vertical videos')
+  assert.ok(/Finished videos → publishing calendar/.test(src) && /org-drop/.test(src), 'finished videos drop into the schedule')
+  for (const m of ['Reach', 'Watch time', 'Engagement']) assert.ok(src.includes(`'${m}'`), m)
+  const jsx = src.replace(/\/\*[\s\S]*?\*\//g, '')
+  assert.ok(!/\d+(\.\d+)?\s?(%|k\b|m\b|views|likes|followers)/i.test(jsx.replace(/w-\d+\/\d+|\d+%|text-\[\d+px\]/g, '')), 'no performance numbers')
+  assert.ok(!/ugc-bar|rising|chart|dashboard/i.test(jsx), 'no bars, charts or dashboard styling for the metrics')
+  assert.ok(/\.org-drop \{/.test(read('src/index.css')) && /\.org-drop,/.test(read('src/index.css')), 'the drop animation exists and is switched off for reduced motion')
+  assert.ok(/max-w-4xl/.test(src) && /lg:flex-row/.test(src), 'larger stage on desktop, stacked below lg')
 })
 
 test('proof: only the published Graspo organic result (figures match its case study); no UGC or paid results or testimonials; empty proof leaves no section', async () => {
@@ -370,16 +388,20 @@ test('pricing deep link: /pricing#organic opens the Organic Social packages afte
   assert.match(rootOf(page('/pricing')), /id="service-panel-organic"[^>]*data-state="inactive"/)
 })
 
-test('final CTA: the same system as the other service pages, with the organic headline; pricing and founder e-mail are real buttons; the Roadmap flow is preserved', () => {
+test('final CTA: the same system as the other service pages, with the organic headline and the booking button; pricing and founder e-mail are real buttons; the Roadmap flow is untouched', () => {
   const html = rootOf(page(PATH))
   const t = textOf(page(PATH))
   const cta = html.split('id="get-started"')[1]
   assert.ok(t.includes('Ready to turn your ideas into content worth watching?'))
-  assert.match(cta, new RegExp(`href="${OFFER_PATHS.roadmap}"[^>]*>Get 5 Free Ad Concepts`))
+  assert.match(cta, new RegExp(`href="${BOOKING_URL.replace(/[.?]/g, '\\$&')}"[^>]*>Discuss Your Content Strategy`))
+  assert.ok(/target="_blank" rel="noopener noreferrer"/.test(cta.match(/<a [^>]*Discuss Your Content Strategy/)?.[0] ?? '') || /target="_blank" rel="noopener noreferrer"[^>]*>Discuss Your Content Strategy/.test(cta), 'opens in a new tab')
+  assert.ok(!/Get 5 Free Ad Concepts|Free strategy session|fit check/.test(cta), 'the Roadmap wording is not under the booking button')
   assert.match(cta, /href="\/pricing#packages"[^>]*>See Pricing/)
   assert.match(cta, /href="mailto:[^"]+\?subject=Organic%20social%20video%20production"[^>]*>[\s\S]*Email the Founder/)
-  assert.ok(t.includes('Every industry welcome'), 'the Roadmap stays open to every industry')
-  assert.equal(ORGANIC_HERO.primary.href, OFFER_PATHS.roadmap)
+  assert.deepEqual(ORGANIC_HERO.primary, { label: 'Discuss Your Content Strategy', href: BOOKING_URL, external: true })
+  assert.equal(ORGANIC_PAGE_CTA.primary.href, ORGANIC_HERO.primary.href, 'the hero and the final CTA share one verified destination')
+  assert.equal(BOOKING_URL, 'https://calendly.com/mohamed-convrt/30min', 'the existing site-wide booking link, not a new one')
+  assert.match(read('src/components/Nav.jsx'), /Get 5 Free Ad Concepts/, 'the global header CTA is untouched')
   // the roadmap application itself is untouched by this page
   assert.match(read('src/lib/roadmapQualification.js'), /QUALIFYING_TIMELINES = \['Immediately \/ This month', 'Within 1–3 months'\]/)
 })
