@@ -58,6 +58,7 @@ function Expectations({ config }) {
 
 function Results({ config }) {
   const { results, testimonials } = config.proof
+  const wide = testimonials.length === 0 // a lone result spans the row: figures left, context right
   return (
     <Section id="results" label={config.headingId} glow>
       <Reveal>
@@ -66,22 +67,26 @@ function Results({ config }) {
       <div className="mt-8 grid grid-cols-1 gap-5 md:mt-10 lg:grid-cols-12 lg:gap-6">
         {results.map((r) => (
           <Reveal key={r.id} className={testimonials.length ? 'lg:col-span-7' : 'lg:col-span-12'}>
-            <div className="relative h-full overflow-hidden rounded-[28px] border border-lime/25 bg-surface-1 p-6 md:p-8">
-              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-lime">{r.brand} · {r.category}</p>
-              <p className="mt-3 flex flex-wrap items-baseline gap-x-3">
-                <span className="font-display text-[4rem] font-bold leading-none tracking-display-xl text-lime sm:text-[5rem]">{r.metric}</span>
-                <span className="font-display text-xl font-semibold text-ink md:text-2xl">{r.metricLabel}</span>
-              </p>
-              {r.secondary?.length > 0 && (
-                <ul className="mt-5 flex flex-wrap gap-x-8 gap-y-3">
-                  {r.secondary.map((x) => (
-                    <li key={x.label}><span className="font-display text-3xl font-bold leading-none tracking-display text-ink">{x.value}</span> <span className="text-[15px] text-ink-muted">{x.label}</span></li>
-                  ))}
-                </ul>
-              )}
-              {r.context && <p className="mt-4 max-w-xl text-[15px] leading-relaxed text-ink-muted">{r.context}</p>}
-              {r.disclaimer && <p className="mt-3 max-w-xl text-[13px] leading-relaxed text-ink-muted">{r.disclaimer}</p>}
-              {r.href && <p className="mt-2.5 text-[15px]"><TextLink href={r.href}>Read the case study <span aria-hidden="true">→</span></TextLink></p>}
+            <div className={`relative h-full overflow-hidden rounded-[28px] border border-lime/25 bg-surface-1 p-6 md:p-8 ${wide ? 'lg:grid lg:grid-cols-[auto_1fr] lg:items-center lg:gap-x-14' : ''}`}>
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-lime">{r.brand} · {r.category}</p>
+                <p className="mt-3 flex flex-wrap items-baseline gap-x-3">
+                  <span className="font-display text-[4rem] font-bold leading-none tracking-display-xl text-lime sm:text-[5rem]">{r.metric}</span>
+                  <span className="font-display text-xl font-semibold text-ink md:text-2xl">{r.metricLabel}</span>
+                </p>
+                {r.secondary?.length > 0 && (
+                  <ul className="mt-5 flex flex-wrap gap-x-8 gap-y-3">
+                    {r.secondary.map((x) => (
+                      <li key={x.label}><span className="font-display text-3xl font-bold leading-none tracking-display text-ink">{x.value}</span> <span className="text-[15px] text-ink-muted">{x.label}</span></li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+              <div className={wide ? 'mt-4 lg:mt-0' : ''}>
+                {r.context && <p className="mt-4 max-w-xl text-[15px] leading-relaxed text-ink-muted lg:mt-0">{r.context}</p>}
+                {r.disclaimer && <p className="mt-3 max-w-xl text-[13px] leading-relaxed text-ink-muted">{r.disclaimer}</p>}
+                {r.href && <p className="mt-2.5 text-[15px]"><TextLink href={r.href}>Read the case study <span aria-hidden="true">→</span></TextLink></p>}
+              </div>
             </div>
           </Reveal>
         ))}
