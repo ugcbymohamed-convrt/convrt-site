@@ -383,3 +383,8 @@ test('accessibility: one H1, headings never skip a level, buttons are real butto
   assert.ok(/prefers-reduced-motion: reduce/.test(read('src/components/ugc/creatorVideo.jsx')) && /saveData/.test(read('src/components/ugc/creatorVideo.jsx')))
   assert.ok(/useAutoplayAllowed/.test(read('src/components/ugc/UgcProcess.jsx')) && /Pause animation/.test(read('src/components/ugc/UgcProcess.jsx')))
 })
+
+test('spokesperson page order is independent of the Showcase order: hero 1, 2, 3 (first = centre) and gallery 1 to 4', () => {
+  assert.deepEqual(selectSpokespersonHero().map((v) => v.id), ['spokesperson-hero-1', 'spokesperson-hero-2', 'spokesperson-hero-3'])
+  assert.deepEqual(selectSpokespersonGallery().map((v) => v.id), ['spokesperson-gal-1', 'spokesperson-gal-2', 'spokesperson-gal-3', 'spokesperson-gal-4'])
+})

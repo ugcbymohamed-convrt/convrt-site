@@ -19,6 +19,10 @@ export const CATEGORY_ICONS = {
   services: (p) => (
     <svg {...base} {...p}><rect x="3" y="6.5" width="14" height="9.5" rx="2" /><path d="M7.5 6.5V5.3a1.3 1.3 0 0 1 1.3-1.3h2.4a1.3 1.3 0 0 1 1.3 1.3v1.2" /><path d="M3 10.8h14" /></svg>
   ),
+  /* microphone: spokesperson videos (a type filter) */
+  spokesperson: (p) => (
+    <svg {...base} {...p}><rect x="7.5" y="2.8" width="5" height="9" rx="2.5" /><path d="M4.8 9.5a5.2 5.2 0 0 0 10.4 0M10 14.7v2.5M7.3 17.2h5.4" /></svg>
+  ),
   /* four-point sparkle: everything else */
   other: (p) => (
     <svg {...base} {...p}><path d="M10 3l1.6 4.4L16 9l-4.4 1.6L10 15l-1.6-4.4L4 9l4.4-1.6L10 3z" /><path d="M15.5 14.5v3M14 16h3" /></svg>
