@@ -128,8 +128,10 @@ function ScenePromo() {
 
 const SCENES = [SceneExplain, SceneDemo, ScenePromo]
 
-export default function DeliveryStyles() {
-  const { eyebrow, title, steps, note } = CONTENT
+/* The interaction shell, shared with /saas-video-production (src/components/saas/SaasFormats.jsx): `content` is { eyebrow, title, steps, note }, `scenes` one component per step,
+   `id` the section's anchor. Spokesperson passes its own below; the markup and behaviour are exactly what they were. */
+export function FormatStage({ content, scenes: SCENES, id }) {
+  const { eyebrow, title, steps, note } = content
   const [step, setStep] = useState(0)
   const [running, setRunning] = useState(false)
   const [inView, setInView] = useState(false)
@@ -157,7 +159,7 @@ export default function DeliveryStyles() {
   const Scene = SCENES[step]
 
   return (
-    <div ref={rootRef} id="spokesperson-formats" className="rounded-3xl border border-hairline-strong bg-surface-1 p-5 md:p-8">
+    <div ref={rootRef} id={id} className="rounded-3xl border border-hairline-strong bg-surface-1 p-5 md:p-8">
       <div className="mx-auto max-w-2xl text-center">
         <p className="text-xs font-semibold uppercase tracking-[0.16em] text-lime">{eyebrow}</p>
         <h3 className="mt-2 font-display text-xl font-semibold leading-snug tracking-snug text-ink md:text-[1.7rem]">{title}</h3>
@@ -197,4 +199,8 @@ export default function DeliveryStyles() {
       </div>
     </div>
   )
+}
+
+export default function DeliveryStyles() {
+  return <FormatStage content={CONTENT} scenes={SCENES} id="spokesperson-formats" />
 }

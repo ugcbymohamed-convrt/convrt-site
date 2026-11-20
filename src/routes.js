@@ -14,6 +14,7 @@ export const PATHS = {
   ugcVideoAgency: '/ugc-video-agency',
   spokespersonVideoProduction: '/spokesperson-video-production',
   socialMediaVideoProduction: '/social-media-video-production',
+  saasVideoProduction: '/saas-video-production',
   ourWork: OUR_WORK_PATH,
   caseStudies: '/case-studies',
   caseStudyGraspo: '/case-studies/graspo',

@@ -22,6 +22,7 @@ import { HOME_FAQ, homeFaqText } from './homeFaq.js'
 import { UGC_FAQ } from './ugcFaq.js'
 import { SPOKESPERSON_FAQ } from './spokespersonFaq.js'
 import { ORGANIC_SOCIAL_FAQ } from './organicSocialFaq.js'
+import { SAAS_FAQ } from './saasFaq.js'
 import { PATHS } from '../routes.js'
 import { selectOurWork, isDisplayable, posterUrl, hlsUrl, titleOf } from '../content/portfolio.js'
 
@@ -76,6 +77,7 @@ export const BREADCRUMB_TRAILS = {
   [PATHS.ugcVideoAgency]: [{ name: 'Home', path: '/' }, { name: 'UGC Video Agency', path: PATHS.ugcVideoAgency }],
   [PATHS.spokespersonVideoProduction]: [{ name: 'Home', path: '/' }, { name: 'Spokesperson Video Production', path: PATHS.spokespersonVideoProduction }],
   [PATHS.socialMediaVideoProduction]: [{ name: 'Home', path: '/' }, { name: 'Organic Social Video Production', path: PATHS.socialMediaVideoProduction }],
+  [PATHS.saasVideoProduction]: [{ name: 'Home', path: '/' }, { name: 'SaaS Video Production', path: PATHS.saasVideoProduction }],
   [PATHS.ourWork]: [{ name: 'Home', path: '/' }, { name: 'Creator Showcase', path: PATHS.ourWork }],
 }
 
@@ -363,6 +365,43 @@ export function spokespersonGraph({ title, description }) {
   ])
 }
 
+/* SaaS service page (/saas-video-production). Same shape as spokespersonGraph. CONVRT lists "SaaS video production" under its additional expertise, not as a priced core service, so
+   this Service has its own @id on the page and is related to the services and the custom package that already exist on /pricing (SaaS demos and explainers are scoped as custom
+   packages). It carries NO Offer: no SaaS-specific price is published. The FAQPage is generated from the exact Q&A the page renders. No ratings, reviews, addresses, awards,
+   results, client names or VideoObject. */
+export function saasGraph({ title, description }) {
+  const path = PATHS.saasVideoProduction
+  const url = abs(path)
+  const trail = BREADCRUMB_TRAILS[path]
+  return graph([
+    organizationNode(),
+    {
+      '@type': 'WebPage',
+      '@id': pageId(path),
+      url,
+      name: title,
+      description,
+      isPartOf: { '@id': WEBSITE_ID },
+      about: { '@id': `${url}#service` },
+      breadcrumb: { '@id': `${url}#breadcrumb` },
+      inLanguage: 'en',
+    },
+    breadcrumbNode(trail, `${url}#breadcrumb`),
+    {
+      '@type': 'Service',
+      '@id': `${url}#service`,
+      name: 'SaaS video production',
+      serviceType: 'SaaS video production',
+      description: 'Video production for software and app companies: SaaS explainer videos, product demonstrations, app walkthroughs, animated product explainers, human-led software presentations and video advertising creatives, produced end to end by CONVRT.',
+      url,
+      provider: { '@id': ORG_ID },
+      audience: { '@type': 'Audience', audienceType: 'SaaS, software and app companies' },
+      isRelatedTo: [{ '@id': serviceId('ugc') }, { '@id': serviceId('spokesperson') }, { '@id': serviceId(CUSTOM_PACKAGES.paid.id) }],
+    },
+    faqNode(SAAS_FAQ, `${url}#faq`),
+  ])
+}
+
 /* Organic Social service page (/social-media-video-production). The Service is the existing 'organic' core service (same @id as on /pricing), described from the business data.
    Its Offers are Organic Light and Organic Growth, built by the same monthlyOffer function and from the same data as on /pricing and shown as the two package cards on the page.
    The FAQPage is generated from the exact Q&A the page renders. No ratings, reviews, addresses, awards, results, post counts beyond the published cadence, or VideoObject. */
@@ -453,6 +492,7 @@ export function jsonLdFor(path, seo = {}) {
   if (path === PATHS.ugcVideoAgency) return ugcGraph(seo)
   if (path === PATHS.spokespersonVideoProduction) return spokespersonGraph(seo)
   if (path === PATHS.socialMediaVideoProduction) return organicSocialGraph(seo)
+  if (path === PATHS.saasVideoProduction) return saasGraph(seo)
   if (path === PATHS.ourWork) return ourWorkGraph(seo)
   return undefined
 }

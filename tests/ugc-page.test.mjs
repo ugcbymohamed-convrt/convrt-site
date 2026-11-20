@@ -247,7 +247,7 @@ test('JSON-LD: Organization, WebPage, BreadcrumbList, Service (+ Offers from the
   assert.equal(web.url, URL_)
   assert.equal(web.about['@id'], svc['@id'])
   assert.deepEqual(crumb.itemListElement.map((i) => [i.position, i.name, i.item]), [[1, 'Home', `${SITE_URL}/`], [2, 'UGC Video Agency', URL_]])
-  assert.deepEqual(Object.keys(BREADCRUMB_TRAILS), ['/pricing', PATH, PATHS.spokespersonVideoProduction, PATHS.socialMediaVideoProduction, PATHS.ourWork])
+  assert.deepEqual(Object.keys(BREADCRUMB_TRAILS), ['/pricing', PATH, PATHS.spokespersonVideoProduction, PATHS.socialMediaVideoProduction, PATHS.saasVideoProduction, PATHS.ourWork])
   assert.equal(svc.provider['@id'], ORG_ID)
   assert.ok(svc.isRelatedTo.some((r) => r['@id'] === serviceId('ugc')))
   const prices = svc.offers.map((o) => o.priceSpecification.price)

@@ -15,12 +15,17 @@
        id: 'saas-onboarding-demo-en',          // unique, lowercase letters, digits and hyphens
        title: 'Short title shown on the card', // optional. Falls back to caption. Keep it short: it is the headline of the card.
        caption: 'One honest sentence describing the video.',   // required. Also the accessible name.
-       type: 'ugc',                            // ugc | spokesperson | organic | demo | testimonial | interview | social | ad  (see TYPE_LABELS). Default 'ugc'.
+       type: 'ugc',                            // ugc | spokesperson | organic | saas | demo | testimonial | interview | social | ad  (see TYPE_LABELS). Default 'ugc'.
                                                // type decides which SERVICE page may show the video: 'ugc' only on the UGC page, 'spokesperson' only on the
-                                               // Spokesperson page, 'organic' only on the Organic Social page. A video is never shown on a service page because
+                                               // Spokesperson page, 'organic' only on the Organic Social page, 'saas' only on the SaaS page (plus anything listed in `alsoOn`). A video is never shown on a service page because
                                                // someone speaks on camera in it. ('social' is the homepage client showcase's type and never reaches a service page.)
        style: 'educational',                   // ORGANIC videos only, optional: educational | entertaining | product | founder (ORGANIC_STYLES). Drives the filter on the
                                                // Organic Social page. Set it ONLY once the owner has confirmed how the video should be classified.
+       format: 'demo',                         // SaaS-page videos only, optional: explainer | demo | presenter | animated | ad (SAAS_FORMATS). Drives the optional filter on the
+                                               // SaaS page. Set it ONLY once the owner has confirmed how the video should be classified.
+       alsoOn: { saas: 'gallery' },            // optional: ALSO show this video on another service page ('ugc' | 'spokesperson' | 'organic' | 'saas'), with its placement there
+                                               // ('hero' | 'gallery'). Only for a video the owner approved for that page, e.g. a presenter demonstrating software on both the
+                                               // Spokesperson and SaaS pages. A video is never added to a service page because of what it shows.
        industry: 'saas',                       // saas | ecommerce | services | other | 'unclassified'. This is what files the video under a tab. Only a
                                                // CONFIRMED industry goes here; while it is unknown use 'unclassified' (or omit it): such a video is in All Work
                                                // but under no tab, and never under Other. 'other' means "confirmed: none of the above". Any other slug
@@ -71,6 +76,20 @@
    • tests/ugc-page.test.mjs and tests/our-work.test.mjs validate every entry (unique ids, valid codes, source, permission flags). */
 
 export const PORTFOLIO = [
+  /* SAAS SLOTS (/saas-video-production): EMPTY ON PURPOSE, awaiting the owner's approved SaaS videos. No UGC, Spokesperson, Organic or homepage-client video may stand in
+     for them, and no Cloudflare id is invented: to fill a slot, paste this entry (with a real Cloudflare id) at the top of this list:
+       THREE-PHONE HERO STAGE  placement: 'hero'      (first = the large centre phone, at most 3)
+         hero slot 1 (centre): a human-led SaaS product explainer      hero slot 2: a software demonstration or app walkthrough      hero slot 3: an animated / motion-graphics SaaS video
+         (the order is a recommendation: the stage shows whatever is approved, in this order)
+       GALLERY                 placement: 'gallery'   (everything else, at most 10; four across on desktop)
+     {
+       id: 'saas-hero-1', title: '…', caption: 'One honest sentence.', type: 'saas', format: 'presenter',   // format only once confirmed
+       industry: 'saas', languages: ['en'], source: { cloudflareId: '…' }, poster: '/portfolio/saas-hero-1.webp',
+       creatorId: 'cv-saas-hero-1', category: 'SaaS · Product explainer', placement: 'hero',
+       approval: { status: 'approved', portfolioUse: true, creatorConsent: true, approvedBy: 'CONVRT owner (confirmed in chat)', approvedOn: 'YYYY-MM-DD' },
+     }
+     A video that genuinely belongs on two service pages keeps ONE entry and adds `alsoOn`, e.g. a spokesperson video: type: 'spokesperson', alsoOn: { saas: 'gallery' }.
+     Set `production: 'convrt'` only if CONVRT produced it. An independent creator's example is never presented as a CONVRT production. */
   /* ORGANIC SOCIAL SLOTS (/social-media-video-production): EMPTY ON PURPOSE, awaiting the owner's approved organic videos. Nothing from the UGC or Spokesperson
      pages, and none of the homepage client videos, may stand in for them. To fill a slot, paste this entry (with a real Cloudflare id) at the top of this list:
        THREE-PHONE HERO STAGE  placement: 'hero'      (first = the large centre phone, at most 3)   hero slot 1 (centre) · hero slot 2 · hero slot 3
@@ -934,7 +953,7 @@ export const INDUSTRY_LABELS = {
 
 /* What kind of video it is. Only videos explicitly typed 'ugc' reach the UGC page (an unset type is unknown, not UGC). */
 export const TYPE_LABELS = {
-  ugc: 'UGC', spokesperson: 'Spokesperson', organic: 'Organic social', demo: 'Product demo', testimonial: 'Testimonial', interview: 'Street interview',
+  ugc: 'UGC', spokesperson: 'Spokesperson', organic: 'Organic social', saas: 'SaaS video', demo: 'Product demo', testimonial: 'Testimonial', interview: 'Street interview',
   social: 'Organic social', ad: 'Ad creative',
 }
 
@@ -947,6 +966,20 @@ export const ORGANIC_STYLES = [
   { id: 'founder', label: 'Founder-led' },
 ]
 export const organicStyleLabel = (id) => ORGANIC_STYLES.find((s) => s.id === id)?.label ?? null
+
+/* The service pages that can show a video (src/routes.js): a video belongs to the page named by its `type` and, optionally, to the others in `alsoOn`. */
+export const SERVICE_PAGES = ['ugc', 'spokesperson', 'organic', 'saas']
+
+/* Suggested video formats for the SaaS gallery filter. Like ORGANIC_STYLES they are a presentation aid, NOT a verified classification: a video carries a `format`
+   only after the owner has confirmed it, and a format with no approved video never appears as a filter. */
+export const SAAS_FORMATS = [
+  { id: 'explainer', label: 'Product explainers' },
+  { id: 'demo', label: 'Product demos' },
+  { id: 'presenter', label: 'Human-led' },
+  { id: 'animated', label: 'Animated' },
+  { id: 'ad', label: 'Ads' },
+]
+export const saasFormatLabel = (id) => SAAS_FORMATS.find((f) => f.id === id)?.label ?? null
 
 const titleCase = (slug) => slug.replace(/[-_]+/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())
 export const languageLabel = (code) => LANGUAGE_LABELS[code] ?? code.toUpperCase()
@@ -968,6 +1001,11 @@ export const isConvrtProduction = (item) => item.production === 'convrt'
 /* Brand name and credit line: shown only with the explicit permission recorded in the approval. */
 export const brandLabel = (item) => (item.brand && item.approval?.brandDisplay === true ? item.brand : null)
 export const creditLabel = (item) => (item.productionCredit && item.approval?.creditDisplay === true ? item.productionCredit : null)
+
+/* Does this video belong on a service page? Only through its own `type` or an explicit `alsoOn` entry, never because of what it shows. */
+export const servesPage = (item, page) => item.type === page || Boolean(item.alsoOn && typeof item.alsoOn === 'object' && item.alsoOn[page])
+/* Where it sits on that page: its own `placement` on the page its type names, the `alsoOn` placement on any other. */
+export const placementOn = (item, page) => (item.type === page ? item.placement : item.alsoOn?.[page])
 
 /* ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
    VALIDATION AND THE PERMISSION GATES
@@ -992,6 +1030,17 @@ export function portfolioProblems(item) {
   if (hasCf === hasMp4) p.push('source needs exactly one of cloudflareId or mp4')
   if (item.style !== undefined && !ORGANIC_STYLES.some((st) => st.id === item.style)) p.push(`style must be one of: ${ORGANIC_STYLES.map((st) => st.id).join(', ')}`)
   if (item.style !== undefined && item.type !== 'organic') p.push("style is only for type 'organic'")
+  if (item.format !== undefined && !SAAS_FORMATS.some((f) => f.id === item.format)) p.push(`format must be one of: ${SAAS_FORMATS.map((f) => f.id).join(', ')}`)
+  if (item.format !== undefined && !servesPage(item, 'saas')) p.push("format is only for videos shown on the SaaS page (type 'saas' or alsoOn.saas)")
+  if (item.alsoOn !== undefined) {
+    const entries = item.alsoOn && typeof item.alsoOn === 'object' && !Array.isArray(item.alsoOn) ? Object.entries(item.alsoOn) : null
+    if (!entries) p.push('alsoOn must be an object: { servicePage: placement }')
+    else for (const [page, where] of entries) {
+      if (!SERVICE_PAGES.includes(page)) p.push(`alsoOn.${page}: unknown service page (use ${SERVICE_PAGES.join(', ')})`)
+      else if (page === item.type) p.push(`alsoOn.${page}: the video already belongs to that page through its type`)
+      if (where !== 'hero' && where !== 'gallery') p.push(`alsoOn.${page} must be 'hero' or 'gallery'`)
+    }
+  }
   if (item.placement !== undefined && item.placement !== 'hero' && item.placement !== 'gallery') p.push("placement must be 'hero' or 'gallery'")
   if (item.showcase !== undefined && !/^[a-z][a-z0-9-]*$/.test(item.showcase)) p.push('showcase must be a lowercase slug')
   if (item.uploadDate !== undefined && !/^\d{4}-\d{2}-\d{2}(T[\d:.+Z-]+)?$/.test(item.uploadDate)) p.push('uploadDate must be an ISO date (YYYY-MM-DD)')
@@ -1019,21 +1068,28 @@ export const selectDisplayable = (items = PORTFOLIO) => items.filter(isDisplayab
 export const selectOurWork = selectDisplayable
 
 /* /ugc-video-agency: approved UGC videos, split into the hero stage (placement 'hero') and the gallery under it (everything else). */
-const selectUgc = (items) => selectDisplayable(items).filter((i) => i.type === 'ugc')
-export const selectHero = (items = PORTFOLIO) => selectUgc(items).filter((i) => i.placement === 'hero')
-export const selectGallery = (items = PORTFOLIO) => selectUgc(items).filter((i) => i.placement !== 'hero')
+const selectUgc = (items) => selectDisplayable(items).filter((i) => servesPage(i, 'ugc'))
+export const selectHero = (items = PORTFOLIO) => selectUgc(items).filter((i) => placementOn(i, 'ugc') === 'hero')
+export const selectGallery = (items = PORTFOLIO) => selectUgc(items).filter((i) => placementOn(i, 'ugc') !== 'hero')
 
 /* /spokesperson-video-production: approved videos whose type is explicitly 'spokesperson', split the same way (hero stage / gallery). A UGC video can never
    appear here and a spokesperson video can never appear on the UGC page: the type is the only switch, and there is no fallback to the other list. */
-const selectSpokesperson = (items) => selectDisplayable(items).filter((i) => typeOf(i) === 'spokesperson')
-export const selectSpokespersonHero = (items = PORTFOLIO) => selectSpokesperson(items).filter((i) => i.placement === 'hero')
-export const selectSpokespersonGallery = (items = PORTFOLIO) => selectSpokesperson(items).filter((i) => i.placement !== 'hero')
+const selectSpokesperson = (items) => selectDisplayable(items).filter((i) => servesPage(i, 'spokesperson'))
+export const selectSpokespersonHero = (items = PORTFOLIO) => selectSpokesperson(items).filter((i) => placementOn(i, 'spokesperson') === 'hero')
+export const selectSpokespersonGallery = (items = PORTFOLIO) => selectSpokesperson(items).filter((i) => placementOn(i, 'spokesperson') !== 'hero')
 
 /* /social-media-video-production: approved videos whose type is explicitly 'organic', split the same way. Like the spokesperson list there is no fallback: no UGC,
    spokesperson or homepage-client ('social') video can appear here, and an organic video can never appear on the other service pages. */
-const selectOrganic = (items) => selectDisplayable(items).filter((i) => typeOf(i) === 'organic')
-export const selectOrganicHero = (items = PORTFOLIO) => selectOrganic(items).filter((i) => i.placement === 'hero')
-export const selectOrganicGallery = (items = PORTFOLIO) => selectOrganic(items).filter((i) => i.placement !== 'hero')
+const selectOrganic = (items) => selectDisplayable(items).filter((i) => servesPage(i, 'organic'))
+export const selectOrganicHero = (items = PORTFOLIO) => selectOrganic(items).filter((i) => placementOn(i, 'organic') === 'hero')
+export const selectOrganicGallery = (items = PORTFOLIO) => selectOrganic(items).filter((i) => placementOn(i, 'organic') !== 'hero')
+
+/* /saas-video-production: approved videos whose type is explicitly 'saas', plus any approved video that lists `alsoOn.saas` (e.g. a presenter demonstrating software that the
+   owner approved for both the Spokesperson and SaaS pages). Split the same way (hero stage / gallery). No fallback: UGC, organic and homepage-client ('social') videos never
+   appear here, and a spokesperson video appears only when its entry says so. */
+const selectSaas = (items) => selectDisplayable(items).filter((i) => servesPage(i, 'saas'))
+export const selectSaasHero = (items = PORTFOLIO) => selectSaas(items).filter((i) => placementOn(i, 'saas') === 'hero')
+export const selectSaasGallery = (items = PORTFOLIO) => selectSaas(items).filter((i) => placementOn(i, 'saas') !== 'hero')
 
 /* Homepage client panel `id` ('adscale' | 'elyon' | 'graspo'). */
 export const selectShowcase = (id, items = PORTFOLIO) => items.filter((i) => isShowcaseable(i) && i.showcase === id)
