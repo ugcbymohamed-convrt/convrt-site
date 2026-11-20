@@ -71,6 +71,7 @@ export const SPOKESPERSON_FAQ = [
       'Yes. A presenter can walk viewers through a product, a software interface or a customer problem. We produce product demonstrations and SaaS explainers as part of our work, and scope each one with you.',
       PRODUCT_REQUIREMENTS.saas,
     ],
+    links: [{ label: 'See our SaaS video production', href: '/saas-video-production' }],
   },
   {
     id: 'real-people-or-ai',

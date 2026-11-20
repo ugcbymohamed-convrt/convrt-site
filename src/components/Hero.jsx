@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { usePressFeedback } from '../lib/usePressFeedback.js'
-import { OFFER_PATHS, OUR_WORK_PATH } from '../config.js'
+import { OFFER_PATHS, CREATOR_SHOWCASE_PATH } from '../config.js'
 import { trackEvent } from '../lib/analytics.js'
 import CreatorVideoStage from './ugc/CreatorVideoStage.jsx'
 import { HOME_HERO } from '../content/homeHero.js'
@@ -67,8 +67,8 @@ export default function Hero() {
               </span>
             </h1>
 
-            <p className="mt-6 md:mt-8 max-w-xl mx-auto lg:mx-0 text-base md:text-lg text-ink-muted leading-relaxed">
-              Human-led UGC ads, spokesperson videos, and organic social content designed to capture attention, build trust, and drive conversions.
+            <p className="mt-6 md:mt-8 max-w-xl mx-auto lg:mx-0 text-pretty text-base md:text-lg text-ink-muted leading-relaxed">
+              From creative strategy and scripting to creator casting, filming and editing. We produce human-led UGC ads, spokesperson videos and organic social content, ready to perform.
             </p>
             </div>
 
@@ -96,7 +96,7 @@ export default function Hero() {
                   </svg>
                 </a>
                 <a
-                  href={OUR_WORK_PATH}
+                  href={CREATOR_SHOWCASE_PATH}
                   onClick={() => trackEvent('hero_see_our_work_click', { location: 'hero' })}
                   {...ghostPress}
                   className="hero-cta-ghost group inline-flex w-full sm:w-auto min-h-[48px] sm:min-h-[64px] md:min-h-[68px] items-center justify-center gap-2
@@ -104,7 +104,7 @@ export default function Hero() {
                              hover:border-ink-muted
                              focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink"
                 >
-                  See Our Work
+                  Explore Videos
                   <svg viewBox="0 0 12 12" className="h-3.5 w-3.5 md:h-4 md:w-4 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0 motion-reduce:group-hover:translate-y-0" fill="none" aria-hidden="true">
                     <path d="M3 9L9 3M9 3H4M9 3V8" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>

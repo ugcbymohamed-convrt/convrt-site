@@ -400,7 +400,7 @@ test('FAQPage JSON-LD is generated from exactly the visible Q&A', () => {
 test('BreadcrumbList: real hierarchy with canonical absolute URLs', () => {
   const bc = graph().find((n) => n['@type'] === 'BreadcrumbList')
   assert.deepEqual(bc.itemListElement.map((i) => [i.position, i.name, i.item]), [[1, 'Home', `${SITE_URL}/`], [2, 'Pricing', `${SITE_URL}/pricing`]])
-  assert.deepEqual(Object.keys(BREADCRUMB_TRAILS), ['/pricing', '/ugc-video-agency', '/spokesperson-video-production', '/social-media-video-production', '/our-work'])
+  assert.deepEqual(Object.keys(BREADCRUMB_TRAILS), ['/pricing', '/ugc-video-agency', '/spokesperson-video-production', '/social-media-video-production', '/saas-video-production', '/creator-showcase'])
 })
 
 test('JSON-LD is attached only to the homepage, /pricing and /ugc-video-agency; the manifest supplies it with the head', () => {
@@ -777,7 +777,7 @@ test('price per variation: Sprint $200 and Sprint Plus $167 (monthly, rounded to
   assert.equal(pricePerVariation(SPRINT_PLUS, 'oneOff').text, '$200')
   const src = fs.readFileSync(path.join(ROOT, 'src/components/pricing/PricingCards.jsx'), 'utf8')
   assert.ok(/pricePerVariation\(pkg, o\.id\)\.text/.test(src) && !/\$166|\$200\b/.test(src.replace(/\/\*[\s\S]*?\*\//g, '')), 'figures are computed, never typed in the component')
-  assert.match(faq('whats-included'), /\$200 per variation for the Creative Testing Sprint and \$167 per variation for Creative Testing Sprint Plus/)
+  assert.match(faq('whats-included'), /\$200 per variation for the Creative Testing Sprint and \$167 per variation for Creative Testing Sprint Plus.*not prices for buying individual videos/)
 })
 
 // ── sitewide consistency audit guard ──

@@ -1,4 +1,4 @@
-/* Icons for Our Work: one per category tab, plus the player and gallery controls. Inline SVG (no icon library), 20px grid, currentColor. */
+/* Icons for the Creator Showcase: one per category tab, plus the player and gallery controls. Inline SVG (no icon library), 20px grid, currentColor. */
 
 const base = { viewBox: '0 0 20 20', fill: 'none', stroke: 'currentColor', strokeWidth: 1.6, strokeLinecap: 'round', strokeLinejoin: 'round', 'aria-hidden': true }
 
@@ -18,6 +18,10 @@ export const CATEGORY_ICONS = {
   /* briefcase: services */
   services: (p) => (
     <svg {...base} {...p}><rect x="3" y="6.5" width="14" height="9.5" rx="2" /><path d="M7.5 6.5V5.3a1.3 1.3 0 0 1 1.3-1.3h2.4a1.3 1.3 0 0 1 1.3 1.3v1.2" /><path d="M3 10.8h14" /></svg>
+  ),
+  /* microphone: spokesperson videos (a type filter) */
+  spokesperson: (p) => (
+    <svg {...base} {...p}><rect x="7.5" y="2.8" width="5" height="9" rx="2.5" /><path d="M4.8 9.5a5.2 5.2 0 0 0 10.4 0M10 14.7v2.5M7.3 17.2h5.4" /></svg>
   ),
   /* four-point sparkle: everything else */
   other: (p) => (

@@ -247,7 +247,7 @@ test('JSON-LD: Organization, WebPage, BreadcrumbList, Service (+ Offers from the
   assert.equal(web.url, URL_)
   assert.equal(web.about['@id'], svc['@id'])
   assert.deepEqual(crumb.itemListElement.map((i) => [i.position, i.name, i.item]), [[1, 'Home', `${SITE_URL}/`], [2, 'UGC Video Agency', URL_]])
-  assert.deepEqual(Object.keys(BREADCRUMB_TRAILS), ['/pricing', PATH, PATHS.spokespersonVideoProduction, PATHS.socialMediaVideoProduction, PATHS.ourWork])
+  assert.deepEqual(Object.keys(BREADCRUMB_TRAILS), ['/pricing', PATH, PATHS.spokespersonVideoProduction, PATHS.socialMediaVideoProduction, PATHS.saasVideoProduction, PATHS.showcase])
   assert.equal(svc.provider['@id'], ORG_ID)
   assert.ok(svc.isRelatedTo.some((r) => r['@id'] === serviceId('ugc')))
   const prices = svc.offers.map((o) => o.priceSpecification.price)
@@ -550,7 +550,7 @@ test('hero left side follows the homepage hero: headline, description, value lin
   const hero = rootOf(page(PATH))
   const left = hero.slice(0, hero.indexOf('id="how-it-works"'))
   assert.match(left, /Your next 5 ad concepts\. Tailored to your brand\. <span class="text-lime">On us\.<\/span>/)
-  assert.ok(left.includes('Get 5 Free Ad Concepts') && left.includes('See Our Work') && left.includes('href="/creative-growth-roadmap"'))
+  assert.ok(left.includes('Get 5 Free Ad Concepts') && left.includes('Explore Videos') && left.includes('href="/creative-growth-roadmap"'))
   assert.ok(left.includes('We&#x27;ve got two more FREE ways to start.') || left.includes("We've got two more FREE ways to start."))
   assert.ok(/1 <span class="text-lime">FREE<\/span> Video/.test(left) && /10 <span class="text-\[#F472B6\]">FREE<\/span> Ad Hooks/.test(left))
   assert.ok(left.includes('href="/risk-free-trial"') && left.includes('href="/free-hooks"'))
@@ -631,7 +631,7 @@ test('gallery: a horizontal scroller of up to 10 approved videos before Results;
   else {
     assert.ok(html.includes('id="ugc-videos"'), 'the gallery is on the page')
     assert.equal((html.split('id="ugc-videos"')[1].split('</section>')[0].match(/Play video:/g) || []).length, Math.min(gallery.length, 10), 'one card per approved gallery video (max 10)')
-    assert.ok(gallery.every((v) => html.includes(posterUrl(v).replace(/&/g, '&amp;'))), 'every card has its thumbnail')
+    assert.ok(gallery.slice(0, 10).every((v) => html.includes(posterUrl(v).replace(/&/g, '&amp;'))), 'every shown card (max 10) has its thumbnail')
     assert.ok(!/<video/.test(html.split('id="ugc-videos"')[1].split('</section>')[0]), 'the gallery has no video element until a visitor presses play')
     assert.ok(!/\.m3u8|<source/.test(html), 'no stream is requested by the static HTML (the hero attaches its source only when idle)')
   }
@@ -641,12 +641,12 @@ test('gallery: a horizontal scroller of up to 10 approved videos before Results;
   assert.match(src, /const TOTAL = 10/)
   assert.ok(/overflow-x-auto/.test(src) && /snap-x/.test(src) && /lg:w-\[calc\(\(100%-3rem\)\/4\)\]/.test(src), 'four cards visible on a laptop, native horizontal scrolling (trackpad swipe)')
   assert.ok(/ArrowRight/.test(src) && /Scroll videos left/.test(src) && /Scroll videos right/.test(src) && /pointerType !== 'mouse'/.test(src), 'keyboard, buttons and mouse drag')
-  assert.ok(/See all UGC videos/.test(src) && /OUR_WORK_PATH/.test(src), 'the button under the gallery')
+  assert.ok(/Explore UGC Videos/.test(src) && /CREATOR_SHOWCASE_PATH/.test(src), 'the button under the gallery')
   assert.ok(/usePreviewHost/.test(src) && /endsWith\('\.vercel\.app'\)/.test(read('src/lib/previewHost.js')) && !/convrt\.studio/.test(read('src/lib/previewHost.js')), 'stand-ins only on preview hosts')
   // with approved videos the gallery renders them
   const mod = await vite.ssrLoadModule('/src/components/ugc/UgcGallery.jsx')
   const out = renderToStaticMarkup(createElement(mod.default, { items: [sample(), sample({ id: 's2', caption: 'Second.' })] }))
-  assert.ok(out.includes('id="ugc-videos"') && out.includes('Play video: A sample caption for tests.') && out.includes('See all UGC videos'))
+  assert.ok(out.includes('id="ugc-videos"') && out.includes('Play video: A sample caption for tests.') && out.includes('Explore UGC Videos'))
   assert.equal((out.match(/<li /g) || []).length, 2)
 })
 

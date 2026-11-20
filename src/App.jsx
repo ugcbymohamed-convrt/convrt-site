@@ -21,6 +21,7 @@ const CreativeTestingSprintPage = lazy(() => import('./CreativeTestingSprintPage
 const UgcVideoAgencyPage = lazy(() => import('./UgcVideoAgencyPage.jsx'))
 const SpokespersonVideoPage = lazy(() => import('./SpokespersonVideoPage.jsx'))
 const OrganicSocialVideoPage = lazy(() => import('./OrganicSocialVideoPage.jsx'))
+const SaasVideoPage = lazy(() => import('./SaasVideoPage.jsx'))
 const OurWorkPage = lazy(() => import('./OurWorkPage.jsx'))
 const CaseStudiesPage = lazy(() => import('./CaseStudiesPage.jsx'))
 const ScalePage = lazy(() => import('./ScalePage.jsx'))
@@ -46,8 +47,10 @@ const ROUTES = {
   [PATHS.spokespersonVideoProduction]: SpokespersonVideoPage,
   // Organic Social service page: the same architecture, with its own content and its own videos.
   [PATHS.socialMediaVideoProduction]: OrganicSocialVideoPage,
-  // Our Work: the filterable video portfolio (src/content/portfolio.js).
-  [PATHS.ourWork]: OurWorkPage,
+  // SaaS service page: the same architecture, with its own content, its own visuals and its own videos.
+  [PATHS.saasVideoProduction]: SaasVideoPage,
+  // Creator Showcase (route stays /creator-showcase): the filterable video library (src/content/portfolio.js).
+  [PATHS.showcase]: OurWorkPage,
   [PATHS.caseStudies]: CaseStudiesPage,
   [PATHS.caseStudyGraspo]: CaseStudiesPage,
   [PATHS.caseStudyElyon]: CaseStudiesPage,

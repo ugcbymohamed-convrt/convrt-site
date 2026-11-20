@@ -24,7 +24,7 @@ import {
 import { jsonLdFor } from './structuredData.js'
 import { PATHS } from '../routes.js'
 import { formatMoney, SPRINT, USAGE_RIGHTS } from './businessKnowledge.js'
-import { selectOurWork, selectSpokespersonHero, selectSpokespersonGallery, selectOrganicHero, selectOrganicGallery } from '../content/portfolio.js'
+import { selectOurWork, selectSpokespersonHero, selectSpokespersonGallery, selectOrganicHero, selectOrganicGallery, selectSaasHero, selectSaasGallery } from '../content/portfolio.js'
 
 export const SITE_SEO = {
   '/': {
@@ -70,12 +70,22 @@ export const SITE_SEO = {
     // empty. It flips by itself when the first approved organic video is added to src/content/portfolio.js (same rule as the spokesperson page and /our-work).
     indexable: selectOrganicHero().length + selectOrganicGallery().length > 0,
   },
-  [PATHS.ourWork]: {
-    title: 'Our Work | UGC Ads & Video Production Portfolio | CONVRT',
+  [PATHS.saasVideoProduction]: {
+    title: 'SaaS Video Production Agency | Explainers, Demos & Ads | CONVRT',
     description:
-      'Watch creator-led UGC ads and performance video creatives produced by CONVRT for paid social. Browse the portfolio and filter by industry.',
-    ogTitle: 'CONVRT Our Work: UGC Ads & Performance Creatives',
-    ogDescription: 'Watch human-led UGC ads, spokesperson videos and performance creatives produced by CONVRT.',
+      'SaaS video production for software and app brands. Human-led explainers, product demos, animated videos and performance-driven ads, from concept to delivery.',
+    ogTitle: 'CONVRT: SaaS Video Production for Software and App Brands',
+    ogDescription: 'Explainers, product demos, animated videos and video ads for software companies, with strategy, scripting, presenters, motion graphics and editing in one place.',
+    // Indexable (and in the sitemap) once at least one approved SaaS video exists for this page, so the page is not promoted to search while its showcase is still empty.
+    // It flips by itself when the first approved SaaS video is added to src/content/portfolio.js (same rule as the Spokesperson and Organic Social pages and /our-work).
+    indexable: selectSaasHero().length + selectSaasGallery().length > 0,
+  },
+  [PATHS.showcase]: {
+    title: 'Creator Showcase | UGC Video Examples | CONVRT',
+    description:
+      'Explore UGC video examples from independent creators across e-commerce, SaaS, services and other industries. Discover different styles and creative approaches.',
+    ogTitle: 'CONVRT Creator Showcase: UGC Video Examples',
+    ogDescription: 'Explore real creator videos across e-commerce, SaaS, services and more. Examples from independent creators.',
     // Indexable (and in the sitemap) only while at least one video is approved for the portfolio, so an empty library is never promoted to search.
     indexable: selectOurWork().length > 0,
   },

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { trackEvent } from '../../lib/analytics.js'
-import { OUR_WORK_PATH } from '../../config.js'
+import { CREATOR_SHOWCASE_PATH } from '../../config.js'
 import { posterUrl, languageLabel } from '../../content/portfolio.js'
 import { usePreviewHost } from '../../lib/previewHost.js'
 import SectionDivider from '../SectionDivider.jsx'
@@ -12,7 +12,7 @@ import { PORTRAITS } from './illustrations.jsx'
 /* SECTION: a horizontal gallery of real UGC examples, shown before "Results & client feedback".
 
    DATA. The approved portfolio videos (selectDisplayable, src/content/portfolio.js), at most TOTAL (10). Adding a video there is the
-   only step needed: this section, the hero stage and the future "Our Work" page all read the same list. With none, the section is
+   only step needed: this section, the hero stage and the Creator Showcase page (/our-work) all read the same list. With none, the section is
    absent on the live site (no placeholder, no stock footage). On Vercel preview hosts only (usePreviewHost) it shows ten stand-in
    cards so the layout can be reviewed; those never reach the production domain.
 
@@ -43,7 +43,7 @@ export const UGC_GALLERY = {
   intro: 'Real creators, made to stop the scroll. Watch the work.',
   ariaLabel: 'UGC video examples. Scroll sideways to see more.',
   badge: 'UGC',
-  cta: { label: 'See all UGC videos', href: OUR_WORK_PATH },
+  cta: { label: 'Explore UGC Videos', href: CREATOR_SHOWCASE_PATH },
   track: 'ugc',
   samplePortraits: PORTRAITS,
   sampleNote: 'Layout preview only: your ten approved videos replace these cards. This never shows on the live site.',
@@ -51,7 +51,7 @@ export const UGC_GALLERY = {
 
 function Card({ item, index, playing, onPlay, config }) {
   const sample = item.sample
-  const langs = sample ? 'EN' : item.languages.map((l) => l.toUpperCase()).join(' · ')
+  const langs = sample ? 'EN' : (item.languages ?? []).map((l) => l.toUpperCase()).join(' · ')
   return (
     <figure className="group relative aspect-[9/16] overflow-hidden rounded-3xl border border-lime/25 bg-surface-1 shadow-[0_26px_60px_-30px_rgba(0,0,0,0.9),0_0_44px_-26px_rgba(213,255,64,0.5)] transition-[transform,border-color,box-shadow] duration-300 hover:-translate-y-1 hover:border-lime/60 hover:shadow-[0_30px_64px_-28px_rgba(0,0,0,0.9),0_0_56px_-18px_rgba(213,255,64,0.55)] motion-reduce:transition-none motion-reduce:hover:translate-y-0">
       {playing ? (
@@ -81,7 +81,7 @@ function Card({ item, index, playing, onPlay, config }) {
           )}
           <span aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/35" />
           <span aria-hidden="true" className="absolute left-3 top-3 inline-flex items-center gap-1.5 rounded-full border border-lime/40 bg-black/55 px-2.5 py-1 text-xs font-bold uppercase tracking-[0.1em] text-lime backdrop-blur">
-            <span className="h-1.5 w-1.5 rounded-full bg-lime" />{`${config.badge} · `}{langs}
+            <span className="h-1.5 w-1.5 rounded-full bg-lime" />{langs ? `${config.badge} · ${langs}` : config.badge}
           </span>
           <span aria-hidden="true" className="absolute left-1/2 top-1/2 flex h-14 w-14 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-lime/60 bg-lime/20 text-ink backdrop-blur transition-transform duration-200 group-hover:scale-110 motion-reduce:transition-none">
             <PlayGlyph />

@@ -57,7 +57,7 @@ export default function CategoryTabs({ tabs, activeId, counts, onSelect }) {
       <div
         ref={scroller}
         role="group"
-        aria-label="Filter videos by industry"
+        aria-label="Filter videos by industry or type"
         className="relative -mx-5 flex snap-x scroll-px-5 gap-2 overflow-x-auto overscroll-x-contain px-5 py-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden md:mx-0 md:scroll-px-0 md:px-0"
       >
         {tabs.map((t) => {

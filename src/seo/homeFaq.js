@@ -50,6 +50,7 @@ export const HOME_FAQ = [
   {
     q: 'Do you make SaaS explainer and product demo videos?',
     a: 'Yes. SaaS is one of our main categories, and we produce creator-led ads, spokesperson videos, product demonstrations and explainers. For software, we work with you to obtain suitable product access, demonstrations or reference materials when needed, using test data rather than real customer information where possible.',
+    link: { label: 'Learn about our SaaS video production', href: '/saas-video-production' },
   },
   {
     q: 'What types of brands do you work best with?',

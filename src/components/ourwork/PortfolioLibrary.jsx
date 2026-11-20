@@ -73,7 +73,7 @@ export default function PortfolioLibrary({ items, pageSize = PAGE }) {
   }
   const openItem = (item) => {
     setOpenId(item.id)
-    trackEvent('our_work_play', { id: item.id, industry: item.industry, type: item.type ?? 'ugc' })
+    trackEvent('our_work_play', { id: item.id, industry: item.industry, type: item.type ?? 'unspecified' })
   }
   const go = (delta) => {
     const i = (openIndex + delta + filtered.length) % filtered.length
