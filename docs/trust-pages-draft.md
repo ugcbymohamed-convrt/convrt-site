@@ -5,7 +5,8 @@ The pages `/about`, `/contact`, `/privacy`, `/terms` exist but are **drafts**: `
 ## To publish
 1. Resolve every highlighted `[OWNER TO CONFIRM: ...]` marker in `src/content/trustPages.js` (`tests/trust-pages.test.mjs` refuses publication while any remains).
 2. Change `TRUST_PAGES_PUBLISHED` to `true` in `src/config.js`. That one flag: removes the banner, makes About and Contact indexable and puts them in the sitemap (Privacy and Terms stay `noindex, follow`), adds About / Privacy / Terms links to the footer, links every form's data-use notice to `/privacy` (through the existing `PRIVACY_POLICY_URL`), links the cookie banner to the policy, and adds the founder Person and contact details to the Organization structured data.
-3. Update the tests that assert the draft state (`tests/trust-pages.test.mjs` first test group) in the same change.
+3. Delete the `/about` and `/contact` rules from `vercel.json` `headers` (they send `X-Robots-Tag: noindex` while the pages are drafts and would override the indexable meta tag; `tests/trust-pages.test.mjs` fails until you do). Keep the `/privacy` and `/terms` rules: those pages stay `noindex, follow`.
+4. Update the tests that assert the draft state (`tests/trust-pages.test.mjs` first test group) in the same change.
 
 ## Items only you can supply or confirm
 | Item | Where it appears | Notes |

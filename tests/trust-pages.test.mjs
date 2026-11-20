@@ -182,3 +182,24 @@ test('vercel.json: apex redirects permanently to www, hashed assets and fonts ge
   assert.ok(v.headers.some((h) => h.source === '/creator-onboarding/:path*' && h.headers.some((x) => x.key === 'X-Robots-Tag')), 'private-page protection intact')
   assert.deepEqual(v.regions, ['fra1'])
 })
+
+test('draft trust pages also send an X-Robots-Tag header; it is tied to the publish flag so publishing cannot leave About/Contact blocked', () => {
+  const v = JSON.parse(read('vercel.json'))
+  const tag = (source) => v.headers.find((h) => h.source === source)?.headers.find((x) => x.key === 'X-Robots-Tag')?.value
+  // Privacy and Terms are noindex, follow permanently (the meta robots says the same).
+  assert.equal(tag('/privacy'), 'noindex, follow')
+  assert.equal(tag('/terms'), 'noindex, follow')
+  // About and Contact: noindex only while TRUST_PAGES_PUBLISHED is false. When it becomes true, delete these two rules (they would override the indexable meta tag).
+  for (const p of ['/about', '/contact']) {
+    if (TRUST_PAGES_PUBLISHED) assert.equal(tag(p), undefined, `${p}: TRUST_PAGES_PUBLISHED is true, so remove its X-Robots-Tag rule from vercel.json`)
+    else assert.equal(tag(p), 'noindex', `${p} must be noindex while it is a draft`)
+  }
+  // The header and the meta tag agree for every trust page.
+  for (const p of TRUST) {
+    const h = pageHead(p)
+    const meta = h.robots ?? (h.noindex ? 'noindex' : '')
+    if (tag(p)) assert.equal(tag(p), meta, `${p}: header and meta robots disagree`)
+  }
+  assert.equal(v.headers.filter((h) => TRUST.includes(h.source)).length, TRUST_PAGES_PUBLISHED ? 2 : 4)
+  for (const h of v.headers.filter((x) => TRUST.includes(x.source))) assert.deepEqual(h.headers.map((x) => x.key), ['X-Robots-Tag'], `${h.source}: robots header only`)
+})
