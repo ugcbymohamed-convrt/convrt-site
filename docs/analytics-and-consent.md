@@ -32,6 +32,7 @@ If anything looks wrong, remove `VITE_GTM_ID` and redeploy: the site returns to 
 | Roadmap outcome (qualified enquiry) | `roadmap_qualified`, `roadmap_not_ready`, `roadmap_different_business` | after the qualification rules run; **`roadmap_qualified` is the "qualified lead"** |
 | Calendar shown / booking made | `roadmap_calendar_viewed`, `roadmap_booking_confirmed` | Calendly embed on /creative-growth-roadmap (`confirmed` only on Calendly's own scheduled message) |
 | Calendly booking on /scale | `booking_flow_opened`, `booking_completed` | /scale booking modal |
+| Calendar requested / Calendly opened in a new tab | `calendar_load_click`, `calendar_newtab_click` (`page` = roadmap or scale) | the booking calendar gate (see docs/booking-embed-and-cookies.md) |
 | Free video application | `risk_free_application_submitted`, `risk_free_application_success` | /risk-free-trial (success = saved) |
 | Free hooks signup | `hooks_signup_submitted`, `hooks_signup_success` | /free-hooks (success = saved) |
 | Referral application | `referral_application_submit`, `referral_application_success` | /referrals |
@@ -52,3 +53,27 @@ Every event includes `landing_page`. In GA4: Explore → Free form → Rows: `la
 - Visitors who reject are not measured at all (no cookieless pings in this "basic" consent mode).
 - Server-side events and Meta/TikTok pixels are not set up. If you add a pixel later inside GTM, tie it to the Marketing consent signals (`ad_storage`, `ad_user_data`, `ad_personalization`).
 - Draft privacy text describing this is in `src/content/trustPages.js`; it needs your review.
+
+## GTM configuration recipe (exact names)
+
+Do these in tagmanager.google.com (container `GTM-W7N2RPCQ`), then publish. One variable set, three triggers, one tag.
+
+| Step | Where in GTM | Create | Exact value |
+|---|---|---|---|
+| 1 | Variables -> User-defined -> New -> *Data Layer Variable* | `DLV page_path` | Data Layer Variable Name: `page_path` |
+| 2 | same | `DLV landing_page` | `landing_page` |
+| 3 | same | `DLV location` | `location` |
+| 4 | same | `DLV percent` | `percent` |
+| 5 | same | `DLV page` | `page` (value `roadmap` or `scale`) |
+| 6 | same | `DLV industry` | `industry` |
+| 7 | Triggers -> New -> *Custom Event* | **CONVRT conversions** | Event name (check *Use regex matching*): `^(roadmap_(form_started\|application_submitted\|qualified\|not_ready\|different_business\|calendar_viewed\|booking_confirmed)\|risk_free_(form_started\|application_submitted\|application_success)\|hooks_(form_started\|signup_submitted\|signup_success)\|referral_(form_start\|application_submit\|application_success)\|booking_(flow_opened\|completed)\|calendar_(load_click\|newtab_click))$` |
+| 8 | Triggers -> New -> *Custom Event* | **CONVRT CTA clicks** | regex: `^(hero_creative_roadmap_click\|roadmap_apply_click\|risk_free_apply_click\|referral_cta_click\|primary_cta_click\|case_study_click\|ugc_case_study_click\|hero_see_our_work_click\|(saas\|spokesperson\|organic)_(page_cta\|pricing_link\|email)_click\|(ugc\|saas\|spokesperson\|organic)_see_all_videos_click)$` |
+| 9 | Triggers -> New -> *Custom Event* | **CONVRT video** | regex: `^vsl_(play\|progress\|complete)$` |
+| 10 | Tags -> New -> *Google Analytics: GA4 Event* | **GA4 - CONVRT events** | Measurement ID `G-7R9WTV2XQF` (or select your Google tag). **Event Name: `{{Event}}`** |
+| 11 | same tag -> Event Parameters | add rows | `page_path` = `{{DLV page_path}}`; `landing_page` = `{{DLV landing_page}}`; `location` = `{{DLV location}}`; `percent` = `{{DLV percent}}`; `page` = `{{DLV page}}`; `industry` = `{{DLV industry}}` |
+| 12 | same tag -> Triggering | add all three | CONVRT conversions + CONVRT CTA clicks + CONVRT video |
+| 13 | same tag -> Advanced settings -> Consent settings | leave default | Built-in consent checks apply (Google tags respect Consent Mode) |
+| 14 | Preview (Tag Assistant) on the Vercel Preview URL | test | Accept analytics, then trigger each event; the tag must fire once per event |
+| 15 | Submit -> Publish | | |
+
+Do **not** forward the `*_page_view`, `*_gallery_*` or FAQ events unless you want them (GA4's own `page_view` already carries the page). In the regexes above, `\|` is just the pipe character: type a normal `|`.

@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { CONTACT_EMAIL } from '../../config.js'
 import { trackEvent, withUtm } from '../../lib/analytics.js'
+import CalendlyGate from '../booking/CalendlyGate.jsx'
 
 /* ─────────────────────────────────────────────
    Booking step — shown ONLY to visitors the qualification rules approved.
@@ -24,7 +25,6 @@ function buildEmbedUrl(base) {
   const url = new URL(base)
   url.searchParams.set('embed_domain', window.location.hostname)
   url.searchParams.set('embed_type', 'Inline')
-  url.searchParams.set('hide_gdpr_banner', '1')
   url.searchParams.set('background_color', '0a0a0b')
   url.searchParams.set('text_color', 'fafafa')
   url.searchParams.set('primary_color', 'd5ff40')
@@ -33,16 +33,19 @@ function buildEmbedUrl(base) {
 
 export default function RoadmapBooking({ bookingUrl, headingRef }) {
   const [loaded, setLoaded] = useState(false)
+  const [requested, setRequested] = useState(false) // the visitor asked for the calendar (CalendlyGate)
   const [slow, setSlow] = useState(false)
   const [booked, setBooked] = useState(false)
   const viewedRef = useRef(false)
   const bookedRef = useRef(false)
   const embedSrc = useRef(buildEmbedUrl(bookingUrl)).current
 
+  // The slow-load notice only makes sense once the calendar is actually loading, not while the visitor is still deciding.
   useEffect(() => {
+    if (!requested) return undefined
     const t = window.setTimeout(() => setSlow(true), SLOW_LOAD_MS)
     return () => window.clearTimeout(t)
-  }, [])
+  }, [requested])
 
   useEffect(() => {
     const onMessage = (e) => {
@@ -66,7 +69,7 @@ export default function RoadmapBooking({ bookingUrl, headingRef }) {
   }
 
   const fallbackHref = withUtm(bookingUrl)
-  const showFallbackNotice = slow && !loaded
+  const showFallbackNotice = requested && slow && !loaded
 
   return (
     <div>
@@ -83,31 +86,43 @@ export default function RoadmapBooking({ bookingUrl, headingRef }) {
           : 'Pick a time below to book your free Creative Growth Roadmap session. You’ll enter your details on the next screen and Calendly will confirm your booking. Your concepts are prepared for confirmed bookings, so please choose a time that works.'}
       </p>
 
-      {/* Fixed-height frame: reserved up-front so revealing the calendar never shifts the page. */}
-      <div className="relative -mx-5 mt-6 h-[760px] overflow-hidden border-y border-hairline bg-canvas sm:mx-0 sm:h-[700px] sm:rounded-2xl sm:border">
-        {!loaded && (
-          <div className="absolute inset-0 flex items-center justify-center gap-2 text-sm text-ink-subtle" aria-hidden="true">
-            <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-lime motion-reduce:animate-none" />
-            Loading calendar…
+      {/* Nothing from Calendly loads until the visitor asks for the calendar (CalendlyGate). The frame below keeps its fixed height once shown, so revealing the
+          calendar never shifts the page after that. Calendly's own cookie notice is no longer suppressed. */}
+      <div className="mt-6">
+        <CalendlyGate page="roadmap" onShow={() => setRequested(true)}>
+          <div className="relative -mx-5 h-[760px] overflow-hidden border-y border-hairline bg-canvas sm:mx-0 sm:h-[700px] sm:rounded-2xl sm:border">
+            {!loaded && (
+              <div className="absolute inset-0 flex items-center justify-center gap-2 text-sm text-ink-subtle" aria-hidden="true">
+                <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-lime motion-reduce:animate-none" />
+                Loading calendar…
+              </div>
+            )}
+            <iframe
+              title="Book your Free Creative Growth Roadmap session with CONVRT"
+              src={embedSrc}
+              onLoad={onLoad}
+              className="block h-full w-full transition-opacity duration-300 motion-reduce:transition-none"
+              style={{ opacity: loaded ? 1 : 0, colorScheme: 'light' }}
+            />
           </div>
-        )}
-        <iframe
-          title="Book your Free Creative Growth Roadmap session with CONVRT"
-          src={embedSrc}
-          onLoad={onLoad}
-          className="block h-full w-full transition-opacity duration-300 motion-reduce:transition-none"
-          style={{ opacity: loaded ? 1 : 0, colorScheme: 'light' }}
-        />
+        </CalendlyGate>
       </div>
 
-      <p className={`mt-4 text-sm leading-relaxed ${showFallbackNotice ? 'text-ink' : 'text-ink-subtle'}`}>
-        {showFallbackNotice ? 'The calendar is taking a while to load. ' : 'Calendar not loading? '}
-        <a href={fallbackHref} target="_blank" rel="noopener noreferrer" className="font-semibold text-lime underline underline-offset-4">
-          Open it in a new tab
-        </a>{' '}
-        or email{' '}
-        <a href={`mailto:${CONTACT_EMAIL}`} className="underline underline-offset-4 hover:text-lime">{CONTACT_EMAIL}</a>.
-      </p>
+      {requested ? (
+        <p className={`mt-4 text-sm leading-relaxed ${showFallbackNotice ? 'text-ink' : 'text-ink-subtle'}`}>
+          {showFallbackNotice ? 'The calendar is taking a while to load. ' : 'Calendar not loading? '}
+          <a href={fallbackHref} target="_blank" rel="noopener noreferrer" className="font-semibold text-lime underline underline-offset-4">
+            Open it in a new tab
+          </a>{' '}
+          or email{' '}
+          <a href={`mailto:${CONTACT_EMAIL}`} className="underline underline-offset-4 hover:text-lime">{CONTACT_EMAIL}</a>.
+        </p>
+      ) : (
+        <p className="mt-4 text-sm leading-relaxed text-ink-subtle">
+          Prefer email? Write to{' '}
+          <a href={`mailto:${CONTACT_EMAIL}`} className="underline underline-offset-4 hover:text-lime">{CONTACT_EMAIL}</a>.
+        </p>
+      )}
     </div>
   )
 }

@@ -224,7 +224,7 @@ export default function ScaleHero() {
     <section
       id="watch"
       ref={sectionRef}
-      className="relative"
+      className="relative overflow-x-clip"
       style={{ height: reducedMotion ? 'auto' : 'clamp(135vh, 160vh, 175vh)' }}
     >
       <div

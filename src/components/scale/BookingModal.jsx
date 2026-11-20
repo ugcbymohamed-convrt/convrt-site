@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { BOOKING_URL, CONTACT_EMAIL } from '../../config.js'
 import { OPEN_BOOKING_EVENT } from '../../lib/bookingModal.js'
 import { trackEvent, withUtm } from '../../lib/analytics.js'
+import CalendlyGate from '../booking/CalendlyGate.jsx'
 
 /* ─────────────────────────────────────────────
    Booking overlay — replaces the old permanently-visible white
@@ -55,7 +56,7 @@ export default function BookingModal() {
   if (!open) return null
 
   const embedSrc = withUtm(
-    `${BOOKING_URL}?embed_domain=${typeof window !== 'undefined' ? window.location.hostname : 'convrt.studio'}&embed_type=Inline&hide_gdpr_banner=1&background_color=0a0a0b&text_color=fafafa&primary_color=d5ff40`
+    `${BOOKING_URL}?embed_domain=${typeof window !== 'undefined' ? window.location.hostname : 'convrt.studio'}&embed_type=Inline&background_color=0a0a0b&text_color=fafafa&primary_color=d5ff40`
   )
 
   return (
@@ -94,20 +95,25 @@ export default function BookingModal() {
           </button>
         </div>
 
-        <div className="relative flex-1 min-h-[520px] overflow-hidden">
-          {!iframeLoaded && (
-            <div className="absolute inset-0 flex items-center justify-center gap-2 text-ink-subtle text-sm">
-              <span className="h-1.5 w-1.5 rounded-full bg-lime animate-pulse" />
-              Loading calendar…
+        <div className="relative flex-1 min-h-[520px] overflow-y-auto sm:overflow-hidden">
+          {/* Nothing from Calendly loads until the visitor asks for the calendar (CalendlyGate); Calendly's own cookie notice is no longer hidden. */}
+          <CalendlyGate page="scale" className="m-5 min-h-[420px]">
+            <div className="absolute inset-0 overflow-hidden">
+              {!iframeLoaded && (
+                <div className="absolute inset-0 flex items-center justify-center gap-2 text-ink-subtle text-sm">
+                  <span className="h-1.5 w-1.5 rounded-full bg-lime animate-pulse" />
+                  Loading calendar…
+                </div>
+              )}
+              <iframe
+                title="Book a Discovery Call with CONVRT"
+                src={embedSrc}
+                onLoad={() => setIframeLoaded(true)}
+                className="block h-full w-full"
+                style={{ opacity: iframeLoaded ? 1 : 0, transition: 'opacity 0.35s ease', colorScheme: 'light' }}
+              />
             </div>
-          )}
-          <iframe
-            title="Book a Discovery Call with CONVRT"
-            src={embedSrc}
-            onLoad={() => setIframeLoaded(true)}
-            className="block h-full w-full"
-            style={{ opacity: iframeLoaded ? 1 : 0, transition: 'opacity 0.35s ease', colorScheme: 'light' }}
-          />
+          </CalendlyGate>
         </div>
 
         <div className="shrink-0 px-5 sm:px-6 py-3 border-t border-hairline text-center">
