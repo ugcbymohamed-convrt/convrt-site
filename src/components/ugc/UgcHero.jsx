@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { trackEvent } from '../../lib/analytics.js'
+import { trackEvent, withUtm } from '../../lib/analytics.js'
 import { usePressFeedback } from '../../lib/usePressFeedback.js'
 import { scrollToElement } from '../../lib/scroll.js'
 import { usePreviewHost } from '../../lib/previewHost.js'
@@ -29,7 +29,9 @@ import { useAutoplayAllowed } from './creatorVideo.jsx'
    and gets the same layout, headline animation, CTA styles, offer cards and phone stage. A config supplies:
      id, lines, lead, words, sizer          the H1: fixed lines, the words before the rolling word, the rolling words and the width-reserving word
      description                           the paragraph under the headline
-     primary / secondary                   the two CTAs ({ label, href }); secondary may also name an element id to scroll to when the page has it
+     primary / secondary                   the two CTAs ({ label, href }); secondary may also name an element id to scroll to when the page has it; primary may be `external`
+                                           (opens in a new tab with the stored UTM parameters; the Organic page's discovery-call link)
+     leadIn                                the line above the CTAs ("Your next 5 ad concepts..."); undefined keeps the default, null removes it
      track                                 analytics event names
      stageLabel / stagePrefix              the phone stage's accessible name and analytics prefix
      previewPortraits                      whether preview hosts show stand-in portraits in the empty phones (UGC: yes) */
@@ -158,11 +160,22 @@ export default function UgcHero({ items, config = UGC_HERO }) {
 
             <div className="order-3 lg:order-none">
               <div className="cs-fade-up lg:mt-6" style={{ animationDelay: '600ms' }}>
-                <p className="mb-3 text-balance text-[15px] font-medium leading-snug text-ink md:text-base">
-                  Your next 5 ad concepts. Tailored to your brand. <span className="text-lime">On us.</span>
-                </p>
+                {config.leadIn !== null && (
+                  <p className="mb-3 text-balance text-[15px] font-medium leading-snug text-ink md:text-base">
+                    {config.leadIn ?? <>Your next 5 ad concepts. Tailored to your brand. <span className="text-lime">On us.</span></>}
+                  </p>
+                )}
                 <div className="flex flex-col items-stretch gap-3 sm:flex-row sm:items-center sm:justify-center lg:justify-start">
-                  <a href={config.primary.href} onClick={() => trackEvent(config.track.cta, { location: 'hero' })} {...primaryPress} className={PRIMARY_CTA}>
+                  <a
+                    href={config.primary.href}
+                    {...(config.primary.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+                    onClick={(e) => {
+                      trackEvent(config.track.cta, { location: 'hero' })
+                      if (config.primary.external) e.currentTarget.href = withUtm(config.primary.href)
+                    }}
+                    {...primaryPress}
+                    className={PRIMARY_CTA}
+                  >
                     {config.primary.label}
                     <Arrow cls="h-4 w-4 md:h-[18px] md:w-[18px]" />
                   </a>

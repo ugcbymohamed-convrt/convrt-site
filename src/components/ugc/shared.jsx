@@ -1,4 +1,4 @@
-import { trackEvent } from '../../lib/analytics.js'
+import { trackEvent, withUtm } from '../../lib/analytics.js'
 import { usePressFeedback } from '../../lib/usePressFeedback.js'
 import { OFFER_PATHS } from '../../config.js'
 import { Reveal, Eyebrow } from '../roadmap/shared.jsx'
@@ -57,13 +57,18 @@ export function Tick({ className = 'text-lime' }) {
   )
 }
 
-/* Primary lime CTA → the Free Creative Growth Roadmap. */
-export function RoadmapCta({ location, className = '', hero = false, children = 'Get 5 Free Ad Concepts', track = 'ugc_page_cta_click' }) {
+/* Primary lime CTA → the Free Creative Growth Roadmap by default. `href` points it elsewhere (the Organic Social page sends it to the existing discovery-call booking link);
+   an `external` destination opens in a new tab and carries the visitor's stored UTM parameters at click time (the markup stays the plain link for crawlers). */
+export function RoadmapCta({ location, className = '', hero = false, children = 'Get 5 Free Ad Concepts', track = 'ugc_page_cta_click', href = OFFER_PATHS.roadmap, external = false }) {
   const press = usePressFeedback()
   return (
     <a
-      href={OFFER_PATHS.roadmap}
-      onClick={() => trackEvent(track, { location })}
+      href={href}
+      {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+      onClick={(e) => {
+        trackEvent(track, { location })
+        if (external) e.currentTarget.href = withUtm(href)
+      }}
       {...(hero ? press : {})}
       className={`${hero ? 'hero-cta ' : ''}cta-gradient group inline-flex min-h-[52px] items-center justify-center gap-2 rounded-full px-7 py-3.5 text-[15px] font-semibold text-canvas focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-lime ${className}`}
     >

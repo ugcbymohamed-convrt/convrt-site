@@ -4,7 +4,9 @@ import { Section, Reveal, RoadmapCta, GhostCta } from './shared.jsx'
 
 /* Final CTA: deliberately short, not a sixth content section. The Free Creative Growth Roadmap is open to brands in every industry. */
 
-/* Configuration-driven: UGC_CTA is this page's content and the default; the Spokesperson page passes its own headline, email subject and analytics names. */
+/* Configuration-driven: UGC_CTA is this page's content and the default; the Spokesperson page passes its own headline, email subject and analytics names. Optional:
+     primary  { label, href, external }  a different primary button (default: "Get 5 Free Ad Concepts" → the Roadmap)
+     note     the line under it; undefined keeps the default, null removes it (the default describes the Roadmap's free strategy session) */
 export const UGC_CTA = {
   id: 'ugc-cta-heading',
   title: 'Ready to see what your next five ad concepts could look like?',
@@ -24,9 +26,11 @@ export default function UgcFinalCTA({ config = UGC_CTA }) {
               {config.title}
             </h2>
             <div className="mt-6 flex justify-center">
-              <RoadmapCta hero location="final" track={config.track.cta} />
+              {config.primary
+                ? <RoadmapCta hero location="final" track={config.track.cta} href={config.primary.href} external={config.primary.external}>{config.primary.label}</RoadmapCta>
+                : <RoadmapCta hero location="final" track={config.track.cta} />}
             </div>
-            <p className="mt-4 text-sm text-ink-muted">Free strategy session. Every industry welcome, subject to a short fit check. No obligation.</p>
+            {config.note !== null && <p className="mt-4 text-sm text-ink-muted">{config.note ?? 'Free strategy session. Every industry welcome, subject to a short fit check. No obligation.'}</p>}
             <div className="mt-5 flex flex-col items-stretch justify-center gap-3 sm:flex-row sm:items-center">
               <GhostCta href="/pricing#packages" onClick={() => trackEvent(config.track.pricing, { location: 'final' })}>
                 See Pricing

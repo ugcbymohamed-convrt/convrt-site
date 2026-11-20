@@ -8,7 +8,7 @@
      5.28x (a paid-social result) or the UGC testimonials. Add an organic testimonial only when the owner has verified it and has permission to publish it.
    • The videos come from src/content/portfolio.js (type: 'organic'), never from here. */
 
-import { OFFER_PATHS, OUR_WORK_PATH } from '../config.js'
+import { BOOKING_URL, OUR_WORK_PATH } from '../config.js'
 import { ORGANIC_STYLES } from './portfolio.js'
 
 export const ORGANIC_PATH_LABEL = 'Organic Social Video Production'
@@ -28,8 +28,12 @@ export const ORGANIC_HERO = {
   words: ['convrt', 'connect', 'inspire', 'resonate'],
   sizer: 'resonate.',
   description:
-    'Keep your brand visible with human-led social media videos built around your audience. From creative strategy and scripting to filming, editing, posting and community management, CONVRT helps you create content worth watching.',
-  primary: { label: 'Get 5 Free Ad Concepts', href: OFFER_PATHS.roadmap },
+    'Turn your brand into content worth following. We handle organic social video strategy, creator production, editing, posting and community management, so your brand shows up consistently.',
+  /* The primary CTA is the site's existing discovery-call booking link (BOOKING_URL, the Calendly event the /scale page and the Roadmap booking already use), opened in a new
+     tab. The Free Creative Growth Roadmap is a paid-ads offer, so it is not the hero action here; it stays in the header and in the proof section. The "Your next 5 ad
+     concepts" line above the CTAs is a Roadmap promise, so it is removed on this page (leadIn: null). */
+  primary: { label: 'Discuss Your Content Strategy', href: BOOKING_URL, external: true },
+  leadIn: null,
   /* No scrollTo: this button always goes to /our-work. */
   secondary: { label: 'Explore Videos', href: OUR_WORK_PATH },
   track: { cta: 'organic_page_cta_click', work: 'organic_explore_videos_click' },
@@ -135,6 +139,9 @@ export const ORGANIC_PACKAGES_COPY = {
 export const ORGANIC_PAGE_CTA = {
   id: 'organic-cta-heading',
   title: 'Ready to turn your ideas into content worth watching?',
+  /* Same verified destination as the hero CTA. The default note under the button ("Free strategy session... fit check") describes the Roadmap, so it is removed here. */
+  primary: { label: 'Discuss Your Content Strategy', href: BOOKING_URL, external: true },
+  note: null,
   emailSubject: 'Organic social video production',
   track: { cta: 'organic_page_cta_click', pricing: 'organic_pricing_link_click', email: 'organic_email_click' },
 }
