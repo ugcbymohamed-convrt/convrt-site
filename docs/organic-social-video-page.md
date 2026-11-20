@@ -15,7 +15,7 @@ H1 and copy so the page does not compete with the UGC page (paid) or the Spokesp
 | Section | Component | Organic config |
 |---|---|---|
 | Hero (headline reel, CTAs, two offer cards, three-phone stage) | `ugc/UgcHero.jsx` | `ORGANIC_HERO` |
-| Showcase gallery + content-style filter | `ugc/UgcGallery.jsx` (new optional `filter` config) | `ORGANIC_GALLERY` |
+| Showcase gallery + content-style filter (after the content system) | `ugc/UgcGallery.jsx` (new optional `filter` config) | `ORGANIC_GALLERY` |
 | How it works (four stages) | `ugc/UgcProcess.jsx` → `ProcessSection` | `ORGANIC_PAGE_STAGES` + scenes in `organic/OrganicScenes.jsx` |
 | "Not just more posts. A content system." | `organic/ContentSystem.jsx` (same interaction system as `ugc/TestingDiagram.jsx`) | `ORGANIC_SYSTEM` |
 | Proof | `spokesperson/SpokespersonProof.jsx` (now configuration-driven; Spokesperson output unchanged) | `ORGANIC_PROOF` |

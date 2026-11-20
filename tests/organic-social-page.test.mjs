@@ -160,12 +160,18 @@ test('portfolio: the content-style field is optional, only for organic videos an
   assert.ok(PORTFOLIO.every((i) => portfolioProblems(i).length === 0))
 })
 
+test('section order: hero, how it works, content system, showcase, proof, packages, FAQ, final CTA', () => {
+  const src = read('src/OrganicSocialVideoPage.jsx')
+  const order = ['<UgcHero', '<ProcessSection', '<ContentSystem', '<UgcGallery', '<SpokespersonProof', '<OrganicPackages', '<UgcFAQ', '<UgcFinalCTA'].map((t) => src.indexOf(t))
+  assert.ok(order.every((i) => i > 0) && order.every((v, i) => i === 0 || v > order[i - 1]), 'sections are in the owner-approved order')
+})
+
 test('live page: with approved organic videos the stage and gallery show exactly those (and nothing else)', () => {
   const html = rootOf(page(PATH))
   const heroItems = selectOrganicHero()
   const galleryItems = selectOrganicGallery()
   if (heroItems.length) {
-    const hero = html.split('<section aria-labelledby="organic-h1"')[1].split('id="organic-videos"')[0]
+    const hero = html.split('<section aria-labelledby="organic-h1"')[1].split('</section>')[0]
     assert.ok(hero.includes('aria-label="Organic social videos"') && hero.includes('aria-roledescription="carousel"'))
     assert.ok(heroItems.slice(0, 3).every((v) => hero.includes(v.poster ?? v.source.cloudflareId)))
   } else {
