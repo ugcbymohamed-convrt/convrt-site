@@ -15,7 +15,7 @@ H1 and copy so the page does not compete with the UGC page (paid) or the Spokesp
 | Section | Component | Organic config |
 |---|---|---|
 | Hero (headline reel, CTAs, two offer cards, three-phone stage) | `ugc/UgcHero.jsx` | `ORGANIC_HERO` |
-| Showcase gallery + content-style filter | `ugc/UgcGallery.jsx` (new optional `filter` config) | `ORGANIC_GALLERY` |
+| Showcase gallery + content-style filter (after the content system) | `ugc/UgcGallery.jsx` (new optional `filter` config) | `ORGANIC_GALLERY` |
 | How it works (four stages) | `ugc/UgcProcess.jsx` → `ProcessSection` | `ORGANIC_PAGE_STAGES` + scenes in `organic/OrganicScenes.jsx` |
 | "Not just more posts. A content system." | `organic/ContentSystem.jsx` (same interaction system as `ugc/TestingDiagram.jsx`) | `ORGANIC_SYSTEM` |
 | Proof | `spokesperson/SpokespersonProof.jsx` (now configuration-driven; Spokesperson output unchanged) | `ORGANIC_PROOF` |
@@ -28,11 +28,9 @@ Shared scene primitives (skeleton lines, tags, colours) live in `src/components/
 ## Videos: separate from the other service pages, always
 Videos come from `src/content/portfolio.js` through `selectOrganicHero()` / `selectOrganicGallery()`: an entry must have `type: 'organic'` and the full approval
 (`status: 'approved'`, `portfolioUse: true`, `creatorConsent: true`). `placement: 'hero'` fills the three-phone stage (first = centre, at most 3), everything else the gallery
-(at most 10, four across on desktop). UGC, spokesperson and the homepage client (`type: 'social'`, e.g. Graspo) videos can never appear here. **No organic video exists yet**, so the
-three phones are empty frames and the gallery is absent on the live site (on preview hosts only it shows ten neutral frames and all four style chips so the layout can be reviewed).
-A commented, ready-to-paste template for the slots is at the top of `PORTFOLIO`.
-
-**Slots awaiting assets:** hero slot 1 (centre phone), hero slot 2, hero slot 3 (the three examples the owner will supply) · the gallery (any number up to 10; four fit the desktop row).
+(at most 10, four across on desktop). UGC, spokesperson and the homepage client (`type: 'social'`, e.g. Graspo) videos can never appear here. **Seven videos are live** (supplied 2026-11-20, Desktop > "Organic page videos"): `organic-hero-1..3` (HERO1-3; hero 1 is the centre phone) and `organic-gal-1..4` (DOWN-SECTION-1-4), on Cloudflare Stream with hand-picked
+thumbnails in `public/portfolio/organic-*.webp`. They carry neutral titles; languages (`en`) and industry (`other`) were confirmed by the owner on 2026-11-20, and no brand, creator, production credit or content style was supplied, so none is set.
+They also appear on `/our-work` (the shared portfolio). To add more: copy an entry (placement `hero` for the stage, anything else is the gallery, at most 10). On preview hosts with no organic videos the layout cards return.
 
 ### Content-style filter
 Educational · Entertaining · Product-focused · Founder-led (`ORGANIC_STYLES`) are *suggested* styles, not a classification. A video carries `style` only once the owner confirms it; a chip appears only
@@ -40,7 +38,7 @@ for a style an approved video carries, and the row only when at least two styles
 to `/our-work`; point it at a filtered view only once one exists.
 
 ## Indexing
-`noindex` and left out of the sitemap until at least one organic video is approved (same rule as `/our-work` and the Spokesperson page); the canonical is always its own URL. Adding the first approved
+`noindex` and left out of the sitemap until at least one organic video is approved (now satisfied: the page is indexable and in the sitemap) (same rule as `/our-work` and the Spokesperson page); the canonical is always its own URL. Adding the first approved
 organic video flips both with no other change. Do not flip anything else without the owner's go-ahead.
 
 ## Facts and claims

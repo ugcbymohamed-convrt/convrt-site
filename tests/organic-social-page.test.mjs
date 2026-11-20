@@ -132,10 +132,13 @@ test('empty hero: with no approved organic videos the three phones stay empty (n
 })
 
 // ── portfolio ────────────────────────────────────────────────────────────────────────────
-test('portfolio: the organic selectors take ONLY approved type "organic" videos; the slots are empty until the owner supplies them; nothing crosses between the three service pages', () => {
-  assert.equal(PORTFOLIO.filter((i) => i.type === 'organic').length, 0, 'no organic video exists yet: the owner supplies them later')
-  assert.deepEqual(selectOrganicHero(), [])
-  assert.deepEqual(selectOrganicGallery(), [])
+test('portfolio: the organic selectors take ONLY approved type "organic" videos (3 hero + 4 gallery supplied 2026-11-20); nothing crosses between the three service pages', () => {
+  assert.equal(PORTFOLIO.filter((i) => i.type === 'organic').length, 7)
+  assert.deepEqual(selectOrganicHero().map((i) => i.id), ['organic-hero-1', 'organic-hero-2', 'organic-hero-3'], 'hero 1 is the centre phone')
+  assert.deepEqual(selectOrganicGallery().map((i) => i.id), ['organic-gal-1', 'organic-gal-2', 'organic-gal-3', 'organic-gal-4'])
+  assert.ok(selectOrganicHero().every((i) => fs.existsSync(path.join(ROOT, 'public', i.poster))) && selectOrganicGallery().every((i) => fs.existsSync(path.join(ROOT, 'public', i.poster))), 'every video has its own hand-picked thumbnail file')
+  assert.ok(PORTFOLIO.filter((i) => i.type === 'organic').every((i) => !i.brand && !i.creator && !i.style), 'no brand, creator or style was supplied, so none is invented')
+  assert.equal(new Set(PORTFOLIO.map((i) => i.source?.cloudflareId).filter(Boolean)).size, PORTFOLIO.filter((i) => i.source?.cloudflareId).length, 'no Cloudflare id is reused across entries')
   const list = [
     sample({ id: 'o-hero', placement: 'hero' }), sample({ id: 'o-gal' }), sample({ id: 'o-unapproved', approval: { ...APPROVED, creatorConsent: false } }),
     sample({ id: 'o-pending', approval: { ...APPROVED, status: 'pending' } }),
@@ -160,12 +163,18 @@ test('portfolio: the content-style field is optional, only for organic videos an
   assert.ok(PORTFOLIO.every((i) => portfolioProblems(i).length === 0))
 })
 
+test('section order: hero, how it works, content system, showcase, proof, packages, FAQ, final CTA', () => {
+  const src = read('src/OrganicSocialVideoPage.jsx')
+  const order = ['<UgcHero', '<ProcessSection', '<ContentSystem', '<UgcGallery', '<SpokespersonProof', '<OrganicPackages', '<UgcFAQ', '<UgcFinalCTA'].map((t) => src.indexOf(t))
+  assert.ok(order.every((i) => i > 0) && order.every((v, i) => i === 0 || v > order[i - 1]), 'sections are in the owner-approved order')
+})
+
 test('live page: with approved organic videos the stage and gallery show exactly those (and nothing else)', () => {
   const html = rootOf(page(PATH))
   const heroItems = selectOrganicHero()
   const galleryItems = selectOrganicGallery()
   if (heroItems.length) {
-    const hero = html.split('<section aria-labelledby="organic-h1"')[1].split('id="organic-videos"')[0]
+    const hero = html.split('<section aria-labelledby="organic-h1"')[1].split('</section>')[0]
     assert.ok(hero.includes('aria-label="Organic social videos"') && hero.includes('aria-roledescription="carousel"'))
     assert.ok(heroItems.slice(0, 3).every((v) => hero.includes(v.poster ?? v.source.cloudflareId)))
   } else {

@@ -21,12 +21,12 @@ import {
 
 /* /social-media-video-production: the Organic Social Video Production & Management page. It reuses the UGC and Spokesperson pages' architecture and design system, and each
    section is the same configuration-driven component fed with organic-social content (src/content/organicSocialPage.js):
-     1 Hero (UgcHero + the three-phone stage)  ·  2 Showcase gallery with a content-style filter (UgcGallery)
-     3 How it works (ProcessSection, four organic scenes) + "Not just more posts. A content system." (ContentSystem)
+     1 Hero (UgcHero + the three-phone stage)
+     2 How it works (ProcessSection, four organic scenes) + "Not just more posts. A content system." (ContentSystem)  ·  3 Showcase gallery with a content-style filter (UgcGallery)
      4 Proof: the published Graspo organic result (the shared proof section)  ·  5 Packages (a light pointer to /pricing)  ·  6 FAQ (UgcFAQ)  ·  then the final CTA.
    Title, description, canonical, robots and JSON-LD all come from the SEO manifest (src/seo/siteSeo.js). Videos come ONLY from src/content/portfolio.js entries whose type is
-   'organic' (no UGC, spokesperson or homepage-client fallback, ever). Prices, cadence, platforms, terms and FAQ facts: src/seo/businessKnowledge.js. Section order follows the brief:
-   the showcase comes before the process. */
+   'organic' (no UGC, spokesperson or homepage-client fallback, ever). Prices, cadence, platforms, terms and FAQ facts: src/seo/businessKnowledge.js. Section order (owner, Nov 2026):
+   how it works and the content system come before the showcase, as on the Spokesperson page. */
 
 const FAQ_CONFIG = {
   items: ORGANIC_SOCIAL_FAQ,
@@ -80,11 +80,11 @@ export default function OrganicSocialVideoPage() {
         </ol>
       </nav>
       <UgcHero items={heroItems} config={ORGANIC_HERO} />
-      <UgcGallery items={galleryItems} config={ORGANIC_GALLERY} />
       <SectionDivider />
       <ProcessSection config={PROCESS_CONFIG} footer={<ProcessFooter />}>
         <ContentSystem />
       </ProcessSection>
+      <UgcGallery items={galleryItems} config={ORGANIC_GALLERY} />
       <SectionDivider />
       <SpokespersonProof config={PROOF_CONFIG} />
       <SectionDivider />
