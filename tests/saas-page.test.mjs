@@ -343,7 +343,7 @@ test('JSON-LD is in the static HTML as one valid block equal to the manifest gra
 test('internal links: the footer on every page, the homepage Services line and FAQ, and the Spokesperson FAQ link to the page; the page links out to Pricing, UGC, Spokesperson, the offers and the showcase', () => {
   const link = (h) => rootOf(h).includes(`href="${PATH}"`)
   assert.ok(link(page('/')))
-  assert.match(rootOf(page('/')), /Explore SaaS video production/)
+  assert.match(rootOf(page('/')), /<a href="\/saas-video-production" class="svc-card"/, 'homepage Services card')
   assert.match(rootOf(page('/')), /Learn about our SaaS video production/)
   for (const p of ['/', '/pricing', '/creative-growth-roadmap', PATHS.ugcVideoAgency, PATHS.spokespersonVideoProduction, PATH]) assert.match(rootOf(page(p)), /<a [^>]*href="\/saas-video-production"[^>]*>SaaS Video Production<\/a>/, `footer link on ${p}`)
   assert.match(rootOf(page(PATHS.spokespersonVideoProduction)), /See our SaaS video production/)

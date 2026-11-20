@@ -1,195 +1,81 @@
 import { useEffect, useRef, useState } from 'react'
 import { OFFER_PATHS } from '../config.js'
+import { PATHS } from '../routes.js'
 
 /* ─────────────────────────────────────────────
    SECTION 4 — WHAT WE OFFER
-   Asymmetric bento · 4 services
-   Default state = 70% intensity · Hover = 120%
+   Four services in an equal 2 × 2 grid. Each card is ONE link to the service's own page, so this section is the
+   homepage's internal-link hub. Destinations come from PATHS (src/routes.js), never typed here.
+   Styling lives in src/index.css (.svc-*); each card only sets its own colour through custom properties.
 ───────────────────────────────────────────── */
 
 const NOISE_BG = `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E")`
 
-/* ─────────────────────────────────────────────
-   Each service carries:
-     glowA / glowB  — dual-source radial lighting (rest + hover)
-     border / glow  — box-shadow values (rest + hover)
-     number         — rest + hover opacity for the bg watermark
-     tag / pills    — color at rest + hover
-───────────────────────────────────────────── */
+/* rgb / rgb2 are space-separated triplets (CSS `rgb(var(--svc-rgb) / .2)`).
+   glowA / glowB: radial light sources; rest and hover alphas. ring: the 1px accent border at rest and on hover. */
 const SERVICES = [
   {
     id: 'ugc',
     number: '01',
-    tag: 'CREATOR-LED',
-    title: 'UGC Ads',
-    description: 'Human-led UGC video ads for Meta, TikTok and YouTube: concepts, creator casting, scripts, filming and editing.',
-    pills: ['Meta', 'TikTok', 'YouTube'],
+    title: 'UGC Video Ads',
+    description: 'Human-led UGC ads built to capture attention and test creative angles.',
+    href: PATHS.ugcVideoAgency,
+    pills: ['UGC Ads', 'Creator-Led', 'Creative Testing'],
     icon: IconUGC,
-    colSpan: 'lg:col-span-7',
-    accent: '#8b5cf6',
-
-    /* Dual radial light sources */
-    glowA:      { pos: '8% 12%',   r: '480px', rest: 'rgba(139,92,246,0.22)', hover: 'rgba(139,92,246,0.42)' },
-    glowB:      { pos: '90% 88%',  r: '320px', rest: 'rgba(139,92,246,0.10)', hover: 'rgba(139,92,246,0.22)' },
-
-    /* Box-shadow (border ring + outer glow) */
-    shadowRest:  '0 0 0 1px rgba(139,92,246,0.32), 0 0 40px -10px rgba(139,92,246,0.28), 0 8px 40px -8px rgba(0,0,0,0.7)',
-    shadowHover: '0 0 0 1px rgba(139,92,246,0.65), 0 0 70px -6px rgba(139,92,246,0.55), 0 40px 80px -20px rgba(0,0,0,0.95)',
-
-    /* Icon container */
-    iconBgRest:  'rgba(139,92,246,0.20)',
-    iconBgHover: 'rgba(139,92,246,0.36)',
-    iconBorderRest:  'rgba(139,92,246,0.35)',
-    iconBorderHover: 'rgba(139,92,246,0.70)',
-
-    /* Halo behind icon */
-    haloRest:  0.22,
-    haloHover: 0.40,
-
-    /* Number watermark */
-    numRest:  0.07,
-    numHover: 0.14,
-
-    /* Tag */
-    tagRest:  'rgba(167,139,250,0.80)',
-    tagHover: '#a78bfa',
-
-    /* Pills */
-    pillBgRest:     'rgba(139,92,246,0.14)',
-    pillBgHover:    'rgba(139,92,246,0.28)',
-    pillBorderRest:  'rgba(139,92,246,0.28)',
-    pillBorderHover: 'rgba(139,92,246,0.60)',
-    pillTextRest:   'rgba(167,139,250,0.85)',
-    pillTextHover:  '#c4b5fd',
-
-    /* Bottom rule */
-    ruleRest:  'linear-gradient(to right, rgba(139,92,246,0.45), rgba(139,92,246,0.10))',
-    ruleHover: 'linear-gradient(to right, rgba(139,92,246,0.80), rgba(139,92,246,0.20))',
+    rgb: '139 92 246', rgb2: '139 92 246', text: '#a78bfa', textHi: '#c4b5fd',
+    glowA: { pos: '8% 12%', r: '480px', rest: 0.22, hover: 0.42 },
+    glowB: { pos: '90% 88%', r: '320px', rest: 0.10, hover: 0.22 },
+    ring: { rest: 0.32, hover: 0.65 },
+  },
+  {
+    id: 'saas',
+    number: '02',
+    title: 'SaaS Video Production',
+    description: 'Product demos, explainers and video ads that make software easier to understand.',
+    href: PATHS.saasVideoProduction,
+    pills: ['Product Demos', 'Explainers', 'Video Ads'],
+    icon: IconSaas,
+    rgb: '56 189 248', rgb2: '34 211 238', text: '#7dd3fc', textHi: '#bae6fd',
+    glowA: { pos: '88% 8%', r: '460px', rest: 0.20, hover: 0.38 },
+    glowB: { pos: '10% 88%', r: '320px', rest: 0.09, hover: 0.20 },
+    ring: { rest: 0.30, hover: 0.62 },
   },
   {
     id: 'spokesperson',
-    number: '02',
-    tag: 'TRUST-DRIVEN',
-    title: 'Spokesperson Ads',
-    description: 'Presenter-led video ads that explain your offer clearly and build trust, from casting to finished edit.',
-    pills: ['Authority', 'Retention', 'Action'],
+    number: '03',
+    title: 'Spokesperson Videos',
+    description: 'Professional, multilingual presenters for ads, demonstrations and brand messages.',
+    href: PATHS.spokespersonVideoProduction,
+    pills: ['Human-Led', 'Multilingual', 'Product Demos'],
     icon: IconSpokesperson,
-    colSpan: 'lg:col-span-5',
-    accent: '#ff6a4d',
-
-    glowA:      { pos: '88% 8%',   r: '420px', rest: 'rgba(255,106,77,0.20)', hover: 'rgba(255,106,77,0.38)' },
-    glowB:      { pos: '10% 85%',  r: '300px', rest: 'rgba(255,106,77,0.09)', hover: 'rgba(255,106,77,0.20)' },
-
-    shadowRest:  '0 0 0 1px rgba(255,106,77,0.30), 0 0 38px -10px rgba(255,106,77,0.26), 0 8px 40px -8px rgba(0,0,0,0.7)',
-    shadowHover: '0 0 0 1px rgba(255,106,77,0.60), 0 0 65px -6px rgba(255,106,77,0.50), 0 40px 80px -20px rgba(0,0,0,0.95)',
-
-    iconBgRest:  'rgba(255,106,77,0.18)',
-    iconBgHover: 'rgba(255,106,77,0.32)',
-    iconBorderRest:  'rgba(255,106,77,0.32)',
-    iconBorderHover: 'rgba(255,106,77,0.65)',
-
-    haloRest:  0.20,
-    haloHover: 0.38,
-
-    numRest:  0.07,
-    numHover: 0.14,
-
-    tagRest:  'rgba(255,140,112,0.82)',
-    tagHover: '#ff8c70',
-
-    pillBgRest:     'rgba(255,106,77,0.13)',
-    pillBgHover:    'rgba(255,106,77,0.26)',
-    pillBorderRest:  'rgba(255,106,77,0.26)',
-    pillBorderHover: 'rgba(255,106,77,0.55)',
-    pillTextRest:   'rgba(255,140,112,0.85)',
-    pillTextHover:  '#ffb59c',
-
-    ruleRest:  'linear-gradient(to right, rgba(255,106,77,0.42), rgba(255,106,77,0.10))',
-    ruleHover: 'linear-gradient(to right, rgba(255,106,77,0.75), rgba(255,106,77,0.18))',
+    rgb: '255 106 77', rgb2: '255 106 77', text: '#ff8c70', textHi: '#ffb59c',
+    glowA: { pos: '8% 12%', r: '460px', rest: 0.20, hover: 0.38 },
+    glowB: { pos: '90% 88%', r: '300px', rest: 0.09, hover: 0.20 },
+    ring: { rest: 0.30, hover: 0.60 },
   },
   {
     id: 'social',
-    number: '03',
-    tag: 'ALWAYS-ON',
-    title: 'Social Media Content & Management',
-    description: 'Organic short-form video for Instagram, TikTok and Facebook: strategy, production, publishing and community engagement.',
-    pills: ['Instagram', 'TikTok', 'Facebook'],
-    icon: IconSocial,
-    colSpan: 'lg:col-span-5',
-    accent: '#d5ff40',
-
-    glowA:      { pos: '12% 85%',  r: '440px', rest: 'rgba(213,255,64,0.16)', hover: 'rgba(213,255,64,0.32)' },
-    glowB:      { pos: '88% 12%',  r: '280px', rest: 'rgba(213,255,64,0.07)', hover: 'rgba(213,255,64,0.16)' },
-
-    shadowRest:  '0 0 0 1px rgba(213,255,64,0.26), 0 0 36px -10px rgba(213,255,64,0.22), 0 8px 40px -8px rgba(0,0,0,0.7)',
-    shadowHover: '0 0 0 1px rgba(213,255,64,0.55), 0 0 60px -6px rgba(213,255,64,0.45), 0 40px 80px -20px rgba(0,0,0,0.95)',
-
-    iconBgRest:  'rgba(213,255,64,0.14)',
-    iconBgHover: 'rgba(213,255,64,0.28)',
-    iconBorderRest:  'rgba(213,255,64,0.28)',
-    iconBorderHover: 'rgba(213,255,64,0.60)',
-
-    haloRest:  0.18,
-    haloHover: 0.35,
-
-    numRest:  0.07,
-    numHover: 0.13,
-
-    tagRest:  'rgba(213,255,64,0.78)',
-    tagHover: '#d5ff40',
-
-    pillBgRest:     'rgba(213,255,64,0.11)',
-    pillBgHover:    'rgba(213,255,64,0.24)',
-    pillBorderRest:  'rgba(213,255,64,0.24)',
-    pillBorderHover: 'rgba(213,255,64,0.55)',
-    pillTextRest:   'rgba(213,255,64,0.82)',
-    pillTextHover:  '#e8ff7a',
-
-    ruleRest:  'linear-gradient(to right, rgba(213,255,64,0.38), rgba(213,255,64,0.08))',
-    ruleHover: 'linear-gradient(to right, rgba(213,255,64,0.70), rgba(213,255,64,0.15))',
-  },
-  {
-    id: 'strategy',
     number: '04',
-    tag: 'PERFORMANCE-FIRST',
-    title: 'Creative Strategy for Organic & Paid',
-    description: 'Concepts, hooks, scripts and structured testing plans that show you what to make next.',
-    pills: ['Hooks', 'Scripts', 'A/B Testing'],
-    icon: IconStrategy,
-    colSpan: 'lg:col-span-7',
-    accent: '#ec4899',
-
-    glowA:      { pos: '88% 85%',  r: '500px', rest: 'rgba(236,72,153,0.20)', hover: 'rgba(236,72,153,0.38)' },
-    glowB:      { pos: '8% 10%',   r: '300px', rest: 'rgba(236,72,153,0.08)', hover: 'rgba(236,72,153,0.18)' },
-
-    shadowRest:  '0 0 0 1px rgba(236,72,153,0.30), 0 0 40px -10px rgba(236,72,153,0.26), 0 8px 40px -8px rgba(0,0,0,0.7)',
-    shadowHover: '0 0 0 1px rgba(236,72,153,0.62), 0 0 68px -6px rgba(236,72,153,0.52), 0 40px 80px -20px rgba(0,0,0,0.95)',
-
-    iconBgRest:  'rgba(236,72,153,0.18)',
-    iconBgHover: 'rgba(236,72,153,0.32)',
-    iconBorderRest:  'rgba(236,72,153,0.32)',
-    iconBorderHover: 'rgba(236,72,153,0.65)',
-
-    haloRest:  0.20,
-    haloHover: 0.38,
-
-    numRest:  0.07,
-    numHover: 0.14,
-
-    tagRest:  'rgba(244,114,182,0.82)',
-    tagHover: '#f472b6',
-
-    pillBgRest:     'rgba(236,72,153,0.13)',
-    pillBgHover:    'rgba(236,72,153,0.26)',
-    pillBorderRest:  'rgba(236,72,153,0.26)',
-    pillBorderHover: 'rgba(236,72,153,0.55)',
-    pillTextRest:   'rgba(244,114,182,0.85)',
-    pillTextHover:  '#f9a8d4',
-
-    ruleRest:  'linear-gradient(to right, rgba(236,72,153,0.42), rgba(236,72,153,0.10))',
-    ruleHover: 'linear-gradient(to right, rgba(236,72,153,0.78), rgba(236,72,153,0.18))',
+    title: 'Social Media Management',
+    description: 'Organic social videos, content planning, publishing and community management.',
+    href: PATHS.socialMediaVideoProduction,
+    pills: ['Organic Video', 'Posting', 'Community'],
+    icon: IconSocial,
+    rgb: '213 255 64', rgb2: '213 255 64', text: '#d5ff40', textHi: '#e8ff7a',
+    glowA: { pos: '88% 8%', r: '440px', rest: 0.16, hover: 0.32 },
+    glowB: { pos: '10% 88%', r: '280px', rest: 0.07, hover: 0.16 },
+    ring: { rest: 0.26, hover: 0.55 },
   },
 ]
+
+/* Per-card custom properties read by the .svc-* rules. The -hi alphas are the EXTRA light added on hover (the
+   hover layer sits on top of the rest layer). */
+const cardVars = (s) => ({
+  '--svc-rgb': s.rgb, '--svc-rgb2': s.rgb2, '--svc-text': s.text, '--svc-text-hi': s.textHi,
+  '--svc-ring': s.ring.rest, '--svc-ring-hi': s.ring.hover,
+  '--svc-ga': s.glowA.rest, '--svc-ga-hi': +(s.glowA.hover - s.glowA.rest).toFixed(2), '--svc-ga-pos': s.glowA.pos, '--svc-ga-r': s.glowA.r,
+  '--svc-gb': s.glowB.rest, '--svc-gb-hi': +(s.glowB.hover - s.glowB.rest).toFixed(2), '--svc-gb-pos': s.glowB.pos, '--svc-gb-r': s.glowB.r,
+})
 
 /* ── IntersectionObserver ── */
 function useInView(threshold = 0.1) {
@@ -253,11 +139,11 @@ export default function Services() {
         </div>
 
         {/* ── Grid ── */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-4 md:gap-5">
+        <ul className="grid grid-cols-1 md:grid-cols-2 auto-rows-fr gap-4 md:gap-5">
           {SERVICES.map((s, i) => (
             <ServiceCard key={s.id} service={s} index={i} />
           ))}
-        </div>
+        </ul>
 
         {/* ── CTA strip ── */}
         <div
@@ -285,22 +171,6 @@ export default function Services() {
           <a href="/pricing" className="text-ink-muted hover:text-lime underline underline-offset-2 transition-colors">
             Explore packages and pricing
           </a>
-          {' · '}
-          <a href="/ugc-video-agency" className="text-ink-muted hover:text-lime underline underline-offset-2 transition-colors">
-            See how our UGC video production works
-          </a>
-          {' · '}
-          <a href="/spokesperson-video-production" className="text-ink-muted hover:text-lime underline underline-offset-2 transition-colors">
-            Explore spokesperson video production
-          </a>
-          {' · '}
-          <a href="/social-media-video-production" className="text-ink-muted hover:text-lime underline underline-offset-2 transition-colors">
-            Explore organic social video production
-          </a>
-          {' · '}
-          <a href="/saas-video-production" className="text-ink-muted hover:text-lime underline underline-offset-2 transition-colors">
-            Explore SaaS video production
-          </a>
         </p>
       </div>
     </section>
@@ -308,287 +178,121 @@ export default function Services() {
 }
 
 /* ─────────────────────────────────────────────
-   ServiceCard
-   Each card has its own IntersectionObserver so it activates independently
-   as it scrolls into view, mirroring the HowItWorks step-by-step reveal.
-
-   Entrance sequence (triggered once per card):
-     0 ms  — card lifts + fades in
-     80 ms — icon pops in with spring overshoot
-     150 ms — tag slides from right
-     200 ms — title slides from left
-     280 ms — description rises from below
-     360 ms — pills pop in with per-pill stagger (80 ms each)
-     480 ms — bottom rule grows from left → right
-
-   Hover layer stays independent (glow, shine, lift, icon tilt).
+   ServiceCard: the whole card is one <a> (no nested links or buttons). Its name is the title and its description is
+   the description, so a screen reader announces "UGC Video Ads, link" and reads the one-line summary. The wrapper <li>
+   only handles the scroll-in; hover, focus and the diagonal-arrow motion are CSS (.svc-*), so keyboard focus gets
+   exactly what the mouse gets.
 ───────────────────────────────────────────── */
-function ServiceCard({ service, index }) {
-  const [hovered, setHovered] = useState(false)
-  const [shining, setShining] = useState(false)
-  const [cardVisible, setCardVisible] = useState(false)
-  const cardRef = useRef(null)
-  const IconComponent = service.icon
-  const s = service
-
-  /* Per-card scroll observer — fires once then disconnects */
-  useEffect(() => {
-    const el = cardRef.current
-    if (!el) return
-    const obs = new IntersectionObserver(
-      ([e]) => { if (e.isIntersecting) { setCardVisible(true); obs.disconnect() } },
-      { threshold: 0.12 }
-    )
-    obs.observe(el)
-    return () => obs.disconnect()
-  }, [])
-
-  function onEnter() {
-    setHovered(true)
-    setShining(false)
-    requestAnimationFrame(() => requestAnimationFrame(() => setShining(true)))
-  }
-  function onLeave() { setHovered(false); setShining(false) }
-
-  /* Icon transform merges entrance scale (0→1 spring) + hover tilt */
-  const iconTransform = !cardVisible
-    ? 'scale(0) rotate(-20deg)'
-    : hovered
-    ? 'scale(1.1) rotate(-5deg)'
-    : 'scale(1) rotate(0deg)'
-
-  /* Helper: produce a transition string with per-property delays */
-  const entryDelay = (ms) => cardVisible ? `${ms}ms` : '0ms'
+function ServiceCard({ service: s, index }) {
+  const [ref, visible] = useInView(0.12)
+  const Icon = s.icon
+  const titleId = `service-${s.id}-title`
+  const descId = `service-${s.id}-desc`
 
   return (
-    <article
-      ref={cardRef}
-      onMouseEnter={onEnter}
-      onMouseLeave={onLeave}
-      className={`${s.colSpan} group relative overflow-hidden rounded-[28px] cursor-default min-h-[280px] flex flex-col`}
-      style={{
-        opacity: cardVisible ? 1 : 0,
-        transform: cardVisible ? 'translateY(0) scale(1)' : 'translateY(44px) scale(0.93)',
-        transition: 'opacity 0.65s cubic-bezier(0.22,1,0.36,1), transform 0.65s cubic-bezier(0.22,1,0.36,1)',
-      }}
+    <li
+      ref={ref}
+      className={`h-full transition-[opacity,transform] duration-700 ease-out motion-reduce:!translate-y-0 motion-reduce:!opacity-100 motion-reduce:transition-none ${visible ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'}`}
+      style={{ transitionDelay: visible ? `${(index % 2) * 90 + Math.floor(index / 2) * 90}ms` : '0ms' }}
     >
-      <div
-        className="relative flex flex-col flex-1 p-8 md:p-9 rounded-[28px] overflow-hidden"
-        style={{
-          background: '#0c0c0f',
-          boxShadow: hovered ? s.shadowHover : s.shadowRest,
-          transform: hovered ? 'translateY(-7px)' : 'translateY(0)',
-          transition: 'box-shadow 0.5s ease, transform 0.4s cubic-bezier(0.22,1,0.36,1)',
-        }}
-      >
-        {/* ── Layer 1: Dual radial glow ── */}
-        <div aria-hidden="true" className="pointer-events-none absolute inset-0">
-          <div className="absolute inset-0" style={{
-            background: `radial-gradient(${s.glowA.r} circle at ${s.glowA.pos}, ${hovered ? s.glowA.hover : s.glowA.rest}, transparent 70%)`,
-            transition: 'background 0.6s ease',
-          }} />
-          <div className="absolute inset-0" style={{
-            background: `radial-gradient(${s.glowB.r} circle at ${s.glowB.pos}, ${hovered ? s.glowB.hover : s.glowB.rest}, transparent 65%)`,
-            transition: 'background 0.6s ease',
-          }} />
-        </div>
+      <a href={s.href} className="svc-card" style={cardVars(s)} aria-labelledby={titleId} aria-describedby={descId}>
+        {/* Border ring (hover version fades in) */}
+        <span aria-hidden="true" className="svc-layer svc-frame" />
+        <span aria-hidden="true" className="svc-layer svc-frame-hi" />
 
-        {/* ── Layer 2: Noise grain ── */}
-        <div aria-hidden="true" className="pointer-events-none absolute inset-0 opacity-[0.032]"
-          style={{ backgroundImage: NOISE_BG, backgroundSize: '150px 150px' }} />
-
-        {/* ── Layer 3: Large background number — fades in with card ── */}
-        <span
-          aria-hidden="true"
-          className="pointer-events-none select-none absolute -bottom-6 -right-2 font-display font-black leading-none"
-          style={{
-            fontSize: 'clamp(90px, 13vw, 155px)',
-            color: s.accent,
-            opacity: cardVisible ? (hovered ? s.numHover : s.numRest) : 0,
-            transition: `opacity 0.5s ${entryDelay(380)} ease`,
-            lineHeight: 1,
-          }}
-        >
-          {s.number}
+        {/* Clipped decoration: glow, grain, big number, shine sweep */}
+        <span aria-hidden="true" className="svc-layer svc-clip">
+          <span className="svc-layer svc-glow" />
+          <span className="svc-layer svc-glow-hi" />
+          <span className="svc-layer opacity-[0.032]" style={{ backgroundImage: NOISE_BG, backgroundSize: '150px 150px' }} />
+          <span className="svc-num font-display">{s.number}</span>
+          <span className="svc-shine" />
         </span>
 
-        {/* ── Layer 4: Shine sweep on hover entry ── */}
-        <div aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden rounded-[28px]">
-          {shining && (
-            <div
-              className="service-card-shine absolute top-0 bottom-0 w-[55%]"
-              style={{ background: `linear-gradient(105deg, transparent, ${s.accent}20, transparent)` }}
-            />
-          )}
-        </div>
-
-        {/* ── Content z-10 ── */}
-        <div className="relative z-10 flex flex-col flex-1 gap-0">
-
-          {/* Icon + tag row */}
-          <div className="flex items-start justify-between mb-7">
-
-            {/* Icon — springs in then responds to hover */}
+        <div className="svc-body">
+          {/* Icon left, diagonal arrow top-right */}
+          <div className="flex items-start justify-between">
             <div className="relative">
-              <div
-                aria-hidden="true"
-                className={hovered ? 'icon-breathe' : ''}
-                style={{
-                  position: 'absolute', inset: '-10px', borderRadius: '50%',
-                  background: s.accent,
-                  opacity: hovered ? undefined : (cardVisible ? s.haloRest : 0),
-                  filter: 'blur(16px)',
-                  transition: `opacity 0.4s ${entryDelay(80)} ease`,
-                }}
-              />
-              <div
-                className="relative h-14 w-14 rounded-2xl flex items-center justify-center"
-                style={{
-                  background: hovered ? s.iconBgHover : s.iconBgRest,
-                  border: `1px solid ${hovered ? s.iconBorderHover : s.iconBorderRest}`,
-                  transform: iconTransform,
-                  transition: `background 0.4s ease, border 0.4s ease, transform 0.55s ${entryDelay(80)} cubic-bezier(0.34,1.56,0.64,1)`,
-                }}
-              >
-                <IconComponent color={hovered ? s.accent : s.tagRest} size={26} />
-              </div>
+              <span className="svc-halo" />
+              <span className="svc-icon"><Icon size={26} /></span>
             </div>
-
-            {/* Tag — slides in from right */}
-            <span
-              className="text-[10px] font-bold uppercase tracking-[0.18em] mt-1.5"
-              style={{
-                color: hovered ? s.tagHover : s.tagRest,
-                opacity: cardVisible ? 1 : 0,
-                transform: cardVisible ? 'translateX(0)' : 'translateX(14px)',
-                transition: `color 0.4s ease,
-                             opacity 0.45s ${entryDelay(150)} ease,
-                             transform 0.45s ${entryDelay(150)} cubic-bezier(0.22,1,0.36,1)`,
-              }}
-            >
-              {s.tag}
+            <span className="svc-corner">
+              <svg className="svc-arrow" aria-hidden="true" width="16" height="16" viewBox="0 0 12 12" fill="none">
+                <path d="M3 9L9 3M9 3H4M9 3V8" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
             </span>
           </div>
 
-          {/* Title — slides in from left */}
-          <h3
-            className="font-display font-bold tracking-display leading-[1.06]"
-            style={{
-              fontSize: 'clamp(1.45rem, 2.4vw, 1.85rem)',
-              color: hovered ? '#ffffff' : '#e4e4e7',
-              opacity: cardVisible ? 1 : 0,
-              transform: cardVisible ? 'translateX(0)' : 'translateX(-22px)',
-              transition: `color 0.3s ease,
-                           opacity 0.5s ${entryDelay(200)} ease,
-                           transform 0.5s ${entryDelay(200)} cubic-bezier(0.22,1,0.36,1)`,
-            }}
-          >
+          <h3 id={titleId} className="svc-title mt-6 font-display font-bold tracking-display leading-[1.06]" style={{ fontSize: 'clamp(1.45rem, 2.4vw, 1.85rem)' }}>
             {s.title}
           </h3>
+          <p id={descId} className="svc-desc mt-3 max-w-[38ch] text-[14.5px] leading-relaxed">{s.description}</p>
 
-          {/* Description — rises from below */}
-          <p
-            className="mt-3 text-[13.5px] leading-relaxed"
-            style={{
-              color: hovered ? '#a1a1aa' : '#71717a',
-              maxWidth: '34ch',
-              opacity: cardVisible ? 1 : 0,
-              transform: cardVisible ? 'translateY(0)' : 'translateY(12px)',
-              transition: `color 0.3s ease,
-                           opacity 0.5s ${entryDelay(280)} ease,
-                           transform 0.5s ${entryDelay(280)} cubic-bezier(0.22,1,0.36,1)`,
-            }}
-          >
-            {s.description}
-          </p>
+          <ul className="mt-5 flex flex-wrap gap-2">
+            {s.pills.map((pill) => (<li key={pill} className="svc-pill">{pill}</li>))}
+          </ul>
 
-          {/* Pills — pop in with per-pill stagger */}
-          <div className="flex flex-wrap gap-2 mt-5">
-            {s.pills.map((pill, pillIdx) => (
-              <span
-                key={pill}
-                className="inline-flex items-center rounded-full px-3 py-1 text-[11px] font-medium"
-                style={{
-                  background: hovered ? s.pillBgHover : s.pillBgRest,
-                  border: `1px solid ${hovered ? s.pillBorderHover : s.pillBorderRest}`,
-                  color: hovered ? s.pillTextHover : s.pillTextRest,
-                  opacity: cardVisible ? 1 : 0,
-                  transform: cardVisible ? 'translateY(0) scale(1)' : 'translateY(8px) scale(0.82)',
-                  transition: `background 0.4s ease, border 0.4s ease, color 0.4s ease,
-                               opacity 0.4s ${entryDelay(360 + pillIdx * 75)} ease,
-                               transform 0.4s ${entryDelay(360 + pillIdx * 75)} cubic-bezier(0.34,1.56,0.64,1)`,
-                }}
-              >
-                {pill}
-              </span>
-            ))}
+          <div className="min-h-[24px] flex-1" />
+          <div aria-hidden="true" className="svc-rule mt-5" />
+          <div className="mt-4 flex">
+            <span className="svc-cta">
+              Explore Service
+              <svg className="svc-arrow" aria-hidden="true" width="14" height="14" viewBox="0 0 12 12" fill="none">
+                <path d="M3 9L9 3M9 3H4M9 3V8" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </span>
           </div>
-
-          {/* Spacer */}
-          <div className="flex-1 min-h-[24px]" />
-
-          {/* Bottom rule — grows left → right on activation */}
-          <div
-            className="h-px mt-5 rounded-full"
-            style={{
-              background: hovered ? s.ruleHover : s.ruleRest,
-              width: cardVisible ? '100%' : '0%',
-              transition: `background 0.5s ease,
-                           width 0.85s ${entryDelay(480)} cubic-bezier(0.22,1,0.36,1)`,
-            }}
-          />
         </div>
-      </div>
-    </article>
+      </a>
+    </li>
   )
 }
 
 /* ─────────────────────────────────────────────
-   Icons — 26 × 26 viewBox, color + size props
+   Icons — 26 × 26 viewBox; stroke follows the CSS colour (currentColor)
 ───────────────────────────────────────────── */
-function IconUGC({ color = '#71717a', size = 26 }) {
+function IconUGC({ size = 26 }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 26 26" fill="none">
-      <rect x="6" y="2" width="14" height="22" rx="3" stroke={color} strokeWidth="1.6" />
-      <rect x="8.5" y="5" width="9" height="13" rx="1.2" stroke={color} strokeWidth="1.3" />
-      <path d="M11.5 9.5l4 2-4 2V9.5z" fill={color} />
-      <path d="M11.5 20h3" stroke={color} strokeWidth="1.8" strokeLinecap="round" />
-      <path d="M21 4l.5 1.3 1.3.5-1.3.5L21 7.6l-.5-1.3-1.3-.5 1.3-.5L21 4z" fill={color} />
+    <svg width={size} height={size} viewBox="0 0 26 26" fill="none" aria-hidden="true">
+      <rect x="6" y="2" width="14" height="22" rx="3" stroke="currentColor" strokeWidth="1.6" />
+      <rect x="8.5" y="5" width="9" height="13" rx="1.2" stroke="currentColor" strokeWidth="1.3" />
+      <path d="M11.5 9.5l4 2-4 2V9.5z" fill="currentColor" />
+      <path d="M11.5 20h3" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+      <path d="M21 4l.5 1.3 1.3.5-1.3.5L21 7.6l-.5-1.3-1.3-.5 1.3-.5L21 4z" fill="currentColor" />
     </svg>
   )
 }
 
-function IconSpokesperson({ color = '#71717a', size = 26 }) {
+function IconSpokesperson({ size = 26 }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 26 26" fill="none">
-      <circle cx="10" cy="8" r="4" stroke={color} strokeWidth="1.6" />
-      <path d="M3 24c0-3.866 3.134-7 7-7s7 3.134 7 7" stroke={color} strokeWidth="1.6" strokeLinecap="round" />
-      <path d="M18 9.5a3.5 3.5 0 010 5" stroke={color} strokeWidth="1.5" strokeLinecap="round" />
-      <path d="M20.5 7a7 7 0 010 10" stroke={color} strokeWidth="1.4" strokeLinecap="round" />
+    <svg width={size} height={size} viewBox="0 0 26 26" fill="none" aria-hidden="true">
+      <circle cx="10" cy="8" r="4" stroke="currentColor" strokeWidth="1.6" />
+      <path d="M3 24c0-3.866 3.134-7 7-7s7 3.134 7 7" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+      <path d="M18 9.5a3.5 3.5 0 010 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+      <path d="M20.5 7a7 7 0 010 10" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
     </svg>
   )
 }
 
-function IconSocial({ color = '#71717a', size = 26 }) {
+function IconSocial({ size = 26 }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 26 26" fill="none">
-      <rect x="2" y="2" width="10" height="10" rx="2.5" stroke={color} strokeWidth="1.5" />
-      <rect x="14" y="2" width="10" height="10" rx="2.5" stroke={color} strokeWidth="1.5" />
-      <rect x="2" y="14" width="10" height="10" rx="2.5" stroke={color} strokeWidth="1.5" />
-      <rect x="14" y="14" width="10" height="10" rx="2.5" stroke={color} strokeWidth="1.5" />
-      <path d="M16.5 19h5M16.5 21.5h3" stroke={color} strokeWidth="1.2" strokeLinecap="round" />
-      <circle cx="22.5" cy="4" r="2" fill={color} />
+    <svg width={size} height={size} viewBox="0 0 26 26" fill="none" aria-hidden="true">
+      <rect x="2" y="2" width="10" height="10" rx="2.5" stroke="currentColor" strokeWidth="1.5" />
+      <rect x="14" y="2" width="10" height="10" rx="2.5" stroke="currentColor" strokeWidth="1.5" />
+      <rect x="2" y="14" width="10" height="10" rx="2.5" stroke="currentColor" strokeWidth="1.5" />
+      <rect x="14" y="14" width="10" height="10" rx="2.5" stroke="currentColor" strokeWidth="1.5" />
+      <path d="M16.5 19h5M16.5 21.5h3" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+      <circle cx="22.5" cy="4" r="2" fill="currentColor" />
     </svg>
   )
 }
 
-function IconStrategy({ color = '#71717a', size = 26 }) {
+function IconSaas({ size = 26 }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 26 26" fill="none">
-      <circle cx="12" cy="14" r="10" stroke={color} strokeWidth="1.5" />
-      <circle cx="12" cy="14" r="5.5" stroke={color} strokeWidth="1.4" />
-      <circle cx="12" cy="14" r="1.8" fill={color} />
-      <path d="M18 3l-2.5 5H19L15.5 13" stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+    <svg width={size} height={size} viewBox="0 0 26 26" fill="none" aria-hidden="true">
+      <rect x="2.5" y="3.5" width="21" height="14.5" rx="2.5" stroke="currentColor" strokeWidth="1.6" />
+      <path d="M10.5 22.5h5M13 18v4.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+      <path d="M11 8.2l5 2.55-5 2.55V8.2z" fill="currentColor" />
     </svg>
   )
 }
