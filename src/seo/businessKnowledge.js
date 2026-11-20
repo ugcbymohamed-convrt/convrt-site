@@ -67,12 +67,20 @@ export const BRAND = {
   url: SITE_URL,
   motto: 'Real creators. Authentic delivery. Performance-driven creative.',
   description:
-    'CONVRT is a creative video marketing studio specializing in human-led UGC advertising, spokesperson videos and organic social media content for brands. We combine creative strategy, in-house and freelance talent, and full-service video production to help brands create authentic, consistent and performance-driven creative.',
+    'CONVRT is a creative video marketing studio specializing in human-led UGC advertising, SaaS video production, spokesperson videos and organic social media content for brands. We combine creative strategy, in-house and freelance talent, and full-service video production to help brands create authentic, consistent and performance-driven creative.',
   logoPath: '/convrt-logo.svg',
   contactEmail: CONTACT_EMAIL,
   /* Organisation-level profiles only. The founder's personal LinkedIn (linked in the footer) is a person's
      profile, not the company's, so it is deliberately NOT listed as the organisation's sameAs. */
   socialProfiles: ['https://www.instagram.com/convrtcreativestudio/'],
+  /* The founder. The name is the owner's confirmed legal name (LEGAL_ENTITY in src/content/creatorLegal.js, confirmed 17 Nov 2026) and the LinkedIn address is
+     the personal profile already linked in the footer. "Founder" is what the site already says ("founder-led"). The owner still has to confirm that the name
+     and title may be shown publicly on the About page (docs/trust-pages-draft.md); no biography, credentials or years of experience are recorded, so none is stated. */
+  founder: {
+    name: 'Mohamed Doukkali Azizi',
+    jobTitle: 'Founder',
+    linkedin: 'https://www.linkedin.com/in/mohameddoukkaliazizi/',
+  },
 }
 
 export const CORE_SERVICES = [

@@ -14,6 +14,7 @@ import { createElement } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { PATHS, KNOWN_PATHS } from '../src/routes.js'
 import { SITE_URL, OFFER_PATHS, CREATOR_SHOWCASE_PATH } from '../src/config.js'
+import { CREATOR_EXAMPLES_NOTE } from '../src/content/attribution.js'
 import { SITE_SEO, pageHead, sitemapRoutes } from '../src/seo/siteSeo.js'
 import { saasGraph, jsonLdFor, ORG_ID, serviceId, BREADCRUMB_TRAILS } from '../src/seo/structuredData.js'
 import { SAAS_FAQ, saasFaqText } from '../src/seo/saasFaq.js'
@@ -195,8 +196,9 @@ test('gallery: SaaS heading, copy, badge, button and four-up horizontal scroller
   const g = renderToStaticMarkup(createElement(Gallery.default, { items, config: SAAS_GALLERY }))
   const t = decode(g.replace(/<[^>]+>/g, ' ')).replace(/\s+/g, ' ')
   assert.ok(g.includes('id="saas-videos"'))
-  assert.ok(t.includes('See software come to life.'))
-  assert.ok(t.includes('Explore product explainers, software demonstrations and creative video approaches that help audiences understand what a product can do.'))
+  assert.ok(t.includes('Creator-led videos for software brands.'))
+  assert.ok(t.includes('Examples of how software and app products can be presented on camera. Explainers, demos and animation are scoped to your brief.'))
+  assert.ok(t.includes(CREATOR_EXAMPLES_NOTE), 'the independent-creators attribution line is visible in the gallery')
   assert.ok(/SaaS ·/.test(t) && !/UGC|Spokesperson/.test(t), 'cards are labelled SaaS')
   assert.match(g, new RegExp(`href="${CREATOR_SHOWCASE_PATH}"[^>]*>[^<]*Explore SaaS Videos`))
   assert.ok(/aria-label="SaaS video examples\. Scroll sideways to see more\."/.test(g))
@@ -327,7 +329,7 @@ test('JSON-LD: Organization, WebPage, BreadcrumbList, a Service with NO price, a
   assert.equal(svc.serviceType, 'SaaS video production')
   assert.equal(faq.mainEntity.length, SAAS_FAQ.length)
   faq.mainEntity.forEach((q, i) => { assert.equal(q.name, SAAS_FAQ[i].q); assert.equal(q.acceptedAnswer.text, saasFaqText(SAAS_FAQ[i])) })
-  assert.ok(!/aggregateRating|"review"|"address"|"award"|areaServed|VideoObject|"Product"|"Person"|"price"/.test(JSON.stringify(g)))
+  assert.ok(!/aggregateRating|"review"|"address"|"award"|areaServed|VideoObject|"Product"|"Person"|"price"/.test(JSON.stringify(g.filter((n) => n['@type'] !== 'Organization'))))
   for (const p of [PATHS.ugcVideoAgency, PATHS.spokespersonVideoProduction, PATHS.socialMediaVideoProduction]) assert.ok(!JSON.stringify(jsonLdFor(p, SITE_SEO[p])).includes('saas-video-production'), `${p}: JSON-LD unchanged`)
 })
 

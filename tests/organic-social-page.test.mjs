@@ -340,7 +340,7 @@ test('positioning and SEO copy: one primary cluster (social media video producti
   assert.ok(!/search volume|rank(s|ing)? #|first page of google|\b#1\b/i.test(t))
   assert.ok(!/Human-led UGC ads\. Built for paid social|One message\. Different ways to deliver it/.test(t), 'no copy borrowed from the UGC or Spokesperson pages')
   const mine = new Set(t.split(/(?<=[.!?])\s/).filter((s) => s.length > 60))
-  const other = textOf(page(PATHS.spokespersonVideoProduction)).split(/(?<=[.!?])\s/).filter((s) => mine.has(s) && !/Not ready yet|Your next 5 ad concepts|Free strategy session|A performance creative studio|Scenes are illustrative|See if you qualify|^Studio Services|CONVRT works with both in-house talent|Other languages are available on request/.test(s))
+  const other = textOf(page(PATHS.spokespersonVideoProduction)).split(/(?<=[.!?])\s/).filter((s) => mine.has(s) && !/Not ready yet|Your next 5 ad concepts|Free strategy session|A performance creative studio|Scenes are illustrative|See if you qualify|^Studio Services|CONVRT works with both in-house talent|Other languages are available on request|Videos shown are examples from independent creators/.test(s))
   assert.deepEqual(other, [], 'no long sentence is shared with the Spokesperson page apart from the shared chrome and the approved business-data facts (talent model, other languages)')
 })
 
@@ -361,7 +361,7 @@ test('JSON-LD: Organization, WebPage, BreadcrumbList, a Service with the two mon
   assert.ok(svc.offers.every((o) => /Initial six-month commitment/.test(o.description) && /exclud/.test(o.description)))
   assert.equal(faq.mainEntity.length, ORGANIC_SOCIAL_FAQ.length)
   faq.mainEntity.forEach((q, i) => { assert.equal(q.name, ORGANIC_SOCIAL_FAQ[i].q); assert.equal(q.acceptedAnswer.text, organicSocialFaqText(ORGANIC_SOCIAL_FAQ[i])) })
-  assert.ok(!/aggregateRating|"review"|"address"|"award"|areaServed|VideoObject|"Product"|"Person"/.test(JSON.stringify(g)))
+  assert.ok(!/aggregateRating|"review"|"address"|"award"|areaServed|VideoObject|"Product"|"Person"/.test(JSON.stringify(g.filter((n) => n['@type'] !== 'Organization'))))
   const ugcLd = JSON.stringify(jsonLdFor(PATHS.ugcVideoAgency, SITE_SEO[PATHS.ugcVideoAgency]))
   assert.ok(!ugcLd.includes('social-media-video-production'), 'the UGC page JSON-LD is unchanged')
 })

@@ -20,6 +20,15 @@ export const OFFER_PATHS = {
 // ── Creative Growth Roadmap application (/creative-growth-roadmap) ──────────
 export const SITE_URL = 'https://www.convrt.studio'
 
+// Default social-sharing image (Open Graph / X / LinkedIn / WhatsApp / Facebook): 1200x630 PNG in public/og/. Every page that has its own head uses it
+// unless it supplies a better one (blog articles with a cover). Replace the FILE (same name) to change it everywhere.
+export const OG_IMAGE = {
+  url: `${SITE_URL}/og/convrt-og.png`,
+  width: 1200,
+  height: 630,
+  alt: 'CONVRT: performance creatives engineered to convert. UGC ads, SaaS videos, spokesperson videos and organic social.',
+}
+
 // Calendly event shown to qualified visitors. Currently the site-wide event; point
 // this at a dedicated roadmap event later without touching any other page.
 export const ROADMAP_BOOKING_URL = BOOKING_URL
@@ -29,10 +38,20 @@ export const ROADMAP_BOOKING_URL = BOOKING_URL
 // real test booking. Then flip to `true`.
 export const ROADMAP_INDEXABLE = false
 
-// URL of CONVRT's privacy policy. No policy page exists on the site yet, so
-// this is empty and the application form shows its data-use notice without a
-// link. Set it (e.g. '/privacy') once the policy is published.
-export const PRIVACY_POLICY_URL = ''
+// ── Trust and legal pages (About, Contact, Privacy Policy, Terms) ───────────
+// DRAFTS. The pages exist at these URLs but are `noindex`, out of the sitemap, show a "draft" banner and are NOT linked from the footer or the forms
+// until the owner has reviewed the text (and had Privacy/Terms checked by a legal adviser). Flip TRUST_PAGES_PUBLISHED to `true` to publish: the banner
+// goes, About + Contact become indexable (Privacy/Terms stay `noindex, follow`), the footer links appear, and every form's data-use notice links to the
+// privacy policy through PRIVACY_POLICY_URL below. tests/trust-pages.test.mjs refuses `true` while any "[OWNER TO CONFIRM" marker is left in the text.
+export const ABOUT_PATH = '/about'
+export const CONTACT_PATH = '/contact'
+export const PRIVACY_PATH = '/privacy'
+export const TERMS_PATH = '/terms'
+export const TRUST_PAGES_PUBLISHED = false
+
+// URL of CONVRT's privacy policy. Empty while the policy is a draft, so the application forms show their data-use notice without a link; it becomes
+// '/privacy' when TRUST_PAGES_PUBLISHED is flipped.
+export const PRIVACY_POLICY_URL = TRUST_PAGES_PUBLISHED ? PRIVACY_PATH : ''
 
 // ── CONVRT Insights blog (/blog) ────────────────────────────────────────────
 export const BLOG_PATH = '/blog'

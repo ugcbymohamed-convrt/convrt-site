@@ -18,7 +18,7 @@ export function headSpecToHtml(spec) {
 }
 
 /* Head tags the shell (index.html) carries as defaults, which every prerendered route replaces. */
-const MANAGED_META = ['description', 'og:title', 'og:description', 'og:type', 'og:url', 'og:site_name', 'twitter:card', 'twitter:title', 'twitter:description', 'og:image', 'twitter:image', 'robots']
+const MANAGED_META = ['description', 'og:title', 'og:description', 'og:type', 'og:url', 'og:site_name', 'twitter:card', 'twitter:title', 'twitter:description', 'og:image', 'og:image:width', 'og:image:height', 'og:image:alt', 'twitter:image', 'twitter:image:alt', 'robots']
 
 export function stripManagedHead(html) {
   let out = html.replace(/[ \t]*<title>[\s\S]*?<\/title>\r?\n?/, '')

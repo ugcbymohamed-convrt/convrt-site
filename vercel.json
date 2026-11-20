@@ -4,6 +4,17 @@
   ],
   "redirects": [
     {
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "convrt.studio"
+        }
+      ],
+      "destination": "https://www.convrt.studio/$1",
+      "permanent": true
+    },
+    {
       "source": "/creative-testing-sprint",
       "destination": "/pricing",
       "permanent": true
@@ -55,6 +66,24 @@
         {
           "key": "Cache-Control",
           "value": "no-store"
+        }
+      ]
+    },
+    {
+      "source": "/assets/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
+    {
+      "source": "/fonts/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
         }
       ]
     }

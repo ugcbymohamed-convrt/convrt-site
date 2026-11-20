@@ -9,16 +9,17 @@ import { buildHeadSpec, STATIC_JSONLD_ATTR, STATIC_JSONLD_VALUE } from './headSp
    Optional extras (used by the blog; existing callers are unaffected):
    • url      — omit it (e.g. the 404 page) to set neither og:url nor a canonical.
    • robots   — full directive string, e.g. 'noindex, follow'. Wins over `noindex`.
-   • image    — absolute URL for og:image / twitter:image (switches the card to large).
+   • image    — absolute URL for og:image / twitter:image (switches the card to large). imageAlt / imageWidth / imageHeight add the matching
+                og:image:alt, twitter:image:alt and og:image:width/height tags.
    • type     — og:type, default 'website' ('article' for blog posts).
    • ogTitle / ogDescription — social copy when it should differ from title / description
      (the case studies). Default: the same as title / description.
    • jsonLd   — one JSON-LD object or an array of them, injected as <script type="application/ld+json">. */
-export function useDocumentHead({ title, description, url, noindex = false, robots, image, type = 'website', jsonLd, ogTitle, ogDescription }) {
+export function useDocumentHead({ title, description, url, noindex = false, robots, image, imageAlt, imageWidth, imageHeight, type = 'website', jsonLd, ogTitle, ogDescription }) {
   const jsonLdText = jsonLd ? JSON.stringify(jsonLd) : ''
   useEffect(() => {
     const restores = []
-    const spec = buildHeadSpec({ title, description, url, noindex, robots, image, type, jsonLd: jsonLdText ? JSON.parse(jsonLdText) : undefined, ogTitle, ogDescription })
+    const spec = buildHeadSpec({ title, description, url, noindex, robots, image, imageAlt, imageWidth, imageHeight, type, jsonLd: jsonLdText ? JSON.parse(jsonLdText) : undefined, ogTitle, ogDescription })
 
     const previousTitle = document.title
     document.title = spec.title
@@ -58,5 +59,5 @@ export function useDocumentHead({ title, description, url, noindex = false, robo
     }
 
     return () => restores.reverse().forEach((fn) => fn())
-  }, [title, description, url, noindex, robots, image, type, jsonLdText, ogTitle, ogDescription])
+  }, [title, description, url, noindex, robots, image, imageAlt, imageWidth, imageHeight, type, jsonLdText, ogTitle, ogDescription])
 }

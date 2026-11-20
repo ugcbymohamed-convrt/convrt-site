@@ -84,6 +84,8 @@ test('vercel.json: no catch-all rewrite; creative-testing-sprint redirect, the /
     assert.ok(!/\(\.\*\)|\*/.test(r.source), `catch-all rewrite would turn unknown URLs into 200s: ${r.source}`)
   }
   assert.deepEqual(VERCEL.redirects, [
+    // SEO/GEO Batch 1: the bare domain redirects permanently to www (host-conditional, so it never touches www or preview URLs).
+    { source: '/(.*)', has: [{ type: 'host', value: 'convrt.studio' }], destination: 'https://www.convrt.studio/$1', permanent: true },
     { source: '/creative-testing-sprint', destination: '/pricing', permanent: true },
     { source: '/our-work', destination: '/creator-showcase', permanent: true },
   ])

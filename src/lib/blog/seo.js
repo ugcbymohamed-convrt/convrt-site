@@ -6,7 +6,7 @@
    • FAQPage is produced only when the article has real `faq` entries that are also
      shown on the page. Coming-soon topics never produce any structured data. */
 
-import { SITE_URL, BLOG_PATH, BLOG_INDEXABLE } from '../../config.js'
+import { SITE_URL, OG_IMAGE, BLOG_PATH, BLOG_INDEXABLE } from '../../config.js'
 import { articlePath } from './schema.js'
 import { organizationRef, websiteRef } from '../../seo/structuredData.js'
 
@@ -28,6 +28,10 @@ export function blogIndexHead(published = []) {
     title: BLOG_TITLE,
     description: BLOG_DESCRIPTION,
     url: BLOG_URL,
+    image: OG_IMAGE.url,
+    imageAlt: OG_IMAGE.alt,
+    imageWidth: OG_IMAGE.width,
+    imageHeight: OG_IMAGE.height,
     robots: robotsFor(BLOG_INDEXABLE),
     jsonLd: blogIndexJsonLd(published),
   }
@@ -60,12 +64,15 @@ export function blogIndexJsonLd(published = []) {
 export const articleUrl = (a) => a.canonicalUrl || `${SITE_URL}${articlePath(a.slug)}`
 
 export function articleHead(a) {
-  const image = absolute(a.ogImage || a.image)
+  const own = absolute(a.ogImage || a.image)
+  // An article's own cover wins; otherwise the default share image (with its known size) is used.
+  const image = own || OG_IMAGE.url
   return {
     title: a.seoTitle || `${a.title} | CONVRT Blog`,
     description: a.metaDescription || a.excerpt,
     url: articleUrl(a),
     image,
+    ...(own ? {} : { imageAlt: OG_IMAGE.alt, imageWidth: OG_IMAGE.width, imageHeight: OG_IMAGE.height }),
     type: 'article',
     robots: a.noindex ? 'noindex, follow' : 'index, follow',
     jsonLd: articleJsonLd(a),

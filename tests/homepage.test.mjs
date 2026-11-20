@@ -18,14 +18,14 @@ const graph = () => homeGraph(SITE_SEO['/'])['@graph']
 
 test('homepage title and description: approved wording, within search-result lengths, unique among pages', () => {
   const e = SITE_SEO['/']
-  assert.equal(e.title, 'Video Marketing Agency | UGC Ads & Organic Social | CONVRT')
+  assert.equal(e.title, 'Video Marketing Agency | UGC, SaaS & Social Video | CONVRT')
   assert.equal(e.description, 'Human-led UGC ads, spokesperson videos and organic social video for SaaS, e-commerce and app brands, produced in English, Spanish, French and Arabic.')
   assert.ok(e.title.length <= 60 && e.description.length <= 160)
   for (const [p, o] of Object.entries(SITE_SEO)) if (p !== '/' && o.title) assert.ok(o.title !== e.title && o.description !== e.description, p)
   assert.equal(pageHead('/').url, `${SITE_URL}/`)
   assert.equal(pageHead('/').noindex, false)
   const html = read('index.html')
-  assert.ok(html.includes('<title>Video Marketing Agency | UGC Ads &amp; Organic Social | CONVRT</title>'))
+  assert.ok(html.includes('<title>Video Marketing Agency | UGC, SaaS &amp; Social Video | CONVRT</title>'))
   assert.ok(!/Performance Creative Studio for Paid Social/.test(html + read('src/seo/siteSeo.js')))
 })
 
@@ -69,7 +69,7 @@ test('FAQ component renders the shared data (and its links); services/hero/foote
   for (const t of ['Human-led UGC ads built to capture attention and test creative angles.', 'Product demos, explainers and video ads that make software easier to understand.', 'Professional, multilingual presenters for ads, demonstrations and brand messages.', 'Organic social videos, content planning, publishing and community management.', 'Video creative for<br />', 'paid and organic social.', 'Creative strategy and full video production,{\' \'}<br', 'from concept and creator casting to finished, platform-ready videos.', 'Explore packages and pricing']) assert.ok(svc.includes(t), t)
   assert.ok(!/Built for modern|Explore the Creative Testing Sprint|Compare packages and pricing/.test(svc))
   assert.match(svc, /<a href="\/pricing"[^>]*>\s*Explore packages and pricing\s*<\/a>/, 'link keeps its /pricing destination')
-  assert.ok(read('src/components/Hero.jsx').includes('From creative strategy and scripting to creator casting, filming and editing. We produce human-led UGC ads, spokesperson videos and organic social content, ready to perform.'))
+  assert.ok(read('src/components/Hero.jsx').includes('From creative strategy and scripting to creator casting, filming and editing. We produce human-led UGC ads, SaaS videos, spokesperson videos and organic social content, ready to perform.'))
   assert.match(read('src/components/Footer.jsx'), /href="\/pricing">Pricing<\/a>/)
   const cs = read('src/components/CaseStudies.jsx')
   assert.ok(cs.includes('href="/case-studies/graspo"') && cs.includes('href="/case-studies/elyon"') && !cs.includes('case=elyon'), 'case-study links point at the canonical study pages')
@@ -115,11 +115,12 @@ test('research stays private: research/ is git-ignored and nothing from it is in
 
 test('hero subtitle: general positioning only; industries and language lists live in the FAQ and case studies, not the hero', () => {
   const hero = read('src/components/Hero.jsx')
-  assert.ok(hero.includes('From creative strategy and scripting to creator casting, filming and editing. We produce human-led UGC ads, spokesperson videos and organic social content, ready to perform.'))
+  assert.ok(hero.includes('From creative strategy and scripting to creator casting, filming and editing. We produce human-led UGC ads, SaaS videos, spokesperson videos and organic social content, ready to perform.'))
   const sub = hero.slice(hero.indexOf('From creative strategy'), hero.indexOf('</p>', hero.indexOf('From creative strategy')))
-  assert.ok(!/SaaS|e-commerce|ecommerce|app brands|English|Spanish|French|Arabic|languages?/i.test(sub), 'no industry or language restriction in the hero')
+  // 'SaaS videos' names the fourth SERVICE (SEO/GEO Batch 1, owner decision); it must not become an industry restriction.
+  assert.ok(!/e-commerce|ecommerce|app brands|English|Spanish|French|Arabic|languages?/i.test(sub.replace('SaaS videos', '')) && !/SaaS (brands|companies|founders|teams)|for SaaS/i.test(sub), 'no industry or language restriction in the hero')
   // end-to-end production message: the whole production chain, one paragraph, no media-buying claim, no stuffed target phrase
-  for (const w of ['creative strategy', 'scripting', 'creator casting', 'filming', 'editing', 'UGC ads', 'spokesperson videos', 'organic social content']) assert.ok(sub.includes(w), w)
+  for (const w of ['creative strategy', 'scripting', 'creator casting', 'filming', 'editing', 'UGC ads', 'SaaS videos', 'spokesperson videos', 'organic social content']) assert.ok(sub.includes(w), w)
   assert.ok(!/media buying|ad accounts?|campaign optimi[sz]ation|video marketing agency/i.test(sub))
   assert.ok(!hero.includes('designed to capture attention'), 'the old subtitle is replaced, not kept as a second paragraph')
   // the specific capabilities are still published where they belong

@@ -15,6 +15,7 @@ import { createElement } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { PATHS, KNOWN_PATHS } from '../src/routes.js'
 import { SITE_URL, CREATOR_SHOWCASE_PATH } from '../src/config.js'
+import { CREATOR_EXAMPLES_NOTE } from '../src/content/attribution.js'
 import { SITE_SEO, pageHead, sitemapRoutes } from '../src/seo/siteSeo.js'
 import { ourWorkGraph, videoObjectNode, jsonLdFor, BREADCRUMB_TRAILS } from '../src/seo/structuredData.js'
 import {
@@ -95,7 +96,8 @@ test('static HTML: breadcrumb, one H1, the approved intro, two sections, the fir
   assert.equal((html.match(/<h1[\s>]/g) || []).length, 1)
   assert.ok(t.includes("See what's possible."))
   assert.ok(t.includes('Explore real creator videos across e-commerce, SaaS, services and more.'))
-  assert.ok(!t.includes('Featuring examples from independent creators'), 'the transparency note is intentionally not shown for now')
+  assert.ok(t.includes(CREATOR_EXAMPLES_NOTE), 'the independent-creators attribution line is visible (SEO/GEO Batch 1)')
+  assert.ok(!/produced by CONVRT|CONVRT produced|our work|we produced/i.test(t.replace(CREATOR_EXAMPLES_NOTE, '')), 'no CONVRT-production claim beyond the disclaimer')
   assert.equal((html.match(/<section[\s>]/g) || []).length, 2, 'only two principal sections: the hero and the library')
   const shown = Math.min(selectOurWork().length, 12)
   assert.equal((html.match(/Play video:/g) || []).length, shown, 'the first page of approved videos is in the HTML (crawlable without the filter script)')

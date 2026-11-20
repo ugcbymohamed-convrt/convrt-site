@@ -12,7 +12,7 @@
    • Services are marked up as Service + Offer. Product markup is deliberately not used.
    • Blog articles keep their own helpers (src/lib/blog/seo.js), which reference the Organization defined here. */
 
-import { SITE_URL } from '../config.js'
+import { SITE_URL, TRUST_PAGES_PUBLISHED } from '../config.js'
 import {
   adVersions, BRAND, CORE_SERVICES, PRODUCTION_LANGUAGES, SPRINT, SPRINT_PLUS, ORGANIC, COMMITMENT, ORGANIC_COMMITMENT,
   USAGE_RIGHTS, RAW_FOOTAGE, CUSTOM_PACKAGES, formatMoney,
@@ -32,6 +32,7 @@ const abs = (path) => `${SITE_URL}${path === '/' ? '/' : path}`
 /* ── stable entity ids ────────────────────────────────────────────────────────────────── */
 export const ORG_ID = `${SITE_URL}/#organization`
 export const WEBSITE_ID = `${SITE_URL}/#website`
+export const FOUNDER_ID = `${SITE_URL}/#founder`
 export const serviceId = (slug) => `${abs('/pricing')}#service-${slug}`
 export const pageId = (path) => `${abs(path)}#webpage`
 
@@ -53,6 +54,12 @@ export function organizationNode() {
     email: BRAND.contactEmail,
     sameAs: BRAND.socialProfiles,
     knowsLanguage: PRODUCTION_LANGUAGES.coreCodes,
+    // The public enquiry address already shown in the footer and on the Contact page.
+    contactPoint: { '@type': 'ContactPoint', contactType: 'customer service', email: BRAND.contactEmail },
+    // The founder is described only once the About page that shows the same facts is published (markup must match visible content).
+    ...(TRUST_PAGES_PUBLISHED
+      ? { founder: { '@type': 'Person', '@id': FOUNDER_ID, name: BRAND.founder.name, jobTitle: BRAND.founder.jobTitle, sameAs: [BRAND.founder.linkedin] } }
+      : {}),
   }
 }
 
@@ -485,6 +492,35 @@ export function ourWorkGraph({ title, description }) {
   ])
 }
 
+/* About / Contact / Privacy / Terms: the Organization, the page (typed AboutPage or ContactPage where that is accurate) and its breadcrumb. Nothing is claimed
+   beyond what the page text says. */
+/* Trails for the trust pages live apart from BREADCRUMB_TRAILS (which the service-page tests pin key by key). */
+const TRUST_TRAILS = {
+  [PATHS.about]: [{ name: 'Home', path: '/' }, { name: 'About', path: PATHS.about }],
+  [PATHS.contact]: [{ name: 'Home', path: '/' }, { name: 'Contact', path: PATHS.contact }],
+  [PATHS.privacy]: [{ name: 'Home', path: '/' }, { name: 'Privacy Policy', path: PATHS.privacy }],
+  [PATHS.terms]: [{ name: 'Home', path: '/' }, { name: 'Terms and Conditions', path: PATHS.terms }],
+}
+const TRUST_PAGE_TYPE = { [PATHS.about]: 'AboutPage', [PATHS.contact]: 'ContactPage' }
+export function trustGraph(path, { title, description }) {
+  const url = abs(path)
+  return graph([
+    organizationNode(),
+    {
+      '@type': TRUST_PAGE_TYPE[path] ?? 'WebPage',
+      '@id': pageId(path),
+      url,
+      name: title,
+      description,
+      isPartOf: { '@id': WEBSITE_ID },
+      ...(path === PATHS.about ? { about: { '@id': ORG_ID } } : {}),
+      breadcrumb: { '@id': `${url}#breadcrumb` },
+      inLanguage: 'en',
+    },
+    breadcrumbNode(TRUST_TRAILS[path], `${url}#breadcrumb`),
+  ])
+}
+
 /* The JSON-LD for a route, or undefined when the route has none. `seo` is the route's SITE_SEO entry. */
 export function jsonLdFor(path, seo = {}) {
   if (path === '/') return homeGraph(seo)
@@ -494,5 +530,6 @@ export function jsonLdFor(path, seo = {}) {
   if (path === PATHS.socialMediaVideoProduction) return organicSocialGraph(seo)
   if (path === PATHS.saasVideoProduction) return saasGraph(seo)
   if (path === PATHS.showcase) return ourWorkGraph(seo)
+  if ([PATHS.about, PATHS.contact, PATHS.privacy, PATHS.terms].includes(path)) return trustGraph(path, seo)
   return undefined
 }

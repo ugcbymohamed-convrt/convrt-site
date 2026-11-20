@@ -1,8 +1,10 @@
+import { CREATOR_EXAMPLES_NOTE } from '../../content/attribution.js'
+
 /* SECTION 1: a short, text-only hero. The H1 and one sentence, then the library starts straight away: no statistics, no service copy,
    no phone mock-ups. Dark canvas, white type, lime only on the last word and a faint glow.
 
-   There is deliberately no "independent creators" note for now. The page still never claims the videos are CONVRT productions
-   (see the regression tests); the SEO description says they are examples from independent creators. */
+   The attribution line under the intro (CREATOR_EXAMPLES_NOTE) says the videos are examples from independent creators and not necessarily CONVRT
+   productions; it was added in the SEO/GEO Batch 1 (owner decision, Nov 2026) so the visible copy matches the SEO description. */
 export default function OurWorkHero() {
   return (
     <section aria-labelledby="our-work-heading" className="relative overflow-x-clip">
@@ -14,6 +16,7 @@ export default function OurWorkHero() {
         <p className="mt-4 max-w-2xl text-base leading-relaxed text-ink-muted md:mt-5 md:text-lg">
           Explore real creator videos across <span className="whitespace-nowrap">e-commerce</span>, SaaS, services and more.
         </p>
+        <p className="mt-3 max-w-2xl text-[13px] leading-relaxed text-ink-muted">{CREATOR_EXAMPLES_NOTE}</p>
       </div>
     </section>
   )

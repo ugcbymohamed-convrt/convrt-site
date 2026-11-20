@@ -72,8 +72,8 @@ export const SAAS_GALLERY = {
   id: 'saas-videos',
   headingId: 'saas-videos-heading',
   eyebrow: 'SaaS showcase',
-  title: 'See software come to life.',
-  intro: 'Explore product explainers, software demonstrations and creative video approaches that help audiences understand what a product can do.',
+  title: 'Creator-led videos for software brands.',
+  intro: 'Examples of how software and app products can be presented on camera. Explainers, demos and animation are scoped to your brief.',
   ariaLabel: 'SaaS video examples. Scroll sideways to see more.',
   badge: 'SaaS',
   /* /creator-showcase filters by industry only (it has no SaaS or format filter route), so this goes to the whole Creator Showcase. Point it at a filtered view only once one exists. */

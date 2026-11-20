@@ -257,7 +257,7 @@ test('brand + talent + languages: verbatim confirmed information, nothing invent
   assert.equal(BRAND.name, 'CONVRT Studio')
   assert.equal(BRAND.url, 'https://www.convrt.studio')
   assert.equal(BRAND.motto, 'Real creators. Authentic delivery. Performance-driven creative.')
-  assert.match(BRAND.description, /^CONVRT is a creative video marketing studio specializing in human-led UGC advertising, spokesperson videos and organic social media content for brands\./)
+  assert.match(BRAND.description, /^CONVRT is a creative video marketing studio specializing in human-led UGC advertising, SaaS video production, spokesperson videos and organic social media content for brands\./)
   assert.deepEqual(PRODUCTION_LANGUAGES.core, ['English', 'Spanish', 'French', 'Arabic'])
   assert.ok(!/\b\d+\s*(creators|offices|countries)\b/i.test(JSON.stringify(BRAND)), 'no invented counts')
 })

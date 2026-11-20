@@ -3,6 +3,7 @@ import { createRoot, hydrateRoot } from 'react-dom/client'
 import App from './App.jsx'
 import { canHydrate, normalizePathname } from './lib/routes/hydration.js'
 import { preloadForPath } from './lib/routes/preload.js'
+import { initConsent } from './lib/consent.js'
 import './index.css'
 
 /* Every public page ships as static HTML (see vite-plugin-static-routes.js). When the HTML in #root was
@@ -37,4 +38,16 @@ if (hydrate) {
   ready.then(attach, attach)
 } else {
   createRoot(container).render(app)
+}
+
+/* Analytics consent (Google Consent Mode v2). Entirely inactive unless a GTM container ID is configured (VITE_GTM_ID): then the denied defaults are set, a saved
+   choice is applied, and the banner mounts in its OWN root, so the prerendered markup and hydration above are untouched. See src/lib/consent.js. */
+const consent = initConsent({ win: window, doc: document })
+if (consent.enabled) {
+  import('./components/ConsentManager.jsx').then(({ default: ConsentManager }) => {
+    const host = document.createElement('div')
+    host.id = 'consent-root'
+    document.body.appendChild(host)
+    createRoot(host).render(<ConsentManager />)
+  })
 }

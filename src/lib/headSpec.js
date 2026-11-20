@@ -5,7 +5,7 @@
 
    Params are the ones useDocumentHead has always taken (see that file). */
 
-export function buildHeadSpec({ title, description, url, noindex = false, robots, image, type = 'website', jsonLd, ogTitle, ogDescription }) {
+export function buildHeadSpec({ title, description, url, noindex = false, robots, image, imageAlt, imageWidth, imageHeight, type = 'website', jsonLd, ogTitle, ogDescription }) {
   const metas = [] // { attr: 'name' | 'property', key, content }
   const add = (attr, key, content) => metas.push({ attr, key, content })
 
@@ -21,6 +21,12 @@ export function buildHeadSpec({ title, description, url, noindex = false, robots
   if (image) {
     add('property', 'og:image', image)
     add('name', 'twitter:image', image)
+    if (imageWidth) add('property', 'og:image:width', String(imageWidth))
+    if (imageHeight) add('property', 'og:image:height', String(imageHeight))
+    if (imageAlt) {
+      add('property', 'og:image:alt', imageAlt)
+      add('name', 'twitter:image:alt', imageAlt)
+    }
   }
   const robotsValue = robots ?? (noindex ? 'noindex' : '')
   if (robotsValue) add('name', 'robots', robotsValue)

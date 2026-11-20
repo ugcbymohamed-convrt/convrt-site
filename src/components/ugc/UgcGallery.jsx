@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { trackEvent } from '../../lib/analytics.js'
 import { CREATOR_SHOWCASE_PATH } from '../../config.js'
+import { CREATOR_EXAMPLES_NOTE } from '../../content/attribution.js'
 import { posterUrl, languageLabel } from '../../content/portfolio.js'
 import { usePreviewHost } from '../../lib/previewHost.js'
 import SectionDivider from '../SectionDivider.jsx'
@@ -173,6 +174,7 @@ export default function UgcGallery({ items, config = UGC_GALLERY }) {
     <Section id={config.id} label={config.headingId} glow>
       <Reveal>
         <Head id={config.headingId} eyebrow={config.eyebrow} title={config.title} intro={config.intro} />
+        <p className="mx-auto mt-3 max-w-xl text-center text-[13px] leading-relaxed text-ink-muted">{CREATOR_EXAMPLES_NOTE}</p>
       </Reveal>
 
       <Reveal className="mt-8 md:mt-10">

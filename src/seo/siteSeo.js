@@ -18,8 +18,9 @@
      here exists so a test can prove the two never drift apart. */
 
 import {
-  SITE_URL, OFFER_PATHS, REFERRALS_PATH,
+  SITE_URL, OG_IMAGE, OFFER_PATHS, REFERRALS_PATH,
   ROADMAP_INDEXABLE, FREE_HOOKS_INDEXABLE, RISK_FREE_INDEXABLE, REFERRALS_INDEXABLE,
+  ABOUT_PATH, CONTACT_PATH, PRIVACY_PATH, TERMS_PATH, TRUST_PAGES_PUBLISHED,
 } from '../config.js'
 import { jsonLdFor } from './structuredData.js'
 import { PATHS } from '../routes.js'
@@ -28,7 +29,7 @@ import { selectOurWork, selectSpokespersonHero, selectSpokespersonGallery, selec
 
 export const SITE_SEO = {
   '/': {
-    title: 'Video Marketing Agency | UGC Ads & Organic Social | CONVRT',
+    title: 'Video Marketing Agency | UGC, SaaS & Social Video | CONVRT',
     description:
       'Human-led UGC ads, spokesperson videos and organic social video for SaaS, e-commerce and app brands, produced in English, Spanish, French and Arabic.',
     ogTitle: 'CONVRT — Performance creatives that convert.',
@@ -43,7 +44,7 @@ export const SITE_SEO = {
     indexable: true,
   },
   [PATHS.ugcVideoAgency]: {
-    title: 'UGC Video Agency | Human-Led UGC Ads for Paid Social | CONVRT',
+    title: 'UGC Agency | Human-Led UGC Ads for Paid Social | CONVRT',
     // The price and usage period come from the business data, so the description can never disagree with the page.
     description: `Human-led, multilingual UGC ads for paid social, from concept to edit. Packages from ${formatMoney(SPRINT.monthly)}/month, with ${USAGE_RIGHTS.includedMonths} months of worldwide usage rights included.`,
     ogTitle: 'CONVRT: UGC Ads Built for Paid Social',
@@ -135,6 +136,32 @@ export const SITE_SEO = {
       'Apply for one free video ad produced by CONVRT, plus two bonus hook variations. Try CONVRT risk free and see if you qualify.',
     indexable: RISK_FREE_INDEXABLE,
   },
+  // Trust and legal pages. DRAFT until TRUST_PAGES_PUBLISHED (src/config.js): noindex and out of the sitemap. Once published, About and Contact are indexable;
+  // Privacy and Terms stay `noindex, follow` (they are reference pages, never search targets) but remain crawlable and linked from the footer.
+  [ABOUT_PATH]: {
+    title: 'About CONVRT | Founder-Led Video Creative Studio',
+    description:
+      'Founder-led creative studio producing human-led UGC ads, SaaS videos, spokesperson videos and organic social content in English, Spanish, French and Arabic.',
+    indexable: TRUST_PAGES_PUBLISHED,
+  },
+  [CONTACT_PATH]: {
+    title: 'Contact CONVRT | Talk to the Studio',
+    description:
+      'Contact CONVRT by email, book a creative call or apply for the free Creative Growth Roadmap. Founder-led video production for SaaS, e-commerce and app brands.',
+    indexable: TRUST_PAGES_PUBLISHED,
+  },
+  [PRIVACY_PATH]: {
+    title: 'Privacy Policy | CONVRT',
+    description: 'How CONVRT Studio collects, uses and protects personal information on convrt.studio, and how to control cookies and your data.',
+    robots: 'noindex, follow',
+    indexable: false,
+  },
+  [TERMS_PATH]: {
+    title: 'Terms and Conditions | CONVRT',
+    description: 'The terms for using the CONVRT Studio website, free offers and how paid services are agreed.',
+    robots: 'noindex, follow',
+    indexable: false,
+  },
   [REFERRALS_PATH]: {
     title: 'CONVRT Referral Partner Program | Earn Rewards for Introductions',
     description:
@@ -156,6 +183,10 @@ export function pageHead(path) {
     title: e.title,
     description: e.description,
     url: urlFor(path),
+    image: OG_IMAGE.url,
+    imageAlt: OG_IMAGE.alt,
+    imageWidth: OG_IMAGE.width,
+    imageHeight: OG_IMAGE.height,
     ...(e.ogTitle ? { ogTitle: e.ogTitle } : {}),
     ...(e.ogDescription ? { ogDescription: e.ogDescription } : {}),
     ...(e.robots ? { robots: e.robots } : { noindex: !e.indexable }),

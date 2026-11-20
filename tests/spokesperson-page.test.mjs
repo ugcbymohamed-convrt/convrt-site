@@ -311,7 +311,7 @@ test('JSON-LD: Organization, WebPage, BreadcrumbList, a Service with NO price, a
   assert.equal(svc.serviceType, 'Spokesperson video production')
   assert.equal(faq.mainEntity.length, SPOKESPERSON_FAQ.length)
   faq.mainEntity.forEach((q, i) => { assert.equal(q.name, SPOKESPERSON_FAQ[i].q); assert.equal(q.acceptedAnswer.text, spokespersonFaqText(SPOKESPERSON_FAQ[i])) })
-  assert.ok(!/aggregateRating|"review"|"address"|"award"|areaServed|VideoObject|"Product"|"Person"|"price"/.test(JSON.stringify(g)))
+  assert.ok(!/aggregateRating|"review"|"address"|"award"|areaServed|VideoObject|"Product"|"Person"|"price"/.test(JSON.stringify(g.filter((n) => n['@type'] !== 'Organization'))))
   const ugcLd = JSON.stringify(jsonLdFor(PATHS.ugcVideoAgency, SITE_SEO[PATHS.ugcVideoAgency]))
   assert.ok(!ugcLd.includes('spokesperson-video-production'), 'the UGC page JSON-LD is unchanged')
 })

@@ -67,7 +67,8 @@ test('index.html: route-agnostic social defaults present', () => {
   const html = read('index.html')
   assert.match(html, /property="og:type" content="website"/)
   assert.match(html, /property="og:site_name" content="CONVRT"/)
-  assert.match(html, /name="twitter:card" content="summary"/)
+  assert.match(html, /name="twitter:card" content="summary_large_image"/)
+  assert.match(html, /property="og:image" content="https:\/\/www\.convrt\.studio\/og\/convrt-og\.png"/)
 })
 
 // ── SEO phase 2: the manifest is the single source of truth ─────────────────────────────

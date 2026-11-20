@@ -30,6 +30,7 @@ const FreeHooksPage = lazy(() => import('./FreeHooksPage.jsx'))
 const RiskFreePage = lazy(() => import('./RiskFreePage.jsx'))
 const ReferralsPage = lazy(() => import('./ReferralsPage.jsx'))
 const BlogPage = lazy(() => import('./BlogPage.jsx'))
+const TrustPage = lazy(() => import('./TrustPage.jsx'))
 const BlogArticlePage = lazy(() => import('./BlogArticlePage.jsx'))
 const NotFoundPage = lazy(() => import('./NotFoundPage.jsx'))
 // Private, invitation-only creator pages (see PRIVATE_PATHS in src/routes.js). Standalone: no Nav, no Footer.
@@ -64,6 +65,11 @@ const ROUTES = {
   [REFERRALS_PATH]: ReferralsPage,
   // The Blog index. Individual articles live at /blog/<slug> (see resolvePage).
   [PATHS.blog]: BlogPage,
+  // About, Contact, Privacy Policy and Terms (drafts until TRUST_PAGES_PUBLISHED, see src/config.js): one template, content in src/content/trustPages.js.
+  [PATHS.about]: TrustPage,
+  [PATHS.contact]: TrustPage,
+  [PATHS.privacy]: TrustPage,
+  [PATHS.terms]: TrustPage,
 }
 
 const PRIVATE_ROUTES = {

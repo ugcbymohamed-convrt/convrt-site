@@ -6,7 +6,7 @@
      a genuine HTTP 404 (dist/404.html). That is why vercel.json no longer has a catch-all rewrite.
    • Blog articles are not listed here: they come from the published Markdown files at build time. */
 
-import { OFFER_PATHS, REFERRALS_PATH, BLOG_PATH, CREATOR_SHOWCASE_PATH } from './config.js'
+import { OFFER_PATHS, REFERRALS_PATH, BLOG_PATH, CREATOR_SHOWCASE_PATH, ABOUT_PATH, CONTACT_PATH, PRIVACY_PATH, TERMS_PATH } from './config.js'
 
 export const PATHS = {
   home: '/',
@@ -25,6 +25,10 @@ export const PATHS = {
   riskFree: OFFER_PATHS.riskFree,
   referrals: REFERRALS_PATH,
   blog: BLOG_PATH,
+  about: ABOUT_PATH,
+  contact: CONTACT_PATH,
+  privacy: PRIVACY_PATH,
+  terms: TERMS_PATH,
 }
 
 export const KNOWN_PATHS = Object.values(PATHS)

@@ -140,7 +140,7 @@ test('every public route: its own title, ONE canonical equal to the manifest, de
     assert.equal(count(head, /name="robots"/g), want.robots || want.noindex ? 1 : 0, `${p}: robots count`)
     const robots = (head.match(/name="robots" content="([^"]*)"/) || [])[1]
     assert.equal(robots, want.robots ?? (want.noindex ? 'noindex' : undefined), `${p}: robots value`)
-    assert.ok(!head.includes('Video Marketing Agency | UGC Ads') || p === '/', `${p}: homepage title leaked into another route`)
+    assert.ok(!head.includes('Video Marketing Agency | UGC,') || p === '/', `${p}: homepage title leaked into another route`)
   }
 })
 
@@ -666,7 +666,7 @@ import { HOME_FAQ } from '../src/seo/homeFaq.js'
 test('homepage HTML: approved title, description, ONE canonical, indexable, social tags intact', () => {
   const h = page('/')
   const head = headOf(h)
-  assert.ok(head.includes('<title>Video Marketing Agency | UGC Ads &amp; Organic Social | CONVRT</title>'))
+  assert.ok(head.includes('<title>Video Marketing Agency | UGC, SaaS &amp; Social Video | CONVRT</title>'))
   assert.equal(count(head, /<title>/g), 1)
   assert.ok(head.includes('<meta name="description" content="Human-led UGC ads, spokesperson videos and organic social video for SaaS, e-commerce and app brands, produced in English, Spanish, French and Arabic." />'))
   assert.equal(count(head, /name="description"/g), 1)
@@ -694,7 +694,7 @@ test('homepage HTML: services heading and cards, hero line, internal links', () 
     'Video creative for paid and organic social.', 'Creative strategy and full video production, from concept and creator casting to finished, platform-ready videos.',
     'Human-led UGC ads built to capture attention and test creative angles.', 'Product demos, explainers and video ads that make software easier to understand.',
     'Professional, multilingual presenters for ads, demonstrations and brand messages.', 'Organic social videos, content planning, publishing and community management.',
-    'From creative strategy and scripting to creator casting, filming and editing. We produce human-led UGC ads, spokesperson videos and organic social content, ready to perform.',
+    'From creative strategy and scripting to creator casting, filming and editing. We produce human-led UGC ads, SaaS videos, spokesperson videos and organic social content, ready to perform.',
     'Explore packages and pricing',
   ]) assert.ok(t.includes(n), n)
   assert.ok(!/Built for modern|Explore the Creative Testing Sprint|Compare packages and pricing|significantly better results|personally approved by the founder|prolific creator/.test(t))

@@ -68,7 +68,7 @@ export default function Hero() {
             </h1>
 
             <p className="mt-6 md:mt-8 max-w-xl mx-auto lg:mx-0 text-pretty text-base md:text-lg text-ink-muted leading-relaxed">
-              From creative strategy and scripting to creator casting, filming and editing. We produce human-led UGC ads, spokesperson videos and organic social content, ready to perform.
+              From creative strategy and scripting to creator casting, filming and editing. We produce human-led UGC ads, SaaS videos, spokesperson videos and organic social content, ready to perform.
             </p>
             </div>
 

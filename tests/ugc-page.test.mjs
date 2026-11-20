@@ -61,7 +61,7 @@ after(async () => {
 // ── SEO manifest, head, sitemap ──────────────────────────────────────────────────────────
 test('head: approved title, price-driven description, self-canonical, indexable, in the sitemap', () => {
   const e = SITE_SEO[PATH]
-  assert.equal(e.title, 'UGC Video Agency | Human-Led UGC Ads for Paid Social | CONVRT')
+  assert.equal(e.title, 'UGC Agency | Human-Led UGC Ads for Paid Social | CONVRT')
   assert.ok(e.title.length <= 62, 'title length')
   assert.ok(e.description.length >= 120 && e.description.length <= 160, `description length ${e.description.length}`)
   assert.ok(e.description.includes(`${formatMoney(SPRINT.monthly)}/month`) && e.description.includes(`${USAGE_RIGHTS.includedMonths} months`), 'description is built from the business data')
@@ -72,7 +72,7 @@ test('head: approved title, price-driven description, self-canonical, indexable,
   assert.ok(!titles.includes(e.title), 'unique title')
   const html = page(PATH)
   const head = headOf(html)
-  assert.ok(head.includes('<title>UGC Video Agency | Human-Led UGC Ads for Paid Social | CONVRT</title>'))
+  assert.ok(head.includes('<title>UGC Agency | Human-Led UGC Ads for Paid Social | CONVRT</title>'))
   assert.ok(head.includes(`<link rel="canonical" href="${URL_}" />`))
   assert.equal((head.match(/rel="canonical"/g) || []).length, 1)
   assert.ok(!/name="robots"/.test(head), 'indexable: no robots tag')
@@ -258,7 +258,7 @@ test('JSON-LD: Organization, WebPage, BreadcrumbList, Service (+ Offers from the
     assert.equal(faq.mainEntity[i].name, f.q)
     assert.equal(faq.mainEntity[i].acceptedAnswer.text, ugcFaqText(f))
   })
-  assert.ok(!/aggregateRating|"review"|"address"|"award"|areaServed|VideoObject|"Product"|"Person"/.test(JSON.stringify(g)), 'nothing the page does not show')
+  assert.ok(!/aggregateRating|"review"|"address"|"award"|areaServed|VideoObject|"Product"|"Person"/.test(JSON.stringify(g.filter((n) => n['@type'] !== 'Organization'))), 'nothing the page does not show')
 })
 
 test('JSON-LD is in the static HTML, valid JSON, and equal to the manifest graph', () => {

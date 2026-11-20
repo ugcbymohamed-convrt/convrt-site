@@ -1,33 +1,50 @@
 /* ─────────────────────────────────────────────
-   ANALYTICS / ATTRIBUTION — placeholder event hooks for the /scale
-   paid-acquisition landing page.
+   ANALYTICS / ATTRIBUTION — every conversion and CTA event on the site goes through trackEvent().
 
-   No analytics vendor is wired into this project yet. trackEvent()
-   pushes to window.dataLayer (GTM/GA4) and calls window.fbq (Meta
-   Pixel) ONLY if those globals already exist on the page — otherwise
-   it's a no-op plus a console.debug so events are visible during
-   development. When real tracking is installed, nothing here needs
-   to change: this stays the single call site for every conversion
-   event on the page.
+   Events are pushed to the Google Tag Manager dataLayer ONLY when consent allows it (src/lib/consent.js):
+   a GTM container ID must be configured (VITE_GTM_ID) AND the visitor must have granted analytics or marketing
+   consent. Otherwise trackEvent() is a no-op (plus a console.debug in development), exactly as before GTM existed.
+   The Meta Pixel hook (window.fbq) is only called with marketing consent.
+
+   Every pushed event also carries `page_path` (this page) and `landing_page` (the page the session started on),
+   so a GA4/GTM report can show which landing pages lead to each enquiry. Event names are stable: GTM triggers
+   match on them (see docs/analytics-and-consent.md for the full list). Identical events fired within
+   750 ms are dropped, which protects against accidental double firing (for example effects that re-run).
 
    UTM + click-id capture: read once on landing, persisted in
-   sessionStorage so they survive in-page navigation and can be
-   replayed onto the booking link even if the visitor scrolls the
-   page for a while before converting.
+   sessionStorage so they survive in-page navigation and can be replayed onto the booking link even if the
+   visitor scrolls the page for a while before converting.
 ───────────────────────────────────────────── */
+
+import { isTrackingAllowed, isMarketingAllowed, landingPage } from './consent.js'
 
 const UTM_KEYS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term']
 const CLICK_ID_KEYS = ['gclid', 'fbclid', 'ttclid', 'wbraid', 'gbraid']
 const STORAGE_KEY = 'convrt_scale_attribution'
 
+const DEDUPE_MS = 750
+const recent = new Map()
+
 export function trackEvent(name, params = {}) {
   if (typeof window === 'undefined') return
 
-  if (Array.isArray(window.dataLayer)) {
-    window.dataLayer.push({ event: name, ...params })
-  }
-  if (typeof window.fbq === 'function') {
-    window.fbq('trackCustom', name, params)
+  if (isTrackingAllowed()) {
+    const key = `${name}|${JSON.stringify(params)}|${window.location.pathname}`
+    const now = Date.now()
+    const last = recent.get(key)
+    if (last !== undefined && now - last < DEDUPE_MS) return
+    recent.set(key, now)
+
+    const payload = {
+      page_path: window.location.pathname.replace(/\/$/, '') || '/',
+      landing_page: landingPage(),
+      ...params,
+    }
+    window.dataLayer = window.dataLayer || []
+    window.dataLayer.push({ event: name, ...payload })
+    if (isMarketingAllowed() && typeof window.fbq === 'function') {
+      window.fbq('trackCustom', name, params)
+    }
   }
   if (import.meta.env?.DEV) {
     // eslint-disable-next-line no-console

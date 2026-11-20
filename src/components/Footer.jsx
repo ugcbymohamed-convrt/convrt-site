@@ -1,5 +1,6 @@
 import Logo from './Logo.jsx'
-import { CONTACT_EMAIL, REFERRALS_PATH, CREATOR_SHOWCASE_PATH } from '../config.js'
+import CookieSettingsLink from './CookieSettingsLink.jsx'
+import { CONTACT_EMAIL, REFERRALS_PATH, CREATOR_SHOWCASE_PATH, ABOUT_PATH, PRIVACY_PATH, TERMS_PATH, TRUST_PAGES_PUBLISHED } from '../config.js'
 
 export default function Footer() {
   const year = new Date().getFullYear()
@@ -31,6 +32,7 @@ export default function Footer() {
               <li><a className="hover:text-ink transition-colors" href={CREATOR_SHOWCASE_PATH}>Creator Showcase</a></li>
               <li><a className="hover:text-ink transition-colors" href="/case-studies">Case Studies</a></li>
               <li><a className="hover:text-ink transition-colors" href="/pricing">Pricing</a></li>
+              {TRUST_PAGES_PUBLISHED && <li><a className="hover:text-ink transition-colors" href={ABOUT_PATH}>About</a></li>}
               <li><a className="hover:text-ink transition-colors" href="/blog">Blog</a></li>
               <li><a className="hover:text-ink transition-colors" href={`${homePrefix}#how-it-works`}>How It Works</a></li>
               <li><a className="hover:text-ink transition-colors" href={`${homePrefix}#clients`}>Clients</a></li>
@@ -66,7 +68,12 @@ export default function Footer() {
 
         <div className="mt-12 pt-6 border-t border-hairline flex flex-col md:flex-row md:items-center md:justify-between gap-3 text-xs text-ink-subtle">
           <p suppressHydrationWarning>© {year} CONVRT Studio. All rights reserved.</p>
-          <p>Built to convert.</p>
+          <p className="flex flex-wrap items-center gap-x-4 gap-y-1">
+            {TRUST_PAGES_PUBLISHED && <a className="underline-offset-4 transition-colors hover:text-ink hover:underline" href={PRIVACY_PATH}>Privacy Policy</a>}
+            {TRUST_PAGES_PUBLISHED && <a className="underline-offset-4 transition-colors hover:text-ink hover:underline" href={TERMS_PATH}>Terms</a>}
+            <CookieSettingsLink />
+            <span>Built to convert.</span>
+          </p>
         </div>
       </div>
     </footer>
