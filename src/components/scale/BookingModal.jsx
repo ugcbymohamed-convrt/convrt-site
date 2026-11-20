@@ -45,6 +45,8 @@ export default function BookingModal() {
 
   useEffect(() => {
     function onMessage(e) {
+      // Only Calendly itself can report a booking: ignore messages from any other origin (the Roadmap booking does the same).
+      if (e.origin !== 'https://calendly.com') return
       const evt = e?.data?.event
       if (typeof evt !== 'string' || !evt.startsWith('calendly.')) return
       if (evt === 'calendly.event_scheduled') trackEvent('booking_completed', { page: 'scale' })

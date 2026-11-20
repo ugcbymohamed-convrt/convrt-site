@@ -126,6 +126,7 @@ export const TRUST_CONTENT = {
             'Referral Partner Program. We collect your name, email, partner type, program choice, and optionally your company or agency name and website or LinkedIn profile, to review your application and contact you.',
             'Email and calls. If you email us or book a call, we use what you send to reply and to work with you.',
             'Technical data. Our hosting provider, Vercel, processes your IP address and request details to serve the website and keep it secure. Videos on the site are delivered through Cloudflare Stream.',
+            'Creator form. The link for freelance creators opens a Google Form; what you enter there is handled through Google Forms.',
           ] },
           'We use this information to respond to you, review applications, provide the free offers you ask for, run and improve the website, and, with your consent, to send marketing emails and measure how the site is used. [OWNER TO CONFIRM: legal bases (for example consent, steps before a contract, legitimate interests) as advised by your legal adviser.]',
         ],
@@ -135,7 +136,15 @@ export const TRUST_CONTENT = {
         body: [
           'The website works without optional cookies. Where analytics is switched on, we use Google Analytics through Google Tag Manager to see which pages are visited and which lead to enquiries, but only if you accept analytics cookies. Marketing cookies are off unless you turn them on, and the site does not set advertising cookies today.',
           'The cookie banner lets you accept all, reject all or choose categories. You can change or withdraw your choice at any time with the "Cookie settings" link in the footer; withdrawing stops analytics events and removes Google\'s cookies from this site.',
-          'We also use your browser\'s storage for necessary purposes: to remember your cookie choice, and to remember campaign details in the link you arrived from (such as utm_source) so they can be passed to our booking calendar. These stay on your device.',
+          'We also use your browser\'s storage on this site, which stays on your device:',
+          { list: [
+            'convrt_consent_v1: your cookie choice, kept until you change it or clear your browser data.',
+            'convrt_scale_attribution (this browser session only): campaign details from the link you arrived through, such as utm_source, so they can be passed on to our booking link. Ad-click identifiers in the link (such as gclid or fbclid) are also kept for the session but are not passed on. [OWNER TO CONFIRM: whether keeping ad-click identifiers in session storage before any consent is acceptable; today only the utm_ values are used.]',
+            'convrt_calendly_requested (this browser session only): that you asked to see the booking calendar.',
+            'convrt_landing_page (this browser session only, and only if you accept analytics): the first page of your visit, used to see which pages lead to enquiries.',
+            'Google Analytics cookies _ga and _ga_<container ID>, only if you accept analytics. [OWNER TO CONFIRM: cookie durations once the Google Analytics data-retention settings are final.]',
+          ] },
+          'The booking calendar is provided by Calendly, a separate company that sets cookies of its own and shows its own cookie notice. We load it only after you ask for it.',
         ],
       },
       {

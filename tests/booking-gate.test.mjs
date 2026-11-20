@@ -54,6 +54,16 @@ test('both embeds sit inside the gate; Calendly cookie notice is no longer hidde
 })
 function walk(d) { return fs.readdirSync(d, { withFileTypes: true }).flatMap((e) => (e.isDirectory() ? walk(path.join(d, e.name)) : [path.join(d, e.name)])) }
 
+test('a booking is reported only from Calendly itself: both handlers check the message origin, and only calendly.event_scheduled counts', () => {
+  for (const f of ['src/components/roadmap/RoadmapBooking.jsx', 'src/components/scale/BookingModal.jsx']) {
+    const s = read(f)
+    assert.match(s, /e\.origin !== 'https:\/\/calendly\.com'/, `${f} ignores other origins`)
+    assert.equal((s.match(/'calendly\.event_scheduled'/g) || []).length, 1, `${f}: exactly one event name (as a string literal) counts as a booking`)
+  }
+  // Opening, loading or clicking Calendly never fires a booking event.
+  assert.ok(!/(booking_completed|roadmap_booking_confirmed)/.test(read('src/components/booking/CalendlyGate.jsx')))
+})
+
 test('the booking conversion events and flows are intact', () => {
   const rb = read('src/components/roadmap/RoadmapBooking.jsx')
   for (const ev of ['roadmap_calendar_viewed', 'roadmap_booking_confirmed', "'calendly.event_scheduled'", "'https://calendly.com'"]) assert.ok(rb.includes(ev), ev)
