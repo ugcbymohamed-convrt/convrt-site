@@ -560,17 +560,16 @@ test('/pricing HTML: both Creative Testing cards carry the end-to-end production
     assert.ok(c.indexOf(note) < c.indexOf('distinct creative concepts'), `${name}: note sits before the checklist`)
     assert.ok(c.includes('Filming, editing, captions & final delivery'), `${name}: checklist line`)
     assert.ok(!c.includes('Priority production scheduling'), `${name}: retired line gone`)
-    assert.ok(!/per variation/.test(c), `${name}: no "per variation" wording`)
     assert.ok(!/media buying|ad account|campaign optimi[sz]ation/i.test(c), `${name}: no media-buying claim`)
   }
-  assert.ok(sprint.includes('$200 per finished ad version') && sprint.includes('$233 per finished ad version'), 'Sprint monthly and one-off')
-  assert.ok(plus.includes('$167 per finished ad version') && plus.includes('$200 per finished ad version'), 'Sprint Plus monthly and one-off')
+  assert.ok(sprint.includes('$200 per variation') && sprint.includes('$233 per variation'), 'Sprint monthly and one-off')
+  assert.ok(plus.includes('$167 per variation') && plus.includes('$200 per variation'), 'Sprint Plus monthly and one-off')
   assert.ok(!custom.includes('End-to-end creative production'), 'Custom card is unchanged')
   // price > testing creatives > per-version, in that order; the repeated concept line is gone
-  for (const [name, c, count, per] of [['Sprint', sprint, '15 testing creatives', '$200 per finished ad version'], ['Sprint Plus', plus, '30 testing creatives', '$167 per finished ad version']]) {
+  for (const [name, c, count, per] of [['Sprint', sprint, '15 testing creatives', '$200 per variation'], ['Sprint Plus', plus, '30 testing creatives', '$167 per variation']]) {
     const iPrice = c.search(/\$[35],000/), iCount = c.indexOf(count), iPer = c.indexOf(per)
-    assert.ok(iPrice > -1 && iPrice < iCount && iCount < iPer, `${name}: price, then testing creatives, then price per finished ad version`)
-    assert.ok(!/unique concepts with \d hook or CTA variations/.test(c), `${name}: repeated concept line removed`)
+    assert.ok(iPrice > -1 && iPrice < iCount && iCount < iPer, `${name}: price, then the testing-creatives pill, then the price-per-variation pill`)
+    assert.ok(/\d+ unique concepts with 3 hook or CTA variations per concept/.test(c), `${name}: the concept line is back under the pills`)
     assert.ok(c.includes('3 versions per concept, changing the hook or CTA'), `${name}: the explanation stays in the checklist`)
   }
   const ld = JSON.stringify(ldScripts(h)[0])
