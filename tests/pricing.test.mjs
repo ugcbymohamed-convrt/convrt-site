@@ -55,7 +55,7 @@ test('Sprint 5/5/3/15 and Sprint Plus 10/10/3/30 (approved offer): config, cards
   assert.match(offer, /\$\{SPRINT_PLUS\.concepts\} distinct creative concepts/)
   assert.match(offer, /\$\{SPRINT_PLUS\.scripts\} complete scripts/)
   assert.match(offer, /\$\{SPRINT_PLUS\.variationsPerConcept\} versions per concept, changing the hook or CTA/)
-  assert.ok(!/conceptLine|unique concepts with/.test(offer)) // the repeated concept line is gone from both cards (the checklist already explains it); the Plus value line is not shown on the card
+  assert.match(offer, /conceptLine\(SPRINT_PLUS\)/) // both cards share one concept line; the Plus value line is no longer shown on the card
   assert.match(faq('whats-included'), /Creative Testing Sprint Plus is \$5,000\/month for 10 concepts and 30 finished ad versions/)
   assert.match(faq('concept-vs-variation'), /Creative Testing Sprint Plus includes 10 concepts with 3 versions each, 30 finished ad versions in total/)
   const svc = graph().find((n) => n.name === 'Creative Testing Sprint Plus')
@@ -777,7 +777,7 @@ test('price per variation: Sprint $200 and Sprint Plus $167 (monthly, rounded to
   assert.equal(pricePerVariation(SPRINT_PLUS, 'oneOff').text, '$200')
   const src = fs.readFileSync(path.join(ROOT, 'src/components/pricing/PricingCards.jsx'), 'utf8')
   assert.ok(/pricePerVariation\(pkg, o\.id\)\.text/.test(src) && !/\$166|\$200\b/.test(src.replace(/\/\*[\s\S]*?\*\//g, '')), 'figures are computed, never typed in the component')
-  assert.match(faq('whats-included'), /\$200 per finished ad version for the Creative Testing Sprint and \$167 per finished ad version for Creative Testing Sprint Plus.*not prices for buying individual videos/)
+  assert.match(faq('whats-included'), /\$200 per variation for the Creative Testing Sprint and \$167 per variation for Creative Testing Sprint Plus.*not prices for buying individual videos/)
 })
 
 // ── sitewide consistency audit guard ──
