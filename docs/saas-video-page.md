@@ -23,9 +23,9 @@ The only shared code touched: `DeliveryStyles.jsx` now exports `FormatStage` (th
 - A video is on this page when its `type` is `'saas'` **or** its entry lists `alsoOn: { saas: 'hero' | 'gallery' }`. Nothing else reaches the page: no UGC, organic,
   homepage-client or spokesperson video appears because of what it shows. `alsoOn` works for every service page (`ugc`, `spokesperson`, `organic`, `saas`): one entry, one
   Cloudflare id, several pages, each with its own placement. Use it only for a video the owner approved for both pages.
-- **Current videos (2026-11-20, from `Desktop > UGC PAGE VIDEOS > SaaS`):** five independent-creator UGC examples for software brands, not explainers, demos or CONVRT-produced work
+- **Current videos (2026-11-20, from `Desktop > UGC PAGE VIDEOS > SaaS`):** eight independent-creator UGC examples for software brands, not explainers, demos or CONVRT-produced work
   (no production credit, brand or language is shown). Hero, centre first: `saas-creator-1` (PDF Expert example, carries a burned-in "UGC EXAMPLE" watermark), `saas-creator-2`
-  (Move Plnr example), then `creator-04` (TechCrypto, via `alsoOn`). Gallery: `creator-01` (Norton) and `creator-15` (Dan & Tabatha), via `alsoOn`. The two `saas-creator-*`
+  (Move Plnr example), then `creator-04` (TechCrypto, via `alsoOn`). Gallery: `creator-01` (Norton), `creator-15` (Dan & Tabatha), `creator-07` (CTA1), `creator-13` (HOOK1) and `creator-10` (HOOK2-3), via `alsoOn` (every SaaS-industry clip in the Creator Showcase SaaS folder). The two `saas-creator-*`
   clips were uploaded to Cloudflare Stream on 2026-11-20; the other three were already on the site as UGC examples, so they are shared, not re-uploaded. To change the hero
   order, move the entries in `PORTFOLIO` or change an `alsoOn` placement.
 - Three hero slots (first = centre phone) and up to ten gallery cards; the empty-slot template is at the top of `PORTFOLIO`. Recommended order for the hero:

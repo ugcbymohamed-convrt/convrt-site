@@ -92,7 +92,7 @@ export const PORTFOLIO = [
      Set `production: 'convrt'` only if CONVRT produced it. An independent creator's example is never presented as a CONVRT production. */
   /* SaaS page videos (/saas-video-production), from the owner's SaaS folder (Desktop > UGC PAGE VIDEOS > SaaS, 2026-11-20). These are independent creators' UGC examples for software
      brands (not explainers, demos or CONVRT-produced work): titles are neutral placeholders, languages and production attribution are unconfirmed, and no brand or credit is shown.
-     Hero stage, centre first: saas-creator-1, saas-creator-2, then creator-04 (alsoOn). Gallery: creator-01 and creator-15 (alsoOn). */
+     Hero stage, centre first: saas-creator-1, saas-creator-2, then creator-04 (alsoOn). Gallery: creator-01, creator-15, creator-07, creator-13 and creator-10 (alsoOn). */
   {
     id: 'saas-creator-1',
     title: 'SaaS creator example 1',
@@ -356,6 +356,7 @@ export const PORTFOLIO = [
     source: { cloudflareId: '32c0e72d46cf8b146efa949fb17a198c' },
     poster: '/portfolio/creator-07.webp',
     creatorId: 'cv-creator-07',
+    alsoOn: { saas: 'gallery' },
     category: 'UGC · Paid social',
     approval: {
       status: 'approved',
@@ -412,6 +413,7 @@ export const PORTFOLIO = [
     source: { cloudflareId: '8e51ea0f1a74d31a7eae3dd3eaf8aafa' },
     poster: '/portfolio/creator-13.webp',
     creatorId: 'cv-creator-13',
+    alsoOn: { saas: 'gallery' },
     category: 'UGC · Paid social',
     approval: {
       status: 'approved',
@@ -503,6 +505,7 @@ export const PORTFOLIO = [
     source: { cloudflareId: '93584825751798b27840b85a2ad43a6a' },
     poster: '/portfolio/creator-10.webp',
     creatorId: 'cv-creator-10',
+    alsoOn: { saas: 'gallery' },
     category: 'UGC · Paid social',
     approval: {
       status: 'approved',
