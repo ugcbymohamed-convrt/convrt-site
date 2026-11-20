@@ -247,7 +247,7 @@ test('JSON-LD: Organization, WebPage, BreadcrumbList, Service (+ Offers from the
   assert.equal(web.url, URL_)
   assert.equal(web.about['@id'], svc['@id'])
   assert.deepEqual(crumb.itemListElement.map((i) => [i.position, i.name, i.item]), [[1, 'Home', `${SITE_URL}/`], [2, 'UGC Video Agency', URL_]])
-  assert.deepEqual(Object.keys(BREADCRUMB_TRAILS), ['/pricing', PATH, PATHS.spokespersonVideoProduction, PATHS.ourWork])
+  assert.deepEqual(Object.keys(BREADCRUMB_TRAILS), ['/pricing', PATH, PATHS.spokespersonVideoProduction, PATHS.showcase])
   assert.equal(svc.provider['@id'], ORG_ID)
   assert.ok(svc.isRelatedTo.some((r) => r['@id'] === serviceId('ugc')))
   const prices = svc.offers.map((o) => o.priceSpecification.price)
@@ -641,7 +641,7 @@ test('gallery: a horizontal scroller of up to 10 approved videos before Results;
   assert.match(src, /const TOTAL = 10/)
   assert.ok(/overflow-x-auto/.test(src) && /snap-x/.test(src) && /lg:w-\[calc\(\(100%-3rem\)\/4\)\]/.test(src), 'four cards visible on a laptop, native horizontal scrolling (trackpad swipe)')
   assert.ok(/ArrowRight/.test(src) && /Scroll videos left/.test(src) && /Scroll videos right/.test(src) && /pointerType !== 'mouse'/.test(src), 'keyboard, buttons and mouse drag')
-  assert.ok(/See all UGC videos/.test(src) && /OUR_WORK_PATH/.test(src), 'the button under the gallery')
+  assert.ok(/See all UGC videos/.test(src) && /CREATOR_SHOWCASE_PATH/.test(src), 'the button under the gallery')
   assert.ok(/usePreviewHost/.test(src) && /endsWith\('\.vercel\.app'\)/.test(read('src/lib/previewHost.js')) && !/convrt\.studio/.test(read('src/lib/previewHost.js')), 'stand-ins only on preview hosts')
   // with approved videos the gallery renders them
   const mod = await vite.ssrLoadModule('/src/components/ugc/UgcGallery.jsx')

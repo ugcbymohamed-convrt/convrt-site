@@ -8,7 +8,7 @@
      testimonials (src/content/ugcProof.js): they describe UGC work.
    • The videos come from src/content/portfolio.js (type: 'spokesperson'), never from here. */
 
-import { OFFER_PATHS, OUR_WORK_PATH } from '../config.js'
+import { OFFER_PATHS, CREATOR_SHOWCASE_PATH } from '../config.js'
 import { USAGE_RIGHTS, PRODUCTION_LANGUAGES } from '../seo/businessKnowledge.js'
 
 export const SPOKESPERSON_PATH_LABEL = 'Spokesperson Video Production'
@@ -27,8 +27,8 @@ export const SPOKESPERSON_HERO = {
   description:
     'Professional, multilingual spokesperson videos featuring real people on camera. From SaaS demos and product presentations to website videos and paid ads, we handle scripting, talent selection, filming and editing.',
   primary: { label: 'Get 5 Free Ad Concepts', href: OFFER_PATHS.roadmap },
-  /* No scrollTo: this button always goes to /our-work. */
-  secondary: { label: 'Explore Videos', href: OUR_WORK_PATH },
+  /* No scrollTo: this button always goes to /creator-showcase. */
+  secondary: { label: 'Explore Videos', href: CREATOR_SHOWCASE_PATH },
   track: { cta: 'spokesperson_page_cta_click', work: 'spokesperson_explore_videos_click' },
   stageLabel: 'Spokesperson videos',
   stagePrefix: 'spokesperson',
@@ -73,8 +73,8 @@ export const SPOKESPERSON_GALLERY = {
   intro: 'Explore different presentation styles, languages and approaches for explaining products, promoting offers and communicating with customers.',
   ariaLabel: 'Spokesperson video examples. Scroll sideways to see more.',
   badge: 'Spokesperson',
-  /* /our-work has no service filter yet, so this goes to the whole Creator Showcase. Point it at a filtered view only once one exists. */
-  cta: { label: 'Explore Spokesperson Videos', href: OUR_WORK_PATH },
+  /* /creator-showcase has no service filter yet, so this goes to the whole Creator Showcase. Point it at a filtered view only once one exists. */
+  cta: { label: 'Explore Spokesperson Videos', href: CREATOR_SHOWCASE_PATH },
   track: 'spokesperson',
   samplePortraits: null,
   sampleNote: 'Layout preview only: your approved spokesperson videos replace these empty frames. This never shows on the live site.',

@@ -7,12 +7,12 @@ import { pageHead } from './seo/siteSeo.js'
 import { PATHS } from './routes.js'
 import { selectOurWork } from './content/portfolio.js'
 
-/* /our-work: the video portfolio. Two sections only: 1 a compact hero, 2 the filterable video library.
+/* /creator-showcase: the video portfolio. Two sections only: 1 a compact hero, 2 the filterable video library.
    Every video comes from src/content/portfolio.js (approved items only), the same file the UGC page and the homepage read.
    Title, description, canonical, robots and JSON-LD all come from the SEO manifest (src/seo/siteSeo.js). The static HTML already contains
    the H1, the intro and the first page of video cards, so crawlers do not need the filtering script. */
 export default function OurWorkPage() {
-  useDocumentHead(pageHead(PATHS.ourWork))
+  useDocumentHead(pageHead(PATHS.showcase))
 
   const viewed = useRef(false)
   useEffect(() => {

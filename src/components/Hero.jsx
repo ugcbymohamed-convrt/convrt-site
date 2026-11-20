@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { usePressFeedback } from '../lib/usePressFeedback.js'
-import { OFFER_PATHS, OUR_WORK_PATH } from '../config.js'
+import { OFFER_PATHS, CREATOR_SHOWCASE_PATH } from '../config.js'
 import { trackEvent } from '../lib/analytics.js'
 import CreatorVideoStage from './ugc/CreatorVideoStage.jsx'
 import { HOME_HERO } from '../content/homeHero.js'
@@ -96,7 +96,7 @@ export default function Hero() {
                   </svg>
                 </a>
                 <a
-                  href={OUR_WORK_PATH}
+                  href={CREATOR_SHOWCASE_PATH}
                   onClick={() => trackEvent('hero_see_our_work_click', { location: 'hero' })}
                   {...ghostPress}
                   className="hero-cta-ghost group inline-flex w-full sm:w-auto min-h-[48px] sm:min-h-[64px] md:min-h-[68px] items-center justify-center gap-2

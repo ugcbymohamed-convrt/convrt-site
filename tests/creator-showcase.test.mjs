@@ -1,5 +1,5 @@
-// Run with: node --test tests/our-work.test.mjs
-// /our-work (the video portfolio) and the shared portfolio data (src/content/portfolio.js) that also feeds /ugc-video-agency and the homepage.
+// Run with: node --test tests/creator-showcase.test.mjs
+// /creator-showcase (the video portfolio) and the shared portfolio data (src/content/portfolio.js) that also feeds /ugc-video-agency and the homepage.
 // Checks the route, head, sitemap, structured data, the prerendered HTML, the permission gates, the per-page selectors, the category
 // tabs (an empty category has no tab), the grid structure, the empty state, the player's accessibility contract and the internal links.
 // Builds the site once into a temp dir and starts a Vite SSR loader to render components with sample data.
@@ -14,7 +14,7 @@ import react from '@vitejs/plugin-react'
 import { createElement } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { PATHS, KNOWN_PATHS } from '../src/routes.js'
-import { SITE_URL, OUR_WORK_PATH } from '../src/config.js'
+import { SITE_URL, CREATOR_SHOWCASE_PATH } from '../src/config.js'
 import { SITE_SEO, pageHead, sitemapRoutes } from '../src/seo/siteSeo.js'
 import { ourWorkGraph, videoObjectNode, jsonLdFor, BREADCRUMB_TRAILS } from '../src/seo/structuredData.js'
 import {
@@ -24,7 +24,7 @@ import {
 
 const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), '..')
 const read = (p) => fs.readFileSync(path.join(ROOT, p), 'utf8')
-const PATH = PATHS.ourWork
+const PATH = PATHS.showcase
 const URL_ = `${SITE_URL}${PATH}`
 
 const decode = (s) => s.replace(/&#x27;|&#39;|&apos;/g, "'").replace(/&quot;/g, '"').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>')
@@ -59,11 +59,11 @@ const sample = (over = {}) => ({
 const many = (n, industry = 'saas') => Array.from({ length: n }, (_, i) => sample({ id: `s-${industry}-${i}`, title: `Video ${i}`, industry }))
 
 // ── route, head, sitemap ─────────────────────────────────────────────────────────────────
-test('route: /our-work is a public path, and OUR_WORK_PATH (used by every link to it) is that path', () => {
-  assert.equal(PATH, '/our-work')
-  assert.equal(OUR_WORK_PATH, '/our-work')
-  assert.ok(KNOWN_PATHS.includes('/our-work'))
-  assert.ok(fs.existsSync(path.join(dist, 'our-work', 'index.html')), 'a real static file is written for the route')
+test('route: /creator-showcase is a public path, and CREATOR_SHOWCASE_PATH (used by every link to it) is that path', () => {
+  assert.equal(PATH, '/creator-showcase')
+  assert.equal(CREATOR_SHOWCASE_PATH, '/creator-showcase')
+  assert.ok(KNOWN_PATHS.includes('/creator-showcase'))
+  assert.ok(fs.existsSync(path.join(dist, 'creator-showcase', 'index.html')), 'a real static file is written for the route')
 })
 
 test('head: approved title, description from the actual portfolio, self-canonical, indexable only with approved videos, in the sitemap accordingly', () => {
@@ -141,7 +141,7 @@ test('data: the shipped list is valid with unique ids, every showcase video is r
   for (const i of PORTFOLIO) assert.deepEqual(portfolioProblems(i), [], i.id)
   const media = PORTFOLIO.map((i) => i.source.cloudflareId ?? i.source.mp4)
   assert.equal(new Set(media).size, media.length, 'no video is listed twice')
-  assert.ok(selectDisplayable(PORTFOLIO).every((i) => !/adscale|elyon|graspo/i.test(JSON.stringify(i))), 'the client case-study clips are not portfolio material, so they never reach /our-work')
+  assert.ok(selectDisplayable(PORTFOLIO).every((i) => !/adscale|elyon|graspo/i.test(JSON.stringify(i))), 'the client case-study clips are not portfolio material, so they never reach /creator-showcase')
   assert.ok(PORTFOLIO.filter((i) => i.showcase).every((i) => i.approval.portfolioUse === false && i.approval.creatorConsent === false))
 })
 
@@ -162,7 +162,7 @@ test('data: each page is a view of the same list: our-work = all approved, UGC p
   assert.deepEqual(selectShowcase('elyon', list).map((i) => i.id), ['panel-1', 'panel-2'], 'homepage panel: approved + tagged; portfolio permission is not needed there')
   assert.equal(isShowcaseable(sample()), false, 'untagged')
   assert.equal(isDisplayable(sample({ id: 'panel-1', showcase: 'elyon', approval: { ...APPROVED, portfolioUse: false } })), false)
-  // one new entry reaches /our-work and the UGC gallery with no other change
+  // one new entry reaches /creator-showcase and the UGC gallery with no other change
   const added = [sample({ id: 'brand-new', industry: 'ecommerce' }), ...list]
   assert.ok(selectOurWork(added).some((i) => i.id === 'brand-new') && selectGallery(added).some((i) => i.id === 'brand-new'))
 })
@@ -300,16 +300,16 @@ test('motion: every animation honours prefers-reduced-motion', () => {
 })
 
 // ── internal links ──────────────────────────────────────────────────────────────────────
-test('links: nav, footer, homepage CTA and the UGC page all lead to /our-work, once each, without duplicates', () => {
+test('links: nav, footer, homepage CTA and the UGC page all lead to /creator-showcase, once each, without duplicates', () => {
   const home = rootOf(page('/'))
-  assert.equal((home.match(/href="\/our-work"/g) || []).length, 3, 'desktop nav (the mobile menu is closed), footer and the hero button')
-  assert.match(home, /<a href="\/our-work"[^>]*>\s*See Our Work/, 'the homepage "See Our Work" button')
+  assert.equal((home.match(/href="\/creator-showcase"/g) || []).length, 3, 'desktop nav (the mobile menu is closed), footer and the hero button')
+  assert.match(home, /<a href="\/creator-showcase"[^>]*>\s*See Our Work/, 'the homepage "See Our Work" button')
   assert.equal((home.match(/>Our Work</g) || []).length, 2, 'one nav link and one footer link')
   assert.ok(!/href="#showcase"/.test(home), 'the old in-page anchor is gone (the section itself stays on the page)')
   assert.ok(home.includes('id="showcase"'))
   const ugc = rootOf(page(PATHS.ugcVideoAgency))
-  assert.match(ugc, /<a href="\/our-work"[^>]*>\s*See Our Work/, 'UGC hero button')
-  assert.match(ugc, /<a href="\/our-work"[^>]*>\s*See all UGC videos/, 'the button under the UGC gallery')
+  assert.match(ugc, /<a href="\/creator-showcase"[^>]*>\s*See Our Work/, 'UGC hero button')
+  assert.match(ugc, /<a href="\/creator-showcase"[^>]*>\s*See all UGC videos/, 'the button under the UGC gallery')
   assert.ok(!/href="\/case-studies"[^>]*>\s*See (all UGC videos|Our Work)/.test(ugc))
   const our = rootOf(page(PATH))
   assert.equal((our.match(/>Our Work</g) || []).length, 3, 'nav, breadcrumb and footer')
@@ -320,4 +320,56 @@ test('docs: the data file header documents the one-file workflow and the new fie
   const header = read('src/content/portfolio.js').slice(0, 5500)
   for (const k of ['title', 'type', 'industry', 'languages', 'source', 'poster', 'creatorId', 'brand', 'placement', 'showcase', 'uploadDate', 'approval']) assert.ok(header.includes(k), `documents ${k}`)
   assert.ok(/ONE file/.test(header) && /selectOurWork/.test(header) && /selectGallery/.test(header) && /selectShowcase/.test(header))
+})
+
+// ── the rename: /our-work → /creator-showcase ────────────────────────────────────────────
+test('rename: /our-work is a permanent redirect to /creator-showcase, with no loop, no page, no sitemap entry and no link left in the app', () => {
+  const vercel = JSON.parse(read('vercel.json'))
+  const r = vercel.redirects.find((x) => x.source === '/our-work')
+  assert.deepEqual(r, { source: '/our-work', destination: '/creator-showcase', permanent: true }, 'permanent (Vercel sends a 308)')
+  // no loop: no redirect's destination is the source of another redirect, and the destination is a real static page
+  const sources = new Set(vercel.redirects.map((x) => x.source))
+  for (const x of vercel.redirects) assert.ok(!sources.has(x.destination), `redirect chain or loop at ${x.source} → ${x.destination}`)
+  assert.ok(KNOWN_PATHS.includes(r.destination) && fs.existsSync(path.join(dist, 'creator-showcase', 'index.html')))
+  assert.ok(!KNOWN_PATHS.includes('/our-work') && !fs.existsSync(path.join(dist, 'our-work')), 'no page is built at the old URL, so the redirect is the only thing that answers it')
+  assert.ok(!/\/our-work/.test(fs.readFileSync(path.join(dist, 'sitemap.xml'), 'utf8')), 'the old URL is not in the sitemap')
+  for (const p of KNOWN_PATHS) assert.ok(!/href="\/our-work"/.test(page(p)) && !/\/our-work/.test(headOf(page(p))), `${p} still points at /our-work`)
+  // source: the only remaining mentions are the redirect's own documentation
+  for (const f of ['src/config.js', 'src/routes.js', 'src/seo/siteSeo.js', 'src/seo/structuredData.js', 'src/components/Nav.jsx', 'src/components/Footer.jsx']) assert.ok(!/['"`]\/our-work/.test(read(f)), `${f} hard-codes the old URL`)
+})
+
+test('rename: every link to the showcase (header, footer, homepage hero, UGC hero and gallery, Spokesperson hero and gallery) goes to /creator-showcase', () => {
+  const link = (h) => rootOf(h).includes('href="/creator-showcase"')
+  for (const p of ['/', '/ugc-video-agency', '/spokesperson-video-production', '/pricing', '/case-studies']) assert.ok(link(page(p)), `${p} links to /creator-showcase (header and footer at least)`)
+  assert.match(rootOf(page('/')), /<a [^>]*href="\/creator-showcase"[^>]*>[\s\S]*?See Our Work/)
+  assert.match(rootOf(page('/spokesperson-video-production')), /<a [^>]*href="\/creator-showcase"[^>]*>\s*Explore Videos/)
+  assert.match(rootOf(page('/ugc-video-agency')), /<a [^>]*href="\/creator-showcase"[^>]*>\s*See Our Work/)
+})
+
+test('rename: canonical, og:url, sitemap and structured data all use /creator-showcase; the approved copy, filters and design are unchanged', () => {
+  const html = page(PATH)
+  const head = headOf(html)
+  assert.ok(head.includes(`<link rel="canonical" href="${SITE_URL}/creator-showcase" />`))
+  assert.ok(!/our-work/.test(head + html.match(/<script type="application\/ld\+json"[\s\S]*?<\/script>/)?.[0]))
+  const ld = JSON.stringify(jsonLdFor(PATH, SITE_SEO[PATH]))
+  assert.ok(ld.includes(`${SITE_URL}/creator-showcase`) && !ld.includes('our-work'))
+  assert.equal(SITE_SEO[PATH].title, 'Our Work | UGC Ads & Video Production Portfolio | CONVRT', 'the approved title is unchanged')
+  assert.deepEqual(CATEGORIES.map((c) => c.label), ['E-commerce', 'SaaS', 'Services', 'Other'], 'the four approved filters')
+  assert.ok(textOf(html).includes('Creative that speaks for itself.'))
+})
+
+test('independence: the Showcase and the Spokesperson page each have their own URL, head, JSON-LD and sitemap entry; neither renders the other', () => {
+  const sp = '/spokesperson-video-production'
+  assert.notEqual(PATH, sp)
+  assert.notEqual(SITE_SEO[PATH].title, SITE_SEO[sp].title)
+  assert.notEqual(SITE_SEO[PATH].description, SITE_SEO[sp].description)
+  assert.ok(!sitemapRoutes().includes('/our-work'))
+  const showcase = rootOf(page(PATH))
+  const spokes = rootOf(page(sp))
+  assert.ok(!showcase.includes('id="spokesperson-h1"') && !showcase.includes('One message. Different ways'), 'the Showcase is not part of the Spokesperson page')
+  assert.ok(!spokes.includes('id="our-work-heading"') && !spokes.includes('Creative that speaks for itself.'), 'the Spokesperson page does not embed the Showcase')
+  assert.ok(spokes.includes('href="/creator-showcase"') && showcase.includes('href="/spokesperson-video-production"'), 'they link to each other only through ordinary links (footer, buttons)')
+  const g = (p) => JSON.parse(page(p).match(/<script type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/)[1].replace(/\\u003c/g, '<'))['@graph']
+  assert.ok(g(PATH).some((n) => n['@type'] === 'CollectionPage') && !g(sp).some((n) => n['@type'] === 'CollectionPage'))
+  assert.ok(g(sp).some((n) => n['@type'] === 'FAQPage') && !g(PATH).some((n) => n['@type'] === 'FAQPage'))
 })

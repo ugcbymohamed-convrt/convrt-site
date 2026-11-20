@@ -34,8 +34,8 @@ raw footage, creator-account ads, commitments, revisions, reshoots, turnaround, 
 brands) are answered in the FAQ, from the business data; a test checks each is still on the page.
 
 ## The creator portfolio (`src/content/portfolio.js`)
-The videos live in **one shared file**, `src/content/portfolio.js`, which also feeds `/our-work` and the homepage client panels
-(see `docs/our-work-page.md`). This page shows the approved videos whose `type` is `'ugc'`: those with `placement: 'hero'` fill the
+The videos live in **one shared file**, `src/content/portfolio.js`, which also feeds `/creator-showcase` and the homepage client panels
+(see `docs/creator-showcase-page.md`). This page shows the approved videos whose `type` is `'ugc'`: those with `placement: 'hero'` fill the
 three-phone stage (first = the large centre phone, at most 3) and the rest fill the horizontal gallery (at most 10). A video renders
 only when `approval.status === 'approved'`, `approval.portfolioUse === true` **and** `approval.creatorConsent === true`. Approval to
 produce or deliver a video is NOT portfolio permission. A creator's name is shown only when `creator.showName === true`.

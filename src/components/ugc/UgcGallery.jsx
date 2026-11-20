@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { trackEvent } from '../../lib/analytics.js'
-import { OUR_WORK_PATH } from '../../config.js'
+import { CREATOR_SHOWCASE_PATH } from '../../config.js'
 import { posterUrl, languageLabel } from '../../content/portfolio.js'
 import { usePreviewHost } from '../../lib/previewHost.js'
 import SectionDivider from '../SectionDivider.jsx'
@@ -40,7 +40,7 @@ export const UGC_GALLERY = {
   intro: 'Real creators, made to stop the scroll. Watch the work.',
   ariaLabel: 'UGC video examples. Scroll sideways to see more.',
   badge: 'UGC',
-  cta: { label: 'See all UGC videos', href: OUR_WORK_PATH },
+  cta: { label: 'See all UGC videos', href: CREATOR_SHOWCASE_PATH },
   track: 'ugc',
   samplePortraits: PORTRAITS,
   sampleNote: 'Layout preview only: your ten approved videos replace these cards. This never shows on the live site.',

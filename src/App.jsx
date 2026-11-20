@@ -44,7 +44,7 @@ const ROUTES = {
   // Spokesperson service page: the same architecture as the UGC page, with its own content and its own videos.
   [PATHS.spokespersonVideoProduction]: SpokespersonVideoPage,
   // Our Work: the filterable video portfolio (src/content/portfolio.js).
-  [PATHS.ourWork]: OurWorkPage,
+  [PATHS.showcase]: OurWorkPage,
   [PATHS.caseStudies]: CaseStudiesPage,
   [PATHS.caseStudyGraspo]: CaseStudiesPage,
   [PATHS.caseStudyElyon]: CaseStudiesPage,

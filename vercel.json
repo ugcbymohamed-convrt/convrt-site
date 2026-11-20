@@ -7,6 +7,11 @@
       "source": "/creative-testing-sprint",
       "destination": "/pricing",
       "permanent": true
+    },
+    {
+      "source": "/our-work",
+      "destination": "/creator-showcase",
+      "permanent": true
     }
   ],
   "headers": [

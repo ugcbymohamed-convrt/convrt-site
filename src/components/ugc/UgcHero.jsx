@@ -3,7 +3,7 @@ import { trackEvent } from '../../lib/analytics.js'
 import { usePressFeedback } from '../../lib/usePressFeedback.js'
 import { scrollToElement } from '../../lib/scroll.js'
 import { usePreviewHost } from '../../lib/previewHost.js'
-import { OFFER_PATHS, OUR_WORK_PATH } from '../../config.js'
+import { OFFER_PATHS, CREATOR_SHOWCASE_PATH } from '../../config.js'
 import { SECONDARY_OFFERS, SecondaryOffer } from '../Hero.jsx'
 import CreatorVideoStage, { PhoneShowcaseFallback } from './CreatorVideoStage.jsx'
 import { useAutoplayAllowed } from './creatorVideo.jsx'
@@ -44,7 +44,7 @@ export const UGC_HERO = {
   sizer: 'resonate.',
   description: 'CONVRT is an international, multilingual UGC agency and creative production studio. We script, film and edit human-created UGC ads with real creators, built for paid social.',
   primary: { label: 'Get 5 Free Ad Concepts', href: OFFER_PATHS.roadmap },
-  secondary: { label: 'See Our Work', href: OUR_WORK_PATH, scrollTo: 'ugc-videos' },
+  secondary: { label: 'See Our Work', href: CREATOR_SHOWCASE_PATH, scrollTo: 'ugc-videos' },
   track: { cta: 'ugc_page_cta_click', work: 'ugc_see_our_work_click' },
   stageLabel: 'Creator UGC videos',
   stagePrefix: 'ugc',

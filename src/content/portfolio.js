@@ -2,12 +2,12 @@
 
    Three pages read it, each through its own selector (see "WHERE A VIDEO APPEARS" below), so a video is added here once:
 
-     /our-work           every approved video, filterable by industry (SaaS, E-commerce, Services, Other)   selectOurWork()
+     /creator-showcase           every approved video, filterable by industry (SaaS, E-commerce, Services, Other)   selectOurWork()
      /ugc-video-agency   the approved UGC videos: the three-phone hero stage + the gallery under it          selectHero() / selectGallery()
      /spokesperson-video-production   the approved SPOKESPERSON videos, same two slots                       selectSpokespersonHero() / selectSpokespersonGallery()
      homepage showcase   the client panels (Adscale, Elyon, Graspo): the videos tagged with that client        selectShowcase('elyon')
 
-   HOW TO ADD A VIDEO (no code changes needed): add an object at the TOP of PORTFOLIO below (newest first: /our-work and the UGC gallery
+   HOW TO ADD A VIDEO (no code changes needed): add an object at the TOP of PORTFOLIO below (newest first: /creator-showcase and the UGC gallery
    keep this order).
 
      {
@@ -41,20 +41,20 @@
      }
 
    WHERE A VIDEO APPEARS
-   • /our-work and the UGC page need the FULL approval: status 'approved' AND portfolioUse === true AND creatorConsent === true.
+   • /creator-showcase and the UGC page need the FULL approval: status 'approved' AND portfolioUse === true AND creatorConsent === true.
      Approval to produce or deliver a video is NOT portfolio permission.
-   • /our-work shows every approved video. /ugc-video-agency shows the approved videos whose type is 'ugc'; /spokesperson-video-production shows
+   • /creator-showcase shows every approved video. /ugc-video-agency shows the approved videos whose type is 'ugc'; /spokesperson-video-production shows
      the approved videos whose type is 'spokesperson'. Nothing else to do. The two service pages never share a video.
    • A homepage client panel shows the videos tagged with its `showcase` key whose status is 'approved' (the client case studies are
-     brand-approved, not creator-portfolio material). A video with portfolioUse false therefore stays OFF /our-work and the UGC page.
-   • A new video classified by industry reaches /our-work and (if it is UGC) the UGC page on its own. The homepage panels are per
+     brand-approved, not creator-portfolio material). A video with portfolioUse false therefore stays OFF /creator-showcase and the UGC page.
+   • A new video classified by industry reaches /creator-showcase and (if it is UGC) the UGC page on its own. The homepage panels are per
      client, each with its own story, so a video appears there only when you add its `showcase` tag.
 
    RULES
    • No placeholder, stock or unapproved material, ever. An empty list is a valid, fully working state on every page.
    • A creator's name is personal data: it is shown only when creator.showName is true. creatorId is never shown.
-   • A category with no approved video never appears as a tab on /our-work.
-   • tests/ugc-page.test.mjs and tests/our-work.test.mjs validate every entry (unique ids, valid codes, source, permission flags). */
+   • A category with no approved video never appears as a tab on /creator-showcase.
+   • tests/ugc-page.test.mjs and tests/creator-showcase.test.mjs validate every entry (unique ids, valid codes, source, permission flags). */
 
 export const PORTFOLIO = [
   /* Spokesperson page videos (/spokesperson-video-production). Supplied by the owner on 2026-11-19 (Desktop > UGC PAGE VIDEOS > Spokesperson videos: HERO1-3,
@@ -422,7 +422,7 @@ export const PORTFOLIO = [
   },
   /* Homepage client panels. These videos were live in the homepage case-study showcase before this file existed, so they are recorded here
      with the same media. The owner decided they are NOT creator-portfolio material, so portfolioUse / creatorConsent are false: they stay
-     off /our-work and the UGC page. To list one on /our-work, confirm the brand's and the creator's permission and set both flags to true
+     off /creator-showcase and the UGC page. To list one on /creator-showcase, confirm the brand's and the creator's permission and set both flags to true
      (then fill in its languages and a real title). type, industry and creatorId below are internal placeholders for the owner to review. */
   {
     id: 'showcase-adscale-1',
@@ -628,7 +628,7 @@ export function portfolioProblems(item) {
   return p
 }
 
-/* THE gate between data and /our-work and the UGC page: full approval, portfolio permission AND creator consent. */
+/* THE gate between data and /creator-showcase and the UGC page: full approval, portfolio permission AND creator consent. */
 export function isDisplayable(item) {
   if (portfolioProblems(item).length) return false
   const a = item.approval
@@ -643,7 +643,7 @@ export const isShowcaseable = (item) => portfolioProblems(item).length === 0 && 
    ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── */
 export const selectDisplayable = (items = PORTFOLIO) => items.filter(isDisplayable)
 
-/* /our-work: everything approved for the portfolio. */
+/* /creator-showcase: everything approved for the portfolio. */
 export const selectOurWork = selectDisplayable
 
 /* /ugc-video-agency: approved UGC videos, split into the hero stage (placement 'hero') and the gallery under it (everything else). */
@@ -667,7 +667,7 @@ export const posterUrl = (item) => item.poster ?? `https://videodelivery.net/${i
 export const hlsUrl = (item) => `https://videodelivery.net/${item.source.cloudflareId}/manifest/video.m3u8`
 
 /* ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
-   CATEGORIES: the four industry groups of /our-work (All Work is the combined view, not a category).
+   CATEGORIES: the four industry groups of /creator-showcase (All Work is the combined view, not a category).
    Colours reuse the site's tokens where one fits (tailwind.config.js: lime, magenta, amber); SaaS and Services use the lighter
    violet / turquoise the brief proposed, because the darker violet token is too dim for small labels on the dark canvas.
    Any industry slug not listed in CATEGORY_OF_INDUSTRY groups under Other; the card still shows its specific industry.
@@ -684,7 +684,7 @@ const CATEGORY_ORDER = CATEGORIES.map((c) => c.id)
 const CATEGORY_OF_INDUSTRY = { saas: 'saas', technology: 'saas', ecommerce: 'ecommerce', services: 'services' }
 export const categoryOf = (item) => CATEGORY_OF_INDUSTRY[item.industry] ?? 'other'
 
-/* The tabs /our-work offers: All Work, then each category that has at least one video (an empty category is hidden). */
+/* The tabs /creator-showcase offers: All Work, then each category that has at least one video (an empty category is hidden). */
 export const availableCategories = (items) => {
   const present = new Set(items.map(categoryOf))
   return [ALL_CATEGORY, ...CATEGORIES.filter((c) => present.has(c.id))]

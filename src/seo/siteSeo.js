@@ -60,7 +60,7 @@ export const SITE_SEO = {
     // its showcase is still empty. It flips by itself when the first approved spokesperson video is added to src/content/portfolio.js.
     indexable: selectSpokespersonHero().length + selectSpokespersonGallery().length > 0,
   },
-  [PATHS.ourWork]: {
+  [PATHS.showcase]: {
     title: 'Our Work | UGC Ads & Video Production Portfolio | CONVRT',
     description:
       'Watch creator-led UGC ads and performance video creatives produced by CONVRT for paid social. Browse the portfolio and filter by industry.',

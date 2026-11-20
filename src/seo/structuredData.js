@@ -74,7 +74,7 @@ export const BREADCRUMB_TRAILS = {
   '/pricing': [{ name: 'Home', path: '/' }, { name: 'Pricing', path: '/pricing' }],
   [PATHS.ugcVideoAgency]: [{ name: 'Home', path: '/' }, { name: 'UGC Video Agency', path: PATHS.ugcVideoAgency }],
   [PATHS.spokespersonVideoProduction]: [{ name: 'Home', path: '/' }, { name: 'Spokesperson Video Production', path: PATHS.spokespersonVideoProduction }],
-  [PATHS.ourWork]: [{ name: 'Home', path: '/' }, { name: 'Our Work', path: PATHS.ourWork }],
+  [PATHS.showcase]: [{ name: 'Home', path: '/' }, { name: 'Our Work', path: PATHS.showcase }],
 }
 
 export function breadcrumbNode(trail, id) {
@@ -369,7 +369,7 @@ export function videoObjectNode(item) {
   const thumb = posterUrl(item)
   return {
     '@type': 'VideoObject',
-    '@id': `${abs(PATHS.ourWork)}#video-${item.id}`,
+    '@id': `${abs(PATHS.showcase)}#video-${item.id}`,
     name: titleOf(item),
     description: item.description ?? item.caption,
     thumbnailUrl: [thumb.startsWith('http') ? thumb : abs(thumb)],
@@ -380,10 +380,10 @@ export function videoObjectNode(item) {
   }
 }
 
-/* /our-work: a CollectionPage + its breadcrumb, plus VideoObject markup only for the videos that qualify (see videoObjectNode). With
+/* /creator-showcase: a CollectionPage + its breadcrumb, plus VideoObject markup only for the videos that qualify (see videoObjectNode). With
    no verified videos there is no video markup at all, never a placeholder. */
 export function ourWorkGraph({ title, description }) {
-  const path = PATHS.ourWork
+  const path = PATHS.showcase
   const url = abs(path)
   const videos = selectOurWork().map(videoObjectNode).filter(Boolean)
   return graph([
@@ -411,6 +411,6 @@ export function jsonLdFor(path, seo = {}) {
   if (path === '/pricing') return pricingGraph(seo)
   if (path === PATHS.ugcVideoAgency) return ugcGraph(seo)
   if (path === PATHS.spokespersonVideoProduction) return spokespersonGraph(seo)
-  if (path === PATHS.ourWork) return ourWorkGraph(seo)
+  if (path === PATHS.showcase) return ourWorkGraph(seo)
   return undefined
 }
