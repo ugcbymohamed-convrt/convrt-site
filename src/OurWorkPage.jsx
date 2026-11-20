@@ -7,7 +7,7 @@ import { pageHead } from './seo/siteSeo.js'
 import { PATHS } from './routes.js'
 import { selectOurWork } from './content/portfolio.js'
 
-/* /our-work: the video portfolio. Two sections only: 1 a compact hero, 2 the filterable video library.
+/* /our-work: the Creator Showcase (the route stays /our-work). Examples from independent creators, not all CONVRT productions. Two sections only: 1 a compact hero, 2 the filterable video library.
    Every video comes from src/content/portfolio.js (approved items only), the same file the UGC page and the homepage read.
    Title, description, canonical, robots and JSON-LD all come from the SEO manifest (src/seo/siteSeo.js). The static HTML already contains
    the H1, the intro and the first page of video cards, so crawlers do not need the filtering script. */
@@ -28,7 +28,7 @@ export default function OurWorkPage() {
         <ol className="flex items-center gap-2 text-[13px] text-ink-subtle">
           <li><a href="/" className="transition-colors hover:text-ink">Home</a></li>
           <li aria-hidden="true">/</li>
-          <li aria-current="page" className="text-ink-muted">Our Work</li>
+          <li aria-current="page" className="text-ink-muted">Creator Showcase</li>
         </ol>
       </nav>
       <OurWorkHero />

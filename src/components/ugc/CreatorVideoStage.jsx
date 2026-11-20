@@ -418,7 +418,7 @@ export default function CreatorVideoStage({ items, label = 'Creator UGC videos',
     if (Math.abs(dx) > 45) select(active + (dx < 0 ? 1 : -1), 'swipe')
   }
   const togglePlay = () => { const next = !playing; setUserIntent(next); setNudge(false); trackEvent(`${trackPrefix}_hero_video_play`, { state: next ? 'play' : 'pause' }) }
-  const meta = [industryLabel(item.industry), item.languages.map(languageLabel).join(' · ')].filter(Boolean).join(' · ')
+  const meta = [industryLabel(item.industry), (item.languages ?? []).map(languageLabel).join(' · ')].filter(Boolean).join(' · ')
 
   return (
     <div role="group" aria-roledescription="carousel" aria-label={label} className="mx-auto w-full">

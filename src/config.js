@@ -5,8 +5,9 @@ export const BOOKING_URL = 'https://calendly.com/mohamed-convrt/30min'
 export const CONTACT_EMAIL = 'mohamed@convrt.studio'
 
 // Homepage offer destinations. Each path is registered to its page in App.jsx.
-/* The Our Work video portfolio. "See all UGC videos" (UGC page), "See Our Work" (homepage and UGC hero), the navigation and the footer
-   all read this one constant. The videos themselves come from src/content/portfolio.js. */
+/* The Creator Showcase video library (examples from independent creators; the visible name is "Creator Showcase", the route stays /our-work).
+   "Explore UGC Videos" (UGC page), "Explore Videos" (homepage and UGC hero), the navigation and the footer all read this one constant.
+   The videos themselves come from src/content/portfolio.js. */
 export const OUR_WORK_PATH = '/our-work'
 
 export const OFFER_PATHS = {

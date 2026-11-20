@@ -76,7 +76,7 @@ export const BREADCRUMB_TRAILS = {
   [PATHS.ugcVideoAgency]: [{ name: 'Home', path: '/' }, { name: 'UGC Video Agency', path: PATHS.ugcVideoAgency }],
   [PATHS.spokespersonVideoProduction]: [{ name: 'Home', path: '/' }, { name: 'Spokesperson Video Production', path: PATHS.spokespersonVideoProduction }],
   [PATHS.socialMediaVideoProduction]: [{ name: 'Home', path: '/' }, { name: 'Organic Social Video Production', path: PATHS.socialMediaVideoProduction }],
-  [PATHS.ourWork]: [{ name: 'Home', path: '/' }, { name: 'Our Work', path: PATHS.ourWork }],
+  [PATHS.ourWork]: [{ name: 'Home', path: '/' }, { name: 'Creator Showcase', path: PATHS.ourWork }],
 }
 
 export function breadcrumbNode(trail, id) {
@@ -415,7 +415,9 @@ export function videoObjectNode(item) {
     uploadDate: item.uploadDate,
     ...(item.languages?.length ? { inLanguage: item.languages[0] } : {}),
     ...(cf ? { contentUrl: hlsUrl(item), embedUrl: `https://iframe.videodelivery.net/${cf}` } : { contentUrl: abs(item.source.mp4) }),
-    publisher: { '@id': ORG_ID },
+    // CONVRT is named as the producer ONLY when the data says the video was produced through CONVRT. Independent creator examples are never
+    // attributed to CONVRT, and a video with unknown production gets no producer at all.
+    ...(item.production === 'convrt' ? { producer: { '@id': ORG_ID } } : {}),
   }
 }
 

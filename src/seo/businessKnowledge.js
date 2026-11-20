@@ -50,6 +50,16 @@ export const adVersions = (n) => `${n} ${n === 1 ? AD_VERSIONS.one : AD_VERSIONS
 /** { concepts: 5, variationsPerConcept: 3, variations: 15 } → "5 concepts × 3 versions = 15 finished ad versions" */
 export const packageEquation = (pkg) => `${pkg.concepts} concepts × ${pkg.variationsPerConcept} ${AD_VERSIONS.perConcept} = ${adVersions(pkg.variations)}`
 
+/* ── end-to-end production message (owner, Nov 2026) ───────────────────────────────────────
+   One compact benefit shown on both Creative Testing cards, plus the checklist line that replaces "Priority production scheduling"
+   (which had no definition anywhere in the business rules). Everything named here is already in scope: FORMATS.fullProductionIncludes
+   (filming, editing, captions, B-roll, motion graphics) and the PRODUCTION_STAGES. It does NOT imply media buying or ad-account management. */
+export const END_TO_END = {
+  title: 'End-to-end creative production',
+  text: 'Strategy, scripts, creator casting, filming and editing. All handled by CONVRT.',
+  checklistItem: 'Filming, editing, captions & final delivery',
+}
+
 /* ── brand ────────────────────────────────────────────────────────────────────────────── */
 export const BRAND = {
   name: 'CONVRT Studio',

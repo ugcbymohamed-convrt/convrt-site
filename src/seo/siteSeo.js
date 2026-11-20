@@ -71,11 +71,11 @@ export const SITE_SEO = {
     indexable: selectOrganicHero().length + selectOrganicGallery().length > 0,
   },
   [PATHS.ourWork]: {
-    title: 'Our Work | UGC Ads & Video Production Portfolio | CONVRT',
+    title: 'Creator Showcase | UGC Video Examples | CONVRT',
     description:
-      'Watch creator-led UGC ads and performance video creatives produced by CONVRT for paid social. Browse the portfolio and filter by industry.',
-    ogTitle: 'CONVRT Our Work: UGC Ads & Performance Creatives',
-    ogDescription: 'Watch human-led UGC ads, spokesperson videos and performance creatives produced by CONVRT.',
+      'Explore UGC video examples from independent creators across e-commerce, SaaS, services and other industries. Discover different styles and creative approaches.',
+    ogTitle: 'CONVRT Creator Showcase: UGC Video Examples',
+    ogDescription: 'Explore real creator videos across e-commerce, SaaS, services and more. Examples from independent creators.',
     // Indexable (and in the sitemap) only while at least one video is approved for the portfolio, so an empty library is never promoted to search.
     indexable: selectOurWork().length > 0,
   },

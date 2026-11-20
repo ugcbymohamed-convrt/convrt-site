@@ -1,6 +1,7 @@
 import { OFFER_PATHS } from '../../config.js'
 import {
   SPRINT, SPRINT_PLUS, ORGANIC, ORGANIC_COMMITMENT, CUSTOM_PACKAGES, BILLING_OPTIONS, formatMoney, pricePerVariation, creatorsLine,
+  END_TO_END,
 } from '../../seo/businessKnowledge.js'
 
 /* The three-column pricing cards (Paid Social: Sprint / Sprint Plus / Custom; Organic: Light / Growth / Custom).
@@ -55,7 +56,29 @@ function CheckIcon({ className = '' }) {
 }
 
 /* One pricing card. `price` and `sub` are nodes so the paid cards can carry both billing variants. */
-function PricingCard({ tone, id, label, badge, description, price, sub, features, note, ctaLabel, tallSub = false, descMin = 'lg:min-h-[69px]', subMin, className = '' }) {
+/* The end-to-end production benefit: a compact two-line note between the deliverable summary and the checklist. A small lime mark on a
+   dark chip (readable on both the light and the lime card). `endToEndSpace` gives the Custom card an equal invisible slot from lg up,
+   so the three checklists still start on one line. */
+const END_TO_END_BOX = 'mt-3 lg:min-h-[89px] xl:min-h-[73px]'
+function EndToEnd({ tone }) {
+  return (
+    <div className={`${END_TO_END_BOX} rounded-xl px-3 py-2 ${TONES[tone].chip}`}>
+      <p className="flex items-center gap-2 text-[13px] font-semibold leading-tight">
+        <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-md bg-canvas text-lime">
+          <svg viewBox="0 0 16 16" className="h-3 w-3" fill="none" aria-hidden="true">
+            <rect x="2" y="5" width="12" height="8.5" rx="1.6" stroke="currentColor" strokeWidth="1.6" />
+            <path d="M2.3 5L2 3.3l10.6-1.9.4 1.7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+            <path d="M7 7.8l2.6 1.5L7 10.8V7.8z" fill="currentColor" />
+          </svg>
+        </span>
+        {END_TO_END.title}
+      </p>
+      <p className={`mt-1 text-[12px] leading-snug ${TONES[tone].muted}`}>{END_TO_END.text}</p>
+    </div>
+  )
+}
+
+function PricingCard({ tone, id, label, badge, description, price, sub, features, note, ctaLabel, tallSub = false, descMin = 'lg:min-h-[69px]', subMin, className = '', endToEnd = false, endToEndSpace = false }) {
   const t = TONES[tone]
   return (
     <article
@@ -76,6 +99,9 @@ function PricingCard({ tone, id, label, badge, description, price, sub, features
 
       <div className="mt-5 flex min-h-[56px] items-end font-display font-bold leading-none tracking-display">{price}</div>
       <div className={`mt-3 ${subMin ?? (tallSub ? 'lg:min-h-[60px]' : 'min-h-[34px]')}`}>{sub}</div>
+
+      {endToEnd && <EndToEnd tone={tone} />}
+      {endToEndSpace && <div aria-hidden="true" className={`hidden lg:block ${END_TO_END_BOX}`} />}
 
       <div className={`mt-4 h-px ${t.divider}`} />
 
@@ -121,30 +147,30 @@ function BillingPrice({ pkg, billing }) {
 
 const LetsTalk = () => <span className="text-[40px] md:text-[46px]">Let&rsquo;s talk.</span>
 
-/* The value highlight directly under the total: what one finished ad version costs at the billing option shown. A small lime mark
-   (lime highlighter on the light card, black chip with lime text on the lime card): clearly more prominent than the supporting
-   copy, clearly smaller than the package price. Both billing variants are rendered (the inactive one is `hidden`), like the price. */
+/* The original two-pill row under the price, texts swapped (owner, Nov 2026): the lime pill (black chip with lime text on the lime card)
+   carries the package size, the grey pill carries the price per variation. The per-variation figure is derived from the package price
+   (not a price for single videos) and follows the billing option shown, so both variants are rendered (the inactive one is `hidden`),
+   like the price. The two pills share a line and wrap only when the card is too narrow for both. */
 const HIGHLIGHT = { light: 'bg-lime text-canvas', lime: 'bg-canvas text-lime' }
 const PerVariation = ({ tone, pkg, billing }) => (
   <>
     {BILLING_OPTIONS.map((o) => (
       <span key={o.id} hidden={billing !== o.id} data-billing={o.id}>
-        <span className={`inline-flex items-baseline gap-1 whitespace-nowrap rounded-lg px-1.5 py-[7px] text-[11.5px] font-semibold leading-none ${HIGHLIGHT[tone]}`}>
-          Just <span className="font-display text-[16px] font-bold tracking-snug">{pricePerVariation(pkg, o.id).text}</span> per variation
+        <span className={`inline-flex items-center whitespace-nowrap rounded-full px-2 py-[7px] text-[11.5px] font-bold leading-none ${TONES[tone].chip}`}>
+          {pricePerVariation(pkg, o.id).text} per variation
         </span>
       </span>
     ))}
   </>
 )
 
-/* The per-variation highlight and the package size sit on one line (they wrap only when the card is too narrow for both). */
 const Variations = ({ tone, count, line, per }) => (
   <>
     <div className="flex flex-wrap items-center gap-1">
-      {per}
-      <span className={`inline-flex items-center whitespace-nowrap rounded-full px-2 py-[7px] text-[11.5px] font-bold leading-none ${TONES[tone].chip}`}>
-        {count} testing creatives
+      <span className={`inline-flex items-baseline gap-1 whitespace-nowrap rounded-lg px-1.5 py-[7px] text-[11.5px] font-semibold leading-none ${HIGHLIGHT[tone]}`}>
+        <span className="font-display text-[16px] font-bold tracking-snug">{count}</span> testing creatives
       </span>
+      {per}
     </div>
     {line && <p className={`mt-2 text-[12.5px] leading-snug ${TONES[tone].muted}`}>{line}</p>}
   </>
@@ -167,10 +193,8 @@ export function PaidCards({ billing }) {
     days(SPRINT.turnaroundBusinessDays),
     usage(SPRINT.usageMonthsIncluded),
     revisions(SPRINT.revisionRoundsPerConcept),
-    'Priority production scheduling',
+    END_TO_END.checklistItem,
   ]
-  /* One line under the price for both cards (owner: the two packages differ in volume and price only). */
-  const conceptLine = (p) => `${p.concepts} unique concepts with ${p.variationsPerConcept} hook or CTA variations per concept`
   /* Sprint Plus (approved offer): 10 concepts, 10 scripts, 3 versions per concept = 30 finished ad versions. */
   const plusFeatures = [
     `${SPRINT_PLUS.concepts} distinct creative concepts`,
@@ -180,8 +204,10 @@ export function PaidCards({ billing }) {
     days(SPRINT_PLUS.turnaroundBusinessDays),
     usage(SPRINT_PLUS.usageMonthsIncluded),
     revisions(SPRINT_PLUS.revisionRoundsPerConcept),
-    'Priority production scheduling',
+    END_TO_END.checklistItem,
   ]
+  /* One line under the price for both cards (owner: the two packages differ in volume and price only). */
+  const conceptLine = (p) => `${p.concepts} unique concepts with ${p.variationsPerConcept} hook or CTA variations per concept`
   const PAID_DESC = 'lg:min-h-[46px]'
   const PAID_SUB = 'lg:min-h-[80px]'
   const custom = CUSTOM_PACKAGES.paid
@@ -190,19 +216,19 @@ export function PaidCards({ billing }) {
       <PricingCard
         tone="light" id="card-sprint" label="Sprint" description={SPRINT.cardDescription}
         price={<BillingPrice pkg={SPRINT} billing={billing} />}
-        sub={<Variations tone="light" per={<PerVariation tone="light" pkg={SPRINT} billing={billing} />} count={SPRINT.variations} line={conceptLine(SPRINT)} />}
-        features={sprintFeatures} note={SPRINT.extraDetail} ctaLabel="Get started" descMin={PAID_DESC} subMin={PAID_SUB}
+        sub={<Variations tone="light" count={SPRINT.variations} line={conceptLine(SPRINT)} per={<PerVariation tone="light" pkg={SPRINT} billing={billing} />} />}
+        features={sprintFeatures} note={SPRINT.extraDetail} ctaLabel="Get started" descMin={PAID_DESC} subMin={PAID_SUB} endToEnd
       />
       <PricingCard
         tone="lime" id="card-sprint-plus" label="Sprint Plus" badge="Deeper testing" description={SPRINT_PLUS.cardDescription}
         price={<BillingPrice pkg={SPRINT_PLUS} billing={billing} />}
-        sub={<Variations tone="lime" per={<PerVariation tone="lime" pkg={SPRINT_PLUS} billing={billing} />} count={SPRINT_PLUS.variations} line={conceptLine(SPRINT_PLUS)} />}
-        features={plusFeatures} note={SPRINT_PLUS.extraDetail} ctaLabel="Get started" descMin={PAID_DESC} subMin={PAID_SUB}
+        sub={<Variations tone="lime" count={SPRINT_PLUS.variations} line={conceptLine(SPRINT_PLUS)} per={<PerVariation tone="lime" pkg={SPRINT_PLUS} billing={billing} />} />}
+        features={plusFeatures} note={SPRINT_PLUS.extraDetail} ctaLabel="Get started" descMin={PAID_DESC} subMin={PAID_SUB} endToEnd
       />
       <PricingCard
         tone="dark" id="card-custom" label={custom.name} description={custom.description}
         price={<LetsTalk />} sub={<Supporting tone="dark">{custom.supportingLabel}</Supporting>}
-        features={custom.features} note={custom.note} ctaLabel={custom.cta} descMin={PAID_DESC} subMin={PAID_SUB}
+        features={custom.features} note={custom.note} ctaLabel={custom.cta} descMin={PAID_DESC} subMin={PAID_SUB} endToEndSpace
         className="md:col-span-2 lg:col-span-1"
       />
     </div>

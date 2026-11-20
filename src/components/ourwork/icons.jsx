@@ -1,4 +1,4 @@
-/* Icons for Our Work: one per category tab, plus the player and gallery controls. Inline SVG (no icon library), 20px grid, currentColor. */
+/* Icons for the Creator Showcase: one per category tab, plus the player and gallery controls. Inline SVG (no icon library), 20px grid, currentColor. */
 
 const base = { viewBox: '0 0 20 20', fill: 'none', stroke: 'currentColor', strokeWidth: 1.6, strokeLinecap: 'round', strokeLinejoin: 'round', 'aria-hidden': true }
 

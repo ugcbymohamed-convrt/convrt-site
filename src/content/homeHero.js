@@ -12,7 +12,7 @@ export const HOME_HERO = [
   {
     id: 'home-hero-main',
     creatorId: 'cv-home-hero',
-    industry: 'other',
+    industry: 'unclassified',
     languages: ['en'],
     caption: 'CONVRT UGC ad example.',
     poster: '/portfolio/home-hero.webp',
@@ -22,7 +22,7 @@ export const HOME_HERO = [
   {
     id: 'home-hero-ugc-1',
     creatorId: 'cv-hero-1',
-    industry: 'other',
+    industry: 'unclassified',
     languages: ['en'],
     caption: 'Creator-led UGC ad example 1.',
     poster: '/portfolio/ugc-hero-1.webp',
@@ -32,7 +32,7 @@ export const HOME_HERO = [
   {
     id: 'home-hero-ugc-2',
     creatorId: 'cv-hero-2',
-    industry: 'other',
+    industry: 'unclassified',
     languages: ['en'],
     caption: 'Creator-led UGC ad example 2.',
     poster: '/portfolio/ugc-hero-2.webp',
