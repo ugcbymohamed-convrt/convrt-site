@@ -29,7 +29,7 @@ Shared scene primitives (skeleton lines, tags, colours) live in `src/components/
 Videos come from `src/content/portfolio.js` through `selectOrganicHero()` / `selectOrganicGallery()`: an entry must have `type: 'organic'` and the full approval
 (`status: 'approved'`, `portfolioUse: true`, `creatorConsent: true`). `placement: 'hero'` fills the three-phone stage (first = centre, at most 3), everything else the gallery
 (at most 10, four across on desktop). UGC, spokesperson and the homepage client (`type: 'social'`, e.g. Graspo) videos can never appear here. **Seven videos are live** (supplied 2026-11-20, Desktop > "Organic page videos"): `organic-hero-1..3` (HERO1-3; hero 1 is the centre phone) and `organic-gal-1..4` (DOWN-SECTION-1-4), on Cloudflare Stream with hand-picked
-thumbnails in `public/portfolio/organic-*.webp`. They carry neutral titles; languages are assumed (`en`) from the on-screen captions, industry is `other`, and no brand, creator, production credit or content style was supplied, so none is set.
+thumbnails in `public/portfolio/organic-*.webp`. They carry neutral titles; languages (`en`) and industry (`other`) were confirmed by the owner on 2026-11-20, and no brand, creator, production credit or content style was supplied, so none is set.
 They also appear on `/our-work` (the shared portfolio). To add more: copy an entry (placement `hero` for the stage, anything else is the gallery, at most 10). On preview hosts with no organic videos the layout cards return.
 
 ### Content-style filter

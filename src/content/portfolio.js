@@ -63,10 +63,9 @@
 
 export const PORTFOLIO = [
   /* Organic Social page videos (/social-media-video-production). Supplied by the owner on 2026-11-20 (Desktop > Organic page videos: HERO1-3 = the three-phone stage,
-     DOWN-SECTION-1-4 = the gallery). type 'organic' is the ONLY thing that sends a video to that page. Titles and captions are neutral placeholders, languages are assumed
-     from the on-screen captions and industry is 'other' because none was supplied; no brand, creator name, production credit or content `style` was supplied, so none is set
-     (the style filter stays hidden until at least two styles are confirmed). The owner should confirm languages, industry, creator consent and whether each is a CONVRT
-     production. To add more later, copy an entry below (hero slots: placement 'hero', first = the centre phone, at most 3; everything else = the gallery, at most 10).
+     DOWN-SECTION-1-4 = the gallery). type 'organic' is the ONLY thing that sends a video to that page. Titles and captions are neutral placeholders. The owner confirmed in chat
+     (2026-11-20) that languages ['en'] and industry 'other' are correct for all seven. No brand, creator name, production credit or content `style` was supplied, so none is set
+     (the style filter stays hidden until at least two styles are confirmed). Still open: creator consent wording and whether each is a CONVRT production. To add more later, copy an entry below (hero slots: placement 'hero', first = the centre phone, at most 3; everything else = the gallery, at most 10).
      A video made by an independent creator is shown only with the creator's consent and is never presented as a CONVRT production unless it is one. */
   {
     id: 'organic-hero-1',
