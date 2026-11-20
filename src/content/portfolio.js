@@ -62,17 +62,148 @@
    • tests/ugc-page.test.mjs and tests/our-work.test.mjs validate every entry (unique ids, valid codes, source, permission flags). */
 
 export const PORTFOLIO = [
-  /* ORGANIC SOCIAL SLOTS (/social-media-video-production): EMPTY ON PURPOSE, awaiting the owner's approved organic videos. Nothing from the UGC or Spokesperson
-     pages, and none of the homepage client videos, may stand in for them. To fill a slot, paste this entry (with a real Cloudflare id) at the top of this list:
-       THREE-PHONE HERO STAGE  placement: 'hero'      (first = the large centre phone, at most 3)   hero slot 1 (centre) · hero slot 2 · hero slot 3
-       GALLERY                 placement: 'gallery'   (everything else, at most 10; four across on desktop)
-     {
-       id: 'organic-hero-1', title: '…', caption: 'One honest sentence.', type: 'organic', style: 'educational',   // style only once confirmed
-       industry: 'ecommerce', languages: ['en'], source: { cloudflareId: '…' }, poster: '/portfolio/organic-hero-1.webp',
-       creatorId: 'cv-organic-hero-1', category: 'Organic social · Short-form video', placement: 'hero',
-       approval: { status: 'approved', portfolioUse: true, creatorConsent: true, approvedBy: 'CONVRT owner (confirmed in chat)', approvedOn: 'YYYY-MM-DD' },
-     }
+  /* Organic Social page videos (/social-media-video-production). Supplied by the owner on 2026-11-20 (Desktop > Organic page videos: HERO1-3 = the three-phone stage,
+     DOWN-SECTION-1-4 = the gallery). type 'organic' is the ONLY thing that sends a video to that page. Titles and captions are neutral placeholders, languages are assumed
+     from the on-screen captions and industry is 'other' because none was supplied; no brand, creator name, production credit or content `style` was supplied, so none is set
+     (the style filter stays hidden until at least two styles are confirmed). The owner should confirm languages, industry, creator consent and whether each is a CONVRT
+     production. To add more later, copy an entry below (hero slots: placement 'hero', first = the centre phone, at most 3; everything else = the gallery, at most 10).
      A video made by an independent creator is shown only with the creator's consent and is never presented as a CONVRT production unless it is one. */
+  {
+    id: 'organic-hero-1',
+    title: 'Organic social video example 1',
+    caption: 'Organic social video example 1.',
+    type: 'organic',
+    industry: 'other',
+    languages: ['en'],
+    source: { cloudflareId: 'cc23b5a0e85bdbadf89a7e097891a622' },
+    poster: '/portfolio/organic-hero-1.webp',
+    creatorId: 'cv-organic-hero-1',
+    category: 'Organic social · Short-form video',
+    placement: 'hero',
+    approval: {
+      status: 'approved',
+      portfolioUse: true,
+      creatorConsent: true,
+      approvedBy: 'CONVRT owner (confirmed in chat)',
+      approvedOn: '2026-11-20',
+    },
+  },
+  {
+    id: 'organic-hero-2',
+    title: 'Organic social video example 2',
+    caption: 'Organic social video example 2.',
+    type: 'organic',
+    industry: 'other',
+    languages: ['en'],
+    source: { cloudflareId: '7c4675614e9381fe40ae686f5cfb3a00' },
+    poster: '/portfolio/organic-hero-2.webp',
+    creatorId: 'cv-organic-hero-2',
+    category: 'Organic social · Short-form video',
+    placement: 'hero',
+    approval: {
+      status: 'approved',
+      portfolioUse: true,
+      creatorConsent: true,
+      approvedBy: 'CONVRT owner (confirmed in chat)',
+      approvedOn: '2026-11-20',
+    },
+  },
+  {
+    id: 'organic-hero-3',
+    title: 'Organic social video example 3',
+    caption: 'Organic social video example 3.',
+    type: 'organic',
+    industry: 'other',
+    languages: ['en'],
+    source: { cloudflareId: 'd9613dac26e702b0f7edc1acca8e73ea' },
+    poster: '/portfolio/organic-hero-3.webp',
+    creatorId: 'cv-organic-hero-3',
+    category: 'Organic social · Short-form video',
+    placement: 'hero',
+    approval: {
+      status: 'approved',
+      portfolioUse: true,
+      creatorConsent: true,
+      approvedBy: 'CONVRT owner (confirmed in chat)',
+      approvedOn: '2026-11-20',
+    },
+  },
+  {
+    id: 'organic-gal-1',
+    title: 'Organic social video example 4',
+    caption: 'Organic social video example 4.',
+    type: 'organic',
+    industry: 'other',
+    languages: ['en'],
+    source: { cloudflareId: '2bb321f0b45175d4b4a0b6e3f79206c9' },
+    poster: '/portfolio/organic-gal-1.webp',
+    creatorId: 'cv-organic-gal-1',
+    category: 'Organic social · Short-form video',
+    approval: {
+      status: 'approved',
+      portfolioUse: true,
+      creatorConsent: true,
+      approvedBy: 'CONVRT owner (confirmed in chat)',
+      approvedOn: '2026-11-20',
+    },
+  },
+  {
+    id: 'organic-gal-2',
+    title: 'Organic social video example 5',
+    caption: 'Organic social video example 5.',
+    type: 'organic',
+    industry: 'other',
+    languages: ['en'],
+    source: { cloudflareId: 'c7c85203ea049a339796bffbef6f1b06' },
+    poster: '/portfolio/organic-gal-2.webp',
+    creatorId: 'cv-organic-gal-2',
+    category: 'Organic social · Short-form video',
+    approval: {
+      status: 'approved',
+      portfolioUse: true,
+      creatorConsent: true,
+      approvedBy: 'CONVRT owner (confirmed in chat)',
+      approvedOn: '2026-11-20',
+    },
+  },
+  {
+    id: 'organic-gal-3',
+    title: 'Organic social video example 6',
+    caption: 'Organic social video example 6.',
+    type: 'organic',
+    industry: 'other',
+    languages: ['en'],
+    source: { cloudflareId: 'e67c49d0d1cff6e3f160b4dbe6b1cea1' },
+    poster: '/portfolio/organic-gal-3.webp',
+    creatorId: 'cv-organic-gal-3',
+    category: 'Organic social · Short-form video',
+    approval: {
+      status: 'approved',
+      portfolioUse: true,
+      creatorConsent: true,
+      approvedBy: 'CONVRT owner (confirmed in chat)',
+      approvedOn: '2026-11-20',
+    },
+  },
+  {
+    id: 'organic-gal-4',
+    title: 'Organic social video example 7',
+    caption: 'Organic social video example 7.',
+    type: 'organic',
+    industry: 'other',
+    languages: ['en'],
+    source: { cloudflareId: 'c8ed4698b9b20ccb49b84c2a5977d008' },
+    poster: '/portfolio/organic-gal-4.webp',
+    creatorId: 'cv-organic-gal-4',
+    category: 'Organic social · Short-form video',
+    approval: {
+      status: 'approved',
+      portfolioUse: true,
+      creatorConsent: true,
+      approvedBy: 'CONVRT owner (confirmed in chat)',
+      approvedOn: '2026-11-20',
+    },
+  },
   /* Spokesperson page videos (/spokesperson-video-production). Supplied by the owner on 2026-11-19 (Desktop > UGC PAGE VIDEOS > Spokesperson videos: HERO1-3,
      SECTION, SECTION2-4); the owner titled the three hero files. type 'spokesperson' is the ONLY thing that sends a video to that page. Captions are neutral
      placeholders, languages are assumed from the on-screen captions and industry is a best guess: the owner should confirm all three. No brand is named. */
