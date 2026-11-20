@@ -479,7 +479,7 @@ test('internal links into the page: homepage Services line and UGC FAQ, Pricing,
   const link = (h) => rootOf(h).includes(`href="${PATH}"`)
   assert.ok(link(page('/')), 'homepage')
   const home = rootOf(page('/'))
-  assert.match(home, /See how our UGC video production works/)
+  assert.match(home, /<a href="\/ugc-video-agency" class="svc-card"/, 'homepage Services card')
   assert.match(home, /Learn about our UGC video production/)
   assert.ok(link(page('/pricing')) && /See how our UGC production works/.test(rootOf(page('/pricing'))), 'pricing')
   assert.ok(link(page('/case-studies/elyon')), 'Elyon case study')

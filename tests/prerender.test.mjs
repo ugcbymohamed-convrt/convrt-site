@@ -168,7 +168,7 @@ test('homepage: headline, services copy, CTAs and links are in the initial HTML'
   const h = page('/')
   const text = visibleText(h)
   assert.match(text, /Performance creatives engineered to/)
-  assert.match(text, /Spokesperson Ads/, 'services copy')
+  assert.match(text, /Spokesperson Videos/, 'services copy')
   assert.match(text, /Things brands usually ask\./, 'FAQ copy')
   assert.match(text, /Get 5 Free Ad Concepts/)
   for (const href of [PATHS.roadmap, PATHS.riskFree, PATHS.hooks, PATHS.caseStudies, PATHS.pricing]) assert.ok(rootOf(h).includes(`href="${href}"`), href)
@@ -330,6 +330,39 @@ test('homepage HTML: ONE JSON-LD block (Organization, WebSite, WebPage, 3 Servic
     assert.equal(ldScripts(page(p)).length, 0, `${p} must not carry structured data`)
   }
   for (const p of ['/case-studies/graspo', '/case-studies/elyon']) assert.equal(ldScripts(page(p)).length, 0, p)
+})
+
+test('homepage Services: four equal-card links in the approved order, each ONE anchor to its canonical page; no strategy card; head and JSON-LD untouched', () => {
+  const html = page('/')
+  const sec = html.slice(html.indexOf('id="services"'), html.indexOf('</section>', html.indexOf('id="services"')))
+  const cards = [...sec.matchAll(/<a href="([^"]+)" class="svc-card"([^>]*)>([\s\S]*?)<\/a>/g)]
+  const want = [
+    ['01', 'UGC Video Ads', PATHS.ugcVideoAgency, '/ugc-video-agency', 'Human-led UGC ads built to capture attention and test creative angles.', ['UGC Ads', 'Creator-Led', 'Creative Testing']],
+    ['02', 'SaaS Video Production', PATHS.saasVideoProduction, '/saas-video-production', 'Product demos, explainers and video ads that make software easier to understand.', ['Product Demos', 'Explainers', 'Video Ads']],
+    ['03', 'Spokesperson Videos', PATHS.spokespersonVideoProduction, '/spokesperson-video-production', 'Professional, multilingual presenters for ads, demonstrations and brand messages.', ['Human-Led', 'Multilingual', 'Product Demos']],
+    ['04', 'Social Media Management', PATHS.socialMediaVideoProduction, '/social-media-video-production', 'Organic social videos, content planning, publishing and community management.', ['Organic Video', 'Posting', 'Community']],
+  ]
+  assert.equal(cards.length, 4, 'exactly four service cards')
+  cards.forEach((c, i) => {
+    const [num, title, pathConst, literal, desc, pills] = want[i]
+    assert.equal(pathConst, literal, `${title}: PATHS entry is the canonical URL`)
+    assert.equal(c[1], literal, `${title}: href`)
+    const body = c[3]
+    assert.match(c[2], new RegExp(`aria-labelledby="service-[a-z]+-title" aria-describedby="service-[a-z]+-desc"`), `${title}: accessible name and description`)
+    assert.ok(body.includes(`>${num}</span>`) && new RegExp(`<h3[^>]*>${title}</h3>`).test(body), `${title}: number and h3`)
+    assert.ok(body.includes(`>${desc}</p>`), `${title}: description`)
+    for (const pill of pills) assert.ok(body.includes(`>${pill}</li>`), `${title}: tag ${pill}`)
+    assert.match(body, /Explore Service/, `${title}: visible action`)
+    assert.ok(!/<(a|button|input|select|textarea)[\s>]|tabindex=|role="button"/.test(body), `${title}: no nested interactive element`)
+  })
+  assert.ok(!/Creative Strategy for Organic/.test(sec), 'the standalone strategy card is gone')
+  assert.equal(count(sec, /class="svc-card"/g), 4)
+  // the four destinations are linked once each (cards are the hub); the pricing link stays
+  for (const [, , , href] of want) assert.equal(count(sec, new RegExp(`href="${href}"`, 'g')), 1, `${href} linked once in Services`)
+  assert.match(sec, /<a href="\/pricing"[^>]*>\s*Explore packages and pricing\s*<\/a>/)
+  // nothing about the page head or structured data changed
+  assert.ok(!JSON.stringify(ldScripts(html)).includes('saas-video-production') && !JSON.stringify(ldScripts(html)).includes('social-media-video-production'))
+  assert.equal(count(html, /<h1[\s>]/g), 1)
 })
 
 test('hydration safety: the client hook REPLACES the prerendered JSON-LD, and /pricing still hydrates its own HTML', () => {
@@ -659,8 +692,8 @@ test('homepage HTML: services heading and cards, hero line, internal links', () 
   const t = unescape(visibleText(h))
   for (const n of [
     'Video creative for paid and organic social.', 'Creative strategy and full video production, from concept and creator casting to finished, platform-ready videos.',
-    'Human-led UGC video ads for Meta, TikTok and YouTube: concepts, creator casting, scripts, filming and editing.', 'Presenter-led video ads that explain your offer clearly and build trust, from casting to finished edit.',
-    'Organic short-form video for Instagram, TikTok and Facebook: strategy, production, publishing and community engagement.', 'Concepts, hooks, scripts and structured testing plans that show you what to make next.',
+    'Human-led UGC ads built to capture attention and test creative angles.', 'Product demos, explainers and video ads that make software easier to understand.',
+    'Professional, multilingual presenters for ads, demonstrations and brand messages.', 'Organic social videos, content planning, publishing and community management.',
     'From creative strategy and scripting to creator casting, filming and editing. We produce human-led UGC ads, spokesperson videos and organic social content, ready to perform.',
     'Explore packages and pricing',
   ]) assert.ok(t.includes(n), n)
