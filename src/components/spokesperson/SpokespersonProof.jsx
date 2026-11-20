@@ -8,14 +8,29 @@ import { SPOKESPERSON_PROOF, SPOKESPERSON_EXPECTATIONS } from '../../content/spo
      honest qualifiers) and attributed, verbatim testimonial cards, under "Results & client feedback".
    • With none (today), it shows a COMPACT "what to expect" strip made only of published business terms (no results, no statistics, no placeholder,
      no "coming soon"). It is deliberately short so the page never carries a large empty section.
-   The UGC page's Elyon 5.28x and its two testimonials are NOT used here: they describe UGC work. */
+   The UGC page's Elyon 5.28x and its two testimonials are NOT used here: they describe UGC work.
 
-function Expectations() {
-  const e = SPOKESPERSON_EXPECTATIONS
+   CONFIGURATION-DRIVEN: the Spokesperson content is the default; /social-media-video-production passes its own `config` (its verified Graspo organic result, its heading and
+   analytics names) and gets the same two layouts. A config supplies:
+     proof          { results, testimonials }              (a result may add `secondary: [{ value, label }]`, shown beside the headline figure)
+     expectations   the compact strip shown when proof is empty, or null (then the section is absent while there is nothing to show)
+     headingId, heading { eyebrow, title }                the populated layout's heading
+     track          { cta, pricing } analytics names */
+
+export const SPOKESPERSON_PROOF_CONFIG = {
+  proof: SPOKESPERSON_PROOF,
+  expectations: SPOKESPERSON_EXPECTATIONS,
+  headingId: 'spokesperson-proof-heading',
+  heading: { eyebrow: 'Results & client feedback', title: 'What clients see. What clients say.' },
+  track: { cta: 'spokesperson_page_cta_click', pricing: 'spokesperson_pricing_link_click' },
+}
+
+function Expectations({ config }) {
+  const e = config.expectations
   return (
-    <Section id="results" label="spokesperson-proof-heading" glow className="!py-8 md:!py-10">
+    <Section id="results" label={config.headingId} glow className="!py-8 md:!py-10">
       <Reveal>
-        <Head id="spokesperson-proof-heading" eyebrow={e.eyebrow} title={e.title} />
+        <Head id={config.headingId} eyebrow={e.eyebrow} title={e.title} />
       </Reveal>
       <ul className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {e.items.map((it, i) => (
@@ -34,19 +49,19 @@ function Expectations() {
       </ul>
       <Reveal className="mt-6 flex justify-center">
         <p className="text-[15px]">
-          <TextLink href={e.link.href} onClick={() => trackEvent('spokesperson_pricing_link_click', { location: 'expect' })}>{e.link.label} <span aria-hidden="true">→</span></TextLink>
+          <TextLink href={e.link.href} onClick={() => trackEvent(config.track.pricing, { location: 'expect' })}>{e.link.label} <span aria-hidden="true">→</span></TextLink>
         </p>
       </Reveal>
     </Section>
   )
 }
 
-function Results({ proof }) {
-  const { results, testimonials } = proof
+function Results({ config }) {
+  const { results, testimonials } = config.proof
   return (
-    <Section id="results" label="spokesperson-proof-heading" glow>
+    <Section id="results" label={config.headingId} glow>
       <Reveal>
-        <Head id="spokesperson-proof-heading" eyebrow="Results & client feedback" title="What clients see. What clients say." />
+        <Head id={config.headingId} eyebrow={config.heading.eyebrow} title={config.heading.title} />
       </Reveal>
       <div className="mt-8 grid grid-cols-1 gap-5 md:mt-10 lg:grid-cols-12 lg:gap-6">
         {results.map((r) => (
@@ -57,13 +72,20 @@ function Results({ proof }) {
                 <span className="font-display text-[4rem] font-bold leading-none tracking-display-xl text-lime sm:text-[5rem]">{r.metric}</span>
                 <span className="font-display text-xl font-semibold text-ink md:text-2xl">{r.metricLabel}</span>
               </p>
+              {r.secondary?.length > 0 && (
+                <ul className="mt-5 flex flex-wrap gap-x-8 gap-y-3">
+                  {r.secondary.map((x) => (
+                    <li key={x.label}><span className="font-display text-3xl font-bold leading-none tracking-display text-ink">{x.value}</span> <span className="text-[15px] text-ink-muted">{x.label}</span></li>
+                  ))}
+                </ul>
+              )}
               {r.context && <p className="mt-4 max-w-xl text-[15px] leading-relaxed text-ink-muted">{r.context}</p>}
               {r.disclaimer && <p className="mt-3 max-w-xl text-[13px] leading-relaxed text-ink-muted">{r.disclaimer}</p>}
               {r.href && <p className="mt-2.5 text-[15px]"><TextLink href={r.href}>Read the case study <span aria-hidden="true">→</span></TextLink></p>}
             </div>
           </Reveal>
         ))}
-        <div className={`grid gap-5 ${results.length ? 'lg:col-span-5' : 'lg:col-span-12 lg:grid-cols-2'}`}>
+        {testimonials.length > 0 && <div className={`grid gap-5 ${results.length ? 'lg:col-span-5' : 'lg:col-span-12 lg:grid-cols-2'}`}>
           {testimonials.map((t, i) => (
             <Reveal key={t.id} delay={120 + i * 120} className="h-full">
               <figure className="relative flex h-full flex-col rounded-[28px] border border-hairline bg-surface-1/70 p-6 backdrop-blur-md md:p-7">
@@ -76,16 +98,18 @@ function Results({ proof }) {
               </figure>
             </Reveal>
           ))}
-        </div>
+        </div>}
       </div>
       <Reveal className="mt-8 flex justify-center">
-        <RoadmapCta location="results" track="spokesperson_page_cta_click" />
+        <RoadmapCta location="results" track={config.track.cta} />
       </Reveal>
     </Section>
   )
 }
 
-/* `proof` is injectable so the populated layout can be rendered and tested with sample data. */
-export default function SpokespersonProof({ proof = SPOKESPERSON_PROOF }) {
-  return proof.results.length || proof.testimonials.length ? <Results proof={proof} /> : <Expectations />
+/* `proof` (or a whole `config`) is injectable so the populated layout can be rendered and tested with sample data. */
+export default function SpokespersonProof({ proof, config = SPOKESPERSON_PROOF_CONFIG }) {
+  const cfg = proof ? { ...config, proof } : config
+  if (cfg.proof.results.length || cfg.proof.testimonials.length) return <Results config={cfg} />
+  return cfg.expectations ? <Expectations config={cfg} /> : null
 }

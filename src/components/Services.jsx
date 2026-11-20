@@ -293,6 +293,10 @@ export default function Services() {
           <a href="/spokesperson-video-production" className="text-ink-muted hover:text-lime underline underline-offset-2 transition-colors">
             Explore spokesperson video production
           </a>
+          {' · '}
+          <a href="/social-media-video-production" className="text-ink-muted hover:text-lime underline underline-offset-2 transition-colors">
+            Explore organic social video production
+          </a>
         </p>
       </div>
     </section>

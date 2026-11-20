@@ -474,6 +474,8 @@ export const ORGANIC = {
     'Community engagement',
   ],
   panelNote: 'Facebook, Instagram and TikTok. Community management excludes customer support.',
+  /* The same sentence on its own, for places that already name the platforms elsewhere (the Organic Social page's package section). */
+  customerSupportNote: 'Community management excludes customer support.',
   scope: [
     'Content strategy and planning',
     'Video concepts and scripting',

@@ -31,7 +31,10 @@ const TOTAL = 10
      ariaLabel, badge                       the scroller's accessible name and the pill on each card ("UGC", "Spokesperson")
      cta                                    { label, href } the button under the gallery
      track                                  analytics prefix
-     samplePortraits                        portraits for the preview-only stand-in cards, or null for neutral empty frames */
+     samplePortraits                        portraits for the preview-only stand-in cards, or null for neutral empty frames
+     filter                                 optional content-style filter { ariaLabel, allLabel, field, options: [{ id, label }] }. A chip appears only for an option that at least
+                                            one APPROVED video carries in `field`, and the row only when two or more options are present (a single style needs no filter). On preview
+                                            hosts the empty frames carry every option so the filter can be reviewed. Without `filter` the section is exactly as before. */
 export const UGC_GALLERY = {
   id: 'ugc-videos',
   headingId: 'ugc-videos-heading',
@@ -97,7 +100,12 @@ export default function UgcGallery({ items, config = UGC_GALLERY }) {
   const preview = usePreviewHost()
   const real = items.slice(0, TOTAL)
   const sample = real.length === 0 && preview
-  const cards = real.length ? real : sample ? Array.from({ length: TOTAL }, (_, i) => ({ id: `sample-${i}`, sample: true, portrait: config.samplePortraits ? config.samplePortraits[i % config.samplePortraits.length] : undefined })) : []
+  const fcfg = config.filter
+  const cards = real.length ? real : sample ? Array.from({ length: TOTAL }, (_, i) => ({ id: `sample-${i}`, sample: true, portrait: config.samplePortraits ? config.samplePortraits[i % config.samplePortraits.length] : undefined, ...(fcfg ? { [fcfg.field]: fcfg.options[i % fcfg.options.length].id } : {}) })) : []
+  const [chip, setChip] = useState('all')
+  const chips = fcfg ? fcfg.options.filter((o) => cards.some((c) => c[fcfg.field] === o.id)) : []
+  const showChips = chips.length >= 2
+  const shown = showChips && chip !== 'all' ? cards.filter((c) => c[fcfg.field] === chip) : cards
 
   const scroller = useRef(null)
   const drag = useRef({ down: false, x: 0, left: 0, moved: false })
@@ -121,8 +129,14 @@ export default function UgcGallery({ items, config = UGC_GALLERY }) {
     el.addEventListener('scroll', on, { passive: true })
     window.addEventListener('resize', on)
     return () => { el.removeEventListener('scroll', on); window.removeEventListener('resize', on); cancelAnimationFrame(raf) }
-  }, [measure, cards.length])
+  }, [measure, shown.length])
 
+  const pick = (id) => {
+    setChip(id)
+    setActiveId(null)
+    if (scroller.current) scroller.current.scrollLeft = 0
+    trackEvent(`${config.track}_gallery_filter`, { style: id })
+  }
   const by = (dir) => {
     const el = scroller.current
     if (!el) return
@@ -163,6 +177,21 @@ export default function UgcGallery({ items, config = UGC_GALLERY }) {
 
       <Reveal className="mt-8 md:mt-10">
         {sample && <p className="mb-3 text-center text-xs font-medium text-ink-muted">{config.sampleNote}</p>}
+        {showChips && (
+          <div role="group" aria-label={fcfg.ariaLabel} className="mb-5 flex flex-wrap items-center justify-center gap-2">
+            {[{ id: 'all', label: fcfg.allLabel }, ...chips].map((o) => (
+              <button
+                key={o.id}
+                type="button"
+                onClick={() => pick(o.id)}
+                aria-pressed={chip === o.id}
+                className={`min-h-[44px] rounded-full px-4 py-2 text-[14px] font-semibold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-lime motion-reduce:transition-none ${chip === o.id ? 'bg-lime text-canvas' : 'border border-hairline bg-surface-2 text-ink-muted hover:text-ink'}`}
+              >
+                {o.label}
+              </button>
+            ))}
+          </div>
+        )}
         <div className="relative">
           <div
             ref={scroller}
@@ -179,7 +208,7 @@ export default function UgcGallery({ items, config = UGC_GALLERY }) {
             className={`-mx-5 overflow-x-auto overscroll-x-contain px-5 pb-5 pt-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden md:mx-0 md:px-1 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-lime ${dragging ? 'cursor-grabbing select-none snap-none' : 'cursor-grab snap-x snap-mandatory'}`}
           >
             <ul className="flex gap-4">
-              {cards.map((item, i) => (
+              {shown.map((item, i) => (
                 <li key={item.id} className="w-[66%] shrink-0 snap-start sm:w-[42%] md:w-[calc((100%-2rem)/3)] lg:w-[calc((100%-3rem)/4)]">
                   <Card
                     item={item}

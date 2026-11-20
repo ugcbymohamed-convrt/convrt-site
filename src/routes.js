@@ -13,6 +13,7 @@ export const PATHS = {
   pricing: '/pricing',
   ugcVideoAgency: '/ugc-video-agency',
   spokespersonVideoProduction: '/spokesperson-video-production',
+  socialMediaVideoProduction: '/social-media-video-production',
   ourWork: OUR_WORK_PATH,
   caseStudies: '/case-studies',
   caseStudyGraspo: '/case-studies/graspo',

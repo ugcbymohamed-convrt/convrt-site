@@ -21,4 +21,14 @@ export const PaidTerms = () => (
     </p>
   </>
 )
-export const OrganicTerms = () => <Note>{CARD_NOTES.organic}</Note>
+export const OrganicTerms = () => (
+  <>
+    <Note>{CARD_NOTES.organic}</Note>
+    <p className="mx-auto mt-2 max-w-3xl text-center text-[13px] leading-relaxed text-ink-subtle">
+      Curious how it works?{' '}
+      <a href="/social-media-video-production" className="text-ink-muted underline underline-offset-2 transition-colors hover:text-lime">
+        See organic social video production
+      </a>
+    </p>
+  </>
+)

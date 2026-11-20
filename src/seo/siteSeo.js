@@ -24,7 +24,7 @@ import {
 import { jsonLdFor } from './structuredData.js'
 import { PATHS } from '../routes.js'
 import { formatMoney, SPRINT, USAGE_RIGHTS } from './businessKnowledge.js'
-import { selectOurWork, selectSpokespersonHero, selectSpokespersonGallery } from '../content/portfolio.js'
+import { selectOurWork, selectSpokespersonHero, selectSpokespersonGallery, selectOrganicHero, selectOrganicGallery } from '../content/portfolio.js'
 
 export const SITE_SEO = {
   '/': {
@@ -59,6 +59,16 @@ export const SITE_SEO = {
     // Indexable (and in the sitemap) once at least one spokesperson video is approved for this page, so the page is not promoted to search while
     // its showcase is still empty. It flips by itself when the first approved spokesperson video is added to src/content/portfolio.js.
     indexable: selectSpokespersonHero().length + selectSpokespersonGallery().length > 0,
+  },
+  [PATHS.socialMediaVideoProduction]: {
+    title: 'Organic Social Media Video Production & Management | CONVRT',
+    description:
+      'Human-led short-form video for organic social media on Instagram, TikTok and Facebook: strategy, filming, editing, publishing and community management.',
+    ogTitle: 'CONVRT: Organic Social Video Production & Management',
+    ogDescription: 'Human-led short-form videos for organic social media, from content strategy and scripting to filming, editing, posting and community management.',
+    // Indexable (and in the sitemap) once at least one approved organic video exists for this page, so the page is not promoted to search while its showcase is still
+    // empty. It flips by itself when the first approved organic video is added to src/content/portfolio.js (same rule as the spokesperson page and /our-work).
+    indexable: selectOrganicHero().length + selectOrganicGallery().length > 0,
   },
   [PATHS.ourWork]: {
     title: 'Our Work | UGC Ads & Video Production Portfolio | CONVRT',

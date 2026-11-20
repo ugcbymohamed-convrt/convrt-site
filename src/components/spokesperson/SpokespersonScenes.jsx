@@ -1,30 +1,14 @@
 import { Avatar, CheckBadge, delay } from '../ugc/illustrations.jsx'
+import { LIME, VIOLET, CORAL, PINK, Skel, Tag, Label, Icon } from '../scenes/sceneKit.jsx'
 
 /* The four "How it works" scenes of /spokesperson-video-production. Same system as the UGC scenes (src/components/ugc/UgcProcess.jsx): small
    scenes built from CSS and SVG, aria-hidden (the title and sentence beside them carry the meaning), each playing once when its stage is
    selected, using the site's own animation classes. The people are the owner-supplied portrait photographs (illustrations.jsx), used without
    names or claims, so no cartoon avatars; the page says in words that the scenes are illustrative. No data, results or deliverable counts. */
 
-const LIME = '#d5ff40'
-const VIOLET = '#8b5cf6'
-const CORAL = '#ff6a4d'
-const PINK = '#ec4899'
-
 /* portrait indexes (illustrations.jsx PORTRAITS): the presenters used in the scenes */
 const P = { woman: 2, man: 1, alt: 3 }
 
-const Skel = ({ w = 'w-full', className = '' }) => <span className={`block h-1.5 rounded-full bg-white/15 ${w} ${className}`} />
-const Tag = ({ children, color = LIME, className = '' }) => (
-  <span className={`inline-block rounded-md px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-[0.08em] ${className}`} style={{ background: color, color: '#0a0a0b' }}>{children}</span>
-)
-const Label = ({ n, children }) => (
-  <p className="flex items-center gap-1.5 whitespace-nowrap text-[10px] font-semibold uppercase tracking-[0.12em] text-ink-muted">
-    <span className="flex h-4 w-4 items-center justify-center rounded-full bg-lime text-[9px] font-bold text-canvas">{n}</span>{children}
-  </p>
-)
-const Icon = ({ children, className = 'h-4 w-4' }) => (
-  <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{children}</svg>
-)
 export const PlayDot = ({ className = 'h-6 w-6' }) => (
   <span className={`flex items-center justify-center rounded-full border border-white/40 bg-black/45 text-ink ${className}`}>
     <svg viewBox="0 0 12 12" className="ml-px h-[45%] w-[45%]" fill="currentColor" aria-hidden="true"><path d="M3 1.8v8.4L10 6z" /></svg>

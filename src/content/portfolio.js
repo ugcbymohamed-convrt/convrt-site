@@ -5,6 +5,7 @@
      /our-work           every approved video, filterable by industry (SaaS, E-commerce, Services, Other)   selectOurWork()
      /ugc-video-agency   the approved UGC videos: the three-phone hero stage + the gallery under it          selectHero() / selectGallery()
      /spokesperson-video-production   the approved SPOKESPERSON videos, same two slots                       selectSpokespersonHero() / selectSpokespersonGallery()
+     /social-media-video-production   the approved ORGANIC social videos, same two slots + a content-style filter selectOrganicHero() / selectOrganicGallery()
      homepage showcase   the client panels (Adscale, Elyon, Graspo): the videos tagged with that client        selectShowcase('elyon')
 
    HOW TO ADD A VIDEO (no code changes needed): add an object at the TOP of PORTFOLIO below (newest first: /our-work and the UGC gallery
@@ -14,9 +15,12 @@
        id: 'saas-onboarding-demo-en',          // unique, lowercase letters, digits and hyphens
        title: 'Short title shown on the card', // optional. Falls back to caption. Keep it short: it is the headline of the card.
        caption: 'One honest sentence describing the video.',   // required. Also the accessible name.
-       type: 'ugc',                            // ugc | spokesperson | demo | testimonial | interview | social | ad  (see TYPE_LABELS). Default 'ugc'.
+       type: 'ugc',                            // ugc | spokesperson | organic | demo | testimonial | interview | social | ad  (see TYPE_LABELS). Default 'ugc'.
                                                // type decides which SERVICE page may show the video: 'ugc' only on the UGC page, 'spokesperson' only on the
-                                               // Spokesperson page. A video is never shown on a service page because someone speaks on camera in it.
+                                               // Spokesperson page, 'organic' only on the Organic Social page. A video is never shown on a service page because
+                                               // someone speaks on camera in it. ('social' is the homepage client showcase's type and never reaches a service page.)
+       style: 'educational',                   // ORGANIC videos only, optional: educational | entertaining | product | founder (ORGANIC_STYLES). Drives the filter on the
+                                               // Organic Social page. Set it ONLY once the owner has confirmed how the video should be classified.
        industry: 'saas',                       // saas | ecommerce | services | any other slug. This is what files the video under a category.
        languages: ['en'],                      // ISO 639-1 codes of the spoken language(s). Required for portfolio videos.
        source: { cloudflareId: '…' },          // Cloudflare Stream id (HLS)…  or  { mp4: '/videos/….mp4' } (an mp4 needs a poster)
@@ -44,7 +48,8 @@
    • /our-work and the UGC page need the FULL approval: status 'approved' AND portfolioUse === true AND creatorConsent === true.
      Approval to produce or deliver a video is NOT portfolio permission.
    • /our-work shows every approved video. /ugc-video-agency shows the approved videos whose type is 'ugc'; /spokesperson-video-production shows
-     the approved videos whose type is 'spokesperson'. Nothing else to do. The two service pages never share a video.
+     the approved videos whose type is 'spokesperson'; /social-media-video-production shows the approved videos whose type is 'organic'. Nothing else to
+     do. The three service pages never share a video.
    • A homepage client panel shows the videos tagged with its `showcase` key whose status is 'approved' (the client case studies are
      brand-approved, not creator-portfolio material). A video with portfolioUse false therefore stays OFF /our-work and the UGC page.
    • A new video classified by industry reaches /our-work and (if it is UGC) the UGC page on its own. The homepage panels are per
@@ -57,6 +62,17 @@
    • tests/ugc-page.test.mjs and tests/our-work.test.mjs validate every entry (unique ids, valid codes, source, permission flags). */
 
 export const PORTFOLIO = [
+  /* ORGANIC SOCIAL SLOTS (/social-media-video-production): EMPTY ON PURPOSE, awaiting the owner's approved organic videos. Nothing from the UGC or Spokesperson
+     pages, and none of the homepage client videos, may stand in for them. To fill a slot, paste this entry (with a real Cloudflare id) at the top of this list:
+       THREE-PHONE HERO STAGE  placement: 'hero'      (first = the large centre phone, at most 3)   hero slot 1 (centre) · hero slot 2 · hero slot 3
+       GALLERY                 placement: 'gallery'   (everything else, at most 10; four across on desktop)
+     {
+       id: 'organic-hero-1', title: '…', caption: 'One honest sentence.', type: 'organic', style: 'educational',   // style only once confirmed
+       industry: 'ecommerce', languages: ['en'], source: { cloudflareId: '…' }, poster: '/portfolio/organic-hero-1.webp',
+       creatorId: 'cv-organic-hero-1', category: 'Organic social · Short-form video', placement: 'hero',
+       approval: { status: 'approved', portfolioUse: true, creatorConsent: true, approvedBy: 'CONVRT owner (confirmed in chat)', approvedOn: 'YYYY-MM-DD' },
+     }
+     A video made by an independent creator is shown only with the creator's consent and is never presented as a CONVRT production unless it is one. */
   /* Spokesperson page videos (/spokesperson-video-production). Supplied by the owner on 2026-11-19 (Desktop > UGC PAGE VIDEOS > Spokesperson videos: HERO1-3,
      SECTION, SECTION2-4); the owner titled the three hero files. type 'spokesperson' is the ONLY thing that sends a video to that page. Captions are neutral
      placeholders, languages are assumed from the on-screen captions and industry is a best guess: the owner should confirm all three. No brand is named. */
@@ -589,9 +605,19 @@ export const INDUSTRY_LABELS = {
 
 /* What kind of video it is. Only 'ugc' videos reach the UGC page. */
 export const TYPE_LABELS = {
-  ugc: 'UGC', spokesperson: 'Spokesperson', demo: 'Product demo', testimonial: 'Testimonial', interview: 'Street interview',
+  ugc: 'UGC', spokesperson: 'Spokesperson', organic: 'Organic social', demo: 'Product demo', testimonial: 'Testimonial', interview: 'Street interview',
   social: 'Organic social', ad: 'Ad creative',
 }
+
+/* Suggested content styles for the Organic Social gallery filter. They are a presentation aid, NOT a verified classification: a video carries a `style`
+   only after the owner has confirmed it, and a style with no approved video never appears as a filter. */
+export const ORGANIC_STYLES = [
+  { id: 'educational', label: 'Educational' },
+  { id: 'entertaining', label: 'Entertaining' },
+  { id: 'product', label: 'Product-focused' },
+  { id: 'founder', label: 'Founder-led' },
+]
+export const organicStyleLabel = (id) => ORGANIC_STYLES.find((s) => s.id === id)?.label ?? null
 
 const titleCase = (slug) => slug.replace(/[-_]+/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())
 export const languageLabel = (code) => LANGUAGE_LABELS[code] ?? code.toUpperCase()
@@ -620,6 +646,8 @@ export function portfolioProblems(item) {
   const hasCf = Boolean(item.source?.cloudflareId)
   const hasMp4 = Boolean(item.source?.mp4)
   if (hasCf === hasMp4) p.push('source needs exactly one of cloudflareId or mp4')
+  if (item.style !== undefined && !ORGANIC_STYLES.some((st) => st.id === item.style)) p.push(`style must be one of: ${ORGANIC_STYLES.map((st) => st.id).join(', ')}`)
+  if (item.style !== undefined && item.type !== 'organic') p.push("style is only for type 'organic'")
   if (item.placement !== undefined && item.placement !== 'hero' && item.placement !== 'gallery') p.push("placement must be 'hero' or 'gallery'")
   if (item.showcase !== undefined && !/^[a-z][a-z0-9-]*$/.test(item.showcase)) p.push('showcase must be a lowercase slug')
   if (item.uploadDate !== undefined && !/^\d{4}-\d{2}-\d{2}(T[\d:.+Z-]+)?$/.test(item.uploadDate)) p.push('uploadDate must be an ISO date (YYYY-MM-DD)')
@@ -656,6 +684,12 @@ export const selectGallery = (items = PORTFOLIO) => selectUgc(items).filter((i) 
 const selectSpokesperson = (items) => selectDisplayable(items).filter((i) => typeOf(i) === 'spokesperson')
 export const selectSpokespersonHero = (items = PORTFOLIO) => selectSpokesperson(items).filter((i) => i.placement === 'hero')
 export const selectSpokespersonGallery = (items = PORTFOLIO) => selectSpokesperson(items).filter((i) => i.placement !== 'hero')
+
+/* /social-media-video-production: approved videos whose type is explicitly 'organic', split the same way. Like the spokesperson list there is no fallback: no UGC,
+   spokesperson or homepage-client ('social') video can appear here, and an organic video can never appear on the other service pages. */
+const selectOrganic = (items) => selectDisplayable(items).filter((i) => typeOf(i) === 'organic')
+export const selectOrganicHero = (items = PORTFOLIO) => selectOrganic(items).filter((i) => i.placement === 'hero')
+export const selectOrganicGallery = (items = PORTFOLIO) => selectOrganic(items).filter((i) => i.placement !== 'hero')
 
 /* Homepage client panel `id` ('adscale' | 'elyon' | 'graspo'). */
 export const selectShowcase = (id, items = PORTFOLIO) => items.filter((i) => isShowcaseable(i) && i.showcase === id)

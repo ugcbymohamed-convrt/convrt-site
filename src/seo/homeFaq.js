@@ -36,6 +36,7 @@ export const HOME_FAQ = [
   {
     q: 'Do you focus on paid ads or organic content?',
     a: 'Both. Some brands come to us for high-performing paid social creatives, while others need organic content that builds trust and attention over time. In many cases, the best strategy combines both.',
+    link: { label: 'Learn about our organic social video production', href: '/social-media-video-production' },
   },
   {
     q: "What's the difference between a UGC video and a spokesperson video?",

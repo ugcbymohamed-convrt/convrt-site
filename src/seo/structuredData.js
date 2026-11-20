@@ -21,6 +21,7 @@ import { PRICING_FAQ, faqAnswerText } from './pricingFaq.js'
 import { HOME_FAQ, homeFaqText } from './homeFaq.js'
 import { UGC_FAQ } from './ugcFaq.js'
 import { SPOKESPERSON_FAQ } from './spokespersonFaq.js'
+import { ORGANIC_SOCIAL_FAQ } from './organicSocialFaq.js'
 import { PATHS } from '../routes.js'
 import { selectOurWork, isDisplayable, posterUrl, hlsUrl, titleOf } from '../content/portfolio.js'
 
@@ -74,6 +75,7 @@ export const BREADCRUMB_TRAILS = {
   '/pricing': [{ name: 'Home', path: '/' }, { name: 'Pricing', path: '/pricing' }],
   [PATHS.ugcVideoAgency]: [{ name: 'Home', path: '/' }, { name: 'UGC Video Agency', path: PATHS.ugcVideoAgency }],
   [PATHS.spokespersonVideoProduction]: [{ name: 'Home', path: '/' }, { name: 'Spokesperson Video Production', path: PATHS.spokespersonVideoProduction }],
+  [PATHS.socialMediaVideoProduction]: [{ name: 'Home', path: '/' }, { name: 'Organic Social Video Production', path: PATHS.socialMediaVideoProduction }],
   [PATHS.ourWork]: [{ name: 'Home', path: '/' }, { name: 'Our Work', path: PATHS.ourWork }],
 }
 
@@ -361,6 +363,43 @@ export function spokespersonGraph({ title, description }) {
   ])
 }
 
+/* Organic Social service page (/social-media-video-production). The Service is the existing 'organic' core service (same @id as on /pricing), described from the business data.
+   Its Offers are Organic Light and Organic Growth, built by the same monthlyOffer function and from the same data as on /pricing and shown as the two package cards on the page.
+   The FAQPage is generated from the exact Q&A the page renders. No ratings, reviews, addresses, awards, results, post counts beyond the published cadence, or VideoObject. */
+export function organicSocialGraph({ title, description }) {
+  const path = PATHS.socialMediaVideoProduction
+  const url = abs(path)
+  const trail = BREADCRUMB_TRAILS[path]
+  const core = CORE_SERVICES.find((s) => s.id === 'organic')
+  return graph([
+    organizationNode(),
+    {
+      '@type': 'WebPage',
+      '@id': pageId(path),
+      url,
+      name: title,
+      description,
+      isPartOf: { '@id': WEBSITE_ID },
+      about: { '@id': `${url}#service` },
+      breadcrumb: { '@id': `${url}#breadcrumb` },
+      inLanguage: 'en',
+    },
+    breadcrumbNode(trail, `${url}#breadcrumb`),
+    {
+      '@type': 'Service',
+      '@id': `${url}#service`,
+      name: 'Organic social media video production and management',
+      serviceType: 'Organic social media content production and management',
+      description: `${core.description} Videos are human-led and can be produced in several languages.`,
+      url,
+      provider: { '@id': ORG_ID },
+      isRelatedTo: [{ '@id': serviceId('organic') }, { '@id': serviceId(ORGANIC.light.id) }, { '@id': serviceId(ORGANIC.growth.id) }, { '@id': serviceId(CUSTOM_PACKAGES.organic.id) }],
+      offers: [ORGANIC.light, ORGANIC.growth].map((p) => monthlyOffer(p.name, p.monthly, `${ORGANIC_COMMITMENT.summary} ${ORGANIC_COMMITMENT.afterInitial}`)),
+    },
+    faqNode(ORGANIC_SOCIAL_FAQ, `${url}#faq`),
+  ])
+}
+
 /* One VideoObject for an approved portfolio video, or undefined. Only a video with a real, verified uploadDate gets one (Google requires
    it, and the site must not invent it): the data file's `uploadDate` is the opt-in. Never emitted for anything that is not displayable. */
 export function videoObjectNode(item) {
@@ -411,6 +450,7 @@ export function jsonLdFor(path, seo = {}) {
   if (path === '/pricing') return pricingGraph(seo)
   if (path === PATHS.ugcVideoAgency) return ugcGraph(seo)
   if (path === PATHS.spokespersonVideoProduction) return spokespersonGraph(seo)
+  if (path === PATHS.socialMediaVideoProduction) return organicSocialGraph(seo)
   if (path === PATHS.ourWork) return ourWorkGraph(seo)
   return undefined
 }
