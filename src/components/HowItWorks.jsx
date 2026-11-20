@@ -260,9 +260,8 @@ export default function HowItWorks() {
                   {/* Giant background number — cinematic depth element */}
                   <span
                     aria-hidden="true"
-                    className="pointer-events-none select-none absolute -top-6 right-0 font-display font-black leading-none"
+                    className="pointer-events-none select-none absolute bottom-2 right-0 md:bottom-auto md:-top-6 font-display font-black leading-none text-[64px] md:[font-size:clamp(80px,16vw,180px)]"
                     style={{
-                      fontSize: 'clamp(80px, 16vw, 180px)',
                       color: step.accent,
                       opacity: active ? 0.09 : 0.025,
                       transition: 'opacity 1s ease',
@@ -308,7 +307,7 @@ export default function HowItWorks() {
 
                   {/* Title */}
                   <h3
-                    className="font-display font-bold tracking-display leading-[1.04] relative z-10"
+                    className="font-display font-bold tracking-display leading-[1.04] relative z-10 md:pr-[calc(clamp(80px,16vw,180px)*1.2)]"
                     style={{
                       fontSize: 'clamp(1.75rem, 4vw, 2.85rem)',
                       color: active ? '#ffffff' : '#52525b',
@@ -322,7 +321,7 @@ export default function HowItWorks() {
 
                   {/* Description */}
                   <p
-                    className="mt-4 text-[15px] leading-relaxed relative z-10"
+                    className="mt-4 text-[15px] leading-relaxed relative z-10 md:!max-w-[min(52ch,calc(100%-clamp(80px,16vw,180px)*1.2))]"
                     style={{
                       color: active ? '#a1a1aa' : '#3f3f46',
                       maxWidth: '52ch',
@@ -336,7 +335,7 @@ export default function HowItWorks() {
 
                   {/* Detail line */}
                   <p
-                    className="mt-2.5 text-[13px] leading-relaxed relative z-10"
+                    className="mt-2.5 text-[13px] leading-relaxed relative z-10 md:!max-w-[min(50ch,calc(100%-clamp(80px,16vw,180px)*1.2))]"
                     style={{
                       color: active ? '#71717a' : 'transparent',
                       maxWidth: '50ch',
