@@ -12,10 +12,10 @@ const STEPS = [
     number: '01',
     phase: 'Phase One',
     label: 'Discovery',
-    title: '20-Minute Strategy Call',
-    description: 'Strategy, brainstorming, positioning, and understanding your goals.',
-    detail: 'We dig into your brand, audience, offer, and current performance — building a clear creative direction before a single frame is planned.',
-    time: '20 min',
+    title: 'Free Creative Growth Roadmap',
+    description: 'We learn about your brand, audience and goals, then develop five personalized ad concepts for you.',
+    detail: 'We walk through the ideas together, exploring creative angles and opportunities tailored to your business.',
+    badge: '5 free ad concepts',
     accent: '#8b5cf6',
     accentSoft: 'rgba(139,92,246,0.16)',
     accentGlow: 'rgba(139,92,246,0.22)',
@@ -25,11 +25,11 @@ const STEPS = [
   {
     number: '02',
     phase: 'Phase Two',
-    label: 'Proposal',
-    title: 'Custom Offer',
-    description: 'We prepare a tailored offer and creative direction adapted to your exact needs.',
-    detail: 'No generic packages. Every proposal is built around your product, budget, platform, and growth goals.',
-    time: null,
+    label: 'Your Decision',
+    title: 'Like the Direction? Let’s Work Together.',
+    description: 'Review your creative roadmap and decide whether you’d like CONVRT to bring those ideas to life.',
+    detail: 'If we’re a good fit, we agree on the project scope, deliverables and next steps before production begins.',
+    badge: 'No obligation',
     accent: '#d5ff40',
     accentSoft: 'rgba(213,255,64,0.14)',
     accentGlow: 'rgba(213,255,64,0.18)',
@@ -39,11 +39,11 @@ const STEPS = [
   {
     number: '03',
     phase: 'Phase Three',
-    label: 'Pre-Production',
-    title: 'Concepts & Strategy',
-    description: 'Hooks, concepts, scripting, creative angles, references, and production planning.',
-    detail: 'Before a single frame is filmed, we align on every creative decision — so production is intentional, fast, and built to perform.',
-    time: null,
+    label: 'Production',
+    title: 'From Concepts to Creatives',
+    description: 'Once approved, we turn the creative direction into scripts, select the right talent, and handle filming and editing.',
+    detail: 'Strategy, scripting, creator casting, production and post-production — all managed by CONVRT.',
+    badge: 'End-to-end production',
     accent: '#ff6a4d',
     accentSoft: 'rgba(255,106,77,0.14)',
     accentGlow: 'rgba(255,106,77,0.20)',
@@ -53,11 +53,11 @@ const STEPS = [
   {
     number: '04',
     phase: 'Phase Four',
-    label: 'Production',
-    title: 'Bringing the Content to Life',
-    description: 'Production, filming, editing, optimization, and final delivery.',
-    detail: 'From raw footage to polished final edits — optimized per platform and ready to launch.',
-    time: null,
+    label: 'Delivery',
+    title: 'Review, Refine & Launch',
+    description: 'Review your videos, request revisions within the agreed scope, and receive approved creatives ready for your channels.',
+    detail: 'Your finished videos are delivered in the agreed formats, ready for your team to publish or use in campaigns.',
+    badge: 'Ready-to-use videos',
     accent: '#ec4899',
     accentSoft: 'rgba(236,72,153,0.14)',
     accentGlow: 'rgba(236,72,153,0.20)',
@@ -162,13 +162,13 @@ export default function HowItWorks() {
           </div>
 
           <h2 className="font-display font-bold text-ink tracking-display leading-[1.02] text-4xl md:text-5xl lg:text-[62px]">
-            From first call
+            From free ideas
             <br />
-            <span className="text-lime">to final delivery.</span>
+            <span className="text-lime">to finished videos.</span>
           </h2>
 
           <p className="mt-6 text-base md:text-lg text-ink-muted leading-relaxed max-w-xl mx-auto lg:mx-0">
-            Four intentional steps. No bloat. Just great creative — delivered with precision and speed.
+            Start with five creative ideas tailored to your brand. See the direction, decide if we’re a fit, and let us handle production from start to finish.
           </p>
         </div>
 
@@ -349,7 +349,7 @@ export default function HowItWorks() {
                   </p>
 
                   {/* Time badge */}
-                  {step.time && (
+                  {step.badge && (
                     <div
                       className="mt-6 inline-flex items-center gap-2.5 rounded-full px-5 py-2.5 relative z-10"
                       style={{
@@ -368,7 +368,7 @@ export default function HowItWorks() {
                         className="text-xs font-semibold tracking-wide"
                         style={{ color: active ? step.textLight : '#52525b', transition: 'color 0.4s' }}
                       >
-                        {step.time}
+                        {step.badge}
                       </span>
                     </div>
                   )}
@@ -389,17 +389,17 @@ export default function HowItWorks() {
         >
           <div>
             <p className="font-display font-semibold text-ink text-xl leading-tight">
-              Ready to start?
+              Start with five free ad concepts.
             </p>
             <p className="mt-1.5 text-sm text-ink-muted">
-              Book a free 20-minute strategy call and we'll build a creative plan tailored to your brand.
+              For qualifying brands. We present five tailored ad concepts in a complimentary strategy session, with no obligation to hire CONVRT.
             </p>
           </div>
           <a
             href={OFFER_PATHS.roadmap}
             className="cta-gradient shrink-0 inline-flex items-center gap-2 rounded-full px-7 py-3.5 text-sm font-semibold text-canvas"
           >
-            Book a Strategy Call
+            Get Your 5 Free Ad Concepts
             <svg viewBox="0 0 12 12" className="h-3.5 w-3.5" fill="none">
               <path d="M3 9L9 3M9 3H4M9 3V8" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
             </svg>

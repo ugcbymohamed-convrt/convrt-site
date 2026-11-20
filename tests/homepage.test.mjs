@@ -127,3 +127,34 @@ test('hero subtitle: general positioning only; industries and language lists liv
   // metadata is a separate decision and is unchanged
   assert.equal(SITE_SEO['/'].description, 'Human-led UGC ads, spokesperson videos and organic social video for SaaS, e-commerce and app brands, produced in English, Spanish, French and Arabic.')
 })
+
+test('How It Works timeline: free-roadmap journey, approved copy, accurate claims, one CTA to the roadmap', () => {
+  const src = read('src/components/HowItWorks.jsx')
+  const steps = src.slice(src.indexOf('const STEPS = ['), src.indexOf('/* ──', src.indexOf('const STEPS = [')))
+  // four stages, in order, with the approved title / primary / secondary / badge
+  const stages = [
+    ['Discovery', 'Free Creative Growth Roadmap', 'We learn about your brand, audience and goals, then develop five personalized ad concepts for you.', 'We walk through the ideas together, exploring creative angles and opportunities tailored to your business.', '5 free ad concepts'],
+    ['Your Decision', 'Like the Direction? Let’s Work Together.', 'Review your creative roadmap and decide whether you’d like CONVRT to bring those ideas to life.', 'If we’re a good fit, we agree on the project scope, deliverables and next steps before production begins.', 'No obligation'],
+    ['Production', 'From Concepts to Creatives', 'Once approved, we turn the creative direction into scripts, select the right talent, and handle filming and editing.', 'Strategy, scripting, creator casting, production and post-production — all managed by CONVRT.', 'End-to-end production'],
+    ['Delivery', 'Review, Refine & Launch', 'Review your videos, request revisions within the agreed scope, and receive approved creatives ready for your channels.', 'Your finished videos are delivered in the agreed formats, ready for your team to publish or use in campaigns.', 'Ready-to-use videos'],
+  ]
+  let at = -1
+  for (const [label, title, desc, detail, badge] of stages) {
+    for (const t of [`label: '${label}'`, `title: '${title}'`, `description: '${desc}'`, `detail: '${detail}'`, `badge: '${badge}'`]) {
+      const i = steps.indexOf(t); assert.ok(i > at, `${t} (present, in order)`); at = i
+    }
+  }
+  assert.equal((steps.match(/number: '0\d'/g) || []).length, 4)
+  // heading + description
+  assert.match(src, /From free ideas\s*<br \/>\s*<span className="text-lime">to finished videos\.<\/span>/)
+  assert.ok(src.includes('Start with five creative ideas tailored to your brand. See the direction, decide if we’re a fit, and let us handle production from start to finish.'))
+  // the old journey is gone
+  for (const old of ['From first call', 'to final delivery', '20-Minute Strategy Call', 'Custom Offer', 'Bringing the Content to Life', 'Book a Strategy Call', 'Four intentional steps']) assert.ok(!src.includes(old), old)
+  // one CTA, lime button style, existing roadmap URL, qualified and not a produced-video promise
+  assert.equal((src.match(/<a\b/g) || []).length, 1, 'a single link in the section')
+  assert.match(src, /<a\s+href=\{OFFER_PATHS\.roadmap\}\s+className="cta-gradient[^"]*"[^>]*>\s*Get Your 5 Free Ad Concepts/)
+  assert.ok(src.includes('For qualifying brands.') && src.includes('no obligation to hire CONVRT'))
+  // no invented guarantees, timelines or ad-account management; no extra H1
+  assert.ok(!/guarantee|within \d+|business days|manage[sd]? your (paid|ad)|ad account|<h1/i.test(src))
+  assert.ok(!/five (free )?(fully )?produced videos|5 free videos/i.test(src))
+})
