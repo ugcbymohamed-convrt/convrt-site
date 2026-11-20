@@ -23,6 +23,11 @@ The only shared code touched: `DeliveryStyles.jsx` now exports `FormatStage` (th
 - A video is on this page when its `type` is `'saas'` **or** its entry lists `alsoOn: { saas: 'hero' | 'gallery' }`. Nothing else reaches the page: no UGC, organic,
   homepage-client or spokesperson video appears because of what it shows. `alsoOn` works for every service page (`ugc`, `spokesperson`, `organic`, `saas`): one entry, one
   Cloudflare id, several pages, each with its own placement. Use it only for a video the owner approved for both pages.
+- **Current videos (2026-11-20, from `Desktop > UGC PAGE VIDEOS > SaaS`):** five independent-creator UGC examples for software brands, not explainers, demos or CONVRT-produced work
+  (no production credit, brand or language is shown). Hero, centre first: `saas-creator-1` (PDF Expert example, carries a burned-in "UGC EXAMPLE" watermark), `saas-creator-2`
+  (Move Plnr example), then `creator-04` (TechCrypto, via `alsoOn`). Gallery: `creator-01` (Norton) and `creator-15` (Dan & Tabatha), via `alsoOn`. The two `saas-creator-*`
+  clips were uploaded to Cloudflare Stream on 2026-11-20; the other three were already on the site as UGC examples, so they are shared, not re-uploaded. To change the hero
+  order, move the entries in `PORTFOLIO` or change an `alsoOn` placement.
 - Three hero slots (first = centre phone) and up to ten gallery cards; the empty-slot template is at the top of `PORTFOLIO`. Recommended order for the hero:
   1 human-led product explainer · 2 software demo / app walkthrough · 3 animated / motion-graphics video. No Cloudflare id exists yet, so none was invented.
 - Optional `format` (`explainer | demo | presenter | animated | ad`, `SAAS_FORMATS`) drives a filter that appears only when two or more formats have an approved video.
@@ -31,7 +36,7 @@ The only shared code touched: `DeliveryStyles.jsx` now exports `FormatStage` (th
 - Approved SaaS videos also appear on `/our-work` automatically (as Spokesperson videos do); that page is the Creator Showcase, so leave `production` unset unless confirmed.
 
 ## Indexing
-`noindex` and out of the sitemap until at least one approved SaaS video exists (same gate as Spokesperson, Organic Social and `/our-work`); the canonical is always its
+`noindex` and out of the sitemap until at least one approved SaaS video exists (now satisfied, so the page is indexable) (same gate as Spokesperson, Organic Social and `/our-work`); the canonical is always its
 own URL. Adding the first approved video flips both with no other change. The approved keyword plan says to build this page "after distinct portfolio and demand
 validation", which is why the gate matters.
 

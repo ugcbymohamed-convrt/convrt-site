@@ -90,6 +90,47 @@ export const PORTFOLIO = [
      }
      A video that genuinely belongs on two service pages keeps ONE entry and adds `alsoOn`, e.g. a spokesperson video: type: 'spokesperson', alsoOn: { saas: 'gallery' }.
      Set `production: 'convrt'` only if CONVRT produced it. An independent creator's example is never presented as a CONVRT production. */
+  /* SaaS page videos (/saas-video-production), from the owner's SaaS folder (Desktop > UGC PAGE VIDEOS > SaaS, 2026-11-20). These are independent creators' UGC examples for software
+     brands (not explainers, demos or CONVRT-produced work): titles are neutral placeholders, languages and production attribution are unconfirmed, and no brand or credit is shown.
+     Hero stage, centre first: saas-creator-1, saas-creator-2, then creator-04 (alsoOn). Gallery: creator-01 and creator-15 (alsoOn). */
+  {
+    id: 'saas-creator-1',
+    title: 'SaaS creator example 1',
+    caption: 'SaaS creator example 1.',
+    type: 'saas',
+    industry: 'saas',
+    source: { cloudflareId: '80fc999238285c7f73757c78d9bcd8e7' },
+    poster: '/portfolio/saas-creator-1.webp',
+    creatorId: 'cv-saas-creator-1',
+    category: 'SaaS · Creator example',
+    placement: 'hero',
+    approval: {
+      status: 'approved',
+      portfolioUse: true,
+      creatorConsent: true,
+      approvedBy: 'CONVRT owner (confirmed in chat)',
+      approvedOn: '2026-11-20',
+    },
+  },
+  {
+    id: 'saas-creator-2',
+    title: 'SaaS creator example 2',
+    caption: 'SaaS creator example 2.',
+    type: 'saas',
+    industry: 'saas',
+    source: { cloudflareId: '0b429c9cebb978105af85bdfb766d992' },
+    poster: '/portfolio/saas-creator-2.webp',
+    creatorId: 'cv-saas-creator-2',
+    category: 'SaaS · Creator example',
+    placement: 'hero',
+    approval: {
+      status: 'approved',
+      portfolioUse: true,
+      creatorConsent: true,
+      approvedBy: 'CONVRT owner (confirmed in chat)',
+      approvedOn: '2026-11-20',
+    },
+  },
   /* ORGANIC SOCIAL SLOTS (/social-media-video-production): EMPTY ON PURPOSE, awaiting the owner's approved organic videos. Nothing from the UGC or Spokesperson
      pages, and none of the homepage client videos, may stand in for them. To fill a slot, paste this entry (with a real Cloudflare id) at the top of this list:
        THREE-PHONE HERO STAGE  placement: 'hero'      (first = the large centre phone, at most 3)   hero slot 1 (centre) · hero slot 2 · hero slot 3
@@ -333,6 +374,7 @@ export const PORTFOLIO = [
     source: { cloudflareId: 'ffad7162bfb022a28724989d06618786' },
     poster: '/portfolio/creator-01.webp',
     creatorId: 'cv-creator-01',
+    alsoOn: { saas: 'gallery' },
     category: 'UGC · Paid social',
     approval: {
       status: 'approved',
@@ -351,6 +393,7 @@ export const PORTFOLIO = [
     source: { cloudflareId: 'cd6654c2daf9e65bb1a1db2588a86f44' },
     poster: '/portfolio/creator-04.webp',
     creatorId: 'cv-creator-04',
+    alsoOn: { saas: 'hero' },
     category: 'UGC · Paid social',
     approval: {
       status: 'approved',
@@ -441,6 +484,7 @@ export const PORTFOLIO = [
     source: { cloudflareId: '0d98f3a55ebd26c9b400e348d02972d9' },
     poster: '/portfolio/creator-15.webp',
     creatorId: 'cv-creator-15',
+    alsoOn: { saas: 'gallery' },
     category: 'UGC · Paid social',
     approval: {
       status: 'approved',

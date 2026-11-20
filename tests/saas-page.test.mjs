@@ -168,7 +168,10 @@ test('portfolio: the SaaS selectors take ONLY approved type "saas" videos or exp
   // the shipped data
   const shipped = selectSaasHero().concat(selectSaasGallery())
   assert.ok(shipped.every((v) => portfolioProblems(v).length === 0 && v.approval.status === 'approved' && v.approval.portfolioUse === true && v.approval.creatorConsent === true))
-  assert.ok(shipped.every((v) => !selectHero().concat(selectGallery(), selectOrganicHero(), selectOrganicGallery()).includes(v)))
+  // a video typed 'saas' is never on another service page; a UGC video reaches the SaaS page only through an explicit alsoOn entry (and keeps its UGC placement)
+  const others = selectHero().concat(selectGallery(), selectOrganicHero(), selectOrganicGallery(), selectSpokespersonHero(), selectSpokespersonGallery())
+  assert.ok(shipped.filter((v) => v.type === 'saas').every((v) => !others.includes(v)))
+  assert.ok(shipped.filter((v) => v.type !== 'saas').every((v) => v.alsoOn?.saas), 'every non-SaaS-typed video on the page is there by an explicit alsoOn entry')
   assert.ok(selectSpokespersonHero().concat(selectSpokespersonGallery()).every((v) => !shipped.includes(v)), 'no shipped spokesperson video is on the SaaS page without a deliberate alsoOn entry')
   assert.deepEqual(selectShowcase('elyon').map((v) => v.id), PORTFOLIO.filter((v) => v.showcase === 'elyon').map((v) => v.id), 'homepage client panels are unchanged')
   assert.equal(typeLabel({ type: 'saas' }), 'SaaS video')
@@ -371,7 +374,7 @@ test('architecture: the page is assembled from the shared configuration-driven c
   assert.ok(!/href="\/|Get 5 Free|SaaS videos\./.test(src.replace(/\/\*[\s\S]*?\*\//g, '').replace(/href="\/pricing#packages"|href="\/"/g, '')), 'copy lives in src/content/saasPage.js and src/seo/saasFaq.js')
 })
 
-test('other pages unchanged: UGC, Spokesperson and Organic keep their H1, reel word, FAQ length and gallery/hero defaults; only the footer (and a Spokesperson FAQ link) mention the new page', () => {
+test('other pages unchanged: UGC, Spokesperson and Organic keep their H1, reel word, FAQ length and gallery/hero defaults; only the footer (and a Spokesperson FAQ link) mention the new page; the UGC lists are unchanged by alsoOn', () => {
   const ugc = rootOf(page(PATHS.ugcVideoAgency))
   assert.equal(textOf(`<div id="root">${ugc.match(/<h1[\s\S]*?<\/h1>/)[0]}`), 'Human-led UGC ads. Built for paid social. to convrt.')
   assert.ok(ugc.includes('class="ugc-reel text-lime" data-sizer="resonate."') && textOf(page(PATHS.ugcVideoAgency)).includes('5.28x'))
@@ -385,7 +388,9 @@ test('other pages unchanged: UGC, Spokesperson and Organic keep their H1, reel w
   assert.ok(!/SaaS/.test(textOf(`<div id="root">${org.match(/<h1[\s\S]*?<\/h1>/)[0]}`)), 'the Organic H1 is its own')
   assert.ok(!org.includes('saas-h1') && !sp.includes('saas-h1') && !ugc.includes('saas-h1'))
   // the Creator Showcase still lists exactly what it listed before the SaaS page existed (no SaaS-typed video ships)
-  assert.ok(selectOurWork().every((v) => v.type !== 'saas'))
+  // the SaaS-typed videos are independent creator examples from the owner's folder: no CONVRT-production claim, and they are all on the SaaS page (and in the Creator Showcase)
+  const saasTyped = PORTFOLIO.filter((v) => v.type === 'saas')
+  assert.ok(saasTyped.every((v) => v.production === undefined && v.brand === undefined && selectOurWork().includes(v) && selectSaasHero().concat(selectSaasGallery()).includes(v)))
 })
 
 test('accessibility: one H1, headings never skip a level, secondary text uses the muted token, motion respects preferences', () => {
