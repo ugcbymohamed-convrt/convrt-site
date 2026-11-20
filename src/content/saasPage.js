@@ -9,7 +9,7 @@
      (Adscale is a SaaS client, but its quote is about UGC ads, so it is not used here without the owner's say-so).
    • The videos come from src/content/portfolio.js (type 'saas', or `alsoOn.saas`), never from here. */
 
-import { OFFER_PATHS, OUR_WORK_PATH } from '../config.js'
+import { OFFER_PATHS, CREATOR_SHOWCASE_PATH } from '../config.js'
 import { PRODUCTION_LANGUAGES, PRODUCT_REQUIREMENTS, CUSTOM_TERMS } from '../seo/businessKnowledge.js'
 import { SAAS_FORMATS } from './portfolio.js'
 
@@ -29,8 +29,8 @@ export const SAAS_HERO = {
   description:
     'From product demos and animated explainers to human-led presentations and paid ads, we turn complex software into clear, engaging videos that communicate your product’s value.',
   primary: { label: 'Get 5 Free Ad Concepts', href: OFFER_PATHS.roadmap },
-  /* No scrollTo: this button always goes to /our-work. */
-  secondary: { label: 'Explore Videos', href: OUR_WORK_PATH },
+  /* No scrollTo: this button always goes to /creator-showcase. */
+  secondary: { label: 'Explore Videos', href: CREATOR_SHOWCASE_PATH },
   track: { cta: 'saas_page_cta_click', work: 'saas_explore_videos_click' },
   stageLabel: 'SaaS videos',
   stagePrefix: 'saas',
@@ -76,8 +76,8 @@ export const SAAS_GALLERY = {
   intro: 'Explore product explainers, software demonstrations and creative video approaches that help audiences understand what a product can do.',
   ariaLabel: 'SaaS video examples. Scroll sideways to see more.',
   badge: 'SaaS',
-  /* /our-work filters by industry only (it has no SaaS or format filter route), so this goes to the whole Creator Showcase. Point it at a filtered view only once one exists. */
-  cta: { label: 'Explore SaaS Videos', href: OUR_WORK_PATH },
+  /* /creator-showcase filters by industry only (it has no SaaS or format filter route), so this goes to the whole Creator Showcase. Point it at a filtered view only once one exists. */
+  cta: { label: 'Explore SaaS Videos', href: CREATOR_SHOWCASE_PATH },
   track: 'saas',
   samplePortraits: null,
   sampleNote: 'Layout preview only: your approved SaaS videos replace these empty frames. This never shows on the live site.',

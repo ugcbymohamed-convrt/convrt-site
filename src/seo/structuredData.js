@@ -78,7 +78,7 @@ export const BREADCRUMB_TRAILS = {
   [PATHS.spokespersonVideoProduction]: [{ name: 'Home', path: '/' }, { name: 'Spokesperson Video Production', path: PATHS.spokespersonVideoProduction }],
   [PATHS.socialMediaVideoProduction]: [{ name: 'Home', path: '/' }, { name: 'Organic Social Video Production', path: PATHS.socialMediaVideoProduction }],
   [PATHS.saasVideoProduction]: [{ name: 'Home', path: '/' }, { name: 'SaaS Video Production', path: PATHS.saasVideoProduction }],
-  [PATHS.ourWork]: [{ name: 'Home', path: '/' }, { name: 'Creator Showcase', path: PATHS.ourWork }],
+  [PATHS.showcase]: [{ name: 'Home', path: '/' }, { name: 'Creator Showcase', path: PATHS.showcase }],
 }
 
 export function breadcrumbNode(trail, id) {
@@ -447,7 +447,7 @@ export function videoObjectNode(item) {
   const thumb = posterUrl(item)
   return {
     '@type': 'VideoObject',
-    '@id': `${abs(PATHS.ourWork)}#video-${item.id}`,
+    '@id': `${abs(PATHS.showcase)}#video-${item.id}`,
     name: titleOf(item),
     description: item.description ?? item.caption,
     thumbnailUrl: [thumb.startsWith('http') ? thumb : abs(thumb)],
@@ -460,10 +460,10 @@ export function videoObjectNode(item) {
   }
 }
 
-/* /our-work: a CollectionPage + its breadcrumb, plus VideoObject markup only for the videos that qualify (see videoObjectNode). With
+/* /creator-showcase: a CollectionPage + its breadcrumb, plus VideoObject markup only for the videos that qualify (see videoObjectNode). With
    no verified videos there is no video markup at all, never a placeholder. */
 export function ourWorkGraph({ title, description }) {
-  const path = PATHS.ourWork
+  const path = PATHS.showcase
   const url = abs(path)
   const videos = selectOurWork().map(videoObjectNode).filter(Boolean)
   return graph([
@@ -493,6 +493,6 @@ export function jsonLdFor(path, seo = {}) {
   if (path === PATHS.spokespersonVideoProduction) return spokespersonGraph(seo)
   if (path === PATHS.socialMediaVideoProduction) return organicSocialGraph(seo)
   if (path === PATHS.saasVideoProduction) return saasGraph(seo)
-  if (path === PATHS.ourWork) return ourWorkGraph(seo)
+  if (path === PATHS.showcase) return ourWorkGraph(seo)
   return undefined
 }

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import Logo from './Logo.jsx'
-import { BOOKING_URL, OFFER_PATHS, REFERRALS_PATH, OUR_WORK_PATH } from '../config.js'
+import { BOOKING_URL, OFFER_PATHS, REFERRALS_PATH, CREATOR_SHOWCASE_PATH } from '../config.js'
 import { openBookingModal } from '../lib/bookingModal.js'
 import { trackEvent } from '../lib/analytics.js'
 import { scrollToApply } from '../lib/roadmapForm.js'
@@ -11,7 +11,7 @@ import { usePressFeedback } from '../lib/usePressFeedback.js'
 // mobile menu, the footer, and the hero/CTA buttons — nothing is removed.
 const links = [
   { label: 'Services', href: '#services' },
-  { label: 'Creator Showcase', href: OUR_WORK_PATH },
+  { label: 'Creator Showcase', href: CREATOR_SHOWCASE_PATH },
   { label: 'Case Studies', href: '/case-studies' },
   { label: 'How It Works', href: '#how-it-works' },
   { label: 'Pricing', href: '/pricing' },

@@ -79,11 +79,14 @@ test('404.html: noindex, own title, no canonical, throws if the shell changes sh
   assert.throws(() => notFoundHtml('<html><head><title>x</title></head></html>'))
 })
 
-test('vercel.json: no catch-all rewrite; creative-testing-sprint redirect and /blog header preserved', () => {
+test('vercel.json: no catch-all rewrite; creative-testing-sprint redirect, the /our-work → /creator-showcase redirect and /blog header preserved', () => {
   for (const r of VERCEL.rewrites ?? []) {
     assert.ok(!/\(\.\*\)|\*/.test(r.source), `catch-all rewrite would turn unknown URLs into 200s: ${r.source}`)
   }
-  assert.deepEqual(VERCEL.redirects, [{ source: '/creative-testing-sprint', destination: '/pricing', permanent: true }])
+  assert.deepEqual(VERCEL.redirects, [
+    { source: '/creative-testing-sprint', destination: '/pricing', permanent: true },
+    { source: '/our-work', destination: '/creator-showcase', permanent: true },
+  ])
   const blog = VERCEL.headers.find((h) => h.source === '/blog')
   assert.deepEqual(blog.headers, [{ key: 'X-Robots-Tag', value: 'noindex, follow' }])
 })

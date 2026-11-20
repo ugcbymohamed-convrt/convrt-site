@@ -1,5 +1,5 @@
 import Logo from './Logo.jsx'
-import { CONTACT_EMAIL, REFERRALS_PATH, OUR_WORK_PATH } from '../config.js'
+import { CONTACT_EMAIL, REFERRALS_PATH, CREATOR_SHOWCASE_PATH } from '../config.js'
 
 export default function Footer() {
   const year = new Date().getFullYear()
@@ -28,7 +28,7 @@ export default function Footer() {
               <li><a className="hover:text-ink transition-colors" href="/spokesperson-video-production">Spokesperson Videos</a></li>
               <li><a className="hover:text-ink transition-colors" href="/social-media-video-production">Organic Social Videos</a></li>
               <li><a className="hover:text-ink transition-colors" href="/saas-video-production">SaaS Video Production</a></li>
-              <li><a className="hover:text-ink transition-colors" href={OUR_WORK_PATH}>Creator Showcase</a></li>
+              <li><a className="hover:text-ink transition-colors" href={CREATOR_SHOWCASE_PATH}>Creator Showcase</a></li>
               <li><a className="hover:text-ink transition-colors" href="/case-studies">Case Studies</a></li>
               <li><a className="hover:text-ink transition-colors" href="/pricing">Pricing</a></li>
               <li><a className="hover:text-ink transition-colors" href="/blog">Blog</a></li>

@@ -49,8 +49,8 @@ const ROUTES = {
   [PATHS.socialMediaVideoProduction]: OrganicSocialVideoPage,
   // SaaS service page: the same architecture, with its own content, its own visuals and its own videos.
   [PATHS.saasVideoProduction]: SaasVideoPage,
-  // Creator Showcase (route stays /our-work): the filterable video library (src/content/portfolio.js).
-  [PATHS.ourWork]: OurWorkPage,
+  // Creator Showcase (route stays /creator-showcase): the filterable video library (src/content/portfolio.js).
+  [PATHS.showcase]: OurWorkPage,
   [PATHS.caseStudies]: CaseStudiesPage,
   [PATHS.caseStudyGraspo]: CaseStudiesPage,
   [PATHS.caseStudyElyon]: CaseStudiesPage,

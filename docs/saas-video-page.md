@@ -33,10 +33,10 @@ The only shared code touched: `DeliveryStyles.jsx` now exports `FormatStage` (th
 - Optional `format` (`explainer | demo | presenter | animated | ad`, `SAAS_FORMATS`) drives a filter that appears only when two or more formats have an approved video.
   Set it only once the owner confirmed it.
 - Set `production: 'convrt'` only for work CONVRT produced. Independent creators' examples are never presented as CONVRT productions.
-- Approved SaaS videos also appear on `/our-work` automatically (as Spokesperson videos do); that page is the Creator Showcase, so leave `production` unset unless confirmed.
+- Approved SaaS videos also appear on `/creator-showcase` automatically (as Spokesperson videos do); that page is the Creator Showcase, so leave `production` unset unless confirmed.
 
 ## Indexing
-`noindex` and out of the sitemap until at least one approved SaaS video exists (now satisfied, so the page is indexable) (same gate as Spokesperson, Organic Social and `/our-work`); the canonical is always its
+`noindex` and out of the sitemap until at least one approved SaaS video exists (now satisfied, so the page is indexable) (same gate as Spokesperson, Organic Social and `/creator-showcase`); the canonical is always its
 own URL. Adding the first approved video flips both with no other change. The approved keyword plan says to build this page "after distinct portfolio and demand
 validation", which is why the gate matters.
 

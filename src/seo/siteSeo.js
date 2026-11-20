@@ -80,7 +80,7 @@ export const SITE_SEO = {
     // It flips by itself when the first approved SaaS video is added to src/content/portfolio.js (same rule as the Spokesperson and Organic Social pages and /our-work).
     indexable: selectSaasHero().length + selectSaasGallery().length > 0,
   },
-  [PATHS.ourWork]: {
+  [PATHS.showcase]: {
     title: 'Creator Showcase | UGC Video Examples | CONVRT',
     description:
       'Explore UGC video examples from independent creators across e-commerce, SaaS, services and other industries. Discover different styles and creative approaches.',

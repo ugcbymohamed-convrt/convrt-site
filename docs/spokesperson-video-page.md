@@ -24,11 +24,11 @@ Videos come from `src/content/portfolio.js` only, through `selectSpokespersonHer
 `type: 'spokesperson'` and the full approval (`status: 'approved'`, `portfolioUse: true`, `creatorConsent: true`). `placement: 'hero'` fills the
 three-phone stage (first = centre, at most 3), everything else the gallery (at most 10). The UGC selectors only return `type: 'ugc'`, so the two
 pages can never share a video, and a video is never shown here just because someone speaks on camera in it. Nothing falls back to UGC footage.
-Approved spokesperson videos also appear on `/our-work` automatically. With none, the hero shows the three empty phone frames and the gallery is
+Approved spokesperson videos also appear on `/creator-showcase` automatically. With none, the hero shows the three empty phone frames and the gallery is
 absent. On Vercel preview hosts only, the gallery shows ten neutral empty frames (no portraits) so the layout can be reviewed.
 
 ## Indexing
-The page is `noindex` and left out of the sitemap until at least one spokesperson video is approved (same rule as `/our-work`); the canonical is
+The page is `noindex` and left out of the sitemap until at least one spokesperson video is approved (same rule as `/creator-showcase`); the canonical is
 always its own URL. Adding the first approved video flips both with no other change.
 
 ## Facts and claims

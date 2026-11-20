@@ -5,10 +5,11 @@ export const BOOKING_URL = 'https://calendly.com/mohamed-convrt/30min'
 export const CONTACT_EMAIL = 'mohamed@convrt.studio'
 
 // Homepage offer destinations. Each path is registered to its page in App.jsx.
-/* The Creator Showcase video library (examples from independent creators; the visible name is "Creator Showcase", the route stays /our-work).
-   "Explore UGC Videos" (UGC page), "Explore Videos" (homepage and UGC hero), the navigation and the footer all read this one constant.
+/* The Creator Showcase video library (examples from independent creators; the visible name is "Creator Showcase"), a standalone page at /creator-showcase. It was /our-work
+   until Nov 2026: vercel.json redirects the old URL permanently (308) so existing links keep working, and nothing in the app links to /our-work any more.
+   "Explore UGC Videos" (UGC page), "Explore Videos" (homepage, UGC and Spokesperson heroes), the navigation and the footer all read this one constant.
    The videos themselves come from src/content/portfolio.js. */
-export const OUR_WORK_PATH = '/our-work'
+export const CREATOR_SHOWCASE_PATH = '/creator-showcase'
 
 export const OFFER_PATHS = {
   roadmap: '/creative-growth-roadmap',

@@ -13,7 +13,7 @@ import react from '@vitejs/plugin-react'
 import { createElement } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { PATHS, KNOWN_PATHS } from '../src/routes.js'
-import { SITE_URL, OFFER_PATHS, OUR_WORK_PATH } from '../src/config.js'
+import { SITE_URL, OFFER_PATHS, CREATOR_SHOWCASE_PATH } from '../src/config.js'
 import { SITE_SEO, pageHead, sitemapRoutes } from '../src/seo/siteSeo.js'
 import { spokespersonGraph, jsonLdFor, ORG_ID, serviceId, BREADCRUMB_TRAILS } from '../src/seo/structuredData.js'
 import { SPOKESPERSON_FAQ, spokespersonFaqText } from '../src/seo/spokespersonFaq.js'
@@ -79,7 +79,7 @@ test('head: approved title and description, unique, self-canonical (never the UG
   assert.equal(e.canonicalPath, undefined, 'a canonical of its own, not a duplicate of another page')
   for (const [p, v] of Object.entries(SITE_SEO)) if (p !== PATH) { assert.notEqual(v.title, e.title); assert.notEqual(v.description, e.description) }
   assert.equal(pageHead(PATH).url, URL_)
-  // indexable once the page has approved spokesperson videos (the same rule as /our-work); the gate flips by itself when the first one is added
+  // indexable once the page has approved spokesperson videos (the same rule as /creator-showcase); the gate flips by itself when the first one is added
   assert.equal(e.indexable, selectSpokespersonHero().length + selectSpokespersonGallery().length > 0)
   assert.equal(sitemapRoutes().includes(PATH), e.indexable)
   const html = page(PATH)
@@ -102,7 +102,7 @@ test('static HTML: breadcrumb, ONE H1 reading "Human-led spokesperson videos. Bu
   assert.equal(h1, 'Human-led spokesperson videos. Built to communicate. Made to convrt.')
   assert.ok(t.includes('Professional, multilingual spokesperson videos featuring real people on camera. From SaaS demos and product presentations to website videos and paid ads, we handle scripting, talent selection, filming and editing.'))
   assert.match(html, new RegExp(`<a [^>]*href="${OFFER_PATHS.roadmap}"[^>]*>\\s*Get 5 Free Ad Concepts`), 'primary CTA → the Roadmap')
-  assert.match(html, new RegExp(`<a [^>]*href="${OUR_WORK_PATH}"[^>]*>\\s*Explore Videos`), 'secondary CTA → /our-work')
+  assert.match(html, new RegExp(`<a [^>]*href="${CREATOR_SHOWCASE_PATH}"[^>]*>\\s*Explore Videos`), 'secondary CTA → /creator-showcase')
   assert.ok(/1 <span class="text-lime">FREE<\/span> Video/.test(html) && /10 <span class="text-\[#F472B6\]">FREE<\/span> Ad Hooks/.test(html), 'the two free-offer cards, reused from the homepage hero')
 })
 
@@ -167,11 +167,11 @@ test('portfolio: the spokesperson selectors take ONLY approved type "spokesperso
   const shipped = selectSpokespersonHero().concat(selectSpokespersonGallery())
   assert.ok(shipped.every((v) => v.type === 'spokesperson' && portfolioProblems(v).length === 0))
   assert.ok(shipped.every((v) => !selectHero().concat(selectGallery()).includes(v)))
-  assert.ok(shipped.every((v) => selectOurWork().includes(v)), 'every approved spokesperson video is also in the broader Creator Showcase (/our-work)')
+  assert.ok(shipped.every((v) => selectOurWork().includes(v)), 'every approved spokesperson video is also in the broader Creator Showcase (/creator-showcase)')
   assert.deepEqual(selectShowcase('elyon').map((v) => v.id), PORTFOLIO.filter((v) => v.showcase === 'elyon').map((v) => v.id), 'homepage client panels are unchanged')
 })
 
-test('portfolio present: with approved spokesperson videos the hero becomes the interactive stage (labelled for this page) and the gallery shows "Spokesperson" cards with the /our-work button', () => {
+test('portfolio present: with approved spokesperson videos the hero becomes the interactive stage (labelled for this page) and the gallery shows "Spokesperson" cards with the /creator-showcase button', () => {
   const items = [sample(), sample({ id: 'sp-b', caption: 'Second.' }), sample({ id: 'sp-c', caption: 'Third.', languages: ['es'] })]
   const hero = renderToStaticMarkup(createElement(Hero.default, { items, config: SPOKESPERSON_HERO }))
   assert.ok(hero.includes('aria-roledescription="carousel"') && hero.includes('aria-label="Spokesperson videos"'))
@@ -192,7 +192,7 @@ test('gallery: spokesperson heading, copy, badge, button and four-up horizontal 
   assert.ok(t.includes('See spokespersons in action.'))
   assert.ok(t.includes('Explore different presentation styles, languages and approaches for explaining products, promoting offers and communicating with customers.'))
   assert.ok(/Spokesperson ·/.test(t) && !/UGC/.test(t), 'cards are labelled Spokesperson, never UGC')
-  assert.match(g, new RegExp(`href="${OUR_WORK_PATH}"[^>]*>[^<]*Explore Spokesperson Videos`))
+  assert.match(g, new RegExp(`href="${CREATOR_SHOWCASE_PATH}"[^>]*>[^<]*Explore Spokesperson Videos`))
   assert.ok(/aria-label="Spokesperson video examples\. Scroll sideways to see more\."/.test(g))
   assert.ok(/lg:w-\[calc\(\(100%-3rem\)\/4\)\]/.test(g), 'four cards across on a laptop')
   assert.equal(renderToStaticMarkup(createElement(Gallery.default, { items: [], config: mod.SPOKESPERSON_GALLERY })), '', 'absent without videos (the stand-ins are preview-only and appear after hydration)')
@@ -335,7 +335,7 @@ test('internal links: homepage Services and FAQ, Pricing, and the footer link to
   for (const p of ['/', '/pricing', '/creative-growth-roadmap', PATH]) assert.match(rootOf(page(p)), /<a [^>]*href="\/spokesperson-video-production"[^>]*>Spokesperson Videos<\/a>/, `footer link on ${p}`)
   assert.ok(!JSON.stringify(jsonLdFor('/')).includes('spokesperson-video-production'))
   const html = rootOf(page(PATH))
-  for (const href of ['/pricing#packages', '/pricing#package-info', '/ugc-video-agency', OFFER_PATHS.roadmap, OUR_WORK_PATH]) assert.ok(html.includes(`href="${href}"`), href)
+  for (const href of ['/pricing#packages', '/pricing#package-info', '/ugc-video-agency', OFFER_PATHS.roadmap, CREATOR_SHOWCASE_PATH]) assert.ok(html.includes(`href="${href}"`), href)
 })
 
 test('final CTA: the same system as the UGC page, with the spokesperson headline; pricing and founder e-mail are real buttons', () => {
@@ -382,4 +382,9 @@ test('accessibility: one H1, headings never skip a level, buttons are real butto
   }
   assert.ok(/prefers-reduced-motion: reduce/.test(read('src/components/ugc/creatorVideo.jsx')) && /saveData/.test(read('src/components/ugc/creatorVideo.jsx')))
   assert.ok(/useAutoplayAllowed/.test(read('src/components/ugc/UgcProcess.jsx')) && /Pause animation/.test(read('src/components/ugc/UgcProcess.jsx')))
+})
+
+test('spokesperson page order is independent of the Showcase order: hero 1, 2, 3 (first = centre) and gallery 1 to 4', () => {
+  assert.deepEqual(selectSpokespersonHero().map((v) => v.id), ['spokesperson-hero-1', 'spokesperson-hero-2', 'spokesperson-hero-3'])
+  assert.deepEqual(selectSpokespersonGallery().map((v) => v.id), ['spokesperson-gal-1', 'spokesperson-gal-2', 'spokesperson-gal-3', 'spokesperson-gal-4'])
 })

@@ -2,13 +2,13 @@
 
    Three pages read it, each through its own selector (see "WHERE A VIDEO APPEARS" below), so a video is added here once:
 
-     /our-work           the Creator Showcase: every approved video, filterable by industry (E-commerce, SaaS, Services, Other)   selectOurWork()
+     /creator-showcase           the Creator Showcase: every approved video, filterable by industry (E-commerce, SaaS, Services, Other)   selectOurWork()
      /ugc-video-agency   the approved UGC videos: the three-phone hero stage + the gallery under it          selectHero() / selectGallery()
      /spokesperson-video-production   the approved SPOKESPERSON videos, same two slots                       selectSpokespersonHero() / selectSpokespersonGallery()
      /social-media-video-production   the approved ORGANIC social videos, same two slots + a content-style filter selectOrganicHero() / selectOrganicGallery()
      homepage showcase   the client panels (Adscale, Elyon, Graspo): the videos tagged with that client        selectShowcase('elyon')
 
-   HOW TO ADD A VIDEO (no code changes needed): add an object at the TOP of PORTFOLIO below (newest first: /our-work and the UGC gallery
+   HOW TO ADD A VIDEO (no code changes needed): add an object at the TOP of PORTFOLIO below (newest first: /creator-showcase and the UGC gallery
    keep this order).
 
      {
@@ -59,21 +59,21 @@
      }
 
    WHERE A VIDEO APPEARS
-   • /our-work and the UGC page need the FULL approval: status 'approved' AND portfolioUse === true AND creatorConsent === true.
+   • /creator-showcase and the UGC page need the FULL approval: status 'approved' AND portfolioUse === true AND creatorConsent === true.
      Approval to produce or deliver a video is NOT portfolio permission.
-   • /our-work shows every approved video. /ugc-video-agency shows the approved videos whose type is 'ugc'; /spokesperson-video-production shows
-     the approved videos whose type is 'spokesperson'; /social-media-video-production shows the approved videos whose type is 'organic'. Nothing else to
-     do. The three service pages never share a video.
+   • /creator-showcase shows every approved video. /ugc-video-agency shows the approved videos whose type is 'ugc'; /spokesperson-video-production shows
+     the approved videos whose type is 'spokesperson'; /social-media-video-production shows the approved videos whose type is 'organic'; /saas-video-production shows
+     the approved videos whose type is 'saas' plus any video that lists the page in `alsoOn`. Nothing else to do. The service pages never share a video unless an entry says so.
    • A homepage client panel shows the videos tagged with its `showcase` key whose status is 'approved' (the client case studies are
-     brand-approved, not creator-portfolio material). A video with portfolioUse false therefore stays OFF /our-work and the UGC page.
-   • A new video classified by industry reaches /our-work and (if it is UGC) the UGC page on its own. The homepage panels are per
+     brand-approved, not creator-portfolio material). A video with portfolioUse false therefore stays OFF /creator-showcase and the UGC page.
+   • A new video classified by industry reaches /creator-showcase and (if it is UGC) the UGC page on its own. The homepage panels are per
      client, each with its own story, so a video appears there only when you add its `showcase` tag.
 
    RULES
    • No placeholder, stock or unapproved material, ever. An empty list is a valid, fully working state on every page.
    • A creator's name is personal data: it is shown only when creator.showName is true. creatorId is never shown.
-   • A category with no approved video never appears as a tab on /our-work.
-   • tests/ugc-page.test.mjs and tests/our-work.test.mjs validate every entry (unique ids, valid codes, source, permission flags). */
+   • A category with no approved video never appears as a tab on /creator-showcase.
+   • tests/ugc-page.test.mjs and tests/creator-showcase.test.mjs validate every entry (unique ids, valid codes, source, permission flags). */
 
 export const PORTFOLIO = [
   /* SAAS SLOTS (/saas-video-production): EMPTY ON PURPOSE, awaiting the owner's approved SaaS videos. No UGC, Spokesperson, Organic or homepage-client video may stand in
@@ -92,7 +92,7 @@ export const PORTFOLIO = [
      Set `production: 'convrt'` only if CONVRT produced it. An independent creator's example is never presented as a CONVRT production. */
   /* SaaS page videos (/saas-video-production), from the owner's SaaS folder (Desktop > UGC PAGE VIDEOS > SaaS, 2026-11-20). These are independent creators' UGC examples for software
      brands (not explainers, demos or CONVRT-produced work): titles are neutral placeholders, languages and production attribution are unconfirmed, and no brand or credit is shown.
-     Hero stage, centre first: saas-creator-1, saas-creator-2, then creator-04 (alsoOn). Gallery: creator-01, creator-15, creator-07, creator-13 and creator-10 (alsoOn). */
+     Hero stage, centre first: saas-creator-1, saas-creator-2, then creator-04 (alsoOn). Gallery, all via alsoOn: creator-15, creator-10 and the three clips that are now Spokesperson entries (Norton, CTA1, HOOK1). */
   {
     id: 'saas-creator-1',
     title: 'SaaS creator example 1',
@@ -142,69 +142,13 @@ export const PORTFOLIO = [
        approval: { status: 'approved', portfolioUse: true, creatorConsent: true, approvedBy: 'CONVRT owner (confirmed in chat)', approvedOn: 'YYYY-MM-DD' },
      }
      A video made by an independent creator is shown only with the creator's consent and is never presented as a CONVRT production unless it is one. */
-  /* Spokesperson page videos (/spokesperson-video-production). Supplied by the owner on 2026-11-19 (Desktop > UGC PAGE VIDEOS > Spokesperson videos: HERO1-3,
+  /* DISPLAY ORDER of the portfolio videos (also the order of the UGC gallery). It is deliberately mixed so that the same creator never appears
+     twice in a row, in All Work or in any industry tab. When you add videos, interleave them rather than appending a run from one creator.
+     The "creator-NN" videos come from the Creator Showcase folder (creator-01, 03, 07, 13, 14 and 18 were duplicates of spokesperson videos and now exist only as spokesperson entries): industry = the folder each file was in (E-commerce, Service, SaaS); titles are
+     placeholders, languages and production attribution are unconfirmed, and no brand or credit is shown. */
+  /* Spokesperson videos (shown on /spokesperson-video-production and in the Creator Showcase; they sit among the UGC videos in the display order below, in the order the Spokesperson page needs within its hero and gallery). Supplied by the owner on 2026-11-19 (Desktop > UGC PAGE VIDEOS > Spokesperson videos: HERO1-3,
      SECTION, SECTION2-4); the owner titled the three hero files. type 'spokesperson' is the ONLY thing that sends a video to that page. Captions are neutral
-     placeholders, languages are assumed from the on-screen captions and industry is a best guess: the owner should confirm all three. No brand is named. */
-  {
-    id: 'spokesperson-hero-1',
-    title: 'Spokesperson video example 1',
-    caption: 'Spokesperson video example 1.',
-    type: 'spokesperson',
-    industry: 'saas',
-    languages: ['en'],
-    source: { cloudflareId: 'b3db228064bde5cd076d22d9c938c2b0' },
-    poster: '/portfolio/spokesperson-hero-1.webp',
-    creatorId: 'cv-spokesperson-hero-1',
-    category: 'Spokesperson · Presenter-led video',
-    placement: 'hero',
-    approval: {
-      status: 'approved',
-      portfolioUse: true,
-      creatorConsent: true,
-      approvedBy: 'CONVRT owner (confirmed in chat)',
-      approvedOn: '2026-11-19',
-    },
-  },
-  {
-    id: 'spokesperson-hero-2',
-    title: 'Spokesperson video example 2',
-    caption: 'Spokesperson video example 2.',
-    type: 'spokesperson',
-    industry: 'other',
-    languages: ['en'],
-    source: { cloudflareId: 'c0c30e58489efad67789cdba1b58df23' },
-    poster: '/portfolio/spokesperson-hero-2.webp',
-    creatorId: 'cv-spokesperson-hero-2',
-    category: 'Spokesperson · Presenter-led video',
-    placement: 'hero',
-    approval: {
-      status: 'approved',
-      portfolioUse: true,
-      creatorConsent: true,
-      approvedBy: 'CONVRT owner (confirmed in chat)',
-      approvedOn: '2026-11-19',
-    },
-  },
-  {
-    id: 'spokesperson-hero-3',
-    title: 'Spokesperson video example 3',
-    caption: 'Spokesperson video example 3.',
-    type: 'spokesperson',
-    industry: 'other',
-    languages: ['en'],
-    source: { cloudflareId: '0d3a810ee068bd311f13ffd4d7a7f3d6' },
-    poster: '/portfolio/spokesperson-hero-3.webp',
-    creatorId: 'cv-spokesperson-hero-3',
-    category: 'Spokesperson · Presenter-led video',
-    placement: 'hero',
-    approval: {
-      status: 'approved',
-      portfolioUse: true,
-      creatorConsent: true,
-      approvedBy: 'CONVRT owner (confirmed in chat)',
-      approvedOn: '2026-11-19',
-    },
-  },
+     placeholders, languages are assumed from the on-screen captions and the industry of six of them is the Creator Showcase folder they were also in (they are the SAME videos as the former creator-01/03/07/13/14/18, which were removed so the Showcase shows each video once); SECTION 4 is 'unclassified'. No production attribution. No brand is named. */
   {
     id: 'spokesperson-gal-1',
     title: 'Spokesperson video example 4',
@@ -215,6 +159,7 @@ export const PORTFOLIO = [
     source: { cloudflareId: 'e767742bb12024437e9df368cedbfba2' },
     poster: '/portfolio/spokesperson-gal-1.webp',
     creatorId: 'cv-spokesperson-gal-1',
+    alsoOn: { saas: 'gallery' },
     category: 'Spokesperson · Presenter-led video',
     placement: 'gallery',
     approval: {
@@ -230,7 +175,7 @@ export const PORTFOLIO = [
     title: 'Spokesperson video example 5',
     caption: 'Spokesperson video example 5.',
     type: 'spokesperson',
-    industry: 'other',
+    industry: 'services',
     languages: ['en'],
     source: { cloudflareId: 'adbf89cb6c07bb06e708c2a03e4cf2f6' },
     poster: '/portfolio/spokesperson-gal-2.webp',
@@ -246,50 +191,6 @@ export const PORTFOLIO = [
     },
   },
   {
-    id: 'spokesperson-gal-3',
-    title: 'Spokesperson video example 6',
-    caption: 'Spokesperson video example 6.',
-    type: 'spokesperson',
-    industry: 'other',
-    languages: ['en'],
-    source: { cloudflareId: '250a9cb5f26c74728d775086879251d1' },
-    poster: '/portfolio/spokesperson-gal-3.webp',
-    creatorId: 'cv-spokesperson-gal-3',
-    category: 'Spokesperson · Presenter-led video',
-    placement: 'gallery',
-    approval: {
-      status: 'approved',
-      portfolioUse: true,
-      creatorConsent: true,
-      approvedBy: 'CONVRT owner (confirmed in chat)',
-      approvedOn: '2026-11-19',
-    },
-  },
-  {
-    id: 'spokesperson-gal-4',
-    title: 'Spokesperson video example 7',
-    caption: 'Spokesperson video example 7.',
-    type: 'spokesperson',
-    industry: 'other',
-    languages: ['en'],
-    source: { cloudflareId: 'a71733d42f59d1cec7034c1daa0258ea' },
-    poster: '/portfolio/spokesperson-gal-4.webp',
-    creatorId: 'cv-spokesperson-gal-4',
-    category: 'Spokesperson · Presenter-led video',
-    placement: 'gallery',
-    approval: {
-      status: 'approved',
-      portfolioUse: true,
-      creatorConsent: true,
-      approvedBy: 'CONVRT owner (confirmed in chat)',
-      approvedOn: '2026-11-19',
-    },
-  },
-  /* DISPLAY ORDER of the 29 portfolio videos (also the order of the UGC gallery). It is deliberately mixed so that the same creator never appears
-     twice in a row, in All Work or in any industry tab. When you add videos, interleave them rather than appending a run from one creator.
-     The 18 "creator-NN" videos come from the Creator Showcase folder: industry = the folder each file was in (E-commerce, Service, SaaS); titles are
-     placeholders, languages and production attribution are unconfirmed, and no brand or credit is shown. */
-  {
     id: 'creator-17',
     title: 'UGC ad example 25',
     caption: 'UGC ad example 25.',
@@ -299,6 +200,27 @@ export const PORTFOLIO = [
     poster: '/portfolio/creator-17.webp',
     creatorId: 'cv-creator-17',
     category: 'UGC · Paid social',
+    approval: {
+      status: 'approved',
+      portfolioUse: true,
+      creatorConsent: true,
+      approvedBy: 'CONVRT owner (confirmed in chat)',
+      approvedOn: '2026-11-19',
+    },
+  },
+  {
+    id: 'spokesperson-gal-3',
+    title: 'Spokesperson video example 6',
+    caption: 'Spokesperson video example 6.',
+    type: 'spokesperson',
+    industry: 'saas',
+    languages: ['en'],
+    source: { cloudflareId: '250a9cb5f26c74728d775086879251d1' },
+    poster: '/portfolio/spokesperson-gal-3.webp',
+    creatorId: 'cv-spokesperson-gal-3',
+    alsoOn: { saas: 'gallery' },
+    category: 'Spokesperson · Presenter-led video',
+    placement: 'gallery',
     approval: {
       status: 'approved',
       portfolioUse: true,
@@ -328,6 +250,27 @@ export const PORTFOLIO = [
     },
   },
   {
+    id: 'spokesperson-hero-1',
+    title: 'Spokesperson video example 1',
+    caption: 'Spokesperson video example 1.',
+    type: 'spokesperson',
+    industry: 'saas',
+    languages: ['en'],
+    source: { cloudflareId: 'b3db228064bde5cd076d22d9c938c2b0' },
+    poster: '/portfolio/spokesperson-hero-1.webp',
+    creatorId: 'cv-spokesperson-hero-1',
+    alsoOn: { saas: 'gallery' },
+    category: 'Spokesperson · Presenter-led video',
+    placement: 'hero',
+    approval: {
+      status: 'approved',
+      portfolioUse: true,
+      creatorConsent: true,
+      approvedBy: 'CONVRT owner (confirmed in chat)',
+      approvedOn: '2026-11-19',
+    },
+  },
+  {
     id: 'ugc-gal-7',
     title: 'UGC ad example 7',
     caption: 'UGC ad example 7.',
@@ -348,35 +291,17 @@ export const PORTFOLIO = [
     },
   },
   {
-    id: 'creator-07',
-    title: 'UGC ad example 15',
-    caption: 'UGC ad example 15.',
-    type: 'ugc',
-    industry: 'saas',
-    source: { cloudflareId: '32c0e72d46cf8b146efa949fb17a198c' },
-    poster: '/portfolio/creator-07.webp',
-    creatorId: 'cv-creator-07',
-    alsoOn: { saas: 'gallery' },
-    category: 'UGC · Paid social',
-    approval: {
-      status: 'approved',
-      portfolioUse: true,
-      creatorConsent: true,
-      approvedBy: 'CONVRT owner (confirmed in chat)',
-      approvedOn: '2026-11-19',
-    },
-  },
-  {
-    id: 'creator-01',
-    title: 'UGC ad example 9',
-    caption: 'UGC ad example 9.',
-    type: 'ugc',
-    industry: 'saas',
-    source: { cloudflareId: 'ffad7162bfb022a28724989d06618786' },
-    poster: '/portfolio/creator-01.webp',
-    creatorId: 'cv-creator-01',
-    alsoOn: { saas: 'gallery' },
-    category: 'UGC · Paid social',
+    id: 'spokesperson-gal-4',
+    title: 'Spokesperson video example 7',
+    caption: 'Spokesperson video example 7.',
+    type: 'spokesperson',
+    industry: 'unclassified',
+    languages: ['en'],
+    source: { cloudflareId: 'a71733d42f59d1cec7034c1daa0258ea' },
+    poster: '/portfolio/spokesperson-gal-4.webp',
+    creatorId: 'cv-spokesperson-gal-4',
+    category: 'Spokesperson · Presenter-led video',
+    placement: 'gallery',
     approval: {
       status: 'approved',
       portfolioUse: true,
@@ -395,25 +320,6 @@ export const PORTFOLIO = [
     poster: '/portfolio/creator-04.webp',
     creatorId: 'cv-creator-04',
     alsoOn: { saas: 'hero' },
-    category: 'UGC · Paid social',
-    approval: {
-      status: 'approved',
-      portfolioUse: true,
-      creatorConsent: true,
-      approvedBy: 'CONVRT owner (confirmed in chat)',
-      approvedOn: '2026-11-19',
-    },
-  },
-  {
-    id: 'creator-13',
-    title: 'UGC ad example 21',
-    caption: 'UGC ad example 21.',
-    type: 'ugc',
-    industry: 'saas',
-    source: { cloudflareId: '8e51ea0f1a74d31a7eae3dd3eaf8aafa' },
-    poster: '/portfolio/creator-13.webp',
-    creatorId: 'cv-creator-13',
-    alsoOn: { saas: 'gallery' },
     category: 'UGC · Paid social',
     approval: {
       status: 'approved',
@@ -450,24 +356,6 @@ export const PORTFOLIO = [
     source: { cloudflareId: 'f1e725634fe6bd8b059048a33612658d' },
     poster: '/portfolio/creator-08.webp',
     creatorId: 'cv-creator-08',
-    category: 'UGC · Paid social',
-    approval: {
-      status: 'approved',
-      portfolioUse: true,
-      creatorConsent: true,
-      approvedBy: 'CONVRT owner (confirmed in chat)',
-      approvedOn: '2026-11-19',
-    },
-  },
-  {
-    id: 'creator-14',
-    title: 'UGC ad example 22',
-    caption: 'UGC ad example 22.',
-    type: 'ugc',
-    industry: 'services',
-    source: { cloudflareId: '2b65a14aa3b9eef2fd3459017d31ef5b' },
-    poster: '/portfolio/creator-14.webp',
-    creatorId: 'cv-creator-14',
     category: 'UGC · Paid social',
     approval: {
       status: 'approved',
@@ -574,6 +462,26 @@ export const PORTFOLIO = [
     },
   },
   {
+    id: 'spokesperson-hero-2',
+    title: 'Spokesperson video example 2',
+    caption: 'Spokesperson video example 2.',
+    type: 'spokesperson',
+    industry: 'ecommerce',
+    languages: ['en'],
+    source: { cloudflareId: 'c0c30e58489efad67789cdba1b58df23' },
+    poster: '/portfolio/spokesperson-hero-2.webp',
+    creatorId: 'cv-spokesperson-hero-2',
+    category: 'Spokesperson · Presenter-led video',
+    placement: 'hero',
+    approval: {
+      status: 'approved',
+      portfolioUse: true,
+      creatorConsent: true,
+      approvedBy: 'CONVRT owner (confirmed in chat)',
+      approvedOn: '2026-11-19',
+    },
+  },
+  {
     id: 'creator-06',
     title: 'UGC ad example 14',
     caption: 'UGC ad example 14.',
@@ -610,15 +518,17 @@ export const PORTFOLIO = [
     },
   },
   {
-    id: 'creator-16',
-    title: 'UGC ad example 24',
-    caption: 'UGC ad example 24.',
-    type: 'ugc',
+    id: 'spokesperson-hero-3',
+    title: 'Spokesperson video example 3',
+    caption: 'Spokesperson video example 3.',
+    type: 'spokesperson',
     industry: 'services',
-    source: { cloudflareId: '6e56f6abcb371853fe557c52a7eb494a' },
-    poster: '/portfolio/creator-16.webp',
-    creatorId: 'cv-creator-16',
-    category: 'UGC · Paid social',
+    languages: ['en'],
+    source: { cloudflareId: '0d3a810ee068bd311f13ffd4d7a7f3d6' },
+    poster: '/portfolio/spokesperson-hero-3.webp',
+    creatorId: 'cv-spokesperson-hero-3',
+    category: 'Spokesperson · Presenter-led video',
+    placement: 'hero',
     approval: {
       status: 'approved',
       portfolioUse: true,
@@ -628,14 +538,14 @@ export const PORTFOLIO = [
     },
   },
   {
-    id: 'creator-18',
-    title: 'UGC ad example 26',
-    caption: 'UGC ad example 26.',
+    id: 'creator-16',
+    title: 'UGC ad example 24',
+    caption: 'UGC ad example 24.',
     type: 'ugc',
     industry: 'services',
-    source: { cloudflareId: 'e749f28f503510a435fb4ba8a0a5fa56' },
-    poster: '/portfolio/creator-18.webp',
-    creatorId: 'cv-creator-18',
+    source: { cloudflareId: '6e56f6abcb371853fe557c52a7eb494a' },
+    poster: '/portfolio/creator-16.webp',
+    creatorId: 'cv-creator-16',
     category: 'UGC · Paid social',
     approval: {
       status: 'approved',
@@ -744,24 +654,6 @@ export const PORTFOLIO = [
     },
   },
   {
-    id: 'creator-03',
-    title: 'UGC ad example 11',
-    caption: 'UGC ad example 11.',
-    type: 'ugc',
-    industry: 'ecommerce',
-    source: { cloudflareId: '4769852f1d5efc10c64502f8a2a679e1' },
-    poster: '/portfolio/creator-03.webp',
-    creatorId: 'cv-creator-03',
-    category: 'UGC · Paid social',
-    approval: {
-      status: 'approved',
-      portfolioUse: true,
-      creatorConsent: true,
-      approvedBy: 'CONVRT owner (confirmed in chat)',
-      approvedOn: '2026-11-19',
-    },
-  },
-  {
     id: 'ugc-gal-6',
     title: 'UGC ad example 6',
     caption: 'UGC ad example 6.',
@@ -839,10 +731,9 @@ export const PORTFOLIO = [
       approvedOn: '2026-11-19',
     },
   },
-
   /* Homepage client panels. These videos were live in the homepage case-study showcase before this file existed, so they are recorded here
      with the same media. The owner decided they are NOT creator-portfolio material, so portfolioUse / creatorConsent are false: they stay
-     off /our-work and the UGC page. To list one on /our-work, confirm the brand's and the creator's permission and set both flags to true
+     off /creator-showcase and the UGC page. To list one on /creator-showcase, confirm the brand's and the creator's permission and set both flags to true
      (then fill in its languages and a real title). creatorId below is an internal placeholder; type and production are unconfirmed. Industry is the one on the homepage tab (Adscale SaaS, Elyon E-commerce); Graspo's is unconfirmed. */
   {
     id: 'showcase-adscale-1',
@@ -1096,7 +987,7 @@ export function portfolioProblems(item) {
   return p
 }
 
-/* THE gate between data and /our-work and the UGC page: full approval, portfolio permission AND creator consent. */
+/* THE gate between data and /creator-showcase and the UGC page: full approval, portfolio permission AND creator consent. */
 export function isDisplayable(item) {
   if (portfolioProblems(item).length) return false
   const a = item.approval
@@ -1111,7 +1002,7 @@ export const isShowcaseable = (item) => portfolioProblems(item).length === 0 && 
    ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── */
 export const selectDisplayable = (items = PORTFOLIO) => items.filter(isDisplayable)
 
-/* /our-work: everything approved for the portfolio. */
+/* /creator-showcase: everything approved for the portfolio. */
 export const selectOurWork = selectDisplayable
 
 /* /ugc-video-agency: approved UGC videos, split into the hero stage (placement 'hero') and the gallery under it (everything else). */
@@ -1148,7 +1039,7 @@ export const posterUrl = (item) => item.poster ?? `https://videodelivery.net/${i
 export const hlsUrl = (item) => `https://videodelivery.net/${item.source.cloudflareId}/manifest/video.m3u8`
 
 /* ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
-   CATEGORIES: the four industry groups of /our-work (All Work is the combined view, not a category).
+   CATEGORIES: the four industry groups of /creator-showcase, plus the Spokesperson type filter (All Work is the combined view, not a category).
    Colours reuse the site's tokens where one fits (tailwind.config.js: lime, magenta, amber); SaaS and Services use the lighter
    violet / turquoise the brief proposed, because the darker violet token is too dim for small labels on the dark canvas.
    An industry slug not listed in CATEGORY_OF_INDUSTRY (beauty, finance ...) is a confirmed industry that groups under Other; the card still
@@ -1160,19 +1051,27 @@ export const CATEGORIES = [
   { id: 'saas', label: 'SaaS', color: '#9a7aff' },
   { id: 'services', label: 'Services', color: '#34c9c0' },
   { id: 'other', label: 'Other', color: '#ffb547' },
+  /* A TYPE filter, not an industry: every video whose type is 'spokesperson', whatever its industry (a SaaS spokesperson video is under both SaaS and
+     Spokesperson). It has a tab only while at least one such video is approved. */
+  { id: 'spokesperson', label: 'Spokesperson', color: '#ff6a4d', byType: 'spokesperson' },
 ]
 export const CATEGORY_LABELS = Object.fromEntries(CATEGORIES.map((c) => [c.id, c.label]))
 const CATEGORY_ORDER = CATEGORIES.map((c) => c.id)
 const CATEGORY_OF_INDUSTRY = { saas: 'saas', technology: 'saas', ecommerce: 'ecommerce', services: 'services' }
 export const categoryOf = (item) => (isClassified(item) ? CATEGORY_OF_INDUSTRY[item.industry] ?? 'other' : null)
 
-/* The tabs /our-work offers: All Work, then each category that has at least one classified video (an empty category is hidden). */
-export const availableCategories = (items) => {
-  const present = new Set(items.map(categoryOf))
-  return [ALL_CATEGORY, ...CATEGORIES.filter((c) => present.has(c.id))]
+/* Is the video in the filter `categoryId`? An industry filter by its industry group; the Spokesperson filter by the video's type. */
+export const inCategory = (item, categoryId) => {
+  const c = CATEGORIES.find((x) => x.id === categoryId)
+  return c?.byType ? typeOf(item) === c.byType : categoryOf(item) === categoryId
 }
-export const countIn = (items, categoryId) => (categoryId === 'all' ? items.length : items.filter((i) => categoryOf(i) === categoryId).length)
-export const filterByCategory = (items, categoryId) => (categoryId === 'all' ? items : items.filter((i) => categoryOf(i) === categoryId))
+
+/* The tabs /creator-showcase offers: All Work, then each category that has at least one classified video (an empty category is hidden). */
+export const availableCategories = (items) => {
+  return [ALL_CATEGORY, ...CATEGORIES.filter((c) => items.some((i) => inCategory(i, c.id)))]
+}
+export const countIn = (items, categoryId) => (categoryId === 'all' ? items.length : items.filter((i) => inCategory(i, categoryId)).length)
+export const filterByCategory = (items, categoryId) => (categoryId === 'all' ? items : items.filter((i) => inCategory(i, categoryId)))
 
 /* Filter facets (the UGC portfolio grid). A facet is offered only when it has two or more distinct values. */
 export function buildFacets(items) {

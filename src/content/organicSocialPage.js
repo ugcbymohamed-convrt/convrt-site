@@ -8,7 +8,7 @@
      5.28x (a paid-social result) or the UGC testimonials. Add an organic testimonial only when the owner has verified it and has permission to publish it.
    • The videos come from src/content/portfolio.js (type: 'organic'), never from here. */
 
-import { BOOKING_URL, OUR_WORK_PATH } from '../config.js'
+import { BOOKING_URL, CREATOR_SHOWCASE_PATH } from '../config.js'
 import { ORGANIC_STYLES } from './portfolio.js'
 
 export const ORGANIC_PATH_LABEL = 'Organic Social Video Production'
@@ -35,7 +35,7 @@ export const ORGANIC_HERO = {
   primary: { label: 'Discuss Your Content Strategy', href: BOOKING_URL, external: true },
   leadIn: null,
   /* No scrollTo: this button always goes to /our-work. */
-  secondary: { label: 'Explore Videos', href: OUR_WORK_PATH },
+  secondary: { label: 'Explore Videos', href: CREATOR_SHOWCASE_PATH },
   track: { cta: 'organic_page_cta_click', work: 'organic_explore_videos_click' },
   stageLabel: 'Organic social videos',
   stagePrefix: 'organic',
@@ -83,7 +83,7 @@ export const ORGANIC_GALLERY = {
   ariaLabel: 'Organic social video examples. Scroll sideways to see more.',
   badge: 'Organic',
   /* /our-work filters by industry only (no content-style or service filter), so this goes to the whole showcase. Point it at a filtered view only once one exists. */
-  cta: { label: 'Explore Videos', href: OUR_WORK_PATH },
+  cta: { label: 'Explore Videos', href: CREATOR_SHOWCASE_PATH },
   track: 'organic',
   samplePortraits: null,
   sampleNote: 'Layout preview only: your approved organic videos replace these empty frames. This never shows on the live site.',

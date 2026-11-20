@@ -1,5 +1,5 @@
-// Run with: node --test tests/our-work.test.mjs
-// /our-work (the Creator Showcase: examples from independent creators) and the shared portfolio data (src/content/portfolio.js) that also feeds /ugc-video-agency and the homepage.
+// Run with: node --test tests/creator-showcase.test.mjs
+// /creator-showcase (the Creator Showcase: examples from independent creators; it was /our-work until Nov 2026) and the shared portfolio data (src/content/portfolio.js) that also feeds /ugc-video-agency, /spokesperson-video-production and the homepage.
 // Checks the route, head, sitemap, structured data, the prerendered HTML, the permission gates, the per-page selectors, the category
 // tabs (an empty category has no tab), the grid structure, the empty state, the player's accessibility contract and the internal links.
 // Builds the site once into a temp dir and starts a Vite SSR loader to render components with sample data.
@@ -14,18 +14,18 @@ import react from '@vitejs/plugin-react'
 import { createElement } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { PATHS, KNOWN_PATHS } from '../src/routes.js'
-import { SITE_URL, OUR_WORK_PATH } from '../src/config.js'
+import { SITE_URL, CREATOR_SHOWCASE_PATH } from '../src/config.js'
 import { SITE_SEO, pageHead, sitemapRoutes } from '../src/seo/siteSeo.js'
 import { ourWorkGraph, videoObjectNode, jsonLdFor, BREADCRUMB_TRAILS } from '../src/seo/structuredData.js'
 import {
   PORTFOLIO, portfolioProblems, isDisplayable, isShowcaseable, selectOurWork, selectHero, selectGallery, selectShowcase, selectDisplayable,
-  availableCategories, categoryOf, countIn, filterByCategory, CATEGORIES, ALL_CATEGORY, titleOf, typeLabel, posterUrl,
+  availableCategories, categoryOf, inCategory, countIn, filterByCategory, CATEGORIES, ALL_CATEGORY, titleOf, typeLabel, posterUrl,
   isClassified, industryLabel, productionLabel, brandLabel, creditLabel, buildFacets, matchesFilters,
 } from '../src/content/portfolio.js'
 
 const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), '..')
 const read = (p) => fs.readFileSync(path.join(ROOT, p), 'utf8')
-const PATH = PATHS.ourWork
+const PATH = PATHS.showcase
 const URL_ = `${SITE_URL}${PATH}`
 
 const decode = (s) => s.replace(/&#x27;|&#39;|&apos;/g, "'").replace(/&quot;/g, '"').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>')
@@ -60,11 +60,11 @@ const sample = (over = {}) => ({
 const many = (n, industry = 'saas') => Array.from({ length: n }, (_, i) => sample({ id: `s-${industry}-${i}`, title: `Video ${i}`, industry }))
 
 // ── route, head, sitemap ─────────────────────────────────────────────────────────────────
-test('route: /our-work is a public path, and OUR_WORK_PATH (used by every link to it) is that path', () => {
-  assert.equal(PATH, '/our-work')
-  assert.equal(OUR_WORK_PATH, '/our-work')
-  assert.ok(KNOWN_PATHS.includes('/our-work'))
-  assert.ok(fs.existsSync(path.join(dist, 'our-work', 'index.html')), 'a real static file is written for the route')
+test('route: /creator-showcase is a public path, and CREATOR_SHOWCASE_PATH (used by every link to it) is that path', () => {
+  assert.equal(PATH, '/creator-showcase')
+  assert.equal(CREATOR_SHOWCASE_PATH, '/creator-showcase')
+  assert.ok(KNOWN_PATHS.includes('/creator-showcase'))
+  assert.ok(fs.existsSync(path.join(dist, 'creator-showcase', 'index.html')), 'a real static file is written for the route')
 })
 
 test('head: approved title, description from the actual portfolio, self-canonical, indexable only with approved videos, in the sitemap accordingly', () => {
@@ -143,7 +143,7 @@ test('data: the shipped list is valid with unique ids, every showcase video is r
   for (const i of PORTFOLIO) assert.deepEqual(portfolioProblems(i), [], i.id)
   const media = PORTFOLIO.map((i) => i.source.cloudflareId ?? i.source.mp4)
   assert.equal(new Set(media).size, media.length, 'no video is listed twice')
-  assert.ok(selectDisplayable(PORTFOLIO).every((i) => !/adscale|elyon|graspo/i.test(JSON.stringify(i))), 'the client case-study clips are not portfolio material, so they never reach /our-work')
+  assert.ok(selectDisplayable(PORTFOLIO).every((i) => !/adscale|elyon|graspo/i.test(JSON.stringify(i))), 'the client case-study clips are not portfolio material, so they never reach /creator-showcase')
   assert.ok(PORTFOLIO.filter((i) => i.showcase).every((i) => i.approval.portfolioUse === false && i.approval.creatorConsent === false))
 })
 
@@ -164,7 +164,7 @@ test('data: each page is a view of the same list: our-work = all approved, UGC p
   assert.deepEqual(selectShowcase('elyon', list).map((i) => i.id), ['panel-1', 'panel-2'], 'homepage panel: approved + tagged; portfolio permission is not needed there')
   assert.equal(isShowcaseable(sample()), false, 'untagged')
   assert.equal(isDisplayable(sample({ id: 'panel-1', showcase: 'elyon', approval: { ...APPROVED, portfolioUse: false } })), false)
-  // one new entry reaches /our-work and the UGC gallery with no other change
+  // one new entry reaches /creator-showcase and the UGC gallery with no other change
   const added = [sample({ id: 'brand-new', industry: 'ecommerce' }), ...list]
   assert.ok(selectOurWork(added).some((i) => i.id === 'brand-new') && selectGallery(added).some((i) => i.id === 'brand-new'))
 })
@@ -194,9 +194,9 @@ test('data: validation rejects bad entries; language is optional until confirmed
 })
 
 // ── categories ──────────────────────────────────────────────────────────────────────────
-test('categories: All Work + E-commerce, SaaS, Services, Other with the proposed colours; a category with no videos has no tab', () => {
-  assert.deepEqual([ALL_CATEGORY, ...CATEGORIES].map((c) => c.label), ['All Work', 'E-commerce', 'SaaS', 'Services', 'Other'])
-  assert.deepEqual([ALL_CATEGORY, ...CATEGORIES].map((c) => c.color), ['#d5ff40', '#ec4899', '#9a7aff', '#34c9c0', '#ffb547'])
+test('categories: All Work + the four approved industry filters (E-commerce, SaaS, Services, Other) + the Spokesperson type filter; a category with no videos has no tab', () => {
+  assert.deepEqual([ALL_CATEGORY, ...CATEGORIES].map((c) => c.label), ['All Work', 'E-commerce', 'SaaS', 'Services', 'Other', 'Spokesperson'])
+  assert.deepEqual([ALL_CATEGORY, ...CATEGORIES].map((c) => c.color), ['#d5ff40', '#ec4899', '#9a7aff', '#34c9c0', '#ffb547', '#ff6a4d'])
   assert.ok(CATEGORIES.every((c) => /^#[0-9a-f]{6}$/.test(c.color)))
   const tailwind = read('tailwind.config.js')
   for (const token of ['lime: \'#d5ff40\'', 'magenta: \'#ec4899\'', 'amber: \'#ffb547\'']) assert.ok(tailwind.includes(token), `reuses the existing token ${token}`)
@@ -221,7 +221,7 @@ test('tabs render: one row, icons, labels, counts, All Work pressed; arrows and 
   assert.deepEqual(buttons.map((b) => b[1]), ['true', 'false', 'false', 'false'])
   assert.deepEqual(buttons.map((b) => b[2].replace(/<svg[\s\S]*?<\/svg>/g, '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim()), ['All Work 6', 'E-commerce 3', 'SaaS 2', 'Services 1'])
   assert.ok(buttons.every((b) => /<svg[^>]*aria-hidden="true"/.test(b[2])), 'every tab has an icon')
-  assert.match(html, /role="group" aria-label="Filter videos by industry"/)
+  assert.match(html, /role="group" aria-label="Filter videos by industry or type"/)
   assert.ok(/overflow-x-auto/.test(html) && !/flex-wrap/.test(html), 'one scrolling row, never wrapping onto several lines')
   assert.ok(/focus-visible:outline/.test(html) && /hover:border-\[var\(--c\)\]/.test(html) && /transition-/.test(html), 'hover, keyboard focus and transitions')
   assert.ok(/Show previous categories/.test(html) && /Show next categories/.test(html) && /md:flex/.test(html))
@@ -302,17 +302,17 @@ test('motion: every animation honours prefers-reduced-motion', () => {
 })
 
 // ── internal links ──────────────────────────────────────────────────────────────────────
-test('links: nav, footer, homepage CTA and the UGC page all lead to /our-work, once each, without duplicates', () => {
+test('links: nav, footer, homepage CTA and the UGC page all lead to /creator-showcase, once each, without duplicates', () => {
   const home = rootOf(page('/'))
-  assert.equal((home.match(/href="\/our-work"/g) || []).length, 3, 'desktop nav (the mobile menu is closed), footer and the hero button')
-  assert.match(home, /<a href="\/our-work"[^>]*>\s*Explore Videos/, 'the homepage "Explore Videos" button')
+  assert.equal((home.match(/href="\/creator-showcase"/g) || []).length, 3, 'desktop nav (the mobile menu is closed), footer and the hero button')
+  assert.match(home, /<a href="\/creator-showcase"[^>]*>\s*Explore Videos/, 'the homepage "Explore Videos" button')
   assert.equal((home.match(/>Creator Showcase</g) || []).length, 2, 'one nav link and one footer link')
   assert.ok(!/>(See Our Work|Our Work)</.test(home), 'no "Our Work" label is left on the homepage')
   assert.ok(!/href="#showcase"/.test(home), 'the old in-page anchor is gone (the section itself stays on the page)')
   assert.ok(home.includes('id="showcase"'))
   const ugc = rootOf(page(PATHS.ugcVideoAgency))
-  assert.match(ugc, /<a href="\/our-work"[^>]*>\s*Explore Videos/, 'UGC hero button')
-  assert.match(ugc, /<a href="\/our-work"[^>]*>\s*Explore UGC Videos/, 'the button under the UGC gallery')
+  assert.match(ugc, /<a href="\/creator-showcase"[^>]*>\s*Explore Videos/, 'UGC hero button')
+  assert.match(ugc, /<a href="\/creator-showcase"[^>]*>\s*Explore UGC Videos/, 'the button under the UGC gallery')
   assert.ok(!/See all UGC videos|See Our Work|>Our Work</.test(ugc))
   const our = rootOf(page(PATH))
   assert.equal((our.match(/>Creator Showcase</g) || []).length, 3, 'nav, breadcrumb and footer')
@@ -323,6 +323,58 @@ test('docs: the data file header documents the one-file workflow and the new fie
   const header = read('src/content/portfolio.js').slice(0, 9000)
   for (const k of ['title', 'type', 'industry', 'languages', 'source', 'poster', 'creatorId', 'brand', 'production', 'productionCredit', 'brandDisplay', 'placement', 'showcase', 'uploadDate', 'approval', 'unclassified']) assert.ok(header.includes(k), `documents ${k}`)
   assert.ok(/ONE file/.test(header) && /selectOurWork/.test(header) && /selectGallery/.test(header) && /selectShowcase/.test(header))
+})
+
+// ── the rename: /our-work → /creator-showcase ────────────────────────────────────────────
+test('rename: /our-work is a permanent redirect to /creator-showcase, with no loop, no page, no sitemap entry and no link left in the app', () => {
+  const vercel = JSON.parse(read('vercel.json'))
+  const r = vercel.redirects.find((x) => x.source === '/our-work')
+  assert.deepEqual(r, { source: '/our-work', destination: '/creator-showcase', permanent: true }, 'permanent (Vercel sends a 308)')
+  // no loop: no redirect's destination is the source of another redirect, and the destination is a real static page
+  const sources = new Set(vercel.redirects.map((x) => x.source))
+  for (const x of vercel.redirects) assert.ok(!sources.has(x.destination), `redirect chain or loop at ${x.source} → ${x.destination}`)
+  assert.ok(KNOWN_PATHS.includes(r.destination) && fs.existsSync(path.join(dist, 'creator-showcase', 'index.html')))
+  assert.ok(!KNOWN_PATHS.includes('/our-work') && !fs.existsSync(path.join(dist, 'our-work')), 'no page is built at the old URL, so the redirect is the only thing that answers it')
+  assert.ok(!/\/our-work/.test(fs.readFileSync(path.join(dist, 'sitemap.xml'), 'utf8')), 'the old URL is not in the sitemap')
+  for (const p of KNOWN_PATHS) assert.ok(!/href="\/our-work"/.test(page(p)) && !/\/our-work/.test(headOf(page(p))), `${p} still points at /our-work`)
+  // source: the only remaining mentions are the redirect's own documentation
+  for (const f of ['src/config.js', 'src/routes.js', 'src/seo/siteSeo.js', 'src/seo/structuredData.js', 'src/components/Nav.jsx', 'src/components/Footer.jsx']) assert.ok(!/['"`]\/our-work/.test(read(f)), `${f} hard-codes the old URL`)
+})
+
+test('rename: every link to the showcase (header, footer, homepage hero, UGC hero and gallery, Spokesperson hero and gallery) goes to /creator-showcase', () => {
+  const link = (h) => rootOf(h).includes('href="/creator-showcase"')
+  for (const p of ['/', '/ugc-video-agency', '/spokesperson-video-production', '/pricing', '/case-studies']) assert.ok(link(page(p)), `${p} links to /creator-showcase (header and footer at least)`)
+  assert.match(rootOf(page('/')), /<a [^>]*href="\/creator-showcase"[^>]*>[\s\S]*?Explore Videos/)
+  assert.match(rootOf(page('/spokesperson-video-production')), /<a [^>]*href="\/creator-showcase"[^>]*>\s*Explore Videos/)
+  assert.match(rootOf(page('/ugc-video-agency')), /<a [^>]*href="\/creator-showcase"[^>]*>\s*Explore Videos/)
+})
+
+test('rename: canonical, og:url, sitemap and structured data all use /creator-showcase; the approved copy and filters are unchanged', () => {
+  const html = page(PATH)
+  const head = headOf(html)
+  assert.ok(head.includes(`<link rel="canonical" href="${SITE_URL}/creator-showcase" />`))
+  assert.ok(!/our-work/.test(head + html.match(/<script type="application\/ld\+json"[\s\S]*?<\/script>/)?.[0]))
+  const ld = JSON.stringify(jsonLdFor(PATH, SITE_SEO[PATH]))
+  assert.ok(ld.includes(`${SITE_URL}/creator-showcase`) && !ld.includes('our-work'))
+  assert.equal(SITE_SEO[PATH].title, 'Creator Showcase | UGC Video Examples | CONVRT', 'the approved title is unchanged')
+  assert.deepEqual(CATEGORIES.map((c) => c.label).slice(0, 4), ['E-commerce', 'SaaS', 'Services', 'Other'], 'the four approved filters, unchanged and in order (the Spokesperson filter follows them)')
+  assert.ok(textOf(html).includes("See what's possible."))
+})
+
+test('independence: the Showcase and the Spokesperson page each have their own URL, head, JSON-LD and sitemap entry; neither renders the other', () => {
+  const sp = '/spokesperson-video-production'
+  assert.notEqual(PATH, sp)
+  assert.notEqual(SITE_SEO[PATH].title, SITE_SEO[sp].title)
+  assert.notEqual(SITE_SEO[PATH].description, SITE_SEO[sp].description)
+  assert.ok(!sitemapRoutes().includes('/our-work'))
+  const showcase = rootOf(page(PATH))
+  const spokes = rootOf(page(sp))
+  assert.ok(!showcase.includes('id="spokesperson-h1"') && !showcase.includes('One message. Different ways'), 'the Showcase is not part of the Spokesperson page')
+  assert.ok(!spokes.includes('id="our-work-heading"') && !spokes.includes("See what's possible."), 'the Spokesperson page does not embed the Showcase')
+  assert.ok(spokes.includes('href="/creator-showcase"') && showcase.includes('href="/spokesperson-video-production"'), 'they link to each other only through ordinary links (footer, buttons)')
+  const g = (p) => JSON.parse(page(p).match(/<script type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/)[1].replace(/\\u003c/g, '<'))['@graph']
+  assert.ok(g(PATH).some((n) => n['@type'] === 'CollectionPage') && !g(sp).some((n) => n['@type'] === 'CollectionPage'))
+  assert.ok(g(sp).some((n) => n['@type'] === 'FAQPage') && !g(PATH).some((n) => n['@type'] === 'FAQPage'))
 })
 
 // ── Creator Showcase positioning: independent creators, not CONVRT productions ──────────────────────
@@ -366,18 +418,18 @@ test('regression: production attribution is unknown unless confirmed, and a labe
   assert.ok(/productionLabel\(item\)/.test(lb) && /\.filter\(Boolean\)/.test(lb), 'the player mentions production only when known')
 })
 
-test('regression: the nine homepage client videos stay homepage-only: not in /our-work, the UGC page or the sitemap data, permissions untouched', () => {
+test('regression: the nine homepage client videos stay homepage-only: not in /creator-showcase, the UGC page or the sitemap data, permissions untouched', () => {
   const clients = PORTFOLIO.filter((v) => v.showcase)
   assert.equal(clients.length, 9)
   assert.deepEqual([...new Set(clients.map((v) => v.showcase))].sort(), ['adscale', 'elyon', 'graspo'])
   for (const v of clients) {
     assert.equal(v.approval.portfolioUse, false, `${v.id}: portfolioUse stays false`)
     assert.equal(v.approval.creatorConsent, false, `${v.id}: creatorConsent stays false`)
-    assert.ok(!selectOurWork().includes(v) && !selectGallery().includes(v) && !selectHero().includes(v), `${v.id} is not on /our-work or the UGC page`)
+    assert.ok(!selectOurWork().includes(v) && !selectGallery().includes(v) && !selectHero().includes(v), `${v.id} is not on /creator-showcase or the UGC page`)
   }
   const our = rootOf(page(PATH))
-  for (const v of clients) assert.ok(!our.includes(v.source.cloudflareId ?? v.source.mp4), `${v.id} is not in the /our-work HTML`)
-  assert.ok(!/adscale|elyon|graspo/i.test(our.replace(/<script[\s\S]*?<\/script>/g, '')), 'no client name on /our-work')
+  for (const v of clients) assert.ok(!our.includes(v.source.cloudflareId ?? v.source.mp4), `${v.id} is not in the /creator-showcase HTML`)
+  assert.ok(!/adscale|elyon|graspo/i.test(our.replace(/<script[\s\S]*?<\/script>/g, '')), 'no client name on /creator-showcase')
   const home = rootOf(page('/'))
   assert.ok(home.includes('id="showcase"') && home.includes('/showcase/adscale-creator-poster.webp'), 'the homepage client showcase is intact')
 })
@@ -399,11 +451,14 @@ test('regression: the 11 original portfolio entries are intact (ids, media, perm
   assert.deepEqual(selectHero().map((v) => v.id), ['ugc-hero-1', 'ugc-hero-2', 'ugc-hero-3'], 'the UGC hero is still the three selected videos, in order')
 })
 
-test('Creator Showcase folder: 18 more videos, classified by folder, uploaded once, with their own local thumbnails; nothing guessed', () => {
+// creator-01, 03, 07, 13, 14 and 18 were the SAME footage as six spokesperson videos (same Cloudflare duration, identical frames), so they were removed and
+// now exist only as spokesperson entries (carrying the folder industry): the Showcase shows each video once.
+const DUPLICATES_REMOVED = ['creator-01', 'creator-03', 'creator-07', 'creator-13', 'creator-14', 'creator-18']
+test('Creator Showcase folder: 12 creator videos (6 of the original 18 are now spokesperson entries), classified by folder, uploaded once, with their own local thumbnails; nothing guessed', () => {
   const added = PORTFOLIO.filter((v) => /^creator-\d\d$/.test(v.id))
-  assert.equal(added.length, 18)
-  assert.deepEqual(added.map((v) => v.id).sort(), Array.from({ length: 18 }, (_, i) => `creator-${String(i + 1).padStart(2, '0')}`))
-  assert.deepEqual(added.reduce((m, v) => ({ ...m, [v.industry]: (m[v.industry] || 0) + 1 }), {}), { saas: 6, services: 8, ecommerce: 4 }, 'SaaS 6, Service 8, E-commerce 4 new (+5 already on the site = 9)')
+  assert.equal(added.length, 12)
+  assert.deepEqual(added.map((v) => v.id).sort(), Array.from({ length: 18 }, (_, i) => `creator-${String(i + 1).padStart(2, '0')}`).filter((id) => !DUPLICATES_REMOVED.includes(id)))
+  assert.deepEqual(added.reduce((m, v) => ({ ...m, [v.industry]: (m[v.industry] || 0) + 1 }), {}), { saas: 3, services: 6, ecommerce: 3 }, 'SaaS 3, Service 6, E-commerce 3 here; the six moved to the spokesperson entries keep their folder industry, so the tabs still hold SaaS 6, Services 8, E-commerce 9')
   const media = PORTFOLIO.map((v) => v.source.cloudflareId ?? v.source.mp4)
   assert.equal(new Set(media).size, media.length, 'no duplicate upload')
   for (const v of added) {
@@ -416,11 +471,11 @@ test('Creator Showcase folder: 18 more videos, classified by folder, uploaded on
     assert.equal(v.production, undefined, `${v.id}: production unknown`)
     assert.ok(/^UGC ad example \d+$/.test(v.title), `${v.id}: placeholder title, not invented`)
   }
-  const ours = selectOurWork().filter((v) => v.type === 'ugc') // the service-page types (spokesperson, saas ...) have their own tests
-  assert.equal(ours.length, 29)
-  assert.deepEqual(availableCategories(ours).map((c) => c.id), ['all', 'ecommerce', 'saas', 'services'], 'Other has no videos, so it has no tab')
-  assert.deepEqual(['ecommerce', 'saas', 'services'].map((c) => countIn(ours, c)), [9, 6, 8])
-  assert.equal(ours.filter((v) => categoryOf(v) === null).length, 6, 'the six still-unclassified videos are only in All Work')
+  const ours = selectOurWork()
+  assert.equal(ours.length, 32, '23 UGC videos + the 7 spokesperson videos (six of which were also uploaded as creator-NN and are now listed once) + the 2 SaaS-folder clips added for the SaaS page')
+  assert.deepEqual(availableCategories(ours).map((c) => c.id), ['all', 'ecommerce', 'saas', 'services', 'spokesperson'], 'Other has no videos, so it has no tab; Spokesperson has seven')
+  assert.deepEqual(['ecommerce', 'saas', 'services', 'spokesperson'].map((c) => countIn(ours, c)), [9, 8, 8, 7])
+  assert.equal(ours.filter((v) => categoryOf(v) === null).length, 7, 'the six still-unclassified UGC videos and the one unclassified spokesperson video are in no industry tab')
   assert.ok(selectGallery().length > 10 && selectGallery().slice(0, 10).length === 10, 'the UGC gallery still caps at 10')
 })
 
@@ -464,27 +519,16 @@ test('brand name and production credit appear only with the recorded permission'
   assert.ok(portfolioProblems(sample({ productionCredit: ' ' })).length)
 })
 
-test('Creator Showcase naming: nav, footer and homepage button use the approved labels while the route stays /our-work', () => {
-  const nav = read('src/components/Nav.jsx')
-  assert.match(nav, /label: 'Creator Showcase', href: OUR_WORK_PATH/)
-  assert.match(read('src/components/Footer.jsx'), />Creator Showcase<\/a>/)
-  assert.match(read('src/components/Hero.jsx'), /Explore Videos/)
-  assert.equal(OUR_WORK_PATH, '/our-work')
-  assert.ok(!KNOWN_PATHS.includes('/creator-showcase'), 'no second route')
-  assert.ok(!fs.readFileSync(path.join(ROOT, 'vercel.json'), 'utf8').includes('creator-showcase'), 'no redirect')
-  assert.equal(BREADCRUMB_TRAILS[PATH][1].name, 'Creator Showcase')
-})
-
 // ── display order: the same creator never twice in a row ───────────────────────────────────────────
 // Who appears in which video (best visual and file-name match, to be corrected by the owner). Videos of one creator share a letter.
 const SAME_CREATOR = [
-  ['ugc-gal-8', 'creator-01', 'creator-15', 'creator-16'],
-  ['ugc-hero-2', 'ugc-gal-2', 'creator-06', 'creator-14'],
-  ['ugc-gal-5', 'creator-18'],
+  ['ugc-gal-8', 'spokesperson-gal-3', 'creator-15', 'creator-16'], // spokesperson-gal-3 is the former creator-01
+  ['ugc-hero-2', 'ugc-gal-2', 'creator-06', 'spokesperson-hero-3', 'spokesperson-gal-4'], // hero-3 = former creator-14; gal-4 looks like the same presenter
+  ['ugc-gal-5', 'spokesperson-gal-2'], // former creator-18
   ['ugc-gal-1', 'ugc-hero-3', 'creator-04'],
   ['ugc-gal-3', 'creator-05'],
-  ['ugc-hero-1', 'ugc-gal-7', 'creator-03', 'creator-11'],
-  ['ugc-gal-4', 'ugc-gal-6', 'creator-02', 'creator-07', 'creator-08', 'creator-09', 'creator-10', 'creator-12', 'creator-13', 'creator-17'],
+  ['ugc-hero-1', 'ugc-gal-7', 'spokesperson-hero-2', 'creator-11'], // hero-2 = former creator-03
+  ['ugc-gal-4', 'ugc-gal-6', 'creator-02', 'spokesperson-gal-1', 'creator-08', 'creator-09', 'creator-10', 'creator-12', 'spokesperson-hero-1', 'creator-17'], // gal-1 = former creator-07, hero-1 = former creator-13
 ]
 const creatorOf = (id) => SAME_CREATOR.findIndex((g) => g.includes(id))
 
@@ -500,7 +544,43 @@ test('order: no creator appears in two videos next to each other, in All Work or
 
 test('UGC hero "Explore Videos" is a plain link to the Creator Showcase (it no longer scrolls to the page gallery)', () => {
   const src = read('src/components/ugc/UgcHero.jsx')
-  assert.match(src, /secondary: \{ label: 'Explore Videos', href: OUR_WORK_PATH \}/, 'the UGC config has no scrollTo target')
-  assert.ok(!/getElementById\('ugc-videos'\)/.test(src), 'no in-page scroll handler for the UGC gallery')
-  assert.match(rootOf(page(PATHS.ugcVideoAgency)), /<a href="\/our-work"[^>]*>\s*Explore Videos/)
+  assert.ok(!/scrollToElement|getElementById\('ugc-videos'\)|preventDefault/.test(src), 'no in-page scroll handler')
+  assert.match(rootOf(page(PATHS.ugcVideoAgency)), /<a href="\/creator-showcase"[^>]*>\s*Explore Videos/)
+})
+
+// ── no duplicates, and the Spokesperson filter ───────────────────────────────────────────────────
+test('no duplicates: every video in the Showcase is listed once (id, Cloudflare id, mp4, poster, title) and the six former duplicates are gone', () => {
+  const list = selectOurWork()
+  for (const key of [(v) => v.id, (v) => v.source.cloudflareId ?? v.source.mp4, (v) => v.poster, (v) => v.title ?? v.caption]) {
+    const vals = list.map(key).filter(Boolean)
+    assert.equal(new Set(vals).size, vals.length)
+  }
+  for (const id of DUPLICATES_REMOVED) assert.ok(!PORTFOLIO.some((v) => v.id === id) && !fs.existsSync(path.join(ROOT, 'public', 'portfolio', `${id}.webp`)), `${id} is gone`)
+  const html = rootOf(page(PATH))
+  const shown = html.match(/aria-label="Play video: [^"]*"/g) || []
+  assert.equal(new Set(shown).size, shown.length, 'no two cards in the HTML share a label')
+  assert.equal(PORTFOLIO.filter((v) => v.type === 'spokesperson').length, 7)
+})
+
+test('Spokesperson filter: a type filter after the four industry filters; it holds every spokesperson video (whatever its industry) and nothing else, and has no tab without one', () => {
+  const items = [
+    sample({ id: 'u-saas', industry: 'saas' }),
+    sample({ id: 's-saas', industry: 'saas', type: 'spokesperson' }),
+    sample({ id: 's-unknown', industry: 'unclassified', type: 'spokesperson' }),
+    sample({ id: 'u-unknown', industry: 'unclassified' }),
+  ]
+  assert.deepEqual(availableCategories(items).map((c) => c.id), ['all', 'saas', 'spokesperson'])
+  assert.deepEqual(filterByCategory(items, 'spokesperson').map((i) => i.id), ['s-saas', 's-unknown'])
+  assert.deepEqual(filterByCategory(items, 'saas').map((i) => i.id), ['u-saas', 's-saas'], 'a classified spokesperson video is in its industry tab as well')
+  assert.equal(countIn(items, 'spokesperson'), 2)
+  assert.deepEqual(availableCategories([items[0], items[3]]).map((c) => c.id), ['all', 'saas'], 'no Spokesperson tab without a spokesperson video')
+  assert.equal(inCategory(sample({ type: undefined }), 'spokesperson'), false)
+  // the shipped page: a Spokesperson pill with seven videos, after the industry pills
+  const html = rootOf(page(PATH))
+  const pills = [...html.matchAll(/aria-pressed="(?:true|false)"[^>]*>[\s\S]*?<\/svg>([A-Za-z -]+)<span[^>]*>(\d+)<\/span>/g)].map((m) => [m[1].trim(), Number(m[2])])
+  assert.deepEqual(pills, [['All Work', 32], ['E-commerce', 9], ['SaaS', 8], ['Services', 8], ['Spokesperson', 7]])
+  assert.match(html, /aria-label="Filter videos by industry or type"/)
+  const lib = renderToStaticMarkup(createElement(Library.default, { items: selectOurWork() }))
+  assert.ok(lib.includes('Spokesperson'))
+  assert.ok(!/Other<span/.test(lib), 'Other still has no tab while it has no video')
 })

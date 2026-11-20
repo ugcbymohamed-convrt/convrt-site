@@ -14,7 +14,7 @@ import react from '@vitejs/plugin-react'
 import { createElement } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { PATHS, KNOWN_PATHS } from '../src/routes.js'
-import { SITE_URL, OFFER_PATHS, OUR_WORK_PATH, BOOKING_URL } from '../src/config.js'
+import { SITE_URL, OFFER_PATHS, CREATOR_SHOWCASE_PATH, BOOKING_URL } from '../src/config.js'
 import { SITE_SEO, pageHead, sitemapRoutes } from '../src/seo/siteSeo.js'
 import { organicSocialGraph, jsonLdFor, ORG_ID, serviceId, BREADCRUMB_TRAILS } from '../src/seo/structuredData.js'
 import { ORGANIC_SOCIAL_FAQ, organicSocialFaqText } from '../src/seo/organicSocialFaq.js'
@@ -107,7 +107,7 @@ test('static HTML: breadcrumb, ONE H1 reading "Organic social videos. Built to e
   assert.equal((hero.match(/<p class="cs-fade-up mx-auto mt-6/g) || []).length, 1, 'one description paragraph only')
   assert.match(hero, new RegExp(`<a href="${BOOKING_URL.replace(/[.?]/g, '\\$&')}" target="_blank" rel="noopener noreferrer"[^>]*>\\s*Discuss Your Content Strategy`), 'primary CTA → the existing discovery-call booking link, in a new tab')
   assert.ok(!/Get 5 Free Ad Concepts|Your next 5 ad concepts/.test(hero), 'the paid-ads Roadmap promise is not in the organic hero')
-  assert.match(html, new RegExp(`<a [^>]*href="${OUR_WORK_PATH}"[^>]*>\\s*Explore Videos`), 'secondary CTA → /our-work')
+  assert.match(html, new RegExp(`<a [^>]*href="${CREATOR_SHOWCASE_PATH}"[^>]*>\\s*Explore Videos`), 'secondary CTA → /our-work')
   assert.ok(html.includes(`href="${OFFER_PATHS.roadmap}"`) && /Get 5 Free Ad Concepts/.test(html), 'the Free Creative Growth Roadmap stays reachable (header and proof section)')
   assert.ok(/1 <span class="text-lime">FREE<\/span> Video/.test(html) && /10 <span class="text-\[#F472B6\]">FREE<\/span> Ad Hooks/.test(html), 'the two free-offer cards, reused from the homepage hero')
 })
@@ -182,7 +182,7 @@ test('gallery: heading, copy, badge, button and four-up horizontal scroller; sty
   assert.ok(t.includes('Content people actually want to watch.'))
   assert.ok(t.includes('From educational Reels and creator-led stories to entertaining short-form videos, explore different ways brands can connect with their audiences.'))
   assert.ok(/Organic ·/.test(t) && !/UGC|Spokesperson/.test(t), 'cards are labelled Organic')
-  assert.match(g, new RegExp(`href="${OUR_WORK_PATH}"[^>]*>[^<]*Explore Videos`))
+  assert.match(g, new RegExp(`href="${CREATOR_SHOWCASE_PATH}"[^>]*>[^<]*Explore Videos`))
   assert.ok(/lg:w-\[calc\(\(100%-3rem\)\/4\)\]/.test(g), 'four cards across on a laptop')
   // filter: All + only the two styles that exist; real toggle buttons in a labelled group
   assert.match(g, /role="group" aria-label="Filter videos by content style"/)
@@ -196,7 +196,7 @@ test('gallery: heading, copy, badge, button and four-up horizontal scroller; sty
   assert.equal((g.match(/<figure/g) || []).length, 3, 'every approved card is in the HTML')
   assert.equal(renderToStaticMarkup(createElement(Gallery.default, { items: [], config: ORGANIC_GALLERY })), '', 'absent without videos (the stand-ins are preview-only and appear after hydration)')
   assert.equal(ORGANIC_GALLERY.samplePortraits, null, 'preview stand-ins carry no creator imagery')
-  assert.deepEqual(ORGANIC_GALLERY.cta, { label: 'Explore Videos', href: OUR_WORK_PATH }, '/our-work has no style filter, so the button goes to the whole showcase')
+  assert.deepEqual(ORGANIC_GALLERY.cta, { label: 'Explore Videos', href: CREATOR_SHOWCASE_PATH }, '/our-work has no style filter, so the button goes to the whole showcase')
   // the shared gallery without a filter config is exactly as before
   const ugcLike = renderToStaticMarkup(createElement(Gallery.default, { items }))
   assert.ok(!/aria-pressed/.test(ugcLike))
@@ -377,7 +377,7 @@ test('internal links: homepage Services and FAQ, Pricing and the footer link to 
   for (const p of ['/', '/pricing', '/creative-growth-roadmap', PATH, PATHS.ugcVideoAgency]) assert.match(rootOf(page(p)), /<a [^>]*href="\/social-media-video-production"[^>]*>Organic Social Videos<\/a>/, `footer link on ${p}`)
   assert.ok(!JSON.stringify(jsonLdFor('/')).includes('social-media-video-production'))
   const html = rootOf(page(PATH))
-  for (const href of [ORGANIC_PRICING_HREF, '/pricing#packages', '/ugc-video-agency', OFFER_PATHS.roadmap, OUR_WORK_PATH, '/case-studies/graspo']) assert.ok(html.includes(`href="${href}"`), href)
+  for (const href of [ORGANIC_PRICING_HREF, '/pricing#packages', '/ugc-video-agency', OFFER_PATHS.roadmap, CREATOR_SHOWCASE_PATH, '/case-studies/graspo']) assert.ok(html.includes(`href="${href}"`), href)
 })
 
 test('pricing deep link: /pricing#organic opens the Organic Social packages after mount; the prerendered pricing HTML still starts on Paid', () => {

@@ -13,7 +13,7 @@ import react from '@vitejs/plugin-react'
 import { createElement } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { PATHS, KNOWN_PATHS } from '../src/routes.js'
-import { SITE_URL, OFFER_PATHS, OUR_WORK_PATH } from '../src/config.js'
+import { SITE_URL, OFFER_PATHS, CREATOR_SHOWCASE_PATH } from '../src/config.js'
 import { SITE_SEO, pageHead, sitemapRoutes } from '../src/seo/siteSeo.js'
 import { saasGraph, jsonLdFor, ORG_ID, serviceId, BREADCRUMB_TRAILS } from '../src/seo/structuredData.js'
 import { SAAS_FAQ, saasFaqText } from '../src/seo/saasFaq.js'
@@ -102,7 +102,7 @@ test('static HTML: breadcrumb, ONE H1 reading "SaaS videos. Built to explain. Ma
   assert.equal(h1, 'SaaS videos. Built to explain. Made to convrt.')
   assert.ok(t.includes('From product demos and animated explainers to human-led presentations and paid ads, we turn complex software into clear, engaging videos that communicate your product’s value.'))
   assert.match(html, new RegExp(`<a [^>]*href="${OFFER_PATHS.roadmap}"[^>]*>\\s*Get 5 Free Ad Concepts`), 'primary CTA → the Roadmap')
-  assert.match(html, new RegExp(`<a [^>]*href="${OUR_WORK_PATH}"[^>]*>\\s*Explore Videos`), 'secondary CTA → /our-work')
+  assert.match(html, new RegExp(`<a [^>]*href="${CREATOR_SHOWCASE_PATH}"[^>]*>\\s*Explore Videos`), 'secondary CTA → /our-work')
   assert.ok(/1 <span class="text-lime">FREE<\/span> Video/.test(html) && /10 <span class="text-\[#F472B6\]">FREE<\/span> Ad Hooks/.test(html), 'the two free-offer cards, reused from the homepage hero')
 })
 
@@ -172,7 +172,7 @@ test('portfolio: the SaaS selectors take ONLY approved type "saas" videos or exp
   const others = selectHero().concat(selectGallery(), selectOrganicHero(), selectOrganicGallery(), selectSpokespersonHero(), selectSpokespersonGallery())
   assert.ok(shipped.filter((v) => v.type === 'saas').every((v) => !others.includes(v)))
   assert.ok(shipped.filter((v) => v.type !== 'saas').every((v) => v.alsoOn?.saas), 'every non-SaaS-typed video on the page is there by an explicit alsoOn entry')
-  assert.ok(selectSpokespersonHero().concat(selectSpokespersonGallery()).every((v) => !shipped.includes(v)), 'no shipped spokesperson video is on the SaaS page without a deliberate alsoOn entry')
+  assert.ok(selectSpokespersonHero().concat(selectSpokespersonGallery()).every((v) => !shipped.includes(v) || v.alsoOn?.saas), 'a shipped spokesperson video is on the SaaS page only through a deliberate alsoOn entry')
   assert.deepEqual(selectShowcase('elyon').map((v) => v.id), PORTFOLIO.filter((v) => v.showcase === 'elyon').map((v) => v.id), 'homepage client panels are unchanged')
   assert.equal(typeLabel({ type: 'saas' }), 'SaaS video')
 })
@@ -198,7 +198,7 @@ test('gallery: SaaS heading, copy, badge, button and four-up horizontal scroller
   assert.ok(t.includes('See software come to life.'))
   assert.ok(t.includes('Explore product explainers, software demonstrations and creative video approaches that help audiences understand what a product can do.'))
   assert.ok(/SaaS ·/.test(t) && !/UGC|Spokesperson/.test(t), 'cards are labelled SaaS')
-  assert.match(g, new RegExp(`href="${OUR_WORK_PATH}"[^>]*>[^<]*Explore SaaS Videos`))
+  assert.match(g, new RegExp(`href="${CREATOR_SHOWCASE_PATH}"[^>]*>[^<]*Explore SaaS Videos`))
   assert.ok(/aria-label="SaaS video examples\. Scroll sideways to see more\."/.test(g))
   assert.ok(/lg:w-\[calc\(\(100%-3rem\)\/4\)\]/.test(g), 'four cards across on a laptop')
   assert.ok(g.includes('Product demos') && g.includes('Product explainers') && !g.includes('>Animated<') && !g.includes('>Ads<'), 'only formats that approved videos carry get a chip')
@@ -208,7 +208,7 @@ test('gallery: SaaS heading, copy, badge, button and four-up horizontal scroller
   assert.ok(!none.includes('Filter videos by format'), 'no unconfirmed format, no filter')
   assert.equal(renderToStaticMarkup(createElement(Gallery.default, { items: [], config: SAAS_GALLERY })), '', 'absent without videos (the stand-ins are preview-only and appear after hydration)')
   assert.equal(SAAS_GALLERY.samplePortraits, null, 'preview stand-ins carry no creator imagery')
-  assert.equal(SAAS_GALLERY.cta.href, OUR_WORK_PATH, 'no invented filtered route')
+  assert.equal(SAAS_GALLERY.cta.href, CREATOR_SHOWCASE_PATH, 'no invented filtered route')
 })
 
 // ── the sections ─────────────────────────────────────────────────────────────────────────
@@ -349,7 +349,7 @@ test('internal links: the footer on every page, the homepage Services line and F
   assert.match(rootOf(page(PATHS.spokespersonVideoProduction)), /See our SaaS video production/)
   assert.ok(!JSON.stringify(jsonLdFor('/')).includes('saas-video-production'), 'the homepage JSON-LD is unchanged')
   const html = rootOf(page(PATH))
-  for (const href of ['/pricing#packages', '/pricing#package-info', '/ugc-video-agency', '/spokesperson-video-production', OFFER_PATHS.roadmap, OUR_WORK_PATH, '/']) assert.ok(html.includes(`href="${href}"`), href)
+  for (const href of ['/pricing#packages', '/pricing#package-info', '/ugc-video-agency', '/spokesperson-video-production', OFFER_PATHS.roadmap, CREATOR_SHOWCASE_PATH, '/']) assert.ok(html.includes(`href="${href}"`), href)
 })
 
 test('final CTA: the same system as the other service pages, with the SaaS headline; pricing and founder e-mail are real buttons; no free-explainer implication', () => {
