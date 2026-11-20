@@ -43,7 +43,7 @@ const ROUTES = {
   [PATHS.ugcVideoAgency]: UgcVideoAgencyPage,
   // Spokesperson service page: the same architecture as the UGC page, with its own content and its own videos.
   [PATHS.spokespersonVideoProduction]: SpokespersonVideoPage,
-  // Our Work: the filterable video portfolio (src/content/portfolio.js).
+  // Creator Showcase (route stays /creator-showcase): the filterable video library (src/content/portfolio.js).
   [PATHS.showcase]: OurWorkPage,
   [PATHS.caseStudies]: CaseStudiesPage,
   [PATHS.caseStudyGraspo]: CaseStudiesPage,

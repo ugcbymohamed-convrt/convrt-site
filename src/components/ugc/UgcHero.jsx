@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import { trackEvent } from '../../lib/analytics.js'
 import { usePressFeedback } from '../../lib/usePressFeedback.js'
-import { scrollToElement } from '../../lib/scroll.js'
 import { usePreviewHost } from '../../lib/previewHost.js'
 import { OFFER_PATHS, CREATOR_SHOWCASE_PATH } from '../../config.js'
 import { SECONDARY_OFFERS, SecondaryOffer } from '../Hero.jsx'
@@ -29,7 +28,7 @@ import { useAutoplayAllowed } from './creatorVideo.jsx'
    and gets the same layout, headline animation, CTA styles, offer cards and phone stage. A config supplies:
      id, lines, lead, words, sizer          the H1: fixed lines, the words before the rolling word, the rolling words and the width-reserving word
      description                           the paragraph under the headline
-     primary / secondary                   the two CTAs ({ label, href }); secondary may also name an element id to scroll to when the page has it
+     primary / secondary                   the two CTAs ({ label, href }); both are plain links
      track                                 analytics event names
      stageLabel / stagePrefix              the phone stage's accessible name and analytics prefix
      previewPortraits                      whether preview hosts show stand-in portraits in the empty phones (UGC: yes) */
@@ -44,7 +43,7 @@ export const UGC_HERO = {
   sizer: 'resonate.',
   description: 'CONVRT is an international, multilingual UGC agency and creative production studio. We script, film and edit human-created UGC ads with real creators, built for paid social.',
   primary: { label: 'Get 5 Free Ad Concepts', href: OFFER_PATHS.roadmap },
-  secondary: { label: 'See Our Work', href: CREATOR_SHOWCASE_PATH, scrollTo: 'ugc-videos' },
+  secondary: { label: 'Explore Videos', href: CREATOR_SHOWCASE_PATH },
   track: { cta: 'ugc_page_cta_click', work: 'ugc_see_our_work_click' },
   stageLabel: 'Creator UGC videos',
   stagePrefix: 'ugc',
@@ -168,14 +167,7 @@ export default function UgcHero({ items, config = UGC_HERO }) {
                   </a>
                   <a
                     href={config.secondary.href}
-                    onClick={(e) => {
-                      trackEvent(config.track.work, { location: 'hero' })
-                      if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return
-                      const target = config.secondary.scrollTo ? document.getElementById(config.secondary.scrollTo) : null
-                      if (!target) return // no gallery on this page yet: follow the link
-                      e.preventDefault()
-                      scrollToElement(target)
-                    }}
+                    onClick={() => trackEvent(config.track.work, { location: 'hero' })}
                     {...ghostPress}
                     className={GHOST_CTA}
                   >

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
-import { titleOf, posterUrl, industryLabel, typeLabel, languageLabel, creatorLabel } from '../../content/portfolio.js'
+import { titleOf, posterUrl, industryLabel, typeLabel, languageLabel, creatorLabel, brandLabel, creditLabel, productionLabel } from '../../content/portfolio.js'
 import { useAttachSource, PlayGlyph, PauseGlyph, SoundGlyph } from '../ugc/creatorVideo.jsx'
 import { CloseGlyph, Chevron } from './icons.jsx'
 
@@ -131,8 +131,9 @@ export default function VideoLightbox({ item, color, onClose, onPrev, onNext }) 
   const closeBtn = useRef(null)
   const opener = useRef(null)
   const title = titleOf(item)
-  const who = [item.brand, creatorLabel(item)].filter(Boolean).join(' · ')
-  const meta = [industryLabel(item.industry), typeLabel(item), ...(item.languages ?? []).map(languageLabel)].join(' · ')
+  const who = [brandLabel(item), creatorLabel(item), creditLabel(item)].filter(Boolean).join(' · ')
+  // Only what is confirmed: an unknown industry, type or production is simply not mentioned.
+  const meta = [industryLabel(item.industry), typeLabel(item), productionLabel(item), ...(item.languages ?? []).map(languageLabel)].filter(Boolean).join(' · ')
 
   /* focus in on open, back to the opening card on close; lock the page behind */
   useEffect(() => {

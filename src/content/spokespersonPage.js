@@ -27,7 +27,7 @@ export const SPOKESPERSON_HERO = {
   description:
     'Professional, multilingual spokesperson videos featuring real people on camera. From SaaS demos and product presentations to website videos and paid ads, we handle scripting, talent selection, filming and editing.',
   primary: { label: 'Get 5 Free Ad Concepts', href: OFFER_PATHS.roadmap },
-  /* No scrollTo: this button always goes to /creator-showcase. */
+  
   secondary: { label: 'Explore Videos', href: CREATOR_SHOWCASE_PATH },
   track: { cta: 'spokesperson_page_cta_click', work: 'spokesperson_explore_videos_click' },
   stageLabel: 'Spokesperson videos',

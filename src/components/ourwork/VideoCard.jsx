@@ -1,20 +1,22 @@
-import { posterUrl, titleOf, industryLabel, categoryOf, CATEGORIES, creatorLabel } from '../../content/portfolio.js'
+import { posterUrl, titleOf, industryLabel, categoryOf, CATEGORIES, creatorLabel, brandLabel } from '../../content/portfolio.js'
 import { PlayGlyph } from '../ugc/creatorVideo.jsx'
 
 /* One portrait (9:16) card. Poster first: there is NO <video> element, stream or download until a visitor opens the card, so a library of
    hundreds of videos costs only its thumbnails. The whole card is one button (the accessible name is "Play video: <title>").
 
-   Text is kept to the minimum: the industry (with its category colour) and the language(s) as small badges, the title and, only when the
-   data allows it, the brand and creator name. `priority` (the first row) loads eagerly; everything else lazy-loads. The image has fixed
+   Text is kept to the minimum: the industry (with its category colour; none while it is unconfirmed) and the language(s) as small badges, the title and, only with
+   the recorded permission, the brand and creator name. `priority` (the first row) loads eagerly; everything else lazy-loads. The image has fixed
    dimensions and the card a fixed 9:16 box, so the grid never shifts as thumbnails arrive. */
 
 const COLOR_OF = Object.fromEntries(CATEGORIES.map((c) => [c.id, c.color]))
+const NEUTRAL = '#a1a1aa' // an unclassified video belongs to no category: no category colour, no industry badge
 
 export default function VideoCard({ item, priority = false, onOpen }) {
-  const color = COLOR_OF[categoryOf(item)]
+  const color = COLOR_OF[categoryOf(item)] ?? NEUTRAL
+  const industry = industryLabel(item.industry)
   const title = titleOf(item)
   const langs = (item.languages ?? []).map((l) => l.toUpperCase()).join(' · ')
-  const who = [item.brand, creatorLabel(item)].filter(Boolean).join(' · ')
+  const who = [brandLabel(item), creatorLabel(item)].filter(Boolean).join(' · ')
   return (
     <button
       type="button"
@@ -36,10 +38,12 @@ export default function VideoCard({ item, priority = false, onOpen }) {
       <span aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/10 to-black/30" />
 
       <span className="absolute inset-x-2.5 top-2.5 flex items-start justify-between gap-2 md:inset-x-3 md:top-3">
-        <span className="inline-flex max-w-full items-center gap-1.5 rounded-full border border-white/15 bg-black/55 px-2 py-1 text-[10px] font-bold uppercase tracking-[0.08em] text-ink backdrop-blur md:text-[11px]">
-          <span aria-hidden="true" className="h-1.5 w-1.5 shrink-0 rounded-full" style={{ backgroundColor: color }} />
-          <span className="truncate">{industryLabel(item.industry)}</span>
-        </span>
+        {industry ? (
+          <span className="inline-flex max-w-full items-center gap-1.5 rounded-full border border-white/15 bg-black/55 px-2 py-1 text-[10px] font-bold uppercase tracking-[0.08em] text-ink backdrop-blur md:text-[11px]">
+            <span aria-hidden="true" className="h-1.5 w-1.5 shrink-0 rounded-full" style={{ backgroundColor: color }} />
+            <span className="truncate">{industry}</span>
+          </span>
+        ) : <span />}
         {langs && <span className="shrink-0 rounded-full border border-white/15 bg-black/55 px-2 py-1 text-[10px] font-bold tracking-[0.08em] text-ink-muted backdrop-blur md:text-[11px]">{langs}</span>}
       </span>
 

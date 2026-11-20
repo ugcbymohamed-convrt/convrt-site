@@ -47,7 +47,7 @@ export function Player({ item }) {
 
 function Card({ item, tone, playing, onPlay }) {
   const name = creatorLabel(item)
-  const langs = item.languages.map(languageLabel).join(' · ')
+  const langs = (item.languages ?? []).map(languageLabel).join(' · ')
   const meta = [item.brand, item.category].filter(Boolean).join(' · ')
   return (
     <figure className="group flex h-full flex-col">
@@ -67,7 +67,7 @@ function Card({ item, tone, playing, onPlay }) {
             <img src={posterUrl(item)} alt="" width="405" height="720" loading="lazy" decoding="async" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.04] motion-reduce:transition-none" />
             <span aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
             <span aria-hidden="true" className="absolute left-3 top-3 rounded-full border border-white/20 bg-black/50 px-2.5 py-1 text-xs font-semibold uppercase tracking-[0.08em] text-ink backdrop-blur">
-              {item.languages.map((l) => l.toUpperCase()).join(' · ')}
+              {(item.languages ?? []).map((l) => l.toUpperCase()).join(' · ')}
             </span>
             <span aria-hidden="true" className="absolute left-1/2 top-1/2 flex h-14 w-14 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-white/30 bg-black/40 text-ink backdrop-blur transition-transform duration-200 group-hover:scale-110 motion-reduce:transition-none">
               <PlayGlyph />
@@ -133,7 +133,7 @@ export function PortfolioGrid({ items, pageSize = PAGE }) {
                 item={item}
                 tone={TONES[i % TONES.length]}
                 playing={activeId === item.id}
-                onPlay={() => { setActiveId(item.id); trackEvent('ugc_portfolio_play', { language: item.languages.join(','), industry: item.industry }) }}
+                onPlay={() => { setActiveId(item.id); trackEvent('ugc_portfolio_play', { language: item.languages?.join(','), industry: item.industry }) }}
               />
             </div>
           </li>

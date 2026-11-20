@@ -11,7 +11,7 @@ import { usePressFeedback } from '../lib/usePressFeedback.js'
 // mobile menu, the footer, and the hero/CTA buttons — nothing is removed.
 const links = [
   { label: 'Services', href: '#services' },
-  { label: 'Our Work', href: CREATOR_SHOWCASE_PATH },
+  { label: 'Creator Showcase', href: CREATOR_SHOWCASE_PATH },
   { label: 'Case Studies', href: '/case-studies' },
   { label: 'How It Works', href: '#how-it-works' },
   { label: 'Pricing', href: '/pricing' },
@@ -88,7 +88,7 @@ export default function Nav() {
       <div className="mx-auto flex h-[72px] max-w-7xl items-center justify-between px-5 md:h-[96px] md:px-8">
         <Logo />
 
-        <nav className="hidden lg:flex items-center gap-5 xl:gap-8" aria-label="Primary">
+        <nav className="hidden lg:flex items-center gap-3 min-[1100px]:gap-5 xl:gap-8" aria-label="Primary">
           {links.map((l) => (
             <a
               key={l.href}

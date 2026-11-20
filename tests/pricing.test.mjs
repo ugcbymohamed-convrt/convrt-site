@@ -777,7 +777,7 @@ test('price per variation: Sprint $200 and Sprint Plus $167 (monthly, rounded to
   assert.equal(pricePerVariation(SPRINT_PLUS, 'oneOff').text, '$200')
   const src = fs.readFileSync(path.join(ROOT, 'src/components/pricing/PricingCards.jsx'), 'utf8')
   assert.ok(/pricePerVariation\(pkg, o\.id\)\.text/.test(src) && !/\$166|\$200\b/.test(src.replace(/\/\*[\s\S]*?\*\//g, '')), 'figures are computed, never typed in the component')
-  assert.match(faq('whats-included'), /\$200 per variation for the Creative Testing Sprint and \$167 per variation for Creative Testing Sprint Plus/)
+  assert.match(faq('whats-included'), /\$200 per variation for the Creative Testing Sprint and \$167 per variation for Creative Testing Sprint Plus.*not prices for buying individual videos/)
 })
 
 // ── sitewide consistency audit guard ──
