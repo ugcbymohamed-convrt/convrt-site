@@ -262,22 +262,68 @@ body {
   animation: line-grow 0.6s 0.15s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-/* ── Service card — shine sweep on hover entry ── */
+/* ── Homepage Services: four equal, fully clickable cards ──
+   One <a> per card. Colour comes from per-card custom properties set in Services.jsx (--svc-*), so all four
+   share one rule set. Hover and keyboard focus (:focus-visible) get the same treatment; the lift, arrow move
+   and shine only run when the visitor has not asked for reduced motion. Every transition is 250 ms. */
 @keyframes card-shine {
   0%   { transform: translateX(-140%) skewX(-14deg); }
   100% { transform: translateX(240%)  skewX(-14deg); }
 }
-.service-card-shine {
-  animation: card-shine 0.75s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+.svc-card {
+  position: relative; isolation: isolate; display: flex; flex-direction: column; height: 100%;
+  border-radius: 28px; background: #0c0c0f; padding: 1.75rem; color: inherit; text-decoration: none;
+  cursor: pointer; -webkit-tap-highlight-color: transparent;
+  transition: transform 250ms cubic-bezier(0.22, 1, 0.36, 1);
 }
-
-/* ── Service card — icon glow breathing on hover ── */
-@keyframes icon-breathe {
-  0%, 100% { opacity: 0.18; transform: scale(1.1); }
-  50%       { opacity: 0.32; transform: scale(1.6); }
-}
-.icon-breathe {
-  animation: icon-breathe 2s ease-in-out infinite;
+@media (min-width: 768px) { .svc-card { padding: 2.25rem; } }
+.svc-card:focus-visible { outline: 2px solid rgb(var(--svc-rgb) / 0.95); outline-offset: 5px; }
+.svc-layer { position: absolute; inset: 0; border-radius: inherit; pointer-events: none; }
+.svc-clip { overflow: hidden; z-index: -1; }
+.svc-frame { z-index: -2; box-shadow: 0 0 0 1px rgb(var(--svc-rgb) / var(--svc-ring)), 0 0 40px -10px rgb(var(--svc-rgb) / 0.28), 0 8px 40px -8px rgb(0 0 0 / 0.7); }
+.svc-frame-hi { z-index: -2; opacity: 0; transition: opacity 250ms ease; box-shadow: 0 0 0 1px rgb(var(--svc-rgb) / var(--svc-ring-hi)), 0 0 70px -6px rgb(var(--svc-rgb) / 0.5), 0 30px 60px -20px rgb(0 0 0 / 0.9); }
+.svc-glow { background:
+  radial-gradient(var(--svc-ga-r) circle at var(--svc-ga-pos), rgb(var(--svc-rgb) / var(--svc-ga)), transparent 70%),
+  radial-gradient(var(--svc-gb-r) circle at var(--svc-gb-pos), rgb(var(--svc-rgb2) / var(--svc-gb)), transparent 65%); }
+.svc-glow-hi { opacity: 0; transition: opacity 250ms ease; background:
+  radial-gradient(var(--svc-ga-r) circle at var(--svc-ga-pos), rgb(var(--svc-rgb) / var(--svc-ga-hi)), transparent 70%),
+  radial-gradient(var(--svc-gb-r) circle at var(--svc-gb-pos), rgb(var(--svc-rgb2) / var(--svc-gb-hi)), transparent 65%); }
+.svc-num { position: absolute; right: -0.5rem; bottom: -1.5rem; font-weight: 900; line-height: 1; user-select: none;
+  font-size: clamp(90px, 13vw, 155px); color: rgb(var(--svc-rgb)); opacity: 0.07; transition: opacity 250ms ease; }
+.svc-shine { position: absolute; top: 0; bottom: 0; width: 55%; transform: translateX(-140%) skewX(-14deg);
+  background: linear-gradient(105deg, transparent, rgb(var(--svc-rgb) / 0.13), transparent); }
+.svc-body { position: relative; display: flex; flex: 1; flex-direction: column; }
+.svc-icon { position: relative; display: flex; height: 3.5rem; width: 3.5rem; align-items: center; justify-content: center;
+  border-radius: 1rem; color: var(--svc-text); background: rgb(var(--svc-rgb) / 0.18); border: 1px solid rgb(var(--svc-rgb) / 0.32);
+  transition: background-color 250ms ease, border-color 250ms ease, color 250ms ease; }
+.svc-halo { position: absolute; inset: -10px; border-radius: 9999px; background: rgb(var(--svc-rgb)); filter: blur(16px); opacity: 0.2; transition: opacity 250ms ease; }
+.svc-corner { display: flex; height: 2.5rem; width: 2.5rem; flex: none; align-items: center; justify-content: center; border-radius: 9999px;
+  color: var(--svc-text); background: rgb(var(--svc-rgb) / 0.10); border: 1px solid rgb(var(--svc-rgb) / 0.35);
+  transition: background-color 250ms ease, border-color 250ms ease, color 250ms ease; }
+.svc-arrow { transition: transform 250ms cubic-bezier(0.22, 1, 0.36, 1); }
+.svc-title { color: #f4f4f5; transition: color 250ms ease; }
+.svc-desc { color: #b4b4bd; transition: color 250ms ease; }
+.svc-pill { display: inline-flex; align-items: center; border-radius: 9999px; padding: 0.25rem 0.75rem; font-size: 11.5px; font-weight: 500; line-height: 1.2;
+  color: var(--svc-text); background: rgb(var(--svc-rgb) / 0.13); border: 1px solid rgb(var(--svc-rgb) / 0.28);
+  transition: background-color 250ms ease, border-color 250ms ease, color 250ms ease; }
+.svc-rule { height: 1px; border-radius: 9999px; background: linear-gradient(to right, rgb(var(--svc-rgb) / 0.45), rgb(var(--svc-rgb) / 0.08)); }
+.svc-cta { display: inline-flex; min-height: 2.5rem; align-items: center; gap: 0.4rem; border-radius: 9999px; padding: 0 1rem; font-size: 14px; font-weight: 600;
+  color: var(--svc-text); background: rgb(var(--svc-rgb) / 0.10); border: 1px solid rgb(var(--svc-rgb) / 0.32);
+  transition: background-color 250ms ease, border-color 250ms ease, color 250ms ease; }
+.svc-card:is(:hover, :focus-visible) .svc-frame-hi,
+.svc-card:is(:hover, :focus-visible) .svc-glow-hi { opacity: 1; }
+.svc-card:is(:hover, :focus-visible) .svc-num { opacity: 0.14; }
+.svc-card:is(:hover, :focus-visible) .svc-halo { opacity: 0.38; }
+.svc-card:is(:hover, :focus-visible) .svc-icon { color: rgb(var(--svc-rgb)); background: rgb(var(--svc-rgb) / 0.30); border-color: rgb(var(--svc-rgb) / 0.65); }
+.svc-card:is(:hover, :focus-visible) .svc-corner { color: #fff; background: rgb(var(--svc-rgb) / 0.28); border-color: rgb(var(--svc-rgb) / 0.7); }
+.svc-card:is(:hover, :focus-visible) .svc-title { color: #fff; }
+.svc-card:is(:hover, :focus-visible) .svc-desc { color: #d4d4d8; }
+.svc-card:is(:hover, :focus-visible) .svc-pill { color: var(--svc-text-hi); background: rgb(var(--svc-rgb) / 0.24); border-color: rgb(var(--svc-rgb) / 0.55); }
+.svc-card:is(:hover, :focus-visible) .svc-cta { color: #fff; background: rgb(var(--svc-rgb) / 0.26); border-color: rgb(var(--svc-rgb) / 0.75); }
+@media (prefers-reduced-motion: no-preference) {
+  .svc-card:is(:hover, :focus-visible) { transform: translateY(-4px); }
+  .svc-card:is(:hover, :focus-visible) .svc-arrow { transform: translate(3px, -3px); }
+  .svc-card:is(:hover, :focus-visible) .svc-shine { animation: card-shine 0.75s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
 }
 
 /* ── Pricing — package panel swap ── */
@@ -357,8 +403,6 @@ body {
   .cs-fade-up,
   .cs-card-in,
   .phone-float,
-  .service-card-shine,
-  .icon-breathe,
   .pricing-panel-in {
     animation: none;
   }
