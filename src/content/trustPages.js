@@ -11,7 +11,9 @@
    Inline links: write [[label|/path]] and the template turns it into an anchor. Marker text must not contain a closing square bracket. */
 
 import { CONTACT_EMAIL, BOOKING_URL, OFFER_PATHS, CREATOR_SHOWCASE_PATH, PRIVACY_PATH, TERMS_PATH, LEGAL_NOTICE_PATH, COMPANY_LINKEDIN_URL, INSTAGRAM_URL, LEGAL_NOTICE_DETAILS_APPROVED } from '../config.js'
-import { BRAND, CREATOR_ALLOCATION, PRODUCTION_LANGUAGES, TALENT, USAGE_RIGHTS, TAX } from '../seo/businessKnowledge.js'
+import { BRAND, CREATOR_ALLOCATION, PRODUCTION_LANGUAGES, PRODUCTION_MODEL, INTERNATIONAL_CLIENTS, TALENT, USAGE_RIGHTS, TAX } from '../seo/businessKnowledge.js'
+import { ELYON_PROOF } from './ugcProof.js'
+import { ORGANIC_PROOF } from './organicSocialPage.js'
 import { OPERATOR } from './operator.js'
 import { CURRENT_MARKETING_CONSENT_VERSION, marketingConsentText } from './marketingConsent.js'
 import { consentConfigured } from '../lib/consent.js'
@@ -25,6 +27,8 @@ const UPDATED = DRAFT_DATE
 const ANALYTICS_ACTIVE = consentConfigured()
 const LANGS = `${PRODUCTION_LANGUAGES.core.slice(0, -1).join(', ')} and ${PRODUCTION_LANGUAGES.core.at(-1)}`
 const founder = BRAND.founder
+/* The headline figures of the two published case studies, read from the data the service pages already use (their qualifiers are kept). */
+const GRASPO = ORGANIC_PROOF.results[0]
 const mail = `[[${CONTACT_EMAIL}|mailto:${CONTACT_EMAIL}]]`
 const CREATOR_FORM = 'https://forms.gle/Bg8ubU2tnmMj88m7A'
 
@@ -49,6 +53,22 @@ export const TRUST_CONTENT = {
     intro:
       'CONVRT Studio is a founder-led creative studio. We produce human-led UGC ads, SaaS videos, spokesperson videos and organic social content for businesses, with creative strategy, scripting, creator casting, filming and editing handled in one place, and a focus on performance-driven creative.',
     sections: [
+      {
+        heading: 'CONVRT Studio at a glance',
+        body: [
+          { list: [
+            'What we do: four services, each with its own page: [[UGC video ads|/ugc-video-agency]], [[SaaS video production|/saas-video-production]], [[spokesperson videos|/spokesperson-video-production]] and [[organic social video|/social-media-video-production]].',
+            `Who we serve: businesses only, across industries including SaaS, e-commerce, apps, technology and consumer products. ${INTERNATIONAL_CLIENTS.text}`,
+            'How we produce: creative strategy, scripts, creator casting, filming and editing in one studio. We work with both in-house talent and freelance creators. Our UGC and spokesperson videos feature real people on camera, not AI-generated avatars. You see relevant creator work before production and approve concepts and scripts before anything is filmed.',
+            `Where we produce: ${PRODUCTION_MODEL.short}`,
+            `Founder: CONVRT Studio is run by its founder, ${founder.name}, and operated as ${OPERATOR.structure}.`,
+            `Languages: ${LANGS}. ${PRODUCTION_LANGUAGES.other}`,
+            `Client work: Graspo, ${GRASPO.metric} ${GRASPO.metricLabel} on Facebook and Instagram, January to June 2026 ([[case study|${GRASPO.href}]]). Elyon Dubai, ${ELYON_PROOF.creativesProduced} creatives produced, including one creator-led video with a client-reported ${ELYON_PROOF.roas} ROAS ([[case study|${ELYON_PROOF.caseStudyHref}]]). Results are specific to each client and period; they are not typical and not guaranteed.`,
+            'Packages and terms: see the [[Pricing page|/pricing]].',
+            `Find us: convrt.studio, [[CONVRT Studio on LinkedIn|${COMPANY_LINKEDIN_URL}]], [[Instagram|${INSTAGRAM_URL}]] and the founder on [[LinkedIn|${founder.linkedin}]].`,
+          ] },
+        ],
+      },
       {
         heading: 'What we do',
         body: [
@@ -80,13 +100,19 @@ export const TRUST_CONTENT = {
         ],
       },
       {
-        heading: 'Languages and markets',
-        body: [`We produce in ${LANGS}. ${PRODUCTION_LANGUAGES.other}`],
+        heading: 'Markets, production and languages',
+        body: [
+          `We produce in ${LANGS}. ${PRODUCTION_LANGUAGES.other} ${INTERNATIONAL_CLIENTS.text} CONVRT Studio is registered in Spain.`,
+          `${PRODUCTION_MODEL.text} ${PRODUCTION_MODEL.scope}`,
+        ],
       },
       {
-        heading: 'What we do not do',
+        heading: 'What we provide, and what we do not',
         body: [
-          'We do not buy media or manage your advertising accounts, so you keep control of distribution and spend. We never guarantee specific results: performance depends on your offer, audience and budget.',
+          'Creative production, not media buying. We provide creative strategy, scripts, creator casting, filming, editing and finished, platform-ready videos. We do not buy media or manage your advertising accounts, so you keep control of distribution and spend. We never guarantee specific results: performance depends on your offer, audience and budget.',
+          'Community management, not customer support. Organic packages include publishing on your accounts and community management, which covers engagement and brand relationships. Customer support is not part of the service.',
+          'Finished videos, with optional raw footage. Every video is delivered finished and professionally edited. Raw footage is available only as an optional add-on alongside finished videos, never instead of them.',
+          'Licensed usage rights. Usage rights license how you may use the videos for the period in your package. They are not a transfer of copyright ownership. Package details, prices and terms are on the [[Pricing page|/pricing]].',
         ],
       },
       {

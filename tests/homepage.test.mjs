@@ -40,7 +40,12 @@ test('homepage FAQ: the approved questions and wording; no unverified claims; no
   assert.match(saas, /we work with you to obtain suitable product access, demonstrations or reference materials when needed/)
   assert.ok(!/(must|need to|require[sd]?|have to) (provide|supply)|dedicated demo account/i.test(saas), 'no implied mandatory demo account')
   const lang = homeFaqText(faq('other languages'))
-  assert.match(lang, /English, Spanish, French and Arabic/); assert.match(lang, /subject to availability/)
+  assert.match(lang, /English, Spanish, French and Arabic/); assert.match(lang, /subject to creator availability/)
+  // GEO Work Package 1: the answer also states how CONVRT produces (owner-approved wording): remote, on location in Spain, other countries subject to approval; on-location is not part of standard packages
+  assert.match(lang, /remote video production through its creator network, as well as on-location filming in Spain/)
+  assert.match(lang, /On-location shoots in other countries may be arranged subject to project requirements, availability and approval/)
+  assert.match(lang, /On-location filming is subject to project scope, availability and quotation where applicable/)
+  assert.ok(!/remote[- ]only|cannot film|do not film at your premises|offices?\b/i.test(lang), 'never remote-only, never an office claim')
   const all = HOME_FAQ.map(homeFaqText).join(' ')
   assert.ok(!/significantly better results/i.test(all), 'unsubstantiated retainer claim removed')
   assert.ok(!/personally approved by the founder/i.test(all), 'founder-approval claim removed')
@@ -100,7 +105,8 @@ test('homepage JSON-LD: WebPage + 4 Services (the service pages\' own ids) + FAQ
   const f = g.find((n) => n['@type'] === 'FAQPage')
   assert.deepEqual(f.mainEntity.map((q) => q.name), HOME_FAQ.map((x) => x.q))
   f.mainEntity.forEach((q, i) => assert.equal(q.acceptedAnswer.text, HOME_FAQ[i].a instanceof Array ? HOME_FAQ[i].a.join(' ') : HOME_FAQ[i].a))
-  assert.ok(!/aggregateRating|"review"|"address"|"award"|areaServed|potentialAction/.test(JSON.stringify(g)))
+  // the only address allowed is the country of registration (GEO Work Package 1): no street, locality or postal code
+  assert.ok(!/aggregateRating|"review"|"address"|"award"|areaServed|potentialAction/.test(JSON.stringify(g).replace('"address":{"@type":"PostalAddress","addressCountry":"ES"}', '')))
   // every @id reference resolves inside this graph
   const ids = new Set(g.map((n) => n['@id']).filter(Boolean))
   const refs = []; const walk = (v) => { if (Array.isArray(v)) return v.forEach(walk); if (v && typeof v === 'object') { if (Object.keys(v).length === 1 && v['@id']) refs.push(v['@id']); Object.values(v).forEach(walk) } }

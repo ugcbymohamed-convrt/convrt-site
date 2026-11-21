@@ -113,7 +113,7 @@ test('structured data: Organization gains a contact point; the founder Person ap
   assert.deepEqual(org.contactPoint, { '@type': 'ContactPoint', contactType: 'customer service', email: BRAND.contactEmail })
   assert.equal('founder' in org, TRUST_PAGES_PUBLISHED)
   assert.match(org.description, /SaaS video production/)
-  assert.ok(!/address|telephone|foundingDate|aggregateRating|award|numberOfEmployees/i.test(JSON.stringify(org)), 'no invented organisation facts')
+  assert.ok(!/address|telephone|foundingDate|aggregateRating|award|numberOfEmployees/i.test(JSON.stringify(org).replace('"address":{"@type":"PostalAddress","addressCountry":"ES"}', '')), 'no invented organisation facts (only the country of registration is an address)')
   const g = trustGraph(ABOUT_PATH, SITE_SEO[ABOUT_PATH])['@graph']
   assert.deepEqual(g.map((n) => n['@type']), ['Organization', 'AboutPage', 'BreadcrumbList'])
   assert.equal(trustGraph(CONTACT_PATH, SITE_SEO[CONTACT_PATH])['@graph'][1]['@type'], 'ContactPage')
