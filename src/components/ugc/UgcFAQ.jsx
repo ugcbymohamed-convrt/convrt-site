@@ -2,6 +2,9 @@ import { useState, useCallback } from 'react'
 import { UGC_FAQ } from '../../seo/ugcFaq.js'
 import { trackEvent } from '../../lib/analytics.js'
 import { Section, Head, Reveal, TextLink } from './shared.jsx'
+import { tr, T } from '../../i18n/tr.js'
+import { currentLocale } from '../../i18n/locale.js'
+import { localizeFaq } from '../../i18n/content.js'
 
 /* SECTION 5: FAQ (14 questions). EVERY question and answer is always in the DOM (and so in the prerendered HTML). Collapsed answers stay in
    the document but are visibility:hidden, so they are out of the tab order and accessibility tree. The same UGC_FAQ array feeds
@@ -69,11 +72,13 @@ function Item({ item, open, onToggle, prefix, track }) {
 export const UGC_FAQ_CONFIG = {
   items: UGC_FAQ,
   prefix: 'ugc',
-  title: <>UGC video production, <span className="text-lime">answered.</span></>,
+  title: <><T>UGC video production,</T>{' '}<span className="text-lime"><T>answered.</T></span></>,
 }
 
 export default function UgcFAQ({ config = UGC_FAQ_CONFIG }) {
-  const { items, prefix, title } = config
+  const { prefix, title } = config
+  // Questions and answers go through the page language's dictionary (identity in English); order, ids and links are the English ones.
+  const items = localizeFaq(config.items, currentLocale())
   const [openId, setOpenId] = useState(null)
   const toggle = useCallback((id) => {
     setOpenId((prev) => {
@@ -85,7 +90,7 @@ export default function UgcFAQ({ config = UGC_FAQ_CONFIG }) {
     <Section id={`${prefix}-faq`} label={`${prefix}-faq-heading`}>
       <div className="mx-auto max-w-3xl">
         <Reveal>
-          <Head id={`${prefix}-faq-heading`} eyebrow="FAQ" title={title} />
+          <Head id={`${prefix}-faq-heading`} eyebrow={tr('FAQ')} title={title} />
         </Reveal>
         <div className="mt-8 h-px bg-white/[0.06]" />
         {items.map((item) => (

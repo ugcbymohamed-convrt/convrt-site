@@ -5,6 +5,7 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import fs from 'node:fs'
+import { readSource } from './helpers/i18nSource.mjs'
 import path from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 import {
@@ -20,7 +21,7 @@ import { LEGAL_ENTITY, CONVRT_ADDRESS } from '../src/content/creatorLegal.js'
 import { captureAttribution, withUtm, ATTRIBUTION_STORAGE_KEY } from '../src/lib/analytics.js'
 
 const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), '..')
-const read = (p) => fs.readFileSync(path.join(ROOT, p), 'utf8')
+const read = (p) => readSource(path.join(ROOT, p))
 const walk = (dir) => fs.readdirSync(path.join(ROOT, dir), { withFileTypes: true }).flatMap((e) =>
   e.isDirectory() ? walk(path.join(dir, e.name)) : [path.join(dir, e.name)])
 const SRC_FILES = walk('src').filter((f) => /\.(js|jsx)$/.test(f))
@@ -266,7 +267,7 @@ test('every form and the cookie preferences link the Privacy Policy, and the foo
     assert.match(read(f), /PRIVACY_POLICY_URL/, f)
   }
   const footer = read('src/components/Footer.jsx')
-  for (const p of ['ABOUT_PATH', 'PRIVACY_PATH', 'TERMS_PATH', 'LEGAL_NOTICE_PATH', 'CONTACT_PATH']) assert.ok(footer.includes(`href={${p}}`) || footer.includes(`? ${p} :`), p)
+  for (const p of ['ABOUT_PATH', 'PRIVACY_PATH', 'TERMS_PATH', 'LEGAL_NOTICE_PATH', 'CONTACT_PATH']) assert.ok(footer.includes(`href={${p}}`) || footer.includes(`href={h(${p})}`) || footer.includes(`? ${p} :`) || footer.includes(`? h(${p}) :`), p)
 })
 
 async function importSim(flags, dirName) {

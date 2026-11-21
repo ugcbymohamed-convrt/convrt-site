@@ -1,0 +1,49 @@
+/* Spanish: header, footer, language selector and shared labels. Keys are the exact English strings passed to tr(...). */
+export default {
+  // Header / menu
+  'Services': 'Servicios',
+  'Creator Showcase': 'Creator Showcase',
+  'Case Studies': 'Casos de éxito',
+  'How It Works': 'Cómo funciona',
+  'Pricing': 'Tarifas',
+  'Blog': 'Blog',
+  'Contact': 'Contacto',
+  'Book a Creative Call': 'Reservar una llamada creativa',
+  'Get 5 Free Ad Concepts': 'Recibe 5 conceptos publicitarios gratis',
+  'Toggle menu': 'Abrir o cerrar el menú',
+  'Language': 'Idioma',
+
+  // Footer
+  'A performance creative studio building UGC ads, spokesperson videos, organic social content, and creative strategy for brands that want content with one purpose: conversion.':
+    'Un estudio creativo de alto rendimiento que crea anuncios UGC, vídeos con presentador, contenido orgánico para redes sociales y estrategia creativa para marcas que quieren contenido con un único objetivo: convertir.',
+  'Studio': 'Estudio',
+  'UGC Video Agency': 'Agencia de vídeos UGC',
+  'Spokesperson Videos': 'Vídeos con presentador',
+  'Organic Social Videos': 'Vídeos para redes sociales',
+  'SaaS Video Production': 'Producción de vídeo para SaaS',
+  'About': 'Sobre CONVRT',
+  'Clients': 'Clientes',
+  'Get in touch': 'Contacta con nosotros',
+  'CONVRT on LinkedIn': 'CONVRT en LinkedIn',
+  'CONVRT on Instagram': 'CONVRT en Instagram',
+  'All rights reserved.': 'Todos los derechos reservados.',
+  // The legal documents are published in English only (approved wording); see docs/multilingual-legal-translation-review.md.
+  'Privacy Policy (in English)': 'Política de privacidad (en inglés)',
+  'Terms (in English)': 'Términos (en inglés)',
+  'Legal Notice (in English)': 'Aviso legal (en inglés)',
+  'Cookie settings': 'Configuración de cookies',
+  'Built to convert.': 'Creado para convertir.',
+  // 404 page (shown for a missing /es/… URL)
+  'Page not found | CONVRT': 'Página no encontrada | CONVRT',
+  'This page could not be found.': 'No se ha podido encontrar esta página.',
+  'Paid and organic social packages': 'Paquetes de redes sociales de pago y orgánicas',
+  'Creator-led UGC ads for paid social': 'Anuncios UGC con creadores para redes sociales de pago',
+  'Video examples from independent creators': 'Ejemplos de vídeo de creadores independientes',
+  'Talk to the studio': 'Habla con el estudio',
+  'Primary': 'Principal',
+  'Pause video': 'Pausar vídeo',
+  'Play video': 'Reproducir vídeo',
+  'Turn sound on': 'Activar el sonido',
+  'Turn sound off': 'Silenciar el sonido',
+  'Video': 'Vídeo',
+}

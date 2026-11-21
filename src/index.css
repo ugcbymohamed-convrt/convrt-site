@@ -577,3 +577,13 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .ow-fade { animation: none; }
 }
+
+/* ── Right-to-left and Arabic readiness (no effect on LTR pages: every rule is scoped to dir="rtl" / lang="ar") ──────────────────────────────────────────────
+   French and Arabic are prepared, not published (src/i18n/locales.js). When Arabic goes live its pages carry <html lang="ar" dir="rtl">. Layout mirrors through
+   Tailwind's rtl: variant and logical utilities (start/end, ms/me, ps/pe). Arabic text needs an Arabic-capable font stack, no negative letter-spacing (it breaks
+   the joining of Arabic letters) and a slightly looser line-height. Latin brand names and numerals inside Arabic text stay LTR via dir="auto"/<bdi> where needed.
+   TODO before Arabic launch: self-host an Arabic web font (for example Noto Sans Arabic, subsetted) as Inter is for Latin; the stack below uses system fonts only. */
+:lang(ar) body, :lang(ar) { font-family: 'Noto Sans Arabic', 'Segoe UI', 'Geeza Pro', 'Tahoma', ui-sans-serif, system-ui, sans-serif; }
+:lang(ar) * { letter-spacing: normal !important; }
+:lang(ar) h1, :lang(ar) h2, :lang(ar) h3 { line-height: 1.25; }
+html[dir='rtl'] { direction: rtl; }

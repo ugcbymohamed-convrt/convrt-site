@@ -1,7 +1,10 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
 import { attachHls } from '../lib/hls.js'
-import { OFFER_PATHS } from '../config.js'
 import { GRASPO_FOLLOWING } from '../lib/siteStats.js'
+import { useTr } from '../i18n/tr.js'
+import { currentLocale } from '../i18n/locale.js'
+import { primaryAction } from '../i18n/cta.js'
+import { esCaseCopy } from '../i18n/es/cases.js'
 import { selectShowcase } from '../content/portfolio.js'
 
 /* ─────────────────────────────────────────────
@@ -56,9 +59,15 @@ function videoSource(v) {
    Main section
 ───────────────────────────────────────────── */
 export default function CaseStudies() {
+  const tr = useTr()
+  const locale = currentLocale()
+  const action = primaryAction(locale)
   const [activeId, setActiveId] = useState(CASES[0]?.id)
-  const active = CASES.find((c) => c.id === activeId)
-  if (!active) return null
+  const base = CASES.find((c) => c.id === activeId)
+  if (!base) return null
+  // Spanish: the same cases (same videos, same figures), with Spanish tab/title/body from src/i18n/es/cases.js.
+  const localize = (c) => (locale === 'es' ? { ...c, ...esCaseCopy(c.id, GRASPO_FOLLOWING) } : c)
+  const active = localize(base)
 
   return (
     <section id="showcase" tabIndex={-1} className="relative overflow-hidden py-14 md:py-20 scroll-mt-[72px] md:scroll-mt-24 focus:outline-none">
@@ -75,18 +84,18 @@ export default function CaseStudies() {
           <div className="inline-flex items-center gap-2 rounded-full border border-hairline bg-surface-1/60 px-4 py-1.5 mb-5 backdrop-blur">
             <span className="h-1.5 w-1.5 rounded-full bg-lime animate-pulse" />
             <span className="text-xs font-medium uppercase tracking-[0.18em] text-ink-muted">
-              Case Studies
+              {tr('Case Studies')}
             </span>
           </div>
 
           <h2 className="font-display font-bold text-ink tracking-display leading-[1.02] text-5xl md:text-6xl lg:text-[72px]">
-            Work that speaks
+            {tr('Work that speaks')}
             <br />
-            <span className="text-lime">for itself.</span>
+            <span className="text-lime">{tr('for itself.')}</span>
           </h2>
 
           <p className="mt-5 text-base text-ink-muted max-w-md mx-auto leading-relaxed">
-            Real brands, real budgets — three case studies from clients who trusted us with their creative.
+            {tr('Real brands, real budgets — three case studies from clients who trusted us with their creative.')}
           </p>
         </div>
 
@@ -108,7 +117,7 @@ export default function CaseStudies() {
                     : 'bg-surface-1 text-ink-muted border border-hairline hover:border-hairline-strong hover:text-ink hover:scale-[1.02]',
                 ].join(' ')}
               >
-                {c.tab}
+                {localize(c).tab}
               </button>
             )
           })}
@@ -160,11 +169,12 @@ export default function CaseStudies() {
 
             {/* CTA */}
             <a
-              href={OFFER_PATHS.roadmap}
+              href={action.href}
+              {...(action.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
               className="cs-fade-up cta-gradient mt-1 inline-flex w-fit items-center gap-2 rounded-full px-7 py-3.5 text-sm font-semibold text-canvas"
               style={{ animationDelay: '190ms' }}
             >
-              Get creatives like these
+              {tr('Get creatives like these')}
               <svg viewBox="0 0 12 12" className="h-3.5 w-3.5" fill="none">
                 <path d="M3 9L9 3M9 3H4M9 3V8" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
@@ -175,10 +185,11 @@ export default function CaseStudies() {
               className="cs-fade-up text-xs text-ink-subtle"
               style={{ animationDelay: '220ms' }}
             >
-              Read the full case studies:{' '}
-              <a href="/case-studies/graspo" className="hover:text-lime underline underline-offset-2 transition-colors">Graspo</a>
+              {tr('Read the full case studies:')}{' '}
+              {/* The full case studies exist in English only: from other languages the links say so and are marked lang="en". */}
+              <a href="/case-studies/graspo" {...(locale === 'en' ? {} : { lang: 'en' })} className="hover:text-lime underline underline-offset-2 transition-colors">Graspo</a>
               {' · '}
-              <a href="/case-studies/elyon" className="hover:text-lime underline underline-offset-2 transition-colors">Elyon Dubai</a>
+              <a href="/case-studies/elyon" {...(locale === 'en' ? {} : { lang: 'en' })} className="hover:text-lime underline underline-offset-2 transition-colors">Elyon Dubai</a>
             </p>
           </div>
 
@@ -198,7 +209,7 @@ export default function CaseStudies() {
             <button
               key={c.id}
               onClick={() => setActiveId(c.id)}
-              aria-label={`View ${c.tab}`}
+              aria-label={`${tr('View')} ${localize(c).tab}`}
               className={[
                 'h-1.5 rounded-full transition-all duration-500',
                 c.id === activeId ? 'w-6 bg-lime' : 'w-1.5 bg-surface-3 hover:bg-ink-subtle',
@@ -302,6 +313,7 @@ const DI_H         = 28    /* matches Hero's md:h-[28px] */
 const DI_W         = 110   /* matches Hero's md:w-[110px] */
 
 function PhoneUnit({ video, pos, phoneOffset, isHovered, onClick, onHover, onHoverEnd, videoRef }) {
+  const tr = useTr()
   const isCenter = pos === 1
   const isLeft   = pos === 0
   const { id: videoId, mp4, poster } = videoSource(video)
@@ -425,13 +437,13 @@ function PhoneUnit({ video, pos, phoneOffset, isHovered, onClick, onHover, onHov
 
             {isCenter && (
               <>
-                <button onClick={toggleMute} aria-label={muted ? 'Unmute' : 'Mute'}
+                <button onClick={toggleMute} aria-label={muted ? tr('Unmute') : tr('Mute')}
                   className="absolute top-14 right-3 z-30 h-9 w-9 rounded-full flex items-center justify-center bg-black/55 backdrop-blur-md text-white transition-colors hover:bg-black/75 active:scale-95">
                   {muted
                     ? <svg viewBox="0 0 20 20" className="h-4 w-4" fill="none"><path d="M4 7v6h3l5 4V3L7 7H4z" fill="currentColor" /><path d="M14.5 7.5l4 4M18.5 7.5l-4 4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" /></svg>
                     : <svg viewBox="0 0 20 20" className="h-4 w-4" fill="none"><path d="M4 7v6h3l5 4V3L7 7H4z" fill="currentColor" /><path d="M14 8c.8.6 1.3 1.3 1.3 2s-.5 1.4-1.3 2" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" /><path d="M16.6 5.6c1.7 1.2 2.6 2.7 2.6 4.4s-.9 3.2-2.6 4.4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" /></svg>}
                 </button>
-                <button onClick={togglePlay} aria-label={playing ? 'Pause' : 'Play'}
+                <button onClick={togglePlay} aria-label={playing ? tr('Pause') : tr('Play')}
                   className={`absolute inset-0 z-10 flex items-center justify-center transition-opacity duration-200 ${playing ? 'opacity-0 hover:opacity-100' : 'opacity-100'}`}>
                   <span className="h-14 w-14 rounded-full bg-black/55 backdrop-blur-md text-white flex items-center justify-center shadow-[0_4px_20px_rgba(0,0,0,0.5)] transition-transform duration-150 hover:scale-110">
                     {playing

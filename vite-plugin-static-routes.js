@@ -21,6 +21,8 @@ import { allRoutePaths, routeFile, notFoundHtml } from './src/lib/routes/staticR
 import { headParamsFor } from './src/lib/routes/headFor.js'
 import { headSpecToHtml, injectPage } from './src/lib/routes/headTags.js'
 import { buildHeadSpec } from './src/lib/headSpec.js'
+import { parsePath } from './src/i18n/paths.js'
+import { LOCALES } from './src/i18n/locales.js'
 import { loadBlogContent } from './vite-plugin-blog.js'
 import blogContent from './vite-plugin-blog.js'
 import { selectPublished } from './src/lib/blog/schema.js'
@@ -70,14 +72,22 @@ export default function staticRoutes() {
       const ssr = await buildServerEntry(root)
       try {
         const { render } = await import(pathToFileURL(ssr.entry).href)
+        const allMisses = new Set()
         for (const p of paths) {
+          globalThis.__i18nMisses = new Set()
           const bodyHtml = await render(p)
-          const headHtml = headSpecToHtml(buildHeadSpec(headParamsFor(p, publishedMetas)))
-          const page = injectPage(shell, { headHtml, bodyHtml, ssrPath: p })
+          const spec = buildHeadSpec(headParamsFor(p, publishedMetas))
+          // A translated page may never ship with an untranslated string: every tr(...) the body render AND the head/JSON-LD build touched must have a dictionary entry.
+          for (const m of globalThis.__i18nMisses ?? []) allMisses.add(`${p}  ${m}`)
+          const headHtml = headSpecToHtml(spec)
+          const { locale } = parsePath(p)
+          const page = injectPage(shell, { headHtml, bodyHtml, ssrPath: p, lang: locale === 'en' ? undefined : LOCALES[locale].htmlLang, dir: locale === 'en' ? undefined : LOCALES[locale].dir })
           const file = path.join(outDir, routeFile(p))
           fs.mkdirSync(path.dirname(file), { recursive: true })
           fs.writeFileSync(file, page)
         }
+        if (allMisses.size && process.env.I18N_MISSES_FILE) fs.writeFileSync(process.env.I18N_MISSES_FILE, JSON.stringify([...allMisses].map((m) => m.split('  ').slice(1).join('  ').replace(/^[a-z]{2}: /, '')).filter((v, i, a) => a.indexOf(v) === i), null, 1))
+        if (allMisses.size) throw new Error(`Untranslated strings (${allMisses.size}):\n  ${[...allMisses].join('\n  ')}`)
         // The 404 page stays the bare shell (React renders NotFoundPage in the browser). Built from the
         // ORIGINAL shell, captured before dist/index.html was overwritten above.
         fs.writeFileSync(path.join(outDir, '404.html'), notFoundHtml(shell))

@@ -1,5 +1,6 @@
 import { posterUrl, titleOf, industryLabel, categoryOf, CATEGORIES, creatorLabel, brandLabel } from '../../content/portfolio.js'
 import { PlayGlyph } from '../ugc/creatorVideo.jsx'
+import { tr } from '../../i18n/tr.js'
 
 /* One portrait (9:16) card. Poster first: there is NO <video> element, stream or download until a visitor opens the card, so a library of
    hundreds of videos costs only its thumbnails. The whole card is one button (the accessible name is "Play video: <title>").
@@ -21,7 +22,7 @@ export default function VideoCard({ item, priority = false, onOpen }) {
     <button
       type="button"
       onClick={() => onOpen(item)}
-      aria-label={`Play video: ${title}`}
+      aria-label={`${tr('Play video:')} ${title}`}
       style={{ '--c': color }}
       className="group relative block aspect-[9/16] w-full overflow-hidden rounded-2xl border border-hairline bg-surface-1 text-left transition-[border-color,transform,box-shadow] duration-300 hover:-translate-y-0.5 hover:border-[var(--c)] hover:shadow-[0_18px_40px_-24px_var(--c)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--c)] motion-reduce:transition-none motion-reduce:hover:translate-y-0 md:rounded-3xl"
     >

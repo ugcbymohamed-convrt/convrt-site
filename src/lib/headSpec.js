@@ -5,7 +5,7 @@
 
    Params are the ones useDocumentHead has always taken (see that file). */
 
-export function buildHeadSpec({ title, description, url, noindex = false, robots, image, imageAlt, imageWidth, imageHeight, type = 'website', jsonLd, ogTitle, ogDescription }) {
+export function buildHeadSpec({ title, description, url, noindex = false, robots, image, imageAlt, imageWidth, imageHeight, type = 'website', jsonLd, ogTitle, ogDescription, lang, dir, ogLocale, alternates }) {
   const metas = [] // { attr: 'name' | 'property', key, content }
   const add = (attr, key, content) => metas.push({ attr, key, content })
 
@@ -15,6 +15,8 @@ export function buildHeadSpec({ title, description, url, noindex = false, robots
   add('property', 'og:type', type)
   if (url) add('property', 'og:url', url)
   add('property', 'og:site_name', 'CONVRT')
+  // Language metadata exists only on translated pages (and on English pages that HAVE a translation); pages without it are byte-identical to before.
+  if (ogLocale) add('property', 'og:locale', ogLocale)
   add('name', 'twitter:card', image ? 'summary_large_image' : 'summary')
   add('name', 'twitter:title', ogTitle ?? title)
   add('name', 'twitter:description', ogDescription ?? description)
@@ -36,6 +38,11 @@ export function buildHeadSpec({ title, description, url, noindex = false, robots
     metas,
     canonical: url || null,
     jsonLd: jsonLd ? [].concat(jsonLd) : [],
+    // Reciprocal hreflang annotations: [{ hreflang, href }], including the page itself and 'x-default'. Empty when the page has no live translation.
+    alternates: alternates ? [...alternates] : [],
+    // <html lang> and <html dir>. Undefined on pages that keep the shell's defaults (lang="en", no dir).
+    lang: lang || null,
+    dir: dir || null,
   }
 }
 

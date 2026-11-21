@@ -17,6 +17,7 @@ import { selectSaasHero, selectSaasGallery } from './content/portfolio.js'
 import {
   SAAS_HERO, SAAS_STAGES, SAAS_PROCESS, SAAS_GALLERY, SAAS_CTA, SAAS_PATH_LABEL, SAAS_PROOF, SAAS_EXPECTATIONS, SAAS_PROOF_CONFIG_TRACK,
 } from './content/saasPage.js'
+import { tr, T, hrefFor } from './i18n/tr.js'
 
 /* /saas-video-production: the SaaS Video Production service page. It reuses the UGC and Spokesperson pages' architecture and design system, and each section is the same
    configuration-driven component fed with SaaS content (src/content/saasPage.js):
@@ -29,7 +30,7 @@ import {
 const FAQ_CONFIG = {
   items: SAAS_FAQ,
   prefix: 'saas',
-  title: <>SaaS video production, <span className="text-lime">answered.</span></>,
+  title: <><T>SaaS video production,</T>{' '}<span className="text-lime"><T>answered.</T></span></>,
 }
 
 const PROCESS_CONFIG = { ...SAAS_PROCESS, stages: SAAS_STAGES, visuals: SAAS_VISUALS }
@@ -46,10 +47,10 @@ function ProcessFooter() {
   return (
     <>
       <p className="mx-auto max-w-3xl text-center text-[15px] leading-relaxed text-ink-muted">
-        Scope depends on your approved brief. See{' '}
-        <a href="/pricing#packages" className="font-medium text-ink underline decoration-lime/60 underline-offset-4 transition-colors hover:text-lime">pricing and terms</a>.
+        {tr('Scope depends on your approved brief. See')}{' '}
+        <a href={hrefFor('/pricing#packages')} className="font-medium text-ink underline decoration-lime/60 underline-offset-4 transition-colors hover:text-lime">{tr('pricing and terms')}</a>.
       </p>
-      <p className="mx-auto mt-2 max-w-3xl text-center text-xs text-ink-muted">Scenes are illustrative. The software shown is generic and the portraits are for illustration only.</p>
+      <p className="mx-auto mt-2 max-w-3xl text-center text-xs text-ink-muted">{tr('Scenes are illustrative. The software shown is generic and the portraits are for illustration only.')}</p>
     </>
   )
 }
@@ -70,11 +71,11 @@ export default function SaasVideoPage() {
 
   return (
     <>
-      <nav aria-label="Breadcrumb" className="mx-auto max-w-7xl px-5 pt-2 md:px-8">
+      <nav aria-label={tr('Breadcrumb')} className="mx-auto max-w-7xl px-5 pt-2 md:px-8">
         <ol className="flex items-center gap-2 text-[13px] text-ink-subtle">
-          <li><a href="/" className="transition-colors hover:text-ink">Home</a></li>
+          <li><a href={hrefFor('/')} className="transition-colors hover:text-ink">{tr('Home')}</a></li>
           <li aria-hidden="true">/</li>
-          <li aria-current="page" className="text-ink-muted">{SAAS_PATH_LABEL}</li>
+          <li aria-current="page" className="text-ink-muted">{tr(SAAS_PATH_LABEL)}</li>
         </ol>
       </nav>
       <UgcHero items={heroItems} config={SAAS_HERO} />

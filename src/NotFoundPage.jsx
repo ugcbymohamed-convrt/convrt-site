@@ -1,5 +1,8 @@
 import { useDocumentHead } from './lib/useDocumentHead.js'
 import { PATHS } from './routes.js'
+import { tr, hrefFor } from './i18n/tr.js'
+import { currentLocale } from './i18n/locale.js'
+import { LOCALES } from './i18n/locales.js'
 
 /* Rendered for any URL that is not a real page. The host answers these URLs with HTTP 404
    (dist/404.html, see vite-plugin-static-routes.js); this is the branded page people see.
@@ -12,11 +15,22 @@ const LINKS = [
   { label: 'Free Ad Hooks', href: PATHS.hooks, hint: '10 hooks for SaaS or e-commerce, by email' },
 ]
 
+// Other languages offer only pages that exist in that language (an untranslated page is never linked from here).
+const LINKS_LOCAL = [
+  { label: 'Pricing', href: PATHS.pricing, hint: 'Paid and organic social packages' },
+  { label: 'UGC Video Agency', href: PATHS.ugcVideoAgency, hint: 'Creator-led UGC ads for paid social' },
+  { label: 'Creator Showcase', href: PATHS.showcase, hint: 'Video examples from independent creators' },
+  { label: 'Contact', href: PATHS.contact, hint: 'Talk to the studio' },
+]
+
 export default function NotFoundPage() {
+  const locale = currentLocale()
+  const links = locale === 'en' ? LINKS : LINKS_LOCAL
   useDocumentHead({
-    title: 'Page not found | CONVRT',
-    description: 'This page could not be found.',
+    title: tr('Page not found | CONVRT'),
+    description: tr('This page could not be found.'),
     robots: 'noindex, follow',
+    ...(locale === 'en' ? {} : { lang: LOCALES[locale]?.htmlLang, dir: LOCALES[locale]?.dir }),
   })
 
   return (
@@ -28,40 +42,35 @@ export default function NotFoundPage() {
       <div className="relative mx-auto max-w-3xl px-5 py-20 text-center md:px-8 md:py-28">
         <div className="inline-flex items-center gap-2 rounded-full border border-hairline bg-surface-1/60 px-4 py-1.5 backdrop-blur">
           <span className="h-1.5 w-1.5 rounded-full bg-lime" aria-hidden="true" />
-          <span className="text-xs font-medium uppercase tracking-[0.18em] text-ink-muted">Error 404</span>
+          <span className="text-xs font-medium uppercase tracking-[0.18em] text-ink-muted">{tr('Error 404')}</span>
         </div>
 
         <h1
           id="not-found-heading"
           className="mt-6 font-display text-4xl font-bold leading-[1.05] tracking-display text-ink md:text-6xl"
-        >
-          This page <span className="text-lime">doesn’t exist.</span>
+        >{tr('This page')}{' '}<span className="text-lime">{tr('doesn’t exist.')}</span>
         </h1>
-        <p className="mx-auto mt-5 max-w-xl text-base leading-relaxed text-ink-muted md:text-lg">
-          The link may be old or mistyped. Here is where most people want to go.
-        </p>
+        <p className="mx-auto mt-5 max-w-xl text-base leading-relaxed text-ink-muted md:text-lg">{tr('The link may be old or mistyped. Here is where most people want to go.')}</p>
 
         <div className="mt-8 flex justify-center">
           <a
-            href={PATHS.home}
+            href={hrefFor(PATHS.home)}
             className="cta-gradient group inline-flex min-h-[52px] items-center justify-center gap-2 rounded-full px-7 py-3.5 text-[15px] font-semibold text-canvas
                        focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-lime"
-          >
-            Back to the homepage
-            <span aria-hidden="true" className="transition-transform duration-200 group-hover:translate-x-0.5 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0">→</span>
+          >{tr('Back to the homepage')}<span aria-hidden="true" className="transition-transform duration-200 group-hover:translate-x-0.5 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0">→</span>
           </a>
         </div>
 
         <ul className="mx-auto mt-10 grid max-w-2xl grid-cols-1 gap-3 text-left sm:grid-cols-2">
-          {LINKS.map((l) => (
+          {links.map((l) => (
             <li key={l.href}>
               <a
-                href={l.href}
+                href={hrefFor(l.href)}
                 className="group flex h-full flex-col rounded-2xl border border-hairline bg-surface-1/70 p-4 transition-colors duration-200 hover:border-lime/40 hover:bg-surface-2/60 motion-reduce:transition-none
                            focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-lime"
               >
-                <span className="text-[15px] font-semibold tracking-snug text-ink transition-colors group-hover:text-lime">{l.label} →</span>
-                <span className="mt-1 text-[13px] leading-snug text-ink-muted">{l.hint}</span>
+                <span className="text-[15px] font-semibold tracking-snug text-ink transition-colors group-hover:text-lime">{tr(l.label)} →</span>
+                <span className="mt-1 text-[13px] leading-snug text-ink-muted">{tr(l.hint)}</span>
               </a>
             </li>
           ))}

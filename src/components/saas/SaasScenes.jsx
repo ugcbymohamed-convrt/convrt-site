@@ -1,6 +1,7 @@
 import { Avatar, CheckBadge, delay } from '../ugc/illustrations.jsx'
 import { LIME, VIOLET, CORAL, PINK, Skel, Tag, Label, Icon } from '../scenes/sceneKit.jsx'
 import { PlayDot } from '../spokesperson/SpokespersonScenes.jsx'
+import { tr } from '../../i18n/tr.js'
 
 /* The four "How it works" scenes of /saas-video-production, plus the product-interface pieces the SaaS "formats" visual (SaasFormats.jsx) reuses.
    Same system as the UGC, Spokesperson and Organic scenes (src/components/ugc/UgcProcess.jsx): small scenes built from CSS and SVG, aria-hidden (the title and
@@ -49,7 +50,7 @@ export function AppUi({ ring = [], tag, rows = 2, className = '', stagger = 0, m
                 <span className="flex h-5 w-5 items-center justify-center rounded-md sm:h-6 sm:w-6" style={{ background: `${c}2e`, color: c }}><Icon className="h-3 w-3 sm:h-3.5 sm:w-3.5">{FEATURE_ICONS[i]}</Icon></span>
                 <Skel className="mt-1.5" w="w-4/5" /><Skel className="mt-1" w="w-3/5" />
                 {on && tag && (
-                  <span className="ugc-pop absolute -top-2 right-1 rounded-full bg-lime px-1.5 py-px text-[8px] font-bold uppercase tracking-[0.06em] text-canvas sm:text-[9px]" style={delay(stagger + i * 200)}>{tag}</span>
+                  <span className="ugc-pop absolute -top-2 right-1 rounded-full bg-lime px-1.5 py-px text-[8px] font-bold uppercase tracking-[0.06em] text-canvas sm:text-[9px]" style={delay(stagger + i * 200)}>{tr(tag)}</span>
                 )}
               </div>
             )
@@ -77,28 +78,28 @@ export function SceneDiscovery() {
   return (
     <div className="flex h-full items-stretch gap-2.5 sm:gap-3">
       <div className="flex min-w-0 flex-[1.35] flex-col justify-center gap-2">
-        <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-ink-muted">Your software</p>
+        <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-ink-muted">{tr('Your software')}</p>
         <AppWindow className="ugc-pop"><AppUi ring={[0, 2]} tag="Key" stagger={500} /></AppWindow>
-        <p className="cs-fade-up flex items-center gap-1.5 text-[10px] font-medium text-ink-muted" style={delay(900)}><span className="h-2 w-2 rounded-full bg-lime" />Key features in focus</p>
+        <p className="cs-fade-up flex items-center gap-1.5 text-[10px] font-medium text-ink-muted" style={delay(900)}><span className="h-2 w-2 rounded-full bg-lime" />{tr('Key features in focus')}</p>
       </div>
       <div aria-hidden="true" className="hidden w-5 shrink-0 items-center sm:flex">
         <svg viewBox="0 0 20 12" className="ugc-draw w-full text-lime" style={delay(700)} fill="none"><path d="M1 6h16M12 1l5 5-5 5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" /></svg>
       </div>
       <div className="flex min-w-0 flex-1 flex-col justify-center gap-2">
-        <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-ink-muted">Creative brief</p>
+        <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-ink-muted">{tr('Creative brief')}</p>
         <div className="cs-fade-up rounded-2xl border border-lime/40 bg-surface-2 p-2.5 sm:p-3" style={{ ...delay(400), boxShadow: '0 0 40px -18px rgba(213,255,64,0.5)' }}>
           <div className="flex items-center gap-1.5 text-lime">
             <Icon className="h-3.5 w-3.5"><path d="M7 3h7l4 4v14H7z" /><path d="M14 3v4h4M10 12h5M10 16h5" /></Icon>
-            <span className="text-[11px] font-bold uppercase tracking-[0.08em]">The brief</span>
+            <span className="text-[11px] font-bold uppercase tracking-[0.08em]">{tr('The brief')}</span>
           </div>
           {rows.map(([l, w], i) => (
             <div key={l} className="cs-fade-up mt-2" style={delay(650 + i * 180)}>
-              <span className="text-[10px] font-medium text-ink-muted">{l}</span>
+              <span className="text-[10px] font-medium text-ink-muted">{tr(l)}</span>
               <Skel className="mt-1" w={w} />
             </div>
           ))}
           <div className="ugc-pop mt-2.5 rounded-lg border border-lime/60 bg-lime/[0.12] px-2 py-1.5" style={delay(1500)}>
-            <span className="text-[9px] font-bold uppercase tracking-[0.1em] text-lime">Strongest message</span>
+            <span className="text-[9px] font-bold uppercase tracking-[0.1em] text-lime">{tr('Strongest message')}</span>
             <Skel className="mt-1 !bg-lime/70" w="w-full" /><Skel className="mt-1 !bg-lime/40" w="w-2/3" />
           </div>
         </div>
@@ -115,7 +116,7 @@ function Frame({ n, label, tone, i, children }) {
         {children}
         <span className="absolute left-1 top-1 flex h-3.5 w-3.5 items-center justify-center rounded-full bg-black/70 text-[8px] font-bold text-ink">{n}</span>
       </div>
-      <span className="truncate text-center text-[10px] font-bold" style={{ color: tone }}>{label}</span>
+      <span className="truncate text-center text-[10px] font-bold" style={{ color: tone }}>{tr(label)}</span>
     </li>
   )
 }
@@ -125,15 +126,15 @@ export function SceneConcept() {
   return (
     <div className="flex h-full flex-col justify-between gap-3">
       <div>
-        <Label n="1">We write the script</Label>
+        <Label n="1">{tr('We write the script')}</Label>
         <div className="cs-fade-up mt-2 rounded-2xl border border-hairline-strong bg-surface-2 p-2.5 sm:p-3" style={delay(150)}>
-          <div className="flex items-center gap-2.5"><Tag className="min-w-[4.6rem] shrink-0 text-center">Hook</Tag><Skel w="w-4/5" /></div>
-          <div className="mt-2 flex items-center gap-2.5"><Tag color={VIOLET} className="min-w-[4.6rem] shrink-0 text-center !text-white">Solution</Tag><Skel w="w-full" /></div>
-          <div className="mt-2 flex items-center gap-2.5"><Tag color={CORAL} className="min-w-[4.6rem] shrink-0 text-center">CTA</Tag><Skel w="w-3/5" /></div>
+          <div className="flex items-center gap-2.5"><Tag className="min-w-[4.6rem] shrink-0 text-center">{tr('Hook')}</Tag><Skel w="w-4/5" /></div>
+          <div className="mt-2 flex items-center gap-2.5"><Tag color={VIOLET} className="min-w-[4.6rem] shrink-0 text-center !text-white">{tr('Solution')}</Tag><Skel w="w-full" /></div>
+          <div className="mt-2 flex items-center gap-2.5"><Tag color={CORAL} className="min-w-[4.6rem] shrink-0 text-center">{tr('CTA')}</Tag><Skel w="w-3/5" /></div>
         </div>
       </div>
       <div>
-        <Label n="2">And storyboard the scenes</Label>
+        <Label n="2">{tr('And storyboard the scenes')}</Label>
         <ol className="mt-2 grid grid-cols-4 gap-1.5 sm:gap-2.5">
           <Frame n="1" label="Problem" tone={CORAL} i={0}>
             <Avatar variant={P.woman} className="absolute inset-0 h-full w-full" pos="50% 20%" />
@@ -168,7 +169,7 @@ export function SceneProduction() {
     <div className="flex h-full flex-col justify-between gap-2.5">
       <div className="flex min-h-0 flex-1 items-center gap-2 sm:gap-3">
         <div className="relative min-w-0 flex-1">
-          <p className="mb-1.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-ink-muted">Screen recording</p>
+          <p className="mb-1.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-ink-muted">{tr('Screen recording')}</p>
           <AppWindow className="ugc-pop" url={false}>
             <AppUi ring={[1]} rows={1} stagger={600} />
           </AppWindow>
@@ -178,7 +179,7 @@ export function SceneProduction() {
           <svg viewBox="0 0 20 12" className="ugc-draw h-3 w-5" style={delay(900)} fill="none"><path d="M1 6h16M12 1l5 5-5 5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" /></svg>
         </div>
         <div className="min-w-0 flex-1">
-          <p className="mb-1.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-lime">Finished video</p>
+          <p className="mb-1.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-lime">{tr('Finished video')}</p>
           <div className="cs-fade-up relative aspect-video overflow-hidden rounded-xl border border-lime/60 bg-surface-2" style={{ ...delay(1000), boxShadow: '0 0 34px -12px rgba(213,255,64,0.55)' }}>
             <div className="absolute inset-0 p-1.5"><AppUi ring={[1]} rows={0} mini /></div>
             <span aria-hidden="true" className="absolute inset-0" style={{ background: 'linear-gradient(180deg, rgba(0,0,0,0.35) 0%, transparent 30%, transparent 55%, rgba(0,0,0,0.7) 100%)' }} />
@@ -194,7 +195,7 @@ export function SceneProduction() {
         {lanes.map(([label, color, icon], i) => (
           <li key={label} className="cs-fade-up flex flex-col items-center gap-1 rounded-xl border border-hairline bg-canvas/40 px-1 py-1.5 sm:py-2" style={delay(300 + i * 450)}>
             <span className="flex h-7 w-7 items-center justify-center rounded-lg sm:h-8 sm:w-8" style={{ background: `${color}26`, color }}><Icon>{icon}</Icon></span>
-            <span className="text-center text-[9px] font-semibold leading-tight text-ink sm:text-[10px]">{label}</span>
+            <span className="text-center text-[9px] font-semibold leading-tight text-ink sm:text-[10px]">{tr(label)}</span>
             <CheckBadge className="ugc-pop" size="h-4 w-4" />
           </li>
         ))}
@@ -209,10 +210,9 @@ export function SceneDelivery() {
     <li className={`cs-fade-up flex min-h-0 flex-col gap-1.5 rounded-2xl border border-hairline bg-canvas/40 p-2 ${span}`} style={delay(i * 200)}>
       <div className="flex min-h-0 flex-1 items-center justify-center">{children}</div>
       <div className="flex flex-col items-start gap-0.5 sm:flex-row sm:items-center sm:justify-between sm:gap-1">
-        <span className="text-[10px] font-semibold leading-tight text-ink sm:truncate sm:text-[11px]">{label}</span>
+        <span className="text-[10px] font-semibold leading-tight text-ink sm:truncate sm:text-[11px]">{tr(label)}</span>
         <span className="ugc-pop inline-flex shrink-0 items-center gap-1 rounded-full bg-lime/15 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-[0.06em] text-lime" style={delay(900 + i * 200)}>
-          <Icon className="h-2.5 w-2.5"><path d="M4 12.5l5 5L20 6" /></Icon>Ready
-        </span>
+          <Icon className="h-2.5 w-2.5"><path d="M4 12.5l5 5L20 6" /></Icon>{tr('Ready')}</span>
       </div>
     </li>
   )
@@ -233,7 +233,7 @@ export function SceneDelivery() {
       </Tile>
       <Tile label="Paid ads" i={1} span="col-span-2">
         <div className="w-full max-w-[7.5rem] overflow-hidden rounded-md border border-white/15 bg-surface-2">
-          <div className="flex items-center gap-1 px-1 py-0.5"><span className="h-2.5 w-2.5 rounded-full bg-lime/70" /><Skel w="w-1/2" /><span className="ml-auto text-[7px] font-semibold uppercase tracking-wide text-ink-muted">Ad</span></div>
+          <div className="flex items-center gap-1 px-1 py-0.5"><span className="h-2.5 w-2.5 rounded-full bg-lime/70" /><Skel w="w-1/2" /><span className="ml-auto text-[7px] font-semibold uppercase tracking-wide text-ink-muted">{tr('Ad')}</span></div>
           <Thumb tone={CORAL} v={P.alt} className="!rounded-none !border-0" />
           <div className="px-1 py-1"><span className="block h-2.5 rounded bg-lime" /></div>
         </div>

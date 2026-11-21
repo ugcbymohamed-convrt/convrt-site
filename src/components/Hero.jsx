@@ -4,8 +4,13 @@ import { OFFER_PATHS, CREATOR_SHOWCASE_PATH } from '../config.js'
 import { trackEvent } from '../lib/analytics.js'
 import CreatorVideoStage from './ugc/CreatorVideoStage.jsx'
 import { HOME_HERO } from '../content/homeHero.js'
+import { useTr, useHref } from '../i18n/tr.js'
+import { currentLocale } from '../i18n/locale.js'
+import { primaryAction, flowAvailable } from '../i18n/cta.js'
 
 const ROTATING_WORDS = ['convert', 'resonate', 'sell', 'connect']
+// Spanish rotating words complete "Creatividades de alto rendimiento diseñadas para ___" (see src/i18n/es/dict-home.js).
+const ROTATING_WORDS_ES = ['convertir', 'conectar', 'vender', 'resonar']
 
 /* Secondary offers — Level 2 in the hero's attention hierarchy. Each has its own
    accent (lime for the video offer, pink for the hooks library) so the
@@ -38,6 +43,11 @@ export const SECONDARY_OFFERS = [
 ]
 
 export default function Hero() {
+  const tr = useTr()
+  const href = useHref()
+  const locale = currentLocale()
+  const action = primaryAction(locale)
+  const en = locale === 'en'
   const primaryPress = usePressFeedback()
   const ghostPress = usePressFeedback()
   return (
@@ -61,14 +71,14 @@ export default function Hero() {
           <div className="contents lg:block lg:col-span-6 text-center lg:text-left">
             <div className="order-1 lg:order-none">
             <h1 className="font-display font-semibold text-ink tracking-display-xl leading-[1.02] text-[48px] sm:text-[50px] md:text-[54px] lg:text-[60px] xl:text-[70px]">
-              <span className="block">Performance creatives</span>{' '}
+              <span className="block">{tr('Performance creatives')}</span>{' '}
               <span className="block">
-                engineered to <RotatingWord words={ROTATING_WORDS} />
+                {tr('engineered to')} <RotatingWord words={en ? ROTATING_WORDS : ROTATING_WORDS_ES} />
               </span>
             </h1>
 
             <p className="mt-6 md:mt-8 max-w-xl mx-auto lg:mx-0 text-pretty text-base md:text-lg text-ink-muted leading-relaxed">
-              From creative strategy and scripting to creator casting, filming and editing. We produce human-led UGC ads, SaaS videos, spokesperson videos and organic social content, ready to perform.
+              {tr('From creative strategy and scripting to creator casting, filming and editing. We produce human-led UGC ads, SaaS videos, spokesperson videos and organic social content, ready to perform.')}
             </p>
             </div>
 
@@ -79,24 +89,25 @@ export default function Hero() {
                 12 offer→button, 32 / 40 button→secondary, 12 label→cards. */}
             <div className="lg:mt-6">
               <p className="mb-3 text-balance text-[15px] md:text-base font-medium leading-snug text-ink">
-                Your next 5 ad concepts. Tailored to your brand. <span className="text-lime">On us.</span>
+                {en ? <>Your next 5 ad concepts. Tailored to your brand. <span className="text-lime">On us.</span></> : <>{tr('Book a free strategy call.')} <span className="text-lime">{tr('We tell you exactly what you need.')}</span></>}
               </p>
               <div className="flex flex-col items-stretch gap-3 sm:flex-row sm:items-center sm:justify-center lg:justify-start">
                 <a
-                  href={OFFER_PATHS.roadmap}
-                  onClick={() => trackEvent('hero_creative_roadmap_click', { location: 'hero' })}
+                  href={action.href}
+                  {...(action.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+                  onClick={() => trackEvent(action.event, en ? { location: 'hero' } : { page: locale, location: 'hero' })}
                   {...primaryPress}
                   className="cta-gradient hero-cta group inline-flex w-full sm:w-auto min-h-[64px] md:min-h-[68px] items-center justify-center gap-2.5
                              rounded-full px-6 md:px-7 lg:px-6 xl:px-7 py-4 text-base md:text-[17px] font-bold tracking-snug text-canvas
                              focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-lime"
                 >
-                  Get 5 Free Ad Concepts
+                  {tr(action.label)}
                   <svg viewBox="0 0 12 12" className="h-4 w-4 md:h-[18px] md:w-[18px] transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0 motion-reduce:group-hover:translate-y-0" fill="none" aria-hidden="true">
                     <path d="M3 9L9 3M9 3H4M9 3V8" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
                 </a>
                 <a
-                  href={CREATOR_SHOWCASE_PATH}
+                  href={href(CREATOR_SHOWCASE_PATH)}
                   onClick={() => trackEvent('hero_see_our_work_click', { location: 'hero' })}
                   {...ghostPress}
                   className="hero-cta-ghost group inline-flex w-full sm:w-auto min-h-[48px] sm:min-h-[64px] md:min-h-[68px] items-center justify-center gap-2
@@ -104,7 +115,7 @@ export default function Hero() {
                              hover:border-ink-muted
                              focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink"
                 >
-                  Explore Videos
+                  {tr('Explore Videos')}
                   <svg viewBox="0 0 12 12" className="h-3.5 w-3.5 md:h-4 md:w-4 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0 motion-reduce:group-hover:translate-y-0" fill="none" aria-hidden="true">
                     <path d="M3 9L9 3M9 3H4M9 3V8" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
@@ -113,14 +124,17 @@ export default function Hero() {
             </div>
 
             {/* Level 2 — compact secondary offers under a quiet, left-aligned label */}
+            {/* The two free offers lead to English-only forms: shown only in languages where their flow is translated (src/i18n/cta.js). */}
+            {flowAvailable(locale, 'riskFree') && flowAvailable(locale, 'hooks') && (
             <div className="mt-8 md:mt-10 max-w-xl mx-auto lg:mx-0">
-              <p className="text-left text-[13px] text-ink-muted">{"Not ready yet? We've got two more FREE ways to start."}</p>
+              <p className="text-left text-[13px] text-ink-muted">{tr("Not ready yet? We've got two more FREE ways to start.")}</p>
               <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-left">
                 {SECONDARY_OFFERS.map((offer) => (
                   <SecondaryOffer key={offer.id} offer={offer} />
                 ))}
               </div>
             </div>
+            )}
             </div>
           </div>
 

@@ -16,6 +16,7 @@ import http from 'node:http'
 import { fileURLToPath } from 'node:url'
 import { build } from 'vite'
 import { PATHS, KNOWN_PATHS, normalizePath } from '../src/routes.js'
+import { allLocalizedPaths } from '../src/i18n/paths.js'
 import { routeFile, allRoutePaths, notFoundHtml } from '../src/lib/routes/staticRoutes.js'
 import { selectPublished } from '../src/lib/blog/schema.js'
 
@@ -197,6 +198,24 @@ test('HTTP: every known route answers 200 with its prerendered page', async () =
     assert.match(r.headers.get('content-type'), /text\/html/, p)
     const body = await r.text()
     assert.ok(body.includes(`<div id="root" data-ssr-path="${p}">`), `${p} is not its prerendered page`)
+  }
+})
+
+test('HTTP: translated pages answer 200 (with and without the trailing slash); unbuilt languages and missing translations answer a genuine 404', async () => {
+  for (const p of allLocalizedPaths(['es'])) {
+    for (const url of [p, p === '/es' ? '/es/' : `${p}/`]) {
+      const r = await get(url)
+      assert.equal(r.status, 200, url)
+      const body = await r.text()
+      assert.ok(body.includes(`<div id="root" data-ssr-path="${p}">`), `${url} is not its prerendered page`)
+      assert.match(body, /<html lang="es">/, `${url} declares Spanish`)
+    }
+  }
+  // French and Arabic are prepared, not built: no page exists, so the host answers 404 (never a fake English page under /fr or /ar).
+  for (const p of ['/fr', '/fr/', '/fr/pricing', '/ar', '/ar/', '/ar/pricing', '/de/', '/es/this-page-does-not-exist', '/es/blog', '/es/privacy', '/es/case-studies/graspo', '/es/pricing/extra']) {
+    const r = await get(p)
+    assert.equal(r.status, 404, p)
+    assert.match(await r.text(), /name="robots" content="noindex, follow"/, p)
   }
 })
 

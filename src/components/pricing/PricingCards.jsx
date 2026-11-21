@@ -1,8 +1,13 @@
 import { OFFER_PATHS } from '../../config.js'
+import { currentLocale } from '../../i18n/locale.js'
+import { resolveCta } from '../../i18n/cta.js'
+import { money } from '../../i18n/money.js'
+import { formatWholeUsdEs } from '../../i18n/es/money.js'
 import {
   SPRINT, SPRINT_PLUS, ORGANIC, ORGANIC_COMMITMENT, CUSTOM_PACKAGES, BILLING_OPTIONS, formatMoney, pricePerVariation, creatorsLine,
   END_TO_END,
 } from '../../seo/businessKnowledge.js'
+import { tr } from '../../i18n/tr.js'
 
 /* The three-column pricing cards (Paid Social: Sprint / Sprint Plus / Custom; Organic: Light / Growth / Custom).
    Every number comes from src/seo/businessKnowledge.js. Both billing options are always in the DOM (the inactive
@@ -71,15 +76,17 @@ function EndToEnd({ tone }) {
             <path d="M7 7.8l2.6 1.5L7 10.8V7.8z" fill="currentColor" />
           </svg>
         </span>
-        {END_TO_END.title}
+        {tr(END_TO_END.title)}
       </p>
-      <p className={`mt-1 text-[12px] leading-snug ${TONES[tone].muted}`}>{END_TO_END.text}</p>
+      <p className={`mt-1 text-[12px] leading-snug ${TONES[tone].muted}`}>{tr(END_TO_END.text)}</p>
     </div>
   )
 }
 
 function PricingCard({ tone, id, label, badge, description, price, sub, features, note, ctaLabel, tallSub = false, descMin = 'lg:min-h-[69px]', subMin, className = '', endToEnd = false, endToEndSpace = false }) {
   const t = TONES[tone]
+  // Other languages: a CTA into the English-only Roadmap becomes the booking call (src/i18n/cta.js).
+  const cta = resolveCta(currentLocale(), { href: OFFER_PATHS.roadmap, label: 'Book a Creative Call' })
   return (
     <article
       aria-labelledby={`${id}-label`}
@@ -88,14 +95,14 @@ function PricingCard({ tone, id, label, badge, description, price, sub, features
     >
       <div className="flex min-h-[32px] items-center justify-between gap-3">
         <h2 id={`${id}-label`} className={`inline-flex items-center rounded-full px-4 py-1.5 font-display text-[15px] font-bold tracking-snug ${t.pill}`}>
-          {label}
+          {tr(label)}
         </h2>
         {badge && (
-          <span className={`rounded-full border px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.14em] ${t.badge}`}>{badge}</span>
+          <span className={`rounded-full border px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.14em] ${t.badge}`}>{tr(badge)}</span>
         )}
       </div>
 
-      <p className={`mt-4 text-[14px] leading-relaxed ${descMin} ${t.muted}`}>{description}</p>
+      <p className={`mt-4 text-[14px] leading-relaxed ${descMin} ${t.muted}`}>{tr(description)}</p>
 
       <div className="mt-5 flex min-h-[56px] items-end font-display font-bold leading-none tracking-display">{price}</div>
       <div className={`mt-3 ${subMin ?? (tallSub ? 'lg:min-h-[60px]' : 'min-h-[34px]')}`}>{sub}</div>
@@ -109,20 +116,21 @@ function PricingCard({ tone, id, label, badge, description, price, sub, features
         {features.map((f) => (
           <li key={f} className="flex items-start gap-3 text-[14px] leading-snug">
             <CheckIcon className={t.check} />
-            <span>{f}</span>
+            <span>{tr(f)}</span>
           </li>
         ))}
       </ul>
 
-      {note && <p className={`mt-5 text-[12px] leading-relaxed ${t.muted}`}>{note}</p>}
+      {note && <p className={`mt-5 text-[12px] leading-relaxed ${t.muted}`}>{tr(note)}</p>}
 
       <div className={`mt-6 h-px ${t.divider}`} />
 
       <a
-        href={OFFER_PATHS.roadmap}
+        href={cta.href}
+        {...(cta.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
         className={`mt-6 inline-flex items-center justify-center gap-2 rounded-full px-6 py-3.5 text-sm font-semibold transition-transform duration-150 active:scale-[0.98] ${t.cta}`}
       >
-        {ctaLabel}
+        {tr(cta.redirected && ctaLabel === 'Get 5 Free Ad Concepts' ? cta.label : ctaLabel)}
         <svg viewBox="0 0 12 12" className="h-3.5 w-3.5" fill="none" aria-hidden="true">
           <path d="M3 9L9 3M9 3H4M9 3V8" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
@@ -137,15 +145,15 @@ function BillingPrice({ pkg, billing }) {
     <>
       {BILLING_OPTIONS.map((o) => (
         <span key={o.id} hidden={billing !== o.id} data-billing={o.id} className="text-[44px] md:text-[52px]">
-          {formatMoney(pkg[o.id])}
-          <span className="ml-1.5 text-base font-medium tracking-normal opacity-60 md:text-lg">{o.unit}</span>
+          {money(pkg[o.id])}
+          <span className="ml-1.5 text-base font-medium tracking-normal opacity-60 md:text-lg">{tr(o.unit)}</span>
         </span>
       ))}
     </>
   )
 }
 
-const LetsTalk = () => <span className="text-[40px] md:text-[46px]">Let&rsquo;s talk.</span>
+const LetsTalk = () => <span className="text-[40px] md:text-[46px]">{tr('Let’s talk.')}</span>
 
 /* The original two-pill row under the price, texts swapped (owner, Nov 2026): the lime pill (black chip with lime text on the lime card)
    carries the package size, the grey pill carries the price per variation. The per-variation figure is derived from the package price
@@ -157,7 +165,7 @@ const PerVariation = ({ tone, pkg, billing }) => (
     {BILLING_OPTIONS.map((o) => (
       <span key={o.id} hidden={billing !== o.id} data-billing={o.id}>
         <span className={`inline-flex items-center whitespace-nowrap rounded-full px-2 py-[7px] text-[11.5px] font-bold leading-none ${TONES[tone].chip}`}>
-          {pricePerVariation(pkg, o.id).text} per variation
+          {currentLocale() === 'es' ? formatWholeUsdEs(pricePerVariation(pkg, o.id).amount) : pricePerVariation(pkg, o.id).text} {tr('per variation')}
         </span>
       </span>
     ))}
@@ -168,16 +176,15 @@ const Variations = ({ tone, count, line, per }) => (
   <>
     <div className="flex flex-wrap items-center gap-1">
       <span className={`inline-flex items-baseline gap-1 whitespace-nowrap rounded-lg px-1.5 py-[7px] text-[11.5px] font-semibold leading-none ${HIGHLIGHT[tone]}`}>
-        <span className="font-display text-[16px] font-bold tracking-snug">{count}</span> testing creatives
-      </span>
+        <span className="font-display text-[16px] font-bold tracking-snug">{count}</span>{' '}{tr('testing creatives')}</span>
       {per}
     </div>
-    {line && <p className={`mt-2 text-[12.5px] leading-snug ${TONES[tone].muted}`}>{line}</p>}
+    {line && <p className={`mt-2 text-[12.5px] leading-snug ${TONES[tone].muted}`}>{tr(line)}</p>}
   </>
 )
 
 const Supporting = ({ tone, children }) => (
-  <span className={`inline-flex items-center rounded-2xl px-3.5 py-1.5 text-sm font-semibold leading-snug ${TONES[tone].chip}`}>{children}</span>
+  <span className={`inline-flex items-center rounded-2xl px-3.5 py-1.5 text-sm font-semibold leading-snug ${TONES[tone].chip}`}>{typeof children === 'string' ? tr(children) : children}</span>
 )
 
 const days = (n) => `${n} business days turnaround`
@@ -257,14 +264,14 @@ export function OrganicCards() {
       <PricingCard
         tone="light" id="card-organic-light" label={ORGANIC.light.name}
         description="Full-service organic content, from strategy and production to editing and publishing."
-        price={<span className="text-[44px] md:text-[52px]">{formatMoney(ORGANIC.light.monthly)}<span className="ml-1.5 text-base font-medium tracking-normal opacity-60 md:text-lg">/month</span></span>}
+        price={<span className="text-[44px] md:text-[52px]">{money(ORGANIC.light.monthly)}<span className="ml-1.5 text-base font-medium tracking-normal opacity-60 md:text-lg">{tr('/month')}</span></span>}
         sub={<Cadence tone="light" text={ORGANIC.light.cadence} />}
         features={shared([])} ctaLabel="Get started" tallSub
       />
       <PricingCard
         tone="lime" id="card-organic-growth" label={ORGANIC.growth.name} badge="Recommended"
         description="Higher-cadence organic content production, with more room to test formats, hooks, and creative directions."
-        price={<span className="text-[44px] md:text-[52px]">{formatMoney(ORGANIC.growth.monthly)}<span className="ml-1.5 text-base font-medium tracking-normal opacity-60 md:text-lg">/month</span></span>}
+        price={<span className="text-[44px] md:text-[52px]">{money(ORGANIC.growth.monthly)}<span className="ml-1.5 text-base font-medium tracking-normal opacity-60 md:text-lg">{tr('/month')}</span></span>}
         sub={<Cadence tone="lime" text={ORGANIC.growth.cadence} />}
         features={shared(['Higher creative testing cadence', 'More formats, hooks & creative angles tested'])} ctaLabel="Get started" tallSub
       />
@@ -292,7 +299,7 @@ export function BillingSwitch({ value, onChange }) {
   }
   return (
     <div
-      role="radiogroup" aria-label="Billing option" onKeyDown={onKeyDown}
+      role="radiogroup" aria-label={tr('Billing option')} onKeyDown={onKeyDown}
       className="inline-grid grid-cols-2 rounded-full border border-hairline bg-surface-1/70 p-0.5"
     >
       {BILLING_OPTIONS.map((o) => {
@@ -305,7 +312,7 @@ export function BillingSwitch({ value, onChange }) {
               active ? 'bg-lime text-canvas' : 'text-ink-muted hover:text-ink'
             }`}
           >
-            {o.label}
+            {tr(o.label)}
           </button>
         )
       })}

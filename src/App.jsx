@@ -13,6 +13,9 @@ import SectionDivider from './components/SectionDivider.jsx'
 import { BLOG_PATH, REFERRALS_PATH } from './config.js'
 import { PATHS, PRIVATE_PATHS } from './routes.js'
 import { scrollToHash } from './lib/scroll.js'
+import { parsePath } from './i18n/paths.js'
+import { hasTranslation } from './i18n/registry.js'
+import { BUILT_LOCALES } from './i18n/locales.js'
 
 /* Route-level code splitting: every non-home page is its own chunk, fetched only when
    that URL is opened, so the homepage no longer downloads (or parses) the roadmap,
@@ -122,11 +125,16 @@ function HashScroller() {
 const PageFallback = <div className="min-h-[100svh]" aria-hidden="true" />
 
 export default function App() {
-  const path = typeof window !== 'undefined' ? window.location.pathname.replace(/\/$/, '') || '/' : '/'
+  const rawPath = typeof window !== 'undefined' ? window.location.pathname.replace(/\/$/, '') || '/' : '/'
+  // /es/pricing → locale 'es', path '/pricing' (the English base path every route above is keyed by). A page that does not exist in the requested
+  // language (or a language that is not built yet, like /fr/…) is never faked from English: it renders the not-found page (the host sends a real 404).
+  const { locale, basePath } = parsePath(rawPath)
+  const translated = locale === 'en' || (BUILT_LOCALES.includes(locale) && hasTranslation(locale, basePath))
+  const path = translated ? basePath : '/__not-found__'
   const Page = resolvePage(path)
 
   // Private creator pages render their own minimal header: no site navigation, footer or sales CTA.
-  const PrivatePage = PRIVATE_ROUTES[path]
+  const PrivatePage = locale === 'en' ? PRIVATE_ROUTES[path] : undefined
   if (PrivatePage) {
     return (
       <div className="bg-canvas text-ink min-h-screen antialiased">

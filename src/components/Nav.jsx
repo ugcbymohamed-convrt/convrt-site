@@ -5,17 +5,23 @@ import { openBookingModal } from '../lib/bookingModal.js'
 import { trackEvent } from '../lib/analytics.js'
 import { scrollToApply } from '../lib/roadmapForm.js'
 import { usePressFeedback } from '../lib/usePressFeedback.js'
+import LanguageSelector from './LanguageSelector.jsx'
+import { parsePath, localizedPath } from '../i18n/paths.js'
+import { translate, localHref } from '../i18n/tr.js'
+import { primaryAction } from '../i18n/cta.js'
 
 // `compactHide`: shown in the desktop bar only from xl (1280px) up, so the bar doesn't crowd
 // at 1024–1279px now that Blog (and the referral link) have joined it. It is still in the
 // mobile menu, the footer, and the hero/CTA buttons — nothing is removed.
+// `englishOnly`: the page exists only in English (no translation yet), so other languages' menus do not list it (never a link from a translated page into
+// an untranslated one). It appears in a language's menu by itself once the page is translated and registered in src/i18n/registry.js.
 const links = [
   { label: 'Services', href: '#services' },
   { label: 'Creator Showcase', href: CREATOR_SHOWCASE_PATH },
-  { label: 'Case Studies', href: '/case-studies' },
+  { label: 'Case Studies', href: '/case-studies', englishOnly: true },
   { label: 'How It Works', href: '#how-it-works' },
   { label: 'Pricing', href: '/pricing' },
-  { label: 'Blog', href: '/blog' },
+  { label: 'Blog', href: '/blog', englishOnly: true },
   { label: 'Contact', href: '#contact', compactHide: true },
 ]
 
@@ -49,23 +55,31 @@ export default function Nav() {
   const [open, setOpen] = useState(false)
   const pressDesktop = usePressFeedback()
   const pressMobile = usePressFeedback()
-  const onHome = typeof window !== 'undefined' ? window.location.pathname === '/' : true
-  const homePrefix = onHome ? '' : '/'
-  const resolveHref = (href) => (href.startsWith('#') ? `${homePrefix}${href}` : href)
+  const { locale, basePath } = parsePath(typeof window !== 'undefined' ? window.location.pathname : '/')
+  const tr = (t) => translate(locale, t)
+  const onHome = basePath === '/'
+  const homePrefix = onHome ? '' : localizedPath(locale, '/')
+  const resolveHref = (href) => (href.startsWith('#') ? `${homePrefix}${href}` : localHref(href, locale))
+  const visibleLinks = links.filter((l) => locale === 'en' || !l.englishOnly)
+  const action = primaryAction(locale)
 
   // /scale is a paid-acquisition page with its own in-page booking modal
   // and consistent "Book a Discovery Call" CTA copy. Everywhere else the
   // header promotes the primary offer (Creative Growth Roadmap); direct
   // booking stays available in the page-level CTAs.
-  const onScalePage = typeof window !== 'undefined' ? window.location.pathname === '/scale' : false
+  const onScalePage = locale === 'en' && typeof window !== 'undefined' ? window.location.pathname === '/scale' : false
   // On the roadmap landing page itself, the CTA scrolls to the application form
   // instead of reloading the page it's already on.
   const onRoadmapPage =
-    typeof window !== 'undefined' ? window.location.pathname.replace(/\/$/, '') === OFFER_PATHS.roadmap : false
-  const ctaLabel = onScalePage ? 'Book a Discovery Call' : 'Get 5 Free Ad Concepts'
-  const ctaHref = onScalePage ? BOOKING_URL : onRoadmapPage ? '#apply' : OFFER_PATHS.roadmap
+    locale === 'en' && typeof window !== 'undefined' ? window.location.pathname.replace(/\/$/, '') === OFFER_PATHS.roadmap : false
+  // Translated pages: the primary action is the language's own flow (src/i18n/cta.js). Spanish: the discovery-call booking, in a new tab, until the Roadmap is translated.
+  const localizedBooking = locale !== 'en' && action.kind === 'booking'
+  const ctaLabel = onScalePage ? 'Book a Discovery Call' : tr(action.label)
+  const ctaHref = onScalePage ? BOOKING_URL : onRoadmapPage ? '#apply' : action.href
   const handleCtaClick = onScalePage
     ? (e) => { e.preventDefault(); setOpen(false); openBookingModal({ location: 'nav' }) }
+    : localizedBooking
+      ? () => { setOpen(false); trackEvent(action.event, { page: locale, location: 'nav' }) }
     : onRoadmapPage
       ? (e) => { e.preventDefault(); setOpen(false); trackEvent('roadmap_apply_click', { location: 'nav' }); scrollToApply() }
       : () => { setOpen(false); trackEvent('hero_creative_roadmap_click', { location: 'nav' }) }
@@ -88,8 +102,8 @@ export default function Nav() {
       <div className="mx-auto flex h-[72px] max-w-7xl items-center justify-between px-5 md:h-[96px] md:px-8">
         <Logo />
 
-        <nav className="hidden lg:flex items-center gap-3 min-[1100px]:gap-5 xl:gap-8" aria-label="Primary">
-          {links.map((l) => (
+        <nav className="hidden lg:flex items-center gap-3 min-[1100px]:gap-5 xl:gap-8" aria-label={tr('Primary')}>
+          {visibleLinks.map((l) => (
             <a
               key={l.href}
               href={resolveHref(l.href)}
@@ -97,16 +111,18 @@ export default function Nav() {
                 l.compactHide ? 'hidden xl:inline' : ''
               }`}
             >
-              {l.label}
+              {tr(l.label)}
             </a>
           ))}
-          <ReferralNavLink underline className="text-[13px] xl:text-sm" />
+          {locale === 'en' && <ReferralNavLink underline className="text-[13px] xl:text-sm" />}
         </nav>
 
         <div className="flex items-center gap-2">
+          <LanguageSelector />
           <a
             href={ctaHref}
             onClick={handleCtaClick}
+            {...(localizedBooking ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
             {...pressDesktop}
             className="nav-cta hidden md:inline-flex items-center gap-1.5 whitespace-nowrap rounded-full bg-lime px-4 py-2.5 text-sm font-medium text-canvas"
           >
@@ -116,7 +132,7 @@ export default function Nav() {
           <button
             type="button"
             onClick={() => setOpen((v) => !v)}
-            aria-label="Toggle menu"
+            aria-label={tr('Toggle menu')}
             aria-expanded={open}
             className="lg:hidden inline-flex h-10 w-10 items-center justify-center rounded-full border border-hairline text-ink"
           >
@@ -138,20 +154,22 @@ export default function Nav() {
       {open && (
         <div className="lg:hidden border-t border-hairline bg-canvas">
           <div className="mx-auto max-w-7xl px-5 py-4 flex flex-col gap-1">
-            {links.map((l) => (
+            {visibleLinks.map((l) => (
               <a
                 key={l.href}
                 href={resolveHref(l.href)}
                 onClick={() => setOpen(false)}
                 className="rounded-lg px-3 py-3 text-base text-ink-muted hover:text-ink hover:bg-surface-1"
               >
-                {l.label}
+                {tr(l.label)}
               </a>
             ))}
-            <ReferralNavLink onClick={() => setOpen(false)} className="block px-3 py-3 text-base hover:bg-surface-1" />
+            {locale === 'en' && <ReferralNavLink onClick={() => setOpen(false)} className="block px-3 py-3 text-base hover:bg-surface-1" />}
+            <LanguageSelector variant="list" onNavigate={() => setOpen(false)} className="mt-1 border-t border-hairline pt-1" />
             <a
               href={ctaHref}
               onClick={handleCtaClick}
+              {...(localizedBooking ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
               {...pressMobile}
               className="nav-cta mt-2 inline-flex items-center justify-center gap-1.5 rounded-full bg-lime px-4 py-3 text-sm font-medium text-canvas"
             >

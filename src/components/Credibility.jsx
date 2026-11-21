@@ -1,6 +1,9 @@
 import { useRef, useEffect, useState } from 'react'
 import { OFFER_PATHS } from '../config.js'
 import { CONVRT_STATS } from '../lib/siteStats.js'
+import { useTr } from '../i18n/tr.js'
+import { currentLocale } from '../i18n/locale.js'
+import { primaryAction } from '../i18n/cta.js'
 
 /* Two rows of real client logos, rendered as uniform white silhouettes so
    they read cleanly against the dark canvas regardless of original color
@@ -41,6 +44,9 @@ const row2 = [
 ]
 
 export default function Credibility() {
+  const tr = useTr()
+  const locale = currentLocale()
+  const action = primaryAction(locale)
   return (
     <section id="clients" className="relative border-y border-hairline bg-canvas overflow-hidden">
       {/*
@@ -112,18 +118,25 @@ export default function Credibility() {
         {/* Headline + CTA below */}
         <div className="mt-14 md:mt-16 flex flex-col items-center text-center gap-10 md:gap-12">
           <h2 className="font-display font-semibold tracking-display text-ink leading-[1.1] text-3xl md:text-4xl lg:text-[44px] max-w-3xl">
-            Trusted by <span className="text-lime">{CONVRT_STATS.clients} brands</span> across ecommerce, apps, SaaS, and global consumer markets.
+            {locale === 'en' ? (
+              <>Trusted by <span className="text-lime">{CONVRT_STATS.clients} brands</span> across ecommerce, apps, SaaS, and global consumer markets.</>
+            ) : (
+              <>{tr('Trusted by')} <span className="text-lime">{CONVRT_STATS.clients} {tr('brands')}</span> {tr('across ecommerce, apps, SaaS, and global consumer markets.')}</>
+            )}
           </h2>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
             <a
-              href={OFFER_PATHS.roadmap}
+              href={action.href}
+              {...(action.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
               className="cta-gradient inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-semibold text-canvas w-full sm:w-auto"
             >
-              Become our next client
+              {tr('Become our next client')}
               <svg viewBox="0 0 12 12" className="h-3.5 w-3.5" fill="none">
                 <path d="M3 9L9 3M9 3H4M9 3V8" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </a>
+            {/* Creator recruitment is an English-only Google Form (a creator-side flow, not part of this release): not offered from other languages. */}
+            {locale === 'en' && (
             <a
               href="https://forms.gle/Bg8ubU2tnmMj88m7A" target="_blank" rel="noopener noreferrer"
               className="inline-flex items-center justify-center gap-2 rounded-full bg-ink px-6 py-3 text-sm font-semibold text-canvas transition-transform duration-150 active:scale-[0.98] hover:bg-white w-full sm:w-auto"
@@ -133,6 +146,7 @@ export default function Credibility() {
                 <path d="M3 9L9 3M9 3H4M9 3V8" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </a>
+            )}
           </div>
         </div>
       </div>

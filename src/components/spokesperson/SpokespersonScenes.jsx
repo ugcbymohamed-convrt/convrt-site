@@ -1,5 +1,6 @@
 import { Avatar, CheckBadge, delay } from '../ugc/illustrations.jsx'
 import { LIME, VIOLET, CORAL, PINK, Skel, Tag, Label, Icon } from '../scenes/sceneKit.jsx'
+import { tr } from '../../i18n/tr.js'
 
 /* The four "How it works" scenes of /spokesperson-video-production. Same system as the UGC scenes (src/components/ugc/UgcProcess.jsx): small
    scenes built from CSS and SVG, aria-hidden (the title and sentence beside them carry the meaning), each playing once when its stage is
@@ -33,15 +34,15 @@ export function SceneBrief() {
   return (
     <div className="flex h-full items-stretch">
       <div className="flex w-[34%] shrink-0 flex-col justify-center gap-2">
-        <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-ink-muted">One brief</p>
+        <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-ink-muted">{tr('One brief')}</p>
         <div className="ugc-pop rounded-2xl border border-lime/40 bg-surface-2 p-2.5 sm:p-3" style={{ boxShadow: '0 0 40px -18px rgba(213,255,64,0.5)' }}>
           <div className="flex items-center gap-1.5 text-lime">
             <Icon className="h-3.5 w-3.5"><path d="M7 3h7l4 4v14H7z" /><path d="M14 3v4h4M10 12h5M10 16h5" /></Icon>
-            <span className="text-[11px] font-bold uppercase tracking-[0.08em]">Brand brief</span>
+            <span className="text-[11px] font-bold uppercase tracking-[0.08em]">{tr('Brand brief')}</span>
           </div>
           {['Product', 'Audience', 'Goal'].map((l) => (
             <div key={l} className="mt-2.5">
-              <span className="text-[10px] font-medium text-ink-muted">{l}</span>
+              <span className="text-[10px] font-medium text-ink-muted">{tr(l)}</span>
               <Skel className="mt-1" w={l === 'Goal' ? 'w-2/3' : 'w-full'} />
             </div>
           ))}
@@ -56,7 +57,7 @@ export function SceneBrief() {
         </svg>
       </div>
       <div className="flex min-w-0 flex-1 flex-col">
-        <p className="mb-2 h-[12px] text-[10px] font-semibold uppercase leading-[12px] tracking-[0.12em] text-ink-muted">Possible video messages</p>
+        <p className="mb-2 h-[12px] text-[10px] font-semibold uppercase leading-[12px] tracking-[0.12em] text-ink-muted">{tr('Possible video messages')}</p>
         <ul className="flex flex-1 flex-col justify-between gap-1.5">
           {angles.map(([label, v, c], i) => (
             <li key={label} className="cs-fade-up flex flex-1 items-center gap-2 rounded-xl border bg-canvas/50 px-2 py-1" style={{ ...delay(500 + i * 110), borderColor: `${c}66` }}>
@@ -64,8 +65,8 @@ export function SceneBrief() {
                 <Avatar variant={v} className="absolute inset-0 h-full w-full" pos="50% 20%" />
               </span>
               <span className="min-w-0">
-                <span className="block text-[10px] font-bold uppercase tracking-[0.08em] text-ink-muted">Angle {i + 1}</span>
-                <span className="mt-0.5 inline-block max-w-full truncate rounded px-1.5 py-px text-[11px] font-bold" style={{ background: `${c}26`, color: c }}>{label}</span>
+                <span className="block text-[10px] font-bold uppercase tracking-[0.08em] text-ink-muted">{tr('Angle')} {i + 1}</span>
+                <span className="mt-0.5 inline-block max-w-full truncate rounded px-1.5 py-px text-[11px] font-bold" style={{ background: `${c}26`, color: c }}>{tr(label)}</span>
               </span>
             </li>
           ))}
@@ -81,7 +82,7 @@ export function ScenePresenter() {
   return (
     <div className="flex h-full flex-col justify-between gap-3">
       <div>
-        <Label n="1">We recommend the right presenter</Label>
+        <Label n="1">{tr('We recommend the right presenter')}</Label>
         <div className="mt-2 grid grid-cols-3 gap-2 sm:gap-3">
           {presenters.map(([tag, v], i) => {
             const chosen = i === 1
@@ -90,8 +91,8 @@ export function ScenePresenter() {
                 <span className="relative h-10 w-10 overflow-hidden rounded-full border-2 sm:h-14 sm:w-14" style={{ borderColor: chosen ? LIME : '#34343a', background: '#17171b' }}>
                   <Avatar variant={v} className="absolute inset-0 h-full w-full" pos="50% 20%" />
                 </span>
-                <span className="text-[11px] font-semibold text-ink">Presenter {i + 1}</span>
-                <span className="text-[10px] text-ink-muted">{tag}</span>
+                <span className="text-[11px] font-semibold text-ink">{tr('Presenter')} {i + 1}</span>
+                <span className="text-[10px] text-ink-muted">{tr(tag)}</span>
                 {chosen && <CheckBadge className="ugc-pop absolute -right-1.5 -top-1.5" size="h-5 w-5" />}
               </div>
             )
@@ -100,15 +101,14 @@ export function ScenePresenter() {
       </div>
       <div>
         <div className="flex items-center justify-between gap-2">
-          <Label n="2">We write the script</Label>
+          <Label n="2">{tr('We write the script')}</Label>
           <span className="ugc-pop inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded-full bg-lime px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.08em] text-canvas" style={delay(1300)}>
-            <Icon className="h-3 w-3"><path d="M4 12.5l5 5L20 6" /></Icon>You approve
-          </span>
+            <Icon className="h-3 w-3"><path d="M4 12.5l5 5L20 6" /></Icon>{tr('You approve')}</span>
         </div>
         <div className="cs-fade-up relative mt-2 rounded-2xl border border-hairline-strong bg-surface-2 p-3" style={delay(750)}>
-          <div className="flex items-start gap-2.5"><Tag className="mt-0.5 shrink-0">Intro</Tag><Skel w="w-4/5" className="mt-1.5" /></div>
-          <div className="mt-2.5 flex items-center gap-2.5"><Tag color={VIOLET} className="shrink-0 !text-white">Message</Tag><Skel w="w-full" /></div>
-          <div className="mt-2 flex items-center gap-2.5"><Tag color={CORAL} className="shrink-0">Action</Tag><Skel w="w-3/5" /></div>
+          <div className="flex items-start gap-2.5"><Tag className="mt-0.5 shrink-0">{tr('Intro')}</Tag><Skel w="w-4/5" className="mt-1.5" /></div>
+          <div className="mt-2.5 flex items-center gap-2.5"><Tag color={VIOLET} className="shrink-0 !text-white">{tr('Message')}</Tag><Skel w="w-full" /></div>
+          <div className="mt-2 flex items-center gap-2.5"><Tag color={CORAL} className="shrink-0">{tr('Action')}</Tag><Skel w="w-3/5" /></div>
         </div>
       </div>
     </div>
@@ -129,8 +129,7 @@ export function SceneFilming() {
       <div className="flex min-h-0 flex-1 items-center justify-center">
         <VideoFrame variant={P.man} tone={VIOLET} className="ugc-pop h-full max-h-[11.5rem] max-w-full">
           <span className="ugc-fade-out absolute left-2 top-2 flex items-center gap-1 rounded-full bg-black/55 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-[0.08em] text-ink" style={delay(2300)}>
-            <span className="ugc-blink h-1.5 w-1.5 rounded-full bg-coral" />Rec
-          </span>
+            <span className="ugc-blink h-1.5 w-1.5 rounded-full bg-coral" />{tr('Rec')}</span>
           {/* lower third, drawn as neutral lines (no names or words) */}
           <span className="cs-fade-up absolute bottom-8 left-3 flex w-[40%] flex-col gap-1 rounded-md border-l-2 border-lime bg-black/60 px-2 py-1.5" style={delay(1500)}>
             <span className="h-1.5 w-4/5 rounded-full bg-white/85" /><span className="h-1 w-3/5 rounded-full bg-white/45" />
@@ -150,7 +149,7 @@ export function SceneFilming() {
         {lanes.map(([label, color, icon], i) => (
           <li key={label} className="cs-fade-up flex flex-col items-center gap-1 rounded-xl border border-hairline bg-canvas/40 px-1 py-2" style={delay(300 + i * 450)}>
             <span className="flex h-8 w-8 items-center justify-center rounded-lg" style={{ background: `${color}26`, color }}><Icon>{icon}</Icon></span>
-            <span className="text-[10px] font-semibold text-ink">{label}</span>
+            <span className="text-[10px] font-semibold text-ink">{tr(label)}</span>
             <CheckBadge className="ugc-pop" size="h-4 w-4" />
           </li>
         ))}
@@ -165,10 +164,9 @@ export function SceneDelivery() {
     <li className="cs-fade-up flex min-h-0 flex-col gap-1.5 rounded-2xl border border-hairline bg-canvas/40 p-2" style={delay(i * 200)}>
       <div className="flex min-h-0 flex-1 items-center justify-center">{children}</div>
       <div className="flex items-center justify-between gap-1">
-        <span className="truncate text-[11px] font-semibold text-ink">{label}</span>
+        <span className="truncate text-[11px] font-semibold text-ink">{tr(label)}</span>
         <span className="ugc-pop inline-flex shrink-0 items-center gap-1 rounded-full bg-lime/15 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-[0.06em] text-lime" style={delay(900 + i * 200)}>
-          <Icon className="h-2.5 w-2.5"><path d="M4 12.5l5 5L20 6" /></Icon>Ready
-        </span>
+          <Icon className="h-2.5 w-2.5"><path d="M4 12.5l5 5L20 6" /></Icon>{tr('Ready')}</span>
       </div>
     </li>
   )
@@ -185,7 +183,7 @@ export function SceneDelivery() {
       </Tile>
       <Tile label="Paid advertising" i={1}>
         <div className="w-full max-w-[7.5rem] overflow-hidden rounded-lg border border-white/15 bg-surface-2">
-          <div className="flex items-center gap-1 px-1.5 py-1"><span className="h-3 w-3 rounded-full bg-lime/70" /><Skel w="w-1/2" /><span className="ml-auto text-[8px] font-semibold uppercase tracking-wide text-ink-muted">Ad</span></div>
+          <div className="flex items-center gap-1 px-1.5 py-1"><span className="h-3 w-3 rounded-full bg-lime/70" /><Skel w="w-1/2" /><span className="ml-auto text-[8px] font-semibold uppercase tracking-wide text-ink-muted">{tr('Ad')}</span></div>
           <VideoFrame variant={P.alt} tone={CORAL} className="rounded-none border-0"><span className="absolute inset-0 flex items-center justify-center"><PlayDot className="h-5 w-5" /></span></VideoFrame>
           <div className="px-1.5 py-1"><span className="block h-3 rounded bg-lime" /></div>
         </div>

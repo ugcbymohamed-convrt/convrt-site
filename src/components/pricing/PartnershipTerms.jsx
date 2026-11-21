@@ -1,4 +1,5 @@
 import { CARD_NOTES } from '../../seo/businessKnowledge.js'
+import { tr, hrefFor } from '../../i18n/tr.js'
 
 /* One concise, centered note under each card group. The full policies (turnaround, custom terms, VAT, organic renewal) live
    in the information panels and the FAQ, and in src/seo/businessKnowledge.js. */
@@ -7,27 +8,27 @@ function Note({ children }) {
 }
 export const PaidTerms = () => (
   <>
-    <Note>{CARD_NOTES.paid}</Note>
+    <Note>{tr(CARD_NOTES.paid)}</Note>
     <p className="mx-auto mt-2 max-w-3xl text-center text-[13px] leading-relaxed text-ink-subtle">
-      New to UGC?{' '}
-      <a href="/ugc-video-agency" className="text-ink-muted underline underline-offset-2 transition-colors hover:text-lime">
-        See how our UGC production works
+      {tr('New to UGC?')}{' '}
+      <a href={hrefFor('/ugc-video-agency')} className="text-ink-muted underline underline-offset-2 transition-colors hover:text-lime">
+        {tr('See how our UGC production works')}
       </a>
       {' · '}
-      Need a presenter?{' '}
-      <a href="/spokesperson-video-production" className="text-ink-muted underline underline-offset-2 transition-colors hover:text-lime">
-        See spokesperson video production
+      {tr('Need a presenter?')}{' '}
+      <a href={hrefFor('/spokesperson-video-production')} className="text-ink-muted underline underline-offset-2 transition-colors hover:text-lime">
+        {tr('See spokesperson video production')}
       </a>
     </p>
   </>
 )
 export const OrganicTerms = () => (
   <>
-    <Note>{CARD_NOTES.organic}</Note>
+    <Note>{tr(CARD_NOTES.organic)}</Note>
     <p className="mx-auto mt-2 max-w-3xl text-center text-[13px] leading-relaxed text-ink-subtle">
-      Curious how it works?{' '}
-      <a href="/social-media-video-production" className="text-ink-muted underline underline-offset-2 transition-colors hover:text-lime">
-        See organic social video production
+      {tr('Curious how it works?')}{' '}
+      <a href={hrefFor('/social-media-video-production')} className="text-ink-muted underline underline-offset-2 transition-colors hover:text-lime">
+        {tr('See organic social video production')}
       </a>
     </p>
   </>

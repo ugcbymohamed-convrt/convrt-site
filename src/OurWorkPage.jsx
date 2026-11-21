@@ -7,6 +7,7 @@ import { useDocumentHead } from './lib/useDocumentHead.js'
 import { pageHead } from './seo/siteSeo.js'
 import { PATHS } from './routes.js'
 import { selectOurWork } from './content/portfolio.js'
+import { tr, T, hrefFor } from './i18n/tr.js'
 
 /* /creator-showcase: the Creator Showcase (the route stays /creator-showcase). Examples from independent creators, not all CONVRT productions. Three sections: 1 a compact hero, 2 the filterable video library, 3 a short "what you'll find here" guide with links to the service pages and case studies (Batch 2).
    Every video comes from src/content/portfolio.js (approved items only), the same file the UGC page and the homepage read.
@@ -26,11 +27,11 @@ export default function OurWorkPage() {
 
   return (
     <>
-      <nav aria-label="Breadcrumb" className="mx-auto max-w-7xl px-5 pt-2 md:px-8">
+      <nav aria-label={tr('Breadcrumb')} className="mx-auto max-w-7xl px-5 pt-2 md:px-8">
         <ol className="flex items-center gap-2 text-[13px] text-ink-subtle">
-          <li><a href="/" className="transition-colors hover:text-ink">Home</a></li>
+          <li><a href={hrefFor('/')} className="transition-colors hover:text-ink">{tr('Home')}</a></li>
           <li aria-hidden="true">/</li>
-          <li aria-current="page" className="text-ink-muted">Creator Showcase</li>
+          <li aria-current="page" className="text-ink-muted">{tr('Creator Showcase')}</li>
         </ol>
       </nav>
       <OurWorkHero />

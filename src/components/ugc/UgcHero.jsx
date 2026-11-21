@@ -6,6 +6,10 @@ import { OFFER_PATHS, CREATOR_SHOWCASE_PATH } from '../../config.js'
 import { SECONDARY_OFFERS, SecondaryOffer } from '../Hero.jsx'
 import CreatorVideoStage, { PhoneShowcaseFallback } from './CreatorVideoStage.jsx'
 import { useAutoplayAllowed } from './creatorVideo.jsx'
+import { tr, hrefFor } from '../../i18n/tr.js'
+import { currentLocale } from '../../i18n/locale.js'
+import { resolveCta, flowAvailable } from '../../i18n/cta.js'
+import { localizeHero } from '../../i18n/hero.js'
 
 /* SECTION 1: hero. The homepage hero's system: the left column has the same structure, type scale, CTA styles and the two free-offer
    cards (reused from components/Hero.jsx); the right column is the three-phone stage.
@@ -135,7 +139,13 @@ const Arrow = ({ cls }) => (
   </svg>
 )
 
-export default function UgcHero({ items, config = UGC_HERO }) {
+export default function UgcHero({ items, config: configProp = UGC_HERO }) {
+  const locale = currentLocale()
+  const config = localizeHero(configProp, locale)
+  // Other languages: a primary CTA into the English-only Roadmap becomes the booking call; the free-offer cards are shown only where their flows are translated.
+  const primary = resolveCta(locale, configProp.primary)
+  const primaryLabel = primary.redirected ? tr(primary.label) : config.primary.label
+  const offersAvailable = flowAvailable(locale, 'riskFree') && flowAvailable(locale, 'hooks')
   const hasWork = items.length > 0
   const primaryPress = usePressFeedback()
   const ghostPress = usePressFeedback()
@@ -161,25 +171,25 @@ export default function UgcHero({ items, config = UGC_HERO }) {
               <div className="cs-fade-up lg:mt-6" style={{ animationDelay: '600ms' }}>
                 {config.leadIn !== null && (
                   <p className="mb-3 text-balance text-[15px] font-medium leading-snug text-ink md:text-base">
-                    {config.leadIn ?? <>Your next 5 ad concepts. Tailored to your brand. <span className="text-lime">On us.</span></>}
+                    {config.leadIn ?? (locale === 'en' || flowAvailable(locale, 'roadmap') ? <>Your next 5 ad concepts. Tailored to your brand. <span className="text-lime">On us.</span></> : <>{tr('Book a free strategy call.')} <span className="text-lime">{tr('We tell you exactly what you need.')}</span></>)}
                   </p>
                 )}
                 <div className="flex flex-col items-stretch gap-3 sm:flex-row sm:items-center sm:justify-center lg:justify-start">
                   <a
-                    href={config.primary.href}
-                    {...(config.primary.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+                    href={hrefFor(primary.href)}
+                    {...(primary.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
                     onClick={(e) => {
-                      trackEvent(config.track.cta, { location: 'hero' })
-                      if (config.primary.external) e.currentTarget.href = withUtm(config.primary.href)
+                      trackEvent(config.track.cta, primary.redirected ? { location: 'hero', page: locale } : { location: 'hero' })
+                      if (primary.external) e.currentTarget.href = withUtm(primary.href)
                     }}
                     {...primaryPress}
                     className={PRIMARY_CTA}
                   >
-                    {config.primary.label}
+                    {primaryLabel}
                     <Arrow cls="h-4 w-4 md:h-[18px] md:w-[18px]" />
                   </a>
                   <a
-                    href={config.secondary.href}
+                    href={hrefFor(config.secondary.href)}
                     onClick={() => trackEvent(config.track.work, { location: 'hero' })}
                     {...ghostPress}
                     className={GHOST_CTA}
@@ -190,12 +200,14 @@ export default function UgcHero({ items, config = UGC_HERO }) {
                 </div>
               </div>
 
+              {offersAvailable && (
               <div className="cs-fade-up mx-auto mt-8 max-w-xl md:mt-10 lg:mx-0" style={{ animationDelay: '680ms' }}>
-                <p className="text-left text-[13px] text-ink-muted">{"Not ready yet? We've got two more FREE ways to start."}</p>
+                <p className="text-left text-[13px] text-ink-muted">{tr("Not ready yet? We've got two more FREE ways to start.")}</p>
                 <div className="mt-3 grid grid-cols-1 gap-2.5 text-left sm:grid-cols-2">
                   {SECONDARY_OFFERS.map((offer) => <SecondaryOffer key={offer.id} offer={offer} />)}
                 </div>
               </div>
+              )}
             </div>
           </div>
 

@@ -19,6 +19,7 @@ import { ORGANIC_CTA } from './seo/businessKnowledge.js'
 import {
   ORGANIC_HERO, ORGANIC_PAGE_STAGES, ORGANIC_PROCESS, ORGANIC_GALLERY, ORGANIC_PAGE_CTA, ORGANIC_PATH_LABEL, ORGANIC_PROOF, ORGANIC_PROOF_COPY, ORGANIC_PRICING_HREF, ORGANIC_SCOPE_NOTE,
 } from './content/organicSocialPage.js'
+import { tr, T, hrefFor } from './i18n/tr.js'
 
 /* /social-media-video-production: the Organic Social Video Production & Management page. It reuses the UGC and Spokesperson pages' architecture and design system, and each
    section is the same configuration-driven component fed with organic-social content (src/content/organicSocialPage.js):
@@ -32,7 +33,7 @@ import {
 const FAQ_CONFIG = {
   items: ORGANIC_SOCIAL_FAQ,
   prefix: 'organic',
-  title: <>Organic social video, <span className="text-lime">answered.</span></>,
+  title: <><T>Organic social video,</T>{' '}<span className="text-lime"><T>answered.</T></span></>,
 }
 
 const PROCESS_CONFIG = { ...ORGANIC_PROCESS, stages: ORGANIC_PAGE_STAGES, visuals: ORGANIC_VISUALS }
@@ -51,11 +52,11 @@ function ProcessFooter() {
   return (
     <>
       <p className="mx-auto max-w-3xl text-center text-[15px] leading-relaxed text-ink-muted">
-        What each stage includes depends on your package or custom brief. See{' '}
-        <a href={ORGANIC_PRICING_HREF} className="font-medium text-ink underline decoration-lime/60 underline-offset-4 transition-colors hover:text-lime">pricing and terms</a>.
+        {tr('What each stage includes depends on your package or custom brief. See')}{' '}
+        <a href={hrefFor(ORGANIC_PRICING_HREF)} className="font-medium text-ink underline decoration-lime/60 underline-offset-4 transition-colors hover:text-lime">{tr('pricing and terms')}</a>.
       </p>
-      <p className="mx-auto mt-2 max-w-3xl text-center text-[15px] leading-relaxed text-ink-muted">{ORGANIC_SCOPE_NOTE}</p>
-      <p className="mx-auto mt-2 max-w-3xl text-center text-xs text-ink-muted">Scenes are illustrative. The portraits are for illustration only.</p>
+      <p className="mx-auto mt-2 max-w-3xl text-center text-[15px] leading-relaxed text-ink-muted">{tr(ORGANIC_SCOPE_NOTE)}</p>
+      <p className="mx-auto mt-2 max-w-3xl text-center text-xs text-ink-muted">{tr('Scenes are illustrative. The portraits are for illustration only.')}</p>
     </>
   )
 }
@@ -76,11 +77,11 @@ export default function OrganicSocialVideoPage() {
 
   return (
     <>
-      <nav aria-label="Breadcrumb" className="mx-auto max-w-7xl px-5 pt-2 md:px-8">
+      <nav aria-label={tr('Breadcrumb')} className="mx-auto max-w-7xl px-5 pt-2 md:px-8">
         <ol className="flex items-center gap-2 text-[13px] text-ink-subtle">
-          <li><a href="/" className="transition-colors hover:text-ink">Home</a></li>
+          <li><a href={hrefFor('/')} className="transition-colors hover:text-ink">{tr('Home')}</a></li>
           <li aria-hidden="true">/</li>
-          <li aria-current="page" className="text-ink-muted">{ORGANIC_PATH_LABEL}</li>
+          <li aria-current="page" className="text-ink-muted">{tr(ORGANIC_PATH_LABEL)}</li>
         </ol>
       </nav>
       <UgcHero items={heroItems} config={ORGANIC_HERO} />

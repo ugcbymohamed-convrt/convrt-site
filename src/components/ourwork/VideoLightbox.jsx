@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom'
 import { titleOf, posterUrl, industryLabel, typeLabel, languageLabel, creatorLabel, brandLabel, creditLabel, productionLabel } from '../../content/portfolio.js'
 import { useAttachSource, PlayGlyph, PauseGlyph, SoundGlyph } from '../ugc/creatorVideo.jsx'
 import { CloseGlyph, Chevron } from './icons.jsx'
+import { tr } from '../../i18n/tr.js'
 
 /* The enlarged, vertical viewing experience for ONE video. There is exactly one player on the page: it is mounted only while a card is
    open (so no other video can be playing; opening another card replaces it), and it stops, detaches its stream and goes away on close.
@@ -82,20 +83,20 @@ function Player({ item, color }) {
         onClick={toggle}
         className="absolute inset-0 h-full w-full cursor-pointer bg-black object-contain"
       />
-      {failed && <p role="alert" className="absolute inset-x-6 top-1/2 -translate-y-1/2 rounded-xl bg-black/70 p-4 text-center text-sm text-ink">This video could not be loaded. Please try again.</p>}
+      {failed && <p role="alert" className="absolute inset-x-6 top-1/2 -translate-y-1/2 rounded-xl bg-black/70 p-4 text-center text-sm text-ink">{tr('This video could not be loaded. Please try again.')}</p>}
       {!playing && !failed && (
-        <button type="button" onClick={toggle} aria-label="Play" className="absolute left-1/2 top-1/2 flex h-16 w-16 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-white/30 bg-black/50 text-ink backdrop-blur transition-transform hover:scale-105 focus-visible:outline focus-visible:outline-2 focus-visible:outline-lime motion-reduce:transition-none">
+        <button type="button" onClick={toggle} aria-label={tr('Play')} className="absolute left-1/2 top-1/2 flex h-16 w-16 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-white/30 bg-black/50 text-ink backdrop-blur transition-transform hover:scale-105 focus-visible:outline focus-visible:outline-2 focus-visible:outline-lime motion-reduce:transition-none">
           <PlayGlyph className="h-6 w-6" />
         </button>
       )}
       <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent px-3 pb-3 pt-10">
         <div className="flex items-center gap-2.5 rounded-full bg-black/55 py-1 pl-1.5 pr-3 backdrop-blur-md">
-          <button type="button" onClick={toggle} aria-label={playing ? 'Pause' : 'Play'} className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white/10 text-ink transition-colors hover:bg-white/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-lime">
+          <button type="button" onClick={toggle} aria-label={playing ? tr('Pause') : tr('Play')} className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white/10 text-ink transition-colors hover:bg-white/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-lime">
             {playing ? <PauseGlyph /> : <PlayGlyph className="h-3.5 w-3.5" />}
           </button>
           <input
             type="range"
-            aria-label="Seek"
+            aria-label={tr('Seek')}
             aria-valuetext={`${fmt(time.cur)} of ${fmt(time.dur)}`}
             min="0"
             max={time.dur || 0}
@@ -106,12 +107,12 @@ function Player({ item, color }) {
             style={{ '--p': `${pct}%` }}
           />
           <span className="hidden shrink-0 text-[11px] tabular-nums text-ink-muted min-[380px]:inline">{fmt(time.cur)}</span>
-          <button type="button" onClick={toggleMute} aria-label={muted ? 'Unmute' : 'Mute'} aria-pressed={muted} className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white/10 text-ink transition-colors hover:bg-white/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-lime">
+          <button type="button" onClick={toggleMute} aria-label={muted ? tr('Unmute') : tr('Mute')} aria-pressed={muted} className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white/10 text-ink transition-colors hover:bg-white/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-lime">
             <SoundGlyph muted={muted || volume === 0} />
           </button>
           <input
             type="range"
-            aria-label="Volume"
+            aria-label={tr('Volume')}
             min="0"
             max="1"
             step="0.05"
@@ -176,11 +177,11 @@ export default function VideoLightbox({ item, color, onClose, onPrev, onNext }) 
       style={{ '--cat': color }}
       className="fixed inset-0 z-[100] flex items-center justify-center gap-4 bg-black/90 p-3 backdrop-blur-sm ow-fade"
     >
-      <button ref={closeBtn} type="button" onClick={onClose} aria-label="Close video" className="absolute right-3 top-3 z-10 flex h-11 w-11 items-center justify-center rounded-full border border-white/25 bg-black/60 text-ink backdrop-blur transition-colors hover:bg-white/15 focus-visible:outline focus-visible:outline-2 focus-visible:outline-lime md:right-5 md:top-5">
+      <button ref={closeBtn} type="button" onClick={onClose} aria-label={tr('Close video')} className="absolute right-3 top-3 z-10 flex h-11 w-11 items-center justify-center rounded-full border border-white/25 bg-black/60 text-ink backdrop-blur transition-colors hover:bg-white/15 focus-visible:outline focus-visible:outline-2 focus-visible:outline-lime md:right-5 md:top-5">
         <CloseGlyph className="h-[18px] w-[18px]" />
       </button>
 
-      {onPrev ? <button type="button" onClick={onPrev} aria-label="Previous video" className={navBtn}><Chevron dir={-1} /></button> : <span className="hidden w-11 md:block" aria-hidden="true" />}
+      {onPrev ? <button type="button" onClick={onPrev} aria-label={tr('Previous video')} className={navBtn}><Chevron dir={-1} /></button> : <span className="hidden w-11 md:block" aria-hidden="true" />}
 
       <div
         className="relative aspect-[9/16] max-w-full overflow-hidden rounded-3xl border border-white/10 bg-black shadow-[0_40px_120px_-30px_rgba(0,0,0,0.9)]"
@@ -196,7 +197,7 @@ export default function VideoLightbox({ item, color, onClose, onPrev, onNext }) 
         </div>
       </div>
 
-      {onNext ? <button type="button" onClick={onNext} aria-label="Next video" className={navBtn}><Chevron dir={1} /></button> : <span className="hidden w-11 md:block" aria-hidden="true" />}
+      {onNext ? <button type="button" onClick={onNext} aria-label={tr('Next video')} className={navBtn}><Chevron dir={1} /></button> : <span className="hidden w-11 md:block" aria-hidden="true" />}
     </div>,
     document.body,
   )

@@ -1,6 +1,9 @@
 import { trackEvent } from '../../lib/analytics.js'
 import { Section, Head, Reveal, RoadmapCta, TextLink } from '../ugc/shared.jsx'
 import { SPOKESPERSON_PROOF, SPOKESPERSON_EXPECTATIONS } from '../../content/spokespersonPage.js'
+import { tr } from '../../i18n/tr.js'
+import { currentLocale } from '../../i18n/locale.js'
+import { localizeConfig } from '../../i18n/content.js'
 
 /* Proof for /spokesperson-video-production: verified, spokesperson-specific material only (src/content/spokespersonPage.js).
 
@@ -86,7 +89,7 @@ function Results({ config }) {
               <div className={wide ? 'mt-4 lg:mt-0' : ''}>
                 {r.context && <p className="mt-4 max-w-xl text-[15px] leading-relaxed text-ink-muted lg:mt-0">{r.context}</p>}
                 {r.disclaimer && <p className="mt-3 max-w-xl text-[13px] leading-relaxed text-ink-muted">{r.disclaimer}</p>}
-                {r.href && <p className="mt-2.5 text-[15px]"><TextLink href={r.href}>Read the case study <span aria-hidden="true">→</span></TextLink></p>}
+                {r.href && <p className="mt-2.5 text-[15px]"><TextLink href={r.href}>{tr('Read the case study')}{' '}<span aria-hidden="true">→</span></TextLink></p>}
               </div>
             </div>
           </Reveal>
@@ -99,7 +102,7 @@ function Results({ config }) {
                 {t.logo && (
                   <img src={t.logo.src} alt={t.logo.alt} width={t.logo.w} height={t.logo.h} loading="lazy" decoding="async" draggable="false" className="h-7 w-auto max-w-[140px] object-contain object-left" style={{ filter: 'brightness(0) invert(1)' }} />
                 )}
-                <blockquote className="mt-4 flex-1 text-[15px] leading-relaxed text-ink">&ldquo;{t.quote}&rdquo;</blockquote>
+                <blockquote lang={currentLocale() === 'en' ? undefined : 'en'} className="mt-4 flex-1 text-[15px] leading-relaxed text-ink">&ldquo;{t.quote}&rdquo;</blockquote>
                 <figcaption className="mt-4 text-sm text-ink-muted"><span className="font-semibold text-ink">{t.brand}</span> · {t.category}</figcaption>
               </figure>
             </Reveal>
@@ -117,7 +120,8 @@ function Results({ config }) {
 
 /* `proof` (or a whole `config`) is injectable so the populated layout can be rendered and tested with sample data. */
 export default function SpokespersonProof({ proof, config = SPOKESPERSON_PROOF_CONFIG }) {
-  const cfg = proof ? { ...config, proof } : config
+  // Other languages: headings, contexts and disclaimers go through the dictionary; testimonial quotes are verbatim and stay in their original language.
+  const cfg = localizeConfig(proof ? { ...config, proof } : config, currentLocale())
   if (cfg.proof.results.length || cfg.proof.testimonials.length) return <Results config={cfg} />
   return cfg.expectations ? <Expectations config={cfg} /> : null
 }

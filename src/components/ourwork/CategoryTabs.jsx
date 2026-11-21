@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { CATEGORY_ICONS, Chevron } from './icons.jsx'
+import { tr } from '../../i18n/tr.js'
 
 /* The horizontal category selector: All Work + one pill per category that has videos (the caller passes only those).
 
@@ -57,7 +58,7 @@ export default function CategoryTabs({ tabs, activeId, counts, onSelect }) {
       <div
         ref={scroller}
         role="group"
-        aria-label="Filter videos by industry or type"
+        aria-label={tr('Filter videos by industry or type')}
         className="relative -mx-5 flex snap-x scroll-px-5 gap-2 overflow-x-auto overscroll-x-contain px-5 py-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden md:mx-0 md:scroll-px-0 md:px-0"
       >
         {tabs.map((t) => {
@@ -77,7 +78,7 @@ export default function CategoryTabs({ tabs, activeId, counts, onSelect }) {
               }`}
             >
               <Icon className={`h-[18px] w-[18px] shrink-0 transition-colors duration-300 motion-reduce:transition-none ${active ? 'text-canvas' : 'text-[var(--c)]'}`} />
-              {t.label}
+              {tr(t.label)}
               <span className={`text-[12px] font-bold tabular-nums ${active ? 'text-canvas/70' : 'text-ink-subtle'}`}>{counts[t.id]}</span>
             </button>
           )
@@ -94,7 +95,7 @@ export default function CategoryTabs({ tabs, activeId, counts, onSelect }) {
             type="button"
             tabIndex={show ? 0 : -1}
             aria-hidden={!show}
-            aria-label={dir < 0 ? 'Show previous categories' : 'Show next categories'}
+            aria-label={dir < 0 ? tr('Show previous categories') : tr('Show next categories')}
             onClick={() => by(dir)}
             className={`absolute top-1/2 hidden h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border border-hairline-strong bg-surface-2 text-ink transition-opacity duration-300 hover:border-ink-subtle focus-visible:outline focus-visible:outline-2 focus-visible:outline-lime md:flex ${dir < 0 ? 'left-0' : 'right-0'} ${show ? 'opacity-100' : 'pointer-events-none opacity-0'}`}
           >

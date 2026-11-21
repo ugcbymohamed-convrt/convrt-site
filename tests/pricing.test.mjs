@@ -4,6 +4,7 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import fs from 'node:fs'
+import { readSource } from './helpers/i18nSource.mjs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import {
@@ -19,7 +20,7 @@ import { articleJsonLd, blogIndexJsonLd } from '../src/lib/blog/seo.js'
 import { SITE_URL, BOOKING_URL } from '../src/config.js'
 
 const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), '..')
-const read = (p) => fs.readFileSync(path.join(ROOT, p), 'utf8')
+const read = (p) => readSource(path.join(ROOT, p))
 const faq = (id) => faqAnswerText(PRICING_FAQ.find((f) => f.id === id))
 const graph = () => pricingGraph({ title: SITE_SEO['/pricing'].title, description: SITE_SEO['/pricing'].description })['@graph']
 
@@ -67,7 +68,7 @@ test('Sprint 5/5/3/15 and Sprint Plus 10/10/3/30 (approved offer): config, cards
   const philoSrc = read('src/components/pricing/PhilosophySection.jsx')
   assert.match(philoSrc, /SPRINT\.concepts/)
   assert.ok(!/SPRINT_PLUS/.test(philoSrc.slice(philoSrc.indexOf('function ConceptColumn'), philoSrc.indexOf('const SEQ_ICONS'))), 'the diagram columns are the standard Sprint only')
-  assert.match(philoSrc, /Standard Sprint shown\. Sprint Plus includes \{SPRINT_PLUS\.concepts\} concepts and \{SPRINT_PLUS\.variations\} finished ad versions\./)
+  assert.match(philoSrc, /Standard Sprint shown\. Sprint Plus includes \$?\{SPRINT_PLUS\.concepts\} concepts and \$?\{SPRINT_PLUS\.variations\} finished ad versions\./)
 })
 
 test('no obsolete 8-concept / uneven-distribution Sprint Plus wording anywhere in active source', () => {
@@ -477,7 +478,7 @@ test('hero: ONE headline and subtitle, no hero CTAs or stats, no second heading 
   const s = strip(stage)
   assert.match(s.replace(/\s+/g, ' '), /Your creative partner\. <span className="text-lime">On your terms\.<\/span>/)
   assert.match(s.replace(/\s+/g, ' '), /From performance-driven video ads to consistent organic content, find the right creative partnership for your brand\./)
-  assert.match(s, /UGC &amp; video production pricing/)
+  assert.match(s, /UGC (&amp;|&) video production pricing/)
   assert.ok(!/More concepts\. Better creative|Choose your creative|Explore Packages|Get 5 Free Ad Concepts|CONVRT_STATS/.test(s), 'old headlines, hero CTAs and stats are out of the opening section')
   assert.equal((s.match(/<h1/g) || []).length, 1)
   assert.equal((s.match(/<h2/g) || []).length, 0, 'no other heading in the opening section')
@@ -507,7 +508,7 @@ test('horizontal transition: CSS transform slide (~420ms), inert inactive group,
 test('billing: compact Monthly / One-off selector for Paid only; prices from config; Organic has none', () => {
   assert.deepEqual(BILLING_OPTIONS.map((o) => [o.id, o.label, o.unit]), [['monthly', 'Monthly', '/month'], ['oneOff', 'One-off', '/project']])
   assert.match(stage, /useState\('monthly'\)/)
-  assert.match(cardsSrc, /formatMoney\(pkg\[o\.id\]\)/)
+  assert.match(cardsSrc, /(formatMoney|money)\(pkg\[o\.id\]\)/)
   assert.equal(SPRINT.monthly.amount, 3000); assert.equal(SPRINT.oneOff.amount, 3500)
   assert.equal(SPRINT_PLUS.monthly.amount, 5000); assert.equal(SPRINT_PLUS.oneOff.amount, 6000)
   const paidPanel = stage.slice(stage.indexOf('id="paid"'), stage.indexOf('id="organic"'))
@@ -581,8 +582,8 @@ test('Section 2: philosophy (standard Sprint diagram / organic sequence) + Roadm
   assert.match(s, /Different concepts\. <span className="text-lime">Not just different hooks\.<\/span>/)
   assert.match(s, /We develop distinct creative angles, then create variations for structured testing\./)
   assert.match(s, /SPRINT\.concepts\} original concepts[\s\S]*SPRINT\.variations\} finished ad versions/)
-  assert.match(s, /A concept<\/span> is a unique ad idea\./); assert.match(s, /A variation<\/span> changes its hook or CTA\./)
-  assert.match(s, /Standard Sprint shown\. Sprint Plus includes \{SPRINT_PLUS\.concepts\} concepts and \{SPRINT_PLUS\.variations\} finished ad versions\./)
+  assert.match(s, /A concept<\/span> is a unique ad idea\./); assert.match(s, /A variation<\/span>(?:\s|\{' '\})*changes its hook or CTA\./)
+  assert.match(s, /Standard Sprint shown\. Sprint Plus includes \$?\{SPRINT_PLUS\.concepts\} concepts and \$?\{SPRINT_PLUS\.variations\} finished ad versions\./)
   assert.match(s, /A video-first approach to building your organic presence\./)
   assert.match(s, /Consistency\. Content\. <span className="text-lime">Real connections\.<\/span>/)
   assert.match(s, /ORGANIC_STAGES\.map/)
@@ -635,7 +636,7 @@ test('panel content: concise inclusions, usage rights + extension prices, stages
   assert.match(u.batchNote, /entire creative batch.*exclude VAT/); assert.match(u.fromDelivery, /date each video is delivered/)
   assert.match(u.organic, /set out in your agreement/); assert.match(u.organic, /do not automatically apply/)
   const s = strip(panels)
-  for (const t of ['u.headline', 'u.shortUses', 'u.expirySummary', 'u.creatorNote', 'u.batchNote', 'Custom quote, subject to agreement with the featured creators', 'formatMoney(e.price)', 'formatMoney(SPRINT_PLUS.usageExtensions[i].price)', 'USAGE_RIGHTS.includedMonths + e.months', 'RAW_FOOTAGE.shortNote', 'FORMATS.standardMaxSeconds', 'SHARED_SPRINT_LANGUAGE_NOTE']) assert.ok(s.includes(t), t)
+  for (const t of ['u.headline', 'u.shortUses', 'u.expirySummary', 'u.creatorNote', 'u.batchNote', 'Custom quote, subject to agreement with the featured creators', 'money(e.price)', 'money(SPRINT_PLUS.usageExtensions[i].price)', 'USAGE_RIGHTS.includedMonths + e.months', 'RAW_FOOTAGE.shortNote', 'FORMATS.standardMaxSeconds', 'SHARED_SPRINT_LANGUAGE_NOTE']) assert.ok(s.includes(t), t)
   for (const t of ["'Vertical, square and 4:5.'", "'16:9 counts as a separate video.'", 'Custom 1–3 minute videos available.', "'Starts after concept and script approval.'", 'business days — Sprint.', 'business days — Sprint Plus.']) assert.ok(s.includes(t), t)
   // Long-form policies were moved out of the panels, not dropped: they are in the FAQ.
   assert.match(faq('usage-rights-expiry-extension'), /Existing organic social media posts may remain published/)
@@ -686,7 +687,7 @@ test('Roadmap card: approved copy and destination; right = three-mockup PITCH-BO
   assert.match(s, /Your next <span className="text-lime">5 winning ad concepts\.<\/span>/)
   assert.match(s, /Five personalized creative ideas for your brand, built around your product and audience\./)
   assert.match(s, /Completely free\. No obligation\./)
-  assert.match(s, /href=\{OFFER_PATHS\.roadmap\}/)
+  assert.match(s, /OFFER_PATHS\.roadmap/)
   // right: pitch-board
   const raw = philo
   const board = raw.slice(raw.indexOf('function PitchBoard'), raw.indexOf('function RoadmapCard'))
@@ -725,11 +726,11 @@ test('service-aware CTAs: Paid keeps the Roadmap offer; Organic uses the organic
   assert.ok(!/Free Ad Concepts|ad concepts|OFFER_PATHS/.test(organicCard), 'the five free ad concepts are not presented as an organic deliverable')
   assert.match(organicCard, /ORGANIC_CTA\.href/)
   const fin = strip(read('src/components/pricing/PricingFinalCTA.jsx'))
-  assert.match(fin, /<div hidden=\{service !== 'paid'\}>\s*<CtaLink href=\{OFFER_PATHS\.roadmap\}>Get 5 Free Ad Concepts<\/CtaLink>/)
-  assert.match(fin, /<div hidden=\{service !== 'organic'\}>\s*<CtaLink href=\{ORGANIC_CTA\.href\} external=\{ORGANIC_CTA\.external\}>\{ORGANIC_CTA\.label\}<\/CtaLink>/)
+  assert.match(fin, /<div hidden=\{service !== 'paid'\}>\s*<CtaLink href=\{rcta\.href\} external=\{rcta\.external\}>\{tr\(rcta\.label\)\}<\/CtaLink>/)
+  assert.match(fin, /<div hidden=\{service !== 'organic'\}>\s*<CtaLink href=\{ORGANIC_CTA\.href\} external=\{ORGANIC_CTA\.external\}>\{tr\(ORGANIC_CTA\.label\)\}<\/CtaLink>/)
   assert.match(read('src/CreativeTestingSprintPage.jsx'), /<PricingFinalCTA service=\{service\} \/>/)
   // The global navigation CTA is untouched.
-  assert.match(read('src/components/Nav.jsx'), /const ctaHref = onScalePage \? BOOKING_URL : onRoadmapPage \? '#apply' : OFFER_PATHS\.roadmap/)
+  assert.match(read('src/components/Nav.jsx'), /const ctaHref = onScalePage \? BOOKING_URL : onRoadmapPage \? '#apply' : action\.href/)
   assert.ok(!/mailto/.test(read('src/lib/routes/headFor.js')))
 })
 
@@ -755,7 +756,7 @@ test('page: five sections in order; paid/organic content is switched by presenta
   assert.match(page, /useDocumentHead\(pageHead\('\/pricing'\)\)/)
   const final = strip(read('src/components/pricing/PricingFinalCTA.jsx')).replace(/\s+/g, ' ')
   assert.match(final, /Ready to create something <span className="text-lime">that converts\?<\/span>/)
-  assert.match(final, /Let&rsquo;s find the right creative approach for your brand\./)
+  assert.match(final, /Let(&rsquo;|’)s find the right creative approach for your brand\./)
   assert.match(final, /Get 5 Free Ad Concepts/); assert.match(final, /OFFER_PATHS\.roadmap/)
 })
 

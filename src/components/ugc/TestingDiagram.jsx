@@ -3,6 +3,7 @@ import { SPRINT, SPRINT_PLUS, adVersions, packageEquation, AD_VERSIONS } from '.
 import { ConceptAccents } from '../pricing/shared.jsx'
 import { useAutoplayAllowed } from './creatorVideo.jsx'
 import { MiniPhone, ArrowDown, ArrowRight, delay } from './illustrations.jsx'
+import { tr } from '../../i18n/tr.js'
 
 /* The creative-testing illustration: ONE interaction, three steps, one short sentence each. Every number comes from the package data
    (SPRINT / SPRINT_PLUS in src/seo/businessKnowledge.js): today 5 concepts x 3 versions = 15 finished ad versions.
@@ -41,7 +42,7 @@ function SceneOne() {
     <div className="relative flex h-full w-full flex-col items-center justify-between py-3.5">
       <div className="cs-fade-up flex items-center gap-2.5 rounded-2xl border border-hairline-strong bg-surface-2 px-3 py-2">
         <MiniPhone variant={1} tone={VIOLET} className="h-9 w-5 rounded-md" />
-        <span className="text-left"><span className="block text-[10px] font-bold uppercase tracking-[0.12em] text-lime">One concept</span><span className="block text-[11px] text-ink-muted">One creator, one offer, one script</span></span>
+        <span className="text-left"><span className="block text-[10px] font-bold uppercase tracking-[0.12em] text-lime">{tr('One concept')}</span><span className="block text-[11px] text-ink-muted">{tr('One creator, one offer, one script')}</span></span>
       </div>
       <div className="w-full max-w-md">
         <svg viewBox="0 0 300 36" preserveAspectRatio="none" aria-hidden="true" className="block h-9 w-full">
@@ -52,17 +53,17 @@ function SceneOne() {
         <div className="grid grid-cols-3">
           {Array.from({ length: n }, (_, i) => (
             <div key={i} className="cs-fade-up flex flex-col items-center gap-1.5" style={delay(500 + i * 140)}>
-              <MiniPhone variant={1} tone={VERSION_TONES[i]} caption={`Hook ${LETTERS[i]}`} captionBg={VERSION_TONES[i]} ring className="w-[4.6rem] sm:w-[6rem]" />
-              <span className="rounded-full px-2.5 py-0.5 text-[11px] font-bold" style={{ background: `${VERSION_TONES[i]}26`, color: VERSION_TONES[i] }}>Version {LETTERS[i]}</span>
+              <MiniPhone variant={1} tone={VERSION_TONES[i]} caption={`${tr('Hook')} ${LETTERS[i]}`} captionBg={VERSION_TONES[i]} ring className="w-[4.6rem] sm:w-[6rem]" />
+              <span className="rounded-full px-2.5 py-0.5 text-[11px] font-bold" style={{ background: `${VERSION_TONES[i]}26`, color: VERSION_TONES[i] }}>{tr('Version')} {LETTERS[i]}</span>
             </div>
           ))}
         </div>
       </div>
       <ul className="cs-fade-up flex flex-wrap items-center justify-center gap-1.5" style={delay(1000)}>
         {['Creator', 'Offer', 'CTA'].map((c) => (
-          <li key={c} className="inline-flex items-center gap-1 rounded-full border border-hairline bg-surface-2 px-2 py-1 text-[10px] font-medium text-ink-muted"><Lock />{c} same</li>
+          <li key={c} className="inline-flex items-center gap-1 rounded-full border border-hairline bg-surface-2 px-2 py-1 text-[10px] font-medium text-ink-muted"><Lock />{tr(c)} {tr('same')}</li>
         ))}
-        <li className="inline-flex items-center gap-1 rounded-full bg-lime px-2.5 py-1 text-[10px] font-bold text-canvas"><Swap />Only the hook changes</li>
+        <li className="inline-flex items-center gap-1 rounded-full bg-lime px-2.5 py-1 text-[10px] font-bold text-canvas"><Swap />{tr('Only the hook changes')}</li>
       </ul>
     </div>
   )
@@ -97,7 +98,7 @@ function SceneTwo({ concepts }) {
 const Num = ({ n, label, lime = false }) => (
   <span className="inline-flex items-baseline gap-1">
     <span className={`font-display text-[1.65rem] font-bold tabular-nums sm:text-4xl ${lime ? 'text-lime' : 'text-ink'}`}>{n}</span>
-    <span className={`text-xs font-medium ${lime ? 'text-lime' : 'text-ink-muted'}`}>{label}</span>
+    <span className={`text-xs font-medium ${lime ? 'text-lime' : 'text-ink-muted'}`}>{tr(label)}</span>
   </span>
 )
 
@@ -126,11 +127,11 @@ function SceneThree({ concepts }) {
           <span className="flex h-9 w-9 items-center justify-center rounded-full bg-lime/15 text-lime">
             <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z" /></svg>
           </span>
-          <span className="whitespace-nowrap rounded-full border border-lime/50 bg-lime/10 px-3 py-1 text-[11px] font-bold text-lime">2 · Learn what resonates</span>
+          <span className="whitespace-nowrap rounded-full border border-lime/50 bg-lime/10 px-3 py-1 text-[11px] font-bold text-lime">{tr('2 · Learn what resonates')}</span>
         </div>
         <ArrowDown className="h-4 w-3 text-lime sm:hidden" /><ArrowRight className="hidden h-3 w-5 text-lime sm:block" />
         <div className="cs-fade-up" style={delay(900)}>
-          <Step k="3">Next batch builds on it</Step>
+          <Step k="3">{tr('Next batch builds on it')}</Step>
           <ul className="flex items-end justify-center gap-1.5">
             {concepts.map((i) => (
               <li key={i} className="w-8 sm:w-9"><MiniPhone variant={i + 1} tone={ConceptAccents[i % ConceptAccents.length]} badge="★" className="w-full" /></li>
@@ -139,9 +140,8 @@ function SceneThree({ concepts }) {
         </div>
       </div>
       <span className="ugc-pop inline-flex items-center gap-1.5 rounded-full border border-hairline-strong bg-surface-2 px-3 py-1 text-[11px] font-semibold text-ink" style={delay(1300)}>
-        <svg viewBox="0 0 24 24" className="h-3 w-3 text-lime" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M20 12a8 8 0 11-2.6-5.9M20 4v5h-5" /></svg>Test it the same way, then repeat
-      </span>
-      <span className="cs-fade-up order-first text-[10px] text-ink-muted sm:absolute sm:right-3 sm:top-2.5" style={delay(300)}>Conceptual illustration, not real results</span>
+        <svg viewBox="0 0 24 24" className="h-3 w-3 text-lime" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M20 12a8 8 0 11-2.6-5.9M20 4v5h-5" /></svg>{tr('Test it the same way, then repeat')}</span>
+      <span className="cs-fade-up order-first text-[10px] text-ink-muted sm:absolute sm:right-3 sm:top-2.5" style={delay(300)}>{tr('Conceptual illustration, not real results')}</span>
     </div>
   )
 }
@@ -176,8 +176,8 @@ export default function TestingDiagram() {
   return (
     <div ref={rootRef} className="rounded-3xl border border-hairline-strong bg-surface-1 p-5 md:p-8">
       <div className="mx-auto max-w-2xl text-center">
-        <p className="text-xs font-semibold uppercase tracking-[0.16em] text-lime">Structured creative testing</p>
-        <h3 className="mt-2 font-display text-xl font-semibold leading-snug tracking-snug text-ink md:text-[1.7rem]">{`${Cap(word(SPRINT.variationsPerConcept))} versions of every concept. Then you learn.`}</h3>
+        <p className="text-xs font-semibold uppercase tracking-[0.16em] text-lime">{tr('Structured creative testing')}</p>
+        <h3 className="mt-2 font-display text-xl font-semibold leading-snug tracking-snug text-ink md:text-[1.7rem]">{tr(`${Cap(word(SPRINT.variationsPerConcept))} versions of every concept. Then you learn.`)}</h3>
       </div>
 
       {/* the stage: one thing on screen at a time */}
@@ -190,7 +190,7 @@ export default function TestingDiagram() {
 
       <div className="mx-auto mt-5 max-w-2xl text-center">
         <p aria-live="polite" className="min-h-[3.2rem] text-base leading-relaxed text-ink-muted md:text-lg">
-          <span className="font-semibold text-ink">{STEPS[step].title}.</span> {STEPS[step].text}
+          <span className="font-semibold text-ink">{tr(STEPS[step].title)}.</span> {tr(STEPS[step].text)}
         </p>
         <ol className="mt-3 flex flex-wrap items-center justify-center gap-2">
           {STEPS.map((s, i) => (
@@ -201,22 +201,20 @@ export default function TestingDiagram() {
                 aria-current={i === step ? 'step' : undefined}
                 className={`min-h-[44px] rounded-full px-4 py-2 text-[14px] font-semibold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-lime motion-reduce:transition-none ${i === step ? 'bg-lime text-canvas' : 'border border-hairline bg-surface-2 text-ink-muted hover:text-ink'}`}
               >
-                <span className="mr-1.5 tabular-nums opacity-70">{i + 1}</span>{s.title}
+                <span className="mr-1.5 tabular-nums opacity-70">{i + 1}</span>{tr(s.title)}
               </button>
             </li>
           ))}
           {running && (
             <li>
-              <button type="button" onClick={() => setRunning(false)} className="min-h-[44px] rounded-full px-3 py-2 text-[13px] font-medium text-ink-muted underline underline-offset-4 hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-lime">
-                Pause
-              </button>
+              <button type="button" onClick={() => setRunning(false)} className="min-h-[44px] rounded-full px-3 py-2 text-[13px] font-medium text-ink-muted underline underline-offset-4 hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-lime">{tr('Pause')}</button>
             </li>
           )}
         </ol>
         <p className="mt-4 text-sm text-ink-muted">
-          {packageEquation(SPRINT)} · {SPRINT_PLUS.name}: {packageEquation(SPRINT_PLUS)}.
+          {tr(packageEquation(SPRINT))} · {SPRINT_PLUS.name}: {tr(packageEquation(SPRINT_PLUS))}.
         </p>
-        <p className="mt-1 text-[13px] text-ink-muted">Illustration only. We can&rsquo;t guarantee performance, which depends on your offer, audience and budget.</p>
+        <p className="mt-1 text-[13px] text-ink-muted">{tr('Illustration only. We can’t guarantee performance, which depends on your offer, audience and budget.')}</p>
       </div>
     </div>
   )

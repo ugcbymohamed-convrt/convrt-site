@@ -3,6 +3,9 @@ import { LIME, VIOLET, CORAL, Skel, Icon } from '../scenes/sceneKit.jsx'
 import { FormatStage } from '../spokesperson/DeliveryStyles.jsx'
 import { SAAS_FORMAT_STEPS as CONTENT } from '../../content/saasPage.js'
 import { AppWindow, AppUi } from './SaasScenes.jsx'
+import { tr } from '../../i18n/tr.js'
+import { currentLocale } from '../../i18n/locale.js'
+import { localizeConfig } from '../../i18n/content.js'
 
 /* "One product. Different ways to bring it to life." The SaaS counterpart of the UGC creative-testing diagram and the Spokesperson formats visual, with the SAME interaction
    system (FormatStage in src/components/spokesperson/DeliveryStyles.jsx, itself modelled on src/components/ugc/TestingDiagram.jsx): one scene on a stage at a time, a live
@@ -29,20 +32,20 @@ function SceneExplainer() {
       <div className="ugc-pop relative grid w-full max-w-xl grid-cols-[1.25fr_1fr] items-stretch gap-2.5 sm:gap-3">
         <AppWindow className="min-w-0"><AppUi ring={[0, 1]} tag="New" stagger={600} rows={2} /></AppWindow>
         <div className="flex min-w-0 flex-col justify-center gap-2 rounded-2xl border border-lime/30 bg-surface-2 p-2.5 sm:p-3" style={{ boxShadow: '0 0 40px -20px rgba(213,255,64,0.5)' }}>
-          <span className="cs-fade-up inline-flex w-fit items-center gap-1 rounded-md bg-lime px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-[0.08em] text-canvas" style={delay(400)}>Value proposition</span>
+          <span className="cs-fade-up inline-flex w-fit items-center gap-1 rounded-md bg-lime px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-[0.08em] text-canvas" style={delay(400)}>{tr('Value proposition')}</span>
           <div className="cs-fade-up" style={delay(550)}><Skel className="!h-2 !bg-white/80" w="w-full" /><Skel className="mt-1.5 !h-2 !bg-white/50" w="w-3/4" /></div>
           <ul className="mt-0.5 space-y-1.5">
             {callouts.map(([l, c, d]) => (
               <li key={l} className="cs-fade-up flex items-center gap-1.5" style={delay(d)}>
                 <span className="h-px w-3 shrink-0 sm:w-5" style={{ background: c }} />
-                <span className="rounded px-1.5 py-px text-[10px] font-bold leading-tight sm:text-[11px]" style={{ background: `${c}26`, color: c }}>{l}</span>
+                <span className="rounded px-1.5 py-px text-[10px] font-bold leading-tight sm:text-[11px]" style={{ background: `${c}26`, color: c }}>{tr(l)}</span>
               </li>
             ))}
           </ul>
         </div>
       </div>
       <ul className="cs-fade-up flex flex-wrap items-center justify-center gap-1.5" style={delay(1700)}>
-        <li><Chip lime>Motion graphics</Chip></li><li><Chip>Feature callouts</Chip></li><li><Chip>Short on-screen labels</Chip></li>
+        <li><Chip lime>{tr('Motion graphics')}</Chip></li><li><Chip>{tr('Feature callouts')}</Chip></li><li><Chip>{tr('Short on-screen labels')}</Chip></li>
       </ul>
     </div>
   )
@@ -72,7 +75,7 @@ function SceneDemo() {
               </div>
               <div className="mt-2 flex items-center gap-2">
                 <span className="relative inline-flex">
-                  <span className="ugc-pop inline-flex h-6 items-center rounded-full bg-lime px-3 text-[9px] font-bold text-canvas sm:text-[10px]" style={delay(1700)}>Run</span>
+                  <span className="ugc-pop inline-flex h-6 items-center rounded-full bg-lime px-3 text-[9px] font-bold text-canvas sm:text-[10px]" style={delay(1700)}>{tr('Run')}</span>
                   <span aria-hidden="true" className="ugc-pop absolute -inset-1.5 rounded-full border-2 border-lime/70" style={delay(1800)} />
                 </span>
               </div>
@@ -89,7 +92,7 @@ function SceneDemo() {
         {steps.map(([l, d], i) => (
           <li key={l} className="cs-fade-up" style={delay(d)}>
             <span className="inline-flex items-center gap-1.5 rounded-full border border-lime/30 bg-lime/[0.06] px-2.5 py-1 text-[10px] font-semibold text-ink">
-              <span className="flex h-4 w-4 items-center justify-center rounded-full bg-lime text-[9px] font-bold text-canvas">{i + 1}</span>{l}
+              <span className="flex h-4 w-4 items-center justify-center rounded-full bg-lime text-[9px] font-bold text-canvas">{i + 1}</span>{tr(l)}
             </span>
           </li>
         ))}
@@ -117,10 +120,10 @@ function SceneAd() {
         {beats.map(([l, c, d], i) => (
           <li key={l} className="cs-fade-up flex items-center gap-2" style={delay(d)}>
             <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[10px] font-bold text-canvas" style={{ background: c }}>{i + 1}</span>
-            <span className="rounded-full px-2.5 py-1 text-[11px] font-bold" style={{ background: `${c}26`, color: c }}>{l}</span>
+            <span className="rounded-full px-2.5 py-1 text-[11px] font-bold" style={{ background: `${c}26`, color: c }}>{tr(l)}</span>
           </li>
         ))}
-        <li className="cs-fade-up mt-1" style={delay(2200)}><Chip>Short-form, for paid advertising</Chip></li>
+        <li className="cs-fade-up mt-1" style={delay(2200)}><Chip>{tr('Short-form, for paid advertising')}</Chip></li>
       </ul>
     </div>
   )
@@ -129,5 +132,5 @@ function SceneAd() {
 const SCENES = [SceneExplainer, SceneDemo, SceneAd]
 
 export default function SaasFormats() {
-  return <FormatStage content={CONTENT} scenes={SCENES} id="saas-formats" />
+  return <FormatStage content={localizeConfig(CONTENT, currentLocale())} scenes={SCENES} id="saas-formats" />
 }

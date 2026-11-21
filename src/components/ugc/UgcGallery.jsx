@@ -2,11 +2,14 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { trackEvent } from '../../lib/analytics.js'
 import { CREATOR_SHOWCASE_PATH } from '../../config.js'
 import { CREATOR_EXAMPLES_NOTE } from '../../content/attribution.js'
-import { posterUrl, languageLabel } from '../../content/portfolio.js'
+import { posterUrl, languageLabel, captionOf } from '../../content/portfolio.js'
 import { usePreviewHost } from '../../lib/previewHost.js'
 import SectionDivider from '../SectionDivider.jsx'
 import { Section, Head, Reveal, GhostCta } from './shared.jsx'
 import { PlayGlyph } from './creatorVideo.jsx'
+import { tr, hrefFor } from '../../i18n/tr.js'
+import { currentLocale } from '../../i18n/locale.js'
+import { localizeConfig } from '../../i18n/content.js'
 import { Player } from './UgcWork.jsx'
 import { PORTRAITS } from './illustrations.jsx'
 
@@ -61,7 +64,7 @@ function Card({ item, index, playing, onPlay, config }) {
         <button
           type="button"
           onClick={sample ? undefined : onPlay}
-          aria-label={sample ? `Sample card ${index + 1}` : `Play video: ${item.caption}`}
+          aria-label={sample ? `Sample card ${index + 1}` : `${tr('Play video:')} ${captionOf(item)}`}
           disabled={sample}
           className="absolute inset-0 cursor-pointer text-left focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-lime disabled:cursor-default"
         >
@@ -97,7 +100,8 @@ const Chevron = ({ dir }) => (
   <svg viewBox="0 0 12 12" className="h-4 w-4" fill="none" aria-hidden="true"><path d={dir < 0 ? 'M8 2L4 6l4 4' : 'M4 2l4 4-4 4'} stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
 )
 
-export default function UgcGallery({ items, config = UGC_GALLERY }) {
+export default function UgcGallery({ items, config: configProp = UGC_GALLERY }) {
+  const config = localizeConfig(configProp, currentLocale())
   const preview = usePreviewHost()
   const real = items.slice(0, TOTAL)
   const sample = real.length === 0 && preview
@@ -174,7 +178,7 @@ export default function UgcGallery({ items, config = UGC_GALLERY }) {
     <Section id={config.id} label={config.headingId} glow>
       <Reveal>
         <Head id={config.headingId} eyebrow={config.eyebrow} title={config.title} intro={config.intro} />
-        <p className="mx-auto mt-3 max-w-xl text-center text-[13px] leading-relaxed text-ink-muted">{CREATOR_EXAMPLES_NOTE}</p>
+        <p className="mx-auto mt-3 max-w-xl text-center text-[13px] leading-relaxed text-ink-muted">{tr(CREATOR_EXAMPLES_NOTE)}</p>
       </Reveal>
 
       <Reveal className="mt-8 md:mt-10">
@@ -239,7 +243,7 @@ export default function UgcGallery({ items, config = UGC_GALLERY }) {
                 type="button"
                 onClick={() => by(dir)}
                 disabled={dir < 0 ? !bar.prev : !bar.next}
-                aria-label={dir < 0 ? 'Scroll videos left' : 'Scroll videos right'}
+                aria-label={dir < 0 ? tr('Scroll videos left') : tr('Scroll videos right')}
                 className="flex h-11 w-11 items-center justify-center rounded-full border border-lime/40 bg-surface-2 text-lime transition-colors hover:bg-lime hover:text-canvas focus-visible:outline focus-visible:outline-2 focus-visible:outline-lime disabled:cursor-default disabled:border-hairline disabled:text-ink-muted disabled:hover:bg-surface-2 disabled:hover:text-ink-muted"
               >
                 <Chevron dir={dir} />

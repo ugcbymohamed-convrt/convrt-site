@@ -4,6 +4,9 @@ import { useAutoplayAllowed } from '../ugc/creatorVideo.jsx'
 import { Icon } from '../scenes/sceneKit.jsx'
 import { ORGANIC_SYSTEM as CONTENT } from '../../content/organicSocialPage.js'
 import { PILLARS } from './OrganicScenes.jsx'
+import { tr } from '../../i18n/tr.js'
+import { currentLocale } from '../../i18n/locale.js'
+import { localizeConfig } from '../../i18n/content.js'
 
 /* "Not just more posts. A content system." The organic counterpart of the UGC page's creative-testing diagram and the Spokesperson page's delivery formats, with the SAME
    interaction system (src/components/ugc/TestingDiagram.jsx): one scene on a stage at a time, a live caption, one button per state, a one-time pass through the states
@@ -23,12 +26,13 @@ const PEOPLE = { educational: 2, entertaining: 3, product: 0, founder: 1 }
 const FLOW_ON = [[0], [1], [2, 3]]
 function Flow({ step }) {
   const on = FLOW_ON[step]
+  const flow = localizeConfig(CONTENT, currentLocale()).flow
   return (
-    <ol aria-label={CONTENT.flow.join(', ')} className="mx-auto mt-5 flex max-w-2xl flex-wrap items-center justify-center gap-x-1.5 gap-y-1 text-[13px] font-semibold">
-      {CONTENT.flow.map((w, i) => (
+    <ol aria-label={flow.join(', ')} className="mx-auto mt-5 flex max-w-2xl flex-wrap items-center justify-center gap-x-1.5 gap-y-1 text-[13px] font-semibold">
+      {flow.map((w, i) => (
         <li key={w} className="flex items-center gap-1.5">
           <span className={`rounded-full px-2.5 py-1 transition-colors duration-300 motion-reduce:transition-none ${on.includes(i) ? 'bg-lime text-canvas' : 'bg-surface-2 text-ink-muted'}`}>{w}</span>
-          {i < CONTENT.flow.length - 1 && <span aria-hidden="true" className="text-ink-muted">→</span>}
+          {i < flow.length - 1 && <span aria-hidden="true" className="text-ink-muted">→</span>}
         </li>
       ))}
     </ol>
@@ -67,11 +71,11 @@ function ScenePlan() {
   return (
     <div className="flex h-full w-full flex-col items-stretch justify-center gap-2 sm:gap-3 lg:gap-4">
       <div>
-        <Cap center>1 · Content pillars</Cap>
+        <Cap center>{tr('1 · Content pillars')}</Cap>
         <ul className="mt-1.5 flex flex-wrap justify-center gap-1.5 sm:gap-2">
           {PILLARS.map((p, i) => (
             <li key={p.id} className="cs-fade-up inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[11px] font-bold sm:px-3.5 sm:py-1.5 sm:text-[13px]" style={{ ...delay(i * 120), color: p.color, background: `${p.color}1f`, borderColor: `${p.color}88` }}>
-              <span className="h-1.5 w-1.5 rounded-full sm:h-2 sm:w-2" style={{ background: p.color }} />{p.label}
+              <span className="h-1.5 w-1.5 rounded-full sm:h-2 sm:w-2" style={{ background: p.color }} />{tr(p.label)}
             </li>
           ))}
         </ul>
@@ -79,7 +83,7 @@ function ScenePlan() {
       <Down />
       <div className="flex min-h-0 flex-col items-center justify-center gap-2 lg:flex-row lg:gap-6">
         <div className="shrink-0">
-          <Cap>2 · Video concepts</Cap>
+          <Cap>{tr('2 · Video concepts')}</Cap>
           <ul className="mt-1.5 flex justify-center gap-2 sm:gap-2.5">
             {concepts.map((c, i) => (
               <li key={c.id} className="ugc-pop" style={delay(700 + i * 160)}>
@@ -91,7 +95,7 @@ function ScenePlan() {
         <svg viewBox="0 0 32 16" className="cs-fade-up hidden h-4 w-8 shrink-0 text-lime lg:block" fill="none" aria-hidden="true" style={delay(1500)}><path d="M1 8h26M21 2l6 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
         <div className="cs-fade-up block lg:hidden" style={delay(1500)}><Down /></div>
         <div className="w-full max-w-[17rem] shrink-0 sm:max-w-[22rem] lg:w-[16.5rem]">
-          <Cap>3 · Content calendar</Cap>
+          <Cap>{tr('3 · Content calendar')}</Cap>
           <div className="mt-1.5 rounded-2xl border border-lime/40 bg-surface-2 p-2 sm:p-2.5" style={{ boxShadow: '0 0 40px -18px rgba(213,255,64,0.45)' }}>
             <div className="mb-1 grid grid-cols-5 gap-1 text-center text-[9px] font-semibold uppercase tracking-[0.1em] text-ink-muted">{['M', 'T', 'W', 'T', 'F'].map((d, i) => <span key={`${d}${i}`}>{d}</span>)}</div>
             {slots.map((row, r) => (
@@ -128,11 +132,11 @@ function SceneProduce() {
       <div className="flex shrink-0 flex-col items-center gap-1.5">
         <Clip variant={2} color="#6b7280" className="ugc-pop h-[8.4rem] sm:h-[15rem]">
           <span aria-hidden="true" className="absolute inset-0" style={{ background: 'rgba(24,24,28,0.35)', mixBlendMode: 'saturation' }} />
-          <span className="absolute left-1.5 top-1.5 flex items-center gap-1 rounded-full bg-black/60 px-1.5 py-0.5 text-[8px] font-bold uppercase tracking-[0.08em] text-ink"><span className="ugc-blink h-1.5 w-1.5 rounded-full bg-coral" />Rec</span>
+          <span className="absolute left-1.5 top-1.5 flex items-center gap-1 rounded-full bg-black/60 px-1.5 py-0.5 text-[8px] font-bold uppercase tracking-[0.08em] text-ink"><span className="ugc-blink h-1.5 w-1.5 rounded-full bg-coral" />{tr('Rec')}</span>
           <span aria-hidden="true" className="absolute inset-x-0 top-1/3 h-px bg-white/20" /><span aria-hidden="true" className="absolute inset-x-0 top-2/3 h-px bg-white/20" />
           <span aria-hidden="true" className="absolute inset-y-0 left-1/3 w-px bg-white/20" /><span aria-hidden="true" className="absolute inset-y-0 left-2/3 w-px bg-white/20" />
         </Clip>
-        <Cap>Footage</Cap>
+        <Cap>{tr('Footage')}</Cap>
       </div>
       <div className="flex shrink-0 flex-col items-center gap-2 sm:gap-3">
         <svg viewBox="0 0 32 16" className="cs-fade-up h-3.5 w-6 text-lime sm:h-4 sm:w-8" fill="none" aria-hidden="true" style={delay(800)}><path d="M1 8h26M21 2l6 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
@@ -140,7 +144,7 @@ function SceneProduce() {
           {edits.map(([l, icon], i) => (
             <li key={l} className="cs-fade-up flex items-center gap-1.5 rounded-lg border border-lime/30 bg-lime/[0.07] p-1 sm:rounded-xl sm:px-2.5 sm:py-1.5" style={delay(1000 + i * 420)}>
               <Icon className="h-4 w-4 shrink-0 text-lime sm:h-4 sm:w-4">{icon}</Icon>
-              <span className="hidden text-[11px] font-semibold text-ink sm:inline">{l}</span>
+              <span className="hidden text-[11px] font-semibold text-ink sm:inline">{tr(l)}</span>
             </li>
           ))}
         </ul>
@@ -156,8 +160,7 @@ function SceneProduce() {
           <Clip variant={1} color={PILLARS[0].color} className="org-drop -ml-6 h-[8.8rem] sm:-ml-9 sm:h-[15.5rem]"><Caption color={PILLARS[0].color} /></Clip>
         </div>
         <span className="cs-fade-up inline-flex items-center gap-1 rounded-full bg-lime/15 px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.08em] text-lime" style={delay(2400)}>
-          <Icon className="h-2.5 w-2.5"><path d="M4 12.5l5 5L20 6" /></Icon>Finished videos
-        </span>
+          <Icon className="h-2.5 w-2.5"><path d="M4 12.5l5 5L20 6" /></Icon>{tr('Finished videos')}</span>
       </div>
     </div>
   )
@@ -171,10 +174,9 @@ function ScenePublishLearn() {
     <div className="flex h-full w-full flex-col justify-center gap-3 sm:gap-4">
       <div>
         <div className="mb-1.5 flex items-center justify-between gap-2">
-          <Cap>Finished videos → publishing calendar</Cap>
+          <Cap>{tr('Finished videos → publishing calendar')}</Cap>
           <span className="cs-fade-up inline-flex shrink-0 items-center gap-1 rounded-full bg-lime/15 px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.06em] text-lime" style={delay(1900)}>
-            <Icon className="h-3 w-3"><circle cx="12" cy="12" r="8.5" /><path d="M12 7.5V12l3 2" /></Icon>Scheduled
-          </span>
+            <Icon className="h-3 w-3"><circle cx="12" cy="12" r="8.5" /><path d="M12 7.5V12l3 2" /></Icon>{tr('Scheduled')}</span>
         </div>
         <div className="grid grid-cols-5 gap-1.5 sm:gap-3">
           {cal.map(([d, id, plat], i) => {
@@ -193,14 +195,14 @@ function ScenePublishLearn() {
       </div>
       <div className="cs-fade-up flex flex-wrap items-center justify-between gap-x-3 gap-y-2 rounded-2xl border border-hairline-strong bg-surface-2 px-3 py-2.5 sm:px-4 sm:py-3" style={delay(2200)}>
         <div className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1.5">
-          <Cap>Review</Cap>
+          <Cap>{tr('Review')}</Cap>
           {metrics.map((m) => (
-            <span key={m} className="inline-flex items-center gap-1.5 text-[11px] font-medium text-ink-muted"><span className="h-1.5 w-1.5 rounded-full bg-violet" />{m}</span>
+            <span key={m} className="inline-flex items-center gap-1.5 text-[11px] font-medium text-ink-muted"><span className="h-1.5 w-1.5 rounded-full bg-violet" />{tr(m)}</span>
           ))}
         </div>
         <span className="inline-flex items-center gap-1.5 text-lime">
           <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M4 12a8 8 0 0113.7-5.6L20 8.7M20 4v4.7h-4.7M20 12a8 8 0 01-13.7 5.6L4 15.3M4 20v-4.7h4.7" /></svg>
-          <span className="text-[10px] font-bold uppercase tracking-[0.08em]">Next plan</span>
+          <span className="text-[10px] font-bold uppercase tracking-[0.08em]">{tr('Next plan')}</span>
         </span>
       </div>
     </div>
@@ -210,7 +212,7 @@ function ScenePublishLearn() {
 const SCENES = [ScenePlan, SceneProduce, ScenePublishLearn]
 
 export default function ContentSystem() {
-  const { eyebrow, title, steps, note } = CONTENT
+  const { eyebrow, title, steps, note } = localizeConfig(CONTENT, currentLocale())
   const [step, setStep] = useState(0)
   const [running, setRunning] = useState(false)
   const [inView, setInView] = useState(false)
@@ -270,9 +272,7 @@ export default function ContentSystem() {
           ))}
           {running && (
             <li>
-              <button type="button" onClick={() => setRunning(false)} className="min-h-[44px] rounded-full px-3 py-2 text-[13px] font-medium text-ink-muted underline underline-offset-4 hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-lime">
-                Pause
-              </button>
+              <button type="button" onClick={() => setRunning(false)} className="min-h-[44px] rounded-full px-3 py-2 text-[13px] font-medium text-ink-muted underline underline-offset-4 hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-lime">{tr('Pause')}</button>
             </li>
           )}
         </ol>

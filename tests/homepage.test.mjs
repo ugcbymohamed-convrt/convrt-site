@@ -4,6 +4,7 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import fs from 'node:fs'
+import { readSource } from './helpers/i18nSource.mjs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { SITE_SEO, pageHead } from '../src/seo/siteSeo.js'
@@ -12,7 +13,7 @@ import { homeGraph, jsonLdFor, ORG_ID, WEBSITE_ID } from '../src/seo/structuredD
 import { SITE_URL } from '../src/config.js'
 
 const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), '..')
-const read = (p) => fs.readFileSync(path.join(ROOT, p), 'utf8')
+const read = (p) => readSource(path.join(ROOT, p))
 const faq = (frag) => HOME_FAQ.find((f) => f.q.includes(frag))
 const graph = () => homeGraph(SITE_SEO['/'])['@graph']
 
@@ -63,14 +64,14 @@ test('homepage FAQ matches /pricing: delivery, retainers and process', () => {
 })
 
 test('FAQ component renders the shared data (and its links); services/hero/footer copy as approved', () => {
-  assert.match(read('src/components/FAQ.jsx'), /import \{ HOME_FAQ \} from '\.\.\/seo\/homeFaq\.js'/)
-  assert.match(read('src/components/FAQ.jsx'), /const FAQS = HOME_FAQ/)
+  assert.match(read('src/components/FAQ.jsx'), /import \{ homeFaqFor \} from '\.\.\/i18n\/content\.js'/)
+  assert.match(read('src/components/FAQ.jsx'), /const FAQS = homeFaqFor\(locale\)/)
   const svc = read('src/components/Services.jsx')
-  for (const t of ['Human-led UGC ads built to capture attention and test creative angles.', 'Product demos, explainers and video ads that make software easier to understand.', 'Professional, multilingual presenters for ads, demonstrations and brand messages.', 'Organic social videos, content planning, publishing and community management.', 'Video creative for<br />', 'paid and organic social.', 'Creative strategy and full video production,{\' \'}<br', 'from concept and creator casting to finished, platform-ready videos.', 'Explore packages and pricing']) assert.ok(svc.includes(t), t)
+  for (const t of ['Human-led UGC ads built to capture attention and test creative angles.', 'Product demos, explainers and video ads that make software easier to understand.', 'Professional, multilingual presenters for ads, demonstrations and brand messages.', 'Organic social videos, content planning, publishing and community management.', 'Video creative for<br />', 'paid and organic social.', 'Creative strategy and full video production, <br', 'from concept and creator casting to finished, platform-ready videos.', 'Explore packages and pricing']) assert.ok(svc.includes(t), t)
   assert.ok(!/Built for modern|Explore the Creative Testing Sprint|Compare packages and pricing/.test(svc))
-  assert.match(svc, /<a href="\/pricing"[^>]*>\s*Explore packages and pricing\s*<\/a>/, 'link keeps its /pricing destination')
+  assert.match(svc, /<a href=\{href\('\/pricing'\)\}[^>]*>\s*Explore packages and pricing\s*<\/a>/, 'link keeps its /pricing destination')
   assert.ok(read('src/components/Hero.jsx').includes('From creative strategy and scripting to creator casting, filming and editing. We produce human-led UGC ads, SaaS videos, spokesperson videos and organic social content, ready to perform.'))
-  assert.match(read('src/components/Footer.jsx'), /href="\/pricing">Pricing<\/a>/)
+  assert.match(read('src/components/Footer.jsx'), /href=\{h\('\/pricing'\)\}>Pricing<\/a>/)
   const cs = read('src/components/CaseStudies.jsx')
   assert.ok(cs.includes('href="/case-studies/graspo"') && cs.includes('href="/case-studies/elyon"') && !cs.includes('case=elyon'), 'case-study links point at the canonical study pages')
   assert.ok(!/activeId === 'graspo' && \(/.test(cs.slice(cs.indexOf('Always-present'))), 'the links are no longer conditional on the selected tab')
@@ -155,7 +156,7 @@ test('How It Works timeline: free-roadmap journey, approved copy, accurate claim
   for (const old of ['From first call', 'to final delivery', '20-Minute Strategy Call', 'Custom Offer', 'Bringing the Content to Life', 'Book a Strategy Call', 'Four intentional steps']) assert.ok(!src.includes(old), old)
   // one CTA, lime button style, existing roadmap URL, qualified and not a produced-video promise
   assert.equal((src.match(/<a\b/g) || []).length, 1, 'a single link in the section')
-  assert.match(src, /<a\s+href=\{OFFER_PATHS\.roadmap\}\s+className="cta-gradient[^"]*"[^>]*>\s*Get Your 5 Free Ad Concepts/)
+  assert.match(src, /<a\s+href=\{action\.href\}[\s\S]*?className="cta-gradient[^"]*"[^>]*>\s*\{locale === 'en' \? 'Get Your 5 Free Ad Concepts'/)
   assert.ok(src.includes('For qualifying brands.') && src.includes('no obligation to hire CONVRT'))
   // no invented guarantees, timelines or ad-account management; no extra H1
   assert.ok(!/guarantee|within \d+|business days|manage[sd]? your (paid|ad)|ad account|<h1/i.test(src))

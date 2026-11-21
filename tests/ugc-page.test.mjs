@@ -6,6 +6,7 @@ import { CONTACT_EMAIL } from '../src/config.js'
 import test, { before, after } from 'node:test'
 import assert from 'node:assert/strict'
 import fs from 'node:fs'
+import { readSource } from './helpers/i18nSource.mjs'
 import os from 'node:os'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -29,7 +30,7 @@ import {
 import { BUSINESS_TYPE_OPTIONS } from '../src/lib/roadmapQuestions.js'
 
 const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), '..')
-const read = (p) => fs.readFileSync(path.join(ROOT, p), 'utf8')
+const read = (p) => readSource(path.join(ROOT, p))
 const PATH = PATHS.ugcVideoAgency
 const URL_ = `${SITE_URL}${PATH}`
 

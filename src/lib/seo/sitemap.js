@@ -10,13 +10,22 @@
 
 import { SITE_URL } from '../../config.js'
 import { SITE_SEO, canonicalPathFor, sitemapRoutes } from '../../seo/siteSeo.js'
+import { LIVE_LOCALES, DEFAULT_LOCALE } from '../../i18n/locales.js'
+import { TRANSLATED_PATHS } from '../../i18n/registry.js'
+import { localizedPath } from '../../i18n/paths.js'
 
 export const SITEMAP_ENTRIES = Object.entries(SITE_SEO)
   .filter(([path]) => canonicalPathFor(path) === path)
   .map(([path, e]) => ({ path, indexable: e.indexable }))
 
+/* Translated pages: only locales that are 'live', only pages with a complete translation, and only while the English equivalent is indexable
+   (a translation is never promoted when its source is not). Each is its own canonical URL: /es/, /es/pricing, ... */
+export const localizedSitemapPaths = () =>
+  LIVE_LOCALES.filter((l) => l !== DEFAULT_LOCALE).flatMap((l) =>
+    (TRANSLATED_PATHS[l] ?? []).filter((bp) => SITE_SEO[bp]?.indexable && canonicalPathFor(bp) === bp).map((bp) => localizedPath(l, bp)))
+
 export const sitemapPaths = (entries) =>
-  entries ? entries.filter((e) => e.indexable).map((e) => e.path) : sitemapRoutes()
+  entries ? entries.filter((e) => e.indexable).map((e) => e.path) : [...sitemapRoutes(), ...localizedSitemapPaths()]
 
 export function buildSitemap(paths = sitemapPaths(), siteUrl = SITE_URL) {
   const body = paths.map((p) => `  <url><loc>${siteUrl}${p === '/' ? '/' : p}</loc></url>`).join('\n')

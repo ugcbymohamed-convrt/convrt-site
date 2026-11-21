@@ -19,10 +19,12 @@ export async function render(pathname) {
   globalThis.window = { location: { pathname, search: '', hash: '', hostname: 'www.convrt.studio' } }
   try {
     return await new Promise((resolve, reject) => {
-      let html = ''
+      const chunks = []
       const errors = []
-      const sink = new Writable({ write(chunk, _enc, cb) { html += chunk.toString(); cb() } })
-      sink.on('finish', () => (errors.length ? reject(new Error(`render ${pathname}: ${errors.join('; ')}`)) : resolve(html)))
+      // Chunks are copied at once and decoded ONCE as UTF-8 (a multi-byte character such as "é" or "—" can straddle two chunks). React's byte stream can also carry stray NUL
+      // bytes next to multi-byte characters in long pages (seen on pages with accented text); a NUL is never page text, so they are dropped.
+      const sink = new Writable({ write(chunk, _enc, cb) { chunks.push(Buffer.from(chunk)); cb() } })
+      sink.on('finish', () => (errors.length ? reject(new Error(`render ${pathname}: ${errors.join('; ')}`)) : resolve(Buffer.concat(chunks).toString('utf8').replace(/\u0000/g, ''))))
       const stream = renderToPipeableStream(<App />, {
         onAllReady() { stream.pipe(sink) },
         onShellError: reject,

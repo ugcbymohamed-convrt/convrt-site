@@ -11,6 +11,7 @@ export function headSpecToHtml(spec) {
   const lines = [`<title>${esc(spec.title)}</title>`]
   for (const { attr, key, content } of spec.metas) lines.push(`<meta ${attr}="${esc(key)}" content="${esc(content)}" />`)
   if (spec.canonical) lines.push(`<link rel="canonical" href="${esc(spec.canonical)}" />`)
+  for (const a of spec.alternates ?? []) lines.push(`<link rel="alternate" hreflang="${esc(a.hreflang)}" href="${esc(a.href)}" />`)
   for (const item of spec.jsonLd) {
     lines.push(`<script type="application/ld+json" ${STATIC_JSONLD_ATTR}="${STATIC_JSONLD_VALUE}">${jsonForScript(item)}</script>`)
   }
@@ -31,11 +32,13 @@ export function stripManagedHead(html) {
 }
 
 /* shell + route head + server-rendered markup → the route's HTML file. */
-export function injectPage(shell, { headHtml, bodyHtml, ssrPath }) {
+export function injectPage(shell, { headHtml, bodyHtml, ssrPath, lang, dir }) {
   const viewport = shell.match(/<meta\s+name="viewport"[^>]*?\/>/)
   if (!viewport) throw new Error('injectPage: <meta name="viewport"> not found in index.html')
   if (!shell.includes('<div id="root"></div>')) throw new Error('injectPage: <div id="root"></div> not found in index.html')
   let html = stripManagedHead(shell)
+  // Translated pages declare their own language (and direction for right-to-left languages). English keeps the shell's <html lang="en">.
+  if (lang && lang !== 'en') html = html.replace(/<html lang="en"/, () => `<html lang="${esc(lang)}"${dir === 'rtl' ? ' dir="rtl"' : ''}`)
   // Function replacer: head text may contain "$" (prices like "$1,500"), which a string replacement would read as $1, $&, ...
   html = html.replace(/(<meta\s+name="viewport"[^>]*?\/>)/, (m) => `${m}\n${headHtml}`)
   html = html.replace('<div id="root"></div>', () => `<div id="root" data-ssr-path="${esc(ssrPath)}">${bodyHtml}</div>`)

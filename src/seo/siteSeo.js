@@ -25,6 +25,10 @@ import {
 import { jsonLdFor } from './structuredData.js'
 import { PATHS } from '../routes.js'
 import { formatMoney, SPRINT, USAGE_RIGHTS } from './businessKnowledge.js'
+import { currentLocale } from '../i18n/locale.js'
+import { DEFAULT_LOCALE } from '../i18n/locales.js'
+import { alternatesFor, localizedHead } from '../i18n/seo.js'
+import { localizedJsonLd } from '../i18n/structuredData.js'
 import { selectOurWork, selectSpokespersonHero, selectSpokespersonGallery, selectOrganicHero, selectOrganicGallery, selectSaasHero, selectSaasGallery } from '../content/portfolio.js'
 
 export const SITE_SEO = {
@@ -182,10 +186,14 @@ export const urlFor = (path) => `${SITE_URL}${path === '/' ? '/' : path}`
 /* The canonical path for a route: itself, unless it is a registered duplicate. */
 export const canonicalPathFor = (path) => SITE_SEO[path]?.canonicalPath ?? path
 
-/* Arguments for useDocumentHead(...) for a route. Throws on an unknown path so a typo can't ship. */
-export function pageHead(path) {
+/* Arguments for useDocumentHead(...) for a route. Throws on an unknown path so a typo can't ship.
+   `path` is always the ENGLISH (base) path; `locale` defaults to the locale of the page being rendered (from the URL), so every page component keeps calling
+   pageHead(PATH) and gets its own language's head. English pages that have a live translation also carry the reciprocal hreflang set. */
+export function pageHead(path, locale = currentLocale()) {
   const e = SITE_SEO[path]
   if (!e || e.canonicalPath) throw new Error(`pageHead: no head entry for "${path}"`)
+  if (locale !== DEFAULT_LOCALE) return localizedHead({ basePath: path, locale, enEntry: e, jsonLd: localizedJsonLd(locale, path, e) })
+  const alternates = alternatesFor(path, e)
   return {
     title: e.title,
     description: e.description,
@@ -197,6 +205,7 @@ export function pageHead(path) {
     ...(e.ogTitle ? { ogTitle: e.ogTitle } : {}),
     ...(e.ogDescription ? { ogDescription: e.ogDescription } : {}),
     ...(e.robots ? { robots: e.robots } : { noindex: !e.indexable }),
+    ...(alternates.length ? { alternates } : {}),
     // Structured data lives next to the head so the static HTML and the client hook always carry the same JSON-LD.
     ...jsonLdParam(path, e),
   }

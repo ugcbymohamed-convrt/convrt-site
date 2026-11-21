@@ -17,6 +17,7 @@ import { selectSpokespersonHero, selectSpokespersonGallery } from './content/por
 import {
   SPOKESPERSON_HERO, SPOKESPERSON_STAGES, SPOKESPERSON_PROCESS, SPOKESPERSON_GALLERY, SPOKESPERSON_CTA, SPOKESPERSON_PATH_LABEL,
 } from './content/spokespersonPage.js'
+import { tr, T, hrefFor } from './i18n/tr.js'
 
 /* /spokesperson-video-production: the Spokesperson service page. It reuses the UGC page's architecture and design system, and each section is
    the same configuration-driven component fed with spokesperson content (src/content/spokespersonPage.js):
@@ -28,7 +29,7 @@ import {
 const FAQ_CONFIG = {
   items: SPOKESPERSON_FAQ,
   prefix: 'spokesperson',
-  title: <>Spokesperson video production, <span className="text-lime">answered.</span></>,
+  title: <><T>Spokesperson video production,</T>{' '}<span className="text-lime"><T>answered.</T></span></>,
 }
 
 const PROCESS_CONFIG = { ...SPOKESPERSON_PROCESS, stages: SPOKESPERSON_STAGES, visuals: SPOKESPERSON_VISUALS }
@@ -37,10 +38,10 @@ function ProcessFooter() {
   return (
     <>
       <p className="mx-auto max-w-3xl text-center text-[15px] leading-relaxed text-ink-muted">
-        Timelines and deliverables depend on your package or custom brief. See{' '}
-        <a href="/pricing#packages" className="font-medium text-ink underline decoration-lime/60 underline-offset-4 transition-colors hover:text-lime">pricing and terms</a>.
+        {tr('Timelines and deliverables depend on your package or custom brief. See')}{' '}
+        <a href={hrefFor('/pricing#packages')} className="font-medium text-ink underline decoration-lime/60 underline-offset-4 transition-colors hover:text-lime">{tr('pricing and terms')}</a>.
       </p>
-      <p className="mx-auto mt-2 max-w-3xl text-center text-xs text-ink-muted">Scenes are illustrative. The portraits are for illustration only.</p>
+      <p className="mx-auto mt-2 max-w-3xl text-center text-xs text-ink-muted">{tr('Scenes are illustrative. The portraits are for illustration only.')}</p>
     </>
   )
 }
@@ -61,11 +62,11 @@ export default function SpokespersonVideoPage() {
 
   return (
     <>
-      <nav aria-label="Breadcrumb" className="mx-auto max-w-7xl px-5 pt-2 md:px-8">
+      <nav aria-label={tr('Breadcrumb')} className="mx-auto max-w-7xl px-5 pt-2 md:px-8">
         <ol className="flex items-center gap-2 text-[13px] text-ink-subtle">
-          <li><a href="/" className="transition-colors hover:text-ink">Home</a></li>
+          <li><a href={hrefFor('/')} className="transition-colors hover:text-ink">{tr('Home')}</a></li>
           <li aria-hidden="true">/</li>
-          <li aria-current="page" className="text-ink-muted">{SPOKESPERSON_PATH_LABEL}</li>
+          <li aria-current="page" className="text-ink-muted">{tr(SPOKESPERSON_PATH_LABEL)}</li>
         </ol>
       </nav>
       <UgcHero items={heroItems} config={SPOKESPERSON_HERO} />

@@ -3,6 +3,10 @@ import { trackEvent } from '../../lib/analytics.js'
 import { ELYON_PROOF, UGC_TESTIMONIALS } from '../../content/ugcProof.js'
 import { Section, Head, Reveal, RoadmapCta, TextLink } from './shared.jsx'
 import { useAutoplayAllowed } from './creatorVideo.jsx'
+import { tr } from '../../i18n/tr.js'
+import { currentLocale } from '../../i18n/locale.js'
+import { localizeStat } from '../../i18n/format.js'
+import { formatMoneyEs } from '../../i18n/es/money.js'
 
 /* SECTION 4: results and client feedback, in one compact block.
    • Elyon 5.28x: ONE individual creator-led UGC video, client-reported, early learning phase, never typical or guaranteed (wording
@@ -20,7 +24,7 @@ const CLIENT_MESSAGES = ['It has 9 sales with an revenue of 3421.25$', 'Roas 5.2
 
 /* One-time number reveal: the page text is always the final figure ("5.28x"); when it scrolls into view it counts up once, over about
    a second, and settles on the same text. Skipped for reduced-motion visitors. */
-function RoasNumber({ value }) {
+function RoasNumber({ value, locale }) {
   const [shown, setShown] = useState(null)
   const ref = useRef(null)
   const autoplay = useAutoplayAllowed()
@@ -43,15 +47,17 @@ function RoasNumber({ value }) {
     io.observe(el)
     return () => { io.disconnect(); cancelAnimationFrame(raf) }
   }, [autoplay, value])
-  return <span ref={ref} className="tabular-nums">{shown == null ? value : `${shown.toFixed(2)}x`}</span>
+  return <span ref={ref} className="tabular-nums">{shown == null ? localizeStat(locale, value) : localizeStat(locale, `${shown.toFixed(2)}x`)}</span>
 }
 
 export default function UgcResults() {
   const e = ELYON_PROOF
+  const locale = currentLocale()
+  const revenue = locale === 'en' ? e.revenue : formatMoneyEs({ amount: Number(e.revenue.replace(/[$,]/g, '')), currency: 'USD' })
   return (
     <Section id="results" label="ugc-results-heading" glow>
       <Reveal>
-        <Head id="ugc-results-heading" eyebrow="Results & client feedback" title="What clients see. What clients say." />
+        <Head id="ugc-results-heading" eyebrow={tr('Results & client feedback')} title={tr('What clients see. What clients say.')} />
       </Reveal>
 
       <div className="mt-8 grid grid-cols-1 gap-5 md:mt-10 lg:grid-cols-12 lg:gap-6">
@@ -59,14 +65,14 @@ export default function UgcResults() {
           <div className="relative h-full overflow-hidden rounded-[28px] border border-lime/25 bg-surface-1 p-6 md:p-8">
             <div aria-hidden="true" className="pointer-events-none absolute -left-16 -top-24 h-72 w-72 rounded-full bg-lime/[0.12] blur-[90px]" />
             <div className="relative">
-              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-lime">{e.brand} · {e.category}</p>
+              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-lime">{e.brand} · {tr(e.category)}</p>
               <p className="mt-3 flex flex-wrap items-baseline gap-x-3">
-                <span className="font-display text-[4.25rem] font-bold leading-none tracking-display-xl text-lime sm:text-[5.5rem]"><RoasNumber value={e.roas} /></span>
-                <span className="font-display text-xl font-semibold text-ink md:text-2xl">ROAS, one UGC video</span>
+                <span className="font-display text-[4.25rem] font-bold leading-none tracking-display-xl text-lime sm:text-[5.5rem]"><RoasNumber value={e.roas} locale={locale} /></span>
+                <span className="font-display text-xl font-semibold text-ink md:text-2xl">{tr('ROAS, one UGC video')}</span>
               </p>
               {/* supporting metrics */}
               <dl className="mt-5 flex flex-wrap gap-x-10 gap-y-3 border-t border-hairline pt-5">
-                {[[String(e.purchases), 'Purchases'], [e.revenue, 'Reported revenue']].map(([v, l]) => (
+                {[[String(e.purchases), tr('Purchases')], [revenue, tr('Reported revenue')]].map(([v, l]) => (
                   <div key={l} className="flex flex-col">
                     <dd className="order-1 font-display text-2xl font-bold tabular-nums text-ink">{v}</dd>
                     <dt className="order-2 text-sm text-ink-muted">{l}</dt>
@@ -77,23 +83,19 @@ export default function UgcResults() {
               {/* the client's own messages: ONE evidence container, messages stacked and aligned together */}
               <figure className="mt-5 rounded-2xl border border-lime/25 bg-canvas/60 p-4">
                 <figcaption className="mb-3 flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.14em] text-lime">
-                  <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-lime" />Client-reported results
-                </figcaption>
+                  <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-lime" />{tr('Client-reported results')}</figcaption>
                 <ul className="space-y-2">
                   {CLIENT_MESSAGES.map((m) => (
-                    <li key={m} className="w-fit max-w-full rounded-2xl rounded-tl-md border border-white/10 bg-surface-2 px-4 py-2.5 text-[15px] font-medium leading-snug text-ink">
+                    <li key={m} lang={locale === 'en' ? undefined : 'en'} className="w-fit max-w-full rounded-2xl rounded-tl-md border border-white/10 bg-surface-2 px-4 py-2.5 text-[15px] font-medium leading-snug text-ink">
                       {m}
                     </li>
                   ))}
                 </ul>
               </figure>
 
-              <p className="mt-4 max-w-xl text-[13px] leading-relaxed text-ink-muted">
-                One individual creative, client-reported during an early learning phase. Not typical, not a guarantee. Results depend on brand, offer, audience and budget.
-              </p>
+              <p className="mt-4 max-w-xl text-[13px] leading-relaxed text-ink-muted">{tr('One individual creative, client-reported during an early learning phase. Not typical, not a guarantee. Results depend on brand, offer, audience and budget.')}</p>
               <p className="mt-2.5 text-[15px]">
-                <TextLink href={e.caseStudyHref} onClick={() => trackEvent('ugc_case_study_click', { location: 'results' })}>
-                  Read the full Elyon case study <span aria-hidden="true">→</span>
+                <TextLink href={e.caseStudyHref} onClick={() => trackEvent('ugc_case_study_click', { location: 'results' })}>{tr('Read the full Elyon case study')}{' '}<span aria-hidden="true">→</span>
                 </TextLink>
               </p>
             </div>
@@ -118,9 +120,9 @@ export default function UgcResults() {
                     className="h-7 w-auto max-w-[140px] object-contain object-left"
                     style={{ filter: 'brightness(0) invert(1)' }}
                   />
-                  <blockquote className="mt-4 flex-1 text-[15px] leading-relaxed text-ink">&ldquo;{t.quote}&rdquo;</blockquote>
+                  <blockquote lang={locale === 'en' ? undefined : 'en'} className="mt-4 flex-1 text-[15px] leading-relaxed text-ink">&ldquo;{t.quote}&rdquo;</blockquote>
                   <figcaption className="mt-4 text-sm text-ink-muted">
-                    <span className="font-semibold text-ink">{t.brand}</span> · {t.category}
+                    <span className="font-semibold text-ink">{t.brand}</span> · {tr(t.category)}
                   </figcaption>
                 </figure>
               </Reveal>

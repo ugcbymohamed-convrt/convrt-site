@@ -1,6 +1,9 @@
 import { OFFER_PATHS } from '../../config.js'
+import { currentLocale } from '../../i18n/locale.js'
+import { resolveCta } from '../../i18n/cta.js'
 import { ORGANIC_CTA } from '../../seo/businessKnowledge.js'
 import { withUtm } from '../../lib/analytics.js'
+import { tr } from '../../i18n/tr.js'
 
 function CtaLink({ href, external = false, children }) {
   return (
@@ -15,6 +18,7 @@ function CtaLink({ href, external = false, children }) {
 
 /* SECTION 5: one short closing invitation. Paid: existing Creative Growth Roadmap flow. Organic: organic-specific wording. */
 export default function PricingFinalCTA({ service = 'paid' }) {
+  const rcta = resolveCta(currentLocale(), { href: OFFER_PATHS.roadmap, label: 'Get 5 Free Ad Concepts' })
   return (
     <section id="contact" className="relative overflow-hidden py-12 md:py-16">
       <div
@@ -23,16 +27,15 @@ export default function PricingFinalCTA({ service = 'paid' }) {
         style={{ background: 'radial-gradient(circle, rgba(213,255,64,0.08) 0%, transparent 60%)' }}
       />
       <div className="relative mx-auto max-w-4xl px-5 text-center md:px-8">
-        <h2 className="font-display font-bold leading-[1.08] tracking-display text-ink" style={{ fontSize: 'clamp(1.7rem, 3.4vw, 2.5rem)' }}>
-          Ready to create something <span className="text-lime">that converts?</span>
+        <h2 className="font-display font-bold leading-[1.08] tracking-display text-ink" style={{ fontSize: 'clamp(1.7rem, 3.4vw, 2.5rem)' }}>{tr('Ready to create something')}{' '}<span className="text-lime">{tr('that converts?')}</span>
         </h2>
-        <p className="mx-auto mt-3 max-w-md text-base leading-relaxed text-ink-muted">Let&rsquo;s find the right creative approach for your brand.</p>
+        <p className="mx-auto mt-3 max-w-md text-base leading-relaxed text-ink-muted">{tr('Let’s find the right creative approach for your brand.')}</p>
         {/* Paid Social: the Roadmap offer. Organic Social: the organic conversation starter. Both are always in the HTML. */}
         <div hidden={service !== 'paid'}>
-          <CtaLink href={OFFER_PATHS.roadmap}>Get 5 Free Ad Concepts</CtaLink>
+          <CtaLink href={rcta.href} external={rcta.external}>{tr(rcta.label)}</CtaLink>
         </div>
         <div hidden={service !== 'organic'}>
-          <CtaLink href={ORGANIC_CTA.href} external={ORGANIC_CTA.external}>{ORGANIC_CTA.label}</CtaLink>
+          <CtaLink href={ORGANIC_CTA.href} external={ORGANIC_CTA.external}>{tr(ORGANIC_CTA.label)}</CtaLink>
         </div>
       </div>
     </section>

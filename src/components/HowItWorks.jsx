@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
-import { OFFER_PATHS } from '../config.js'
+import { useTr } from '../i18n/tr.js'
+import { currentLocale } from '../i18n/locale.js'
+import { primaryAction } from '../i18n/cta.js'
 
 /* ─────────────────────────────────────────────
    HOW IT WORKS — Scroll-driven vertical timeline
@@ -70,6 +72,9 @@ const STEPS = [
    Section
 ───────────────────────────────────────────── */
 export default function HowItWorks() {
+  const tr = useTr()
+  const locale = currentLocale()
+  const action = primaryAction(locale)
   /* -1 = nothing activated yet, 0–3 = highest activated index */
   const [activeStep, setActiveStep] = useState(-1)
   const [headerVisible, setHeaderVisible] = useState(false)
@@ -158,17 +163,17 @@ export default function HowItWorks() {
         >
           <div className="inline-flex items-center gap-2 rounded-full border border-hairline bg-surface-1/60 px-4 py-1.5 mb-6 backdrop-blur-md">
             <span className="h-1.5 w-1.5 rounded-full bg-lime animate-pulse" />
-            <span className="text-xs font-medium uppercase tracking-[0.18em] text-ink-muted">How It Works</span>
+            <span className="text-xs font-medium uppercase tracking-[0.18em] text-ink-muted">{tr('How It Works')}</span>
           </div>
 
           <h2 className="font-display font-bold text-ink tracking-display leading-[1.02] text-4xl md:text-5xl lg:text-[62px]">
-            From free ideas
+            {tr('From free ideas')}
             <br />
-            <span className="text-lime">to finished videos.</span>
+            <span className="text-lime">{tr('to finished videos.')}</span>
           </h2>
 
           <p className="mt-6 text-base md:text-lg text-ink-muted leading-relaxed max-w-xl mx-auto lg:mx-0">
-            Start with five creative ideas tailored to your brand. See the direction, decide if we’re a fit, and let us handle production from start to finish.
+            {tr('Start with five creative ideas tailored to your brand. See the direction, decide if we’re a fit, and let us handle production from start to finish.')}
           </p>
         </div>
 
@@ -301,7 +306,7 @@ export default function HowItWorks() {
                         transition: 'color 0.5s',
                       }}
                     >
-                      {step.number}&thinsp;/&thinsp;04&ensp;·&ensp;{step.label}
+                      {step.number}&thinsp;/&thinsp;04&ensp;·&ensp;{tr(step.label)}
                     </span>
                   </div>
 
@@ -316,7 +321,7 @@ export default function HowItWorks() {
                       transition: 'opacity 0.65s 0.05s ease, transform 0.65s 0.05s cubic-bezier(0.22,1,0.36,1), color 0.5s',
                     }}
                   >
-                    {step.title}
+                    {tr(step.title)}
                   </h3>
 
                   {/* Description */}
@@ -330,7 +335,7 @@ export default function HowItWorks() {
                       transition: 'opacity 0.65s 0.15s ease, transform 0.65s 0.15s cubic-bezier(0.22,1,0.36,1), color 0.5s',
                     }}
                   >
-                    {step.description}
+                    {tr(step.description)}
                   </p>
 
                   {/* Detail line */}
@@ -344,7 +349,7 @@ export default function HowItWorks() {
                       transition: 'opacity 0.65s 0.25s ease, transform 0.65s 0.25s cubic-bezier(0.22,1,0.36,1), color 0.5s 0.2s',
                     }}
                   >
-                    {step.detail}
+                    {tr(step.detail)}
                   </p>
 
                   {/* Time badge */}
@@ -367,7 +372,7 @@ export default function HowItWorks() {
                         className="text-xs font-semibold tracking-wide"
                         style={{ color: active ? step.textLight : '#52525b', transition: 'color 0.4s' }}
                       >
-                        {step.badge}
+                        {tr(step.badge)}
                       </span>
                     </div>
                   )}
@@ -388,17 +393,18 @@ export default function HowItWorks() {
         >
           <div>
             <p className="font-display font-semibold text-ink text-xl leading-tight">
-              Start with five free ad concepts.
+              {tr('Start with five free ad concepts.')}
             </p>
             <p className="mt-1.5 text-sm text-ink-muted">
-              For qualifying brands. We present five tailored ad concepts in a complimentary strategy session, with no obligation to hire CONVRT.
+              {tr('For qualifying brands. We present five tailored ad concepts in a complimentary strategy session, with no obligation to hire CONVRT.')}
             </p>
           </div>
           <a
-            href={OFFER_PATHS.roadmap}
+            href={action.href}
+            {...(action.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
             className="cta-gradient shrink-0 inline-flex items-center gap-2 rounded-full px-7 py-3.5 text-sm font-semibold text-canvas"
           >
-            Get Your 5 Free Ad Concepts
+            {locale === 'en' ? 'Get Your 5 Free Ad Concepts' : tr(action.label)}
             <svg viewBox="0 0 12 12" className="h-3.5 w-3.5" fill="none">
               <path d="M3 9L9 3M9 3H4M9 3V8" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
             </svg>

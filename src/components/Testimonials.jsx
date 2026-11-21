@@ -1,4 +1,6 @@
 import { useRef, useEffect, useState } from 'react'
+import { useTr } from '../i18n/tr.js'
+import { currentLocale } from '../i18n/locale.js'
 
 /* ─────────────────────────────────────────────
    SECTION — SOCIAL PROOF / TESTIMONIALS
@@ -86,6 +88,8 @@ function StarRow({ count = 5, color = '#d5ff40' }) {
 }
 
 function ReviewCard({ review, inView, delay }) {
+  const tr = useTr()
+  const locale = currentLocale()
   const [hovered, setHovered] = useState(false)
 
   return (
@@ -147,7 +151,7 @@ function ReviewCard({ review, inView, delay }) {
                 className="inline-block h-1.5 w-1.5 rounded-full"
                 style={{ background: '#d5ff40' }}
               />
-              {review.badge}
+              {tr(review.badge)}
             </div>
           </div>
 
@@ -155,14 +159,15 @@ function ReviewCard({ review, inView, delay }) {
           <StarRow count={review.stars} color="#d5ff40" />
 
           {/* ── Review text ── */}
-          <blockquote className="flex-1 text-[15px] leading-[1.78] text-ink-subtle">
+          {/* The quote is the client's own English wording (published with permission): it is never machine- or re-translated; other languages mark it lang="en". */}
+          <blockquote lang={locale === 'en' ? undefined : 'en'} className="flex-1 text-[15px] leading-[1.78] text-ink-subtle">
             {review.text}
           </blockquote>
 
           {/* ── Bottom row: brand info ── */}
           <div className="pt-2 border-t border-hairline">
             <p className="text-sm font-semibold text-ink">{review.brand}</p>
-            <p className="text-[12px] text-ink-muted mt-0.5">{review.category}</p>
+            <p className="text-[12px] text-ink-muted mt-0.5">{tr(review.category)}</p>
           </div>
 
         </div>
@@ -172,6 +177,8 @@ function ReviewCard({ review, inView, delay }) {
 }
 
 export default function Testimonials() {
+  const tr = useTr()
+  const locale = currentLocale()
   const sectionRef = useRef(null)
   const [inView, setInView] = useState(false)
 
@@ -208,7 +215,7 @@ export default function Testimonials() {
             <div className="inline-flex items-center gap-2.5">
               <span className="h-px w-8 bg-lime" />
               <span className="text-xs font-semibold uppercase tracking-[0.2em] text-lime">
-                Client Reviews
+                {tr('Client Reviews')}
               </span>
               <span className="h-px w-8 bg-lime" />
             </div>
@@ -219,15 +226,15 @@ export default function Testimonials() {
               className="font-display font-bold text-ink tracking-display leading-[1.06] max-w-2xl"
               style={{ fontSize: 'clamp(2rem, 4.5vw, 3.5rem)' }}
             >
-              Trusted by brands that{' '}
-              <span className="text-lime">came back</span>
-              {' '}for more.
+              {tr('Trusted by brands that')}{' '}
+              <span className="text-lime">{tr('came back')}</span>
+              {' '}{tr('for more.')}
             </h2>
           </FadeUp>
 
           <FadeUp inView={inView} delay={200}>
             <p className="text-ink-muted text-base leading-relaxed max-w-xl">
-              Most of our clients come back for additional creatives, testing, and long-term collaboration.
+              {tr('Most of our clients come back for additional creatives, testing, and long-term collaboration.')}
             </p>
           </FadeUp>
         </div>
@@ -244,7 +251,9 @@ export default function Testimonials() {
           ))}
         </div>
 
-
+        {locale !== 'en' && (
+          <p className="mt-6 text-center text-xs text-ink-subtle">{tr('Reviews are shown in the clients’ original language (English).')}</p>
+        )}
       </div>
     </section>
   )

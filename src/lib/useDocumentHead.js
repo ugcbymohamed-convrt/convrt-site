@@ -15,11 +15,12 @@ import { buildHeadSpec, STATIC_JSONLD_ATTR, STATIC_JSONLD_VALUE } from './headSp
    • ogTitle / ogDescription — social copy when it should differ from title / description
      (the case studies). Default: the same as title / description.
    • jsonLd   — one JSON-LD object or an array of them, injected as <script type="application/ld+json">. */
-export function useDocumentHead({ title, description, url, noindex = false, robots, image, imageAlt, imageWidth, imageHeight, type = 'website', jsonLd, ogTitle, ogDescription }) {
+export function useDocumentHead({ title, description, url, noindex = false, robots, image, imageAlt, imageWidth, imageHeight, type = 'website', jsonLd, ogTitle, ogDescription, lang, dir, ogLocale, alternates }) {
   const jsonLdText = jsonLd ? JSON.stringify(jsonLd) : ''
+  const alternatesText = alternates ? JSON.stringify(alternates) : ''
   useEffect(() => {
     const restores = []
-    const spec = buildHeadSpec({ title, description, url, noindex, robots, image, imageAlt, imageWidth, imageHeight, type, jsonLd: jsonLdText ? JSON.parse(jsonLdText) : undefined, ogTitle, ogDescription })
+    const spec = buildHeadSpec({ title, description, url, noindex, robots, image, imageAlt, imageWidth, imageHeight, type, jsonLd: jsonLdText ? JSON.parse(jsonLdText) : undefined, ogTitle, ogDescription, lang, dir, ogLocale, alternates: alternatesText ? JSON.parse(alternatesText) : undefined })
 
     const previousTitle = document.title
     document.title = spec.title
@@ -45,6 +46,32 @@ export function useDocumentHead({ title, description, url, noindex = false, robo
     spec.metas.forEach(({ attr, key, content }) => upsert('meta', { [attr]: key }, 'content')(content))
     if (spec.canonical) upsert('link', { rel: 'canonical' }, 'href')(spec.canonical)
 
+    // Language of the document (matters in `npm run dev` and for client-only renders; the static HTML already carries it).
+    if (spec.lang) {
+      const root = document.documentElement
+      const prevLang = root.getAttribute('lang')
+      const prevDir = root.getAttribute('dir')
+      root.setAttribute('lang', spec.lang)
+      if (spec.dir === 'rtl') root.setAttribute('dir', 'rtl')
+      restores.push(() => {
+        prevLang === null ? root.removeAttribute('lang') : root.setAttribute('lang', prevLang)
+        prevDir === null ? root.removeAttribute('dir') : root.setAttribute('dir', prevDir)
+      })
+    }
+
+    // hreflang: replace whatever the static HTML carried with the same set (never a second copy).
+    if (spec.alternates.length) {
+      document.head.querySelectorAll('link[rel="alternate"][hreflang]').forEach((n) => n.remove())
+      spec.alternates.forEach((a) => {
+        const el = document.createElement('link')
+        el.rel = 'alternate'
+        el.setAttribute('hreflang', a.hreflang)
+        el.href = a.href
+        document.head.appendChild(el)
+        restores.push(() => el.remove())
+      })
+    }
+
     if (spec.jsonLd.length) {
       // Replace the prerendered copies (same data) rather than adding a second set.
       document.head.querySelectorAll(`script[${STATIC_JSONLD_ATTR}="${STATIC_JSONLD_VALUE}"]`).forEach((n) => n.remove())
@@ -59,5 +86,5 @@ export function useDocumentHead({ title, description, url, noindex = false, robo
     }
 
     return () => restores.reverse().forEach((fn) => fn())
-  }, [title, description, url, noindex, robots, image, imageAlt, imageWidth, imageHeight, type, jsonLdText, ogTitle, ogDescription])
+  }, [title, description, url, noindex, robots, image, imageAlt, imageWidth, imageHeight, type, jsonLdText, ogTitle, ogDescription, lang, dir, ogLocale, alternatesText])
 }

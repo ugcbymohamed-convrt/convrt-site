@@ -75,6 +75,9 @@
    • A category with no approved video never appears as a tab on /creator-showcase.
    • tests/ugc-page.test.mjs and tests/creator-showcase.test.mjs validate every entry (unique ids, valid codes, source, permission flags). */
 
+import { currentLocale } from '../i18n/locale.js'
+import { ES_LANGUAGE_LABELS, ES_INDUSTRY_LABELS, ES_TYPE_LABELS, ES_PRODUCTION_LABELS, captionEs } from '../i18n/es/labels.js'
+
 export const PORTFOLIO = [
   /* SAAS SLOTS (/saas-video-production): EMPTY ON PURPOSE, awaiting the owner's approved SaaS videos. No UGC, Spokesperson, Organic or homepage-client video may stand in
      for them, and no Cloudflare id is invented: to fill a slot, paste this entry (with a real Cloudflare id) at the top of this list:
@@ -1054,20 +1057,24 @@ export const SAAS_FORMATS = [
 export const saasFormatLabel = (id) => SAAS_FORMATS.find((f) => f.id === id)?.label ?? null
 
 const titleCase = (slug) => slug.replace(/[-_]+/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())
-export const languageLabel = (code) => LANGUAGE_LABELS[code] ?? code.toUpperCase()
+/* The label helpers below speak the language of the page being rendered (from the URL; English everywhere unless the page is /es/…). The data itself stays English. */
+const isEs = () => currentLocale() === 'es'
+export const languageLabel = (code) => (isEs() ? ES_LANGUAGE_LABELS[code] : LANGUAGE_LABELS[code]) ?? code.toUpperCase()
 
 /* An industry that has not been confirmed. It is internal: it is never shown as a label and never becomes a tab. */
 export const UNCLASSIFIED = 'unclassified'
 export const isClassified = (item) => Boolean(item.industry) && item.industry !== UNCLASSIFIED
 /* '' for an unconfirmed industry, so nothing is displayed (callers drop empty labels). */
-export const industryLabel = (slug) => (!slug || slug === UNCLASSIFIED ? '' : INDUSTRY_LABELS[slug] ?? titleCase(slug))
+export const industryLabel = (slug) => (!slug || slug === UNCLASSIFIED ? '' : (isEs() ? ES_INDUSTRY_LABELS[slug] : INDUSTRY_LABELS[slug]) ?? titleCase(slug))
 export const typeOf = (item) => item.type
-export const typeLabel = (item) => (item.type ? TYPE_LABELS[item.type] ?? titleCase(item.type) : '')
-export const titleOf = (item) => item.title ?? item.caption
+export const typeLabel = (item) => (item.type ? (isEs() ? ES_TYPE_LABELS[item.type] : TYPE_LABELS[item.type]) ?? titleCase(item.type) : '')
+/* A video's caption in the page's language: generic captions ("UGC ad example 5.") are translated; a hand-written one is shown as written. */
+export const captionOf = (item) => (isEs() ? captionEs(item.caption) ?? item.caption : item.caption)
+export const titleOf = (item) => (isEs() ? captionEs(item.title ?? item.caption) ?? item.title ?? item.caption : item.title ?? item.caption)
 
 /* PRODUCTION ATTRIBUTION. 'independent' = a creator's own example; 'convrt' = produced through CONVRT; unset = unknown (nothing is claimed). */
 export const PRODUCTION_LABELS = { independent: 'Independent creator', convrt: 'Produced by CONVRT' }
-export const productionLabel = (item) => PRODUCTION_LABELS[item.production] ?? ''
+export const productionLabel = (item) => (isEs() ? ES_PRODUCTION_LABELS : PRODUCTION_LABELS)[item.production] ?? ''
 export const isConvrtProduction = (item) => item.production === 'convrt'
 
 /* Brand name and credit line: shown only with the explicit permission recorded in the approval. */
@@ -1206,6 +1213,14 @@ export const availableCategories = (items) => {
 }
 export const countIn = (items, categoryId) => (categoryId === 'all' ? items.length : items.filter((i) => inCategory(i, categoryId)).length)
 export const filterByCategory = (items, categoryId) => (categoryId === 'all' ? items : items.filter((i) => inCategory(i, categoryId)))
+
+/* A page in language `locale` shows videos spoken in that language FIRST (a stable sort: everything else keeps its order and stays available). Only a video whose
+   `languages` list contains the code moves; a video with no confirmed language is never guessed into any language. English keeps the file order. */
+export const prioritizeLanguage = (items, locale) => {
+  if (!locale || locale === 'en') return items
+  const spoken = items.filter((i) => (i.languages ?? []).includes(locale))
+  return spoken.length === 0 ? items : [...spoken, ...items.filter((i) => !(i.languages ?? []).includes(locale))]
+}
 
 /* Filter facets (the UGC portfolio grid). A facet is offered only when it has two or more distinct values. */
 export function buildFacets(items) {

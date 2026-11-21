@@ -3,6 +3,9 @@ import { Avatar, delay } from '../ugc/illustrations.jsx'
 import { useAutoplayAllowed } from '../ugc/creatorVideo.jsx'
 import { SPOKESPERSON_STYLES as CONTENT } from '../../content/spokespersonPage.js'
 import { VideoFrame } from './SpokespersonScenes.jsx'
+import { tr } from '../../i18n/tr.js'
+import { currentLocale } from '../../i18n/locale.js'
+import { localizeConfig } from '../../i18n/content.js'
 
 /* "One message. Different ways to deliver it." The spokesperson counterpart of the UGC page's creative-testing diagram, with the SAME interaction
    system (src/components/ugc/TestingDiagram.jsx): one scene on a stage at a time, a live caption, one button per state, a one-time pass through the
@@ -36,20 +39,20 @@ function SceneExplain() {
       <div className="grid w-full max-w-xl grid-cols-1 items-center gap-3 sm:grid-cols-[1.15fr_1fr]">
         <VideoFrame variant={MAN} tone={VIOLET} className="ugc-pop mx-auto w-full max-w-[16rem] sm:max-w-none">
           <span className="absolute bottom-2 left-2 flex w-[44%] flex-col gap-1 rounded-md border-l-2 border-lime bg-black/60 px-2 py-1.5"><span className="h-1.5 w-4/5 rounded-full bg-white/85" /><span className="h-1 w-3/5 rounded-full bg-white/45" /></span>
-          <span className="absolute right-2 top-2 inline-flex items-center gap-1 rounded-full bg-black/55 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-[0.08em] text-ink">To camera</span>
+          <span className="absolute right-2 top-2 inline-flex items-center gap-1 rounded-full bg-black/55 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-[0.08em] text-ink">{tr('To camera')}</span>
         </VideoFrame>
         <div className="cs-fade-up rounded-2xl border border-hairline-strong bg-surface-2 p-3" style={delay(500)}>
           <div className="flex items-center gap-2">
             <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-lime/20 text-lime">
               <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z" /><path d="M4 7.5L12 12l8-4.5M12 12v9" /></svg>
             </span>
-            <span className="text-[11px] font-bold uppercase tracking-[0.08em] text-ink">Your product</span>
+            <span className="text-[11px] font-bold uppercase tracking-[0.08em] text-ink">{tr('Your product')}</span>
           </div>
           <ul className="mt-2.5 space-y-2">
             {feats.map(([f, c], i) => (
               <li key={f} className="cs-fade-up flex items-center gap-2" style={delay(800 + i * 250)}>
                 <span className="h-2 w-2 shrink-0 rounded-full" style={{ background: c }} />
-                <span className="text-[11px] font-medium text-ink-muted">{f}</span>
+                <span className="text-[11px] font-medium text-ink-muted">{tr(f)}</span>
                 <Skel w="w-1/3" className="ml-auto" />
               </li>
             ))}
@@ -57,7 +60,7 @@ function SceneExplain() {
         </div>
       </div>
       <ul className="cs-fade-up flex flex-wrap items-center justify-center gap-1.5" style={delay(1500)}>
-        <li><Chip lime>Presenter explains</Chip></li><li><Chip>Clear, scripted message</Chip></li><li><Chip>Product panel supports it</Chip></li>
+        <li><Chip lime>{tr('Presenter explains')}</Chip></li><li><Chip>{tr('Clear, scripted message')}</Chip></li><li><Chip>{tr('Product panel supports it')}</Chip></li>
       </ul>
     </div>
   )
@@ -95,7 +98,7 @@ function SceneDemo() {
         </span>
       </div>
       <ul className="cs-fade-up flex flex-wrap items-center justify-center gap-1.5" style={delay(1500)}>
-        <li><Chip lime>Presenter walks you through</Chip></li><li><Chip>Product or app on screen</Chip></li><li><Chip>Step by step</Chip></li>
+        <li><Chip lime>{tr('Presenter walks you through')}</Chip></li><li><Chip>{tr('Product or app on screen')}</Chip></li><li><Chip>{tr('Step by step')}</Chip></li>
       </ul>
     </div>
   )
@@ -109,7 +112,7 @@ function ScenePromo() {
         <Avatar variant={ALT} className="absolute inset-0 h-full w-full" pos="50% 22%" />
         <span aria-hidden="true" className="absolute inset-0" style={{ background: 'linear-gradient(180deg, rgba(0,0,0,0.5) 0%, transparent 34%, transparent 58%, rgba(0,0,0,0.7) 100%)' }} />
         <span className="cs-fade-up absolute inset-x-[9%] top-[9%] rounded-md bg-lime px-1.5 py-1.5 text-center" style={delay(500)}><span className="mx-auto block h-1.5 w-4/5 rounded-full bg-canvas/80" /><span className="mx-auto mt-1 block h-1.5 w-3/5 rounded-full bg-canvas/80" /></span>
-        <span className="absolute right-2 top-[26%] flex h-6 w-6 items-center justify-center rounded-full border border-white/40 bg-black/50 text-[9px] font-bold text-ink">Logo</span>
+        <span className="absolute right-2 top-[26%] flex h-6 w-6 items-center justify-center rounded-full border border-white/40 bg-black/50 text-[9px] font-bold text-ink">{tr('Logo')}</span>
         <span className="cs-fade-up absolute inset-x-[10%] bottom-[16%] flex flex-col items-center gap-0.5 rounded bg-black/55 px-2 py-1" style={delay(1000)}><span className="h-1 w-full rounded-full bg-white/85" /><span className="h-1 w-3/5 rounded-full bg-lime" /></span>
         <span className="ugc-pop absolute inset-x-[12%] bottom-[5%] h-4 rounded-full bg-coral" style={delay(1500)} />
       </div>
@@ -117,10 +120,10 @@ function ScenePromo() {
         {[['Opening hook', LIME, 500], ['Branded visuals', VIOLET, 900], ['Call to action', CORAL, 1500]].map(([l, c, d]) => (
           <li key={l} className="cs-fade-up flex items-center gap-2" style={delay(d)}>
             <span className="h-px w-5 sm:w-8" style={{ background: c }} />
-            <span className="rounded-full px-2.5 py-1 text-[11px] font-bold" style={{ background: `${c}26`, color: c }}>{l}</span>
+            <span className="rounded-full px-2.5 py-1 text-[11px] font-bold" style={{ background: `${c}26`, color: c }}>{tr(l)}</span>
           </li>
         ))}
-        <li className="cs-fade-up mt-1" style={delay(1800)}><Chip>Built for paid advertising</Chip></li>
+        <li className="cs-fade-up mt-1" style={delay(1800)}><Chip>{tr('Built for paid advertising')}</Chip></li>
       </ul>
     </div>
   )
@@ -189,9 +192,7 @@ export function FormatStage({ content, scenes: SCENES, id }) {
           ))}
           {running && (
             <li>
-              <button type="button" onClick={() => setRunning(false)} className="min-h-[44px] rounded-full px-3 py-2 text-[13px] font-medium text-ink-muted underline underline-offset-4 hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-lime">
-                Pause
-              </button>
+              <button type="button" onClick={() => setRunning(false)} className="min-h-[44px] rounded-full px-3 py-2 text-[13px] font-medium text-ink-muted underline underline-offset-4 hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-lime">{tr('Pause')}</button>
             </li>
           )}
         </ol>
@@ -202,5 +203,5 @@ export function FormatStage({ content, scenes: SCENES, id }) {
 }
 
 export default function DeliveryStyles() {
-  return <FormatStage content={CONTENT} scenes={SCENES} id="spokesperson-formats" />
+  return <FormatStage content={localizeConfig(CONTENT, currentLocale())} scenes={SCENES} id="spokesperson-formats" />
 }

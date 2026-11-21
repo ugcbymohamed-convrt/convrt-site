@@ -1,6 +1,8 @@
 import { useRef, useEffect, useState, useCallback } from 'react'
 import { CONTACT_EMAIL } from '../config.js'
-import { HOME_FAQ } from '../seo/homeFaq.js'
+import { homeFaqFor } from '../i18n/content.js'
+import { useTr, useHref } from '../i18n/tr.js'
+import { currentLocale } from '../i18n/locale.js'
 
 /* ─────────────────────────────────────────────
    SECTION — FAQ
@@ -8,10 +10,11 @@ import { HOME_FAQ } from '../seo/homeFaq.js'
 ───────────────────────────────────────────── */
 
 /* The questions and answers live in src/seo/homeFaq.js: the same list feeds this accordion and the homepage FAQPage JSON-LD. */
-const FAQS = HOME_FAQ
+// (the Spanish list is src/i18n/es/faq/home.js; homeFaqFor() picks the page's language)
 
 /* ── Single accordion item ── */
 function FAQItem({ item, isOpen, onToggle }) {
+  const href = useHref()
   const bodyRef = useRef(null)
   const [height, setHeight] = useState(0)
 
@@ -103,7 +106,7 @@ function FAQItem({ item, isOpen, onToggle }) {
               </p>
             ))}
             {[item.link, ...(item.moreLinks ?? [])].filter(Boolean).map((l) => (
-              <a key={l.href} href={l.href} className="w-fit text-[15px] text-lime underline underline-offset-2 hover:text-lime-light transition-colors">
+              <a key={l.href} href={href(l.href)} className="w-fit text-[15px] text-lime underline underline-offset-2 hover:text-lime-light transition-colors">
                 {l.label} →
               </a>
             ))}
@@ -144,6 +147,9 @@ function FadeUp({ children, inView, delay = 0, className = '' }) {
 }
 
 export default function FAQ() {
+  const tr = useTr()
+  const locale = currentLocale()
+  const FAQS = homeFaqFor(locale)
   const sectionRef = useRef(null)
   const [inView, setInView] = useState(false)
   const [openIndex, setOpenIndex] = useState(null)
@@ -192,7 +198,7 @@ export default function FAQ() {
             <div className="inline-flex items-center gap-2.5 mb-6">
               <span className="h-px w-8 bg-lime" />
               <span className="text-xs font-semibold uppercase tracking-[0.2em] text-lime">
-                FAQ
+                {tr('FAQ')}
               </span>
               <span className="h-px w-8 bg-lime" />
             </div>
@@ -200,17 +206,17 @@ export default function FAQ() {
 
           <FadeUp inView={inView} delay={80}>
             <h2
-              className="font-display font-bold text-ink tracking-display leading-[1.05] mb-5 whitespace-nowrap"
+              className={`font-display font-bold text-ink tracking-display leading-[1.05] mb-5 ${locale === 'en' ? 'whitespace-nowrap' : ''}`}
               style={{ fontSize: 'clamp(1.75rem, 3.5vw, 2.75rem)' }}
             >
-              Things brands{' '}
-              <span className="text-lime">usually ask.</span>
+              {tr('Things brands')}{' '}
+              <span className="text-lime">{tr('usually ask.')}</span>
             </h2>
           </FadeUp>
 
           <FadeUp inView={inView} delay={160}>
             <p className="text-ink-muted text-base leading-relaxed">
-              We believe good creative partnerships start with clarity.
+              {tr('We believe good creative partnerships start with clarity.')}
             </p>
           </FadeUp>
         </div>
@@ -241,17 +247,17 @@ export default function FAQ() {
           >
             <div className="flex-1">
               <p className="text-[15px] font-semibold text-ink leading-snug mb-1">
-                Still have questions?
+                {tr('Still have questions?')}
               </p>
               <p className="text-[13px] text-ink-muted leading-relaxed">
-                Reach us directly, we're happy to answer anything before you commit to anything.
+                {tr("Reach us directly, we're happy to answer anything before you commit to anything.")}
               </p>
             </div>
             <a
               href={`mailto:${CONTACT_EMAIL}`}
               className="flex-shrink-0 inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-semibold text-canvas cta-gradient whitespace-nowrap"
             >
-              Get in touch
+              {tr('Get in touch')}
               <svg viewBox="0 0 12 12" className="h-3.5 w-3.5" fill="none">
                 <path d="M3 9L9 3M9 3H4M9 3V8" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
               </svg>

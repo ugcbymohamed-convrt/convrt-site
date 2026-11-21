@@ -5,6 +5,9 @@ import { pageHead } from './seo/siteSeo.js'
 import { PATHS } from './routes.js'
 import { TRUST_PAGES_PUBLISHED } from './config.js'
 import { TRUST_CONTENT } from './content/trustPages.js'
+import { parsePath } from './i18n/paths.js'
+import { tr, hrefFor } from './i18n/tr.js'
+import { localizeConfig } from './i18n/content.js'
 
 /* About, Contact, Privacy Policy and Terms: one template, four URLs (PATHS.about / contact / privacy / terms). The words are in src/content/trustPages.js.
    Head and JSON-LD come from the SEO manifest like every other page. While TRUST_PAGES_PUBLISHED is false (src/config.js) the pages are drafts: noindex, no
@@ -22,7 +25,7 @@ function Inline({ text }) {
     if (link) {
       const external = /^https?:/.test(link[2])
       return (
-        <a key={i} href={link[2]} className={linkClass} {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}>
+        <a key={i} href={hrefFor(link[2])} className={linkClass} {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}>
           {link[1]}
         </a>
       )
@@ -34,10 +37,22 @@ function Inline({ text }) {
   })
 }
 
+function localizePage(page, locale) {
+  if (locale === 'en') return page
+  const t = localizeConfig(page, locale)
+  const cleaned = (body) => body
+    .map((b) => (typeof b === 'string' ? b : { list: b.list.filter((x) => x.trim() !== '') }))
+    .filter((b) => (typeof b === 'string' ? b.trim() !== '' : b.list.length > 0))
+  const sections = t.sections.map((s) => ({ ...s, body: cleaned(s.body) })).filter((s) => s.body.length > 0)
+  return { ...t, sections }
+}
+
 export default function TrustPage() {
-  const path = typeof window !== 'undefined' ? window.location.pathname.replace(/\/$/, '') || '/' : '/'
+  const { locale, basePath: path } = parsePath(typeof window !== 'undefined' ? window.location.pathname : '/')
   const key = KEY_BY_PATH[path] ?? 'about'
-  const page = TRUST_CONTENT[key]
+  // Other languages: the page's words go through the dictionary. An entry translated to an empty string means "leave this out in that language" (for example a link into an
+  // English-only flow); sections left empty disappear. The legal documents (privacy, terms, legal notice) are not translated and are never built in other languages.
+  const page = localizePage(TRUST_CONTENT[key], locale)
   useDocumentHead(pageHead(PATHS[key]))
 
   const viewed = useRef(false)
@@ -50,11 +65,11 @@ export default function TrustPage() {
 
   return (
     <>
-      <nav aria-label="Breadcrumb" className="mx-auto max-w-7xl px-5 pt-2 md:px-8">
+      <nav aria-label={tr('Breadcrumb')} className="mx-auto max-w-7xl px-5 pt-2 md:px-8">
         <ol className="flex items-center gap-2 text-[13px] text-ink-subtle">
-          <li><a href="/" className="transition-colors hover:text-ink">Home</a></li>
+          <li><a href={hrefFor('/')} className="transition-colors hover:text-ink">{tr('Home')}</a></li>
           <li aria-hidden="true">/</li>
-          <li aria-current="page" className="text-ink-muted">{LABEL[key]}</li>
+          <li aria-current="page" className="text-ink-muted">{tr(LABEL[key])}</li>
         </ol>
       </nav>
       <article aria-labelledby="trust-heading" className="relative overflow-x-clip">

@@ -1,6 +1,9 @@
 import { CONTACT_EMAIL } from '../../config.js'
 import { trackEvent } from '../../lib/analytics.js'
 import { Section, Reveal, RoadmapCta, GhostCta } from './shared.jsx'
+import { tr } from '../../i18n/tr.js'
+import { currentLocale } from '../../i18n/locale.js'
+import { localizeConfig } from '../../i18n/content.js'
 
 /* Final CTA: deliberately short, not a sixth content section. The Free Creative Growth Roadmap is open to brands in every industry. */
 
@@ -14,7 +17,8 @@ export const UGC_CTA = {
   track: { cta: 'ugc_page_cta_click', pricing: 'ugc_pricing_link_click', email: 'ugc_email_click' },
 }
 
-export default function UgcFinalCTA({ config = UGC_CTA }) {
+export default function UgcFinalCTA({ config: configProp = UGC_CTA }) {
+  const config = localizeConfig(configProp, currentLocale())
   return (
     <Section id="get-started" label={config.id} className="!pt-4 !pb-12 md:!pb-16">
       <Reveal>
@@ -30,15 +34,11 @@ export default function UgcFinalCTA({ config = UGC_CTA }) {
                 ? <RoadmapCta hero location="final" track={config.track.cta} href={config.primary.href} external={config.primary.external}>{config.primary.label}</RoadmapCta>
                 : <RoadmapCta hero location="final" track={config.track.cta} />}
             </div>
-            {config.note !== null && <p className="mt-4 text-sm text-ink-muted">{config.note ?? 'Free strategy session. Every industry welcome, subject to a short fit check. No obligation.'}</p>}
+            {config.note !== null && <p className="mt-4 text-sm text-ink-muted">{config.note ?? tr('Free strategy session. Every industry welcome, subject to a short fit check. No obligation.')}</p>}
             <div className="mt-5 flex flex-col items-stretch justify-center gap-3 sm:flex-row sm:items-center">
-              <GhostCta href="/pricing#packages" onClick={() => trackEvent(config.track.pricing, { location: 'final' })}>
-                See Pricing
-              </GhostCta>
+              <GhostCta href="/pricing#packages" onClick={() => trackEvent(config.track.pricing, { location: 'final' })}>{tr('See Pricing')}</GhostCta>
               <GhostCta href={`mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(config.emailSubject)}`} onClick={() => trackEvent(config.track.email, { location: 'final' })}>
-                <svg viewBox="0 0 24 24" className="h-[18px] w-[18px] text-lime" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2.5" /><path d="M3.5 7l8.5 6 8.5-6" /></svg>
-                Email the Founder
-              </GhostCta>
+                <svg viewBox="0 0 24 24" className="h-[18px] w-[18px] text-lime" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2.5" /><path d="M3.5 7l8.5 6 8.5-6" /></svg>{tr('Email the Founder')}</GhostCta>
             </div>
           </div>
         </div>

@@ -5,6 +5,9 @@ import {
   ORGANIC_STAGES, ORGANIC, ORGANIC_COMMITMENT, FORMATS, RAW_FOOTAGE, REVISIONS, formatMoney,
 } from '../../seo/businessKnowledge.js'
 import { SectionHeader, Check } from './shared.jsx'
+import { tr } from '../../i18n/tr.js'
+import { currentLocale } from '../../i18n/locale.js'
+import { money } from '../../i18n/money.js'
 
 /* SECTION 3: "The details." One section, four panels, ALL CLOSED on load (one open at a time; switching goal closes them).
    Every panel's content is always in the DOM (collapsed = grid-rows 0fr + `visibility`), so the prerendered HTML carries all of
@@ -51,13 +54,13 @@ function IncludedPaid() {
           <li key={b.id} className="flex items-start gap-3">
             <Tile>{BENEFIT_ICONS[b.id]}</Tile>
             <span className="min-w-0 pt-[7px]">
-              <span className="block text-[13.5px] leading-snug text-ink">{b.label}</span>
-              {b.detail && <span className="mt-0.5 block text-[12px] leading-snug text-ink-subtle">{b.detail}</span>}
+              <span className="block text-[13.5px] leading-snug text-ink">{tr(b.label)}</span>
+              {b.detail && <span className="mt-0.5 block text-[12px] leading-snug text-ink-subtle">{tr(b.detail)}</span>}
             </span>
           </li>
         ))}
       </ul>
-      <Note className="mt-4">{SHARED_SPRINT_LANGUAGE_NOTE} {SHARED_SPRINT_NOTE}</Note>
+      <Note className="mt-4">{tr(SHARED_SPRINT_LANGUAGE_NOTE)} {tr(SHARED_SPRINT_NOTE)}</Note>
     </>
   )
 }
@@ -66,10 +69,10 @@ function IncludedOrganic() {
     <>
       <ul className="grid grid-cols-2 gap-x-5 gap-y-2.5 lg:grid-cols-4">
         {ORGANIC.panelInclusions.map((t) => (
-          <li key={t} className="flex items-start gap-2.5 text-[13.5px] leading-snug text-ink"><Check />{t}</li>
+          <li key={t} className="flex items-start gap-2.5 text-[13.5px] leading-snug text-ink"><Check />{tr(t)}</li>
         ))}
       </ul>
-      <Note className="mt-4">{ORGANIC.panelNote}</Note>
+      <Note className="mt-4">{tr(ORGANIC.panelNote)}</Note>
     </>
   )
 }
@@ -81,14 +84,14 @@ function UsagePaid() {
     <>
       <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-2.5">
         <div>
-          <p className="font-display text-[17px] font-semibold leading-snug text-ink">{u.headline}</p>
-          <p className="mt-0.5 text-[12.5px] text-ink-subtle">{u.fromDelivery}</p>
+          <p className="font-display text-[17px] font-semibold leading-snug text-ink">{tr(u.headline)}</p>
+          <p className="mt-0.5 text-[12.5px] text-ink-subtle">{tr(u.fromDelivery)}</p>
         </div>
         <ul className="flex flex-wrap gap-2">
           {u.shortUses.map((t, i) => (
             <li key={t} className="flex items-center gap-2 rounded-full border border-hairline-strong bg-surface-2 py-1 pl-1.5 pr-3.5 text-[13px] font-medium text-ink">
               <span className="flex h-6 w-6 items-center justify-center rounded-full bg-lime/10 text-lime"><Icon className="h-3.5 w-3.5">{USE_ICONS[i]}</Icon></span>
-              {t}
+              {tr(t)}
             </li>
           ))}
         </ul>
@@ -96,43 +99,43 @@ function UsagePaid() {
 
       <div className="mt-4 overflow-hidden rounded-2xl border border-hairline">
         <table className="w-full text-left text-[13px] md:text-sm">
-          <caption className="sr-only">Usage rights extension prices per package, for the entire creative batch, excluding VAT</caption>
+          <caption className="sr-only">{tr('Usage rights extension prices per package, for the entire creative batch, excluding VAT')}</caption>
           <thead className="bg-surface-2 text-ink">
             <tr>
-              <th scope="col" className="px-3 py-2.5 font-semibold md:px-4">Extend your {USAGE_RIGHTS.includedMonths} months</th>
-              <th scope="col" className="px-3 py-2.5 font-semibold md:px-4">Sprint</th>
-              <th scope="col" className="px-3 py-2.5 font-semibold md:px-4">Sprint Plus</th>
+              <th scope="col" className="px-3 py-2.5 font-semibold md:px-4">{tr('Extend your')} {USAGE_RIGHTS.includedMonths} {tr('months')}</th>
+              <th scope="col" className="px-3 py-2.5 font-semibold md:px-4">{tr('Sprint')}</th>
+              <th scope="col" className="px-3 py-2.5 font-semibold md:px-4">{tr('Sprint Plus')}</th>
             </tr>
           </thead>
           <tbody className="text-ink-muted">
             {SPRINT.usageExtensions.map((e, i) => (
               <tr key={e.months} className="border-t border-hairline">
                 <th scope="row" className="px-3 py-2 font-medium text-ink md:px-4">
-                  Additional {e.months} months
-                  <span className="block text-[11.5px] font-normal text-ink-subtle">{USAGE_RIGHTS.includedMonths + e.months} months in total</span>
+                  {tr('Additional')} {e.months} {tr('months')}
+                  <span className="block text-[11.5px] font-normal text-ink-subtle">{USAGE_RIGHTS.includedMonths + e.months} {tr('months in total')}</span>
                 </th>
-                <td className="px-3 py-2 font-display font-bold tabular-nums text-ink md:px-4">{formatMoney(e.price)}</td>
-                <td className="px-3 py-2 font-display font-bold tabular-nums text-ink md:px-4">{formatMoney(SPRINT_PLUS.usageExtensions[i].price)}</td>
+                <td className="px-3 py-2 font-display font-bold tabular-nums text-ink md:px-4">{money(e.price)}</td>
+                <td className="px-3 py-2 font-display font-bold tabular-nums text-ink md:px-4">{money(SPRINT_PLUS.usageExtensions[i].price)}</td>
               </tr>
             ))}
             <tr className="border-t border-hairline">
-              <th scope="row" className="px-3 py-2 font-medium text-ink md:px-4">Perpetual usage</th>
-              <td className="px-3 py-2 md:px-4" colSpan={2}>Custom quote, subject to agreement with the featured creators</td>
+              <th scope="row" className="px-3 py-2 font-medium text-ink md:px-4">{tr('Perpetual usage')}</th>
+              <td className="px-3 py-2 md:px-4" colSpan={2}>{tr('Custom quote, subject to agreement with the featured creators')}</td>
             </tr>
           </tbody>
         </table>
       </div>
 
       <div className="mt-3 space-y-1.5">
-        <Note>{u.batchNote}</Note>
-        <Note>{u.expirySummary}</Note>
-        <Note>{u.creatorNote}</Note>
+        <Note>{tr(u.batchNote)}</Note>
+        <Note>{tr(u.expirySummary)}</Note>
+        <Note>{tr(u.creatorNote)}</Note>
       </div>
     </>
   )
 }
 function UsageOrganic() {
-  return <Note>{USAGE_RIGHTS.panel.organic}</Note>
+  return <Note>{tr(USAGE_RIGHTS.panel.organic)}</Note>
 }
 
 /* ── Panel 3: how we work ─────────────────────────────────────────────────────────────── */
@@ -156,9 +159,9 @@ function Stages({ stages, icons }) {
           <Tile>{icons[st.id]}</Tile>
           <div>
             <p className="font-display text-[14px] font-semibold leading-snug text-ink">
-              <span className="mr-1.5 text-lime">{String(i + 1).padStart(2, '0')}</span>{st.title}
+              <span className="mr-1.5 text-lime">{String(i + 1).padStart(2, '0')}</span>{tr(st.title)}
             </p>
-            <p className="mt-1 text-[13px] leading-snug text-ink-muted">{st.description}</p>
+            <p className="mt-1 text-[13px] leading-snug text-ink-muted">{tr(st.description)}</p>
           </div>
         </li>
       ))}
@@ -172,10 +175,10 @@ function Rows({ rows }) {
     <dl className="grid grid-cols-1 gap-x-8 gap-y-2.5 md:grid-cols-2">
       {rows.map(([t, d, sub]) => (
         <div key={t} className="border-t border-hairline pt-2.5">
-          <dt className="font-display text-[14px] font-semibold text-ink">{t}</dt>
+          <dt className="font-display text-[14px] font-semibold text-ink">{tr(t)}</dt>
           <dd className="mt-0.5 text-[13.5px] leading-snug text-ink-muted">
-            {d}
-            {sub && <span className="block text-[12.5px] text-ink-subtle">{sub}</span>}
+            {tr(d)}
+            {sub && <span className="block text-[12.5px] text-ink-subtle">{tr(sub)}</span>}
           </dd>
         </div>
       ))}
@@ -262,10 +265,10 @@ function Panel({ panel, open, onToggle, service }) {
             <Icon>{panel.icon}</Icon>
           </span>
           <span className="min-w-0 flex-1">
-            <span className="block font-display text-[16px] font-semibold leading-snug text-ink md:text-[17px]">{panel.title}</span>
+            <span className="block font-display text-[16px] font-semibold leading-snug text-ink md:text-[17px]">{tr(panel.title)}</span>
             <span className="mt-0.5 block text-[13px] leading-snug text-ink-muted">
-              <span hidden={service !== 'paid'}>{panel.summary.paid}</span>
-              <span hidden={service !== 'organic'}>{panel.summary.organic}</span>
+              <span hidden={service !== 'paid'}>{tr(panel.summary.paid)}</span>
+              <span hidden={service !== 'organic'}>{tr(panel.summary.organic)}</span>
             </span>
           </span>
           <span
@@ -307,7 +310,7 @@ export default function InfoPanels({ service }) {
   return (
     <section id="package-info" aria-labelledby="info-heading" className="relative overflow-hidden py-9 md:py-12">
       <div className="relative mx-auto max-w-4xl px-5 md:px-8">
-        <SectionHeader id="info-heading" title="The details." intro="Everything you need to know before getting started." />
+        <SectionHeader id="info-heading" title={tr('The details.')} intro={tr('Everything you need to know before getting started.')} />
         <div className="space-y-3">
           {PANELS.map((p) => (
             <Panel key={p.id} panel={p} service={service} open={openId === p.id} onToggle={() => setOpenId((cur) => (cur === p.id ? null : p.id))} />

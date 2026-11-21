@@ -1,6 +1,9 @@
 import { useState, useCallback } from 'react'
 import { PRICING_FAQ, FAQ_CATEGORIES } from '../../seo/pricingFaq.js'
 import { SectionHeader } from './shared.jsx'
+import { tr } from '../../i18n/tr.js'
+import { currentLocale } from '../../i18n/locale.js'
+import { localizeFaq } from '../../i18n/content.js'
 
 /* Categorized pricing FAQ. EVERY question and answer is always in the DOM (and therefore in the prerendered HTML);
    the category selector only decides which group is visible (the others carry `hidden`). Accordion answers also stay
@@ -66,6 +69,7 @@ function Item({ item, open, onToggle }) {
 }
 
 export default function PricingFAQ() {
+  const FAQ = localizeFaq(PRICING_FAQ, currentLocale())
   const [category, setCategory] = useState(FAQ_CATEGORIES[0].id)
   const [openId, setOpenId] = useState(null)
   const toggle = useCallback((id) => setOpenId((prev) => (prev === id ? null : id)), [])
@@ -87,13 +91,13 @@ export default function PricingFAQ() {
         <SectionHeader
           id="pricing-faq-heading"
           eyebrow="FAQ"
-          title={<>Pricing questions, <span className="text-lime">answered.</span></>}
+          title={<>{tr('Pricing questions,')}{' '}<span className="text-lime">{tr('answered.')}</span></>}
         />
 
         <div className="mb-6 flex justify-center">
           <div
             role="tablist"
-            aria-label="FAQ categories"
+            aria-label={tr('FAQ categories')}
             onKeyDown={onKeyDown}
             className="flex max-w-full flex-wrap justify-center gap-1.5 rounded-3xl border border-hairline bg-surface-1/60 p-1.5 backdrop-blur-md"
           >
@@ -113,7 +117,7 @@ export default function PricingFAQ() {
                     active ? 'bg-lime text-canvas shadow-[0_0_20px_rgba(213,255,64,0.3)]' : 'text-ink-muted hover:text-ink'
                   }`}
                 >
-                  {c.label}
+                  {tr(c.label)}
                 </button>
               )
             })}
@@ -123,7 +127,7 @@ export default function PricingFAQ() {
         <div className="h-px bg-white/[0.06]" />
         {FAQ_CATEGORIES.map((c) => (
           <div key={c.id} id={`faq-panel-${c.id}`} role="tabpanel" aria-labelledby={`faq-tab-${c.id}`} hidden={c.id !== category}>
-            {PRICING_FAQ.filter((f) => f.category === c.id).map((item) => (
+            {FAQ.filter((f) => f.category === c.id).map((item) => (
               <Item key={item.id} item={item} open={openId === item.id} onToggle={() => toggle(item.id)} />
             ))}
           </div>

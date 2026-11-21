@@ -3,6 +3,7 @@ import { GOALS } from '../../seo/businessKnowledge.js'
 import { PaidCards, OrganicCards, BillingSwitch } from './PricingCards.jsx'
 import { PaidTerms, OrganicTerms } from './PartnershipTerms.jsx'
 import { useState } from 'react'
+import { tr } from '../../i18n/tr.js'
 
 /* SECTION 1: one unified opening. A single headline + subtitle, a goal-based selector, and the three pricing cards for
    the chosen goal. Both card groups are always in the DOM (prerendered HTML has every package and price); the selector
@@ -26,10 +27,8 @@ function GoalSelector({ value, onChange }) {
   }
   return (
     <div className="mx-auto mt-6 md:mt-7 max-w-2xl">
-      <p className="mb-3 text-center text-[13px] font-bold uppercase tracking-[0.18em] text-lime sm:text-[15px]">
-        What are you looking to achieve?
-      </p>
-      <div role="tablist" aria-label="What are you looking to achieve?" onKeyDown={onKeyDown} className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
+      <p className="mb-3 text-center text-[13px] font-bold uppercase tracking-[0.18em] text-lime sm:text-[15px]">{tr('What are you looking to achieve?')}</p>
+      <div role="tablist" aria-label={tr('What are you looking to achieve?')} onKeyDown={onKeyDown} className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
         {GOALS.map((g) => {
           const active = g.id === value
           return (
@@ -54,8 +53,8 @@ function GoalSelector({ value, onChange }) {
                 </svg>
               </span>
               <span className="min-w-0 flex-1">
-                <span className="block font-display text-[15px] font-bold leading-tight tracking-snug">{g.label}</span>
-                <span className={`mt-0.5 block text-[12.5px] leading-snug ${active ? 'text-canvas/70' : 'text-ink-muted'}`}>{g.description}</span>
+                <span className="block font-display text-[15px] font-bold leading-tight tracking-snug">{tr(g.label)}</span>
+                <span className={`mt-0.5 block text-[12.5px] leading-snug ${active ? 'text-canvas/70' : 'text-ink-muted'}`}>{tr(g.description)}</span>
               </span>
               <span
                 aria-hidden="true"
@@ -121,17 +120,14 @@ export default function PricingStage({ service, onServiceChange }) {
         <div className="mx-auto max-w-4xl text-center">
           <div className="inline-flex items-center gap-2 rounded-full border border-hairline bg-surface-1/60 px-3 py-1.5 text-xs font-medium text-ink-muted backdrop-blur">
             <span className="h-1.5 w-1.5 rounded-full bg-lime" />
-            UGC &amp; video production pricing
+            {tr('UGC & video production pricing')}
           </div>
           <h1
             className="mt-4 font-display font-semibold leading-[1.06] tracking-display-xl text-ink"
             style={{ fontSize: 'clamp(1.9rem, 3.6vw, 2.75rem)' }}
-          >
-            Your creative partner. <span className="text-lime">On your terms.</span>
+          >{tr('Your creative partner.')}{' '}<span className="text-lime">{tr('On your terms.')}</span>
           </h1>
-          <p className="mx-auto mt-3 max-w-2xl text-[15px] leading-relaxed text-ink-muted md:text-base">
-            From performance-driven video ads to consistent organic content, find the right creative partnership for your brand.
-          </p>
+          <p className="mx-auto mt-3 max-w-2xl text-[15px] leading-relaxed text-ink-muted md:text-base">{tr('From performance-driven video ads to consistent organic content, find the right creative partnership for your brand.')}</p>
         </div>
 
         <GoalSelector value={service} onChange={select} />

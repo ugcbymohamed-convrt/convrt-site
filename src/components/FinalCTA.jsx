@@ -1,6 +1,10 @@
 import { useRef, useEffect, useState } from 'react'
-import { OFFER_PATHS, CONTACT_EMAIL } from '../config.js'
+import { CONTACT_EMAIL } from '../config.js'
 import { CONVRT_STATS } from '../lib/siteStats.js'
+import { useTr } from '../i18n/tr.js'
+import { currentLocale } from '../i18n/locale.js'
+import { primaryAction } from '../i18n/cta.js'
+import { localizeStat } from '../i18n/format.js'
 
 /* ─────────────────────────────────────────────
    FINAL CTA — Cinematic close
@@ -30,6 +34,9 @@ function FadeUp({ children, inView, delay = 0, className = '' }) {
 }
 
 export default function FinalCTA() {
+  const tr = useTr()
+  const locale = currentLocale()
+  const action = primaryAction(locale)
   const sectionRef = useRef(null)
   const [inView, setInView] = useState(false)
   const [btnHovered, setBtnHovered] = useState(false)
@@ -79,7 +86,7 @@ export default function FinalCTA() {
           <div className="inline-flex items-center gap-2.5 mb-8">
             <span className="h-px w-8 bg-lime" />
             <span className="text-xs font-semibold uppercase tracking-[0.22em] text-lime">
-              Let's create together
+              {tr("Let's create together")}
             </span>
             <span className="h-px w-8 bg-lime" />
           </div>
@@ -91,9 +98,9 @@ export default function FinalCTA() {
             className="font-display font-bold tracking-display leading-[1.04] mb-7"
             style={{ fontSize: 'clamp(2.5rem, 6vw, 5rem)' }}
           >
-            <span className="text-ink">Good brands deserve </span>
+            <span className="text-ink">{tr('Good brands deserve')} </span>
             <br className="hidden sm:block" />
-            <span className="text-lime">better creatives.</span>
+            <span className="text-lime">{tr('better creatives.')}</span>
           </h2>
         </FadeUp>
 
@@ -103,9 +110,7 @@ export default function FinalCTA() {
             className="text-ink-muted leading-relaxed mx-auto mb-12"
             style={{ fontSize: 'clamp(1rem, 1.5vw, 1.125rem)', maxWidth: '36rem' }}
           >
-            Whether you need paid social creatives, UGC, spokesperson ads,
-            or a long-term creative partner, we build content designed for
-            modern attention.
+            {tr('Whether you need paid social creatives, UGC, spokesperson ads, or a long-term creative partner, we build content designed for modern attention.')}
           </p>
         </FadeUp>
 
@@ -115,7 +120,8 @@ export default function FinalCTA() {
 
             {/* Primary — lime */}
             <a
-              href={OFFER_PATHS.roadmap}
+              href={action.href}
+              {...(action.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
               onMouseEnter={() => setBtnHovered(true)}
               onMouseLeave={() => setBtnHovered(false)}
               className="group relative inline-flex items-center gap-2.5 rounded-full px-8 py-4 text-[15px] font-semibold text-canvas overflow-hidden"
@@ -138,7 +144,7 @@ export default function FinalCTA() {
                   transition: 'transform 0.5s ease',
                 }}
               />
-              <span className="relative">Book a Creative Call</span>
+              <span className="relative">{tr('Book a Creative Call')}</span>
               <svg viewBox="0 0 12 12" className="relative h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" fill="none">
                 <path d="M3 9L9 3M9 3H4M9 3V8" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
@@ -149,7 +155,7 @@ export default function FinalCTA() {
               href={`mailto:${CONTACT_EMAIL}`}
               className="group inline-flex items-center gap-2 rounded-full border border-hairline px-7 py-4 text-[15px] font-medium text-ink-subtle hover:text-ink hover:border-white/20 transition-all duration-300"
             >
-              Send us an email
+              {tr('Send us an email')}
               <svg viewBox="0 0 12 12" className="h-3.5 w-3.5 opacity-50 group-hover:opacity-100 transition-opacity duration-300" fill="none">
                 <path d="M3 9L9 3M9 3H4M9 3V8" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
@@ -169,8 +175,8 @@ export default function FinalCTA() {
                   border: '1px solid rgba(255,255,255,0.08)',
                 }}
               >
-                <span className="text-sm font-bold text-lime tabular-nums">{pill.value}</span>
-                <span className="text-xs text-ink-muted">{pill.label}</span>
+                <span className="text-sm font-bold text-lime tabular-nums">{localizeStat(locale, pill.value)}</span>
+                <span className="text-xs text-ink-muted">{tr(pill.label)}</span>
               </div>
             ))}
           </div>

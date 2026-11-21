@@ -5,6 +5,9 @@ import { Section, Head, Reveal } from './shared.jsx'
 import { Avatar, MiniPhone, CheckBadge, delay } from './illustrations.jsx'
 import { useAutoplayAllowed } from './creatorVideo.jsx'
 import TestingDiagram from './TestingDiagram.jsx'
+import { tr } from '../../i18n/tr.js'
+import { currentLocale } from '../../i18n/locale.js'
+import { localizeConfig } from '../../i18n/content.js'
 
 /* SECTION 3: how we create and test UGC ads. Four stages. All four titles and one-line explanations are always visible, so the
    process reads in seconds without touching anything; selecting a stage (mouse, touch or keyboard) swaps the illustration beside it.
@@ -36,7 +39,7 @@ const Icon = ({ children, className = 'h-4 w-4' }) => (
   <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{children}</svg>
 )
 
-const HOOKS = ['Problem → fix', 'Founder story', 'Before & after', 'Social proof', 'Unboxing']
+const HOOKS = ['Problem → fix', 'Founder story', 'Before & after', 'Social proof', 'Unboxing'] // rendered through tr()
 
 /* 1  one brief branches into several different concepts */
 function VisualResearch() {
@@ -45,15 +48,15 @@ function VisualResearch() {
   return (
     <div className="flex h-full items-stretch">
       <div className="flex w-[34%] shrink-0 flex-col justify-center gap-2">
-        <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-ink-muted">One brief</p>
+        <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-ink-muted">{tr('One brief')}</p>
         <div className="ugc-pop rounded-2xl border border-lime/40 bg-surface-2 p-2.5 sm:p-3" style={{ boxShadow: '0 0 40px -18px rgba(213,255,64,0.5)' }}>
           <div className="flex items-center gap-1.5 text-lime">
             <Icon className="h-3.5 w-3.5"><path d="M7 3h7l4 4v14H7z" /><path d="M14 3v4h4M10 12h5M10 16h5" /></Icon>
-            <span className="text-[11px] font-bold uppercase tracking-[0.08em]">Brand brief</span>
+            <span className="text-[11px] font-bold uppercase tracking-[0.08em]">{tr('Brand brief')}</span>
           </div>
           {['Offer', 'Audience', 'Goal'].map((l) => (
             <div key={l} className="mt-2.5">
-              <span className="text-[10px] font-medium text-ink-muted">{l}</span>
+              <span className="text-[10px] font-medium text-ink-muted">{tr(l)}</span>
               <Skel className="mt-1" w={l === 'Goal' ? 'w-2/3' : 'w-full'} />
             </div>
           ))}
@@ -68,14 +71,14 @@ function VisualResearch() {
       </svg>
       </div>
       <div className="flex min-w-0 flex-1 flex-col">
-        <p className="mb-2 h-[12px] text-[10px] font-semibold uppercase leading-[12px] tracking-[0.12em] text-ink-muted">{rows} different concepts</p>
+        <p className="mb-2 h-[12px] text-[10px] font-semibold uppercase leading-[12px] tracking-[0.12em] text-ink-muted">{rows} {tr('different concepts')}</p>
         <ul className="flex flex-1 flex-col justify-between gap-1.5">
           {Array.from({ length: rows }, (_, i) => (
             <li key={i} className="cs-fade-up flex flex-1 items-center gap-2 rounded-xl border bg-canvas/50 px-2 py-1" style={{ ...delay(500 + i * 110), borderColor: `${ConceptAccents[i]}66` }}>
               <MiniPhone variant={i} tone={ConceptAccents[i]} className="h-full max-h-[2.6rem] shrink-0 rounded-md" />
               <span className="min-w-0">
-                <span className="block text-[11px] font-bold uppercase tracking-[0.08em] text-ink">Concept {i + 1}</span>
-                <span className="mt-0.5 inline-block max-w-full truncate rounded px-1.5 py-px text-[10px] font-bold" style={{ background: `${ConceptAccents[i]}26`, color: ConceptAccents[i] }}>{HOOKS[i % HOOKS.length]}</span>
+                <span className="block text-[11px] font-bold uppercase tracking-[0.08em] text-ink">{tr('Concept')} {i + 1}</span>
+                <span className="mt-0.5 inline-block max-w-full truncate rounded px-1.5 py-px text-[10px] font-bold" style={{ background: `${ConceptAccents[i]}26`, color: ConceptAccents[i] }}>{tr(HOOKS[i % HOOKS.length])}</span>
               </span>
             </li>
           ))}
@@ -91,7 +94,7 @@ function VisualCreators() {
   return (
     <div className="flex h-full flex-col justify-between gap-3">
       <div>
-        <Label n="1">We match the right creator</Label>
+        <Label n="1">{tr('We match the right creator')}</Label>
         <div className="mt-2 grid grid-cols-3 gap-2 sm:gap-3">
           {creators.map(([tag, v, tone], i) => {
             const chosen = i === 1
@@ -100,8 +103,8 @@ function VisualCreators() {
                 <span className="relative h-12 w-12 overflow-hidden rounded-full border-2 sm:h-14 sm:w-14" style={{ borderColor: chosen ? '#d5ff40' : '#34343a', background: '#17171b' }}>
                   <Avatar variant={v} className="absolute inset-0 h-full w-full" pos="50% 20%" />
                 </span>
-                <span className="text-[11px] font-semibold text-ink">Creator {i + 1}</span>
-                <span className="text-[10px] text-ink-muted">{tag}</span>
+                <span className="text-[11px] font-semibold text-ink">{tr('Creator')} {i + 1}</span>
+                <span className="text-[10px] text-ink-muted">{tr(tag)}</span>
                 {chosen && <CheckBadge className="ugc-pop absolute -right-1.5 -top-1.5" size="h-5 w-5" />}
               </div>
             )
@@ -110,15 +113,14 @@ function VisualCreators() {
       </div>
       <div>
         <div className="flex items-center justify-between gap-2">
-          <Label n="2">We write the script</Label>
+          <Label n="2">{tr('We write the script')}</Label>
           <span className="ugc-pop inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded-full bg-lime px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.08em] text-canvas" style={delay(1300)}>
-            <Icon className="h-3 w-3"><path d="M4 12.5l5 5L20 6" /></Icon>You approve
-          </span>
+            <Icon className="h-3 w-3"><path d="M4 12.5l5 5L20 6" /></Icon>{tr('You approve')}</span>
         </div>
         <div className="cs-fade-up relative mt-2 rounded-2xl border border-hairline-strong bg-surface-2 p-3" style={delay(750)}>
-          <div className="flex items-start gap-2.5"><Tag className="mt-0.5 shrink-0">Hook</Tag><p className="text-[12px] font-medium leading-snug text-ink">&ldquo;Wait, you&rsquo;re still doing it the hard way?&rdquo;</p></div>
-          <div className="mt-2.5 flex items-center gap-2.5"><Tag color="#8b5cf6" className="shrink-0 !text-white">Story</Tag><Skel w="w-4/5" /></div>
-          <div className="mt-2 flex items-center gap-2.5"><Tag color="#ff6a4d" className="shrink-0">Call</Tag><Skel w="w-3/5" /></div>
+          <div className="flex items-start gap-2.5"><Tag className="mt-0.5 shrink-0">{tr('Hook')}</Tag><p className="text-[12px] font-medium leading-snug text-ink">&ldquo;Wait, you&rsquo;re still doing it the hard way?&rdquo;</p></div>
+          <div className="mt-2.5 flex items-center gap-2.5"><Tag color="#8b5cf6" className="shrink-0 !text-white">{tr('Story')}</Tag><Skel w="w-4/5" /></div>
+          <div className="mt-2 flex items-center gap-2.5"><Tag color="#ff6a4d" className="shrink-0">{tr('Call')}</Tag><Skel w="w-3/5" /></div>
         </div>
       </div>
     </div>
@@ -140,8 +142,7 @@ function VisualFilming() {
         <Avatar variant={0} className="absolute inset-0 h-full w-full" pos="50% 22%" />
         <span aria-hidden="true" className="absolute inset-0" style={{ background: 'linear-gradient(180deg, rgba(0,0,0,0.35) 0%, transparent 30%, transparent 55%, rgba(0,0,0,0.6) 100%)' }} />
         <span className="ugc-fade-out absolute left-2 top-2.5 flex items-center gap-1 rounded-full bg-black/55 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-[0.08em] text-ink" style={delay(2300)}>
-          <span className="ugc-blink h-1.5 w-1.5 rounded-full bg-coral" />Rec
-        </span>
+          <span className="ugc-blink h-1.5 w-1.5 rounded-full bg-coral" />{tr('Rec')}</span>
         {/* captions, drawn as neutral lines (no words) */}
         <span className="cs-fade-up absolute inset-x-3 bottom-8 flex flex-col items-center gap-1 rounded-lg bg-black/55 px-2 py-2" style={delay(2450)}>
           <span className="h-1.5 w-full rounded-full bg-white/85" /><span className="h-1.5 w-3/5 rounded-full bg-lime" />
@@ -153,13 +154,13 @@ function VisualFilming() {
           <li key={label} className="cs-fade-up flex items-center gap-2.5" style={delay(200 + i * 650)}>
             <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg" style={{ background: `${color}26`, color }}><Icon>{icon}</Icon></span>
             <span className="min-w-0 flex-1">
-              <span className="flex items-center justify-between gap-2 text-xs font-semibold text-ink">{label}
+              <span className="flex items-center justify-between gap-2 text-xs font-semibold text-ink">{tr(label)}
                 <CheckBadge className="ugc-pop" size="h-4 w-4" />
               </span>
               <span className="mt-1 block h-1.5 rounded-full bg-white/[0.07]"><span className="ugc-bar block h-full rounded-full" style={{ background: color, animationDuration: '0.8s', ...delay(300 + i * 650) }} /></span>
               {i === 3 && (
                 <span className="mt-1.5 flex flex-wrap gap-1">
-                  {formats.map((f, k) => <span key={f} className="cs-fade-up rounded-full border border-hairline-strong bg-surface-2 px-2 py-0.5 text-[10px] font-medium text-ink-muted" style={delay(2800 + k * 100)}>{f}</span>)}
+                  {formats.map((f, k) => <span key={f} className="cs-fade-up rounded-full border border-hairline-strong bg-surface-2 px-2 py-0.5 text-[10px] font-medium text-ink-muted" style={delay(2800 + k * 100)}>{tr(f)}</span>)}
                 </span>
               )}
             </span>
@@ -179,17 +180,16 @@ function VisualDelivery() {
       <div className="flex items-start justify-center gap-3 sm:gap-6">
         {Array.from({ length: n }, (_, i) => (
           <div key={i} className="cs-fade-up flex flex-col items-center gap-1.5" style={delay(i * 200)}>
-            <span className="rounded-full px-2.5 py-0.5 text-[11px] font-bold" style={{ background: `${tones[i]}26`, color: tones[i] }}>Version {'ABC'[i]}</span>
-            <MiniPhone variant={1} tone={tones[i]} caption={`Hook ${'ABC'[i]}`} captionBg={tones[i]} className="w-[4.4rem] sm:w-[6rem]" />
+            <span className="rounded-full px-2.5 py-0.5 text-[11px] font-bold" style={{ background: `${tones[i]}26`, color: tones[i] }}>{tr('Version')} {'ABC'[i]}</span>
+            <MiniPhone variant={1} tone={tones[i]} caption={`${tr('Hook')} ${'ABC'[i]}`} captionBg={tones[i]} className="w-[4.4rem] sm:w-[6rem]" />
             <span className="ugc-pop inline-flex items-center gap-1 rounded-full bg-lime/15 px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.06em] text-lime" style={delay(900 + i * 200)}>
-              <Icon className="h-3 w-3"><path d="M4 12.5l5 5L20 6" /></Icon>Delivered
-            </span>
+              <Icon className="h-3 w-3"><path d="M4 12.5l5 5L20 6" /></Icon>{tr('Delivered')}</span>
           </div>
         ))}
       </div>
       <div className="cs-fade-up flex items-center gap-3 rounded-2xl border border-lime/30 bg-lime/[0.06] px-3 py-2.5" style={delay(1400)}>
         <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-lime/20 text-lime"><Icon><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z" /></Icon></span>
-        <span className="min-w-0"><span className="block text-[12px] font-bold text-ink">Ready to test</span><span className="block text-[11px] leading-snug text-ink-muted">Finished versions, plus guidance on what to test next.</span></span>
+        <span className="min-w-0"><span className="block text-[12px] font-bold text-ink">{tr('Ready to test')}</span><span className="block text-[11px] leading-snug text-ink-muted">{tr('Finished versions, plus guidance on what to test next.')}</span></span>
       </div>
     </div>
   )
@@ -222,15 +222,18 @@ function UgcProcessFooter() {
   return (
     <>
       <p className="mx-auto max-w-3xl text-center text-[15px] leading-relaxed text-ink-muted">
-        <span className="font-semibold text-ink">Production turnaround:</span> {SPRINT.turnaroundBusinessDays} business days for the {SPRINT.name} and{' '}
-        {SPRINT_PLUS.turnaroundBusinessDays} for {SPRINT_PLUS.name}, counted from the moment you approve concepts and scripts. {TURNAROUND.note}
+        <span className="font-semibold text-ink">{tr('Production turnaround:')}</span>{' '}
+        {currentLocale() === 'en'
+          ? <>{SPRINT.turnaroundBusinessDays} business days for the {SPRINT.name} and{' '}{SPRINT_PLUS.turnaroundBusinessDays} for {SPRINT_PLUS.name}, counted from the moment you approve concepts and scripts. {TURNAROUND.note}</>
+          : <>{SPRINT.turnaroundBusinessDays} días laborables para el {SPRINT.name} y {SPRINT_PLUS.turnaroundBusinessDays} para {SPRINT_PLUS.name}, contados desde el momento en que apruebas los conceptos y los guiones. {tr(TURNAROUND.note)}</>}
       </p>
-      <p className="mx-auto mt-2 max-w-3xl text-center text-xs text-ink-muted">Scenes are illustrative. The portraits are for illustration only.</p>
+      <p className="mx-auto mt-2 max-w-3xl text-center text-xs text-ink-muted">{tr('Scenes are illustrative. The portraits are for illustration only.')}</p>
     </>
   )
 }
 
-export function ProcessSection({ config, footer, children }) {
+export function ProcessSection({ config: configProp, footer, children }) {
+  const config = localizeConfig(configProp, currentLocale())
   const { stages: STAGES, visuals: VISUALS } = config
   const [active, setActive] = useState(0)
   const [running, setRunning] = useState(false)
@@ -315,9 +318,7 @@ export function ProcessSection({ config, footer, children }) {
               })}
             </ol>
             {running && (
-              <button type="button" onClick={() => setRunning(false)} className="mt-3 min-h-[44px] rounded-full border border-hairline px-4 py-2 text-[13px] font-medium text-ink-muted transition-colors hover:border-hairline-strong hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-lime">
-                Pause animation
-              </button>
+              <button type="button" onClick={() => setRunning(false)} className="mt-3 min-h-[44px] rounded-full border border-hairline px-4 py-2 text-[13px] font-medium text-ink-muted transition-colors hover:border-hairline-strong hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-lime">{tr('Pause animation')}</button>
             )}
           </div>
         </div>

@@ -11,6 +11,7 @@ import { useDocumentHead } from './lib/useDocumentHead.js'
 import { pageHead } from './seo/siteSeo.js'
 import { PATHS } from './routes.js'
 import { selectHero, selectGallery } from './content/portfolio.js'
+import { tr, T, hrefFor } from './i18n/tr.js'
 
 /* /ugc-video-agency: the UGC service page.
      1 Hero (with the approved-video stage) · 2 How we create and test UGC ads · 3 How your videos could look (a horizontal gallery of up to 10 approved
@@ -33,11 +34,11 @@ export default function UgcVideoAgencyPage() {
 
   return (
     <>
-      <nav aria-label="Breadcrumb" className="mx-auto max-w-7xl px-5 pt-2 md:px-8">
+      <nav aria-label={tr('Breadcrumb')} className="mx-auto max-w-7xl px-5 pt-2 md:px-8">
         <ol className="flex items-center gap-2 text-[13px] text-ink-subtle">
-          <li><a href="/" className="transition-colors hover:text-ink">Home</a></li>
+          <li><a href={hrefFor('/')} className="transition-colors hover:text-ink">{tr('Home')}</a></li>
           <li aria-hidden="true">/</li>
-          <li aria-current="page" className="text-ink-muted">UGC Video Agency</li>
+          <li aria-current="page" className="text-ink-muted">{tr('UGC Video Agency')}</li>
         </ol>
       </nav>
       <UgcHero items={heroItems} />

@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { attachHls } from '../../lib/hls.js'
-import { posterUrl, hlsUrl, languageLabel, industryLabel } from '../../content/portfolio.js'
+import { posterUrl, hlsUrl, languageLabel, industryLabel, captionOf } from '../../content/portfolio.js'
 import { trackEvent } from '../../lib/analytics.js'
 import { useAutoplayAllowed, useIdleAfterLoad, PlayGlyph, PauseGlyph, SoundGlyph } from './creatorVideo.jsx'
+import { tr } from '../../i18n/tr.js'
 
 /* THE HERO PHONE STAGE (same visual language and the same rotate-on-click behaviour as the homepage's CaseStudies phone carousel).
 
@@ -187,9 +188,7 @@ export function PhoneShowcaseFallback({ portraits = false }) {
         <button type="button" tabIndex={-1} onClick={() => pick(active + 1)} className="flex h-10 w-10 items-center justify-center rounded-full border border-hairline-strong bg-surface-2 text-ink transition-colors hover:border-lime/60 hover:text-lime"><ChevronRight /></button>
       </div>
       <p className="mx-auto mt-1 flex items-center justify-center gap-1.5 text-[13px] text-ink-muted">
-        <svg viewBox="0 0 24 24" className="h-3.5 w-3.5 text-lime" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M9 11V5.5a1.5 1.5 0 013 0V10m0-1.5a1.5 1.5 0 013 0V11m0-1a1.5 1.5 0 013 0v4.5c0 3-2 5.5-5 5.5h-1.5c-2 0-3.2-.8-4.3-2.3L5 14.5a1.4 1.4 0 012.2-1.7L9 14.5" /></svg>
-        Tap a side phone to bring it forward
-      </p>
+        <svg viewBox="0 0 24 24" className="h-3.5 w-3.5 text-lime" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M9 11V5.5a1.5 1.5 0 013 0V10m0-1.5a1.5 1.5 0 013 0V11m0-1a1.5 1.5 0 013 0v4.5c0 3-2 5.5-5 5.5h-1.5c-2 0-3.2-.8-4.3-2.3L5 14.5a1.4 1.4 0 012.2-1.7L9 14.5" /></svg>{tr('Tap a side phone to bring it forward')}</p>
     </div>
   )
 }
@@ -268,7 +267,7 @@ function StagePhone({ item, slot, n, index, active, load, wantPlay, muted, playi
           playsInline
           preload="none"
           poster={posterUrl(item)}
-          aria-label={item.caption}
+          aria-label={captionOf(item)}
           className="absolute inset-0 h-full w-full object-cover"
         />
         {/* the inactive phones are dimmed with an overlay (cheaper to animate than a filter) */}
@@ -280,7 +279,7 @@ function StagePhone({ item, slot, n, index, active, load, wantPlay, muted, playi
               <button
                 type="button"
                 onClick={onTogglePlay}
-                aria-label={`Play video: ${item.caption}`}
+                aria-label={`${tr('Play video:')} ${captionOf(item)}`}
                 className="group absolute inset-0 z-10 flex items-center justify-center focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-4 focus-visible:outline-lime"
               >
                 <span className={`flex h-14 w-14 items-center justify-center rounded-full border border-white/30 bg-black/45 text-ink backdrop-blur transition-transform duration-200 group-hover:scale-110 motion-reduce:transition-none ${nudge ? 'ugc-nudge' : ''}`}>
@@ -293,7 +292,7 @@ function StagePhone({ item, slot, n, index, active, load, wantPlay, muted, playi
                 <button
                   type="button"
                   onClick={onTogglePlay}
-                  aria-label={playing ? 'Pause video' : 'Play video'}
+                  aria-label={playing ? tr('Pause video') : tr('Play video')}
                   className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-lime md:h-10 md:w-10"
                 >
                   {playing ? <PauseGlyph /> : <PlayGlyph className="h-4 w-4" />}
@@ -306,14 +305,14 @@ function StagePhone({ item, slot, n, index, active, load, wantPlay, muted, playi
                   value={Math.round(progress * 1000)}
                   onChange={(e) => seek(Number(e.target.value) / 1000)}
                   onKeyDown={(e) => e.stopPropagation()}
-                  aria-label="Seek video"
+                  aria-label={tr('Seek video')}
                   className="ugc-seek min-w-0 flex-1"
                   style={{ '--p': `${Math.round(progress * 1000) / 10}%` }}
                 />
                 <button
                   type="button"
                   onClick={onToggleMute}
-                  aria-label={muted ? 'Turn sound on' : 'Turn sound off'}
+                  aria-label={muted ? tr('Turn sound on') : tr('Turn sound off')}
                   aria-pressed={!muted}
                   className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-lime md:h-10 md:w-10"
                 >
@@ -326,7 +325,7 @@ function StagePhone({ item, slot, n, index, active, load, wantPlay, muted, playi
           <button
             type="button"
             onClick={onSelect}
-            aria-label={`Show video ${index + 1} of ${n}: ${item.caption}`}
+            aria-label={`${tr('Show video')} ${index + 1} ${tr('of')} ${n}: ${captionOf(item)}`}
             className="absolute inset-0 z-10 cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-4 focus-visible:outline-lime"
           />
         )}
@@ -465,25 +464,25 @@ export default function CreatorVideoStage({ items, label = 'Creator UGC videos',
 
       {n > 1 && (
         <div className="mt-1 flex items-center justify-center gap-3">
-          <button type="button" onClick={() => select(active - 1, 'button')} aria-label="Previous video" className="flex h-11 w-11 items-center justify-center rounded-full border border-hairline-strong bg-surface-2 text-ink transition-colors hover:border-ink-subtle focus-visible:outline focus-visible:outline-2 focus-visible:outline-lime">
+          <button type="button" onClick={() => select(active - 1, 'button')} aria-label={tr('Previous video')} className="flex h-11 w-11 items-center justify-center rounded-full border border-hairline-strong bg-surface-2 text-ink transition-colors hover:border-ink-subtle focus-visible:outline focus-visible:outline-2 focus-visible:outline-lime">
             <svg viewBox="0 0 12 12" className="h-4 w-4" fill="none" aria-hidden="true"><path d="M8 2L4 6l4 4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
           </button>
           <ol className="flex items-center">
             {shown.map((it, i) => (
               <li key={it.id}>
-                <button type="button" onClick={() => select(i, 'dot')} aria-label={`Video ${i + 1} of ${n}`} aria-current={i === active ? 'true' : undefined} className="group flex h-11 w-8 items-center justify-center focus-visible:outline focus-visible:outline-2 focus-visible:outline-lime">
+                <button type="button" onClick={() => select(i, 'dot')} aria-label={`${tr('Video')} ${i + 1} ${tr('of')} ${n}`} aria-current={i === active ? 'true' : undefined} className="group flex h-11 w-8 items-center justify-center focus-visible:outline focus-visible:outline-2 focus-visible:outline-lime">
                   <span className={`block h-1.5 rounded-full transition-all duration-300 motion-reduce:transition-none ${i === active ? 'w-6 bg-lime' : 'w-1.5 bg-surface-3 group-hover:bg-ink-subtle'}`} />
                 </button>
               </li>
             ))}
           </ol>
-          <button type="button" onClick={() => select(active + 1, 'button')} aria-label="Next video" className="flex h-11 w-11 items-center justify-center rounded-full border border-hairline-strong bg-surface-2 text-ink transition-colors hover:border-ink-subtle focus-visible:outline focus-visible:outline-2 focus-visible:outline-lime">
+          <button type="button" onClick={() => select(active + 1, 'button')} aria-label={tr('Next video')} className="flex h-11 w-11 items-center justify-center rounded-full border border-hairline-strong bg-surface-2 text-ink transition-colors hover:border-ink-subtle focus-visible:outline focus-visible:outline-2 focus-visible:outline-lime">
             <svg viewBox="0 0 12 12" className="h-4 w-4" fill="none" aria-hidden="true"><path d="M4 2l4 4-4 4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
           </button>
         </div>
       )}
       <p aria-live="polite" className="sr-only">
-        <span className="font-medium text-ink">{item.caption}</span>
+        <span className="font-medium text-ink">{captionOf(item)}</span>
         {meta && <span className="block text-[13px]">{meta}</span>}
       </p>
     </div>

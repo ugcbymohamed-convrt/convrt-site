@@ -1,5 +1,6 @@
 import { Avatar, CheckBadge, delay } from '../ugc/illustrations.jsx'
 import { LIME, VIOLET, CORAL, PINK, Skel, Tag, Label, Icon } from '../scenes/sceneKit.jsx'
+import { tr } from '../../i18n/tr.js'
 
 /* The four "How it works" scenes of /social-media-video-production. Same system as the UGC and Spokesperson scenes: small scenes built from CSS and SVG, aria-hidden
    (the title and sentence beside them carry the meaning), each playing once when its stage is selected, using the site's own animation classes (which already honour
@@ -30,10 +31,10 @@ export function SceneStrategy() {
   return (
     <div className="flex h-full flex-col justify-between gap-2.5">
       <div className="flex items-center justify-between gap-2">
-        <Label n="1">Brand, audience, goals</Label>
+        <Label n="1">{tr('Brand, audience, goals')}</Label>
         <ul className="hidden shrink-0 items-center gap-1 sm:flex" aria-hidden="true">
           {['Brand', 'Audience', 'Goals'].map((t, i) => (
-            <li key={t} className="cs-fade-up rounded-full border border-hairline-strong bg-surface-2 px-2 py-0.5 text-[9px] font-semibold text-ink-muted" style={delay(i * 110)}>{t}</li>
+            <li key={t} className="cs-fade-up rounded-full border border-hairline-strong bg-surface-2 px-2 py-0.5 text-[9px] font-semibold text-ink-muted" style={delay(i * 110)}>{tr(t)}</li>
           ))}
         </ul>
       </div>
@@ -63,7 +64,7 @@ export function SceneStrategy() {
       <ul className="flex flex-wrap items-center justify-center gap-1.5" aria-hidden="true">
         {PILLARS.map((p, i) => (
           <li key={p.id} className="cs-fade-up inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-bold" style={{ ...delay(1800 + i * 100), background: `${p.color}22`, color: p.color }}>
-            <span className="h-1.5 w-1.5 rounded-full" style={{ background: p.color }} />{p.label}
+            <span className="h-1.5 w-1.5 rounded-full" style={{ background: p.color }} />{tr(p.label)}
           </li>
         ))}
       </ul>
@@ -81,10 +82,9 @@ export function SceneScripts() {
   return (
     <div className="flex h-full flex-col justify-between gap-2.5">
       <div className="flex items-center justify-between gap-2">
-        <Label n="1">Creators and scripts</Label>
+        <Label n="1">{tr('Creators and scripts')}</Label>
         <span className="ugc-pop inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded-full bg-lime px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.08em] text-canvas" style={delay(2200)}>
-          <Icon className="h-3 w-3"><path d="M4 12.5l5 5L20 6" /></Icon>Approved
-        </span>
+          <Icon className="h-3 w-3"><path d="M4 12.5l5 5L20 6" /></Icon>{tr('Approved')}</span>
       </div>
       <ul className="flex min-h-0 flex-1 flex-col justify-between gap-2">
         {rows.map(([label, color, who, a, b], i) => (
@@ -93,9 +93,9 @@ export function SceneScripts() {
               <Avatar variant={who} className="absolute inset-0 h-full w-full" pos="50% 20%" />
             </span>
             <span className="min-w-0 flex-1">
-              <span className="inline-block rounded px-1.5 py-px text-[10px] font-bold uppercase tracking-[0.08em]" style={{ background: `${color}26`, color }}>{label}</span>
-              <span className="mt-1.5 flex items-center gap-2"><Tag color={color} className="shrink-0">{a}</Tag><Skel w="w-4/5" /></span>
-              <span className="mt-1 flex items-center gap-2"><Tag color="#34343a" className="shrink-0 !text-ink-muted">{b}</Tag><Skel w="w-3/5" /></span>
+              <span className="inline-block rounded px-1.5 py-px text-[10px] font-bold uppercase tracking-[0.08em]" style={{ background: `${color}26`, color }}>{tr(label)}</span>
+              <span className="mt-1.5 flex items-center gap-2"><Tag color={color} className="shrink-0">{tr(a)}</Tag><Skel w="w-4/5" /></span>
+              <span className="mt-1 flex items-center gap-2"><Tag color="#34343a" className="shrink-0 !text-ink-muted">{tr(b)}</Tag><Skel w="w-3/5" /></span>
             </span>
             <span className="ugc-pop shrink-0" style={delay(1100 + i * 380)}><CheckBadge size="h-6 w-6" /></span>
           </li>
@@ -127,12 +127,12 @@ export function SceneFilming() {
       <div className="flex min-h-0 flex-1 items-center justify-center gap-2.5 sm:gap-5">
         <div className="flex flex-col items-center gap-1.5">
           <Vertical variant={2} tone="#6b7280" filter className={`ugc-pop ${PHONE}`}>
-            <span className="absolute left-1.5 top-1.5 flex items-center gap-1 rounded-full bg-black/60 px-1.5 py-0.5 text-[8px] font-bold uppercase tracking-[0.08em] text-ink"><span className="ugc-blink h-1.5 w-1.5 rounded-full bg-coral" />Rec</span>
+            <span className="absolute left-1.5 top-1.5 flex items-center gap-1 rounded-full bg-black/60 px-1.5 py-0.5 text-[8px] font-bold uppercase tracking-[0.08em] text-ink"><span className="ugc-blink h-1.5 w-1.5 rounded-full bg-coral" />{tr('Rec')}</span>
             {/* framing guides */}
             <span aria-hidden="true" className="absolute inset-x-0 top-1/3 h-px bg-white/20" /><span aria-hidden="true" className="absolute inset-x-0 top-2/3 h-px bg-white/20" />
             <span aria-hidden="true" className="absolute inset-y-0 left-1/3 w-px bg-white/20" /><span aria-hidden="true" className="absolute inset-y-0 left-2/3 w-px bg-white/20" />
           </Vertical>
-          <span className="text-[10px] font-semibold uppercase tracking-[0.1em] text-ink-muted">Footage</span>
+          <span className="text-[10px] font-semibold uppercase tracking-[0.1em] text-ink-muted">{tr('Footage')}</span>
         </div>
         <svg viewBox="0 0 32 16" className="cs-fade-up h-4 w-8 shrink-0 text-lime" fill="none" aria-hidden="true" style={delay(900)}><path d="M1 8h26M21 2l6 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
         <div className="flex flex-col items-center gap-1.5">
@@ -142,14 +142,14 @@ export function SceneFilming() {
             <span className="cs-fade-up absolute bottom-[22%] right-1.5 flex h-5 w-5 items-center justify-center rounded-full border border-white/40 bg-black/50" style={delay(2100)}><Icon className="h-3 w-3"><path d="M12 20s-7-4.4-7-10a4 4 0 017-2.6A4 4 0 0119 10c0 5.6-7 10-7 10z" /></Icon></span>
             <span className="cs-fade-up absolute inset-x-[14%] bottom-[7%] flex flex-col items-center gap-0.5 rounded bg-black/60 px-1.5 py-1" style={delay(2400)}><span className="h-1 w-full rounded-full bg-white/85" /><span className="h-1 w-3/5 rounded-full bg-lime" /></span>
           </Vertical>
-          <span className="text-[10px] font-semibold uppercase tracking-[0.1em] text-lime">Edited video</span>
+          <span className="text-[10px] font-semibold uppercase tracking-[0.1em] text-lime">{tr('Edited video')}</span>
         </div>
       </div>
       <ul className="grid grid-cols-4 gap-1.5 sm:gap-2" aria-hidden="true">
         {steps.map(([label, color, icon], i) => (
           <li key={label} className="cs-fade-up flex items-center justify-center gap-1.5 rounded-xl border border-hairline bg-canvas/40 px-1 py-1.5" style={delay(300 + i * 560)}>
             <span className="flex h-6 w-6 items-center justify-center rounded-md" style={{ background: `${color}26`, color }}><Icon className="h-3.5 w-3.5">{icon}</Icon></span>
-            <span className="hidden text-[10px] font-semibold text-ink min-[420px]:inline">{label}</span>
+            <span className="hidden text-[10px] font-semibold text-ink min-[420px]:inline">{tr(label)}</span>
           </li>
         ))}
       </ul>
@@ -165,10 +165,9 @@ export function ScenePublishing() {
     <div className="flex h-full flex-col justify-between gap-2.5">
       <div>
         <div className="flex items-center justify-between gap-2">
-          <Label n="1">Publishing calendar</Label>
+          <Label n="1">{tr('Publishing calendar')}</Label>
           <span className="cs-fade-up inline-flex shrink-0 items-center gap-1 rounded-full bg-lime/15 px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.06em] text-lime" style={delay(1500)}>
-            <Icon className="h-3 w-3"><circle cx="12" cy="12" r="8.5" /><path d="M12 7.5V12l3 2" /></Icon>Scheduled
-          </span>
+            <Icon className="h-3 w-3"><circle cx="12" cy="12" r="8.5" /><path d="M12 7.5V12l3 2" /></Icon>{tr('Scheduled')}</span>
         </div>
         <div className="mt-2 grid grid-cols-5 gap-1.5 sm:gap-2">
           {week.map(([d, who, color, plat], i) => (
@@ -189,7 +188,7 @@ export function ScenePublishing() {
         </div>
       </div>
       <div>
-        <Label n="2">Community</Label>
+        <Label n="2">{tr('Community')}</Label>
         <ul className="mt-2 space-y-1.5">
           {comments.map(([who, t], i) => (
             <li key={i} className="flex flex-col gap-1">
@@ -199,7 +198,7 @@ export function ScenePublishing() {
               </div>
               <div className="cs-fade-up flex items-center justify-end gap-2" style={delay(2300 + i * 900)}>
                 <span className="w-3/5 rounded-2xl rounded-tr-sm border border-lime/40 bg-lime/10 px-2.5 py-1.5"><Skel w="w-4/5" className="!bg-lime/60" /></span>
-                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-lime text-[8px] font-bold text-canvas">CV</span>
+                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-lime text-[8px] font-bold text-canvas">{tr('CV')}</span>
               </div>
             </li>
           ))}

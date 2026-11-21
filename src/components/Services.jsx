@@ -2,6 +2,9 @@ import { useEffect, useRef, useState } from 'react'
 import { OFFER_PATHS } from '../config.js'
 import { PATHS } from '../routes.js'
 import { SERVICE_LABELS } from '../seo/businessKnowledge.js'
+import { useTr, useHref } from '../i18n/tr.js'
+import { currentLocale } from '../i18n/locale.js'
+import { primaryAction } from '../i18n/cta.js'
 
 /* ─────────────────────────────────────────────
    SECTION 4 — WHAT WE OFFER
@@ -100,6 +103,9 @@ function useInView(threshold = 0.1) {
 ───────────────────────────────────────────── */
 export default function Services() {
   const [wrapRef, sectionVisible] = useInView(0.08)
+  const tr = useTr()
+  const href = useHref()
+  const action = primaryAction(currentLocale())
 
   return (
     <section id="services" className="relative overflow-hidden py-16 md:py-20">
@@ -125,16 +131,16 @@ export default function Services() {
         >
           <div className="inline-flex items-center gap-2 rounded-full border border-hairline bg-surface-1/60 px-4 py-1.5 mb-6 backdrop-blur-md">
             <span className="h-1.5 w-1.5 rounded-full bg-lime animate-pulse" />
-            <span className="text-xs font-medium uppercase tracking-[0.18em] text-ink-muted">What We Offer</span>
+            <span className="text-xs font-medium uppercase tracking-[0.18em] text-ink-muted">{tr('What We Offer')}</span>
           </div>
           <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-5">
             <h2 className="font-display font-bold text-ink tracking-display leading-[1.02] text-4xl md:text-5xl lg:text-[62px]">
-              Video creative for<br />
-              <span className="text-lime">paid and organic social.</span>
+              {tr('Video creative for')}<br />
+              <span className="text-lime">{tr('paid and organic social.')}</span>
             </h2>
             <p className="text-[15px] text-ink-muted leading-relaxed max-w-sm mx-auto lg:mx-0 text-center lg:text-right pb-1">
-              Creative strategy and full video production,{' '}<br className="hidden lg:block" />
-              from concept and creator casting to finished, platform-ready videos.
+              {tr('Creative strategy and full video production,')}{' '}<br className="hidden lg:block" />
+              {tr('from concept and creator casting to finished, platform-ready videos.')}
             </p>
           </div>
         </div>
@@ -156,11 +162,11 @@ export default function Services() {
           }}
         >
           <div>
-            <p className="font-display font-semibold text-ink text-xl leading-tight">Not sure which service fits?</p>
-            <p className="mt-1.5 text-sm text-ink-muted">We'll tell you exactly what you need in a free 20-minute strategy call.</p>
+            <p className="font-display font-semibold text-ink text-xl leading-tight">{tr('Not sure which service fits?')}</p>
+            <p className="mt-1.5 text-sm text-ink-muted">{tr("We'll tell you exactly what you need in a free 20-minute strategy call.")}</p>
           </div>
-          <a href={OFFER_PATHS.roadmap} className="cta-gradient shrink-0 inline-flex items-center gap-2 rounded-full px-7 py-3.5 text-sm font-semibold text-canvas">
-            Book a Creative Call
+          <a href={action.href} {...(action.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})} className="cta-gradient shrink-0 inline-flex items-center gap-2 rounded-full px-7 py-3.5 text-sm font-semibold text-canvas">
+            {tr('Book a Creative Call')}
             <svg viewBox="0 0 12 12" className="h-3.5 w-3.5" fill="none">
               <path d="M3 9L9 3M9 3H4M9 3V8" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
@@ -168,9 +174,9 @@ export default function Services() {
         </div>
 
         <p className="mt-6 text-center lg:text-right text-xs text-ink-subtle">
-          Need to test creative concepts first?{' '}
-          <a href="/pricing" className="text-ink-muted hover:text-lime underline underline-offset-2 transition-colors">
-            Explore packages and pricing
+          {tr('Need to test creative concepts first?')}{' '}
+          <a href={href('/pricing')} className="text-ink-muted hover:text-lime underline underline-offset-2 transition-colors">
+            {tr('Explore packages and pricing')}
           </a>
         </p>
       </div>
@@ -185,6 +191,8 @@ export default function Services() {
    exactly what the mouse gets.
 ───────────────────────────────────────────── */
 function ServiceCard({ service: s, index }) {
+  const tr = useTr()
+  const href = useHref()
   const [ref, visible] = useInView(0.12)
   const Icon = s.icon
   const titleId = `service-${s.id}-title`
@@ -196,7 +204,7 @@ function ServiceCard({ service: s, index }) {
       className={`h-full transition-[opacity,transform] duration-700 ease-out motion-reduce:!translate-y-0 motion-reduce:!opacity-100 motion-reduce:transition-none ${visible ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'}`}
       style={{ transitionDelay: visible ? `${(index % 2) * 90 + Math.floor(index / 2) * 90}ms` : '0ms' }}
     >
-      <a href={s.href} className="svc-card" style={cardVars(s)} aria-labelledby={titleId} aria-describedby={descId}>
+      <a href={href(s.href)} className="svc-card" style={cardVars(s)} aria-labelledby={titleId} aria-describedby={descId}>
         {/* Border ring (hover version fades in) */}
         <span aria-hidden="true" className="svc-layer svc-frame" />
         <span aria-hidden="true" className="svc-layer svc-frame-hi" />
@@ -225,19 +233,19 @@ function ServiceCard({ service: s, index }) {
           </div>
 
           <h3 id={titleId} className="svc-title mt-6 font-display font-bold tracking-display leading-[1.06]" style={{ fontSize: 'clamp(1.45rem, 2.4vw, 1.85rem)' }}>
-            {s.title}
+            {tr(s.title)}
           </h3>
-          <p id={descId} className="svc-desc mt-3 max-w-[38ch] text-[14.5px] leading-relaxed">{s.description}</p>
+          <p id={descId} className="svc-desc mt-3 max-w-[38ch] text-[14.5px] leading-relaxed">{tr(s.description)}</p>
 
           <ul className="mt-5 flex flex-wrap gap-2">
-            {s.pills.map((pill) => (<li key={pill} className="svc-pill">{pill}</li>))}
+            {s.pills.map((pill) => (<li key={pill} className="svc-pill">{tr(pill)}</li>))}
           </ul>
 
           <div className="min-h-[24px] flex-1" />
           <div aria-hidden="true" className="svc-rule mt-5" />
           <div className="mt-4 flex">
             <span className="svc-cta">
-              Explore Service
+              {tr('Explore Service')}
               <svg className="svc-arrow" aria-hidden="true" width="14" height="14" viewBox="0 0 12 12" fill="none">
                 <path d="M3 9L9 3M9 3H4M9 3V8" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
               </svg>

@@ -1,10 +1,11 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { trackEvent } from '../../lib/analytics.js'
 import {
-  buildFacets, matchesFilters, posterUrl, creatorLabel, languageLabel, industryLabel,
+  buildFacets, matchesFilters, posterUrl, creatorLabel, languageLabel, industryLabel, captionOf,
 } from '../../content/portfolio.js'
 import { Section, Head, Reveal, RoadmapCta, TextLink } from './shared.jsx'
 import { useAttachSource, PlayGlyph } from './creatorVideo.jsx'
+import { tr } from '../../i18n/tr.js'
 
 /* SECTION 2: our best UGC work. A data-driven portfolio of approved vertical creator videos (src/content/portfolio.js).
 
@@ -39,7 +40,7 @@ export function Player({ item }) {
       playsInline
       preload="none"
       poster={posterUrl(item)}
-      aria-label={item.caption}
+      aria-label={captionOf(item)}
       className="absolute inset-0 h-full w-full bg-black object-cover"
     />
   )
@@ -61,7 +62,7 @@ function Card({ item, tone, playing, onPlay }) {
           <button
             type="button"
             onClick={onPlay}
-            aria-label={`Play video: ${item.caption}`}
+            aria-label={`${tr('Play video:')} ${captionOf(item)}`}
             className="absolute inset-0 focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-lime"
           >
             <img src={posterUrl(item)} alt="" width="405" height="720" loading="lazy" decoding="async" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.04] motion-reduce:transition-none" />
@@ -77,10 +78,10 @@ function Card({ item, tone, playing, onPlay }) {
       </div>
       <figcaption className="mt-3 px-1">
         {meta && <p className="text-sm font-semibold text-ink">{meta}</p>}
-        <p className="text-[15px] leading-snug text-ink-muted">{item.caption}</p>
+        <p className="text-[15px] leading-snug text-ink-muted">{captionOf(item)}</p>
         <p className="mt-1 text-[13px] text-ink-muted">{[industryLabel(item.industry), langs, name].filter(Boolean).join(' · ')}</p>
         {item.caseStudyHref && (
-          <p className="mt-1.5 text-[13px]"><TextLink href={item.caseStudyHref} onClick={() => trackEvent('ugc_case_study_click', { location: 'portfolio' })}>Related case study</TextLink></p>
+          <p className="mt-1.5 text-[13px]"><TextLink href={item.caseStudyHref} onClick={() => trackEvent('ugc_case_study_click', { location: 'portfolio' })}>{tr('Related case study')}</TextLink></p>
         )}
       </figcaption>
     </figure>
@@ -94,7 +95,7 @@ function FilterGroup({ label, name, options, value, onChange }) {
   return (
     <div role="group" aria-label={label} className="flex flex-wrap items-center justify-center gap-2">
       <span className="mr-1 text-xs font-semibold uppercase tracking-[0.16em] text-ink-muted">{label}</span>
-      <button type="button" aria-pressed={value === null} onClick={() => onChange(name, null)} className={chip(value === null)}>All</button>
+      <button type="button" aria-pressed={value === null} onClick={() => onChange(name, null)} className={chip(value === null)}>{tr('All')}</button>
       {options.map((o) => (
         <button key={o.value} type="button" aria-pressed={value === o.value} onClick={() => onChange(name, o.value)} className={chip(value === o.value)}>
           {o.label} <span className="opacity-70">{o.count}</span>
@@ -159,7 +160,7 @@ export default function UgcWork({ items }) {
   return (
     <Section id="work" label="ugc-work-heading" glow>
       <Reveal>
-        <Head id="ugc-work-heading" eyebrow="Our best UGC work" title="Creator-led ads, made for paid social." intro="Real creators, made to stop the scroll. Watch the work." />
+        <Head id="ugc-work-heading" eyebrow="Our best UGC work" title={tr('Creator-led ads, made for paid social.')} intro="Real creators, made to stop the scroll. Watch the work." />
       </Reveal>
       <div className="mt-8 md:mt-10"><PortfolioGrid items={items} /></div>
       <div className="mt-9 flex justify-center">
