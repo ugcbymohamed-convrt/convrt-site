@@ -68,4 +68,7 @@ export default {
   "Finished versions, plus guidance on what to test next.": "Versiones finalizadas, más orientación sobre qué testear a continuación.",
   "Pause animation": "Pausar animación",
   "Related case study": "Caso de éxito relacionado (en inglés)",
+  "The Spanish-language showcase is being prepared.": "La galería en español se está preparando.",
+  "We are selecting Spanish-speaking creators and videos for this page. Meanwhile, tell us about your project.": "Estamos seleccionando creadores y vídeos en español para esta página. Mientras tanto, cuéntanos tu proyecto.",
+  "Examples from independent creators in your language, coming soon.": "Ejemplos de creadores independientes en español, próximamente.",
 }

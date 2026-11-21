@@ -8,6 +8,8 @@ import os from 'node:os'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { build } from 'vite'
+import { allLocalizedPaths } from '../src/i18n/paths.js'
+import { localizedSitemapPaths } from '../src/lib/seo/sitemap.js'
 import { PATHS, KNOWN_PATHS } from '../src/routes.js'
 import { SITE_URL, BOOKING_URL, OFFER_PATHS } from '../src/config.js'
 import { SITE_SEO, sitemapRoutes } from '../src/seo/siteSeo.js'
@@ -53,7 +55,8 @@ test('the nine indexable URLs stay indexable, self-canonical and in the sitemap;
     assert.ok(!/<meta name="robots"[^>]*noindex/.test(h), `${p} stays indexable`)
   }
   assert.ok(page('/case-studies').includes(`<link rel="canonical" href="${SITE_URL}/case-studies/graspo" />`))
-  assert.equal(fs.readFileSync(path.join(dist, 'sitemap.xml'), 'utf8').split('<loc>').length - 1, INDEXABLE.length + trust.length)
+  // plus the released Spanish translations (src/i18n/release.js): English entries are unchanged
+  assert.equal(fs.readFileSync(path.join(dist, 'sitemap.xml'), 'utf8').split('<loc>').length - 1, INDEXABLE.length + trust.length + localizedSitemapPaths().length)
 })
 
 // ── UGC FAQs ─────────────────────────────────────────────────────────────────────────────
@@ -280,7 +283,7 @@ test('public claims register: every claim has a source and a status; the figures
 
 // ── links ────────────────────────────────────────────────────────────────────────────────
 test('every internal link on every prerendered page resolves to a real page, section or file', () => {
-  const known = new Set([...KNOWN_PATHS, '/blog'])
+  const known = new Set([...KNOWN_PATHS, '/blog', '/es', ...allLocalizedPaths(['es'])])
   const bad = []
   const walk = (d) => fs.readdirSync(d, { withFileTypes: true }).flatMap((e) => (e.isDirectory() ? walk(path.join(d, e.name)) : [path.join(d, e.name)]))
   const files = walk(dist).filter((f) => f.endsWith('index.html'))

@@ -1069,8 +1069,11 @@ export const industryLabel = (slug) => (!slug || slug === UNCLASSIFIED ? '' : (i
 export const typeOf = (item) => item.type
 export const typeLabel = (item) => (item.type ? (isEs() ? ES_TYPE_LABELS[item.type] : TYPE_LABELS[item.type]) ?? titleCase(item.type) : '')
 /* A video's caption in the page's language: generic captions ("UGC ad example 5.") are translated; a hand-written one is shown as written. */
-export const captionOf = (item) => (isEs() ? captionEs(item.caption) ?? item.caption : item.caption)
-export const titleOf = (item) => (isEs() ? captionEs(item.title ?? item.caption) ?? item.title ?? item.caption : item.title ?? item.caption)
+/* LANGUAGE-SPECIFIC COPY. An entry may carry `i18n: { es: { title, caption } }`: copy WRITTEN for that language's page (the Spanish Showcase has its own creators and videos, not translations of the English
+   ones). Resolution on a /es/ page: the entry's own `i18n.es` text, else (for the generic placeholder captions only) the pattern translation, else the entry's own text as written. */
+const own = (item, field) => (isEs() ? item.i18n?.es?.[field] : undefined)
+export const captionOf = (item) => own(item, 'caption') ?? (isEs() ? captionEs(item.caption) ?? item.caption : item.caption)
+export const titleOf = (item) => own(item, 'title') ?? (isEs() ? captionEs(item.title ?? item.caption) ?? item.title ?? item.caption : item.title ?? item.caption)
 
 /* PRODUCTION ATTRIBUTION. 'independent' = a creator's own example; 'convrt' = produced through CONVRT; unset = unknown (nothing is claimed). */
 export const PRODUCTION_LABELS = { independent: 'Independent creator', convrt: 'Produced by CONVRT' }
@@ -1098,6 +1101,10 @@ export function portfolioProblems(item) {
   if (!item.creatorId || typeof item.creatorId !== 'string') p.push('creatorId is required')
   if (!item.caption || typeof item.caption !== 'string') p.push('caption is required')
   if (item.title !== undefined && (typeof item.title !== 'string' || !item.title.trim())) p.push('title must be a non-empty string')
+  if (item.i18n !== undefined) {
+    const ok = item.i18n && typeof item.i18n === 'object' && !Array.isArray(item.i18n) && Object.entries(item.i18n).every(([l, v]) => /^[a-z]{2}$/.test(l) && v && typeof v === 'object' && Object.entries(v).every(([k, t]) => ['title', 'caption'].includes(k) && typeof t === 'string' && t.trim()))
+    if (!ok) p.push('i18n must be { <2-letter language>: { title?, caption? } } with non-empty strings')
+  }
   if (item.type !== undefined && !/^[a-z][a-z0-9-]*$/.test(item.type)) p.push('type must be a lowercase slug')
   if (item.industry !== undefined && !/^[a-z][a-z0-9-]*$/.test(item.industry)) p.push("industry must be a lowercase slug (or 'unclassified')")
   if (item.production !== undefined && !(item.production in PRODUCTION_LABELS)) p.push("production must be 'independent' or 'convrt' (leave it out when unknown)")
@@ -1141,7 +1148,13 @@ export const isShowcaseable = (item) => portfolioProblems(item).length === 0 && 
 /* ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
    SELECTORS: one per page. Order is the order of PORTFOLIO.
    ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── */
+/* forPageLanguage(): on a page in another language ONLY videos whose confirmed spoken `languages` include that language are shown (the page components apply it to what the selectors return):
+   the Spanish pages never show the English library, and a video with no recorded language is never guessed into a language. English is unchanged. It is NOT applied inside the selectors, because
+   module-level code (the SEO manifest's `indexable` flags) must stay language-independent. */
+export const forPageLanguage = (items) => (currentLocale() === 'en' ? items : items.filter((i) => (i.languages ?? []).includes(currentLocale())))
 export const selectDisplayable = (items = PORTFOLIO) => items.filter(isDisplayable)
+/* Approved videos for a language, independent of the page being rendered (used by the release gate, the sitemap and the tests). */
+export const displayableFor = (locale, items = PORTFOLIO) => items.filter(isDisplayable).filter((i) => locale === 'en' || (i.languages ?? []).includes(locale))
 
 /* /creator-showcase: everything approved for the portfolio. */
 export const selectOurWork = selectDisplayable

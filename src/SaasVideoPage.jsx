@@ -13,7 +13,7 @@ import { useDocumentHead } from './lib/useDocumentHead.js'
 import { pageHead } from './seo/siteSeo.js'
 import { PATHS } from './routes.js'
 import { SAAS_FAQ } from './seo/saasFaq.js'
-import { selectSaasHero, selectSaasGallery } from './content/portfolio.js'
+import { selectSaasHero, selectSaasGallery, forPageLanguage } from './content/portfolio.js'
 import {
   SAAS_HERO, SAAS_STAGES, SAAS_PROCESS, SAAS_GALLERY, SAAS_CTA, SAAS_PATH_LABEL, SAAS_PROOF, SAAS_EXPECTATIONS, SAAS_PROOF_CONFIG_TRACK,
 } from './content/saasPage.js'
@@ -66,8 +66,8 @@ export default function SaasVideoPage() {
     trackEvent('saas_page_view')
   }, [])
 
-  const heroItems = selectSaasHero()
-  const galleryItems = selectSaasGallery()
+  const heroItems = forPageLanguage(selectSaasHero())
+  const galleryItems = forPageLanguage(selectSaasGallery())
 
   return (
     <>

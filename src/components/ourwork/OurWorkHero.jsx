@@ -6,7 +6,7 @@ import { tr } from '../../i18n/tr.js'
 
    The attribution line under the intro (CREATOR_EXAMPLES_NOTE) says the videos are examples from independent creators and not necessarily CONVRT
    productions; it was added in the SEO/GEO Batch 1 (owner decision, Nov 2026) so the visible copy matches the SEO description. */
-export default function OurWorkHero() {
+export default function OurWorkHero({ empty = false }) {
   return (
     <section aria-labelledby="our-work-heading" className="relative overflow-x-clip">
       <div aria-hidden="true" className="pointer-events-none absolute -top-40 left-1/2 h-[320px] w-[820px] -translate-x-1/2 rounded-full bg-lime/[0.06] blur-[140px]" />
@@ -14,7 +14,7 @@ export default function OurWorkHero() {
         <h1 id="our-work-heading" className="max-w-4xl font-display text-[2.4rem] font-bold leading-[1.03] tracking-display-xl text-ink sm:text-5xl md:text-6xl">
           {tr("See what's")} <span className="text-lime">{tr('possible.')}</span>
         </h1>
-        <p className="mt-4 max-w-2xl text-base leading-relaxed text-ink-muted md:mt-5 md:text-lg">{tr('Explore real creator videos across')}{' '}<span className="whitespace-nowrap">{tr('e-commerce')}</span>{tr(', SaaS, services and more.')}</p>
+        <p className="mt-4 max-w-2xl text-base leading-relaxed text-ink-muted md:mt-5 md:text-lg">{empty ? tr('Examples from independent creators in your language, coming soon.') : <>{tr('Explore real creator videos across')}{' '}<span className="whitespace-nowrap">{tr('e-commerce')}</span>{tr(', SaaS, services and more.')}</>}</p>
         <p className="mt-3 max-w-2xl text-[13px] leading-relaxed text-ink-muted">{tr(CREATOR_EXAMPLES_NOTE)}</p>
       </div>
     </section>

@@ -28,12 +28,14 @@ import { tr } from '../../i18n/tr.js'
 const PAGE = 12
 
 function EmptyState() {
+  // A language page with no approved videos in that language (the Spanish Showcase has its own creators and videos, never the English library): say so plainly.
+  const localized = currentLocale() !== 'en'
   return (
     <Section id="library" label="library-heading" className="!py-10 md:!py-16">
       <h2 id="library-heading" className="sr-only">{tr('Video library')}</h2>
       <div className="mx-auto max-w-2xl rounded-3xl border border-hairline bg-surface-1/60 p-7 text-center md:p-10">
-        <p className="font-display text-2xl font-bold tracking-display text-ink md:text-3xl">{tr('New work is on its way.')}</p>
-        <p className="mx-auto mt-3 max-w-md text-base leading-relaxed text-ink-muted">{tr('Videos appear here as soon as they are approved for public display.')}</p>
+        <p className="font-display text-2xl font-bold tracking-display text-ink md:text-3xl">{localized ? tr('The Spanish-language showcase is being prepared.') : tr('New work is on its way.')}</p>
+        <p className="mx-auto mt-3 max-w-md text-base leading-relaxed text-ink-muted">{localized ? tr('We are selecting Spanish-speaking creators and videos for this page. Meanwhile, tell us about your project.') : tr('Videos appear here as soon as they are approved for public display.')}</p>
         <div className="mt-7 flex flex-col items-center justify-center gap-3 sm:flex-row">
           <RoadmapCta location="our-work-empty" />
           <GhostCta href="/case-studies" onClick={() => trackEvent('our_work_case_studies_click', { location: 'empty' })}>{tr('Read the case studies')}</GhostCta>

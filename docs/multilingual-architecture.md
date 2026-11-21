@@ -38,6 +38,9 @@ and the reciprocal **hreflang** set (`en`, `es`, `x-default` = English) from `al
 English pages with a translation carry the same set (reciprocity); everything else has none. The Organization node and its `@id` are **identical in every language**; each Spanish page has its
 own `WebPage` (`inLanguage: es`), breadcrumb, FAQPage (generated from the Spanish FAQ it shows) and page-scoped Spanish `Service` nodes. The `WebSite` node is referenced by `@id`, not redefined.
 
+## Release gates (`src/i18n/release.js`)
+A page can be built but not released: blocked pages are noindex, out of the sitemap, out of hreflang, and the selector falls back to the language home. The Spanish Showcase is gated on having approved Spanish-language videos (its own creators and videos, never the English library); `node scripts/es-launch-readiness.mjs` lists every remaining blocker. Videos shown on a non-English page are limited to entries whose `languages` include that language (`forPageLanguage`), and an entry may carry `i18n: { es: { title, caption } }` copy written for that page.
+
 ## Language selector
 `src/components/LanguageSelector.jsx` (header dropdown, mobile-menu list, crawlable footer list). Every option is a plain link to the equivalent page when it exists (`src/i18n/switch.js`), otherwise that
 language's home; no redirect, no detection, no cookie or storage (the Privacy Policy lists exactly which browser storage the site uses, so a stored preference would need a Privacy Policy change: see

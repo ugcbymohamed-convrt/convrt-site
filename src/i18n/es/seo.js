@@ -13,6 +13,12 @@
 import { SPRINT, USAGE_RIGHTS } from '../../seo/businessKnowledge.js'
 import { formatMoneyEs } from './money.js'
 
+/* Spanish share image. The default OG image (public/og/convrt-og.png) has ENGLISH text burned into it, so Spanish pages reuse it only until a Spanish version exists. Add
+   public/og/convrt-og-es.png (1200x630 PNG, same layout; suggested text in docs/multilingual-spanish-release.md) and set this to true: every Spanish page then switches by itself.
+   tests/i18n.test.mjs checks that the file exists, is 1200x630 PNG, whenever this is true. */
+export const ES_OG_IMAGE_READY = false
+export const ES_OG_IMAGE_PATH = '/og/convrt-og-es.png'
+
 export const ES_OG_IMAGE_ALT = 'CONVRT: creatividades de alto rendimiento diseñadas para convertir. Anuncios UGC, vídeos para SaaS, vídeos con presentador y contenido orgánico para redes sociales.'
 
 export const ES_SEO = {

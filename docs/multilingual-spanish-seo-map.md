@@ -4,6 +4,19 @@ Sources: the CONVRT keyword workbook (`Spanish_targets`, `Page_map`, `Search_int
 `ES - Social media Agency`, `ES- Spokesperson video keywords`, Nov 2026), the Reddit analysis and the SEO/GEO audit. **Keyword Planner volumes are rounded, directional buckets (50 / 500 / 5,000), not
 precise demand; blank means "no estimate", not zero. Variants are never summed. No Spanish volume was invented, and none is quoted below beyond the workbook's own bucket.**
 
+## Sources actually used (no metric invented)
+| Source | Used for |
+|---|---|
+| `seo-geo-audit/workbook-dump` (from "CONVRT — Keyword Target Plan.xlsx"): `Spanish_targets`, `Page_map`, `Search_intent_review`, `Competitor_database`, `Competitor_opportunities`, `Question_and_content_map`, `Customer_research` | target list, priorities, proposed pages, Spain competitors (PlusROI, La InflUGC, DONT, byCreators/Huuk, HICARI, UGCvideos, Maen Studios), question gaps (G07–G09, PAA05/06), Reddit-derived rows (M01–M04, R03, R08, R26, R27) |
+| Keyword Planner exports (Spain, Nov 2026): `~/Downloads/SPAIN.csv`, `ES - Group D — Pricing and buying-intent keywords.csv`, `ES - Group F — Geographic agency searches.csv`, `ES - Group C — Industry-specific video agencies.csv`, `ES - Group A`, `ES - Group E`; `CONVRT/KEYWORDS/ES - Social media Agency.csv`, `ES - Keywords hiring an agency.csv`, `SPOKESPERSON/ES- Spokesperson video keywords.csv` | the monthly-search buckets quoted below (read directly from the files) |
+| Spanish Reddit research (`CONVRT - Spanish Reddit Research.zip`, 42 exports, 15 Nov 2026) | only through the workbook's analysis of it (it states: few explicit Spain mentions, one Spanish-language pricing thread, no reliable Spanish pricing or buyer prevalence); I did not re-analyse the raw comments |
+| 5 live Spanish searches (this session) | SERP intent check (below) |
+**Bucket values read from the exports** (rounded Planner buckets, not demand; blank = no estimate; never summed): agencia UGC 500 · agencia UGC España 500 · agencia de UGC 50 · agencia de contenido UGC / agencia de vídeos UGC / producción de vídeos UGC / agencia de anuncios UGC: blank ·
+tarifas UGC 50 · precio vídeo UGC / precios UGC: blank · agencia de contenidos 500 · agencia de redes sociales 500 · agencia de contenidos para redes sociales 50 · gestión de redes sociales 500 · vídeos explicativos 500 (generic explainer intent, not SaaS-specific) ·
+vídeos para SaaS: blank · vídeos publicitarios 50 · vídeos promocionales 50 · vídeo marketing 50 · vídeos con presentador / con portavoz / presentador publicitario: blank · productora audiovisual 5,000 (broad film/event intent, not targeted).
+**What this verifies and what it does not.** The home ("agencia UGC", "agencia UGC España") and the content page ("agencia de contenidos", 500) rest on measurable buckets; pricing ("tarifas UGC") is a 50 bucket plus unmeasured sibling phrasings; the UGC production page ("producción de vídeos UGC"), the
+spokesperson page and the SaaS-specific phrasing have **no Planner estimate**, so they are conversion/intent-led pages justified by the SERP check and the workbook's reasoning, not by volume. "Vídeos explicativos" (500) supports the SaaS page's explainer wording but is a broader market than SaaS.
+
 ## Targeted SERP / competitor validation (Spain, Nov 2026; not a repeat of the audit)
 | Query | What ranks / what it says | Decision |
 |---|---|---|

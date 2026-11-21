@@ -6,12 +6,12 @@
    • No browser-language detection, no geolocation, no cookie and no redirect is involved: every option is an ordinary link. */
 
 import { LOCALES, SELECTOR_ORDER, isLive, DEFAULT_LOCALE } from './locales.js'
-import { hasTranslation } from './registry.js'
+import { isReleased } from './release.js'
 import { localizedPath } from './paths.js'
 
 export function switchTarget(toLocale, basePath) {
   if (toLocale === DEFAULT_LOCALE) return basePath
-  return hasTranslation(toLocale, basePath) ? localizedPath(toLocale, basePath) : localizedPath(toLocale, '/')
+  return isReleased(toLocale, basePath) ? localizedPath(toLocale, basePath) : localizedPath(toLocale, '/')
 }
 
 /* The options to show: live languages only, in the owner's order (English, Español, Français, العربية). French and Arabic appear here by themselves
@@ -23,7 +23,7 @@ export function languageOptions(currentLocale, basePath) {
     htmlLang: LOCALES[code].htmlLang,
     dir: LOCALES[code].dir,
     href: switchTarget(code, basePath),
-    exact: code === DEFAULT_LOCALE || hasTranslation(code, basePath),
+    exact: code === DEFAULT_LOCALE || isReleased(code, basePath),
     current: code === currentLocale,
   }))
 }

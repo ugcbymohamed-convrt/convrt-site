@@ -13,7 +13,7 @@ import { useDocumentHead } from './lib/useDocumentHead.js'
 import { pageHead } from './seo/siteSeo.js'
 import { PATHS } from './routes.js'
 import { SPOKESPERSON_FAQ } from './seo/spokespersonFaq.js'
-import { selectSpokespersonHero, selectSpokespersonGallery } from './content/portfolio.js'
+import { selectSpokespersonHero, selectSpokespersonGallery, forPageLanguage } from './content/portfolio.js'
 import {
   SPOKESPERSON_HERO, SPOKESPERSON_STAGES, SPOKESPERSON_PROCESS, SPOKESPERSON_GALLERY, SPOKESPERSON_CTA, SPOKESPERSON_PATH_LABEL,
 } from './content/spokespersonPage.js'
@@ -57,8 +57,8 @@ export default function SpokespersonVideoPage() {
     trackEvent('spokesperson_page_view')
   }, [])
 
-  const heroItems = selectSpokespersonHero()
-  const galleryItems = selectSpokespersonGallery()
+  const heroItems = forPageLanguage(selectSpokespersonHero())
+  const galleryItems = forPageLanguage(selectSpokespersonGallery())
 
   return (
     <>

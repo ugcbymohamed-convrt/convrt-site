@@ -270,7 +270,7 @@ export const ORGANIC_COMMITMENT = {
     'Building a meaningful social media presence takes consistency. Our organic partnerships begin with a six-month commitment, giving us time to develop your content strategy, publish consistently, learn what resonates with your audience and assess performance before making longer-term decisions.',
 }
 
-/* Organic Social visitors get ONE organic-specific route: the direct 30-minute strategy call (the same Calendly event as BOOKING_URL, opened in a new tab). The Free Creative Growth
+/* Organic Social visitors get ONE organic-specific route: the direct strategy call (a 20-minute Calendly event: its public title is "20-minute strategy call"; the URL slug "30min" is legacy) (the same Calendly event as BOOKING_URL, opened in a new tab). The Free Creative Growth
    Roadmap is a paid-ads offer whose form asks about monthly paid-ad spend, so it is not used for organic leads. The Organic page hero, its proof and final CTA, its FAQ link and the
    Organic promo on /pricing all read this one object (Batch 2, 2026-11-21: the Pricing promo used a mailto before; owner may switch it back here in one line). */
 export const ORGANIC_CTA = {

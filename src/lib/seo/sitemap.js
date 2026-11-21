@@ -12,6 +12,7 @@ import { SITE_URL } from '../../config.js'
 import { SITE_SEO, canonicalPathFor, sitemapRoutes } from '../../seo/siteSeo.js'
 import { LIVE_LOCALES, DEFAULT_LOCALE } from '../../i18n/locales.js'
 import { TRANSLATED_PATHS } from '../../i18n/registry.js'
+import { isReleased } from '../../i18n/release.js'
 import { localizedPath } from '../../i18n/paths.js'
 
 export const SITEMAP_ENTRIES = Object.entries(SITE_SEO)
@@ -22,7 +23,7 @@ export const SITEMAP_ENTRIES = Object.entries(SITE_SEO)
    (a translation is never promoted when its source is not). Each is its own canonical URL: /es/, /es/pricing, ... */
 export const localizedSitemapPaths = () =>
   LIVE_LOCALES.filter((l) => l !== DEFAULT_LOCALE).flatMap((l) =>
-    (TRANSLATED_PATHS[l] ?? []).filter((bp) => SITE_SEO[bp]?.indexable && canonicalPathFor(bp) === bp).map((bp) => localizedPath(l, bp)))
+    (TRANSLATED_PATHS[l] ?? []).filter((bp) => SITE_SEO[bp]?.indexable && canonicalPathFor(bp) === bp && isReleased(l, bp)).map((bp) => localizedPath(l, bp)))
 
 export const sitemapPaths = (entries) =>
   entries ? entries.filter((e) => e.indexable).map((e) => e.path) : [...sitemapRoutes(), ...localizedSitemapPaths()]

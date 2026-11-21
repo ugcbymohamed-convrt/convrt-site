@@ -117,4 +117,5 @@ export default {
   'We believe good creative partnerships start with clarity.': 'Creemos que las buenas colaboraciones creativas empiezan por la claridad.',
   'Still have questions?': '¿Aún tienes preguntas?',
   "Reach us directly, we're happy to answer anything before you commit to anything.": 'Escríbenos directamente: estaremos encantados de resolver cualquier duda antes de que te comprometas a nada.',
+  'The online Roadmap application is not available in this language yet. Book a free 20-minute strategy call (subject to a short fit check, no obligation) and we explain how to get your five ad concepts.': 'La solicitud online de la Hoja de Ruta aún no está disponible en español. Reserva una llamada estratégica gratuita de 20 minutos (sujeta a una breve comprobación de encaje, sin compromiso) y te explicamos cómo conseguir tus cinco conceptos publicitarios.',
 }

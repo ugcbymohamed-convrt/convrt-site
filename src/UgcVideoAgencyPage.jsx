@@ -10,7 +10,7 @@ import { captureAttribution, trackEvent } from './lib/analytics.js'
 import { useDocumentHead } from './lib/useDocumentHead.js'
 import { pageHead } from './seo/siteSeo.js'
 import { PATHS } from './routes.js'
-import { selectHero, selectGallery } from './content/portfolio.js'
+import { selectHero, selectGallery, forPageLanguage } from './content/portfolio.js'
 import { tr, T, hrefFor } from './i18n/tr.js'
 
 /* /ugc-video-agency: the UGC service page.
@@ -29,8 +29,8 @@ export default function UgcVideoAgencyPage() {
     trackEvent('ugc_page_view')
   }, [])
 
-  const heroItems = selectHero()
-  const galleryItems = selectGallery()
+  const heroItems = forPageLanguage(selectHero())
+  const galleryItems = forPageLanguage(selectGallery())
 
   return (
     <>

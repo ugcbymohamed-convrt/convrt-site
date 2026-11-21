@@ -186,6 +186,7 @@ function RoadmapCard() {
         <svg viewBox="0 0 16 16" className="h-4 w-4 shrink-0 text-lime" fill="none" aria-hidden="true">
           <circle cx="8" cy="8" r="6.5" stroke="currentColor" strokeWidth="1.4" /><path d="M5 8.2l2 2L11 6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
         </svg>{tr('Completely free. No obligation.')}</p>
+      {rcta.redirected && <p className="mt-2 text-[12.5px] leading-relaxed text-ink-subtle">{tr('The online Roadmap application is not available in this language yet. Book a free 20-minute strategy call (subject to a short fit check, no obligation) and we explain how to get your five ad concepts.')}</p>}
       <a
         href={rcta.href}
         {...(rcta.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}

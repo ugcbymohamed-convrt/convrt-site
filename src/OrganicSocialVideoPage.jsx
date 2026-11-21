@@ -14,7 +14,7 @@ import { useDocumentHead } from './lib/useDocumentHead.js'
 import { pageHead } from './seo/siteSeo.js'
 import { PATHS } from './routes.js'
 import { ORGANIC_SOCIAL_FAQ } from './seo/organicSocialFaq.js'
-import { selectOrganicHero, selectOrganicGallery } from './content/portfolio.js'
+import { selectOrganicHero, selectOrganicGallery, forPageLanguage } from './content/portfolio.js'
 import { ORGANIC_CTA } from './seo/businessKnowledge.js'
 import {
   ORGANIC_HERO, ORGANIC_PAGE_STAGES, ORGANIC_PROCESS, ORGANIC_GALLERY, ORGANIC_PAGE_CTA, ORGANIC_PATH_LABEL, ORGANIC_PROOF, ORGANIC_PROOF_COPY, ORGANIC_PRICING_HREF, ORGANIC_SCOPE_NOTE,
@@ -72,8 +72,8 @@ export default function OrganicSocialVideoPage() {
     trackEvent('organic_page_view')
   }, [])
 
-  const heroItems = selectOrganicHero()
-  const galleryItems = selectOrganicGallery()
+  const heroItems = forPageLanguage(selectOrganicHero())
+  const galleryItems = forPageLanguage(selectOrganicGallery())
 
   return (
     <>

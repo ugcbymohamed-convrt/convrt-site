@@ -5,9 +5,9 @@
 
 import { SITE_URL, OG_IMAGE } from '../config.js'
 import { LOCALES, LIVE_LOCALES, DEFAULT_LOCALE, isLive } from './locales.js'
-import { hasTranslation } from './registry.js'
+import { isReleased } from './release.js'
 import { localizedPath } from './paths.js'
-import { ES_SEO, ES_OG_IMAGE_ALT } from './es/seo.js'
+import { ES_SEO, ES_OG_IMAGE_ALT, ES_OG_IMAGE_READY, ES_OG_IMAGE_PATH } from './es/seo.js'
 
 export const SEO_BY_LOCALE = { es: ES_SEO }
 export const OG_IMAGE_ALT_BY_LOCALE = { es: ES_OG_IMAGE_ALT }
@@ -16,7 +16,7 @@ export const OG_IMAGE_ALT_BY_LOCALE = { es: ES_OG_IMAGE_ALT }
 export const absoluteUrl = (locale, basePath) => `${SITE_URL}${localizedPath(locale, basePath)}`
 
 /* The live locales that have a COMPLETE translation of this base path, English first. */
-export const liveLocalesFor = (basePath) => LIVE_LOCALES.filter((l) => l === DEFAULT_LOCALE || hasTranslation(l, basePath))
+export const liveLocalesFor = (basePath) => LIVE_LOCALES.filter((l) => l === DEFAULT_LOCALE || isReleased(l, basePath))
 
 /* Reciprocal hreflang annotations for a base path: every live translation + English + x-default (English). Empty unless the page is indexable AND has at least
    one live translation, so a page without a translation, an unfinished language or a noindex page never gets hreflang. The SAME array is used for the English
@@ -37,12 +37,12 @@ export function alternatesFor(basePath, enEntry) {
 export function localizedHead({ basePath, locale, enEntry, jsonLd }) {
   const seo = SEO_BY_LOCALE[locale]?.[basePath]
   if (!seo) throw new Error(`localizedHead: no ${locale} SEO entry for "${basePath}"`)
-  const indexable = isLive(locale) && Boolean(enEntry?.indexable)
+  const indexable = isLive(locale) && Boolean(enEntry?.indexable) && isReleased(locale, basePath)
   return {
     title: seo.title,
     description: seo.description,
     url: absoluteUrl(locale, basePath),
-    image: OG_IMAGE.url,
+    image: locale === 'es' && ES_OG_IMAGE_READY ? `${SITE_URL}${ES_OG_IMAGE_PATH}` : OG_IMAGE.url,
     imageAlt: OG_IMAGE_ALT_BY_LOCALE[locale] ?? OG_IMAGE.alt,
     imageWidth: OG_IMAGE.width,
     imageHeight: OG_IMAGE.height,
@@ -52,7 +52,7 @@ export function localizedHead({ basePath, locale, enEntry, jsonLd }) {
     lang: LOCALES[locale].htmlLang,
     dir: LOCALES[locale].dir,
     ogLocale: LOCALES[locale].ogLocale,
-    alternates: isLive(locale) ? alternatesFor(basePath, enEntry) : [],
+    alternates: isLive(locale) && isReleased(locale, basePath) ? alternatesFor(basePath, enEntry) : [],
     ...(jsonLd ? { jsonLd } : {}),
   }
 }

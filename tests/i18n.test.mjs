@@ -27,6 +27,11 @@ import { SITE_SEO } from '../src/seo/siteSeo.js'
 import { SITE_URL, OFFER_PATHS, BOOKING_URL } from '../src/config.js'
 import { SPRINT, SPRINT_PLUS, ORGANIC, USAGE_RIGHTS } from '../src/seo/businessKnowledge.js'
 import { buildSitemap, localizedSitemapPaths } from '../src/lib/seo/sitemap.js'
+import { isReleased, releaseBlocker, blockedPages } from '../src/i18n/release.js'
+import { displayableFor, titleOf, portfolioProblems } from '../src/content/portfolio.js'
+
+// Pages that are built AND released (the Spanish Showcase is launch-blocked until Spanish-language videos exist).
+const RELEASED_ES = TRANSLATED_PATHS.es.filter((bp) => isReleased('es', bp))
 
 const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), '..')
 const read = (p) => fs.readFileSync(path.join(ROOT, p), 'utf8')
@@ -77,7 +82,7 @@ test('every translated path is a real English page with SEO data and a Spanish t
 })
 
 test('hreflang: one reciprocal set per translated page (en, es, x-default), only for indexable pages; none for untranslated pages', () => {
-  for (const bp of TRANSLATED_PATHS.es) {
+  for (const bp of RELEASED_ES) {
     const set = alternatesFor(bp, SITE_SEO[bp])
     assert.deepEqual(set.map((a) => a.hreflang), ['en', 'es', 'x-default'], bp)
     assert.equal(set[0].href, `${SITE_URL}${bp}`)
@@ -108,7 +113,8 @@ test('sitemap: English entries are unchanged; Spanish canonical URLs are added f
   const xml = buildSitemap()
   for (const p of ['/', '/pricing', '/ugc-video-agency', '/creator-showcase', '/about']) assert.ok(xml.includes(`<loc>${SITE_URL}${p}</loc>`), `English ${p} still listed`)
   const es = localizedSitemapPaths()
-  assert.deepEqual(es, ['/es/', '/es/ugc-video-agency', '/es/spokesperson-video-production', '/es/social-media-video-production', '/es/saas-video-production', '/es/pricing', '/es/creator-showcase', '/es/about', '/es/contact'])
+  assert.deepEqual(es, RELEASED_ES.map((bp) => localizedPath('es', bp)))
+  assert.ok(!es.includes('/es/creator-showcase') || displayableFor('es').length > 0, 'the Spanish Showcase is listed only once Spanish-language videos exist')
   for (const p of es) assert.ok(xml.includes(`<loc>${SITE_URL}${p}</loc>`), p)
   assert.ok(!/<loc>[^<]*\/(fr|ar)(\/|<)/.test(xml), 'no French or Arabic URL')
   assert.ok(!/privacy|terms|legal-notice/.test(es.join()), 'the legal pages are not translated')
@@ -214,7 +220,8 @@ test('Spanish pages: real static HTML with html lang="es", no dir, one self-refe
     assert.deepEqual(tag(h, /<title>([^<]*)<\/title>/g).map((t) => t.replace(/&amp;/g, '&')), [ES_SEO[bp].title], `${p}: title`)
     assert.ok(headOf(h).includes(`content="${ES_SEO[bp].description.replace(/&/g, '&amp;')}"`), `${p}: description`)
     assert.match(headOf(h), /<meta property="og:locale" content="es_ES" \/>/, p)
-    assert.ok(!/name="robots"/.test(headOf(h)), `${p}: indexable (no robots meta)`)
+    if (isReleased('es', bp)) assert.ok(!/name="robots"/.test(headOf(h)), `${p}: indexable (no robots meta)`)
+    else assert.match(headOf(h), /name="robots" content="noindex, follow"/, `${p}: launch-blocked pages are noindex`)
     const h1s = [...h.matchAll(/<h1[\s>]/g)]
     assert.equal(h1s.length, 1, `${p}: exactly one H1`)
     assert.ok(h.includes('data-ssr-path="' + p + '"'), p)
@@ -223,14 +230,14 @@ test('Spanish pages: real static HTML with html lang="es", no dir, one self-refe
 })
 
 test('hreflang in the built HTML is reciprocal: each Spanish page and its English page carry the identical set', () => {
-  for (const bp of TRANSLATED_PATHS.es) {
+  for (const bp of RELEASED_ES) {
     const en = page(bp), es = page(localizedPath('es', bp))
     const set = (h) => tag(h, /<link rel="alternate" hreflang="([^"]+)" href="[^"]+"/g).join(',') + '|' + tag(h, /<link rel="alternate" hreflang="[^"]+" href="([^"]+)"/g).join(',')
     assert.equal(set(en), set(es), bp)
     assert.equal(set(en).split('|')[0], 'en,es,x-default', bp)
   }
   // English pages with NO translation carry no hreflang at all
-  for (const p of ['/blog', '/case-studies/graspo', '/privacy', '/terms', '/legal-notice', '/free-hooks', '/creative-growth-roadmap']) assert.ok(!/hreflang/.test(page(p)), `${p} has no hreflang`)
+  for (const p of ['/blog', '/case-studies/graspo', '/privacy', '/terms', '/legal-notice', '/free-hooks', '/creative-growth-roadmap', ...TRANSLATED_PATHS.es.filter((bp) => !isReleased('es', bp))]) assert.ok(!/hreflang/.test(page(p)), `${p} has no hreflang`)
   assert.ok(!/hreflang="(fr|ar)/.test(ES_PAGES.map(page).join('') + TRANSLATED_PATHS.es.map(page).join('')))
 })
 
@@ -373,4 +380,45 @@ test('hydration data: the Spanish pages prerender the same locale the browser de
   assert.match(read('src/i18n/locale.js'), /parsePath\(window\.location\.pathname\)\.locale/)
   assert.match(read('src/entry-server.jsx'), /window = \{ location: \{ pathname/)
   assert.match(read('src/lib/routes/hydration.js'), /normalizePathname/)
+})
+
+test('Spanish Showcase release gate: its own creators and videos, never the English library; launch-blocked (noindex, no sitemap, no hreflang) until one exists', () => {
+  assert.equal(displayableFor('es').length, 0, 'no approved Spanish-language video exists today')
+  assert.deepEqual(blockedPages('es'), [{ path: '/creator-showcase', reason: 'no approved Spanish-language videos yet' }])
+  assert.ok(releaseBlocker('es', '/creator-showcase') && !releaseBlocker('es', '/pricing'))
+  const h = page('/es/creator-showcase')
+  assert.match(headOf(h), /name="robots" content="noindex, follow"/)
+  assert.ok(!/UGC ad example|Spokesperson video example|example \d/i.test(textOf(h).join('\n')), 'no English-library video appears on the Spanish Showcase')
+  assert.match(textOf(h).join('\n'), /La galería en español se está preparando\./)
+  assert.ok(!fs.readFileSync(path.join(dist, 'sitemap.xml'), 'utf8').includes('/es/creator-showcase'))
+  assert.ok(!/hreflang/.test(page('/creator-showcase')), 'the English Showcase carries no hreflang to the blocked page')
+  // the selector never offers the blocked page: it falls back to the Spanish home
+  assert.equal(switchTarget('es', '/creator-showcase'), '/es/')
+  // service-page galleries on Spanish pages hold no English-library video either
+  for (const p of ['/es/ugc-video-agency', '/es/spokesperson-video-production', '/es/social-media-video-production', '/es/saas-video-production']) assert.ok(!/UGC ad example|Spokesperson video example|Organic social video example|SaaS creator example/.test(textOf(page(p)).join('\n')), p)
+})
+
+test('Spanish-specific video entries: separate copy per language, never a translation of the English titles; validated', () => {
+  const v = { id: 'es-demo', creatorId: 'cv-es-1', caption: 'Un ejemplo.', source: { cloudflareId: 'x' }, languages: ['es'], approval: { status: 'approved', portfolioUse: true, creatorConsent: true }, i18n: { es: { title: 'Título propio en español', caption: 'Descripción propia.' } } }
+  assert.deepEqual(portfolioProblems(v), [])
+  assert.ok(portfolioProblems({ ...v, i18n: { es: { title: '' } } }).length)
+  assert.ok(portfolioProblems({ ...v, i18n: { español: { title: 'x' } } }).length)
+  assert.equal(titleOf(v), 'Un ejemplo.', 'English/default pages read the entry\'s own text')
+  assert.deepEqual(displayableFor('es', [v, { ...v, id: 'en-only', languages: ['en'] }, { ...v, id: 'unset', languages: undefined }]).map((i) => i.id), ['es-demo'], 'only confirmed Spanish-spoken videos; an unset language is never guessed')
+  assert.match(read('src/content/portfolio.js'), /i18n: \{ es: \{ title, caption \} \}/)
+})
+
+test('Spanish share image: reuses the English image only until public/og/convrt-og-es.png exists; when enabled it is a real 1200x630 PNG', async () => {
+  const { ES_OG_IMAGE_READY, ES_OG_IMAGE_PATH } = await import('../src/i18n/es/seo.js')
+  const h = page('/es')
+  if (!ES_OG_IMAGE_READY) return assert.match(h, /og:image" content="https:\/\/www\.convrt\.studio\/og\/convrt-og\.png"/)
+  const buf = fs.readFileSync(path.join(ROOT, 'public', ES_OG_IMAGE_PATH))
+  assert.equal(buf.subarray(1, 4).toString(), 'PNG'); assert.equal(buf.readUInt32BE(16), 1200); assert.equal(buf.readUInt32BE(20), 630)
+  assert.ok(h.includes(`og:image" content="https://www.convrt.studio${ES_OG_IMAGE_PATH}"`))
+})
+
+test('offer matches destination: where Spanish copy describes the Roadmap, the CTA block explains the booking step; the 20-minute claim matches the Calendly event', () => {
+  for (const p of ['/es', '/es/pricing']) assert.match(textOf(page(p)).join('\n'), /La solicitud online de la Hoja de Ruta aún no está disponible en español\. Reserva una llamada estratégica gratuita de 20 minutos/, p)
+  assert.match(read('src/config.js'), /"20-minute strategy call".*"30min" in the URL is a legacy slug/s)
+  assert.ok(!/30[- ]minutes?|30 minutos/i.test(ES_PAGES.map((p) => textOf(page(p)).join(' ')).join(' ')), 'no 30-minute claim on any Spanish page')
 })

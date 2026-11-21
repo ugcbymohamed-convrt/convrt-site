@@ -6,7 +6,8 @@ import { captureAttribution, trackEvent } from './lib/analytics.js'
 import { useDocumentHead } from './lib/useDocumentHead.js'
 import { pageHead } from './seo/siteSeo.js'
 import { PATHS } from './routes.js'
-import { selectOurWork } from './content/portfolio.js'
+import { currentLocale } from './i18n/locale.js'
+import { selectOurWork, forPageLanguage } from './content/portfolio.js'
 import { tr, T, hrefFor } from './i18n/tr.js'
 
 /* /creator-showcase: the Creator Showcase (the route stays /creator-showcase). Examples from independent creators, not all CONVRT productions. Three sections: 1 a compact hero, 2 the filterable video library, 3 a short "what you'll find here" guide with links to the service pages and case studies (Batch 2).
@@ -15,7 +16,7 @@ import { tr, T, hrefFor } from './i18n/tr.js'
    the H1, the intro and the first page of video cards, so crawlers do not need the filtering script. */
 export default function OurWorkPage() {
   useDocumentHead(pageHead(PATHS.showcase))
-  const items = selectOurWork()
+  const items = forPageLanguage(selectOurWork())
 
   const viewed = useRef(false)
   useEffect(() => {
@@ -34,7 +35,7 @@ export default function OurWorkPage() {
           <li aria-current="page" className="text-ink-muted">{tr('Creator Showcase')}</li>
         </ol>
       </nav>
-      <OurWorkHero />
+      <OurWorkHero empty={items.length === 0 && currentLocale() !== 'en'} />
       <PortfolioLibrary items={items} />
       <ShowcaseFormats items={items} />
     </>
