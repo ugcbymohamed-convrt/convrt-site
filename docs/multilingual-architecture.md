@@ -47,9 +47,10 @@ language's home; no redirect, no detection, no cookie or storage (the Privacy Po
 `docs/multilingual-spanish-release.md`, decision 6). French and Arabic appear automatically the day their status becomes `'live'`.
 
 ## Conversion flows
-Roadmap, 1 FREE Video, Free Hooks and Referral are English-only flows with API-coupled option labels. `src/i18n/cta.js` blocks them per language (`LOCALIZED_FLOWS`); for Spanish every CTA that
-pointed at the Roadmap becomes the discovery-call booking (the same Calendly link, new tab, `rel=noopener`), FAQ links into blocked flows are dropped, and the free-offer cards are hidden. Event names are
-unchanged (`primary_cta_click` etc., with `page: 'es'`). No API, validation or business logic was touched; no form exists on a translated page.
+`src/i18n/cta.js` says, per language, which conversion flows exist (`LOCALIZED_FLOWS`). English has all of them. **Spanish has the Roadmap** (`/es/creative-growth-roadmap`): labels, descriptions, validation errors,
+outcomes and the Calendly gate are translated, while option *values* stay English (the qualification logic compares them exactly) and no backend, analytics or Calendly behaviour changed (the Roadmap is client-side
+only; there is no consent box). Risk-free trial, Free Hooks and Referral remain English-only: for Spanish their CTAs are omitted or become the booking call (same Calendly link, new tab, `rel=noopener`), and FAQ
+links into them are dropped. French and Arabic have no flows. To localize another flow: translate its components with `tr()`, build the page into `TRANSLATED_PATHS`, then flip its flag (CTAs switch by themselves).
 
 ## Right-to-left readiness (Arabic)
 `languages.ar.dir = 'rtl'`; the build writes `<html lang="ar" dir="rtl">` for any built RTL locale; `src/index.css` has an Arabic font stack, `letter-spacing: normal` and line-height rules scoped to

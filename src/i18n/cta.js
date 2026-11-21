@@ -11,9 +11,10 @@
 
 import { BOOKING_URL, OFFER_PATHS } from '../config.js'
 import { DEFAULT_LOCALE } from './locales.js'
+import { hrefFor } from './tr.js'
 
 export const LOCALIZED_FLOWS = {
-  es: { roadmap: false, riskFree: false, hooks: false, referrals: false },
+  es: { roadmap: true, riskFree: false, hooks: false, referrals: false },
   fr: { roadmap: false, riskFree: false, hooks: false, referrals: false },
   ar: { roadmap: false, riskFree: false, hooks: false, referrals: false },
 }
@@ -22,7 +23,7 @@ export const LOCALIZED_FLOWS = {
    key). Everything else is returned unchanged. */
 export function resolveCta(locale, { href, external = false, label }) {
   if (locale !== DEFAULT_LOCALE && href === OFFER_PATHS.roadmap && !flowAvailable(locale, 'roadmap')) return { href: BOOKING_URL, external: true, label: 'Book a Creative Call', redirected: true }
-  return { href, external, label, redirected: false }
+  return { href: hrefFor(href, locale), external, label, redirected: false }
 }
 
 export const flowAvailable = (locale, flow) => locale === DEFAULT_LOCALE || LOCALIZED_FLOWS[locale]?.[flow] === true
@@ -30,7 +31,7 @@ export const flowAvailable = (locale, flow) => locale === DEFAULT_LOCALE || LOCA
 /* The primary "start here" action of a page, per language. English keeps the Roadmap. Other languages: the roadmap when its flow is localized,
    otherwise the booking call. `label` is a dictionary key (see src/i18n/es/dict-shell.js). */
 export function primaryAction(locale) {
-  if (flowAvailable(locale, 'roadmap')) return { kind: 'roadmap', label: 'Get 5 Free Ad Concepts', href: OFFER_PATHS.roadmap, external: false, event: 'hero_creative_roadmap_click' }
+  if (flowAvailable(locale, 'roadmap')) return { kind: 'roadmap', label: 'Get 5 Free Ad Concepts', href: hrefFor(OFFER_PATHS.roadmap, locale), external: false, event: 'hero_creative_roadmap_click' }
   return { kind: 'booking', label: 'Book a Creative Call', href: BOOKING_URL, external: true, event: 'primary_cta_click' }
 }
 

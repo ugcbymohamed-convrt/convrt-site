@@ -1,66 +1,55 @@
 # Spanish launch candidate: state, checklist and decisions before publication
 
-Branch `multilingual-foundation-es` (from `origin/main` 5bf3b50). Not merged, not deployed to Production. Merging it **is** the publication act: `src/i18n/locales.js` has `es: 'live'`
-(indexable, sitemap, hreflang, selector). To hold Spanish back after a merge set it to `'review'` (pages stay reachable by URL, noindex, no sitemap/hreflang/selector).
+Branch `multilingual-foundation-es` (rebased onto `origin/main` 61e3652). Not merged, not deployed to Production. Merging it **is** the publication act: `src/i18n/locales.js` has
+`es: 'live'` (indexable pages, sitemap, hreflang, selector). To merge the code without publishing Spanish, set `'review'` (pages stay reachable by URL, noindex, no sitemap/hreflang/selector).
+Live blocker list: `node scripts/es-launch-readiness.mjs` (exit code 1 while any remain).
 
-## Pages prepared (complete native Spanish, same slugs)
-`/es/` · `/es/ugc-video-agency` · `/es/spokesperson-video-production` · `/es/social-media-video-production` · `/es/saas-video-production` · `/es/pricing` · `/es/creator-showcase` · `/es/about` · `/es/contact`.
-Not translated, deliberately: case studies, blog, Roadmap, free hooks, risk-free trial, referrals, /scale, Privacy, Terms, Legal Notice (English remains; see below).
+## Pages prepared (native Spanish, same slugs)
+`/es/` · `/es/ugc-video-agency` · `/es/spokesperson-video-production` · `/es/social-media-video-production` · `/es/saas-video-production` · `/es/pricing` · `/es/creator-showcase` (launch-blocked) ·
+`/es/about` · `/es/contact` · `/es/creative-growth-roadmap` (the application; `noindex`, like the English page, so no sitemap or hreflang).
+Deliberately English-only: case studies, blog, free hooks, risk-free trial, referrals, /scale, Privacy, Terms, Legal Notice.
 
-## Localization completeness checklist
-- [x] 9 pages, visible text, headings, FAQs (5 lists), buttons, aria labels, illustrated scene labels, 404 for `/es/…`
-- [x] Titles/descriptions/OG copy unique per page; self-referencing canonicals; reciprocal hreflang (en, es, x-default); `html lang="es"`
-- [x] FAQ and JSON-LD generated from the same Spanish text; one stable Organization @id; Spanish Services/offers from the business data
-- [x] USD kept, Spanish number notation ("3.000 USD"); all figures verified equal to the English page by test
-- [x] Client quotes verbatim in English, marked `lang="en"`, with a visible note; case-study links labelled "(en inglés)"
-- [x] Creator Showcase: separate Spanish video set supported (language filter, `i18n` copy, release gate); none configured, so the page is launch-blocked
-- [x] Language selector (header, mobile menu, footer); no detection/redirect/storage
-- [x] Conversion CTAs → booking call + email; English-only flows blocked; consent/forms untouched; privacy links kept (English, labelled)
-- [x] English pages byte-identical except the selector and hreflang tags (`scripts/i18n-english-parity.mjs`: 0 differences)
-- [x] Full suite 671 existing + 27 new tests pass; build passes; 404 model: `/fr`, `/ar`, `/es/<missing>`, `/es/privacy` → 404
-- [ ] Native-Spanish reviewer pass (written as natural Spain-Spanish marketing copy: "tú" to the reader, "vosotros" for the studio in FAQ questions, "vídeo", "testeo")
-- [ ] Spanish-language Showcase videos (launch blocker), Spanish OG image, Spanish conversion flows, legal set (see blockers)
+## Completeness checklist
+- [x] Visible text, headings, FAQs, buttons, aria labels, scene labels, form labels/errors/outcomes; 404 for unbuilt `/es/…`, `/fr`, `/ar`
+- [x] Unique titles/descriptions per page from the approved keyword map (`docs/multilingual-spanish-seo-map.md`); self-referencing canonicals; reciprocal hreflang `en`/`es`/`x-default` for indexable pages only
+- [x] FAQ and JSON-LD generated from the same Spanish text; one stable Organization `@id`; the noindex Roadmap has no JSON-LD (as in English)
+- [x] USD only, Spanish notation ("3.000 USD"); figures equal the English page (tests)
+- [x] Client quotes verbatim in English, marked `lang="en"`, with a visible note; English-only case studies labelled "(en inglés)"
+- [x] No language preference is stored (language comes from the URL only)
+- [x] English pages differ from `origin/main` only by the selector and hreflang tags (`scripts/i18n-english-parity.mjs`: 0 differences)
+- [x] Spanish Roadmap application: see below
+- [ ] Native-Spanish review of all copy (see the list in the report)
+- [ ] Spanish-language Showcase videos (blocker 1), Spanish OG image (blocker 2), legal set (blocker 3)
 
-## Launch blockers (live list: `node scripts/es-launch-readiness.mjs`, exit code 1 while any remain)
-1. **Spanish Creator Showcase has no videos.** The Spanish Showcase has its OWN creators and videos (owner, Nov 2026), never the 39 English ones, and none is configured. `/es/creator-showcase` is therefore
-   **launch-blocked**: built and reachable for review, but `noindex`, out of the sitemap and hreflang, the English showcase carries no hreflang to it, the selector falls back to the Spanish home, and the
-   page itself says "La galería en español se está preparando" instead of showing an irrelevant gallery (`src/i18n/release.js`). The four service pages on Spanish also show only Spanish-language videos (none yet), so their
-   galleries are absent. **To add the Spanish videos:** append entries to `src/content/portfolio.js` with `languages: ['es']`, a real `creatorId`, the usual approval flags (only once the creator consented) and, if the
-   English caption would not suit, `i18n: { es: { title, caption } }` copy written for the Spanish page (validated; a Spanish-spoken entry with no `i18n` simply uses its own title/caption). The gate lifts by itself with the first approved
-   Spanish-language video, and the Spanish language filter appears at two spoken languages. The English showcase is untouched. (The homepage hero and the client case-study panels are not "Showcase" content and still use their existing videos.)
-2. **Conversion flows.** Roadmap, 1 FREE Video, Free Hooks and Referral stay English-only (API-coupled option labels). See decision 2.
-3. **Spanish OG image.** The shared image has English text burned in. Recommended: design `public/og/convrt-og-es.png` (1200×630, same layout) with: headline "Creatividades de alto rendimiento diseñadas para *convertir*." (lime on the last word), line "Anuncios UGC · Vídeos para SaaS · Vídeos con presentador · Contenido orgánico", tagline "Creadores reales. Entrega auténtica.", "convrt.studio"; then set `ES_OG_IMAGE_READY = true` in `src/i18n/es/seo.js` (a test validates the file). Interim: keep the English image (the page title, description and alt text are Spanish) or use a text-free image.
-4. **English-only legal pages** (see `docs/multilingual-legal-translation-review.md`).
+## Launch blockers
+1. **Spanish Creator Showcase has no videos.** `/es/creator-showcase` is built but `noindex`, out of the sitemap and hreflang, and the selector falls back to the Spanish home (`src/i18n/release.js`).
+   The four service galleries on Spanish pages are empty for the same reason. Exact information needed, and how an approved video flows to the Showcase and the galleries: `docs/multilingual-spanish-videos.md`.
+   Spanish videos use `languages: ['es']` + `onlyIn: ['es']`, so they never change an English page.
+2. **Spanish OG image.** `public/og/convrt-og-es.png` (1200×630) is missing; Spanish pages share the English image until it exists. Requirements in `docs/multilingual-spanish-videos.md`; flip `ES_OG_IMAGE_READY` after adding it.
+3. **Legal pages.** Privacy, Terms and Legal Notice are English-only (linked from Spanish pages, marked `lang="en"`). Unpublished Spanish drafts for review are outside the repo (`CONVRT/Claude/multilingual-es/legal-translation-review/`); `docs/multilingual-legal-translation-review.md` lists what the lawyer must check.
 
-## Conversion experience (what the Spanish visitor is promised vs where they land)
-- Every Spanish CTA that would have opened the Roadmap now says what it is: **"Reservar una llamada creativa"**, opening the Calendly "20-minute strategy call" in a new tab (same event the English /scale and Organic pages use).
-- Where Spanish copy still describes the free five-concept Roadmap (How it works, the pricing "Roadmap" card) the CTA block now explains the step: *"La solicitud online de la Hoja de Ruta aún no está disponible en español. Reserva una llamada estratégica gratuita de 20 minutos (sujeta a una breve comprobación de encaje, sin compromiso) y te explicamos cómo conseguir tus cinco conceptos publicitarios."* The free-video and free-hooks cards are hidden; FAQ links into blocked flows are removed.
-- **Duration check:** the Calendly event's public title is "20-minute strategy call"; the `30min` in the URL is a legacy slug, not the duration. Site copy ("free 20-minute strategy call") is accurate; comments in `config.js` and `businessKnowledge.js` now say so. (The event's actual length setting lives in your Calendly account; please confirm it is 20.)
-- **Recommended path to a fully Spanish funnel:** (1) Roadmap first: Spanish page + application (labels shown in Spanish, English option values sent unchanged so `roadmapQualification` and the API contract stay as they are), Spanish validation/confirmation messages, subtitled or Spanish version of the Roadmap video, Spanish consent text with its **own recorded version** (not "v2") reviewed by your lawyer; owner-alert emails stay English. (2) Then risk-free and hooks the same way; (3) referral program last. Flip each flag in `LOCALIZED_FLOWS.es` as it ships; CTAs switch automatically. Nothing about the API or the English flows needs to change.
+Not blockers but English-only: free hooks, risk-free trial and referrals (their Spanish CTAs are omitted or send the visitor to the booking call or contact page).
 
-## Decisions needed from the owner before publication
-1. **Spanish videos:** who are the Spanish-speaking creators, and which videos have the creator's consent for portfolio use? (Without them the Showcase stays blocked.) Should the four service pages show the same Spanish set?
-2. **Conversion flow:** launch with the booking call (current), or translate the Roadmap first (recommended), and accept that Spanish visitors currently skip the Roadmap fit questions.
-3. **Legal set:** publish lawyer-reviewed Spanish Privacy/Terms/Legal Notice before indexing (recommended), or accept English-only legal links labelled "(en inglés)".
-4. **Prices in USD for Spain** ("3.000 USD", "sin IVA"): confirm, or approve a displayed EUR reference (would change a commercial claim).
-5. **Spanish OG image:** commission the design above, or publish with the English image.
-6. **Keyword split:** `/es/` = "agencia UGC" (workbook), `/es/ugc-video-agency` = "vídeos UGC / producción de vídeos UGC" (no Planner estimate: a risk, see the SEO map); confirm.
-7. **`hreflang="es"` vs `es-ES`** (used `es`).
-8. **Language preference storage** (not implemented; needs a Privacy Policy line in both languages).
-9. **Testimonials** in the clients' English (verbatim, `lang="en"`) or approved Spanish translations.
-10. **Case studies / blog / Referral program** English-only: link labelled "(en inglés)" or translate case studies next.
-11. **Native Spanish review** of all copy before launch.
-12. **Publishing control:** `es: 'live'` on this branch means merging publishes Spanish including the blocked/blocker items above (the Showcase stays noindex by gate; the rest goes live). Set `'review'` in `src/i18n/locales.js` if you want to merge the code without publishing.
+## Spanish Roadmap (`/es/creative-growth-roadmap`)
+- The English flow, qualification logic, outcomes, Calendly gate/booking and analytics calls are unchanged (no analytics, API or backend line was touched). The Roadmap is entirely client-side: no request is sent to the backend and there is no consent box.
+- Option **values** stay English (qualification compares them exactly); only the displayed labels are Spanish. Spend options read "Menos de 5.000 USD", "Entre 5.000 y 20.000 USD", "Más de 20.000 USD" (USD kept).
+- Outcomes verified in a browser against English with the same answers: qualified → Calendly gate then booking; marketing agency → `/es/#contact`; not ready → `/es/contact` (English offers the free hooks, which exist only in English).
+- Spanish Calendly gate text (the consent-style cookie notice) is a translation of the existing notice and is on the lawyer's list.
+- Hidden on the Spanish page: the Roadmap explainer video (spoken English, no captions).
+- Privacy policy link is the English policy, labelled "(en inglés)".
+- Calendly renders in the visitor's browser language; the event's own name/description and its confirmation emails stay as set in the Calendly account (English). The owner can localize them in Calendly.
 
-## Integration with main (Batch 2 and the showcase titles are now on `origin/main`)
-Update after this branch was cut (from 5bf3b50): `origin/main` is now 61e3652 and already contains SEO/GEO Batch 2 and the Creator Showcase title/caption rewrite. `git merge-tree` against it reports
-**7 textual conflicts**: `CLAUDE.md`, `src/OrganicSocialVideoPage.jsx`, `src/components/Footer.jsx`, `src/components/Services.jsx`, `src/components/pricing/PhilosophySection.jsx`,
-`src/components/pricing/PricingFinalCTA.jsx`, `src/components/ugc/shared.jsx` (plus `tests/pricing.test.mjs`); `src/content/portfolio.js` auto-merges. All are small hunks where both sides edited the same lines.
-**This branch was deliberately not rebased** (not requested; the rebase surfaces the re-translation work below). Next step after your approval: rebase onto main, keep Batch 2's wording inside the `tr()` wrappers,
-and update the dictionary.
-- Batch 2 reworded English FAQs (home, UGC, spokesperson, organic), `businessKnowledge.js` (service labels etc.) and the homepage service label. Because Spanish is keyed by the exact English sentence, **each reworded
-  string makes the Spanish build fail with an exact list of what to re-translate**; nothing goes stale silently.
-- Spanish JSON-LD uses page-scoped service ids, so Batch 2's new English service ids do not collide.
-- **Showcase:** the showcase titles are in main's `portfolio.js`. This branch translates generic captions by pattern (`src/i18n/es/labels.js`); after the rebase the new evidence-based English titles will pass through
-  unchanged (shown as written, in English) until translated. Also, the owner told the showcase session that the **Spanish page will have its own videos**: that is compatible with the language ordering/filter built
-  here (Spanish-spoken entries added to `portfolio.js` with `languages: ['es']` appear first), but the Spanish showcase currently shows the shared library. Please confirm how the Spanish-only set should be defined.
+## Decisions needed from the owner
+1. **Spanish videos:** which creators and videos have written consent for portfolio use, and the spoken language of each (`docs/multilingual-spanish-videos.md`).
+2. **Legal set:** publish lawyer-reviewed Spanish Privacy/Terms/Legal Notice before indexing (recommended), or accept English-only legal links labelled "(en inglés)".
+3. **Spanish OG image:** commission it or publish with the English image.
+4. **Roadmap explainer in Spanish:** provide a Spanish version (audio or burned-in captions), or keep it hidden on the Spanish page.
+5. **Roadmap privacy wording** and the Calendly notice translation: lawyer review.
+6. **Native Spanish review** of all copy before launch.
+7. **Spanish-only video pages and indexing:** a Spanish gallery page follows its English twin's indexability flag. Change only if you want Spanish videos alone to make a page indexable.
+8. **Publishing control:** `es: 'live'` means merging publishes Spanish, including the blocked items above (the Showcase stays noindex by gate). Use `'review'` to merge without publishing.
+
+Closed earlier and kept: USD for Spain, `hreflang="es"`, no language-preference storage, quotes verbatim in English, 20-minute wording (the Calendly event is titled "20-minute strategy call"; the `30min` in the URL is a legacy slug).
+
+## Integration with main
+The branch is rebased on `origin/main` 61e3652 (SEO/GEO Batch 2 and the Showcase titles included). Because Spanish is keyed by the exact English sentence, any later English copy change fails the Spanish build with the exact list to re-translate; nothing goes stale silently.

@@ -1,4 +1,6 @@
 import { useId } from 'react'
+import { tr } from '../../i18n/tr.js'
+import { currentLocale } from '../../i18n/locale.js'
 
 /* ─────────────────────────────────────────────
    Shared application-form fields (Roadmap + Risk-Free Trial pages).
@@ -12,7 +14,7 @@ export function ErrorText({ id, children }) {
         <circle cx="8" cy="8" r="6.25" stroke="currentColor" strokeWidth="1.5" />
         <path d="M8 4.7v3.6M8 10.8v.01" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
       </svg>
-      <span>{children}</span>
+      <span>{typeof children === 'string' ? tr(children) : children}</span>
     </p>
   )
 }
@@ -22,8 +24,8 @@ export function Progress({ label, answered, total }) {
   return (
     <div>
       <div className="flex items-center justify-between text-xs">
-        <p className="font-semibold uppercase tracking-[0.16em] text-lime">{label}</p>
-        <p className="text-ink-muted" aria-live="polite">{answered} of {total} answered</p>
+        <p className="font-semibold uppercase tracking-[0.16em] text-lime">{tr(label)}</p>
+        <p className="text-ink-muted" aria-live="polite">{currentLocale() === 'en' ? <>{answered} of {total} answered</> : tr('{n} of {total} answered').replace('{n}', answered).replace('{total}', total)}</p>
       </div>
       <div className="mt-3 grid gap-2" style={{ gridTemplateColumns: `repeat(${total}, minmax(0, 1fr))` }} aria-hidden="true">
         {Array.from({ length: total }).map((_, i) => (
@@ -47,7 +49,7 @@ export function RadioGroup({ name, legend, options, value, onChange, error, hint
       aria-describedby={error ? errId : hint ? hintId : undefined}
       className="min-w-0"
     >
-      <legend className="mb-2 text-sm font-semibold text-ink">{legend}</legend>
+      <legend className="mb-2 text-sm font-semibold text-ink">{tr(legend)}</legend>
       <div className={`grid ${compact ? 'grid-cols-2' : 'grid-cols-1'} gap-2.5 ${cols}`}>
         {options.map((opt, i) => (
           <label
@@ -69,11 +71,12 @@ export function RadioGroup({ name, legend, options, value, onChange, error, hint
               aria-hidden="true"
               className="h-[18px] w-[18px] shrink-0 rounded-full border border-ink-subtle transition-colors peer-checked:border-lime peer-checked:bg-lime peer-checked:shadow-[inset_0_0_0_4px_#0a0a0b] motion-reduce:transition-none"
             />
-            <span>{opt}</span>
+            {/* The VALUE stays the English option (src/lib/roadmapQuestions.js, matched by the qualification rules); only the label is translated. */}
+            <span>{tr(opt)}</span>
           </label>
         ))}
       </div>
-      {hint && !error && <p id={hintId} className="mt-2 text-xs text-ink-subtle">{hint}</p>}
+      {hint && !error && <p id={hintId} className="mt-2 text-xs text-ink-subtle">{tr(hint)}</p>}
       {error && <ErrorText id={errId}>{error}</ErrorText>}
     </fieldset>
   )

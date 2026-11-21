@@ -1,6 +1,7 @@
 import { trackEvent } from '../../lib/analytics.js'
 import { scrollToApply } from '../../lib/roadmapForm.js'
 import { useInView } from '../caseStudies/shared/useInView.js'
+import { tr } from '../../i18n/tr.js'
 
 /* Scroll-reveal wrapper. Pure CSS transitions; reduced-motion users get the
    final state immediately. Only used below the fold. */
@@ -62,7 +63,7 @@ export function ApplyButton({ location, className = '', children = 'Apply for Yo
       className={`cta-gradient group inline-flex min-h-[52px] items-center justify-center gap-2 rounded-full px-7 py-3.5 text-[15px] font-semibold text-canvas
                   focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-lime ${className}`}
     >
-      {children}
+      {typeof children === 'string' ? tr(children) : children}
       <span aria-hidden="true" className="transition-transform duration-200 group-hover:translate-x-0.5 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0">→</span>
     </a>
   )

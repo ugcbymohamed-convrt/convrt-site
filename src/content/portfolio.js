@@ -31,6 +31,8 @@
                                                // but under no tab, and never under Other. 'other' means "confirmed: none of the above". Any other slug
                                                // (beauty, finance ...) is a confirmed industry that groups under the Other tab and shows its own name on the card.
        languages: ['en'],                      // ISO 639-1 codes of the spoken language(s). Optional: leave it out until confirmed (no badge is shown).
+       onlyIn: ['es'],                         // optional: limit the video to a language site. A Spanish creator's video uses languages: ['es'] AND onlyIn: ['es'] so it shows on /es/ pages only
+                                               // (the Spanish Showcase and the matching Spanish service galleries) and never changes an English page. See docs/multilingual-spanish-videos.md.
        production: 'independent',              // optional, and unknown unless confirmed: 'independent' = a creator's own example, supplied to show their
                                                // capabilities (CONVRT did not necessarily produce it) | 'convrt' = produced through CONVRT. Leave it out when unknown.
                                                // The Creator Showcase never calls a video CONVRT's work unless this is 'convrt'.
@@ -76,6 +78,7 @@
    • tests/ugc-page.test.mjs and tests/creator-showcase.test.mjs validate every entry (unique ids, valid codes, source, permission flags). */
 
 import { currentLocale } from '../i18n/locale.js'
+import { DEFAULT_LOCALE } from '../i18n/locales.js'
 import { ES_LANGUAGE_LABELS, ES_INDUSTRY_LABELS, ES_TYPE_LABELS, ES_PRODUCTION_LABELS, captionEs } from '../i18n/es/labels.js'
 
 export const PORTFOLIO = [
@@ -1111,6 +1114,11 @@ export function portfolioProblems(item) {
   if (item.productionCredit !== undefined && (typeof item.productionCredit !== 'string' || !item.productionCredit.trim())) p.push('productionCredit must be a non-empty string')
   const langsOk = Array.isArray(item.languages) && item.languages.length > 0 && item.languages.every((l) => /^[a-z]{2}$/.test(l))
   if (item.languages !== undefined && !langsOk) p.push('languages must be a non-empty list of 2-letter ISO 639-1 codes')
+  if (item.onlyIn !== undefined) {
+    const ok = Array.isArray(item.onlyIn) && item.onlyIn.length > 0 && item.onlyIn.every((l) => /^[a-z]{2}$/.test(l))
+    if (!ok) p.push('onlyIn must be a non-empty list of 2-letter language codes (the language sites that may show this video)')
+    else if (!item.onlyIn.includes('en') && !item.onlyIn.every((l) => (item.languages ?? []).includes(l))) p.push('onlyIn: a video limited to other languages must list those languages in `languages` (its confirmed spoken language)')
+  }
   const hasCf = Boolean(item.source?.cloudflareId)
   const hasMp4 = Boolean(item.source?.mp4)
   if (hasCf === hasMp4) p.push('source needs exactly one of cloudflareId or mp4')
@@ -1152,9 +1160,15 @@ export const isShowcaseable = (item) => portfolioProblems(item).length === 0 && 
    the Spanish pages never show the English library, and a video with no recorded language is never guessed into a language. English is unchanged. It is NOT applied inside the selectors, because
    module-level code (the SEO manifest's `indexable` flags) must stay language-independent. */
 export const forPageLanguage = (items) => (currentLocale() === 'en' ? items : items.filter((i) => (i.languages ?? []).includes(currentLocale())))
-export const selectDisplayable = (items = PORTFOLIO) => items.filter(isDisplayable)
+/* `onlyIn: ['es']` limits a video to the Spanish site: it is then invisible to every English-facing consumer (English pages, the English indexable flags, English JSON-LD), so adding a
+   Spanish-only video can never change an English page. With no `onlyIn` a video behaves exactly as before. */
+const shownIn = (item, locale) => !item.onlyIn || item.onlyIn.includes(locale)
+/* The English library: what module-level, language-independent code (the SEO manifest) must read. */
+export const ENGLISH_LIBRARY = PORTFOLIO.filter((i) => shownIn(i, DEFAULT_LOCALE))
+/* Always the library of the page being rendered: English pages (and anything evaluated without a page) never see Spanish-only videos. */
+export const selectDisplayable = (items = PORTFOLIO) => items.filter((i) => shownIn(i, currentLocale()) && isDisplayable(i))
 /* Approved videos for a language, independent of the page being rendered (used by the release gate, the sitemap and the tests). */
-export const displayableFor = (locale, items = PORTFOLIO) => items.filter(isDisplayable).filter((i) => locale === 'en' || (i.languages ?? []).includes(locale))
+export const displayableFor = (locale, items = PORTFOLIO) => items.filter(isDisplayable).filter((i) => shownIn(i, locale) && (locale === 'en' || (i.languages ?? []).includes(locale)))
 
 /* /creator-showcase: everything approved for the portfolio. */
 export const selectOurWork = selectDisplayable
@@ -1184,7 +1198,7 @@ export const selectSaasHero = (items = PORTFOLIO) => selectSaas(items).filter((i
 export const selectSaasGallery = (items = PORTFOLIO) => selectSaas(items).filter((i) => placementOn(i, 'saas') !== 'hero')
 
 /* Homepage client panel `id` ('adscale' | 'elyon' | 'graspo'). */
-export const selectShowcase = (id, items = PORTFOLIO) => items.filter((i) => isShowcaseable(i) && i.showcase === id)
+export const selectShowcase = (id, items = PORTFOLIO) => items.filter((i) => shownIn(i, currentLocale()) && isShowcaseable(i) && i.showcase === id)
 
 /* Name shown on a card: only with explicit permission. */
 export const creatorLabel = (item) => (item.creator?.showName === true && item.creator?.displayName ? item.creator.displayName : null)

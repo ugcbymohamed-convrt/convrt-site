@@ -29,7 +29,7 @@ import { currentLocale } from '../i18n/locale.js'
 import { DEFAULT_LOCALE } from '../i18n/locales.js'
 import { alternatesFor, localizedHead } from '../i18n/seo.js'
 import { localizedJsonLd } from '../i18n/structuredData.js'
-import { selectOurWork, selectSpokespersonHero, selectSpokespersonGallery, selectOrganicHero, selectOrganicGallery, selectSaasHero, selectSaasGallery } from '../content/portfolio.js'
+import { selectOurWork, selectSpokespersonHero, selectSpokespersonGallery, selectOrganicHero, selectOrganicGallery, selectSaasHero, selectSaasGallery, ENGLISH_LIBRARY } from '../content/portfolio.js'
 
 export const SITE_SEO = {
   '/': {
@@ -63,7 +63,7 @@ export const SITE_SEO = {
     ogDescription: 'Human-led, multilingual spokesperson videos for websites, product demos, apps and paid advertising, from script to finished edit.',
     // Indexable (and in the sitemap) once at least one spokesperson video is approved for this page, so the page is not promoted to search while
     // its showcase is still empty. It flips by itself when the first approved spokesperson video is added to src/content/portfolio.js.
-    indexable: selectSpokespersonHero().length + selectSpokespersonGallery().length > 0,
+    indexable: selectSpokespersonHero(ENGLISH_LIBRARY).length + selectSpokespersonGallery(ENGLISH_LIBRARY).length > 0,
   },
   [PATHS.socialMediaVideoProduction]: {
     title: 'Organic Social Media Video Production & Management | CONVRT',
@@ -73,7 +73,7 @@ export const SITE_SEO = {
     ogDescription: 'Human-led short-form videos for organic social media, from content strategy and scripting to filming, editing, posting and community management.',
     // Indexable (and in the sitemap) once at least one approved organic video exists for this page, so the page is not promoted to search while its showcase is still
     // empty. It flips by itself when the first approved organic video is added to src/content/portfolio.js (same rule as the spokesperson page and /our-work).
-    indexable: selectOrganicHero().length + selectOrganicGallery().length > 0,
+    indexable: selectOrganicHero(ENGLISH_LIBRARY).length + selectOrganicGallery(ENGLISH_LIBRARY).length > 0,
   },
   [PATHS.saasVideoProduction]: {
     title: 'SaaS Video Production Agency | Explainers, Demos & Ads | CONVRT',
@@ -83,7 +83,7 @@ export const SITE_SEO = {
     ogDescription: 'Explainers, product demos, animated videos and video ads for software companies, with strategy, scripting, presenters, motion graphics and editing in one place.',
     // Indexable (and in the sitemap) once at least one approved SaaS video exists for this page, so the page is not promoted to search while its showcase is still empty.
     // It flips by itself when the first approved SaaS video is added to src/content/portfolio.js (same rule as the Spokesperson and Organic Social pages and /our-work).
-    indexable: selectSaasHero().length + selectSaasGallery().length > 0,
+    indexable: selectSaasHero(ENGLISH_LIBRARY).length + selectSaasGallery(ENGLISH_LIBRARY).length > 0,
   },
   [PATHS.showcase]: {
     title: 'Creator Showcase | UGC Video Examples | CONVRT',
@@ -92,7 +92,7 @@ export const SITE_SEO = {
     ogTitle: 'CONVRT Creator Showcase: UGC Video Examples',
     ogDescription: 'Explore real creator videos across e-commerce, SaaS, services and more. Examples from independent creators.',
     // Indexable (and in the sitemap) only while at least one video is approved for the portfolio, so an empty library is never promoted to search.
-    indexable: selectOurWork().length > 0,
+    indexable: selectOurWork(ENGLISH_LIBRARY).length > 0,
   },
   '/case-studies/graspo': {
     title: 'Graspo Case Study: 10.7M Organic Views, Arabic-First Social | CONVRT',

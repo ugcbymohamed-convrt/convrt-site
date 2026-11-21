@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { BOOKING_URL } from '../../config.js'
 import { trackEvent, withUtm } from '../../lib/analytics.js'
+import { tr } from '../../i18n/tr.js'
 
 /* Booking calendar gate. Calendly (a third party) is NOT contacted until the visitor asks for the calendar.
 
@@ -45,15 +46,15 @@ export default function CalendlyGate({ page, children, className = '', onShow })
 
   return (
     <div className={`flex flex-col items-center justify-center rounded-2xl border border-hairline bg-surface-1/60 px-5 py-8 text-center sm:px-8 ${className}`}>
-      <h4 className="font-display text-lg font-bold tracking-display text-ink sm:text-xl">Show the booking calendar</h4>
-      <p className="mt-3 max-w-md text-[14px] leading-relaxed text-ink-muted">{CALENDLY_NOTICE}</p>
+      <h4 className="font-display text-lg font-bold tracking-display text-ink sm:text-xl">{tr('Show the booking calendar')}</h4>
+      <p className="mt-3 max-w-md text-[14px] leading-relaxed text-ink-muted">{tr(CALENDLY_NOTICE)}</p>
       <div className="mt-6 flex w-full max-w-sm flex-col gap-3 sm:max-w-none sm:flex-row sm:justify-center">
         <button
           type="button"
           onClick={request}
           className="cta-gradient inline-flex min-h-[48px] items-center justify-center rounded-full px-6 py-3 text-[15px] font-semibold text-canvas focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-lime"
         >
-          Show the calendar
+          {tr('Show the calendar')}
         </button>
         <a
           href={withUtm(BOOKING_URL)}
@@ -62,7 +63,7 @@ export default function CalendlyGate({ page, children, className = '', onShow })
           onClick={() => trackEvent('calendar_newtab_click', { page })}
           className="inline-flex min-h-[48px] items-center justify-center rounded-full border border-hairline-strong bg-surface-2 px-6 py-3 text-[15px] font-semibold text-ink transition-colors hover:bg-surface-3 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-lime"
         >
-          Open Calendly in a new tab
+          {tr('Open Calendly in a new tab')}
         </a>
       </div>
     </div>

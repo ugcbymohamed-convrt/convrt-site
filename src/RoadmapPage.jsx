@@ -8,6 +8,7 @@ import { captureAttribution, trackEvent } from './lib/analytics.js'
 import { OFFER_PATHS } from './config.js'
 import { useDocumentHead } from './lib/useDocumentHead.js'
 import { pageHead } from './seo/siteSeo.js'
+import { currentLocale } from './i18n/locale.js'
 
 export default function RoadmapPage() {
   useDocumentHead(pageHead(OFFER_PATHS.roadmap))
@@ -22,7 +23,8 @@ export default function RoadmapPage() {
 
   return (
     <>
-      <RoadmapVideo />
+      {/* The explainer video is spoken English with no Spanish version or captions: it is not shown on translated pages (a Spanish version is a launch asset, see docs). */}
+      {currentLocale() === 'en' && <RoadmapVideo />}
       <RoadmapHero />
       <SectionDivider />
       <RoadmapApplication />

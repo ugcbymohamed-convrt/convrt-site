@@ -19,6 +19,8 @@ export const TRANSLATED_PATHS = {
     '/creator-showcase',
     '/about',
     '/contact',
+    // The Free Creative Growth Roadmap application (noindex like the English page, so never in the sitemap or hreflang): translated end to end.
+    '/creative-growth-roadmap',
   ],
   // French and Arabic: nothing is translated yet, so nothing is routed. See docs/multilingual-french-arabic-backlog.md.
   fr: [],

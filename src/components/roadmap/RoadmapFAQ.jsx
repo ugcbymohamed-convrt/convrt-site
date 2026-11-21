@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Reveal, SectionHeader } from './shared.jsx'
+import { tr } from '../../i18n/tr.js'
 
 /* Accessible accordion: each question is a <button aria-expanded aria-controls>
    inside a heading; each answer is a labelled region. Collapsed answers are
@@ -41,7 +42,7 @@ export default function RoadmapFAQ() {
     <section aria-labelledby="faq-heading" className="relative py-16 md:py-24">
       <div className="mx-auto max-w-3xl px-5 md:px-8">
         <Reveal>
-          <SectionHeader id="faq-heading" eyebrow="FAQ" title="Questions, answered." />
+          <SectionHeader id="faq-heading" eyebrow={tr('FAQ')} title={tr('Questions, answered.')} />
         </Reveal>
 
         <Reveal className="mt-10 md:mt-12">
@@ -62,7 +63,7 @@ export default function RoadmapFAQ() {
                       className="flex min-h-[56px] w-full items-center justify-between gap-5 py-5 text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-lime"
                     >
                       <span className={`text-base font-semibold leading-snug transition-colors motion-reduce:transition-none md:text-lg ${isOpen ? 'text-ink' : 'text-ink/80'}`}>
-                        {item.q}
+                        {tr(item.q)}
                       </span>
                       <span
                         aria-hidden="true"
@@ -81,7 +82,7 @@ export default function RoadmapFAQ() {
                     className={`grid transition-[grid-template-rows,visibility] duration-300 ease-out motion-reduce:transition-none ${isOpen ? 'visible grid-rows-[1fr]' : 'invisible grid-rows-[0fr]'}`}
                   >
                     <div className="overflow-hidden">
-                      <p className="pb-6 pr-8 text-[15px] leading-[1.75] text-ink-muted">{item.a}</p>
+                      <p className="pb-6 pr-8 text-[15px] leading-[1.75] text-ink-muted">{tr(item.a)}</p>
                     </div>
                   </div>
                 </div>

@@ -415,7 +415,7 @@ test('final CTA: the same system as the other service pages, with the organic he
   assert.deepEqual(ORGANIC_HERO.primary, { label: 'Discuss Your Content Strategy', href: BOOKING_URL, external: true })
   assert.equal(ORGANIC_PAGE_CTA.primary.href, ORGANIC_HERO.primary.href, 'the hero and the final CTA share one verified destination')
   assert.equal(BOOKING_URL, 'https://calendly.com/mohamed-convrt/30min', 'the existing site-wide booking link, not a new one')
-  assert.match(read('src/i18n/cta.js'), /label: 'Get 5 Free Ad Concepts', href: OFFER_PATHS\.roadmap/, 'the global header CTA is untouched (English keeps the Roadmap)')
+  assert.match(read('src/i18n/cta.js'), /label: 'Get 5 Free Ad Concepts', href: hrefFor\(OFFER_PATHS\.roadmap, locale\)/, 'the global header CTA is untouched (English keeps the Roadmap)')
   // the roadmap application itself is untouched by this page
   assert.match(read('src/lib/roadmapQualification.js'), /QUALIFYING_TIMELINES = \['Immediately \/ This month', 'Within 1–3 months'\]/)
 })

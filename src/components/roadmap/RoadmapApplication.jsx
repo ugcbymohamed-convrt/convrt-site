@@ -1,7 +1,10 @@
 import { useEffect, useRef, useState } from 'react'
 import { trackEvent } from '../../lib/analytics.js'
 import { scrollToElement } from '../../lib/scroll.js'
-import { OFFER_PATHS, PRIVACY_POLICY_URL, ROADMAP_BOOKING_URL } from '../../config.js'
+import { OFFER_PATHS, PRIVACY_POLICY_URL, ROADMAP_BOOKING_URL, CONTACT_PATH } from '../../config.js'
+import { tr, hrefFor } from '../../i18n/tr.js'
+import { currentLocale } from '../../i18n/locale.js'
+import { flowAvailable } from '../../i18n/cta.js'
 import {
   BUSINESS_TYPE_OPTIONS,
   SPEND_OPTIONS,
@@ -112,22 +115,17 @@ export default function RoadmapApplication() {
             <Reveal early>
               <div className="inline-flex items-center gap-2.5">
                 <span className="h-px w-8 bg-lime" aria-hidden="true" />
-                <span className="text-xs font-semibold uppercase tracking-[0.2em] text-lime">Apply</span>
+                <span className="text-xs font-semibold uppercase tracking-[0.2em] text-lime">{tr('Apply')}</span>
               </div>
               <h2
                 id="apply-heading"
                 tabIndex={-1}
                 className="mt-5 font-display text-[1.9rem] font-bold leading-[1.06] tracking-display text-ink outline-none sm:text-4xl md:text-[2.75rem]"
-              >
-                Let’s Find Your Next 5 Ad Concepts.
-              </h2>
-              <p className="mt-4 text-base leading-relaxed text-ink-muted md:text-lg">
-                Answer five quick questions. If your brand is a good fit, you can choose a time for your free strategy
-                session straight away.
-              </p>
+              >{tr('Let’s Find Your Next 5 Ad Concepts.')}</h2>
+              <p className="mt-4 text-base leading-relaxed text-ink-muted md:text-lg">{tr('Answer five quick questions. If your brand is a good fit, you can choose a time for your free strategy session straight away.')}</p>
 
               <div className="mt-8 hidden rounded-3xl border border-hairline bg-surface-1/60 p-6 lg:block">
-                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-ink-subtle">What happens next</p>
+                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-ink-subtle">{tr('What happens next')}</p>
                 <NextSteps />
               </div>
             </Reveal>
@@ -143,7 +141,7 @@ export default function RoadmapApplication() {
                   <Alternative kind={result.status} headingRef={resultHeadingRef} onChange={changeAnswers} />
                 )
               ) : (
-                <form ref={formRef} onSubmit={onSubmit} noValidate aria-label="Creative Growth Roadmap qualification">
+                <form ref={formRef} onSubmit={onSubmit} noValidate aria-label={tr('Creative Growth Roadmap qualification')}>
                   <Progress label="Quick fit check" answered={answered} total={FIELDS.length} />
 
                   <div className="mt-7 space-y-7">
@@ -169,16 +167,16 @@ export default function RoadmapApplication() {
                       value={values.investment} error={errors.investment} onChange={set('investment')} columns={1}
                     />
 
-                    <button type="submit" className={`${primaryBtn} w-full`}>
-                      Continue <span aria-hidden="true">→</span>
+                    <button type="submit" className={`${primaryBtn} w-full`}>{tr('Continue')}{' '}<span aria-hidden="true">→</span>
                     </button>
 
                     <p className="text-xs leading-relaxed text-ink-subtle">
-                      Your answers stay in your browser and are only used to check fit.
+                      {tr('Your answers stay in your browser and are only used to check fit.')}
                       {PRIVACY_POLICY_URL && (
                         <>
-                          {' '}See our{' '}
-                          <a href={PRIVACY_POLICY_URL} className="text-ink-muted underline underline-offset-2 hover:text-lime">privacy policy</a>.
+                          {' '}{tr('See our')}{' '}
+                          {/* The policy exists in English only: from other languages the link says so and is marked lang="en". */}
+                          <a href={PRIVACY_POLICY_URL} {...(currentLocale() === 'en' ? {} : { lang: 'en' })} className="text-ink-muted underline underline-offset-2 hover:text-lime">{currentLocale() === 'en' ? 'privacy policy' : tr('privacy policy (in English)')}</a>.
                         </>
                       )}
                     </p>
@@ -204,11 +202,11 @@ const primaryBtn =
 
 function NextSteps() {
   return (
-    <ol className="mt-4 space-y-3.5 lg:mt-4" aria-label="What happens next">
+    <ol className="mt-4 space-y-3.5 lg:mt-4" aria-label={tr('What happens next')}>
       {NEXT_STEPS.map((t, i) => (
         <li key={t} className="flex gap-3 text-sm leading-snug text-ink-muted">
           <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-lime/30 text-xs font-bold tabular-nums text-lime" aria-hidden="true">{i + 1}</span>
-          <span>{t}</span>
+          <span>{tr(t)}</span>
         </li>
       ))}
     </ol>
@@ -240,34 +238,37 @@ const ALTERNATIVES = {
 }
 
 function Alternative({ kind, headingRef, onChange }) {
-  const alt = ALTERNATIVES[kind]
+  const locale = currentLocale()
+  let alt = ALTERNATIVES[kind]
+  // The free-hooks flow is English-only: where it is not translated, the "not ready" outcome offers the contact page instead of a link into it (the offer itself is not changed).
+  if (kind === 'not_ready' && !flowAvailable(locale, 'hooks')) {
+    alt = { ...alt, body: alt.body.slice(0, 1), cta: 'Contact CONVRT', href: CONTACT_PATH, event: 'roadmap_alt_contact_click' }
+  }
   return (
     <div className="px-1 py-4 text-center sm:py-8" role="status">
       <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full border border-lime/40 bg-lime/10 text-lime">
         <Check className="h-6 w-6" />
       </div>
       <h3 ref={headingRef} tabIndex={-1} className="mt-6 font-display text-3xl font-bold tracking-display text-ink outline-none">
-        {alt.title}
+        {tr(alt.title)}
       </h3>
       {alt.body.map((t) => (
-        <p key={t} className="mx-auto mt-4 max-w-md text-base leading-relaxed text-ink-muted">{t}</p>
+        <p key={t} className="mx-auto mt-4 max-w-md text-base leading-relaxed text-ink-muted">{tr(t)}</p>
       ))}
       <div className="mt-8 flex flex-col items-stretch justify-center gap-3 sm:flex-row sm:items-center">
         <a
-          href={alt.href}
+          href={hrefFor(alt.href)}
           onClick={() => trackEvent(alt.event)}
           className={`${primaryBtn} group`}
         >
-          {alt.cta}
+          {tr(alt.cta)}
           <span aria-hidden="true" className="transition-transform duration-200 group-hover:translate-x-0.5 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0">→</span>
         </a>
         <button
           type="button"
           onClick={onChange}
           className="inline-flex min-h-[48px] items-center justify-center rounded-full border border-hairline-strong px-6 py-3 text-sm font-semibold text-ink transition-colors hover:border-lime/50 hover:text-lime focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-lime"
-        >
-          ← Change my answers
-        </button>
+        >{tr('← Change my answers')}</button>
       </div>
     </div>
   )

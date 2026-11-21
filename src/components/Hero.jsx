@@ -89,7 +89,7 @@ export default function Hero() {
                 12 offer→button, 32 / 40 button→secondary, 12 label→cards. */}
             <div className="lg:mt-6">
               <p className="mb-3 text-balance text-[15px] md:text-base font-medium leading-snug text-ink">
-                {en ? <>Your next 5 ad concepts. Tailored to your brand. <span className="text-lime">On us.</span></> : <>{tr('Book a free strategy call.')} <span className="text-lime">{tr('We tell you exactly what you need.')}</span></>}
+                {en ? <>Your next 5 ad concepts. Tailored to your brand. <span className="text-lime">On us.</span></> : flowAvailable(locale, 'roadmap') ? <>{tr('Your next 5 ad concepts. Tailored to your brand.')} <span className="text-lime">{tr('On us.')}</span></> : <>{tr('Book a free strategy call.')} <span className="text-lime">{tr('We tell you exactly what you need.')}</span></>}
               </p>
               <div className="flex flex-col items-stretch gap-3 sm:flex-row sm:items-center sm:justify-center lg:justify-start">
                 <a

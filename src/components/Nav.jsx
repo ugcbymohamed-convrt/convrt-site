@@ -71,7 +71,7 @@ export default function Nav() {
   // On the roadmap landing page itself, the CTA scrolls to the application form
   // instead of reloading the page it's already on.
   const onRoadmapPage =
-    locale === 'en' && typeof window !== 'undefined' ? window.location.pathname.replace(/\/$/, '') === OFFER_PATHS.roadmap : false
+    typeof window !== 'undefined' ? basePath === OFFER_PATHS.roadmap : false
   // Translated pages: the primary action is the language's own flow (src/i18n/cta.js). Spanish: the discovery-call booking, in a new tab, until the Roadmap is translated.
   const localizedBooking = locale !== 'en' && action.kind === 'booking'
   const ctaLabel = onScalePage ? 'Book a Discovery Call' : tr(action.label)

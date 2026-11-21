@@ -73,9 +73,14 @@ export const ES_SEO = {
     description:
       'Estudio creativo liderado por su fundador que produce anuncios UGC, vídeos para SaaS, vídeos con presentador y contenido orgánico para redes sociales en español, inglés, francés y árabe.',
   },
+  '/creative-growth-roadmap': {
+    title: 'Hoja de ruta de crecimiento creativo gratuita | CONVRT',
+    description:
+      'Solicita cinco conceptos publicitarios personalizados para tu marca. Ángulos creativos, ganchos y recomendaciones de testeo de CONVRT, presentados en una sesión estratégica gratuita.',
+  },
   '/contact': {
     title: 'Contacto | Habla con el estudio de CONVRT',
     description:
-      'Contacta con CONVRT por correo electrónico o reserva una llamada creativa. Estudio de vídeo liderado por su fundador para marcas SaaS, e-commerce y apps.',
+      'Contacta con CONVRT por correo, reserva una llamada creativa o solicita la Hoja de Ruta de Crecimiento Creativo gratuita. Estudio de vídeo liderado por su fundador para SaaS, e-commerce y apps.',
   },
 }

@@ -1,5 +1,6 @@
 import { ApplyButton } from './shared.jsx'
 import ConceptCardsVisual from './ConceptCardsVisual.jsx'
+import { tr } from '../../i18n/tr.js'
 
 /* ─────────────────────────────────────────────
    HERO — the offer, one CTA, and a stack of five colour-coded concept cards
@@ -22,29 +23,26 @@ export default function RoadmapHero() {
           <div className="min-w-0 lg:col-span-7">
             <div className="inline-flex max-w-full items-center gap-2 rounded-2xl border border-hairline bg-surface-1/60 px-3.5 py-1.5 backdrop-blur sm:rounded-full">
               <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-lime" aria-hidden="true" />
-              <span className="text-[10px] font-medium uppercase tracking-[0.14em] text-ink-muted min-[400px]:text-[11px] min-[400px]:tracking-[0.16em] sm:text-xs sm:tracking-[0.18em]">
-                Free Creative Strategy · By Application
-              </span>
+              <span className="text-[10px] font-medium uppercase tracking-[0.14em] text-ink-muted min-[400px]:text-[11px] min-[400px]:tracking-[0.16em] sm:text-xs sm:tracking-[0.18em]">{tr('Free Creative Strategy · By Application')}</span>
             </div>
 
             <h1 className="mt-6 font-display font-bold text-ink tracking-display-xl leading-[1.03] text-[2.2rem] min-[400px]:text-[2.75rem] sm:text-[3rem] md:text-[3.5rem] lg:text-[2.75rem] xl:text-[3.6rem]">
-              <span className="block">Your Next 5 Ad Concepts.</span>
-              <span className="block">Built for Your Brand.</span>
-              <span className="block text-lime">On Us.</span>
+              <span className="block">{tr('Your Next 5 Ad Concepts.')}</span>
+              <span className="block">{tr('Built for Your Brand.')}</span>
+              <span className="block text-lime">{tr('On Us.')}</span>
             </h1>
 
             <p className="mt-6 max-w-xl text-base leading-relaxed text-ink-muted md:text-lg">
-              <span className="font-semibold text-ink">Stop guessing what ad to create next.</span>
+              <span className="font-semibold text-ink">{tr('Stop guessing what ad to create next.')}</span>
               <br />
-              Get five personalized advertising concepts built around your brand, audience, and growth
-              goals, presented in a free creative strategy session with CONVRT.
+              {tr('Get five personalized advertising concepts built around your brand, audience, and growth goals, presented in a free creative strategy session with CONVRT.')}
             </p>
 
             <div className="mt-8 flex flex-col items-stretch gap-4 sm:items-start">
               <ApplyButton location="hero" className="w-full sm:w-auto" />
               <div className="text-sm leading-relaxed text-ink-subtle">
-                <p>For brands in every industry. No obligation.</p>
-                <p>Takes about a minute. Qualifying brands can book right away.</p>
+                <p>{tr('For brands in every industry. No obligation.')}</p>
+                <p>{tr('Takes about a minute. Qualifying brands can book right away.')}</p>
               </div>
             </div>
           </div>

@@ -35,12 +35,14 @@ const BREADCRUMB_NAMES = {
   '/creator-showcase': 'Creator Showcase',
   '/about': 'Sobre CONVRT',
   '/contact': 'Contacto',
+  '/creative-growth-roadmap': 'Hoja de ruta de crecimiento creativo',
 }
 
 const PAGE_TYPE = { '/about': 'AboutPage', '/contact': 'ContactPage', '/creator-showcase': 'CollectionPage' }
 
 export function localizedJsonLd(locale, basePath, seo = {}) {
   if (locale !== LOCALE) return undefined
+  if (basePath === '/creative-growth-roadmap') return undefined // like the English page: noindex, no structured data
   const url = absoluteUrl(LOCALE, basePath)
   const { title, description } = seoFor(basePath, seo)
   const isHome = basePath === '/'

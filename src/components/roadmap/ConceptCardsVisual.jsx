@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react'
+import { tr } from '../../i18n/tr.js'
 
 /* ─────────────────────────────────────────────
    HERO VISUAL — five stacked creative-concept cards.
@@ -110,7 +111,7 @@ export default function ConceptCardsVisual() {
     <figure
       className="mx-auto w-full max-w-[380px] sm:max-w-[460px] lg:max-w-[520px]"
       role="img"
-      aria-label="Illustration of five stacked, colour-coded creative concept cards: problem and solution, social proof, pattern interrupt, product demonstration and objection breaker"
+      aria-label={tr('Illustration of five stacked, colour-coded creative concept cards: problem and solution, social proof, pattern interrupt, product demonstration and objection breaker')}
     >
       {/* dangerouslySetInnerHTML: React's server renderer HTML-escapes text inside <style> (') but browsers read
           <style> content literally, which broke the .rc-deco rule in the static HTML. The CSS is a constant. */}
@@ -143,20 +144,20 @@ export default function ConceptCardsVisual() {
               <div className="rc-head">
                 <p className="rc-num">
                   {c.n}
-                  <span>Concept</span>
+                  <span>{tr('Concept')}</span>
                 </p>
                 <span className="rc-chip"><Icon name={c.icon} /></span>
               </div>
-              <p className="rc-title">{c.title}</p>
+              <p className="rc-title">{tr(c.title)}</p>
 
               {/* Lower part of the card: only the front card shows it in full. */}
               <span className="rc-deco" />
-              {c.blurb && <p className="rc-blurb">{c.blurb}</p>}
+              {c.blurb && <p className="rc-blurb">{tr(c.blurb)}</p>}
             </div>
           ))}
        </div>
 
-       <figcaption className="mt-4 text-center text-xs text-ink-subtle">Illustrative concept ideas, not real ads.</figcaption>
+       <figcaption className="mt-4 text-center text-xs text-ink-subtle">{tr('Illustrative concept ideas, not real ads.')}</figcaption>
       </div>
     </figure>
   )
