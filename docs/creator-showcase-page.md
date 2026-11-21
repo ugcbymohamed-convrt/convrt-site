@@ -55,3 +55,5 @@ only when tagged).
   `src/lib/hls.js`: native HLS on Safari/iOS, hls.js elsewhere). Closing stops and releases the stream.
 - Language filtering is prepared (`languages`, `buildFacets`, `matchesFilters` in `portfolio.js`) but no filter row is shown.
 - Tests: `tests/creator-showcase.test.mjs`; the portfolio gate is also covered by `tests/ugc-page.test.mjs`.
+
+Descriptive titles and their evidence: `docs/creator-showcase-titles.md`. A title must describe what the footage shows (never a brand or creator name without permission); videos whose subject could not be verified carry a format-only title and are listed there for manual identification.

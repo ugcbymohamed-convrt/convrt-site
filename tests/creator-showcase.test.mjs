@@ -472,7 +472,7 @@ test('Creator Showcase folder: 12 creator videos (6 of the original 18 are now s
     assert.equal(v.languages, undefined, `${v.id}: language not guessed`)
     assert.equal(v.brand, undefined, `${v.id}: no brand`)
     assert.equal(v.production, undefined, `${v.id}: production unknown`)
-    assert.ok(/^UGC ad example \d+$/.test(v.title), `${v.id}: placeholder title, not invented`)
+    assert.ok(v.title && v.title.length <= 60 && !/example \d+/i.test(v.title), `${v.id}: a descriptive title (SEO showcase-titles pass), not a numbered placeholder`)
   }
   const ours = selectOurWork()
   assert.equal(ours.length, 39, '23 UGC videos + the 7 spokesperson videos (six of which were also uploaded as creator-NN and are now listed once) + the 2 SaaS-folder clips added for the SaaS page + the 7 organic social videos')
@@ -586,4 +586,27 @@ test('Spokesperson filter: a type filter after the four industry filters; it hol
   const lib = renderToStaticMarkup(createElement(Library.default, { items: selectOurWork() }))
   assert.ok(lib.includes('Spokesperson'))
   assert.ok(/Other<span/.test(lib), 'Other has a tab now that the seven organic videos (industry "other") exist; it would vanish again with none')
+})
+
+// ── descriptive titles (SEO/GEO showcase-titles pass, 2026-11-21): evidence-based, short, unique, no invented names ───────────────────────────
+test('showcase titles: every video has a short, unique, descriptive title and a matching caption; no placeholder, brand, creator name or testimonial wording', () => {
+  const list = selectOurWork()
+  assert.equal(list.length, 39)
+  const titles = list.map((v) => v.title)
+  assert.equal(new Set(titles).size, titles.length, 'unique titles')
+  for (const v of list) {
+    assert.ok(v.title.length >= 15 && v.title.length <= 60, `${v.id}: title length ${v.title.length}`)
+    assert.ok(!/\b(example|sample|placeholder|video \d)\b ?\d*$/i.test(v.title), `${v.id}: no numbered placeholder`)
+    assert.equal(v.caption, `${v.title}.`, `${v.id}: the caption restates the title (it is the accessible label on the UGC pages)`)
+    assert.ok(!/testimonial|review(s|er)?\b|customer story|real customer|genuine/i.test(v.title), `${v.id}: scripted creator videos are never described as customer testimonials`)
+  }
+  // brand names that are visible inside the footage are NOT used: a brand appears next to a video only with the brand's recorded permission (approval.brandDisplay)
+  const BRANDS_SEEN_IN_FOOTAGE = /move ?pl(a)?nn?r|tip ?green|cologuard|exact sciences|harroman|green chef|pdf expert|lusion|think in the dark|form\b/i
+  for (const v of list) assert.ok(!BRANDS_SEEN_IN_FOOTAGE.test(v.title), `${v.id}: no unapproved brand name in the title`)
+  // no creator first name taken from a file name (Aoife, Luis) and no unverified language in a title: the language badge is data-driven
+  for (const v of list) assert.ok(!/\b(aoife|luis)\b/i.test(v.title) && !/\b(spanish|french|arabic|english)\b/i.test(v.title), `${v.id}: no creator name or language asserted in the title`)
+  // the data fields that drive filters and badges are untouched by the titles pass
+  assert.deepEqual(['ecommerce', 'saas', 'services', 'other', 'spokesperson'].map((c) => countIn(list, c)), [9, 8, 8, 7, 7])
+  assert.ok(list.every((v) => v.approval.status === 'approved' && v.approval.portfolioUse === true && v.approval.creatorConsent === true))
+  assert.ok(list.every((v) => v.production === undefined && v.brand === undefined), 'no production credit or brand was added')
 })
