@@ -239,7 +239,7 @@ test('structured data on every page: valid JSON, no ratings, reviews, awards, ad
     const blocks = ldBlocks(page(p))
     assert.equal(blocks.length, 1, `${p}: one JSON-LD block`)
     const s = JSON.stringify(blocks)
-    assert.ok(!/aggregateRating|"Review"|"review"|"award"|"address"|"datePublished"|"foundingDate"|"Article"/.test(s), `${p}: nothing invented`)
+    assert.ok(!/aggregateRating|"Review"|"review"|"award"|"address"|"datePublished"|"foundingDate"|"Article"/.test(s.replace('"address":{"@type":"PostalAddress","addressCountry":"ES"}', '')), `${p}: nothing invented (only the country of registration is an address)`)
     assert.ok(!/rich result|citation|guarantee/i.test(s.replace(/We can[’']t guarantee ad performance/g, '').replace(/guarantee/gi, (m) => (/never guarantee|not guarantee|can't guarantee|can’t guarantee/i.test(s) ? '' : m))), `${p}: no claim about rich results or citations`)
   }
   assert.ok(!/VideoObject/.test(ldBlocks(page(PATHS.showcase)).map((b) => JSON.stringify(b)).join('')), 'VideoObject stays off until real upload dates exist')

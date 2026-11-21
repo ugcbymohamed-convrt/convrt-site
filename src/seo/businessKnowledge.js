@@ -72,6 +72,8 @@ export const BRAND = {
     'CONVRT is a creative video marketing studio specializing in human-led UGC advertising, SaaS video production, spokesperson videos and organic social media content for brands. We combine creative strategy, in-house and freelance talent, and full-service video production to help brands create authentic, consistent and performance-driven creative.',
   logoPath: '/convrt-logo.svg',
   contactEmail: CONTACT_EMAIL,
+  /* Country of the operator's registration (About page: "registered in Spain"). Country only: no street address belongs in structured data. */
+  country: 'ES',
   /* Organisation-level profiles only: Instagram and the official company LinkedIn page (owner-confirmed Nov 2026). The founder's personal LinkedIn
      is a person's profile, not the company's, so it is deliberately NOT listed as the organisation's sameAs (it is the Person's, below). */
   socialProfiles: [INSTAGRAM_URL, COMPANY_LINKEDIN_URL],
@@ -138,10 +140,27 @@ export const PRODUCTION_LANGUAGES = {
   core: ['English', 'Spanish', 'French', 'Arabic'],
   /** ISO 639-1 codes for the four core languages (used by structured data). */
   coreCodes: ['en', 'es', 'fr', 'ar'],
-  other: 'Other languages are available on request, subject to availability.',
+  other: 'Other languages are available on request, subject to creator availability.',
   /* Owner-confirmed (2026-11-21): CONVRT can support Gulf Arabic and Moroccan Darija productions. The English site keeps this to one concise clause; dialect-specific messaging
      is reserved for the future Arabic-language site. Used by the home, UGC and Spokesperson FAQs so the wording cannot drift. */
   arabicDialects: 'Gulf and Moroccan Arabic dialects',
+}
+
+/* Where and how CONVRT produces (owner-approved wording, 2026-11-21). CONVRT is NOT remote-only: it produces remotely through its creator network, films on location in Spain, and may arrange
+   on-location shoots in other countries. It maintains no permanent offices or local production teams outside Spain and none may be implied. Read by the About page and the Home FAQ so the
+   sentence cannot drift. */
+export const PRODUCTION_MODEL = {
+  text: 'CONVRT offers remote video production through its creator network, as well as on-location filming in Spain. On-location shoots in other countries may be arranged subject to project requirements, availability and approval.',
+  /* On-location filming is NOT part of the standard packages automatically (owner, 2026-11-21). */
+  scope: 'On-location filming is subject to project scope, availability and quotation where applicable.',
+  /* The short form for places that already point to the full wording. */
+  short: 'Remote production through our creator network, and on-location filming in Spain.',
+}
+
+/* Owner-confirmed (2026-11-21; the United States added the same day): CONVRT serves international clients. This states clients, not presence: it implies no offices or local legal entities in those markets.
+   Current SEO acquisition priorities are Europe, the UK, Spain and the Middle East, but US businesses are not excluded from the service positioning. */
+export const INTERNATIONAL_CLIENTS = {
+  text: 'We work with international clients, including in Europe, the UK, the Middle East and the United States.',
 }
 
 export const TALENT = {
@@ -452,7 +471,7 @@ export const PRODUCTION_STAGES = [
 ]
 
 export const PRODUCT_REQUIREMENTS = {
-  physical: 'For physical products, you ship the product to the selected creator and cover the shipping costs.',
+  physical: 'For physical products produced remotely by a creator, you ship the product to the selected creator and cover the shipping costs.',
   saas: 'For SaaS products, you provide a dedicated demo or dummy account with access to the relevant features, using test data rather than real customer information where possible.',
 }
 
@@ -573,6 +592,10 @@ export const PUBLIC_CLAIMS = [
     note: 'Dialect-specific messaging is reserved for the future Arabic-language site; the English site keeps this one clause.' },
   { id: 'quality-review', claim: 'Every project goes through our internal creative quality review.', appears: 'home FAQ "What makes CONVRT different?" and UGC FAQ "revisions-and-performance"', source: 'owner-confirmed 2026-11-21: an actual process (kept as published)', status: 'owner-confirmed' },
   { id: 'hundreds-of-creatives', claim: "After producing hundreds of creatives, we've developed a strong understanding of what captures attention", appears: 'home FAQ "Do you help with concepts and scripting?"', source: 'owner-confirmed 2026-11-21: accurate and substantiable (kept as published)', status: 'owner-confirmed' },
+  { id: 'international-clients', claim: INTERNATIONAL_CLIENTS.text, appears: 'About page ("at a glance" and "Markets, production and languages")', source: 'owner-confirmed 2026-11-21', status: 'owner-confirmed',
+    note: 'States clients, not presence: it implies no offices or local legal entities in Europe, the UK, the Middle East or the United States. SEO acquisition priorities remain Europe, the UK, Spain and the Middle East; US businesses are not excluded.' },
+  { id: 'production-model', claim: PRODUCTION_MODEL.text, appears: 'About page; Home FAQ "other languages and for other markets"', source: 'owner-confirmed 2026-11-21 (approved wording, verbatim)', status: 'owner-confirmed',
+    note: 'CONVRT is not remote-only. Implies no permanent offices or local production teams outside Spain. On-location filming is not presented as part of standard packages: PRODUCTION_MODEL.scope says it is subject to project scope, availability and quotation where applicable.' },
   { id: 'human-created-ugc', claim: 'UGC videos are 100% human-created, featuring real human creators', appears: 'UGC FAQ, structured data', source: 'owner-confirmed Nov 2026 (scoped to the UGC service)', status: 'owner-confirmed' },
   { id: 'client-logos', claim: '13 client logos: TikTok, inDrive, Airalo, Ria, Expert Option, Promova, FIXD, Adscale, Toluna, WPX, Elyon, Coursiv, Graspo', appears: 'homepage credibility strip', source: 'owner-confirmed 2026-11-21: all 13 are verified relationships authorised for display', status: 'owner-confirmed' },
   { id: 'elyon-roas', claim: '5.28x ROAS, 9 purchases, $3,421.25 reported revenue (one video)', appears: 'UGC page proof, Elyon case study, Elyon page title/description', source: 'client-reported, early learning phase (src/content/ugcProof.js)', status: 'published-client-reported',

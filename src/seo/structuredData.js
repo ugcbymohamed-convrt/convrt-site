@@ -65,9 +65,9 @@ export function organizationNode() {
     knowsLanguage: PRODUCTION_LANGUAGES.coreCodes,
     // The public enquiry address already shown in the footer and on the Contact page.
     contactPoint: { '@type': 'ContactPoint', contactType: 'customer service', email: BRAND.contactEmail },
-    // The founder is described only once the About page that shows the same facts is published (markup must match visible content).
+    // The founder and the country of registration are described only once the About page that shows the same facts is published (markup must match visible content).
     ...(TRUST_PAGES_PUBLISHED
-      ? { founder: { '@type': 'Person', '@id': FOUNDER_ID, name: BRAND.founder.name, jobTitle: BRAND.founder.jobTitle, sameAs: [BRAND.founder.linkedin] } }
+      ? { address: { '@type': 'PostalAddress', addressCountry: BRAND.country }, founder: { '@type': 'Person', '@id': FOUNDER_ID, name: BRAND.founder.name, jobTitle: BRAND.founder.jobTitle, sameAs: [BRAND.founder.linkedin] } }
       : {}),
   }
 }

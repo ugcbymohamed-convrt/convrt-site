@@ -11,7 +11,7 @@
    • No promised results, rankings, FAQ rich results or AI citations.
    • An answer is an array of paragraphs. `link` adds a final text link under the answer and `moreLinks` any further ones (neither is part of the structured-data text). */
 
-import { PRODUCTION_LANGUAGES } from './businessKnowledge.js'
+import { PRODUCTION_LANGUAGES, PRODUCTION_MODEL } from './businessKnowledge.js'
 
 export const HOME_FAQ = [
   {
@@ -31,7 +31,8 @@ export const HOME_FAQ = [
   {
     q: 'Can you produce videos in other languages and for other markets?',
     a: [
-      `Yes. We produce in English, Spanish, French and Arabic, including ${PRODUCTION_LANGUAGES.arabicDialects}, and can source creators for other languages on request, subject to availability.`,
+      `Yes. We produce in English, Spanish, French and Arabic, including ${PRODUCTION_LANGUAGES.arabicDialects}, and can source creators for other languages on request, subject to creator availability.`,
+      `${PRODUCTION_MODEL.text} ${PRODUCTION_MODEL.scope}`,
       'We recommend the creator who best fits your brand and share relevant work samples before production.',
     ],
   },

@@ -298,7 +298,7 @@ test('pricing JSON-LD: serialises to valid JSON; one @graph; expected node types
   for (const t of ['Organization', 'WebPage', 'BreadcrumbList', 'Service', 'FAQPage']) assert.ok(types.includes(t), t)
   assert.equal(types.filter((t) => t === 'Service').length, 11, '4 core (UGC, SaaS, Spokesperson, Organic) + 2 creative testing + 2 organic + raw footage add-on + 2 custom (no price)')
   assert.ok(!types.includes('Product'), 'services must not be marked up as Product')
-  assert.ok(!/aggregateRating|"review"|"address"|"award"|areaServed/.test(JSON.stringify(graph())), 'nothing invented')
+  assert.ok(!/aggregateRating|"review"|"address"|"award"|areaServed/.test(JSON.stringify(graph()).replace('"address":{"@type":"PostalAddress","addressCountry":"ES"}', '')), 'nothing invented (the Organization carries only the country of registration)')
 })
 
 test('JSON-LD entity ids are stable and every @id reference resolves inside the graph', () => {
