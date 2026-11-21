@@ -1,21 +1,24 @@
-# Trust and legal pages: what is drafted and what you must supply
+# Trust and legal pages: status, what changed, and how to publish safely
 
-The pages `/about`, `/contact`, `/privacy`, `/terms` exist but are **drafts**: `noindex`, not in the sitemap, not linked from the footer or forms, with a visible "Draft for owner review" banner. Text lives in `src/content/trustPages.js` and was written only from facts already on the site or in this repository. Privacy and Terms are drafts that need review by a legal adviser; nothing here is legal advice.
+`/about`, `/contact`, `/privacy` and `/terms` are **unpublished drafts**: `TRUST_PAGES_PUBLISHED = false`, `noindex` (meta tag **and** `X-Robots-Tag` header), not in the sitemap, not linked from the footer or the forms, with a visible draft banner. Text is in `src/content/trustPages.js`; the operator's identity is in `src/content/operator.js`. Nothing is legal advice; Privacy and Terms need a Spanish legal adviser before publication.
 
-## To publish
-1. Resolve every highlighted `[OWNER TO CONFIRM: ...]` marker in `src/content/trustPages.js` (`tests/trust-pages.test.mjs` refuses publication while any remains).
-2. Change `TRUST_PAGES_PUBLISHED` to `true` in `src/config.js`. That one flag: removes the banner, makes About and Contact indexable and puts them in the sitemap (Privacy and Terms stay `noindex, follow`), adds About / Privacy / Terms links to the footer, links every form's data-use notice to `/privacy` (through the existing `PRIVACY_POLICY_URL`), links the cookie banner to the policy, and adds the founder Person and contact details to the Organization structured data.
-3. Delete the `/about` and `/contact` rules from `vercel.json` `headers` (they send `X-Robots-Tag: noindex` while the pages are drafts and would override the indexable meta tag; `tests/trust-pages.test.mjs` fails until you do). Keep the `/privacy` and `/terms` rules: those pages stay `noindex, follow`.
-4. Update the tests that assert the draft state (`tests/trust-pages.test.mjs` first test group) in the same change.
+## Owner decisions applied (21 Nov 2026)
+Trading name CONVRT Studio; legal operator Mohamed Doukkali Azizi, self-employed (autónomo) registered in Spain; exclusively B2B; title "Founder"; positioning "founder-led creative studio"; no biography or credentials; contact email, Calendly link and genuine social profiles only; no public phone or office hours; official company LinkedIn `https://www.linkedin.com/company/123164137/` in the footer (one LinkedIn icon, the company's), the About and Contact pages and the Organization `sameAs`; the founder's personal profile kept separately (About, Contact, founder Person data); Terms of Service for a B2B audience; the four pages become public and indexable **after** legal approval.
 
-## Items only you can supply or confirm
-| Item | Where it appears | Notes |
-|---|---|---|
-| Founder name and title shown publicly | About, Organization schema | Draft uses the legal name already recorded for creator agreements (Mohamed Doukkali Azizi) and "Founder". Confirm, and add a short bio if wanted. No experience, credentials or numbers were invented. |
-| Legal-notice details | Privacy "Who we are" | Postal address and tax ID are on file for creator agreements but **were not published**. Ask your adviser whether a Spanish website operator must show them. |
-| Legal bases, retention periods, transfers, processor agreements | Privacy | Marked as owner/adviser items. |
-| Supervisory authority to name | Privacy "Your rights" | |
-| Liability limitation and governing law | Terms | Must be drafted by your adviser. |
-| Whether privacy/terms may stay `noindex` | SEO | Default `noindex, follow` (reference pages). |
-| Company LinkedIn page, if one exists | Organization `sameAs` | Only the personal profile (founder) and Instagram are known. |
-| Any other tools that touch visitor data | Privacy | Draft lists MailerLite, Resend, Calendly, Vercel, Cloudflare and (after consent) Google. |
+## Two kinds of open marker (both block publication)
+* `[OWNER TO CONFIRM: ...]` a fact only you can supply or check (NIF/address display, GA4 terms accepted, provider agreements and locations, free-video conditions, cookie lifetimes, how paid projects are documented).
+* `[LEGAL REVIEW: ...]` wording a legal adviser must approve (legal bases, Calendly's role, retention periods, free-concept ownership, liability cap, governing law).
+
+`node scripts/activate-trust-pages.mjs` (dry run) prints every open marker and every other blocker. `tests/trust-pages.test.mjs` refuses `TRUST_PAGES_PUBLISHED = true` while any marker remains or while the legally required tax ID and postal address are hidden (`LEGAL_NOTICE_DETAILS_APPROVED`). A simulation test proves that with both flags on, all four pages are indexable with self-canonicals and sitemap entries, every form links the policy, and the founder Person appears.
+
+## To publish (after approval)
+1. Resolve every marker: edit `src/content/trustPages.js` with the confirmed wording (send me the answers and I do it).
+2. Approve showing the NIF and postal address (required by Ley 34/2002 art. 10, `docs/spanish-legal-information-requirements.md`).
+3. Run `node scripts/activate-trust-pages.mjs --apply --owner-approved-details`. It refuses while a blocker remains; otherwise it sets `LEGAL_NOTICE_DETAILS_APPROVED` and `TRUST_PAGES_PUBLISHED` to `true` and removes the four `X-Robots-Tag` rules from `vercel.json`. It never commits or deploys.
+4. Update the draft-state assertions in `tests/trust-pages.test.mjs` and `tests/trust-privacy-implementation.test.mjs` (they assert `false` today, deliberately), run all tests and the build, review the Preview.
+5. Then, and only then, merge. After publication: submit `/about`, `/contact`, `/privacy` and `/terms` in Search Console; check the footer links and each form's privacy link.
+
+What one flag does on publication: removes the banner; makes all four pages indexable and puts them in the sitemap; adds About, Privacy and Terms to the footer and points the footer "Contact" at `/contact`; links every form's data-use notice to `/privacy`; links the cookie banner to the policy; adds the founder Person and contact details to the Organization data.
+
+## Open items for you (short)
+Sixteen markers are listed by the script; the ones that need your own dashboards are collected in `docs/privacy-provider-checklist.md`, the retention periods in `docs/data-retention-and-deletion.md`, the marketing consent steps in `docs/marketing-consent-mailerlite.md`, and the unwritten client agreement in `docs/client-service-agreement-outline.md`.

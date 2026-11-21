@@ -134,8 +134,7 @@ the tracker, not in analytics. Registrations are not revenue.
   has a real company field), same-origin check, strict server-side validation (the same rules as the form), 16 KB body cap.
 * **Third-party data:** the page collects **no** information about referred people or companies, so there is nothing to
   hold without their permission. Referrals arrive later, by email, from the partner.
-* **Consent:** a required checkbox (the server rejects submissions without it). It currently has **no privacy-policy link**
-  (see section 9).
+* **Consent:** a required checkbox (the server rejects submissions without it) that covers reviewing the application. It has no privacy-policy link until `PRIVACY_POLICY_URL` is set (see section 9). A **separate, optional, unticked** marketing box (21 Nov 2026) adds the partner to the marketing group with a consent record only if ticked; see `docs/marketing-consent-mailerlite.md`.
 * **Analytics** (`src/lib/analytics.js`, no vendor installed, events go to `dataLayer` / `fbq` if the site adds them):
   `referral_page_view`, `referral_cta_click` (with `location`), `referral_form_start`, `referral_application_submit`,
   `referral_application_success`, `referral_application_error`. Never any names, emails or form contents. A click is

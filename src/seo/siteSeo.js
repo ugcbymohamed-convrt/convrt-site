@@ -136,8 +136,9 @@ export const SITE_SEO = {
       'Apply for one free video ad produced by CONVRT, plus two bonus hook variations. Try CONVRT risk free and see if you qualify.',
     indexable: RISK_FREE_INDEXABLE,
   },
-  // Trust and legal pages. DRAFT until TRUST_PAGES_PUBLISHED (src/config.js): noindex and out of the sitemap. Once published, About and Contact are indexable;
-  // Privacy and Terms stay `noindex, follow` (they are reference pages, never search targets) but remain crawlable and linked from the footer.
+  // Trust and legal pages. DRAFT until TRUST_PAGES_PUBLISHED (src/config.js): noindex and out of the sitemap. The owner's approved target state AFTER legal
+  // approval is that all four are public and indexable (self-referencing canonical, sitemap, footer links), so one flag controls all four; there is no
+  // separate permanent noindex for Privacy and Terms any more.
   [ABOUT_PATH]: {
     title: 'About CONVRT | Founder-Led Video Creative Studio',
     description:
@@ -153,14 +154,14 @@ export const SITE_SEO = {
   [PRIVACY_PATH]: {
     title: 'Privacy Policy | CONVRT',
     description: 'How CONVRT Studio collects, uses and protects personal information on convrt.studio, and how to control cookies and your data.',
-    robots: 'noindex, follow',
-    indexable: false,
+    ...(TRUST_PAGES_PUBLISHED ? {} : { robots: 'noindex, follow' }),
+    indexable: TRUST_PAGES_PUBLISHED,
   },
   [TERMS_PATH]: {
-    title: 'Terms and Conditions | CONVRT',
-    description: 'The terms for using the CONVRT Studio website, free offers and how paid services are agreed.',
-    robots: 'noindex, follow',
-    indexable: false,
+    title: 'Terms of Service | CONVRT Studio',
+    description: 'Terms for using the CONVRT Studio website and its free offers, the legal notice, and how paid services are agreed. For businesses.',
+    ...(TRUST_PAGES_PUBLISHED ? {} : { robots: 'noindex, follow' }),
+    indexable: TRUST_PAGES_PUBLISHED,
   },
   [REFERRALS_PATH]: {
     title: 'CONVRT Referral Partner Program | Earn Rewards for Introductions',

@@ -11,16 +11,21 @@
    match on them (see docs/analytics-and-consent.md for the full list). Identical events fired within
    750 ms are dropped, which protects against accidental double firing (for example effects that re-run).
 
-   UTM + click-id capture: read once on landing, persisted in
-   sessionStorage so they survive in-page navigation and can be replayed onto the booking link even if the
-   visitor scrolls the page for a while before converting.
+   UTM capture: the five standard utm_* campaign parameters are read once on landing and kept in sessionStorage
+   (this tab only) so they survive in-page navigation and can be replayed onto the booking link, which Calendly
+   records against the booking. Advertising click identifiers (gclid, fbclid, ttclid, wbraid, gbraid) are NOT
+   stored: nothing on the site ever used them, and storing them before any consent is unnecessary. Google's own
+   tags read gclid/gbraid/wbraid from the page URL themselves, and only as far as the visitor's consent allows.
 ───────────────────────────────────────────── */
 
 import { isTrackingAllowed, isMarketingAllowed, landingPage } from './consent.js'
 
 const UTM_KEYS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term']
-const CLICK_ID_KEYS = ['gclid', 'fbclid', 'ttclid', 'wbraid', 'gbraid']
-const STORAGE_KEY = 'convrt_scale_attribution'
+/* Advertising click identifiers: never written to storage. Listed only so a value saved by an earlier version of the
+   site in a visitor's open tab is wiped the next time attribution is captured. */
+const LEGACY_CLICK_ID_KEYS = ['gclid', 'fbclid', 'ttclid', 'wbraid', 'gbraid']
+export const ATTRIBUTION_STORAGE_KEY = 'convrt_scale_attribution'
+const STORAGE_KEY = ATTRIBUTION_STORAGE_KEY
 
 const DEDUPE_MS = 750
 const recent = new Map()
@@ -52,21 +57,30 @@ export function trackEvent(name, params = {}) {
   }
 }
 
-/* Capture UTM + click-id params from the current URL into sessionStorage.
-   Call once on page mount. Safe to call repeatedly — only overwrites
-   stored values when the current URL actually has new ones. */
+/* Capture the utm_* params from the current URL into sessionStorage. Call once on page mount. Safe to call
+   repeatedly: only overwrites stored values when the current URL has new ones. Click identifiers are never kept
+   (and any left in storage by an earlier version are removed). */
 export function captureAttribution() {
   if (typeof window === 'undefined') return
   const params = new URLSearchParams(window.location.search)
   const found = {}
-  ;[...UTM_KEYS, ...CLICK_ID_KEYS].forEach((key) => {
+  UTM_KEYS.forEach((key) => {
     const value = params.get(key)
     if (value) found[key] = value
   })
-  if (Object.keys(found).length === 0) return
   try {
-    const existing = JSON.parse(window.sessionStorage.getItem(STORAGE_KEY) || '{}')
-    window.sessionStorage.setItem(STORAGE_KEY, JSON.stringify({ ...existing, ...found }))
+    const raw = window.sessionStorage.getItem(STORAGE_KEY)
+    let existing = {}
+    try {
+      existing = JSON.parse(raw || '{}') || {}
+    } catch {
+      existing = {}
+    }
+    const hadClickIds = LEGACY_CLICK_ID_KEYS.some((k) => k in existing)
+    if (Object.keys(found).length === 0 && !hadClickIds) return
+    const kept = Object.fromEntries(Object.entries({ ...existing, ...found }).filter(([k]) => UTM_KEYS.includes(k)))
+    if (Object.keys(kept).length === 0) window.sessionStorage.removeItem(STORAGE_KEY)
+    else window.sessionStorage.setItem(STORAGE_KEY, JSON.stringify(kept))
   } catch {
     /* sessionStorage unavailable (privacy mode, etc.) — attribution simply isn't replayed */
   }
@@ -81,10 +95,7 @@ function getStoredAttribution() {
   }
 }
 
-/* Append captured UTM params onto a booking URL. Click-ids (gclid/fbclid/…)
-   are attribution-only and aren't meaningful to Calendly, so only the
-   utm_* keys — which Calendly natively records against the booking — are
-   forwarded into the query string. */
+/* Append captured UTM params onto a booking URL: the utm_* keys, which Calendly natively records against the booking. */
 export function withUtm(url) {
   const stored = getStoredAttribution()
   const utmOnly = Object.fromEntries(Object.entries(stored).filter(([k]) => UTM_KEYS.includes(k)))

@@ -14,6 +14,7 @@
    • Wording changes need the owner's approval again: update OWNER_APPROVAL_ITEMS (a test keeps it tied to the text) and
      docs/creator-final-documents.md. */
 
+import { OPERATOR } from './operator.js'
 import { CONTACT_EMAIL } from '../config.js'
 
 export const LEGAL_STATUS = {
@@ -32,7 +33,7 @@ export const PRIVACY_VERSION = PRIVACY_REVISION
 /* CONVRT's legal contracting identity, taken from the owner's own reference agreement and instructions
    (confirmed by the owner on 17 Nov 2026). `taxId` is the NIF
    the owner asked to have printed beside the CONVRT signature. */
-export const LEGAL_ENTITY = { name: 'Mohamed Doukkali Azizi', taxId: 'Y6755743J', confirmed: true }
+export const LEGAL_ENTITY = { name: OPERATOR.name, taxId: OPERATOR.taxId, confirmed: true }
 
 /* Owner instruction (16 Nov 2026): CONVRT's side of every agreement arrives pre-filled: the legal name and NIF, a typed
    signature identical to the name, and the date (the acceptance date recorded by the server). This is a standing
@@ -40,7 +41,7 @@ export const LEGAL_ENTITY = { name: 'Mohamed Doukkali Azizi', taxId: 'Y6755743J'
 export const CONVRT_PRESIGN = true
 
 /* Contact address for the privacy notice (supplied by the owner, 16 Nov 2026). */
-export const CONVRT_ADDRESS = 'Calle Gibraltar Español 9, 04007 Almería, Spain'
+export const CONVRT_ADDRESS = OPERATOR.address
 
 export const CONTRACTING_PARTY = {
   tradeName: 'CONVRT Studio',

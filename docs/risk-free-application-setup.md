@@ -45,6 +45,9 @@ Redeploy afterwards. Until both exist the endpoint answers `503` and the form sh
 false "Application received!". Local dev: add the same variables to `.env.local`; `npm run dev` serves the real
 handler at `/api/risk-free-apply`.
 
+### Marketing email consent (new, 21 Nov 2026)
+The form has a separate, optional, **unticked** box for tips and offers. This group is the service record of the application and is **not** a marketing audience; a ticked box adds the contact to `MAILERLITE_GROUP_MARKETING_ID` with a consent record. Declining changes nothing about the application. A contact who previously unsubscribed can still apply: the Resend alert (subject `[NOT IN MAILERLITE]`) carries the application. Full model and MailerLite steps: `docs/marketing-consent-mailerlite.md`.
+
 ### Optional: instant email alert for every application (and every free-hooks signup)
 
 The same `RESEND_API_KEY` also alerts you to every `/free-hooks` signup (email, industry, new/repeat, confirmed or

@@ -8,11 +8,11 @@ import { TRUST_CONTENT } from './content/trustPages.js'
 
 /* About, Contact, Privacy Policy and Terms: one template, four URLs (PATHS.about / contact / privacy / terms). The words are in src/content/trustPages.js.
    Head and JSON-LD come from the SEO manifest like every other page. While TRUST_PAGES_PUBLISHED is false (src/config.js) the pages are drafts: noindex, no
-   footer or form links, and a banner says so; any "[OWNER TO CONFIRM: ...]" marker in the text is highlighted so nothing is overlooked. */
+   footer or form links, and a banner says so; any "[OWNER TO CONFIRM: ...]" or "[LEGAL REVIEW: ...]" marker in the text is highlighted so nothing is overlooked. */
 
 const KEY_BY_PATH = { [PATHS.about]: 'about', [PATHS.contact]: 'contact', [PATHS.privacy]: 'privacy', [PATHS.terms]: 'terms' }
-const LABEL = { about: 'About', contact: 'Contact', privacy: 'Privacy Policy', terms: 'Terms and Conditions' }
-const TOKEN = /(\[\[[^\]|]+\|[^\]]+\]\]|\[OWNER TO CONFIRM[^\]]*\])/g
+const LABEL = { about: 'About', contact: 'Contact', privacy: 'Privacy Policy', terms: 'Terms of Service' }
+const TOKEN = /(\[\[[^\]|]+\|[^\]]+\]\]|\[(?:OWNER TO CONFIRM|LEGAL REVIEW)[^\]]*\])/g
 
 const linkClass = 'font-medium text-ink underline decoration-lime/60 underline-offset-4 transition-colors hover:text-lime'
 
@@ -27,7 +27,7 @@ function Inline({ text }) {
         </a>
       )
     }
-    if (part.startsWith('[OWNER TO CONFIRM')) {
+    if (part.startsWith('[OWNER TO CONFIRM') || part.startsWith('[LEGAL REVIEW')) {
       return <mark key={i} className="rounded bg-amber/20 px-1 text-amber">{part}</mark>
     }
     return part

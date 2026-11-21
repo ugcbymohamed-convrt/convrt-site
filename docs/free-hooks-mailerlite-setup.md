@@ -46,10 +46,14 @@ Until these are set the form shows a friendly error and the endpoint answers `50
 
 ## 3. Consent model (marketing separate from delivery)
 
+> **Updated 21 Nov 2026 (branch `trust-privacy-implementation`): see `docs/marketing-consent-mailerlite.md` for the current model.** All three forms now share one optional, unchecked marketing box with versioned wording; the marketing group is added only together with a consent record (four extra MailerLite text fields), and the lead is saved without it if that fails. The paragraphs below that describe the older behaviour are superseded where they conflict.
+
+
 - Submitting the form = a request to be emailed the resource. The form says so, names MailerLite as the processor, and links the privacy policy once `PRIVACY_POLICY_URL` is set.
 - The checkbox *"Also send me occasional creative tips and offers"* is **unticked by default** and optional.
 - If ticked **and** `MAILERLITE_GROUP_MARKETING_ID` is set, the subscriber is also added to that group. Build any newsletter / nurture automations on **that group only**, so non-consenting people only ever receive the delivery email.
-- Without `MAILERLITE_GROUP_MARKETING_ID` the tick has no effect — set it, or remove the checkbox, before relying on consent.
+- Without `MAILERLITE_GROUP_MARKETING_ID` the tick is still recorded (time, wording version, source) but nobody is added to a marketing group and the owner alert says so — set it before relying on consent.
+- The consent record fields `marketing_consent`, `marketing_consent_at`, `marketing_consent_version` and `marketing_consent_source` must exist in MailerLite (Text). Declining the box writes nothing marketing-related and never blocks the hooks.
 
 ## 4. Behaviour you should know
 

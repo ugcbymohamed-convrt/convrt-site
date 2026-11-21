@@ -31,3 +31,20 @@ Booking itself does not need the embed: a plain link to Calendly works and Calen
 2. Whether the cookies observed before Calendly's own choice (`__stripe_*`, `_dd_s`) are acceptable as strictly necessary for booking, given Calendly's own classification.
 3. Whether CONVRT should accept joint-controller or processor terms with Calendly and what the privacy policy must say (draft text added in `src/content/trustPages.js`).
 4. Whether direct new-tab links are preferred over the embed for EU visitors.
+
+## Update 21 Nov 2026: what the official sources say, and what is still open (the owner chose to KEEP the embed)
+
+**Kept exactly as it is:** click-to-load gate, "Show the calendar", Calendly's own cookie notice, the new-tab alternative, booking when analytics is rejected, booking events only from origin `https://calendly.com`, the session flag `convrt_calendly_requested`. Tests in `tests/booking-gate.test.mjs` cover these and still pass.
+
+**What I can and cannot state about the third-party cookies (accurately):**
+* *Observed by me (20 Nov, above):* with Calendly loaded and no choice made, `__stripe_mid`, `__stripe_sid` and `_dd_s` were present besides `_calendly_session`, `__cf_bm`, `_cfuvid` and the OneTrust record. Stripe (payments/fraud) and Datadog (monitoring) scripts are part of Calendly's page; their cookies appear because Calendly's page loads them.
+* *Calendly's own words (help centre, via search summary):* it sets cookies even if the banner is hidden, and recommends waiting to load Calendly until visitors accept performance cookies. A third-party summary of its terms says the site that embeds it must show Calendly's banner or run its own consent: **read the terms yourself; I did not**.
+* *Not established:* whether the Stripe/Datadog cookies are "strictly necessary" for booking (Calendly lists the Stripe ones as functional), or whether a click on "Show the calendar" is valid consent for them. **Click-to-load does not by itself satisfy GDPR/ePrivacy.** It only guarantees that nothing loads before an informed action; the cookies that follow may still need a legal basis.
+
+**Options to remove or reduce non-essential storage before consent (not implemented, listed safest first):**
+1. **Make the button a consent step for the embed** (recommended if your adviser wants more than today): rename it "Load Calendly and accept its cookies" with a link to Calendly's cookie information, and remember that choice as a third category in `convrt_consent_v1` ("Third-party booking embed"). Same booking experience, a clearer record, no new library.
+2. **Default to the new-tab link for visitors in the EEA/UK** and show the embed only after the stronger step in 1. Needs a location signal (the site has none); skip unless your adviser insists.
+3. **Replace the embed by the link only.** Simplest and the strongest on cookies, but you lose on-page booking and the booking conversion events (`roadmap_booking_confirmed`, `booking_completed`), which come only from the embed.
+4. **Hosting a Calendly alternative** that does not load third-party scripts: a different product; out of scope.
+
+**Unresolved legal questions (for your adviser):** is the click enough for Calendly's cookies; are `_dd_s` and `__stripe_*` strictly necessary; is Calendly a processor or an independent controller; who must obtain consent, the site or Calendly (the embed shows Calendly's own notice, which may be the answer).

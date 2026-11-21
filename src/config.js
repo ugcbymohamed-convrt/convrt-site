@@ -4,6 +4,13 @@ export const BOOKING_URL = 'https://calendly.com/mohamed-convrt/30min'
 
 export const CONTACT_EMAIL = 'mohamed@convrt.studio'
 
+// Public profiles. The COMPANY page and the founder's PERSONAL profile are different accounts and are never interchangeable: the footer, the Contact
+// page, the About page and the Organization structured data use the company page; only the About page, the Contact page and the founder's Person
+// structured data use the founder's profile.
+export const COMPANY_LINKEDIN_URL = 'https://www.linkedin.com/company/123164137/'
+export const FOUNDER_LINKEDIN_URL = 'https://www.linkedin.com/in/mohameddoukkaliazizi/'
+export const INSTAGRAM_URL = 'https://www.instagram.com/convrtcreativestudio/'
+
 // Homepage offer destinations. Each path is registered to its page in App.jsx.
 /* The Creator Showcase video library (examples from independent creators; the visible name is "Creator Showcase"), a standalone page at /creator-showcase. It was /our-work
    until Nov 2026: vercel.json redirects the old URL permanently (308) so existing links keep working, and nothing in the app links to /our-work any more.
@@ -48,6 +55,11 @@ export const CONTACT_PATH = '/contact'
 export const PRIVACY_PATH = '/privacy'
 export const TERMS_PATH = '/terms'
 export const TRUST_PAGES_PUBLISHED = false
+
+// The operator's tax ID (NIF) and postal address are legally required in a Spanish commercial website's legal information (LSSI art. 10) but are
+// private until the owner approves showing them. While this is false the pages show a visible review marker where they belong; once true they are
+// printed from src/content/operator.js. tests/trust-pages.test.mjs refuses TRUST_PAGES_PUBLISHED = true while this is false.
+export const LEGAL_NOTICE_DETAILS_APPROVED = false
 
 // URL of CONVRT's privacy policy. Empty while the policy is a draft, so the application forms show their data-use notice without a link; it becomes
 // '/privacy' when TRUST_PAGES_PUBLISHED is flipped.

@@ -6,13 +6,13 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import {
-  SITE_URL, OG_IMAGE, ABOUT_PATH, CONTACT_PATH, PRIVACY_PATH, TERMS_PATH, TRUST_PAGES_PUBLISHED, PRIVACY_POLICY_URL,
+  SITE_URL, OG_IMAGE, ABOUT_PATH, CONTACT_PATH, PRIVACY_PATH, TERMS_PATH, TRUST_PAGES_PUBLISHED, PRIVACY_POLICY_URL, LEGAL_NOTICE_DETAILS_APPROVED,
 } from '../src/config.js'
 import { PATHS, KNOWN_PATHS } from '../src/routes.js'
 import { SITE_SEO, pageHead, sitemapRoutes } from '../src/seo/siteSeo.js'
 import { buildHeadSpec } from '../src/lib/headSpec.js'
 import { organizationNode, trustGraph, jsonLdFor, FOUNDER_ID } from '../src/seo/structuredData.js'
-import { TRUST_CONTENT, plainText, ownerMarkersIn, OWNER_MARKER } from '../src/content/trustPages.js'
+import { TRUST_CONTENT, plainText, ownerMarkersIn, OWNER_MARKER, LEGAL_MARKER } from '../src/content/trustPages.js'
 import { BRAND } from '../src/seo/businessKnowledge.js'
 import { articleHead } from '../src/lib/blog/seo.js'
 import { LEGAL_ENTITY, CONVRT_ADDRESS } from '../src/content/creatorLegal.js'
@@ -54,18 +54,23 @@ test('privacy link on the forms and footer links follow the same single flag', (
 test('publication guard: no "[OWNER TO CONFIRM" marker may remain once TRUST_PAGES_PUBLISHED is true; today the markers are listed', () => {
   const markers = Object.values(TRUST_CONTENT).flatMap(ownerMarkersIn)
   if (TRUST_PAGES_PUBLISHED) assert.deepEqual(markers, [], 'resolve every owner marker before publishing')
-  else assert.ok(markers.length > 0 && markers.every((m) => m.startsWith(OWNER_MARKER)), 'drafts carry visible markers for the missing details')
+  else assert.ok(markers.length > 0 && markers.every((m) => m.startsWith(OWNER_MARKER) || m.startsWith(LEGAL_MARKER)), 'drafts carry visible markers for the missing details')
 })
 
-test('no invented or private details: no address, tax id, registration number, phone, credentials or results on the trust pages', () => {
+test('no invented or private details: no phone, office hours, credentials, results; tax id and address only after the owner approves them', () => {
   const all = Object.values(TRUST_CONTENT).map(plainText).join('\n')
-  // The tax id and postal address recorded for the creator agreements must not leak onto the public pages without the owner's decision.
-  assert.ok(!all.includes(LEGAL_ENTITY.taxId), 'tax id not published')
+  // The tax id and postal address (on file for the creator agreements) are legally required in the legal notice, but private until LEGAL_NOTICE_DETAILS_APPROVED.
   const [street, postalAndCity] = CONVRT_ADDRESS.split(/,\s*/)
-  assert.ok(!all.includes(street) && !all.includes(postalAndCity.split(' ')[0]), 'street address and postal code not published')
-  for (const forbidden of ['NIF', 'VAT number', 'registered in', 'Company number', '+34', 'award', 'years of experience']) {
+  if (LEGAL_NOTICE_DETAILS_APPROVED) {
+    assert.ok(all.includes(LEGAL_ENTITY.taxId) && all.includes(street), 'approved details are shown in the legal notice')
+  } else {
+    assert.ok(!all.includes(LEGAL_ENTITY.taxId), 'tax id not published')
+    assert.ok(!all.includes(street) && !all.includes(postalAndCity.split(' ')[0]), 'street address and postal code not published')
+  }
+  for (const forbidden of ['VAT number', 'Company number', '+34', 'award', 'years of experience', 'office hours', 'Opening hours']) {
     assert.ok(!all.includes(forbidden), `must not contain ${forbidden}`)
   }
+  assert.ok(!/\+?\d[\d\s().-]{8,}\d/.test(all.replace(/\d{1,2} (November|December) 2026/g, '')), 'no phone number')
   assert.ok(!/\b(top-rated|rated|rating)\b/i.test(all), 'no ratings')
   assert.ok(!/\b(he|she|his|her|him)\b/i.test(plainText(TRUST_CONTENT.about)), 'no pronouns are assumed for the founder')
   assert.ok(!/guarantee(s|d)? (results|performance|roi|sales)/i.test(all.replace(/never guarantee|do not guarantee|not guarantee|no guarantee/gi, '')))
@@ -183,16 +188,14 @@ test('vercel.json: apex redirects permanently to www, hashed assets and fonts ge
   assert.deepEqual(v.regions, ['fra1'])
 })
 
-test('draft trust pages also send an X-Robots-Tag header; it is tied to the publish flag so publishing cannot leave About/Contact blocked', () => {
+test('draft trust pages also send an X-Robots-Tag header; it is tied to the publish flag so publishing cannot leave any of the four blocked', () => {
   const v = JSON.parse(read('vercel.json'))
   const tag = (source) => v.headers.find((h) => h.source === source)?.headers.find((x) => x.key === 'X-Robots-Tag')?.value
-  // Privacy and Terms are noindex, follow permanently (the meta robots says the same).
-  assert.equal(tag('/privacy'), 'noindex, follow')
-  assert.equal(tag('/terms'), 'noindex, follow')
-  // About and Contact: noindex only while TRUST_PAGES_PUBLISHED is false. When it becomes true, delete these two rules (they would override the indexable meta tag).
-  for (const p of ['/about', '/contact']) {
+  // Owner-approved target state after legal approval: all four pages public and indexable. While drafts, each carries a noindex header as well as the meta tag.
+  // When TRUST_PAGES_PUBLISHED becomes true, delete all four rules (they would override the indexable meta tag).
+  for (const p of TRUST) {
     if (TRUST_PAGES_PUBLISHED) assert.equal(tag(p), undefined, `${p}: TRUST_PAGES_PUBLISHED is true, so remove its X-Robots-Tag rule from vercel.json`)
-    else assert.equal(tag(p), 'noindex', `${p} must be noindex while it is a draft`)
+    else assert.equal(tag(p), p === '/about' || p === '/contact' ? 'noindex' : 'noindex, follow', `${p} must be noindex while it is a draft`)
   }
   // The header and the meta tag agree for every trust page.
   for (const p of TRUST) {
@@ -200,6 +203,6 @@ test('draft trust pages also send an X-Robots-Tag header; it is tied to the publ
     const meta = h.robots ?? (h.noindex ? 'noindex' : '')
     if (tag(p)) assert.equal(tag(p), meta, `${p}: header and meta robots disagree`)
   }
-  assert.equal(v.headers.filter((h) => TRUST.includes(h.source)).length, TRUST_PAGES_PUBLISHED ? 2 : 4)
+  assert.equal(v.headers.filter((h) => TRUST.includes(h.source)).length, TRUST_PAGES_PUBLISHED ? 0 : 4)
   for (const h of v.headers.filter((x) => TRUST.includes(x.source))) assert.deepEqual(h.headers.map((x) => x.key), ['X-Robots-Tag'], `${h.source}: robots header only`)
 })

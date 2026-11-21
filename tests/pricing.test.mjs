@@ -340,7 +340,7 @@ test('USD everywhere: no € / EUR / euro in pricing data, components, FAQ or JS
   }
 })
 
-test('Organization: verified facts only (name, url, description, logo, Instagram, email, languages)', () => {
+test('Organization: verified facts only (name, url, description, logo, Instagram, company LinkedIn, email, languages)', () => {
   const org = graph().find((n) => n['@type'] === 'Organization')
   assert.equal(org.name, 'CONVRT Studio')
   assert.equal(org.url, SITE_URL)
@@ -348,9 +348,10 @@ test('Organization: verified facts only (name, url, description, logo, Instagram
   assert.equal(org.slogan, BRAND.motto)
   assert.equal(org.logo.url, `${SITE_URL}/convrt-logo.svg`)
   assert.ok(fs.existsSync(path.join(ROOT, 'public', 'convrt-logo.svg')), 'logo file exists')
-  assert.deepEqual(org.sameAs, ['https://www.instagram.com/convrtcreativestudio/'])
+  assert.deepEqual(org.sameAs, ['https://www.instagram.com/convrtcreativestudio/', 'https://www.linkedin.com/company/123164137/'])
   assert.deepEqual(org.knowsLanguage, ['en', 'es', 'fr', 'ar'])
   assert.ok(!org.sameAs.some((u) => /linkedin\.com\/in\//.test(u)), "a founder's personal profile is not the organisation's profile")
+  assert.equal(org.sameAs.filter((u) => /linkedin\.com/.test(u)).length, 1, 'exactly one LinkedIn: the official company page')
 })
 
 test('Offers: numeric prices, correct currencies, monthly vs one-off kept apart, never a contract total', () => {

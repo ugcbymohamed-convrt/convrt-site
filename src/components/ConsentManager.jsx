@@ -78,7 +78,7 @@ function Preferences({ initial, onSave, onClose }) {
         <div className="mt-5 space-y-3">
           <Switch id="consent-necessary" checked disabled label="Necessary" description="Remembers your choice here and keeps the site and forms working. Always on." onChange={() => {}} />
           <Switch id="consent-analytics" checked={analytics} onChange={setAnalytics} label="Analytics" description="Helps us understand which pages are visited and which lead to enquiries (Google Analytics through Google Tag Manager)." />
-          <Switch id="consent-marketing" checked={marketing} onChange={setMarketing} label="Marketing" description="Allows advertising and measurement cookies if we ever run ads. Off unless you turn it on; the site does not set advertising cookies today." />
+          <Switch id="consent-marketing" checked={marketing} onChange={setMarketing} label="Marketing" description="Allows advertising and measurement cookies if we ever run ads. Off unless you turn it on; the site does not set advertising cookies today. This is about cookies only: marketing emails are a separate choice on our forms." />
         </div>
         <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-end">
           <button type="button" className={btnSecondary} onClick={() => onSave(DENIED_CHOICE)}>Reject all</button>
