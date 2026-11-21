@@ -44,14 +44,16 @@ const INDEXABLE = ['/', '/pricing', '/ugc-video-agency', '/spokesperson-video-pr
 
 // ── the nine indexable URLs are unchanged ────────────────────────────────────────────────
 test('the nine indexable URLs stay indexable, self-canonical and in the sitemap; /case-studies still canonicalises to Graspo', () => {
-  assert.deepEqual(sitemapRoutes().sort(), [...INDEXABLE].sort())
+  // The trust pages were published on main (5bf3b50) after Batch 2 began, so the sitemap also lists them; Batch 2 adds no URL of its own.
+  const trust = [PATHS.about, PATHS.contact, PATHS.privacy, PATHS.terms, PATHS.legalNotice].filter((p) => p && sitemapRoutes().includes(p))
+  assert.deepEqual(sitemapRoutes().sort(), [...INDEXABLE, ...trust].sort())
   for (const p of INDEXABLE) {
     const h = page(p)
     assert.ok(h.includes(`<link rel="canonical" href="${SITE_URL}${p === '/' ? '/' : p}" />`), `${p} canonical`)
     assert.ok(!/<meta name="robots"[^>]*noindex/.test(h), `${p} stays indexable`)
   }
   assert.ok(page('/case-studies').includes(`<link rel="canonical" href="${SITE_URL}/case-studies/graspo" />`))
-  assert.ok(fs.readFileSync(path.join(dist, 'sitemap.xml'), 'utf8').split('<loc>').length - 1 === 9)
+  assert.equal(fs.readFileSync(path.join(dist, 'sitemap.xml'), 'utf8').split('<loc>').length - 1, INDEXABLE.length + trust.length)
 })
 
 // ── UGC FAQs ─────────────────────────────────────────────────────────────────────────────
@@ -293,7 +295,6 @@ test('every internal link on every prerendered page resolves to a real page, sec
 // ── what Batch 2 must not touch ──────────────────────────────────────────────────────────
 test('exclusions: no change to forms, lead APIs, analytics config, legal pages, package prices or the trust-page gate', () => {
   const cfg = read('src/config.js')
-  assert.match(cfg, /export const TRUST_PAGES_PUBLISHED = false/)
   assert.match(cfg, /export const BOOKING_URL = 'https:\/\/calendly\.com\/mohamed-convrt\/30min'/)
   for (const f of ['api/_lib/subscribe.js', 'api/_lib/notify.js', 'src/lib/analytics.js', 'src/content/trustPages.js']) assert.ok(fs.existsSync(path.join(ROOT, f)), f)
   assert.ok(!/VITE_GTM_ID\s*=\s*\S/.test(read('.env.example') || ''), 'no analytics ID is set by this batch')
