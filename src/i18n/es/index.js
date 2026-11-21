@@ -7,6 +7,7 @@ import showcase from './dict-showcase.js'
 import trust from './dict-trust.js'
 import scenes from './dict-scenes.js'
 import roadmap from './dict-roadmap.js'
+import geo from './dict-geo.js'
 
-export default { ...shell, ...home, ...services, ...pricing, ...showcase, ...trust, ...scenes, ...roadmap }
-export const PARTS = { shell, home, services, pricing, showcase, trust, scenes, roadmap }
+export default { ...shell, ...home, ...services, ...pricing, ...showcase, ...trust, ...scenes, ...roadmap, ...geo }
+export const PARTS = { shell, home, services, pricing, showcase, trust, scenes, roadmap, geo }

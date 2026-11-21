@@ -1,8 +1,9 @@
 // Run with: node --test tests/spanish-eur-pricing.test.mjs
 // The Spanish site shows EUR prices that only the owner can approve (src/i18n/es/pricing.js). These tests prove:
 //   1. the mechanism (config validation, formatting, tokens, per-variation, no USD fall-through, every business-data price has a key);
-//   2. that the committed configuration is still PENDING (nothing invented) unless the owner approved every amount;
-//   3. with a FAKE fully approved fixture (test-only amounts, never shipped) a real build switches every Spanish price, Offer and description to EUR, lifts the pricing gates and leaves no placeholder.
+//   2. that the committed configuration is the owner's approved table (2026-11-21), pinned amount by amount;
+//   3. with a PENDING fixture (a throw-away copy of the site, never shipped) the safety net works: visible placeholder, no price Offers, no price in the description, the priced pages launch-blocked.
+// (The approved state of the real configuration is built and checked in tests/i18n.test.mjs.)
 import test, { after } from 'node:test'
 import assert from 'node:assert/strict'
 import fs from 'node:fs'
@@ -22,6 +23,7 @@ const NB = ' '
 
 // FAKE amounts, chosen to differ from every USD price so a leaked dollar figure cannot hide. They exist only in this test.
 const FAKE = { 'sprint.monthly': 2701, 'sprint.oneOff': 3201, 'sprint.ext3': 801.5, 'sprint.ext6': 1301, 'sprint.ext12': 2401, 'sprintPlus.monthly': 4501, 'sprintPlus.oneOff': 5401, 'sprintPlus.ext3': 1501.5, 'sprintPlus.ext6': 2501, 'sprintPlus.ext12': 4301, rawFootage: 221, 'organicLight.monthly': 1201, 'organicGrowth.monthly': 2201 }
+const pendingFixture = () => ({ ...ES_PRICING, status: 'pending', approvedBy: null, approvedOn: null, amounts: Object.fromEntries(Object.keys(ES_PRICING.amounts).map((k) => [k, null])) })
 const approvedFixture = () => ({ ...ES_PRICING, status: 'approved', approvedBy: 'Test', approvedOn: '2026-11-21', amounts: { ...FAKE } })
 
 // ── 1. the mechanism ─────────────────────────────────────────────────────────────────────────────────────────
@@ -63,8 +65,10 @@ test('EUR amounts format naturally and come from the Spanish config, never from 
   assert.equal(priceOf('es', ORGANIC.growth.monthly, cfg).amount, 2201)
   assert.notEqual(priceOf('es', SPRINT.monthly, cfg).amount, SPRINT.monthly.amount, 'not the USD number')
   // pending: placeholder, never a number
-  assert.equal(priceOf('es', SPRINT.monthly).amount, null)
-  assert.equal(formatPrice('es', priceOf('es', SPRINT.monthly)), ES_PRICING.placeholder)
+  assert.equal(priceOf('es', SPRINT.monthly, pendingFixture()).amount, null)
+  assert.equal(formatPrice('es', priceOf('es', SPRINT.monthly, pendingFixture()), pendingFixture()), ES_PRICING.placeholder)
+  // the committed (approved) configuration
+  assert.equal(money(SPRINT.monthly, 'es'), `2.750${NB}€`)
   assert.throws(() => priceOf('es', { amount: 3000, currency: 'USD' }), /no key/)
   assert.throws(() => priceOf('fr', SPRINT.monthly), /No pricing configuration/)
   assert.equal(money(SPRINT.monthly, 'en'), '$3,000')
@@ -77,14 +81,18 @@ test('per-variation figures are derived only from the approved amount of that la
   assert.equal(perVariationOf('es', 'sprintPlus.monthly', cfg).amount, 150) // 4501 / 30
   assert.equal(perVariationOf('es', 'sprintPlus.oneOff', cfg).amount, 180) // 5401 / 30
   assert.equal(perVariationText('es', SPRINT.monthly, cfg), `180${NB}€`)
-  assert.equal(perVariationOf('es', 'sprint.monthly').amount, null, 'pending stays pending')
+  assert.equal(perVariationOf('es', 'sprint.monthly', pendingFixture()).amount, null, 'pending stays pending')
+  // the committed table: 2750/15 = 183.3, 3250/15 = 216.7, 4600/30 = 153.3, 5500/30 = 183.3 (rounded to whole euros)
+  assert.deepEqual(['sprint.monthly', 'sprint.oneOff', 'sprintPlus.monthly', 'sprintPlus.oneOff'].map((k) => perVariationOf('es', k).amount), [183, 217, 153, 183])
+  assert.equal(perVariationText('es', SPRINT_PLUS.oneOff), `183${NB}€`)
   assert.throws(() => perVariationOf('es', 'rawFootage', cfg))
 })
 
 test('dictionary sentences carry price tokens, never a typed amount; tokens resolve from the config', () => {
   const sentence = 'Creative Testing Sprint cuesta {{price:sprint.monthly}} ({{perVariation:sprint.monthly}} por variación)'
   assert.equal(resolvePriceTokens('es', sentence, approvedFixture()), `Creative Testing Sprint cuesta 2.701${NB}€ (180${NB}€ por variación)`)
-  assert.equal(resolvePriceTokens('es', sentence), `Creative Testing Sprint cuesta ${ES_PRICING.placeholder} (${ES_PRICING.placeholder} por variación)`)
+  assert.equal(resolvePriceTokens('es', sentence, pendingFixture()), `Creative Testing Sprint cuesta ${ES_PRICING.placeholder} (${ES_PRICING.placeholder} por variación)`)
+  assert.equal(resolvePriceTokens('es', sentence), `Creative Testing Sprint cuesta 2.750${NB}€ (183${NB}€ por variación)`, 'the committed table')
   assert.throws(() => resolvePriceTokens('es', '{{price:nope}}'))
   // the real dictionary: no Spanish sentence types a currency amount
   const dictDir = path.join(ROOT, 'src/i18n/es')
@@ -96,7 +104,7 @@ test('dictionary sentences carry price tokens, never a typed amount; tokens reso
       assert.ok(!/\d[\d.,]*\s?(USD|€|EUR|euros?)\b/i.test(value), `${f}: a Spanish value types an amount instead of a price token: ${value.slice(0, 90)}`)
     }
   }
-  assert.equal(translate('es', 'Yes, one-off packages are available: Creative Testing Sprint is $3,500 and Creative Testing Sprint Plus is $6,000.'), `Sí, hay paquetes puntuales: Creative Testing Sprint cuesta ${ES_PRICING.placeholder} y Creative Testing Sprint Plus ${ES_PRICING.placeholder}.`)
+  assert.equal(translate('es', 'Yes, one-off packages are available: Creative Testing Sprint is $3,500 and Creative Testing Sprint Plus is $6,000.'), `Sí, hay paquetes puntuales: Creative Testing Sprint cuesta 3.250${NB}€ y Creative Testing Sprint Plus 5.500${NB}€.`)
 })
 
 test('future languages register their own pricing; English is never in the registry', () => {
@@ -106,11 +114,14 @@ test('future languages register their own pricing; English is never in the regis
 })
 
 // ── 2. the committed configuration ───────────────────────────────────────────────────────────────────────────
-test('the committed Spanish pricing is consistent: pending with no amount, or approved with every amount, who and when', () => {
+test('the committed Spanish pricing is the owner-approved table (2026-11-21), amount by amount, and is not derived from the USD data', () => {
   assert.deepEqual(pricingProblems(ES_PRICING), [])
-  if (ES_PRICING.status === 'pending') assert.ok(Object.values(ES_PRICING.amounts).every((v) => v === null), 'no amount may be set before the owner approves the table')
-  else assert.ok(PRICE_KEYS.every((k) => ES_PRICING.amounts[k] > 0))
+  assert.equal(ES_PRICING.status, 'approved'); assert.equal(ES_PRICING.approvedOn, '2026-11-21'); assert.equal(ES_PRICING.currency, 'EUR')
+  assert.deepEqual(ES_PRICING.amounts, { 'sprint.monthly': 2750, 'sprint.oneOff': 3250, 'sprint.ext3': 850, 'sprint.ext6': 1375, 'sprint.ext12': 2400, 'sprintPlus.monthly': 4600, 'sprintPlus.oneOff': 5500, 'sprintPlus.ext3': 1550, 'sprintPlus.ext6': 2500, 'sprintPlus.ext12': 4350, rawFootage: 225, 'organicLight.monthly': 1400, 'organicGrowth.monthly': 2300 })
+  // no exchange-rate logic anywhere in the pricing code
+  for (const f of ['src/i18n/pricing.js', 'src/i18n/es/pricing.js', 'src/i18n/es/money.js', 'src/i18n/money.js']) assert.ok(!/exchange|fx|rate|convert/i.test(fs.readFileSync(path.join(ROOT, f), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '').replace(/\/\/.*$/gm, '')), `${f}: no conversion logic`)
   assert.ok(ES_PRICED_PAGES.every((p) => p.startsWith('/')))
+  assert.ok(pricingProblems(pendingFixture()).length === 0, 'a pending config is also valid (it is the safety state)')
 })
 
 // ── 3. a real build with a FAKE approved configuration ──────────────────────────────────────────────────────
@@ -119,54 +130,35 @@ after(() => { if (tmp) fs.rmSync(tmp, { recursive: true, force: true }) })
 const textOf = (h) => h.slice(h.indexOf('<body')).replace(/<script[\s\S]*?<\/script>|<style[\s\S]*?<\/style>|<svg[\s\S]*?<\/svg>/g, ' ').replace(/<[^>]+>/g, '\n').replace(/&amp;/g, '&').replace(/&#x27;/g, "'").replace(/&quot;/g, '"').split('\n').map((s) => s.trim()).filter(Boolean).join('\n')
 const jsonLd = (h) => [...h.matchAll(/<script type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/g)].map((m) => JSON.parse(m[1]))
 
-test('with approved EUR amounts a real build shows EUR everywhere: cards, FAQs, metadata, Offers; no placeholder, no USD price; the pricing gates lift', { timeout: 120000 }, async () => {
+test('safety net: with a PENDING configuration a real build shows placeholders, omits price Offers and the price claim, and launch-blocks exactly the priced pages', { timeout: 120000 }, async () => {
   tmp = fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), 'convrt-eur-')))
-  // A throw-away COPY of the project whose Spanish pricing is the fake approved fixture: head metadata is built by Node-side build code, so a resolver swap cannot reach it.
+  // A throw-away COPY of the project whose Spanish pricing is pending: head metadata is built by Node-side build code, so a resolver swap cannot reach it.
   const proj = path.join(tmp, 'proj'), dist = path.join(proj, 'dist')
   fs.mkdirSync(path.join(proj, 'public'), { recursive: true })
   for (const f of ['src', 'index.html', 'package.json', 'vite.config.js', 'vite-plugin-blog.js', 'vite-plugin-sitemap.js', 'vite-plugin-static-routes.js', 'tailwind.config.js', 'postcss.config.js']) fs.cpSync(path.join(ROOT, f), path.join(proj, f), { recursive: true })
   fs.cpSync(path.join(ROOT, 'public', 'fonts'), path.join(proj, 'public', 'fonts'), { recursive: true })
   fs.symlinkSync(path.join(ROOT, 'node_modules'), path.join(proj, 'node_modules'), 'dir')
+  const pending = pendingFixture()
   fs.writeFileSync(path.join(proj, 'src/i18n/es/pricing.js'), `import { formatMoneyEs } from './money.js'
-export const ES_PRICING = { locale: 'es', currency: 'EUR', status: 'approved', approvedBy: 'Test', approvedOn: '2026-11-21', placeholder: ${JSON.stringify(ES_PRICING.placeholder)}, format: formatMoneyEs, amounts: ${JSON.stringify(FAKE)} }
+export const ES_PRICING = { locale: 'es', currency: 'EUR', status: 'pending', approvedBy: null, approvedOn: null, placeholder: ${JSON.stringify(ES_PRICING.placeholder)}, format: formatMoneyEs, amounts: ${JSON.stringify(pending.amounts)} }
 export const ES_PRICED_PAGES = ${JSON.stringify(ES_PRICED_PAGES)}
 `)
   await build({ root: proj, configFile: path.join(proj, 'vite.config.js'), logLevel: 'silent', build: { outDir: 'dist', emptyOutDir: true } })
   const page = (p) => fs.readFileSync(path.join(dist, p.replace(/^\/|\/$/g, ''), 'index.html'), 'utf8')
-  const eur = (n) => n.toLocaleString('de-DE', { minimumFractionDigits: Number.isInteger(n) ? 0 : 2 }) + NB + '€'
-
-  const pricing = page('/es/pricing'), t = textOf(pricing)
-  for (const k of ['sprint.monthly', 'sprint.oneOff', 'sprintPlus.monthly', 'sprintPlus.oneOff', 'sprint.ext3', 'sprint.ext6', 'sprint.ext12', 'sprintPlus.ext3', 'sprintPlus.ext6', 'sprintPlus.ext12', 'rawFootage', 'organicLight.monthly', 'organicGrowth.monthly']) assert.ok(t.includes(eur(FAKE[k])), `/es/pricing shows ${k} as ${eur(FAKE[k])}; sample: ${JSON.stringify((t.match(/.{12}€.{3}|.{20}precio en.{20}/g) ?? []).slice(0, 6))}`)
-  assert.ok(t.includes(`180${NB}€`) && t.includes(`150${NB}€`), 'per-variation figures derive from the EUR amounts')
-  // deliverables, terms and VAT wording are unchanged (translated English data)
-  for (const s of ['15 versiones de anuncio finalizadas', '30 versiones de anuncio finalizadas', 'sin IVA'.replace('sin IVA', 'IVA')]) assert.ok(t.includes(s), s)
-
-  for (const p of ['/es', '/es/pricing', '/es/ugc-video-agency', '/es/spokesperson-video-production', '/es/social-media-video-production', '/es/saas-video-production', '/es/about', '/es/contact', '/es/creator-showcase', '/es/creative-growth-roadmap']) {
-    const h = page(p), x = textOf(h)
-    assert.ok(!x.includes(ES_PRICING.placeholder), `${p}: no placeholder once approved`)
-    assert.ok(!/\$\s?\d/.test(x), `${p}: no $N`)
-    assert.ok(!/"priceCurrency":"USD"/.test(h), `${p}: no USD price in JSON-LD`)
-    // USD survives only as a client's real result (UGC) and the Roadmap's ad-spend brackets
-    const usd = x.match(/[\d.,]+\s?USD/g) ?? []
-    assert.ok(usd.every((u) => /3\.421,25|^(5|20)\.000/.test(u.replace(NB, ' ').trim())), `${p}: ${usd}`)
-  }
-  // metadata
-  assert.ok(page('/es/ugc-video-agency').includes(`desde ${eur(2701)}/mes`), 'UGC description carries the EUR price: ' + (page('/es/ugc-video-agency').match(/<meta name="description" content="[^"]*"/) ?? [])[0])
-  assert.match(page('/es/pricing'), /precios claros en euros/)
-  // JSON-LD Offers: EUR amounts only
-  const offers = JSON.stringify(jsonLd(pricing)[0]['@graph'])
-  const prices = [...offers.matchAll(/"price":([\d.]+),"priceCurrency":"(\w+)"/g)].map((m) => [Number(m[1]), m[2]])
-  assert.ok(prices.length >= 7 && prices.every(([, c]) => c === 'EUR'), 'every Offer is EUR')
-  assert.deepEqual(prices.map(([n]) => n).sort((a, b) => a - b), [221, 1201, 2201, 2701, 3201, 4501, 5401].sort((a, b) => a - b), 'Offer amounts are the approved EUR amounts')
-  assert.ok(jsonLd(page('/es/ugc-video-agency'))[0]['@graph'].some((n) => n.offers?.length === 4 && n.offers.every((o) => o.priceSpecification.priceCurrency === 'EUR')), 'UGC page Service offers')
-  // gates lifted: indexable, hreflang, sitemap
   const sm = fs.readFileSync(path.join(dist, 'sitemap.xml'), 'utf8')
+  const withPlaceholder = []
+  for (const p of ['/es', '/es/pricing', '/es/ugc-video-agency', '/es/spokesperson-video-production', '/es/social-media-video-production', '/es/saas-video-production', '/es/about', '/es/contact', '/es/creative-growth-roadmap']) {
+    const h = page(p)
+    if (textOf(h).includes(ES_PRICING.placeholder)) withPlaceholder.push(p.replace('/es', '') || '/')
+    assert.ok(!/"price":\d/.test(h), `${p}: no price Offer while pending`)
+    assert.ok(!/\$\s?\d/.test(textOf(h)), `${p}: no USD amount substituted`)
+  }
+  assert.deepEqual(withPlaceholder.sort(), [...ES_PRICED_PAGES].sort(), 'exactly the priced pages show a placeholder')
   for (const bp of ES_PRICED_PAGES) {
     const es = page(`/es${bp}`)
-    assert.ok(!/name="robots"/.test(es.slice(0, es.indexOf('</head>'))), `${bp}: indexable`)
-    assert.ok(sm.includes(`/es${bp}`) && /hreflang="es"/.test(page(bp)), `${bp}: sitemap + hreflang`)
+    assert.match(es.slice(0, es.indexOf('</head>')), /name="robots" content="noindex, follow"/, `${bp}: launch-blocked`)
+    assert.ok(!sm.includes(`/es${bp}`) && !/hreflang/.test(page(bp)), `${bp}: no sitemap entry, no hreflang`)
   }
-  // English pages keep USD
-  assert.match(textOf(page('/pricing')), /\$3,000/)
-  assert.ok(!/€/.test(textOf(page('/pricing'))))
+  assert.ok(!/desde/.test(page('/es/ugc-video-agency').match(/<meta name="description" content="[^"]*"/)[0]), 'no price claim in the description')
+  assert.ok(sm.includes('/es/about'), 'unrelated pages stay released')
 })

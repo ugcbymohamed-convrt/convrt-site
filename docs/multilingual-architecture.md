@@ -53,7 +53,7 @@ only; there is no consent box). Risk-free trial, Free Hooks and Referral remain 
 links into them are dropped. French and Arabic have no flows. To localize another flow: translate its components with `tr()`, build the page into `TRANSLATED_PATHS`, then flip its flag (CTAs switch by themselves).
 
 ## Pricing per language
-English prices are the business data (USD). Each other language has its own explicitly approved pricing configuration (`src/i18n/<locale>/pricing.js`: currency, notation, `status`, one amount per price in `PRICE_ITEMS`), registered in `src/i18n/pricing.js`. Dictionary sentences carry `{{price:key}}` tokens, never numbers; `money()` throws for a price without a key; pending pricing shows a placeholder, omits Offers and blocks the priced pages (`src/i18n/release.js`). Spanish is EUR and pending approval: `docs/multilingual-spanish-eur-pricing.md`.
+English prices are the business data (USD). Each other language has its own explicitly approved pricing configuration (`src/i18n/<locale>/pricing.js`: currency, notation, `status`, one amount per price in `PRICE_ITEMS`), registered in `src/i18n/pricing.js`. Dictionary sentences carry `{{price:key}}` tokens, never numbers; `money()` throws for a price without a key; pending pricing shows a placeholder, omits Offers and blocks the priced pages (`src/i18n/release.js`). Spanish is EUR with owner-approved amounts: `docs/multilingual-spanish-eur-pricing.md`.
 
 ## Right-to-left readiness (Arabic)
 `languages.ar.dir = 'rtl'`; the build writes `<html lang="ar" dir="rtl">` for any built RTL locale; `src/index.css` has an Arabic font stack, `letter-spacing: normal` and line-height rules scoped to

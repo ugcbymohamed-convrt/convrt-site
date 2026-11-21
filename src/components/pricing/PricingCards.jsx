@@ -144,7 +144,8 @@ function BillingPrice({ pkg, billing }) {
   return (
     <>
       {BILLING_OPTIONS.map((o) => (
-        <span key={o.id} hidden={billing !== o.id} data-billing={o.id} className="text-[44px] md:text-[52px]">
+        // Spanish prices ("3.250 €/proyecto") are wider than the English ones: between 1024 and 1279px the three-column card is narrower than the 52px price, so non-English pages step the size down there.
+        <span key={o.id} hidden={billing !== o.id} data-billing={o.id} className={currentLocale() === 'en' ? 'text-[44px] md:text-[52px]' : 'text-[44px] md:text-[52px] lg:text-[40px] xl:text-[52px]'}>
           {money(pkg[o.id])}
           <span className="ml-1.5 text-base font-medium tracking-normal opacity-60 md:text-lg">{tr(o.unit)}</span>
         </span>

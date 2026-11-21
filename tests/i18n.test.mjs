@@ -303,46 +303,62 @@ test('Spanish pages: client quotes stay verbatim in their original language and 
   assert.match(page('/es/ugc-video-agency'), /<blockquote lang="en"/)
 })
 
-test('Spanish prices are EUR and owner-approved: while pending every price is a visible placeholder, never a USD amount, and the pages that carry a price are launch-blocked', () => {
+// The owner's FINAL approved Spanish-market EUR prices (2026-11-21). Pinned here so a change to src/i18n/es/pricing.js cannot slip through without a deliberate test edit.
+const APPROVED_EUR = { 'sprint.monthly': 2750, 'sprint.oneOff': 3250, 'sprint.ext3': 850, 'sprint.ext6': 1375, 'sprint.ext12': 2400, 'sprintPlus.monthly': 4600, 'sprintPlus.oneOff': 5500, 'sprintPlus.ext3': 1550, 'sprintPlus.ext6': 2500, 'sprintPlus.ext12': 4350, rawFootage: 225, 'organicLight.monthly': 1400, 'organicGrowth.monthly': 2300 }
+const eurText = (n) => formatMoneyEs({ amount: n, currency: 'EUR' })
+
+test('Spanish prices are the owner-approved EUR amounts: shown everywhere a price appears, no placeholder, no USD package price, EUR Offers, pricing gates lifted, other gates intact', () => {
   const cfg = pricingConfig('es')
   assert.deepEqual(pricingProblems(cfg), [], 'the Spanish pricing configuration is valid')
-  assert.equal(cfg.currency, 'EUR')
-  const PH = cfg.placeholder
-  const priced = []
+  assert.equal(cfg.currency, 'EUR'); assert.equal(cfg.status, 'approved'); assert.equal(cfg.approvedOn, '2026-11-21')
+  assert.deepEqual(cfg.amounts, APPROVED_EUR, 'the 13 approved amounts')
+  assert.ok(isPricingApproved('es'))
   for (const p of ES_PAGES) {
     const h = page(p), t = textOf(h).join('\n')
+    assert.ok(!t.includes(cfg.placeholder), `${p}: no price placeholder`)
     assert.ok(!/\$\s?\d/.test(t), `${p}: no "$N" amount`)
     // the only dollars on a Spanish page are a client's real reported result (UGC page) and the Roadmap's ad-spend answer brackets (qualification thresholds, unchanged)
-    const usd = t.match(/[\d.,]+\u00a0?\s?USD|dólar/g) ?? []
+    const usd = t.match(/[\d.,]+ ?\s?USD|dólar/g) ?? []
     assert.ok(usd.every((u) => (p === '/es/ugc-video-agency' && /3\.421,25/.test(u)) || (p === '/es/creative-growth-roadmap' && /^(5|20)\.000/.test(u))), `${p}: USD left on a Spanish page: ${usd}`)
     assert.ok(!/"priceCurrency":"USD"/.test(h), `${p}: no USD price in JSON-LD`)
-    if (!isPricingApproved('es')) {
-      if (t.includes(PH)) priced.push(baseOf(p))
-      assert.ok(!/"price":\d/.test(h), `${p}: no price Offer while the EUR amounts are pending`)
-    }
   }
-  if (!isPricingApproved('es')) {
-    assert.deepEqual(priced.sort(), [...ES_PRICED_PAGES].sort(), 'exactly the pages listed in ES_PRICED_PAGES render a price placeholder (a new priced page must be added to the list)')
-    for (const bp of ES_PRICED_PAGES) {
-      assert.ok(releaseBlocker('es', bp), `${bp} is launch-blocked`)
-      assert.match(headOf(page(localizedPath('es', bp))), /name="robots" content="noindex, follow"/, bp)
-      assert.ok(!fs.readFileSync(path.join(dist, 'sitemap.xml'), 'utf8').includes(localizedPath('es', bp)), `${bp} is not in the sitemap`)
-      assert.ok(!/hreflang/.test(page(bp)), `English ${bp} carries no hreflang to a blocked Spanish page`)
-    }
-    assert.ok(!/desde/.test(ES_SEO['/ugc-video-agency'].description), 'the UGC description makes no price claim until the EUR amount is approved')
+  // /es/pricing: every approved amount and the derived per-variation figures
+  const pt = textOf(page('/es/pricing')).join('\n')
+  for (const [k, n] of Object.entries(APPROVED_EUR)) assert.ok(pt.includes(eurText(n)), `/es/pricing shows ${k} = ${eurText(n)}`)
+  for (const n of [183, 217, 153]) assert.ok(pt.includes(eurText(n)), `per-variation ${n}`) // 2750/15, 3250/15, 4600/30 (= 5500/30 = 183)
+  assert.match(pt, /no incluyen IVA|sin IVA|excluyen el IVA/, 'VAT wording kept')
+  // spokesperson / organic / UGC pages carry the EUR figures from the same configuration
+  assert.ok(textOf(page('/es/spokesperson-video-production')).join('\n').includes(eurText(2750)))
+  assert.ok(textOf(page('/es/social-media-video-production')).join('\n').includes(eurText(1400)))
+  assert.ok(textOf(page('/es/ugc-video-agency')).join('\n').includes(eurText(2750)))
+  // metadata
+  assert.match(headOf(page('/es/ugc-video-agency')), new RegExp(`desde ${eurText(2750).replace(' ', ' ')}/mes`))
+  assert.match(ES_SEO['/pricing'].description, /precios claros en euros/)
+  // Offers: EUR, exactly the approved amounts
+  const offers = JSON.stringify(jsonLd(page('/es/pricing'))[0]['@graph'])
+  const prices = [...offers.matchAll(/"price":([\d.]+),"priceCurrency":"(\w+)"/g)].map((m) => [Number(m[1]), m[2]])
+  assert.ok(prices.every(([, c]) => c === 'EUR'))
+  assert.deepEqual(prices.map(([n]) => n).sort((a, b) => a - b), [225, 1400, 2300, 2750, 3250, 4600, 5500])
+  // pricing gates lifted: indexable, hreflang, sitemap; unrelated gates untouched
+  const sm = fs.readFileSync(path.join(dist, 'sitemap.xml'), 'utf8')
+  for (const bp of ES_PRICED_PAGES) {
+    assert.equal(releaseBlocker('es', bp), null, `${bp}: released`)
+    assert.ok(!/name="robots"/.test(headOf(page(localizedPath('es', bp)))), `${bp}: indexable`)
+    assert.ok(sm.includes(localizedPath('es', bp)) && /hreflang="es"/.test(page(bp)), `${bp}: sitemap + hreflang`)
   }
-  // English is untouched: USD notation from the business data
-  assert.match(textOf(page('/pricing')).join('\n'), /\$3,000/)
-  assert.ok(pr_has_no_placeholder(page('/pricing'), PH))
+  assert.ok(releaseBlocker('es', '/creator-showcase'), 'the Spanish Showcase stays gated until Spanish videos exist')
+  assert.match(headOf(page('/es/creator-showcase')), /name="robots" content="noindex, follow"/)
+  // English is untouched: USD notation from the business data, no euro sign
+  const en = textOf(page('/pricing')).join('\n')
+  assert.match(en, /\$3,000/); assert.ok(!/€/.test(en))
 })
-const pr_has_no_placeholder = (h, ph) => !textOf(h).join('\n').includes(ph)
 
-test('commercial facts match the English source: same figures on /es/pricing as on /pricing', () => {
-  const nums = (h) => (textOf(h).join(' ').match(/\d[\d.,]*/g) || []).map((n) => n.replace(/[.,]/g, ''))
-  const en = new Set(nums(page('/pricing'))), es = nums(page('/es/pricing'))
+test('commercial facts match the English source: the Spanish pricing page carries the same non-price figures as /pricing (deliverables, months, days, rounds)', () => {
+  // prices differ by design (USD vs approved EUR): strip them, then every remaining figure on the Spanish page must exist on the English one
+  const nums = (t, priceRe) => (t.replace(priceRe, ' ').match(/\d[\d.,]*/g) || []).map((n) => n.replace(/[.,]/g, ''))
+  const en = new Set(nums(textOf(page('/pricing')).join(' '), /\$[\d,.]+/g)), es = nums(textOf(page('/es/pricing')).join(' '), /[\d.,]+ €/g)
   const stray = [...new Set(es)].filter((n) => !en.has(n) && n.length > 2)
   assert.deepEqual(stray, [], 'a figure on the Spanish pricing page that is not on the English one')
-  for (const k of ['3000', '5000', '3500', '6000', '1500', '2500', '93750', '168750']) assert.ok(es.includes(k) || k.length > 4 && false || true)
 })
 
 test('JSON-LD: one stable Organization @id across languages; Spanish WebPage/FAQPage/Service in Spanish; FAQ markup equals the visible FAQ; no invented facts', () => {
@@ -357,7 +373,7 @@ test('JSON-LD: one stable Organization @id across languages; Spanish WebPage/FAQ
     assert.equal(web.url, `${SITE_URL}${p === '/es' ? '/es/' : p}`)
     assert.deepEqual(web.isPartOf, { '@id': `${SITE_URL}/#website` }, p)
     assert.ok(!g.some((n) => n['@type'] === 'WebSite'), `${p}: the WebSite is referenced by @id, not redefined`)
-    assert.ok(!JSON.stringify(g).match(/aggregateRating|review"|"rating|address|geo|areaServed/), `${p}: nothing invented`)
+    assert.ok(!JSON.stringify(g.filter((n) => n['@type'] !== 'Organization')).match(/aggregateRating|review"|"rating|address|geo|areaServed/), `${p}: nothing invented (the Organization node, incl. its country-only address, is asserted identical to English above)`)
     const faq = g.find((n) => n['@type'] === 'FAQPage')
     if (faq) {
       const visible = textOf(page(p)).join('\n')

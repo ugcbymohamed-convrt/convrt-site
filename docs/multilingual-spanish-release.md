@@ -1,6 +1,6 @@
 # Spanish launch candidate: state, checklist and decisions before publication
 
-Branch `multilingual-foundation-es` (rebased onto `origin/main` 61e3652). Not merged, not deployed to Production. Merging it **is** the publication act: `src/i18n/locales.js` has
+Branch `multilingual-foundation-es` (merged with `origin/main` da558ee, which includes GEO Work Package 1). Not merged, not deployed to Production. Merging it **is** the publication act: `src/i18n/locales.js` has
 `es: 'live'` (indexable pages, sitemap, hreflang, selector). To merge the code without publishing Spanish, set `'review'` (pages stay reachable by URL, noindex, no sitemap/hreflang/selector).
 Live blocker list: `node scripts/es-launch-readiness.mjs` (exit code 1 while any remain).
 
@@ -13,7 +13,7 @@ Deliberately English-only: case studies, blog, free hooks, risk-free trial, refe
 - [x] Visible text, headings, FAQs, buttons, aria labels, scene labels, form labels/errors/outcomes; 404 for unbuilt `/es/…`, `/fr`, `/ar`
 - [x] Unique titles/descriptions per page from the approved keyword map (`docs/multilingual-spanish-seo-map.md`); self-referencing canonicals; reciprocal hreflang `en`/`es`/`x-default` for indexable pages only
 - [x] FAQ and JSON-LD generated from the same Spanish text; one stable Organization `@id`; the noindex Roadmap has no JSON-LD (as in English)
-- [x] EUR pricing mechanism (separate Spanish configuration, "3.000 €" notation, tokens in every sentence, Offers, metadata); **amounts pending the owner's approval** (`docs/multilingual-spanish-eur-pricing.md`)
+- [x] EUR pricing mechanism (separate Spanish configuration, "2.750 €" notation, tokens in every sentence, Offers, metadata); **the 13 amounts are owner-approved (2026-11-21)** and the pricing gates are lifted (`docs/multilingual-spanish-eur-pricing.md`)
 - [x] Client quotes verbatim in English, marked `lang="en"`, with a visible note; English-only case studies labelled "(en inglés)"
 - [x] No language preference is stored (language comes from the URL only)
 - [x] English pages differ from `origin/main` only by the selector and hreflang tags (`scripts/i18n-english-parity.mjs`: 0 differences)
@@ -22,7 +22,6 @@ Deliberately English-only: case studies, blog, free hooks, risk-free trial, refe
 - [ ] Spanish-language Showcase videos (blocker 1), Spanish OG image (blocker 2), legal set (blocker 3)
 
 ## Launch blockers
-0. **Spanish EUR prices are not approved.** The owner replaced USD with EUR for the Spanish site (Nov 2026). Every euro amount is blank until approved (no conversion, no reuse of USD figures); the Spanish pages that carry a price (`/es/pricing`, `/es/ugc-video-agency`, `/es/spokesperson-video-production`, `/es/social-media-video-production`) show a placeholder and are launch-blocked (noindex, no sitemap, no hreflang) and price Offers are omitted from their JSON-LD. Approval table: `docs/multilingual-spanish-eur-pricing.md`.
 1. **Spanish Creator Showcase has no videos.** `/es/creator-showcase` is built but `noindex`, out of the sitemap and hreflang, and the selector falls back to the Spanish home (`src/i18n/release.js`).
    The four service galleries on Spanish pages are empty for the same reason. Exact information needed, and how an approved video flows to the Showcase and the galleries: `docs/multilingual-spanish-videos.md`.
    Spanish videos use `languages: ['es']` + `onlyIn: ['es']`, so they never change an English page.
@@ -42,16 +41,15 @@ Not blockers but English-only: free hooks, risk-free trial and referrals (their 
 
 ## Decisions needed from the owner
 1. **Spanish videos:** which creators and videos have written consent for portfolio use, and the spoken language of each (`docs/multilingual-spanish-videos.md`).
-2. **Spanish EUR prices:** approve the 13 amounts in the table (and confirm the per-variation derivation and the items deliberately left in USD).
-3. **Legal set:** publish lawyer-reviewed Spanish Privacy/Terms/Legal Notice before indexing (recommended), or accept English-only legal links labelled "(en inglés)".
-4. **Spanish OG image:** commission it or publish with the English image.
-5. **Roadmap explainer in Spanish:** provide a Spanish version (audio or burned-in captions), or keep it hidden on the Spanish page.
-6. **Roadmap privacy wording** and the Calendly notice translation: lawyer review.
-7. **Native Spanish review** of all copy before launch.
-8. **Spanish-only video pages and indexing:** a Spanish gallery page follows its English twin's indexability flag. Change only if you want Spanish videos alone to make a page indexable.
-9. **Publishing control:** `es: 'live'` means merging publishes Spanish, including the blocked items above (the Showcase stays noindex by gate). Use `'review'` to merge without publishing.
+2. **Legal set:** publish lawyer-reviewed Spanish Privacy/Terms/Legal Notice before indexing (recommended), or accept English-only legal links labelled "(en inglés)".
+3. **Spanish OG image:** commission it or publish with the English image.
+4. **Roadmap explainer in Spanish:** provide a Spanish version (audio or burned-in captions), or keep it hidden on the Spanish page.
+5. **Roadmap privacy wording** and the Calendly notice translation: lawyer review.
+6. **Native Spanish review** of all copy before launch.
+7. **Spanish-only video pages and indexing:** a Spanish gallery page follows its English twin's indexability flag. Change only if you want Spanish videos alone to make a page indexable.
+8. **Publishing control:** `es: 'live'` means merging publishes Spanish, including the blocked items above (the Showcase stays noindex by gate). Use `'review'` to merge without publishing.
 
-Closed earlier and kept: `hreflang="es"`, no language-preference storage, quotes verbatim in English, 20-minute wording (the Calendly event is titled "20-minute strategy call"; the `30min` in the URL is a legacy slug).
+Closed: **Spanish prices are EUR** (final, approved amounts), `hreflang="es"`, no language-preference storage, quotes verbatim in English, 20-minute wording (the Calendly event is titled "20-minute strategy call"; the `30min` in the URL is a legacy slug).
 
 ## Integration with main
-The branch is rebased on `origin/main` 61e3652 (SEO/GEO Batch 2 and the Showcase titles included). Because Spanish is keyed by the exact English sentence, any later English copy change fails the Spanish build with the exact list to re-translate; nothing goes stale silently.
+The branch contains `origin/main` da558ee (SEO/GEO Batch 2, the Showcase titles and GEO Work Package 1 with the United States follow-up), merged with a merge commit; the 30 new English strings from GEO WP1 are translated (`src/i18n/es/dict-geo.js` and updated FAQ keys) and the Organization JSON-LD stays identical in both languages. Because Spanish is keyed by the exact English sentence, any later English copy change fails the Spanish build with the exact list to re-translate; nothing goes stale silently.
