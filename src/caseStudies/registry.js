@@ -12,9 +12,9 @@ export const CASE_STUDIES = [
     id: 'graspo',
     label: 'Graspo',
     category: 'Social Growth',
-    descriptor: '10M+ Organic Views',
+    descriptor: '10.7M Organic Views',
     accent: '#d5ff40',
-    blurb: 'From zero to 10M+ organic views.',
+    blurb: '10.7M organic views generated through our work with Graspo.',
     /* The service this project is an example of, and where to compare its packages (used by the "related service" line on the case-study page). */
     related: {
       lead: 'Graspo is an example of our',

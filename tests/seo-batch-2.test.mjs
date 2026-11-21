@@ -265,8 +265,17 @@ test('public claims register: every claim has a source and a status; the figures
   // the homepage FAQ text and JSON-LD still match after centralising the wording
   const faq = ldBlocks(page('/'))[0]['@graph'].find((n) => n['@type'] === 'FAQPage')
   HOME_FAQ.forEach((f, i) => assert.equal(faq.mainEntity[i].acceptedAnswer.text, homeFaqText(f)))
-  // the claims that need confirmation are the ones the owner is asked about
-  assert.deepEqual(PUBLIC_CLAIMS.filter((c) => c.status === 'needs-confirmation').map((c) => c.id).sort(), ['client-logos', 'graspo-from-zero', 'hundreds-of-creatives', 'quality-review', 'stat-returning'])
+  // after the owner's review (2026-11-21) no claim is left unconfirmed, and the ambiguous Graspo teaser is replaced by the documented metric
+  assert.deepEqual(PUBLIC_CLAIMS.filter((c) => c.status === 'needs-confirmation'), [])
+  assert.ok(!PUBLIC_CLAIMS.some((c) => c.id === 'graspo-from-zero'))
+  for (const c of CASE_STUDIES.filter((x) => x.id === 'graspo')) {
+    assert.equal(c.blurb, '10.7M organic views generated through our work with Graspo.')
+    assert.equal(c.descriptor, '10.7M Organic Views')
+  }
+  for (const h of [rootOf(page('/case-studies/elyon')), rootOf(page('/case-studies/graspo'))]) assert.ok(!/10M\+|From zero/.test(h), 'no ambiguous Graspo wording anywhere in the rendered case-study pages')
+  assert.ok(!/10M\+|From zero/.test(rootOf(page('/')) + rootOf(page('/scale'))), 'nor on the homepage or /scale')
+  const g = SITE_SEO['/case-studies/graspo']
+  assert.ok(g.title.includes('10.7M') && g.description.includes('10.7M') && g.description.includes('January to June 2026'), 'metadata states the documented figure and period')
 })
 
 // ── links ────────────────────────────────────────────────────────────────────────────────
