@@ -157,9 +157,10 @@ export const PRODUCTION_MODEL = {
   short: 'Remote production through our creator network, and on-location filming in Spain.',
 }
 
-/* Owner-confirmed (2026-11-21): CONVRT serves international clients. This states clients, not presence: it implies no offices or local legal entities in those markets. */
+/* Owner-confirmed (2026-11-21; the United States added the same day): CONVRT serves international clients. This states clients, not presence: it implies no offices or local legal entities in those markets.
+   Current SEO acquisition priorities are Europe, the UK, Spain and the Middle East, but US businesses are not excluded from the service positioning. */
 export const INTERNATIONAL_CLIENTS = {
-  text: 'We work with international clients, including in Europe, the UK and the Middle East.',
+  text: 'We work with international clients, including in Europe, the UK, the Middle East and the United States.',
 }
 
 export const TALENT = {
@@ -592,7 +593,7 @@ export const PUBLIC_CLAIMS = [
   { id: 'quality-review', claim: 'Every project goes through our internal creative quality review.', appears: 'home FAQ "What makes CONVRT different?" and UGC FAQ "revisions-and-performance"', source: 'owner-confirmed 2026-11-21: an actual process (kept as published)', status: 'owner-confirmed' },
   { id: 'hundreds-of-creatives', claim: "After producing hundreds of creatives, we've developed a strong understanding of what captures attention", appears: 'home FAQ "Do you help with concepts and scripting?"', source: 'owner-confirmed 2026-11-21: accurate and substantiable (kept as published)', status: 'owner-confirmed' },
   { id: 'international-clients', claim: INTERNATIONAL_CLIENTS.text, appears: 'About page ("at a glance" and "Markets, production and languages")', source: 'owner-confirmed 2026-11-21', status: 'owner-confirmed',
-    note: 'States clients, not presence: it implies no offices or local legal entities in Europe, the UK or the Middle East.' },
+    note: 'States clients, not presence: it implies no offices or local legal entities in Europe, the UK, the Middle East or the United States. SEO acquisition priorities remain Europe, the UK, Spain and the Middle East; US businesses are not excluded.' },
   { id: 'production-model', claim: PRODUCTION_MODEL.text, appears: 'About page; Home FAQ "other languages and for other markets"', source: 'owner-confirmed 2026-11-21 (approved wording, verbatim)', status: 'owner-confirmed',
     note: 'CONVRT is not remote-only. Implies no permanent offices or local production teams outside Spain. On-location filming is not presented as part of standard packages: PRODUCTION_MODEL.scope says it is subject to project scope, availability and quotation where applicable.' },
   { id: 'human-created-ugc', claim: 'UGC videos are 100% human-created, featuring real human creators', appears: 'UGC FAQ, structured data', source: 'owner-confirmed Nov 2026 (scoped to the UGC service)', status: 'owner-confirmed' },
