@@ -465,7 +465,9 @@ test('Creator Showcase folder: 12 creator videos (6 of the original 18 are now s
   const media = PORTFOLIO.map((v) => v.source.cloudflareId ?? v.source.mp4)
   assert.equal(new Set(media).size, media.length, 'no duplicate upload')
   for (const v of added) {
-    assert.ok(isDisplayable(v) && v.type === 'ugc')
+    // creator-05 is ON HOLD (third-party regulated-brand slate; display authorization not recorded): its data stays, but it is not displayable
+    if (v.id === 'creator-05') { assert.equal(v.approval.status, 'on-hold'); assert.ok(!isDisplayable(v)); assert.ok(v.approval.holdReason) } else assert.ok(isDisplayable(v))
+    assert.equal(v.type, 'ugc')
     assert.ok(/^[0-9a-f]{32}$/.test(v.source.cloudflareId), `${v.id}: Cloudflare id`)
     assert.equal(v.poster, `/portfolio/${v.id}.webp`)
     assert.ok(fs.existsSync(path.join(ROOT, 'public', v.poster)), `${v.id}: thumbnail file exists`)
@@ -475,9 +477,9 @@ test('Creator Showcase folder: 12 creator videos (6 of the original 18 are now s
     assert.ok(v.title && v.title.length <= 60 && !/example \d+/i.test(v.title), `${v.id}: a descriptive title (SEO showcase-titles pass), not a numbered placeholder`)
   }
   const ours = selectOurWork()
-  assert.equal(ours.length, 39, '23 UGC videos + the 7 spokesperson videos (six of which were also uploaded as creator-NN and are now listed once) + the 2 SaaS-folder clips added for the SaaS page + the 7 organic social videos')
+  assert.equal(ours.length, 38, '39 approved videos minus creator-05, which is on hold pending display authorization: 23 UGC videos + the 7 spokesperson videos (six of which were also uploaded as creator-NN and are now listed once) + the 2 SaaS-folder clips added for the SaaS page + the 7 organic social videos')
   assert.deepEqual(availableCategories(ours).map((c) => c.id), ['all', 'ecommerce', 'saas', 'services', 'other', 'spokesperson'], 'Other has the seven organic videos (industry "other", confirmed by the owner); Spokesperson has seven')
-  assert.deepEqual(['ecommerce', 'saas', 'services', 'other', 'spokesperson'].map((c) => countIn(ours, c)), [9, 8, 8, 7, 7])
+  assert.deepEqual(['ecommerce', 'saas', 'services', 'other', 'spokesperson'].map((c) => countIn(ours, c)), [9, 8, 7, 7, 7])
   assert.equal(ours.filter((v) => categoryOf(v) === null).length, 7, 'the six still-unclassified UGC videos and the one unclassified spokesperson video are in no industry tab')
   assert.ok(selectGallery().length > 10 && selectGallery().slice(0, 10).length === 10, 'the UGC gallery still caps at 10')
 })
@@ -581,7 +583,7 @@ test('Spokesperson filter: a type filter after the four industry filters; it hol
   // the shipped page: a Spokesperson pill with seven videos, after the industry pills
   const html = rootOf(page(PATH))
   const pills = [...html.matchAll(/aria-pressed="(?:true|false)"[^>]*>[\s\S]*?<\/svg>([A-Za-z -]+)<span[^>]*>(\d+)<\/span>/g)].map((m) => [m[1].trim(), Number(m[2])])
-  assert.deepEqual(pills, [['All Work', 39], ['E-commerce', 9], ['SaaS', 8], ['Services', 8], ['Other', 7], ['Spokesperson', 7]])
+  assert.deepEqual(pills, [['All Work', 38], ['E-commerce', 9], ['SaaS', 8], ['Services', 7], ['Other', 7], ['Spokesperson', 7]])
   assert.match(html, /aria-label="Filter videos by industry or type"/)
   const lib = renderToStaticMarkup(createElement(Library.default, { items: selectOurWork() }))
   assert.ok(lib.includes('Spokesperson'))
@@ -591,7 +593,10 @@ test('Spokesperson filter: a type filter after the four industry filters; it hol
 // ── descriptive titles (SEO/GEO showcase-titles pass, 2026-11-21): evidence-based, short, unique, no invented names ───────────────────────────
 test('showcase titles: every video has a short, unique, descriptive title and a matching caption; no placeholder, brand, creator name or testimonial wording', () => {
   const list = selectOurWork()
-  assert.equal(list.length, 39)
+  assert.equal(list.length, 38, '39 titled videos; creator-05 is on hold and not displayed')
+  const held = PORTFOLIO.find((v) => v.id === 'creator-05')
+  assert.ok(held && held.title && !isDisplayable(held) && held.approval.status === 'on-hold', 'the held video keeps its data and title but is not shown')
+  assert.ok(/TO VERIFY/.test(fs.readFileSync(path.join(ROOT, 'src/content/portfolio.js'), 'utf8')) && PORTFOLIO.find((v) => v.id === 'ugc-gal-5').languages[0] === 'en', 'ugc-gal-5 spoken language is flagged for verification, data unchanged')
   const titles = list.map((v) => v.title)
   assert.equal(new Set(titles).size, titles.length, 'unique titles')
   for (const v of list) {
@@ -606,7 +611,7 @@ test('showcase titles: every video has a short, unique, descriptive title and a 
   // no creator first name taken from a file name (Aoife, Luis) and no unverified language in a title: the language badge is data-driven
   for (const v of list) assert.ok(!/\b(aoife|luis)\b/i.test(v.title) && !/\b(spanish|french|arabic|english)\b/i.test(v.title), `${v.id}: no creator name or language asserted in the title`)
   // the data fields that drive filters and badges are untouched by the titles pass
-  assert.deepEqual(['ecommerce', 'saas', 'services', 'other', 'spokesperson'].map((c) => countIn(list, c)), [9, 8, 8, 7, 7])
+  assert.deepEqual(['ecommerce', 'saas', 'services', 'other', 'spokesperson'].map((c) => countIn(list, c)), [9, 8, 7, 7, 7])
   assert.ok(list.every((v) => v.approval.status === 'approved' && v.approval.portfolioUse === true && v.approval.creatorConsent === true))
   assert.ok(list.every((v) => v.production === undefined && v.brand === undefined), 'no production credit or brand was added')
 })

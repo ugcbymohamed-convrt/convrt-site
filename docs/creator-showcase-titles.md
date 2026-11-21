@@ -1,6 +1,6 @@
 # Creator Showcase titles: evidence table (2026-11-21)
 
-Scope: the 39 videos shown on `/creator-showcase` (the nine homepage-client videos are not on the Showcase and were not touched). Evidence came from four frames per video (start to 80%), on-screen text, Cloudflare Stream metadata (names are file names; no captions exist) and the portfolio data. **Audio was not heard**, so no spoken language or spoken topic was verified; the language shown on a card is still the data value. `V` = subject verified from the footage. `M` = needs manual identification: the title only describes the format.
+Scope: the 39 titled videos (38 are displayed: `creator-05` is on hold, see below) on `/creator-showcase` (the nine homepage-client videos are not on the Showcase and were not touched). Evidence came from four frames per video (start to 80%), on-screen text, Cloudflare Stream metadata (names are file names; no captions exist) and the portfolio data. **Audio was not heard**, so no spoken language or spoken topic was verified; the language shown on a card is still the data value. `V` = subject verified from the footage. `M` = needs manual identification: the title only describes the format.
 
 | Video | Original title | New title | Status | Evidence |
 |---|---|---|---|---|
@@ -49,3 +49,10 @@ Scope: the 39 videos shown on `/creator-showcase` (the nine homepage-client vide
 - Creator first names that appear in Cloudflare file names are not used: a name is shown only with `creator.showName`.
 - Languages, industries, types, filters, posters, Cloudflare ids and approvals are untouched.
 - No `VideoObject` markup: still no verified upload dates.
+
+## Open items (owner decisions, 2026-11-21)
+- **`creator-05` is ON HOLD and not shown anywhere.** The footage ends on a third-party health-screening test's regulatory risk slate and no record exists that the brand's content may be displayed publicly. Its entry, title and Cloudflare id are kept (`approval.status: 'on-hold'`, with `holdReason`); set `status` back to `'approved'` once display authorization is confirmed.
+- **`ugc-gal-5`: verify the spoken language.** Captions mix English with a Spanish word ("también"); the data still says English. A `TO VERIFY` comment sits on the entry.
+- **Duplicate to review later:** `ugc-hero-1` and `saas-creator-2` are the same footage (identical frames and 62 s duration), uploaded twice. Both stay for now; their titles differ only because titles must be unique.
+- **Ten format-only titles** (status "Manual review" above) describe what is visible and nothing more; replace them once the subject is identified.
+- **Spanish site:** these English titles are not translated. The Spanish Showcase will use its own Spanish-specific videos.

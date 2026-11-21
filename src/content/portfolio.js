@@ -249,6 +249,7 @@ export const PORTFOLIO = [
     caption: 'Creator Introduction — UGC Creator Experience.',
     type: 'ugc',
     industry: 'unclassified',
+    // TO VERIFY: the on-screen captions mix English with a Spanish word ("también"); confirm the spoken language(s) before relying on this value.
     languages: ['en'],
     source: { cloudflareId: '3a41e0f797a707576ff9af9fb9fb6a81' },
     poster: '/portfolio/ugc-gal-5.webp',
@@ -506,8 +507,11 @@ export const PORTFOLIO = [
     poster: '/portfolio/creator-05.webp',
     creatorId: 'cv-creator-05',
     category: 'UGC · Paid social',
+    // ON HOLD (owner instruction, 2026-11-21): the footage ends on a third-party health-screening test's regulatory risk-information slate. No record exists that the brand's content
+    // may be shown publicly, so the video is withheld from every page. Nothing is deleted: set `status` back to 'approved' once the owner confirms display authorization.
     approval: {
-      status: 'approved',
+      status: 'on-hold',
+      holdReason: 'Third-party regulated brand content (health-screening test risk slate): public-display authorization not recorded.',
       portfolioUse: true,
       creatorConsent: true,
       approvedBy: 'CONVRT owner (confirmed in chat)',
