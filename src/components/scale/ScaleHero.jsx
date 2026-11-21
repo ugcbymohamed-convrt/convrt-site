@@ -81,7 +81,11 @@ export default function ScaleHero() {
       // margin excluded) — on wide, short screens 92vw would otherwise be taller
       // than the viewport and push the bottom controls off screen.
       const fitScale = (window.innerHeight - navH - 32) / frame.offsetHeight
-      const maxScale = Math.min(isMobile ? 1.08 : 1.48, Math.max(1, fitScale))
+      // Desktop (>= 768 px): unchanged, grows 1.48x (62vw -> about 92vw).
+      // Phones (< 768 px): the frame rests at a narrower width (see its className) and grows to 94% of the screen width, so it expands progressively with
+      // the scroll in proportion to the screen, never wider than the screen (no horizontal overflow). It used to stop at 1.08x, i.e. about 26 px.
+      const widthScale = isMobile ? (window.innerWidth * 0.94) / frame.offsetWidth : 1.48
+      const maxScale = Math.min(Math.max(1, widthScale), Math.max(1, fitScale))
       const scale = 1 + p * (maxScale - 1)
 
       // Measure the frame's resting centre relative to the sticky container, so
@@ -271,10 +275,16 @@ export default function ScaleHero() {
           <FadeIn show={entered} delay={300} className="mt-8 md:mt-10">
             <div
               ref={frameRef}
-              className="relative mx-auto aspect-video w-full min-w-[320px] overflow-hidden rounded-[28px] border border-hairline-strong bg-black shadow-[0_40px_100px_-20px_rgba(0,0,0,0.75)]"
-              // 62vw on normal desktops. On wide-but-short screens the starting size is
-              // capped by viewport height so the video still has room to grow into.
-              style={{ maxWidth: 'min(62vw, calc((100vh - 128px) * 1.28))', willChange: 'transform, border-radius' }}
+              // Resting width. Desktop (>= 768 px): 62vw, exactly as before (min 320 px); on wide-but-short screens the starting size is capped by viewport
+              // height so the video still has room to grow into. Phones (< 768 px): 66vw (never narrower than 240 px or the container), so there is room to
+              // expand into as the visitor scrolls; the scroll code above grows it to 94% of the screen width. With reduced motion nothing grows, so phones
+              // keep the previous fixed size (about 320 px).
+              className={`relative mx-auto aspect-video w-full overflow-hidden rounded-[28px] border border-hairline-strong bg-black shadow-[0_40px_100px_-20px_rgba(0,0,0,0.75)] md:min-w-[320px] md:max-w-[min(62vw,calc((100vh_-_128px)*1.28))] ${
+                reducedMotion
+                  ? 'min-w-[min(320px,100%)] max-w-[min(62vw,calc((100vh_-_128px)*1.28))]'
+                  : 'min-w-[min(240px,100%)] max-w-[min(66vw,calc((100vh_-_128px)*1.28))]'
+              }`}
+              style={{ willChange: 'transform, border-radius' }}
             >
               {/* Base layer: designed placeholder — also the fallback if the poster can't load */}
               <FounderPlaceholderArt />
