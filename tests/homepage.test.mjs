@@ -85,15 +85,17 @@ test('H1: the animated heading is unchanged visually; its text is clean (no dupl
   assert.match(hero, /animate-word-in/)
 })
 
-test('homepage JSON-LD: WebPage + 3 Services (same ids as /pricing) + FAQPage from the visible FAQ; nothing invented', () => {
+test('homepage JSON-LD: WebPage + 4 Services (the service pages\' own ids) + FAQPage from the visible FAQ; nothing invented', () => {
   const g = graph()
-  assert.deepEqual(g.map((n) => n['@type']), ['Organization', 'WebSite', 'WebPage', 'Service', 'Service', 'Service', 'FAQPage'])
+  assert.deepEqual(g.map((n) => n['@type']), ['Organization', 'WebSite', 'WebPage', 'Service', 'Service', 'Service', 'Service', 'FAQPage'])
   const page = g.find((n) => n['@type'] === 'WebPage')
   assert.equal(page['@id'], `${SITE_URL}/#webpage`); assert.equal(page.url, `${SITE_URL}/`)
   assert.equal(page.name, SITE_SEO['/'].title); assert.equal(page.description, SITE_SEO['/'].description)
   assert.equal(page.isPartOf['@id'], WEBSITE_ID); assert.equal(page.about['@id'], ORG_ID)
   const services = g.filter((n) => n['@type'] === 'Service')
-  assert.deepEqual(services.map((s) => s['@id']), [`${SITE_URL}/pricing#service-ugc`, `${SITE_URL}/pricing#service-spokesperson`, `${SITE_URL}/pricing#service-organic`])
+  // Batch 2 (audit G-02): one stable @id per core service, the service page's own #service, so the homepage, /pricing and each service page describe the same entity. SaaS is a core service.
+  assert.deepEqual(services.map((s) => s['@id']), [`${SITE_URL}/ugc-video-agency#service`, `${SITE_URL}/saas-video-production#service`, `${SITE_URL}/spokesperson-video-production#service`, `${SITE_URL}/social-media-video-production#service`])
+  assert.deepEqual(services.map((s) => s.url), [`${SITE_URL}/ugc-video-agency`, `${SITE_URL}/saas-video-production`, `${SITE_URL}/spokesperson-video-production`, `${SITE_URL}/social-media-video-production`])
   for (const s of services) { assert.equal(s.provider['@id'], ORG_ID); assert.ok(!s.offers, 'no prices on the homepage services') }
   const f = g.find((n) => n['@type'] === 'FAQPage')
   assert.deepEqual(f.mainEntity.map((q) => q.name), HOME_FAQ.map((x) => x.q))

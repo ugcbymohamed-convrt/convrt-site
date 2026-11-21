@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { OFFER_PATHS } from '../config.js'
 import { PATHS } from '../routes.js'
+import { SERVICE_LABELS } from '../seo/businessKnowledge.js'
 
 /* ─────────────────────────────────────────────
    SECTION 4 — WHAT WE OFFER
@@ -56,7 +57,7 @@ const SERVICES = [
   {
     id: 'social',
     number: '04',
-    title: 'Social Media Management',
+    title: SERVICE_LABELS.organic,
     description: 'Organic social videos, content planning, publishing and community management.',
     href: PATHS.socialMediaVideoProduction,
     pills: ['Organic Video', 'Posting', 'Community'],

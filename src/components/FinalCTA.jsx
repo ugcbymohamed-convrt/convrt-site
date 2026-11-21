@@ -10,7 +10,7 @@ import { CONVRT_STATS } from '../lib/siteStats.js'
 const PROOF_PILLS = [
   { value: CONVRT_STATS.videos, label: 'Videos produced' },
   { value: CONVRT_STATS.views, label: 'Views generated' },
-  { value: '50%+', label: 'of clients return for more' },
+  { value: CONVRT_STATS.returningClients, label: 'of clients return for more' },
 ]
 
 function FadeUp({ children, inView, delay = 0, className = '' }) {

@@ -8,7 +8,8 @@
      5.28x (a paid-social result) or the UGC testimonials. Add an organic testimonial only when the owner has verified it and has permission to publish it.
    • The videos come from src/content/portfolio.js (type: 'organic'), never from here. */
 
-import { BOOKING_URL, CREATOR_SHOWCASE_PATH } from '../config.js'
+import { CREATOR_SHOWCASE_PATH } from '../config.js'
+import { ORGANIC_CTA, ORGANIC } from '../seo/businessKnowledge.js'
 import { ORGANIC_STYLES } from './portfolio.js'
 
 export const ORGANIC_PATH_LABEL = 'Organic Social Video Production'
@@ -28,11 +29,11 @@ export const ORGANIC_HERO = {
   words: ['convrt', 'connect', 'inspire', 'resonate'],
   sizer: 'resonate.',
   description:
-    'Turn your brand into content worth following. We handle organic social video strategy, creator production, editing, posting and community management, so your brand shows up consistently.',
-  /* The primary CTA is the site's existing discovery-call booking link (BOOKING_URL, the Calendly event the /scale page and the Roadmap booking already use), opened in a new
-     tab. The Free Creative Growth Roadmap is a paid-ads offer, so it is not the hero action here; it stays in the header and in the proof section. The "Your next 5 ad
+    'Turn your brand into content worth following. We handle short-form social media video production end to end: creative strategy, creator-led filming, editing, publishing and community management, so your brand shows up consistently.',
+  /* The primary CTA is the organic strategy call (ORGANIC_CTA in src/seo/businessKnowledge.js: the site's existing discovery-call booking link, the Calendly event the /scale page and the
+     Roadmap booking already use), opened in a new tab. The proof section's button and the Pricing page's organic promo use the same route. The Free Creative Growth Roadmap is a paid-ads offer, so it is not an action on this page; it stays only in the global header. The "Your next 5 ad
      concepts" line above the CTAs is a Roadmap promise, so it is removed on this page (leadIn: null). */
-  primary: { label: 'Discuss Your Content Strategy', href: BOOKING_URL, external: true },
+  primary: { label: ORGANIC_CTA.label, href: ORGANIC_CTA.href, external: ORGANIC_CTA.external },
   leadIn: null,
   /* No scrollTo: this button always goes to /our-work. */
   secondary: { label: 'Explore Videos', href: CREATOR_SHOWCASE_PATH },
@@ -117,6 +118,9 @@ export const ORGANIC_PROOF = {
   testimonials: [],
 }
 
+/* What the organic service does NOT cover, stated once beside the process (ORGANIC.excluded in the business data, word for word). Keeps organic management distinct from paid-media buying and customer support. */
+export const ORGANIC_SCOPE_NOTE = ORGANIC.excluded.join(' ')
+
 export const ORGANIC_PROOF_COPY = {
   eyebrow: 'Results',
   title: 'Organic social, in one client’s numbers.',
@@ -140,7 +144,7 @@ export const ORGANIC_PAGE_CTA = {
   id: 'organic-cta-heading',
   title: 'Ready to turn your ideas into content worth watching?',
   /* Same verified destination as the hero CTA. The default note under the button ("Free strategy session... fit check") describes the Roadmap, so it is removed here. */
-  primary: { label: 'Discuss Your Content Strategy', href: BOOKING_URL, external: true },
+  primary: { label: ORGANIC_CTA.label, href: ORGANIC_CTA.href, external: ORGANIC_CTA.external },
   note: null,
   emailSubject: 'Organic social video production',
   track: { cta: 'organic_page_cta_click', pricing: 'organic_pricing_link_click', email: 'organic_email_click' },

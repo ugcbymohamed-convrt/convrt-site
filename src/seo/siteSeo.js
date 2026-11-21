@@ -64,7 +64,7 @@ export const SITE_SEO = {
   [PATHS.socialMediaVideoProduction]: {
     title: 'Organic Social Media Video Production & Management | CONVRT',
     description:
-      'Human-led short-form video for organic social media on Instagram, TikTok and Facebook: strategy, filming, editing, publishing and community management.',
+      'Organic social media video production: human-led short-form video, from strategy to publishing and community management on Instagram, TikTok and Facebook.',
     ogTitle: 'CONVRT: Organic Social Video Production & Management',
     ogDescription: 'Human-led short-form videos for organic social media, from content strategy and scripting to filming, editing, posting and community management.',
     // Indexable (and in the sitemap) once at least one approved organic video exists for this page, so the page is not promoted to search while its showcase is still
@@ -91,18 +91,18 @@ export const SITE_SEO = {
     indexable: selectOurWork().length > 0,
   },
   '/case-studies/graspo': {
-    title: 'Graspo Case Study: 10.7M Organic Views & Arabic Social Media Leads | CONVRT',
+    title: 'Graspo Case Study: 10.7M Organic Views, Arabic-First Social | CONVRT',
     description:
-      'How CONVRT turned a European printing company into an Arabic-first social content engine, 10.7M organic views, 3.4M reach across MENA, and 75 qualified inbound printing leads.',
+      'How CONVRT built Graspo’s Arabic-first organic social presence: 10.7M organic views, 3.4M accounts reached and 75 unique inbound leads, January to June 2026.',
     ogTitle: 'Graspo × CONVRT, From Printing Expertise to 10.7M Organic Views and Qualified MENA Demand',
     ogDescription:
       'A social media content management case study: how Arabic-first strategy, production and inbound handling turned Graspo into a recognized name across Saudi Arabia, Iraq, Morocco, Egypt and the wider MENA region.',
     indexable: true,
   },
   '/case-studies/elyon': {
-    title: 'Elyon Dubai Case Study: Performance Creative for Luxury Fragrance | CONVRT',
+    title: 'Elyon Dubai Case Study: Creator-Led Luxury Fragrance Ads | CONVRT',
     description:
-      'How CONVRT built a repeatable performance-creative system for Elyon Dubai, 160+ creatives across street interviews, creator-led ads and multiple locations, with a 5.28x ROAS standout result.',
+      'How CONVRT built a repeatable creator-led ad system for Elyon Dubai: 160+ creatives, street interviews, and one video with a client-reported 5.28x ROAS.',
     ogTitle: 'Elyon Dubai × CONVRT, Performance Creative for a Luxury Fragrance Brand',
     ogDescription:
       'Creator-led ads, street interviews and continuous creative testing turned into measurable purchases and ROAS for Elyon Dubai.',

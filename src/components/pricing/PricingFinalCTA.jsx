@@ -1,9 +1,10 @@
 import { OFFER_PATHS } from '../../config.js'
 import { ORGANIC_CTA } from '../../seo/businessKnowledge.js'
+import { withUtm } from '../../lib/analytics.js'
 
-function CtaLink({ href, children }) {
+function CtaLink({ href, external = false, children }) {
   return (
-    <a href={href} className="cta-gradient group mt-6 inline-flex items-center gap-2 rounded-full px-8 py-3.5 text-sm font-semibold text-canvas">
+    <a href={href} {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})} onClick={external ? (e) => { e.currentTarget.href = withUtm(href) } : undefined} className="cta-gradient group mt-6 inline-flex items-center gap-2 rounded-full px-8 py-3.5 text-sm font-semibold text-canvas">
       {children}
       <svg viewBox="0 0 12 12" className="h-3.5 w-3.5 transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" fill="none" aria-hidden="true">
         <path d="M3 9L9 3M9 3H4M9 3V8" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
@@ -31,7 +32,7 @@ export default function PricingFinalCTA({ service = 'paid' }) {
           <CtaLink href={OFFER_PATHS.roadmap}>Get 5 Free Ad Concepts</CtaLink>
         </div>
         <div hidden={service !== 'organic'}>
-          <CtaLink href={ORGANIC_CTA.href}>{ORGANIC_CTA.label}</CtaLink>
+          <CtaLink href={ORGANIC_CTA.href} external={ORGANIC_CTA.external}>{ORGANIC_CTA.label}</CtaLink>
         </div>
       </div>
     </section>

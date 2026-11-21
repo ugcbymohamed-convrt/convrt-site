@@ -33,7 +33,16 @@ const abs = (path) => `${SITE_URL}${path === '/' ? '/' : path}`
 export const ORG_ID = `${SITE_URL}/#organization`
 export const WEBSITE_ID = `${SITE_URL}/#website`
 export const FOUNDER_ID = `${SITE_URL}/#founder`
-export const serviceId = (slug) => `${abs('/pricing')}#service-${slug}`
+/* The four core services each have ONE stable @id: the service page's own `#service` fragment. The homepage, /pricing, the service pages and the case studies all refer to that
+   same id (G-02 in the Nov 2026 audit: the homepage used to point its Services at /pricing and left SaaS out). Package and add-on Services (Sprint, Organic Light, raw footage,
+   custom packages) keep their `/pricing#service-<slug>` ids: they are Offers described on /pricing, separate from the service descriptions. */
+export const SERVICE_PATHS = {
+  ugc: PATHS.ugcVideoAgency,
+  saas: PATHS.saasVideoProduction,
+  spokesperson: PATHS.spokespersonVideoProduction,
+  organic: PATHS.socialMediaVideoProduction,
+}
+export const serviceId = (slug) => (SERVICE_PATHS[slug] ? `${abs(SERVICE_PATHS[slug])}#service` : `${abs('/pricing')}#service-${slug}`)
 export const pageId = (path) => `${abs(path)}#webpage`
 
 /* A light reference to the Organization for pages that do not define the full entity (blog articles etc.). */
@@ -77,8 +86,8 @@ export function webSiteNode() {
 
 /* ── breadcrumbs ──────────────────────────────────────────────────────────────────────── */
 /* The real site hierarchy, by canonical URL. Only pages listed here get a BreadcrumbList.
-   (/case-studies/* is intentionally absent: its parent /case-studies is a duplicate of /case-studies/graspo, so a
-   breadcrumb would point at a non-canonical URL. Blog articles build their own trail in src/lib/blog/seo.js.) */
+   (/case-studies/* is not here: its parent /case-studies is a duplicate of /case-studies/graspo, so the case-study pages use a two-level trail, Home > the study, built by
+   caseStudyGraph. Blog articles build their own trail in src/lib/blog/seo.js.) */
 export const BREADCRUMB_TRAILS = {
   '/pricing': [{ name: 'Home', path: '/' }, { name: 'Pricing', path: '/pricing' }],
   [PATHS.ugcVideoAgency]: [{ name: 'Home', path: '/' }, { name: 'UGC Video Agency', path: PATHS.ugcVideoAgency }],
@@ -151,16 +160,20 @@ export function perUnitOffer(name, money, unit) {
 }
 
 /* ── services ─────────────────────────────────────────────────────────────────────────── */
-export function coreServiceNodes() {
-  return CORE_SERVICES.map((s) => ({
+/* One core Service node, identical wherever it is emitted (the same @id always carries the same name, type and description). Service pages add their own Offers and relations on top. */
+export function coreServiceNode(slug) {
+  const s = CORE_SERVICES.find((x) => x.id === slug)
+  return {
     '@type': 'Service',
-    '@id': serviceId(s.id),
+    '@id': serviceId(slug),
     name: s.name,
+    serviceType: s.serviceType,
     description: s.description,
+    url: abs(SERVICE_PATHS[slug]),
     provider: { '@id': ORG_ID },
-    url: abs('/pricing'),
-  }))
+  }
 }
+export const coreServiceNodes = () => CORE_SERVICES.map((s) => coreServiceNode(s.id))
 
 const usageLine = `${USAGE_RIGHTS.includedMonths} months of ${USAGE_RIGHTS.scope.toLowerCase()} usage rights`
 
@@ -238,8 +251,8 @@ export function faqNode(items = PRICING_FAQ, id) {
 /* ── page graphs ──────────────────────────────────────────────────────────────────────── */
 const graph = (nodes) => ({ '@context': CONTEXT, '@graph': nodes })
 
-/* Homepage: Organization + WebSite, the WebPage itself, the three core services (same @ids as on /pricing, so they are one entity
-   described in two places) and an FAQPage generated from the exact FAQ shown on the page (src/seo/homeFaq.js). No ratings, no
+/* Homepage: Organization + WebSite, the WebPage itself, the four core services (the same @ids and descriptions as on each service page and on /pricing, so each is one entity
+   described in several places) and an FAQPage generated from the exact FAQ shown on the page (src/seo/homeFaq.js). No ratings, no
    addresses, no promised results; FAQPage is included for consistency with visible content, not as a promise of rich results. */
 export function homeGraph({ title, description } = {}) {
   const url = abs('/')
@@ -300,7 +313,6 @@ export function ugcGraph({ title, description }) {
   const path = PATHS.ugcVideoAgency
   const url = abs(path)
   const trail = BREADCRUMB_TRAILS[path]
-  const ugc = CORE_SERVICES.find((s) => s.id === 'ugc')
   return graph([
     organizationNode(),
     {
@@ -316,14 +328,8 @@ export function ugcGraph({ title, description }) {
     },
     breadcrumbNode(trail, `${url}#breadcrumb`),
     {
-      '@type': 'Service',
-      '@id': `${url}#service`,
-      name: 'UGC video production',
-      serviceType: 'UGC video ad production',
-      description: `${ugc.description} UGC videos are created by real human creators.`,
-      url,
-      provider: { '@id': ORG_ID },
-      isRelatedTo: [{ '@id': serviceId('ugc') }, { '@id': serviceId(SPRINT.id) }, { '@id': serviceId(SPRINT_PLUS.id) }],
+      ...coreServiceNode('ugc'),
+      isRelatedTo: [{ '@id': serviceId(SPRINT.id) }, { '@id': serviceId(SPRINT_PLUS.id) }],
       offers: [
         monthlyOffer(SPRINT.name, SPRINT.monthly),
         oneOffOffer(SPRINT.name, SPRINT.oneOff),
@@ -343,7 +349,6 @@ export function spokespersonGraph({ title, description }) {
   const path = PATHS.spokespersonVideoProduction
   const url = abs(path)
   const trail = BREADCRUMB_TRAILS[path]
-  const core = CORE_SERVICES.find((s) => s.id === 'spokesperson')
   return graph([
     organizationNode(),
     {
@@ -359,14 +364,8 @@ export function spokespersonGraph({ title, description }) {
     },
     breadcrumbNode(trail, `${url}#breadcrumb`),
     {
-      '@type': 'Service',
-      '@id': `${url}#service`,
-      name: 'Spokesperson video production',
-      serviceType: 'Spokesperson video production',
-      description: `${core.description} Spokesperson videos feature real human presenters and can be produced in several languages.`,
-      url,
-      provider: { '@id': ORG_ID },
-      isRelatedTo: [{ '@id': serviceId('spokesperson') }, { '@id': serviceId(SPRINT.id) }, { '@id': serviceId(SPRINT_PLUS.id) }, { '@id': serviceId(CUSTOM_PACKAGES.paid.id) }],
+      ...coreServiceNode('spokesperson'),
+      isRelatedTo: [{ '@id': serviceId(SPRINT.id) }, { '@id': serviceId(SPRINT_PLUS.id) }, { '@id': serviceId(CUSTOM_PACKAGES.paid.id) }],
     },
     faqNode(SPOKESPERSON_FAQ, `${url}#faq`),
   ])
@@ -395,13 +394,7 @@ export function saasGraph({ title, description }) {
     },
     breadcrumbNode(trail, `${url}#breadcrumb`),
     {
-      '@type': 'Service',
-      '@id': `${url}#service`,
-      name: 'SaaS video production',
-      serviceType: 'SaaS video production',
-      description: 'Video production for software and app companies: SaaS explainer videos, product demonstrations, app walkthroughs, animated product explainers, human-led software presentations and video advertising creatives, produced end to end by CONVRT.',
-      url,
-      provider: { '@id': ORG_ID },
+      ...coreServiceNode('saas'),
       audience: { '@type': 'Audience', audienceType: 'SaaS, software and app companies' },
       isRelatedTo: [{ '@id': serviceId('ugc') }, { '@id': serviceId('spokesperson') }, { '@id': serviceId(CUSTOM_PACKAGES.paid.id) }],
     },
@@ -416,7 +409,6 @@ export function organicSocialGraph({ title, description }) {
   const path = PATHS.socialMediaVideoProduction
   const url = abs(path)
   const trail = BREADCRUMB_TRAILS[path]
-  const core = CORE_SERVICES.find((s) => s.id === 'organic')
   return graph([
     organizationNode(),
     {
@@ -432,17 +424,41 @@ export function organicSocialGraph({ title, description }) {
     },
     breadcrumbNode(trail, `${url}#breadcrumb`),
     {
-      '@type': 'Service',
-      '@id': `${url}#service`,
-      name: 'Organic social media video production and management',
-      serviceType: 'Organic social media content production and management',
-      description: `${core.description} Videos are human-led and can be produced in several languages.`,
-      url,
-      provider: { '@id': ORG_ID },
-      isRelatedTo: [{ '@id': serviceId('organic') }, { '@id': serviceId(ORGANIC.light.id) }, { '@id': serviceId(ORGANIC.growth.id) }, { '@id': serviceId(CUSTOM_PACKAGES.organic.id) }],
+      ...coreServiceNode('organic'),
+      isRelatedTo: [{ '@id': serviceId(ORGANIC.light.id) }, { '@id': serviceId(ORGANIC.growth.id) }, { '@id': serviceId(CUSTOM_PACKAGES.organic.id) }],
       offers: [ORGANIC.light, ORGANIC.growth].map((p) => monthlyOffer(p.name, p.monthly, `${ORGANIC_COMMITMENT.summary} ${ORGANIC_COMMITMENT.afterInitial}`)),
     },
     faqNode(ORGANIC_SOCIAL_FAQ, `${url}#faq`),
+  ])
+}
+
+/* Case studies (/case-studies/graspo, /case-studies/elyon). A WebPage about the client work, its breadcrumb and the CONVRT service it is an example of. Everything is on the visible page:
+   the client name, the page title and description and the service the page links to. Deliberately NOT emitted: Article (no author or publication date exists to support it), Review or
+   Rating (testimonials are not reviews), any result figure beyond the page text, awards or VideoObject. `/case-studies` is a duplicate of Graspo and uses Graspo's markup. */
+export const CASE_STUDY_SCHEMA = {
+  [PATHS.caseStudyGraspo]: { client: 'Graspo', service: 'organic', trail: 'Graspo case study' },
+  [PATHS.caseStudyElyon]: { client: 'Elyon Dubai', service: 'ugc', trail: 'Elyon Dubai case study' },
+}
+export function caseStudyGraph(path, { title, description }) {
+  const url = abs(path)
+  const cs = CASE_STUDY_SCHEMA[path]
+  return graph([
+    organizationNode(),
+    {
+      '@type': 'WebPage',
+      '@id': pageId(path),
+      url,
+      name: title,
+      description,
+      isPartOf: { '@id': WEBSITE_ID },
+      publisher: { '@id': ORG_ID },
+      about: { '@type': 'Organization', name: cs.client },
+      mentions: { '@id': serviceId(cs.service) },
+      breadcrumb: { '@id': `${url}#breadcrumb` },
+      inLanguage: 'en',
+    },
+    breadcrumbNode([{ name: 'Home', path: '/' }, { name: cs.trail, path }], `${url}#breadcrumb`),
+    coreServiceNode(cs.service),
   ])
 }
 
@@ -531,6 +547,7 @@ export function jsonLdFor(path, seo = {}) {
   if (path === PATHS.socialMediaVideoProduction) return organicSocialGraph(seo)
   if (path === PATHS.saasVideoProduction) return saasGraph(seo)
   if (path === PATHS.showcase) return ourWorkGraph(seo)
+  if (CASE_STUDY_SCHEMA[path]) return caseStudyGraph(path, seo)
   if ([PATHS.about, PATHS.contact, PATHS.privacy, PATHS.terms, PATHS.legalNotice].includes(path)) return trustGraph(path, seo)
   return undefined
 }

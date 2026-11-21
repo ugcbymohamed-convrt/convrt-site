@@ -1,5 +1,6 @@
 import { OFFER_PATHS } from '../../config.js'
 import { CONVRT_STATS } from '../../lib/siteStats.js'
+import { withUtm } from '../../lib/analytics.js'
 import { SPRINT, SPRINT_PLUS, ORGANIC_STAGES, ORGANIC, ORGANIC_CTA, PRODUCTION_LANGUAGES } from '../../seo/businessKnowledge.js'
 
 /* SECTION 2: creative philosophy + credibility + the free Roadmap offer, as one cohesive block.
@@ -206,7 +207,7 @@ function RoadmapCard() {
 }
 
 /* Shown instead of the Roadmap card when Organic Social is selected: the Roadmap offers FREE AD concepts (a paid-ads offer), so it
-   is not presented as an organic deliverable. Route: the existing contact email (see ORGANIC_CTA in businessKnowledge.js). */
+   is not presented as an organic deliverable. Route: the organic strategy call, the same destination as the Organic Social page (see ORGANIC_CTA in businessKnowledge.js). */
 function OrganicOfferCard() {
   const o = ORGANIC_CTA.promo
   return (
@@ -221,6 +222,7 @@ function OrganicOfferCard() {
       <p className="mt-4 text-[14.5px] leading-relaxed text-ink-muted">{o.text}</p>
       <a
         href={ORGANIC_CTA.href}
+        {...(ORGANIC_CTA.external ? { target: '_blank', rel: 'noopener noreferrer', onClick: (e) => { e.currentTarget.href = withUtm(ORGANIC_CTA.href) } } : {})}
         className="cta-gradient group mt-5 flex items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-semibold text-canvas"
       >
         {ORGANIC_CTA.label}

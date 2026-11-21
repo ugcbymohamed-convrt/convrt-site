@@ -11,6 +11,7 @@ import {
   REVISIONS, PRODUCT_REQUIREMENTS, TALENT, PRODUCTION_LANGUAGES, PARTNERSHIP_TERMS,
 } from './businessKnowledge.js'
 import { OFFER_PATHS } from '../config.js'
+import { PATHS } from '../routes.js'
 
 const [S3, S6, S12] = SPRINT.usageExtensions
 const [P3, P6, P12] = SPRINT_PLUS.usageExtensions
@@ -23,6 +24,15 @@ export const UGC_FAQ = [
       'A UGC agency commissions and manages creator-led video content for your brand. Ours covers creative research, concepts and hooks, scripts, creator selection, filming, editing, captions, reframing and creative variations, produced end to end for brands in any industry.',
       "We make the ads. We don't buy media or manage your advertising accounts, so you keep control of distribution and spend.",
     ],
+  },
+  {
+    id: 'agency-vs-hiring-creators',
+    q: 'Should I use a UGC agency or hire creators directly?',
+    a: [
+      'Both can work. Hiring a creator directly can make sense when you already know the creator you want, have someone in-house to write the brief, review the work and handle the edit, and are comfortable agreeing the usage rights and payment with them yourself.',
+      `An agency adds the work around the filming: creative research and strategy, concepts and scripts, creator casting, production coordination, editing and captions, and the usage-rights terms, so you are not negotiating them creator by creator. ${TALENT.model} The right choice depends on what your team already does well and how much of that you want to run yourself.`,
+    ],
+    links: [{ label: 'See what each package includes', href: '/pricing#packages' }],
   },
   {
     id: 'ugc-vs-influencer',
@@ -46,6 +56,18 @@ export const UGC_FAQ = [
     a: [
       `${TALENT.model} We recommend the creator who best fits your brand and audience, chosen for on-camera delivery and product fit, not follower counts. ${CREATOR_ALLOCATION.sentence}`,
       'You see relevant work samples from the creator before production and can take part in creator selection when you want to. You can request the same creator for future projects, subject to availability.',
+    ],
+  },
+  {
+    id: 'how-to-evaluate-a-ugc-agency',
+    q: 'How should I evaluate a UGC agency?',
+    a: [
+      'Ask for evidence rather than claims. Look for relevant work examples, a clear creative process (how concepts and scripts are developed and approved), how creators are chosen and whether you see their work before production, exactly what is delivered (concepts, versions, formats and lengths), which usage rights are included and for how long, how many revision rounds are included, and how results are used to decide what to test next.',
+      `You can hold us to the same list. Our packages, deliverables and terms are published on the Pricing page. You see relevant creator work before production and approve concepts and scripts before filming, ${REVISIONS.roundsPerConcept} rounds of revisions per concept and ${USAGE_RIGHTS.includedMonths} months of worldwide usage rights are included, and our packages include testing recommendations. Be cautious of any agency that promises specific ad results.`,
+    ],
+    links: [
+      { label: 'Read the Elyon Dubai case study', href: PATHS.caseStudyElyon },
+      { label: 'Compare packages and terms on the Pricing page', href: '/pricing#packages' },
     ],
   },
   {
@@ -111,7 +133,7 @@ export const UGC_FAQ = [
     id: 'languages-and-international',
     q: 'Do you produce UGC in other languages, for international audiences?',
     a: [
-      `Yes. We produce in ${PRODUCTION_LANGUAGES.core.slice(0, -1).join(', ')} and ${PRODUCTION_LANGUAGES.core.at(-1)}, including Gulf and Moroccan Arabic dialects, with one core language included in a package. ${PRODUCTION_LANGUAGES.other}`,
+      `Yes. We produce in ${PRODUCTION_LANGUAGES.core.slice(0, -1).join(', ')} and ${PRODUCTION_LANGUAGES.core.at(-1)}, including ${PRODUCTION_LANGUAGES.arabicDialects}, with one core language included in a package. ${PRODUCTION_LANGUAGES.other}`,
       'We work with international brands and produce for multilingual audiences.',
     ],
   },
@@ -131,7 +153,11 @@ export const UGC_FAQ = [
       'CONVRT works best with brands that run paid social and want to test several creative angles rather than rely on a single video. We work with brands across industries, including but not limited to SaaS, e-commerce, apps, technology and consumer products. When a project does not fit a standard package, we tailor one.',
       `There is no universal number of creatives to test: it depends on your budget, audience, niche and conversion volume. We size a batch for learning, with ${SPRINT.concepts} or ${SPRINT_PLUS.concepts} concepts, include testing recommendations, and never guarantee specific results.`,
     ],
-    links: [{ label: 'Get 5 free ad concepts', href: OFFER_PATHS.roadmap }],
+    links: [
+      { label: 'Get 5 free ad concepts', href: OFFER_PATHS.roadmap },
+      { label: 'Prefer a presenter-led format? See spokesperson video production', href: PATHS.spokespersonVideoProduction },
+      { label: 'Selling software? See SaaS video production', href: PATHS.saasVideoProduction },
+    ],
   },
 ]
 

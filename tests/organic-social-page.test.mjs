@@ -76,7 +76,7 @@ test('head: title and description, unique, self-canonical, robots follows the vi
   const e = SITE_SEO[PATH]
   assert.equal(e.title, 'Organic Social Media Video Production & Management | CONVRT')
   assert.ok(e.title.length <= 60, `title length ${e.title.length}`)
-  assert.equal(e.description, 'Human-led short-form video for organic social media on Instagram, TikTok and Facebook: strategy, filming, editing, publishing and community management.')
+  assert.equal(e.description, 'Organic social media video production: human-led short-form video, from strategy to publishing and community management on Instagram, TikTok and Facebook.')
   assert.ok(e.description.length >= 120 && e.description.length <= 160, `description length ${e.description.length}`)
   assert.equal(e.canonicalPath, undefined, 'a canonical of its own')
   for (const [p, v] of Object.entries(SITE_SEO)) if (p !== PATH) { assert.notEqual(v.title, e.title); assert.notEqual(v.description, e.description) }
@@ -101,7 +101,7 @@ test('static HTML: breadcrumb, ONE H1 reading "Organic social videos. Built to e
   assert.match(html, /<nav aria-label="Breadcrumb"[\s\S]*?Home[\s\S]*?Organic Social Video Production/)
   assert.equal((html.match(/<h1[\s>]/g) || []).length, 1)
   assert.equal(textOf(`<div id="root">${html.match(/<h1[\s\S]*?<\/h1>/)[0]}`), 'Organic social videos. Built to engage. Made to convrt.')
-  assert.ok(t.includes('Turn your brand into content worth following. We handle organic social video strategy, creator production, editing, posting and community management, so your brand shows up consistently.'))
+  assert.ok(t.includes('Turn your brand into content worth following. We handle short-form social media video production end to end: creative strategy, creator-led filming, editing, publishing and community management, so your brand shows up consistently.'))
   assert.ok(!t.includes('Keep your brand visible with human-led'), 'the long description is gone')
   const hero = html.split('<section aria-labelledby="organic-h1"')[1].split('</section>')[0]
   assert.equal((hero.match(/<p class="cs-fade-up mx-auto mt-6/g) || []).length, 1, 'one description paragraph only')
@@ -354,7 +354,9 @@ test('JSON-LD: Organization, WebPage, BreadcrumbList, a Service with the two mon
   assert.deepEqual(crumb.itemListElement.map((i) => [i.position, i.name, i.item]), [[1, 'Home', `${SITE_URL}/`], [2, 'Organic Social Video Production', URL_]])
   assert.equal(BREADCRUMB_TRAILS[PATH].length, 2)
   assert.equal(svc.provider['@id'], ORG_ID)
-  assert.ok(svc.isRelatedTo.some((r) => r['@id'] === serviceId('organic')), 'the same service entity as on /pricing')
+  assert.equal(svc['@id'], serviceId('organic'), 'the stable service id every other page (homepage, /pricing, case studies) refers to')
+  assert.ok(!svc.isRelatedTo.some((r) => r['@id'] === svc['@id']), 'never related to itself')
+  assert.ok(svc.isRelatedTo.some((r) => r['@id'] === serviceId('organic-light')) && svc.isRelatedTo.some((r) => r['@id'] === serviceId('organic-growth')))
   assert.deepEqual(svc.offers.map((o) => [o.name, o.priceSpecification.price, o.priceSpecification.priceCurrency, o.priceSpecification.unitCode]), [
     ['Organic Light (monthly)', 1500, 'USD', 'MON'], ['Organic Growth (monthly)', 2500, 'USD', 'MON'],
   ])
@@ -383,8 +385,10 @@ test('internal links: homepage Services and FAQ, Pricing and the footer link to 
   assert.match(rootOf(page('/')), /Learn about our UGC video production/, 'the existing UGC link is kept')
   assert.match(rootOf(page('/')), /<a href="\/spokesperson-video-production" class="svc-card"/, 'the existing spokesperson link is kept')
   assert.ok(link(page('/pricing')) && /See organic social video production/.test(rootOf(page('/pricing'))), 'pricing')
-  for (const p of ['/', '/pricing', '/creative-growth-roadmap', PATH, PATHS.ugcVideoAgency]) assert.match(rootOf(page(p)), /<a [^>]*href="\/social-media-video-production"[^>]*>Organic Social Videos<\/a>/, `footer link on ${p}`)
-  assert.ok(!JSON.stringify(jsonLdFor('/')).includes('social-media-video-production'))
+  for (const p of ['/', '/pricing', '/creative-growth-roadmap', PATH, PATHS.ugcVideoAgency]) assert.match(rootOf(page(p)), /<a [^>]*href="\/social-media-video-production"[^>]*>Organic Social Video<\/a>/, `footer link on ${p}`)
+  // the FAQ link is not in the homepage FAQ answer text; the homepage Service node (Batch 2) now carries the page URL as the service's url
+  assert.ok(!JSON.stringify(jsonLdFor('/')['@graph'].find((n) => n['@type'] === 'FAQPage')).includes('social-media-video-production'))
+  assert.ok(JSON.stringify(jsonLdFor('/')).includes('social-media-video-production#service'))
   const html = rootOf(page(PATH))
   for (const href of [ORGANIC_PRICING_HREF, '/pricing#packages', '/ugc-video-agency', OFFER_PATHS.roadmap, CREATOR_SHOWCASE_PATH, '/case-studies/graspo']) assert.ok(html.includes(`href="${href}"`), href)
 })
@@ -434,7 +438,7 @@ test('UGC and Spokesperson pages unchanged: same H1, reel words, FAQ lengths, pr
   assert.ok(ugc.includes('class="ugc-reel text-lime" data-sizer="resonate."'))
   assert.ok(ugcT.includes('5.28x') && ugcT.includes('Elyon Dubai') && ugcT.includes('How we create and test UGC ads.'))
   assert.ok(!/organic-h1|Not just more posts/.test(ugc + ugcT))
-  assert.equal(UGC_FAQ.length, 14)
+  assert.equal(UGC_FAQ.length, 16, '14 + the two Batch 2 FAQs (agency vs hiring creators, how to evaluate an agency)')
   const sp = rootOf(page(PATHS.spokespersonVideoProduction))
   const spT = textOf(page(PATHS.spokespersonVideoProduction))
   assert.equal(textOf(`<div id="root">${sp.match(/<h1[\s\S]*?<\/h1>/)[0]}`), 'Human-led spokesperson videos. Built to communicate. Made to convrt.')

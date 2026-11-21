@@ -15,8 +15,9 @@ import { pageHead } from './seo/siteSeo.js'
 import { PATHS } from './routes.js'
 import { ORGANIC_SOCIAL_FAQ } from './seo/organicSocialFaq.js'
 import { selectOrganicHero, selectOrganicGallery } from './content/portfolio.js'
+import { ORGANIC_CTA } from './seo/businessKnowledge.js'
 import {
-  ORGANIC_HERO, ORGANIC_PAGE_STAGES, ORGANIC_PROCESS, ORGANIC_GALLERY, ORGANIC_PAGE_CTA, ORGANIC_PATH_LABEL, ORGANIC_PROOF, ORGANIC_PROOF_COPY, ORGANIC_PRICING_HREF,
+  ORGANIC_HERO, ORGANIC_PAGE_STAGES, ORGANIC_PROCESS, ORGANIC_GALLERY, ORGANIC_PAGE_CTA, ORGANIC_PATH_LABEL, ORGANIC_PROOF, ORGANIC_PROOF_COPY, ORGANIC_PRICING_HREF, ORGANIC_SCOPE_NOTE,
 } from './content/organicSocialPage.js'
 
 /* /social-media-video-production: the Organic Social Video Production & Management page. It reuses the UGC and Spokesperson pages' architecture and design system, and each
@@ -42,6 +43,8 @@ const PROOF_CONFIG = {
   headingId: ORGANIC_PROOF_COPY.headingId,
   heading: { eyebrow: ORGANIC_PROOF_COPY.eyebrow, title: ORGANIC_PROOF_COPY.title },
   track: ORGANIC_PROOF_COPY.track,
+  // The Roadmap is a paid-ads offer, so the button under the Graspo result is the organic strategy call (same route as the hero and the final CTA).
+  cta: { label: ORGANIC_CTA.label, href: ORGANIC_CTA.href, external: ORGANIC_CTA.external },
 }
 
 function ProcessFooter() {
@@ -51,6 +54,7 @@ function ProcessFooter() {
         What each stage includes depends on your package or custom brief. See{' '}
         <a href={ORGANIC_PRICING_HREF} className="font-medium text-ink underline decoration-lime/60 underline-offset-4 transition-colors hover:text-lime">pricing and terms</a>.
       </p>
+      <p className="mx-auto mt-2 max-w-3xl text-center text-[15px] leading-relaxed text-ink-muted">{ORGANIC_SCOPE_NOTE}</p>
       <p className="mx-auto mt-2 max-w-3xl text-center text-xs text-ink-muted">Scenes are illustrative. The portraits are for illustration only.</p>
     </>
   )

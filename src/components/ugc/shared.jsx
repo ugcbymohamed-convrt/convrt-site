@@ -93,10 +93,14 @@ export function GhostCta({ href, onClick, className = '', children }) {
   )
 }
 
-export const TextLink = ({ href, onClick, children, className = '' }) => (
+export const TextLink = ({ href, onClick, children, className = '', external = false }) => (
   <a
     href={href}
-    onClick={onClick}
+    {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+    onClick={(e) => {
+      onClick?.(e)
+      if (external) e.currentTarget.href = withUtm(href) // carries the visitor's stored UTM parameters to the booking page, as the page CTAs do
+    }}
     className={`font-medium text-ink underline decoration-lime/60 underline-offset-4 transition-colors hover:text-lime focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-lime ${className}`}
   >
     {children}

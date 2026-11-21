@@ -3,6 +3,7 @@ import { useDocumentHead } from './lib/useDocumentHead.js'
 import { pageHead } from './seo/siteSeo.js'
 import FinalCTA from './components/FinalCTA.jsx'
 import NextCaseStudy from './components/caseStudies/NextCaseStudy.jsx'
+import RelatedService from './components/caseStudies/RelatedService.jsx'
 import GraspoHero from './components/graspo/GraspoHero.jsx'
 import GraspoMetrics from './components/graspo/GraspoMetrics.jsx'
 import GraspoChallenge from './components/graspo/GraspoChallenge.jsx'
@@ -40,6 +41,7 @@ export default function GraspoCaseStudyPage() {
       <GraspoLeadComposition />
       <SectionDivider />
       <GraspoResult />
+      <RelatedService currentId="graspo" />
       <NextCaseStudy currentId="graspo" />
       <SectionDivider />
       <FinalCTA />

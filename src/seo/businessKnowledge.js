@@ -15,8 +15,9 @@
    • `status: 'pending-owner-confirmation'` would mark a value the owner has NOT confirmed; pages must not build new
      claims on it (see OWNER_REVIEW_FLAGS at the bottom). */
 
-import { SITE_URL, CONTACT_EMAIL, INSTAGRAM_URL, COMPANY_LINKEDIN_URL, FOUNDER_LINKEDIN_URL } from '../config.js'
+import { SITE_URL, CONTACT_EMAIL, BOOKING_URL, INSTAGRAM_URL, COMPANY_LINKEDIN_URL, FOUNDER_LINKEDIN_URL } from '../config.js'
 import { OPERATOR } from '../content/operator.js'
+import { CONVRT_STATS } from '../lib/siteStats.js'
 
 /** @typedef {{ amount: number, currency: 'USD' }} Money  (all CONVRT pricing is in US dollars) */
 
@@ -88,29 +89,45 @@ export const BRAND = {
   },
 }
 
+/* The four core services. ONE record per service feeds every Service entity in the JSON-LD (homepage, pricing, each service page and the case studies), so the same
+   @id always carries the same name, type and description. `name` / `serviceType` are the schema.org wording; the short visible navigation label is SERVICE_LABELS below. */
 export const CORE_SERVICES = [
   {
     id: 'ugc',
-    name: 'Human-led UGC video advertising',
+    name: 'UGC video production',
+    serviceType: 'UGC video ad production',
     description:
-      'Creator-led UGC video ads for paid social, produced end to end: creative strategy, scripting, creator selection, filming and editing.',
+      'Creator-led UGC video ads for paid social, produced end to end: creative strategy, scripting, creator selection, filming and editing. UGC videos are created by real human creators.',
+  },
+  {
+    id: 'saas',
+    name: 'SaaS video production',
+    serviceType: 'SaaS video production',
+    description:
+      'Video production for software and app companies: SaaS explainer videos, product demonstrations, app walkthroughs, animated product explainers, human-led software presentations and video advertising creatives, produced end to end by CONVRT.',
   },
   {
     id: 'spokesperson',
-    name: 'Spokesperson video advertising',
+    name: 'Spokesperson video production',
+    serviceType: 'Spokesperson video production',
     description:
-      'Spokesperson-led video ads that explain an offer clearly and build trust, produced end to end by CONVRT.',
+      'Spokesperson-led video ads that explain an offer clearly and build trust, produced end to end by CONVRT. Spokesperson videos feature real human presenters and can be produced in several languages.',
   },
   {
     id: 'organic',
-    name: 'Organic social media content production and management',
+    name: 'Organic social media video production and management',
+    serviceType: 'Organic social media content production and management',
     description:
-      'Content strategy, production, publishing on client accounts, performance reporting and engagement across Facebook, Instagram and TikTok.',
+      'Content strategy, production, publishing on client accounts, performance reporting and engagement across Facebook, Instagram and TikTok. Videos are human-led and can be produced in several languages.',
   },
 ]
 
+/* Short visible labels for navigation anchors and cards (owner direction, Nov 2026: one short label for service #4). The longer descriptive names stay in page titles, H1s and schema. */
+export const SERVICE_LABELS = {
+  organic: 'Organic Social Video',
+}
+
 export const ADDITIONAL_EXPERTISE = [
-  'SaaS video production',
   'SaaS explainers',
   'Product demonstrations',
   'Animated videos',
@@ -122,6 +139,9 @@ export const PRODUCTION_LANGUAGES = {
   /** ISO 639-1 codes for the four core languages (used by structured data). */
   coreCodes: ['en', 'es', 'fr', 'ar'],
   other: 'Other languages are available on request, subject to availability.',
+  /* Owner-confirmed (2026-11-21): CONVRT can support Gulf Arabic and Moroccan Darija productions. The English site keeps this to one concise clause; dialect-specific messaging
+     is reserved for the future Arabic-language site. Used by the home, UGC and Spokesperson FAQs so the wording cannot drift. */
+  arabicDialects: 'Gulf and Moroccan Arabic dialects',
 }
 
 export const TALENT = {
@@ -250,12 +270,13 @@ export const ORGANIC_COMMITMENT = {
     'Building a meaningful social media presence takes consistency. Our organic partnerships begin with a six-month commitment, giving us time to develop your content strategy, publish consistently, learn what resonates with your audience and assess performance before making longer-term decisions.',
 }
 
-/* Organic Social visitors get an organic-specific conversation starter instead of the paid-ads Roadmap offer. The existing
-   Roadmap form asks about paid-ad spend and ad creative challenges, so it is not used for organic leads here. The route is the
-   existing contact email (no new form, funnel or page). Follow-up for the owner: a dedicated organic qualification route. */
+/* Organic Social visitors get ONE organic-specific route: the direct 30-minute strategy call (the same Calendly event as BOOKING_URL, opened in a new tab). The Free Creative Growth
+   Roadmap is a paid-ads offer whose form asks about monthly paid-ad spend, so it is not used for organic leads. The Organic page hero, its proof and final CTA, its FAQ link and the
+   Organic promo on /pricing all read this one object (Batch 2, 2026-11-21: the Pricing promo used a mailto before; owner may switch it back here in one line). */
 export const ORGANIC_CTA = {
-  label: 'Discuss Your Organic Strategy',
-  href: `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent('Organic social media strategy')}`,
+  label: 'Discuss Your Content Strategy',
+  href: BOOKING_URL,
+  external: true,
   promo: {
     eyebrow: 'Your organic content partnership',
     headline: "Let's build your brand's organic presence.",
@@ -532,4 +553,35 @@ export const ORGANIC_STAGES = [
 export const OWNER_REVIEW_FLAGS = [
   'Copyright, derivative-editing and ownership terms are deferred to the applicable agreement: no ownership transfer or unrestricted editing rights may be implied.',
   'Detailed organic operational commitments (community management scope, reporting schedule, response times, monitoring hours, video counts) are deferred to the applicable agreement.',
+]
+
+/* ── public claims register ───────────────────────────────────────────────────────────────
+   Every figure, credential and client relationship the PUBLIC pages state, with where it comes from and whether it is confirmed. It exists so a claim has ONE reviewable home and so the
+   tests can prove the pages still use it (tests/claims-register.test.mjs). It never adds a claim: an entry only describes what the site already says.
+   status:  'owner-confirmed'            the owner confirmed it (date in `source`)
+            'published-client-reported'  reported by the client, published with that qualifier
+            'needs-confirmation'         shown on the site, but no source is recorded: ask the owner before building anything new on it
+   The wording of every claim is unchanged by the Batch 2 review (2026-11-21); `proposed` is a conservative replacement for the owner to approve, never applied. */
+export const PUBLIC_CLAIMS = [
+  { id: 'stat-clients', claim: `Trusted by ${CONVRT_STATS.clients} brands`, appears: 'homepage credibility strip', source: 'siteStats.js: owner-confirmed Nov 2026; no public corroboration', status: 'owner-confirmed',
+    note: 'Shown beside 13 logos. "Trusted by" is a stronger relationship than "worked with" and the logo wall implies those 13 are among the 500+.', proposed: 'Worked with 500+ brands' },
+  { id: 'stat-videos', claim: `${CONVRT_STATS.videos} videos produced`, appears: 'homepage final CTA strip', source: 'siteStats.js: owner-confirmed Nov 2026', status: 'owner-confirmed', note: 'Counts videos, not creators.' },
+  { id: 'stat-views', claim: `${CONVRT_STATS.views} views generated`, appears: 'homepage final CTA strip', source: 'siteStats.js: owner-confirmed Nov 2026', status: 'owner-confirmed', note: 'No platform or period is stated on the page.' },
+  { id: 'stat-returning', claim: `${CONVRT_STATS.returningClients} of clients return for more`, appears: 'homepage final CTA strip', source: 'none recorded (was hard-coded in FinalCTA.jsx)', status: 'needs-confirmation',
+    note: 'No definition (of what base, over what period). The two published testimonials mention repeat orders, which is consistent but is not a percentage.', proposed: 'Remove the pill, or define it ("clients who ordered again within 12 months")' },
+  { id: 'arabic-dialects', claim: PRODUCTION_LANGUAGES.arabicDialects, appears: 'home, UGC and Spokesperson FAQs (not the Organic FAQ)', source: 'owner-confirmed 2026-11-21 (Gulf Arabic and Moroccan Darija)', status: 'owner-confirmed',
+    note: 'Dialect-specific messaging is reserved for the future Arabic-language site; the English site keeps this one clause.' },
+  { id: 'quality-review', claim: 'Every project goes through our internal creative quality review.', appears: 'home FAQ "What makes CONVRT different?" and UGC FAQ "revisions-and-performance"', source: 'none recorded', status: 'needs-confirmation',
+    note: 'The UGC FAQ already says UGC videos have "human creative direction and quality control" (owner-confirmed), which is the supportable part.', proposed: 'Every project is reviewed by our team before delivery.' },
+  { id: 'hundreds-of-creatives', claim: "After producing hundreds of creatives, we've developed a strong understanding of what captures attention", appears: 'home FAQ "Do you help with concepts and scripting?"', source: 'none recorded; consistent with 1,200+ videos and 160+ creatives for Elyon', status: 'needs-confirmation',
+    note: 'Low risk next to the confirmed 1,200+ videos, but "creatives" is not defined.', proposed: 'After producing 1,200+ videos' },
+  { id: 'human-created-ugc', claim: 'UGC videos are 100% human-created, featuring real human creators', appears: 'UGC FAQ, structured data', source: 'owner-confirmed Nov 2026 (scoped to the UGC service)', status: 'owner-confirmed' },
+  { id: 'client-logos', claim: '13 client logos: TikTok, inDrive, Airalo, Ria, Expert Option, Promova, FIXD, Adscale, Toluna, WPX, Elyon, Coursiv, Graspo', appears: 'homepage credibility strip', source: 'on-site evidence only for Elyon (case study + testimonial), Graspo (case study) and Adscale (testimonial)', status: 'needs-confirmation',
+    note: 'No record in the repo of permission to show, or of the relationship (client, creator-supplied work, platform partner), for the other ten. Not removed: needs the owner.' },
+  { id: 'elyon-roas', claim: '5.28x ROAS, 9 purchases, $3,421.25 reported revenue (one video)', appears: 'UGC page proof, Elyon case study, Elyon page title/description', source: 'client-reported, early learning phase (src/content/ugcProof.js)', status: 'published-client-reported',
+    note: 'The case-study registry blurb says "reaching up to 5.28x ROAS" for the whole campaign; the proof says one video. Titles and descriptions now say "client-reported" and "one video".' },
+  { id: 'elyon-creatives', claim: '160+ creatives', appears: 'Elyon case study and description', source: 'published on the Elyon case study as a production count', status: 'published-client-reported' },
+  { id: 'graspo-results', claim: '10.7M organic views, 3.4M accounts reached, 75 unique inbound leads (1 Jan to 19 Jun 2026)', appears: 'Graspo case study, Organic page proof, descriptions', source: 'Meta Business Suite (views, reach) and Graspo\'s inbound tracker (leads)', status: 'published-client-reported' },
+  { id: 'graspo-from-zero', claim: 'From zero to 10M+ organic views', appears: 'case-study switcher card and "Next case study" block', source: 'none recorded', status: 'needs-confirmation',
+    note: 'The Graspo page calls Graspo "an established European printing company", so "from zero" is ambiguous (zero Arabic audience, or zero social presence?). "10M+" is consistent with 10.7M.', proposed: 'From a new Arabic-first presence to 10.7M organic views' },
 ]

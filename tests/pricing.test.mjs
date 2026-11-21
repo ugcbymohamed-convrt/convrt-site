@@ -12,11 +12,11 @@ import {
 } from '../src/seo/businessKnowledge.js'
 import { PRICING_FAQ, faqAnswerText } from '../src/seo/pricingFaq.js'
 import {
-  ORG_ID, WEBSITE_ID, homeGraph, pricingGraph, jsonLdFor, organizationRef, BREADCRUMB_TRAILS,
+  ORG_ID, WEBSITE_ID, homeGraph, pricingGraph, jsonLdFor, organizationRef, BREADCRUMB_TRAILS, serviceId,
 } from '../src/seo/structuredData.js'
 import { SITE_SEO, pageHead } from '../src/seo/siteSeo.js'
 import { articleJsonLd, blogIndexJsonLd } from '../src/lib/blog/seo.js'
-import { SITE_URL } from '../src/config.js'
+import { SITE_URL, BOOKING_URL } from '../src/config.js'
 
 const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), '..')
 const read = (p) => fs.readFileSync(path.join(ROOT, p), 'utf8')
@@ -295,7 +295,7 @@ test('pricing JSON-LD: serialises to valid JSON; one @graph; expected node types
   assert.equal(doc['@context'], 'https://schema.org')
   const types = graph().map((n) => n['@type'])
   for (const t of ['Organization', 'WebPage', 'BreadcrumbList', 'Service', 'FAQPage']) assert.ok(types.includes(t), t)
-  assert.equal(types.filter((t) => t === 'Service').length, 10, '3 core + 2 creative testing + 2 organic + raw footage add-on + 2 custom (no price)')
+  assert.equal(types.filter((t) => t === 'Service').length, 11, '4 core (UGC, SaaS, Spokesperson, Organic) + 2 creative testing + 2 organic + raw footage add-on + 2 custom (no price)')
   assert.ok(!types.includes('Product'), 'services must not be marked up as Product')
   assert.ok(!/aggregateRating|"review"|"address"|"award"|areaServed/.test(JSON.stringify(graph())), 'nothing invented')
 })
@@ -382,10 +382,15 @@ test('Offers: numeric prices, correct currencies, monthly vs one-off kept apart,
 
 test('Service nodes relate to the Organization and to the right core service', () => {
   for (const n of graph().filter((x) => x['@type'] === 'Service')) assert.equal(n.provider['@id'], ORG_ID, n.name)
+  // Batch 2 (audit G-02): a package relates to the core service by its stable id, the service page's own #service, which the same graph defines.
   const sprint = graph().find((n) => n.name === 'Creative Testing Sprint')
-  assert.deepEqual(sprint.isRelatedTo.map((r) => r['@id'].split('#service-')[1]), ['ugc', 'spokesperson'])
+  assert.deepEqual(sprint.isRelatedTo.map((r) => r['@id']), [serviceId('ugc'), serviceId('spokesperson')])
+  assert.deepEqual(sprint.isRelatedTo.map((r) => r['@id']), [`${SITE_URL}/ugc-video-agency#service`, `${SITE_URL}/spokesperson-video-production#service`])
   const light = graph().find((n) => n.name === 'Organic Light')
-  assert.deepEqual(light.isRelatedTo.map((r) => r['@id'].split('#service-')[1]), ['organic'])
+  assert.deepEqual(light.isRelatedTo.map((r) => r['@id']), [`${SITE_URL}/social-media-video-production#service`])
+  const core = graph().filter((n) => n['@type'] === 'Service' && n['@id'].endsWith('#service'))
+  assert.deepEqual(core.map((n) => n['@id']), [serviceId('ugc'), serviceId('saas'), serviceId('spokesperson'), serviceId('organic')], 'SaaS is a core service')
+  assert.ok(core.every((n) => !n.offers), 'the core service descriptions carry no price: Offers stay on the package nodes')
 })
 
 test('FAQPage JSON-LD is generated from exactly the visible Q&A', () => {
@@ -410,7 +415,7 @@ test('JSON-LD is attached only to the homepage, /pricing and /ugc-video-agency; 
   assert.equal(pageHead('/scale').jsonLd, undefined)
   assert.equal(pageHead('/pricing').jsonLd['@graph'].find((n) => n['@type'] === 'WebPage').url, `${SITE_URL}/pricing`)
   const home = homeGraph()['@graph']
-  assert.deepEqual(home.map((n) => n['@type']), ['Organization', 'WebSite', 'WebPage', 'Service', 'Service', 'Service', 'FAQPage'])
+  assert.deepEqual(home.map((n) => n['@type']), ['Organization', 'WebSite', 'WebPage', 'Service', 'Service', 'Service', 'Service', 'FAQPage'])
   assert.equal(home[1].publisher['@id'], ORG_ID)
   assert.ok(!home[1].potentialAction, 'no SearchAction: the site has no search')
 })
@@ -706,12 +711,13 @@ test('Roadmap card: approved copy and destination; right = three-mockup PITCH-BO
   assert.ok(!fs.readFileSync(path.join(ROOT, 'src/index.css'), 'utf8').includes('roadmap-float'))
 })
 
-test('service-aware CTAs: Paid keeps the Roadmap offer; Organic uses the organic conversation starter via the existing contact email', () => {
-  assert.equal(ORGANIC_CTA.label, 'Discuss Your Organic Strategy')
+test('service-aware CTAs: Paid keeps the Roadmap offer; Organic uses the organic conversation starter via the strategy call', () => {
+  assert.equal(ORGANIC_CTA.label, 'Discuss Your Content Strategy', 'one organic label, the same as the Organic Social page')
   assert.equal(ORGANIC_CTA.promo.eyebrow.toUpperCase(), 'YOUR ORGANIC CONTENT PARTNERSHIP')
   assert.equal(ORGANIC_CTA.promo.headline, "Let's build your brand's organic presence.")
   assert.equal(ORGANIC_CTA.promo.text, 'Strategy, consistent video production, publishing and engagement — managed together.')
-  assert.equal(ORGANIC_CTA.href, `mailto:${CONTACT_EMAIL}?subject=Organic%20social%20media%20strategy`)
+  assert.equal(ORGANIC_CTA.href, BOOKING_URL, 'one organic route: the strategy call (Batch 2; the Pricing promo used a mailto before)')
+  assert.equal(ORGANIC_CTA.external, true)
   const s = strip(philo)
   assert.match(s, /<div hidden=\{service !== 'paid'\}><RoadmapCard \/><\/div>/)
   assert.match(s, /<div hidden=\{service !== 'organic'\}><OrganicOfferCard \/><\/div>/)
@@ -720,7 +726,7 @@ test('service-aware CTAs: Paid keeps the Roadmap offer; Organic uses the organic
   assert.match(organicCard, /ORGANIC_CTA\.href/)
   const fin = strip(read('src/components/pricing/PricingFinalCTA.jsx'))
   assert.match(fin, /<div hidden=\{service !== 'paid'\}>\s*<CtaLink href=\{OFFER_PATHS\.roadmap\}>Get 5 Free Ad Concepts<\/CtaLink>/)
-  assert.match(fin, /<div hidden=\{service !== 'organic'\}>\s*<CtaLink href=\{ORGANIC_CTA\.href\}>\{ORGANIC_CTA\.label\}<\/CtaLink>/)
+  assert.match(fin, /<div hidden=\{service !== 'organic'\}>\s*<CtaLink href=\{ORGANIC_CTA\.href\} external=\{ORGANIC_CTA\.external\}>\{ORGANIC_CTA\.label\}<\/CtaLink>/)
   assert.match(read('src/CreativeTestingSprintPage.jsx'), /<PricingFinalCTA service=\{service\} \/>/)
   // The global navigation CTA is untouched.
   assert.match(read('src/components/Nav.jsx'), /const ctaHref = onScalePage \? BOOKING_URL : onRoadmapPage \? '#apply' : OFFER_PATHS\.roadmap/)

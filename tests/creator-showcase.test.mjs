@@ -98,7 +98,7 @@ test('static HTML: breadcrumb, one H1, the approved intro, two sections, the fir
   assert.ok(t.includes('Explore real creator videos across e-commerce, SaaS, services and more.'))
   assert.ok(t.includes(CREATOR_EXAMPLES_NOTE), 'the independent-creators attribution line is visible (SEO/GEO Batch 1)')
   assert.ok(!/produced by CONVRT|CONVRT produced|our work|we produced/i.test(t.replace(CREATOR_EXAMPLES_NOTE, '')), 'no CONVRT-production claim beyond the disclaimer')
-  assert.equal((html.match(/<section[\s>]/g) || []).length, 2, 'only two principal sections: the hero and the library')
+  assert.equal((html.match(/<section[\s>]/g) || []).length, 3, 'three sections: the hero, the library and the "what you will find" guide (Batch 2)')
   const shown = Math.min(selectOurWork().length, 12)
   assert.equal((html.match(/Play video:/g) || []).length, shown, 'the first page of approved videos is in the HTML (crawlable without the filter script)')
   for (const v of selectOurWork().slice(0, shown)) assert.ok(html.includes(decode(titleOf(v)).replace(/&/g, '&amp;')) || html.includes(titleOf(v)), `${v.id} title in the HTML`)
@@ -431,7 +431,8 @@ test('regression: the nine homepage client videos stay homepage-only: not in /cr
   }
   const our = rootOf(page(PATH))
   for (const v of clients) assert.ok(!our.includes(v.source.cloudflareId ?? v.source.mp4), `${v.id} is not in the /creator-showcase HTML`)
-  assert.ok(!/adscale|elyon|graspo/i.test(our.replace(/<script[\s\S]*?<\/script>/g, '')), 'no client name on /creator-showcase')
+  // Batch 2 added two descriptive links to the published case studies (their hrefs contain the slugs); the anchors name no client and no client video is shown.
+  assert.ok(!/adscale|elyon|graspo/i.test(our.replace(/<script[\s\S]*?<\/script>/g, '').replace(/href="\/case-studies\/(graspo|elyon)"/g, '')), 'no client name on /creator-showcase')
   const home = rootOf(page('/'))
   assert.ok(home.includes('id="showcase"') && home.includes('/showcase/adscale-creator-poster.webp'), 'the homepage client showcase is intact')
 })

@@ -322,14 +322,20 @@ test('/pricing HTML: conversion funnel intact: Roadmap CTAs, Free Video Producti
   assert.ok(!/<form/.test(root.slice(root.indexOf('id="packages"'))), 'no form was added or moved into the pricing sections')
 })
 
-test('homepage HTML: ONE JSON-LD block (Organization, WebSite, WebPage, 3 Services, FAQPage); none on noindex or offer pages', () => {
+test('homepage HTML: ONE JSON-LD block (Organization, WebSite, WebPage, 4 Services, FAQPage); none on noindex or offer pages; the case studies carry their own small graph', () => {
   const home = ldScripts(page('/'))
   assert.equal(home.length, 1)
-  assert.deepEqual(home[0]['@graph'].map((n) => n['@type']), ['Organization', 'WebSite', 'WebPage', 'Service', 'Service', 'Service', 'FAQPage'])
+  assert.deepEqual(home[0]['@graph'].map((n) => n['@type']), ['Organization', 'WebSite', 'WebPage', 'Service', 'Service', 'Service', 'Service', 'FAQPage'])
   for (const p of [PATHS.roadmap, PATHS.hooks, PATHS.riskFree, PATHS.referrals, PATHS.scale]) {
     assert.equal(ldScripts(page(p)).length, 0, `${p} must not carry structured data`)
   }
-  for (const p of ['/case-studies/graspo', '/case-studies/elyon']) assert.equal(ldScripts(page(p)).length, 0, p)
+  // Batch 2: a WebPage about the client work, its breadcrumb and the service it exemplifies. No Article, Review or rating.
+  for (const p of ['/case-studies/graspo', '/case-studies/elyon']) {
+    const ld = ldScripts(page(p))
+    assert.equal(ld.length, 1, p)
+    assert.deepEqual(ld[0]['@graph'].map((n) => n['@type']), ['Organization', 'WebPage', 'BreadcrumbList', 'Service'], p)
+    assert.ok(!/Article|Review|aggregateRating|"award"|VideoObject|datePublished|"author"/.test(JSON.stringify(ld)), `${p}: nothing the page does not support`)
+  }
 })
 
 test('homepage Services: four equal-card links in the approved order, each ONE anchor to its canonical page; no strategy card; head and JSON-LD untouched', () => {
@@ -340,7 +346,7 @@ test('homepage Services: four equal-card links in the approved order, each ONE a
     ['01', 'UGC Video Ads', PATHS.ugcVideoAgency, '/ugc-video-agency', 'Human-led UGC ads built to capture attention and test creative angles.', ['UGC Ads', 'Creator-Led', 'Creative Testing']],
     ['02', 'SaaS Video Production', PATHS.saasVideoProduction, '/saas-video-production', 'Product demos, explainers and video ads that make software easier to understand.', ['Product Demos', 'Explainers', 'Video Ads']],
     ['03', 'Spokesperson Videos', PATHS.spokespersonVideoProduction, '/spokesperson-video-production', 'Professional, multilingual presenters for ads, demonstrations and brand messages.', ['Human-Led', 'Multilingual', 'Product Demos']],
-    ['04', 'Social Media Management', PATHS.socialMediaVideoProduction, '/social-media-video-production', 'Organic social videos, content planning, publishing and community management.', ['Organic Video', 'Posting', 'Community']],
+    ['04', 'Organic Social Video', PATHS.socialMediaVideoProduction, '/social-media-video-production', 'Organic social videos, content planning, publishing and community management.', ['Organic Video', 'Posting', 'Community']],
   ]
   assert.equal(cards.length, 4, 'exactly four service cards')
   cards.forEach((c, i) => {
@@ -360,8 +366,8 @@ test('homepage Services: four equal-card links in the approved order, each ONE a
   // the four destinations are linked once each (cards are the hub); the pricing link stays
   for (const [, , , href] of want) assert.equal(count(sec, new RegExp(`href="${href}"`, 'g')), 1, `${href} linked once in Services`)
   assert.match(sec, /<a href="\/pricing"[^>]*>\s*Explore packages and pricing\s*<\/a>/)
-  // nothing about the page head or structured data changed
-  assert.ok(!JSON.stringify(ldScripts(html)).includes('saas-video-production') && !JSON.stringify(ldScripts(html)).includes('social-media-video-production'))
+  // Batch 2: the homepage Service nodes now point at the four service pages (audit G-02), so the structured data names those URLs
+  for (const [, , , href] of want) assert.ok(JSON.stringify(ldScripts(html)).includes(`${SITE_URL}${href}#service`), `${href}: the homepage Service node uses the service page's own id`)
   assert.equal(count(html, /<h1[\s>]/g), 1)
 })
 
@@ -627,21 +633,21 @@ test('/pricing HTML: Sprint Plus card shows 10 concepts / 10 scripts / 3 variati
   assert.match(ld, /5 distinct creative concepts with 3 versions each \(15 finished ad versions\)/)
 })
 
-test('/pricing HTML: service-aware CTAs: Paid = Roadmap, Organic = "Discuss Your Organic Strategy" (hidden until Organic is selected)', () => {
+test('/pricing HTML: service-aware CTAs: Paid = Roadmap, Organic = "Discuss Your Content Strategy" (the organic strategy call; hidden until Organic is selected)', () => {
   const h = page('/pricing')
   const m = main(h)
   const phil = m.slice(m.indexOf('id="philosophy"'), m.indexOf('id="package-info"'))
   const fin = m.slice(m.indexOf('id="contact"'))
-  const mail = 'mailto:mohamed@convrt.studio?subject=Organic%20social%20media%20strategy'
+  const call = 'https://calendly.com/mohamed-convrt/30min' // Batch 2: one organic route, the strategy call (was a mailto)
   const orgAt = phil.indexOf('Your organic content partnership'); const paidAt = phil.indexOf('Your free Creative Growth Roadmap')
   assert.ok(orgAt > 0 && paidAt > 0)
   // the card wrapper right before each eyebrow: hidden="" for Organic, plain for Paid
   assert.ok(/<div hidden="">\s*<div class="rounded-/.test(phil.slice(Math.max(0, orgAt - 330), orgAt)), 'organic offer card hidden by default')
   assert.ok(/<div>\s*<div class="rounded-/.test(phil.slice(Math.max(0, paidAt - 330), paidAt)) && !/hidden=""/.test(phil.slice(paidAt - 120, paidAt)), 'Roadmap card visible by default')
-  assert.match(flat(`<div id="root">${phil}`), /Let's build your brand's organic presence\. Facebook Instagram TikTok Strategy, consistent video production, publishing and engagement — managed together\. Discuss Your Organic Strategy/)
-  assert.equal(count(phil, new RegExp(mail.replace(/[?.]/g, '\\$&'), 'g')), 1)
-  assert.equal(count(fin, new RegExp(mail.replace(/[?.]/g, '\\$&'), 'g')), 1)
-  assert.ok(fin.includes(`<div hidden=""><a href="${mail}"`) && fin.includes('Discuss Your Organic Strategy'))
+  assert.match(flat(`<div id="root">${phil}`), /Let's build your brand's organic presence\. Facebook Instagram TikTok Strategy, consistent video production, publishing and engagement — managed together\. Discuss Your Content Strategy/)
+  assert.equal(count(phil, new RegExp(call.replace(/[?.]/g, '\\$&'), 'g')), 1)
+  assert.equal(count(fin, new RegExp(call.replace(/[?.]/g, '\\$&'), 'g')), 1)
+  assert.ok(fin.includes(`<div hidden=""><a href="${call}" target="_blank" rel="noopener noreferrer"`) && fin.includes('Discuss Your Content Strategy'))
   assert.ok(fin.includes(`<div><a href="${OFFER_PATHS.roadmap}"`) && fin.includes('Get 5 Free Ad Concepts'), 'Paid CTA visible by default')
   assert.ok(phil.includes(`href="${OFFER_PATHS.roadmap}"`))
   assert.ok(rootOf(h).includes(`<a href="${OFFER_PATHS.roadmap}"`), 'the navigation CTA still goes to the Roadmap')
@@ -718,7 +724,7 @@ test('homepage HTML: every FAQ question and full answer is visible content, and 
   const faqNode = ld.find((n) => n['@type'] === 'FAQPage')
   assert.deepEqual(faqNode.mainEntity.map((q) => q.name), HOME_FAQ.map((f) => f.q))
   faqNode.mainEntity.forEach((q, i) => assert.equal(q.acceptedAnswer.text, [].concat(HOME_FAQ[i].a).join(' ')))
-  assert.deepEqual(ld.map((n) => n['@type']), ['Organization', 'WebSite', 'WebPage', 'Service', 'Service', 'Service', 'FAQPage'])
+  assert.deepEqual(ld.map((n) => n['@type']), ['Organization', 'WebSite', 'WebPage', 'Service', 'Service', 'Service', 'Service', 'FAQPage'])
   assert.ok(JSON.stringify(ld).includes('"@id":"https://www.convrt.studio/#webpage"'))
   assert.ok(!/\\u003c|<\/script/.test(JSON.stringify(ld)))
 })

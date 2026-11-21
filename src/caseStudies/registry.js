@@ -5,6 +5,8 @@
    component wired in CaseStudiesPage.jsx's PAGES map.
 ───────────────────────────────────────────── */
 
+import { PATHS } from '../routes.js'
+
 export const CASE_STUDIES = [
   {
     id: 'graspo',
@@ -13,6 +15,12 @@ export const CASE_STUDIES = [
     descriptor: '10M+ Organic Views',
     accent: '#d5ff40',
     blurb: 'From zero to 10M+ organic views.',
+    /* The service this project is an example of, and where to compare its packages (used by the "related service" line on the case-study page). */
+    related: {
+      lead: 'Graspo is an example of our',
+      service: { label: 'organic social video production and management', href: PATHS.socialMediaVideoProduction },
+      pricing: { label: 'Compare the organic packages', href: '/pricing#organic' },
+    },
   },
   {
     id: 'elyon',
@@ -21,6 +29,11 @@ export const CASE_STUDIES = [
     descriptor: 'Up to 5.28x ROAS',
     accent: '#c9a668',
     blurb: 'Creator-led paid social reaching up to 5.28x ROAS.',
+    related: {
+      lead: 'Elyon Dubai is an example of our',
+      service: { label: 'UGC video production', href: PATHS.ugcVideoAgency },
+      pricing: { label: 'Compare the UGC packages', href: '/pricing#packages' },
+    },
   },
 ]
 

@@ -60,7 +60,7 @@ export const SPOKESPERSON_FAQ = [
     id: 'languages',
     q: 'Can you produce spokesperson videos in multiple languages?',
     a: [
-      `Yes. We produce in ${PRODUCTION_LANGUAGES.core.slice(0, -1).join(', ')} and ${PRODUCTION_LANGUAGES.core.at(-1)}, including Gulf and Moroccan Arabic dialects, with one core language included in a package. ${PRODUCTION_LANGUAGES.other}`,
+      `Yes. We produce in ${PRODUCTION_LANGUAGES.core.slice(0, -1).join(', ')} and ${PRODUCTION_LANGUAGES.core.at(-1)}, including ${PRODUCTION_LANGUAGES.arabicDialects}, with one core language included in a package. ${PRODUCTION_LANGUAGES.other}`,
       SHARED_SPRINT_LANGUAGE_NOTE,
     ],
   },

@@ -15,7 +15,8 @@ import { SPOKESPERSON_PROOF, SPOKESPERSON_EXPECTATIONS } from '../../content/spo
      proof          { results, testimonials }              (a result may add `secondary: [{ value, label }]`, shown beside the headline figure)
      expectations   the compact strip shown when proof is empty, or null (then the section is absent while there is nothing to show)
      headingId, heading { eyebrow, title }                the populated layout's heading
-     track          { cta, pricing } analytics names */
+     track          { cta, pricing } analytics names
+     cta            optional { label, href, external }: a different button under the populated results (default: "Get 5 Free Ad Concepts" → the Roadmap) */
 
 export const SPOKESPERSON_PROOF_CONFIG = {
   proof: SPOKESPERSON_PROOF,
@@ -106,7 +107,9 @@ function Results({ config }) {
         </div>}
       </div>
       <Reveal className="mt-8 flex justify-center">
-        <RoadmapCta location="results" track={config.track.cta} />
+        {config.cta
+          ? <RoadmapCta location="results" track={config.track.cta} href={config.cta.href} external={config.cta.external}>{config.cta.label}</RoadmapCta>
+          : <RoadmapCta location="results" track={config.track.cta} />}
       </Reveal>
     </Section>
   )

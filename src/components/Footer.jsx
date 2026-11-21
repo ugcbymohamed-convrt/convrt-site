@@ -1,5 +1,6 @@
 import Logo from './Logo.jsx'
 import CookieSettingsLink from './CookieSettingsLink.jsx'
+import { SERVICE_LABELS } from '../seo/businessKnowledge.js'
 import { CONTACT_EMAIL, REFERRALS_PATH, CREATOR_SHOWCASE_PATH, ABOUT_PATH, CONTACT_PATH, PRIVACY_PATH, TERMS_PATH, LEGAL_NOTICE_PATH, TRUST_PAGES_PUBLISHED, COMPANY_LINKEDIN_URL, INSTAGRAM_URL } from '../config.js'
 
 export default function Footer() {
@@ -27,7 +28,7 @@ export default function Footer() {
               <li><a className="hover:text-ink transition-colors" href={`${homePrefix}#services`}>Services</a></li>
               <li><a className="hover:text-ink transition-colors" href="/ugc-video-agency">UGC Video Agency</a></li>
               <li><a className="hover:text-ink transition-colors" href="/spokesperson-video-production">Spokesperson Videos</a></li>
-              <li><a className="hover:text-ink transition-colors" href="/social-media-video-production">Organic Social Videos</a></li>
+              <li><a className="hover:text-ink transition-colors" href="/social-media-video-production">{SERVICE_LABELS.organic}</a></li>
               <li><a className="hover:text-ink transition-colors" href="/saas-video-production">SaaS Video Production</a></li>
               <li><a className="hover:text-ink transition-colors" href={CREATOR_SHOWCASE_PATH}>Creator Showcase</a></li>
               <li><a className="hover:text-ink transition-colors" href="/case-studies">Case Studies</a></li>

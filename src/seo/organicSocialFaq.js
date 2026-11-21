@@ -8,9 +8,9 @@
    customer support. An answer is an array of paragraphs. */
 
 import {
-  formatMoney, ORGANIC, ORGANIC_COMMITMENT, CARD_NOTES, CUSTOM_PACKAGES, CUSTOM_TERMS, TALENT, PRODUCTION_LANGUAGES, USAGE_RIGHTS,
+  formatMoney, ORGANIC, ORGANIC_CTA, ORGANIC_COMMITMENT, CARD_NOTES, CUSTOM_PACKAGES, CUSTOM_TERMS, TALENT, PRODUCTION_LANGUAGES, USAGE_RIGHTS,
 } from './businessKnowledge.js'
-import { OFFER_PATHS, CONTACT_EMAIL } from '../config.js'
+import { CONTACT_EMAIL } from '../config.js'
 import { PATHS } from '../routes.js'
 import { ORGANIC_PRICING_HREF } from '../content/organicSocialPage.js'
 
@@ -75,6 +75,7 @@ export const ORGANIC_SOCIAL_FAQ = [
       `Yes. Both organic packages include ${ORGANIC.includedInBoth.map((x) => x.toLowerCase()).join(' and ')}. We publish on your accounts and handle social media engagement and brand relationship management.`,
       `${ORGANIC.communityManagement} Customer support is not part of the service.`,
     ],
+    links: [{ label: 'See the Graspo case study', href: PATHS.caseStudyGraspo }],
   },
   {
     id: 'organic-light-vs-growth',
@@ -118,7 +119,7 @@ export const ORGANIC_SOCIAL_FAQ = [
       'We review the performance data your platforms make available, such as views, watch time and engagement, to see what your audience responds to, and we use it to refine the content plan. Performance reporting and optimization are part of the organic service.',
       'We never guarantee virality, follower growth or sales. Organic results build over time, which is why our organic partnerships start with an initial commitment. How often we report is set out in your agreement.',
     ],
-    links: [{ label: 'Get 5 free ad concepts', href: OFFER_PATHS.roadmap }],
+    links: [{ label: ORGANIC_CTA.label, href: ORGANIC_CTA.href, external: ORGANIC_CTA.external }],
   },
 ]
 

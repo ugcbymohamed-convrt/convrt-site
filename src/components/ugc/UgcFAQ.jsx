@@ -53,7 +53,7 @@ function Item({ item, open, onToggle, prefix, track }) {
             ))}
             {item.links?.map((l) => (
               <p key={l.href} className="text-[15px]">
-                <TextLink href={l.href} onClick={() => trackEvent(`${track}_faq_link_click`, { question: item.id, href: l.href })}>{l.label} <span aria-hidden="true">→</span></TextLink>
+                <TextLink href={l.href} external={l.external} onClick={() => trackEvent(`${track}_faq_link_click`, { question: item.id, href: l.href })}>{l.label} <span aria-hidden="true">→</span></TextLink>
               </p>
             ))}
           </div>

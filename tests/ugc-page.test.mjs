@@ -112,10 +112,10 @@ test('static HTML: the Free Creative Growth Roadmap is the primary CTA; pricing 
   assert.ok(textOf('<div id="root">' + cta).length < 520, 'the final CTA stays short')
 })
 
-test('static HTML: every FAQ question, answer and contextual link is in the page, and the list is 14 long', () => {
+test('static HTML: every FAQ question, answer and contextual link is in the page, and the list is 16 long (14 + the two Batch 2 buyer-decision FAQs)', () => {
   const root = rootOf(page(PATH))
   const t = textOf(page(PATH))
-  assert.equal(UGC_FAQ.length, 14)
+  assert.equal(UGC_FAQ.length, 16)
   assert.equal(new Set(UGC_FAQ.map((f) => f.id)).size, UGC_FAQ.length)
   for (const f of UGC_FAQ) {
     assert.ok(t.includes(decode(f.q)), `question: ${f.q}`)
@@ -124,7 +124,7 @@ test('static HTML: every FAQ question, answer and contextual link is in the page
   }
   // the buyer objections from the Reddit research and keyword analysis are each answered
   const qs = UGC_FAQ.map((f) => f.q).join(' | ')
-  for (const topic of [/UGC agency/, /influencer/, /real people or by AI/, /choose creators/, /cost/, /concepts and versions/, /one-off/, /how long/i, /usage rights/, /raw footage/, /revisions/, /other languages/, /scripts and handles creative strategy/]) assert.match(qs, topic)
+  for (const topic of [/UGC agency/, /influencer/, /real people or by AI/, /choose creators/, /cost/, /concepts and versions/, /one-off/, /how long/i, /usage rights/, /raw footage/, /revisions/, /other languages/, /scripts and handles creative strategy/, /UGC agency or hire creators directly/, /evaluate a UGC agency/]) assert.match(qs, topic)
 })
 
 // ── claims and positioning ───────────────────────────────────────────────────────────────
@@ -249,7 +249,8 @@ test('JSON-LD: Organization, WebPage, BreadcrumbList, Service (+ Offers from the
   assert.deepEqual(crumb.itemListElement.map((i) => [i.position, i.name, i.item]), [[1, 'Home', `${SITE_URL}/`], [2, 'UGC Video Agency', URL_]])
   assert.deepEqual(Object.keys(BREADCRUMB_TRAILS), ['/pricing', PATH, PATHS.spokespersonVideoProduction, PATHS.socialMediaVideoProduction, PATHS.saasVideoProduction, PATHS.showcase])
   assert.equal(svc.provider['@id'], ORG_ID)
-  assert.ok(svc.isRelatedTo.some((r) => r['@id'] === serviceId('ugc')))
+  assert.equal(svc['@id'], serviceId('ugc'), 'the stable service id the homepage and /pricing also use (Batch 2)')
+  assert.ok(!svc.isRelatedTo.some((r) => r['@id'] === svc['@id']), 'never related to itself')
   const prices = svc.offers.map((o) => o.priceSpecification.price)
   assert.deepEqual(prices, [SPRINT.monthly.amount, SPRINT.oneOff.amount, SPRINT_PLUS.monthly.amount, SPRINT_PLUS.oneOff.amount])
   assert.ok(svc.offers.every((o) => o.priceSpecification.priceCurrency === 'USD' && o.priceSpecification.valueAddedTaxIncluded === false))
@@ -485,7 +486,8 @@ test('internal links into the page: homepage Services line and UGC FAQ, Pricing,
   assert.ok(link(page('/case-studies/elyon')), 'Elyon case study')
   for (const p of ['/', '/pricing', '/creative-growth-roadmap']) assert.match(rootOf(page(p)), /<a [^>]*href="\/ugc-video-agency"[^>]*>UGC Video Agency<\/a>/, `footer link on ${p}`)
   // the homepage FAQ JSON-LD is unchanged by the link (links are not part of the answer text)
-  assert.ok(!JSON.stringify(jsonLdFor('/')).includes('ugc-video-agency'))
+  assert.ok(!JSON.stringify(jsonLdFor('/')['@graph'].find((n) => n['@type'] === 'FAQPage')).includes('ugc-video-agency'))
+  assert.ok(JSON.stringify(jsonLdFor('/')).includes('ugc-video-agency#service'), 'the homepage Service node uses the UGC page\'s own id')
 })
 
 // ── Roadmap eligibility ──────────────────────────────────────────────────────────────────

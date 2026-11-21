@@ -1,18 +1,20 @@
 import { useEffect, useRef } from 'react'
 import OurWorkHero from './components/ourwork/OurWorkHero.jsx'
 import PortfolioLibrary from './components/ourwork/PortfolioLibrary.jsx'
+import ShowcaseFormats from './components/ourwork/ShowcaseFormats.jsx'
 import { captureAttribution, trackEvent } from './lib/analytics.js'
 import { useDocumentHead } from './lib/useDocumentHead.js'
 import { pageHead } from './seo/siteSeo.js'
 import { PATHS } from './routes.js'
 import { selectOurWork } from './content/portfolio.js'
 
-/* /creator-showcase: the Creator Showcase (the route stays /creator-showcase). Examples from independent creators, not all CONVRT productions. Two sections only: 1 a compact hero, 2 the filterable video library.
+/* /creator-showcase: the Creator Showcase (the route stays /creator-showcase). Examples from independent creators, not all CONVRT productions. Three sections: 1 a compact hero, 2 the filterable video library, 3 a short "what you'll find here" guide with links to the service pages and case studies (Batch 2).
    Every video comes from src/content/portfolio.js (approved items only), the same file the UGC page and the homepage read.
    Title, description, canonical, robots and JSON-LD all come from the SEO manifest (src/seo/siteSeo.js). The static HTML already contains
    the H1, the intro and the first page of video cards, so crawlers do not need the filtering script. */
 export default function OurWorkPage() {
   useDocumentHead(pageHead(PATHS.showcase))
+  const items = selectOurWork()
 
   const viewed = useRef(false)
   useEffect(() => {
@@ -32,7 +34,8 @@ export default function OurWorkPage() {
         </ol>
       </nav>
       <OurWorkHero />
-      <PortfolioLibrary items={selectOurWork()} />
+      <PortfolioLibrary items={items} />
+      <ShowcaseFormats items={items} />
     </>
   )
 }
