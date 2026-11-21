@@ -1,6 +1,6 @@
 import Logo from './Logo.jsx'
 import CookieSettingsLink from './CookieSettingsLink.jsx'
-import { CONTACT_EMAIL, REFERRALS_PATH, CREATOR_SHOWCASE_PATH, ABOUT_PATH, CONTACT_PATH, PRIVACY_PATH, TERMS_PATH, TRUST_PAGES_PUBLISHED, COMPANY_LINKEDIN_URL, INSTAGRAM_URL } from '../config.js'
+import { CONTACT_EMAIL, REFERRALS_PATH, CREATOR_SHOWCASE_PATH, ABOUT_PATH, CONTACT_PATH, PRIVACY_PATH, TERMS_PATH, LEGAL_NOTICE_PATH, TRUST_PAGES_PUBLISHED, COMPANY_LINKEDIN_URL, INSTAGRAM_URL } from '../config.js'
 
 export default function Footer() {
   const year = new Date().getFullYear()
@@ -71,6 +71,7 @@ export default function Footer() {
           <p className="flex flex-wrap items-center gap-x-4 gap-y-1">
             {TRUST_PAGES_PUBLISHED && <a className="underline-offset-4 transition-colors hover:text-ink hover:underline" href={PRIVACY_PATH}>Privacy Policy</a>}
             {TRUST_PAGES_PUBLISHED && <a className="underline-offset-4 transition-colors hover:text-ink hover:underline" href={TERMS_PATH}>Terms</a>}
+            {TRUST_PAGES_PUBLISHED && <a className="underline-offset-4 transition-colors hover:text-ink hover:underline" href={LEGAL_NOTICE_PATH}>Legal Notice</a>}
             <CookieSettingsLink />
             <span>Built to convert.</span>
           </p>

@@ -10,7 +10,7 @@
    ACTIVATE (only after the owner AND a legal adviser have approved the text; refuses while any blocker remains):
      node scripts/activate-trust-pages.mjs --apply --owner-approved-details
    Does exactly two things: sets LEGAL_NOTICE_DETAILS_APPROVED and TRUST_PAGES_PUBLISHED to true in src/config.js, and removes the four
-   X-Robots-Tag rules for /about /contact /privacy /terms from vercel.json. It never commits, pushes or deploys.
+   X-Robots-Tag rules for /about /contact /privacy /terms /legal-notice from vercel.json. It never commits, pushes or deploys.
    `--owner-approved-details` is the owner's explicit statement that the tax ID and postal address in src/content/operator.js may be public.
 ───────────────────────────────────────────── */
 
@@ -18,7 +18,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 
-const TRUST = ['/about', '/contact', '/privacy', '/terms']
+const TRUST = ['/about', '/contact', '/privacy', '/terms', '/legal-notice']
 
 export async function checkActivation(root) {
   const blockers = []

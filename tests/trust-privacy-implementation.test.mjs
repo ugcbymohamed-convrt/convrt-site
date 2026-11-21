@@ -8,13 +8,14 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 import {
-  ABOUT_PATH, CONTACT_PATH, PRIVACY_PATH, TERMS_PATH, TRUST_PAGES_PUBLISHED, LEGAL_NOTICE_DETAILS_APPROVED,
+  ABOUT_PATH, CONTACT_PATH, PRIVACY_PATH, TERMS_PATH, LEGAL_NOTICE_PATH, TRUST_PAGES_PUBLISHED, LEGAL_NOTICE_DETAILS_APPROVED,
   COMPANY_LINKEDIN_URL, FOUNDER_LINKEDIN_URL, INSTAGRAM_URL, BOOKING_URL, CONTACT_EMAIL,
 } from '../src/config.js'
 import { TRUST_CONTENT, plainText, ownerMarkersIn, operatorDetails } from '../src/content/trustPages.js'
 import { OPERATOR } from '../src/content/operator.js'
 import { BRAND } from '../src/seo/businessKnowledge.js'
 import { organizationNode } from '../src/seo/structuredData.js'
+import { pageHead, sitemapRoutes } from '../src/seo/siteSeo.js'
 import { LEGAL_ENTITY, CONVRT_ADDRESS } from '../src/content/creatorLegal.js'
 import { captureAttribution, withUtm, ATTRIBUTION_STORAGE_KEY } from '../src/lib/analytics.js'
 
@@ -39,21 +40,19 @@ test('operator facts are the owner-confirmed ones and live in one module shared 
   assert.equal(CONVRT_ADDRESS, OPERATOR.address)
 })
 
-test('the legally required operator details are present in the legal notice: name, structure, email and a second direct way to reach us; NIF and address only after approval, otherwise a visible marker', () => {
+test('the legally required operator details (LSSI art. 10) are in the Legal Notice: name, structure, tax ID, postal address, email and a second direct way to reach us', () => {
   const lines = operatorDetails().join('\n')
   assert.match(lines, /Trading name: CONVRT Studio/)
   assert.match(lines, /Operator: Mohamed Doukkali Azizi, a self-employed professional/)
   assert.ok(lines.includes(CONTACT_EMAIL))
   assert.ok(lines.includes(BOOKING_URL) && lines.includes(COMPANY_LINKEDIN_URL), 'a second means of direct contact')
-  if (LEGAL_NOTICE_DETAILS_APPROVED) {
-    assert.ok(lines.includes(OPERATOR.taxId) && lines.includes(OPERATOR.address))
-  } else {
-    assert.ok(!lines.includes(OPERATOR.taxId) && !lines.includes('Gibraltar'))
-    assert.equal((lines.match(/\[OWNER TO CONFIRM: show the operator’s/g) || []).length, 2, 'both missing items are flagged')
-  }
-  // the notice appears in the Terms and the same details lead the Privacy Policy
-  assert.ok(headings('terms')[0] === 'Legal notice')
+  assert.equal(LEGAL_NOTICE_DETAILS_APPROVED, true, 'the owner approved showing the tax ID and address (21 Nov 2026)')
+  assert.ok(lines.includes(OPERATOR.taxId) && lines.includes(OPERATOR.address))
+  assert.ok(!/\[OWNER TO CONFIRM/.test(lines))
+  // they appear on the Legal Notice and in the Privacy Policy's controller identity, and are kept off the Contact page
+  assert.ok(page('legalNotice').includes(OPERATOR.taxId) && page('legalNotice').includes(OPERATOR.address))
   assert.ok(page('privacy').includes('Operator: Mohamed Doukkali Azizi'))
+  assert.ok(!page('contact').includes(OPERATOR.taxId) && !page('contact').includes('Almería'), 'Legal Notice stays distinct from Contact')
 })
 
 test('the owner decision "no public phone number or office hours" holds on every trust page', () => {
@@ -133,13 +132,13 @@ test('Contact: email, Calendly, company LinkedIn, Instagram, creator and referra
 test('Privacy: covers every required topic', () => {
   const h = headings('privacy').join(' | ')
   for (const topic of [
-    'Who is responsible', 'What we collect', 'Marketing emails', 'Booking a call', 'Cookies and similar', 'Analytics',
+    'Who is responsible', 'What we collect', 'Marketing emails', 'Booking a call', 'Cookies and browser storage', 'Browser storage we use', 'Analytics',
     'Who we share information with', 'Transfers outside the European Economic Area', 'How long we keep it', 'Your rights',
   ]) assert.ok(h.includes(topic), topic)
   const p = page('privacy')
   for (const s of ['Free ad hooks', 'Free video application', 'Referral Partner Program', 'Free Creative Growth Roadmap', 'withdraw', 'Agencia Española de Protección de Datos (AEPD)', 'www.aepd.es']) assert.ok(p.includes(s), s)
   for (const provider of ['MailerLite', 'Resend', 'Calendly', 'Vercel', 'Cloudflare', 'Google Tag Manager', 'Google Analytics']) assert.ok(p.includes(provider), provider)
-  assert.match(p, /We do not use any other customer database/)
+  assert.match(p, /We have no other customer database or CRM/)
 })
 
 test('Privacy: marketing email consent is described exactly as implemented', () => {
@@ -161,27 +160,27 @@ test('Privacy: marketing email consent is described exactly as implemented', () 
   for (const key of ['marketing_consent_at', 'marketing_consent_version', 'marketing_consent_source']) assert.ok(marketing.includes(key), key)
 })
 
-test('Privacy: retention periods are the owner proposals, flagged for legal review, and no deletion routine is claimed to exist', () => {
+test('Privacy: retention periods are stated plainly (owner proposals, now applied through periodic review); GA4 14 months', () => {
   const sec = TRUST_CONTENT.privacy.sections.find((s) => s.heading === 'How long we keep it')
   const t = plainText({ h1: '', intro: '', sections: [sec] })
   assert.match(t, /12 months after our last meaningful contact/)
   assert.match(t, /Booking records: 12 months, unless an ongoing business relationship/)
   assert.match(t, /until you withdraw your consent or unsubscribe, with a periodic review/)
   assert.match(t, /as long as Spanish law requires/)
-  assert.match(t, /Google Analytics event data: 14 months/)
-  assert.match(t, /\[LEGAL REVIEW: these periods are proposals/)
-  assert.match(t, /No automated deletion exists yet/)
+  assert.match(t, /event and user data \(once analytics is on\): 14 months/)
+  assert.match(t, /by reviewing our records periodically/)
+  assert.ok(!/automatic(ally)? delet|automated delet/i.test(t), 'no automated deletion is claimed')
 })
 
-test('Privacy: no invented data-processing agreements, transfer safeguards or provider storage locations', () => {
+test('Privacy: no unverified agreements, safeguards or storage locations are claimed', () => {
   const p = page('privacy')
   assert.ok(!/we have (signed )?data[- ]processing (agreements|addenda)/i.test(p))
-  assert.ok(!/(servers?|data) (is|are) (stored|located|hosted) (in|within) (the )?(EU|European|Germany|Frankfurt|United States|US|Ireland)/i.test(p))
-  assert.ok(!/standard contractual clauses (with|from|apply)/i.test(p.replace(/for example an adequacy decision[^\]]*\]/, '')))
-  // each of those facts is an open owner marker instead
-  const markers = ownerMarkersIn(TRUST_CONTENT.privacy).join(' ')
-  assert.match(markers, /data-processing terms that apply to your account/)
-  assert.match(markers, /where it stores and processes the information and the safeguard it relies on/)
+  assert.ok(!/(MailerLite|Vercel|Google)[^.]*(stores?|stored|located|hosted) (in|within) (the )?(EU|European|Germany|Ireland|United States)/i.test(p), 'no location claimed for MailerLite, Vercel or Google')
+  // safeguards are attributed to the providers' own documents, and the unconfirmed providers are named as unconfirmed
+  assert.match(p, /According to their own published documentation, Resend stores customer data in the United States/)
+  assert.match(p, /For MailerLite, Vercel and Google we have not independently confirmed/)
+  assert.ok(!/MailerLite[^.]*(Data Privacy Framework|Standard Contractual)/.test(p))
+  assert.ok(!/legal review|reviewed by (a )?(lawyer|solicitor|legal adviser)|legally (approved|validated)|GDPR[- ]compliant/i.test(Object.values(TRUST_CONTENT).map(plainText).join('\n')), 'no fake legal-review claims on the pages')
 })
 
 test('Privacy: every browser-storage key in the code is disclosed, and no undisclosed one exists', () => {
@@ -196,32 +195,49 @@ test('Privacy: every browser-storage key in the code is disclosed, and no undisc
   assert.match(p, /do not store advertising click identifiers \(such as gclid or fbclid\)/)
 })
 
-test('Privacy: the Google Analytics statements match the owner-confirmed GA4 settings and carry an owner check', () => {
+test('Privacy: the Google Analytics statements match the confirmed GA4 settings and the real state of the build', () => {
   const p = page('privacy')
-  assert.match(p, /switched off Google signals and the collection of user-provided data/)
-  assert.match(p, /keeps event-level data for 14 months/)
+  assert.match(p, /Google signals off, collection of user-provided data off, automatic form-interaction tracking off, browser-history page views off/)
+  assert.match(p, /event and user data kept for 14 months with "reset on new activity" off/)
   assert.match(p, /never include your name, email address or anything you type into a form/)
-  assert.match(ownerMarkersIn(TRUST_CONTENT.privacy).join(' '), /Google’s data-processing terms have been accepted/)
+  assert.ok(!ownerMarkersIn(TRUST_CONTENT.privacy).length)
+  // This test build has no GTM id, so the policy says analytics is NOT active and no cookie banner exists yet (Production's real state).
+  assert.match(p, /Google Analytics, through Google Tag Manager, is not active on this website today/)
+  assert.match(p, /sets no analytics or advertising cookies and shows no cookie banner/)
+  assert.ok(!/Cookie settings" link in the footer/.test(p))
 })
 
 /* ───────── Terms of Service ───────── */
 
-test('Terms of Service: every required topic, liability and governing law flagged for Spanish legal review, no invented contract', () => {
+test('Terms of Service: every required topic, Spanish law stated, no invented contract, no open markers', () => {
   const h = headings('terms').join(' | ')
   for (const topic of [
-    'Legal notice', 'Using the website', 'Enquiries and applications', 'Free creative concepts offer', 'Free Video Production eligibility',
+    'Using the website', 'Enquiries and applications', 'Free creative concepts offer', 'Free Video Production eligibility',
     'Website content and intellectual property', 'No guarantee of results', 'Liability', 'Governing law and disputes', 'Website terms and signed client agreements',
   ]) assert.ok(h.includes(topic), topic)
   assert.equal(TRUST_CONTENT.terms.h1, 'Terms of Service')
   const t = page('terms')
   assert.match(t, /Sending an enquiry or application does not create a contract/)
-  assert.match(t, /\[LEGAL REVIEW: the limitation of liability/)
-  assert.match(t, /\[LEGAL REVIEW: governing law/)
   assert.match(t, /governed by Spanish law/)
+  assert.match(t, /competent Spanish courts/)
   assert.match(t, /If a signed agreement conflicts with these terms, the signed agreement prevails for that project/)
-  assert.match(t, /A standard Client Service Agreement does not exist yet/)
   assert.ok(!/(payment terms|net \d+|invoice(s)? (are|is) due|cancellation fee|revision(s)? (are|is) included|late fee|termination for)/i.test(t), 'no invented client-agreement provisions in the website terms')
   assert.ok(!/(guarantee|promise)s? (sales|leads|roas|return|growth)/i.test(t.replace(/never guarantee[^.]*\./g, '')))
+  assert.deepEqual(ownerMarkersIn(TRUST_CONTENT.terms), [])
+})
+
+test('Legal Notice (Aviso Legal): its own page with the LSSI art. 10 information, distinct from Contact', () => {
+  const h = headings('legalNotice').join(' | ')
+  for (const topic of ['Website operator', 'Activity and audience', 'Prices and taxes', 'Intellectual property', 'Personal data and cookies', 'applicable law and jurisdiction']) assert.ok(h.includes(topic), topic)
+  const t = page('legalNotice')
+  assert.match(t, /Ley 34\/2002/)
+  assert.match(t, /Tax identification number \(NIF\): /)
+  assert.match(t, /Postal address: /)
+  assert.match(t, /offered to businesses only/)
+  assert.match(t, /prices exclude VAT/i)
+  assert.deepEqual(ownerMarkersIn(TRUST_CONTENT.legalNotice), [])
+  assert.equal(LEGAL_NOTICE_PATH, '/legal-notice')
+  assert.ok(JSON.stringify(TRUST_CONTENT.contact).includes(`${LEGAL_NOTICE_PATH}`), 'Contact points to the Legal Notice')
 })
 
 test('the B2B Client Service Agreement is an unpublished outline only: no route, no page, no link, not in the sitemap', () => {
@@ -234,61 +250,108 @@ test('the B2B Client Service Agreement is an unpublished outline only: no route,
 
 /* ───────── publication safety ───────── */
 
-test('draft state: unpublished, noindex, no form privacy link; the legal-notice gate is closed', () => {
-  assert.equal(TRUST_PAGES_PUBLISHED, false)
-  assert.equal(LEGAL_NOTICE_DETAILS_APPROVED, false)
-  const markers = Object.values(TRUST_CONTENT).flatMap(ownerMarkersIn)
-  assert.ok(markers.length > 10, 'markers are listed')
-  if (TRUST_PAGES_PUBLISHED) assert.equal(LEGAL_NOTICE_DETAILS_APPROVED, true, 'cannot publish without the legally required details')
+test('published state: flags on, no open marker anywhere, the legally required details approved', () => {
+  assert.equal(TRUST_PAGES_PUBLISHED, true)
+  assert.equal(LEGAL_NOTICE_DETAILS_APPROVED, true)
+  assert.deepEqual(Object.values(TRUST_CONTENT).flatMap(ownerMarkersIn), [])
+  assert.equal(PRIVACY_POLICY_URL_CHECK(), '/privacy')
 })
 
-test('publication prep: a SIMULATED published build makes all four pages indexable with self-canonicals, sitemap entries, footer and form links, and the founder Person', async () => {
-  // Copy src into node_modules (so bare imports still resolve), flip the two flags in the copy, import the copy. The real config is never touched.
-  const sim = path.join(ROOT, 'node_modules/.convrt-publish-sim')
+function PRIVACY_POLICY_URL_CHECK() {
+  return /export const PRIVACY_POLICY_URL = TRUST_PAGES_PUBLISHED \? PRIVACY_PATH : ''/.test(read('src/config.js')) ? '/privacy' : ''
+}
+
+test('every form and the cookie preferences link the Privacy Policy, and the footer links all five pages', () => {
+  for (const f of ['src/components/roadmap/RoadmapApplication.jsx', 'src/components/referrals/ReferralForm.jsx', 'src/components/hooks/HooksSignupCard.jsx', 'src/components/riskfree/RiskFreeApplication.jsx', 'src/components/ConsentManager.jsx']) {
+    assert.match(read(f), /PRIVACY_POLICY_URL/, f)
+  }
+  const footer = read('src/components/Footer.jsx')
+  for (const p of ['ABOUT_PATH', 'PRIVACY_PATH', 'TERMS_PATH', 'LEGAL_NOTICE_PATH', 'CONTACT_PATH']) assert.ok(footer.includes(`href={${p}}`) || footer.includes(`? ${p} :`), p)
+})
+
+async function importSim(flags, dirName) {
+  // Copy src into node_modules (so bare imports still resolve), set flags in the copy, import the copy. The real files are never touched.
+  const sim = path.join(ROOT, 'node_modules', dirName)
   fs.rmSync(sim, { recursive: true, force: true })
   fs.cpSync(path.join(ROOT, 'src'), path.join(sim, 'src'), { recursive: true })
   const cfgPath = path.join(sim, 'src/config.js')
-  fs.writeFileSync(cfgPath, fs.readFileSync(cfgPath, 'utf8')
-    .replace('TRUST_PAGES_PUBLISHED = false', 'TRUST_PAGES_PUBLISHED = true')
-    .replace('LEGAL_NOTICE_DETAILS_APPROVED = false', 'LEGAL_NOTICE_DETAILS_APPROVED = true'))
+  let cfg = fs.readFileSync(cfgPath, 'utf8')
+  for (const [k, v] of Object.entries(flags)) cfg = cfg.replace(new RegExp(`${k} = (true|false)`), `${k} = ${v}`)
+  fs.writeFileSync(cfgPath, cfg)
+  return sim
+}
+
+test('SIMULATED draft build (flags off) still works: pages noindex, no markers hidden, legal details withheld behind a visible marker', async () => {
+  const sim = await importSim({ TRUST_PAGES_PUBLISHED: false, LEGAL_NOTICE_DETAILS_APPROVED: false }, '.convrt-draft-sim')
   try {
     const url = (f) => pathToFileURL(path.join(sim, f)).href
-    const cfg = await import(url('src/config.js'))
     const seo = await import(url('src/seo/siteSeo.js'))
-    const sd = await import(url('src/seo/structuredData.js'))
     const content = await import(url('src/content/trustPages.js'))
-    assert.equal(cfg.PRIVACY_POLICY_URL, '/privacy', 'every form links the privacy policy')
-    for (const p of [ABOUT_PATH, CONTACT_PATH, PRIVACY_PATH, TERMS_PATH]) {
-      const head = seo.pageHead(p)
-      assert.equal(head.noindex, false, `${p} indexable`)
-      assert.equal(head.robots, undefined, `${p} no robots override`)
-      assert.equal(head.url, `https://www.convrt.studio${p}`, `${p} self-referencing canonical`)
-      assert.ok(seo.sitemapRoutes().includes(p), `${p} in the sitemap`)
+    for (const p of [ABOUT_PATH, CONTACT_PATH, PRIVACY_PATH, TERMS_PATH, LEGAL_NOTICE_PATH]) {
+      const h = seo.pageHead(p)
+      assert.ok(h.noindex === true || /noindex/.test(h.robots || ''), p)
+      assert.ok(!seo.sitemapRoutes().includes(p), p)
     }
-    const org = sd.organizationNode()
-    assert.equal(org.founder.name, 'Mohamed Doukkali Azizi')
-    assert.deepEqual(org.founder.sameAs, [FOUNDER_LINKEDIN_URL])
-    assert.deepEqual(org.sameAs, [INSTAGRAM_URL, COMPANY_LINKEDIN_URL])
-    // with the details approved the legal notice carries the NIF and address
-    const notice = content.operatorDetails().join('\n')
-    assert.ok(notice.includes(OPERATOR.taxId) && notice.includes(OPERATOR.address))
-    // the remaining blockers are exactly the owner/legal markers (the guard in tests/trust-pages.test.mjs refuses to publish until none is left)
     const left = Object.values(content.TRUST_CONTENT).flatMap(content.ownerMarkersIn)
-    assert.ok(left.length > 0, 'the simulation shows what still blocks publication')
-    assert.ok(!left.some((m) => /show the operator’s/.test(m)), 'the legal-notice markers disappear once the details are approved')
+    assert.ok(left.length >= 2 && left.every((m) => /show the operator’s/.test(m)), 'only the hidden-details markers remain')
+    assert.ok(!content.operatorDetails().join('\n').includes(OPERATOR.taxId))
   } finally {
     fs.rmSync(sim, { recursive: true, force: true })
   }
 })
 
-test('activation script (dry run) reports the blockers and changes nothing', async () => {
+test('SIMULATED build with analytics ON (VITE_GTM_ID set): the Privacy Policy describes the cookie banner, consent and cookie settings instead of "not active"', async () => {
+  const sim = await importSim({}, '.convrt-analytics-sim')
+  const consentPath = path.join(sim, 'src/lib/consent.js')
+  fs.writeFileSync(consentPath, fs.readFileSync(consentPath, 'utf8').replace("export const GTM_ID = validGtmId(import.meta.env?.VITE_GTM_ID)", "export const GTM_ID = validGtmId('GTM-TEST1234')"))
+  try {
+    const content = await import(pathToFileURL(path.join(sim, 'src/content/trustPages.js')).href)
+    const p = content.plainText(content.TRUST_CONTENT.privacy)
+    assert.match(p, /This website uses Google Analytics, through Google Tag Manager/)
+    assert.match(p, /"Cookie settings" link in the footer/)
+    assert.match(p, /only if you accept analytics cookies/)
+    assert.ok(!/is not active on this website today/.test(p))
+    assert.ok(!/shows no cookie banner/.test(p))
+    // what does NOT depend on the build is identical
+    assert.match(p, /Google signals off/)
+    assert.match(p, /marketing emails are a separate choice on our forms/)
+  } finally {
+    fs.rmSync(sim, { recursive: true, force: true })
+  }
+})
+
+test('published build: all five pages indexable with self-canonicals and sitemap entries; Organization carries the company LinkedIn and the founder Person; legal-notice details shown', () => {
+  for (const p of [ABOUT_PATH, CONTACT_PATH, PRIVACY_PATH, TERMS_PATH, LEGAL_NOTICE_PATH]) {
+    const head = pageHead(p)
+    assert.equal(head.noindex, false, `${p} indexable`)
+    assert.equal(head.robots, undefined, `${p} no robots override`)
+    assert.equal(head.url, `https://www.convrt.studio${p}`, `${p} self-referencing canonical`)
+    assert.ok(sitemapRoutes().includes(p), `${p} in the sitemap`)
+    assert.ok(head.jsonLd && JSON.stringify(head.jsonLd).includes('BreadcrumbList'), `${p} has breadcrumbs`)
+  }
+  const org = organizationNode()
+  assert.equal(org.founder.name, 'Mohamed Doukkali Azizi')
+  assert.deepEqual(org.founder.sameAs, [FOUNDER_LINKEDIN_URL])
+  assert.deepEqual(org.sameAs, [INSTAGRAM_URL, COMPANY_LINKEDIN_URL])
+  assert.ok(!JSON.stringify(org).includes(OPERATOR.taxId), 'the tax id is shown on the page, not repeated in structured data')
+})
+
+test('the nine commercial pages stay indexable and in the sitemap', () => {
+  const routes = sitemapRoutes()
+  for (const p of ['/', '/pricing', '/ugc-video-agency', '/spokesperson-video-production', '/creator-showcase', '/case-studies/graspo', '/case-studies/elyon', '/scale', '/creative-growth-roadmap']) {
+    if (p === '/scale' || p === '/creative-growth-roadmap') continue // gated pages are checked by their own suites
+    assert.ok(routes.includes(p), p)
+  }
+})
+
+test('activation script reports an already-published state with no open marker and changes nothing', async () => {
   const before = [read('src/config.js'), read('vercel.json')]
   const { checkActivation } = await import('../scripts/activate-trust-pages.mjs')
   const report = await checkActivation(ROOT)
-  assert.equal(report.ready, false)
-  assert.ok(report.blockers.some((b) => /OWNER TO CONFIRM|LEGAL REVIEW/.test(b)))
-  assert.ok(report.blockers.some((b) => /LEGAL_NOTICE_DETAILS_APPROVED/.test(b)))
+  assert.deepEqual(report.blockers, ['TRUST_PAGES_PUBLISHED is already true'])
   assert.deepEqual([read('src/config.js'), read('vercel.json')], before)
+  const v = JSON.parse(read('vercel.json'))
+  assert.equal(v.headers.filter((h) => ['/about', '/contact', '/privacy', '/terms', '/legal-notice'].includes(h.source)).length, 0, 'no X-Robots-Tag rule left for the five pages')
 })
 
 /* ───────── advertising click identifiers ───────── */

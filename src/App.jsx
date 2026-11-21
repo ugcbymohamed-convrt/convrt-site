@@ -70,6 +70,7 @@ const ROUTES = {
   [PATHS.contact]: TrustPage,
   [PATHS.privacy]: TrustPage,
   [PATHS.terms]: TrustPage,
+  [PATHS.legalNotice]: TrustPage,
 }
 
 const PRIVATE_ROUTES = {

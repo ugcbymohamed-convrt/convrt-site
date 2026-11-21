@@ -54,12 +54,13 @@ export const ABOUT_PATH = '/about'
 export const CONTACT_PATH = '/contact'
 export const PRIVACY_PATH = '/privacy'
 export const TERMS_PATH = '/terms'
-export const TRUST_PAGES_PUBLISHED = false
+export const LEGAL_NOTICE_PATH = '/legal-notice'
+export const TRUST_PAGES_PUBLISHED = true
 
 // The operator's tax ID (NIF) and postal address are legally required in a Spanish commercial website's legal information (LSSI art. 10) but are
 // private until the owner approves showing them. While this is false the pages show a visible review marker where they belong; once true they are
 // printed from src/content/operator.js. tests/trust-pages.test.mjs refuses TRUST_PAGES_PUBLISHED = true while this is false.
-export const LEGAL_NOTICE_DETAILS_APPROVED = false
+export const LEGAL_NOTICE_DETAILS_APPROVED = true
 
 // URL of CONVRT's privacy policy. Empty while the policy is a draft, so the application forms show their data-use notice without a link; it becomes
 // '/privacy' when TRUST_PAGES_PUBLISHED is flipped.

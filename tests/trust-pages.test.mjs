@@ -6,7 +6,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import {
-  SITE_URL, OG_IMAGE, ABOUT_PATH, CONTACT_PATH, PRIVACY_PATH, TERMS_PATH, TRUST_PAGES_PUBLISHED, PRIVACY_POLICY_URL, LEGAL_NOTICE_DETAILS_APPROVED,
+  SITE_URL, OG_IMAGE, ABOUT_PATH, CONTACT_PATH, PRIVACY_PATH, TERMS_PATH, LEGAL_NOTICE_PATH, TRUST_PAGES_PUBLISHED, PRIVACY_POLICY_URL, LEGAL_NOTICE_DETAILS_APPROVED,
 } from '../src/config.js'
 import { PATHS, KNOWN_PATHS } from '../src/routes.js'
 import { SITE_SEO, pageHead, sitemapRoutes } from '../src/seo/siteSeo.js'
@@ -19,33 +19,32 @@ import { LEGAL_ENTITY, CONVRT_ADDRESS } from '../src/content/creatorLegal.js'
 
 const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), '..')
 const read = (p) => fs.readFileSync(path.join(ROOT, p), 'utf8')
-const TRUST = [ABOUT_PATH, CONTACT_PATH, PRIVACY_PATH, TERMS_PATH]
+const TRUST = [ABOUT_PATH, CONTACT_PATH, PRIVACY_PATH, TERMS_PATH, LEGAL_NOTICE_PATH]
 
 test('trust pages: four routes, all known, all routed to the one template, all with SEO entries', () => {
-  assert.deepEqual(TRUST, ['/about', '/contact', '/privacy', '/terms'])
+  assert.deepEqual(TRUST, ['/about', '/contact', '/privacy', '/terms', '/legal-notice'])
   for (const p of TRUST) { assert.ok(KNOWN_PATHS.includes(p), p); assert.ok(SITE_SEO[p], p) }
   const app = read('src/App.jsx')
-  for (const k of ['about', 'contact', 'privacy', 'terms']) assert.match(app, new RegExp(`\\[PATHS\\.${k}\\]: TrustPage`))
+  for (const k of ['about', 'contact', 'privacy', 'terms', 'legalNotice']) assert.match(app, new RegExp(`\\[PATHS\\.${k}\\]: TrustPage`))
   assert.equal(PATHS.about, '/about')
 })
 
-test('trust pages are drafts: noindex and out of the sitemap while TRUST_PAGES_PUBLISHED is false; Privacy and Terms never indexable', () => {
-  assert.equal(TRUST_PAGES_PUBLISHED, false, 'the owner has not approved publication yet: flip this only on approval')
+test('trust pages are PUBLISHED (owner approval, 21 Nov 2026): indexable, self-canonical, in the sitemap, no robots override; the flag and the SEO entries agree', () => {
+  assert.equal(TRUST_PAGES_PUBLISHED, true)
   for (const p of TRUST) {
     const h = pageHead(p)
-    assert.ok(h.noindex === true || /noindex/.test(h.robots || ''), `${p} is noindex`)
-    assert.ok(!sitemapRoutes().includes(p), `${p} is not in the sitemap`)
+    assert.equal(h.noindex, false, `${p} is indexable`)
+    assert.equal(h.robots, undefined, `${p} has no robots override`)
+    assert.equal(h.url, `${SITE_URL}${p}`, `${p} self-referencing canonical`)
+    assert.ok(sitemapRoutes().includes(p), `${p} is in the sitemap`)
+    assert.equal(SITE_SEO[p].indexable, TRUST_PAGES_PUBLISHED)
   }
-  assert.equal(pageHead(PRIVACY_PATH).robots, 'noindex, follow')
-  assert.equal(pageHead(TERMS_PATH).robots, 'noindex, follow')
-  assert.equal(SITE_SEO[ABOUT_PATH].indexable, TRUST_PAGES_PUBLISHED)
-  assert.equal(SITE_SEO[CONTACT_PATH].indexable, TRUST_PAGES_PUBLISHED)
 })
 
 test('privacy link on the forms and footer links follow the same single flag', () => {
   assert.equal(PRIVACY_POLICY_URL, TRUST_PAGES_PUBLISHED ? PRIVACY_PATH : '')
   const footer = read('src/components/Footer.jsx')
-  assert.ok((footer.match(/TRUST_PAGES_PUBLISHED &&/g) || []).length >= 3, 'About, Privacy and Terms links are gated')
+  assert.ok((footer.match(/TRUST_PAGES_PUBLISHED &&/g) || []).length >= 4, 'About, Privacy, Terms and Legal Notice links are gated')
   for (const f of ['src/components/roadmap/RoadmapApplication.jsx', 'src/components/referrals/ReferralForm.jsx', 'src/components/hooks/HooksSignupCard.jsx']) {
     assert.match(read(f), /PRIVACY_POLICY_URL &&/, `${f} already links the policy when the URL is set (form code untouched)`)
   }
@@ -90,9 +89,9 @@ test('About page says only verified things: services link to their pages, human 
   assert.match(about, /English, Spanish, French and Arabic/)
 })
 
-test('Privacy draft describes the data flows that really exist in the code (MailerLite, Resend, Calendly, Vercel, Cloudflare, consent-gated Google analytics)', () => {
+test('Privacy Policy describes the data flows that really exist in the code (MailerLite, Resend, Calendly, Vercel, Cloudflare, consent-gated Google analytics)', () => {
   const p = plainText(TRUST_CONTENT.privacy)
-  for (const s of ['MailerLite', 'Resend', 'Calendly', 'Vercel', 'Cloudflare', 'Google Tag Manager', 'Cookie settings', 'withdraw', 'not sent to us']) assert.ok(p.includes(s), s)
+  for (const s of ['MailerLite', 'Resend', 'Calendly', 'Vercel', 'Cloudflare', 'Google Tag Manager', 'withdraw', 'not sent to us']) assert.ok(p.includes(s), s)
   assert.match(p, /only if you accept analytics cookies/)
   assert.match(p, /do not sell personal information/)
   // matches the real handlers

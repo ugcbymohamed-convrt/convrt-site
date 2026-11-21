@@ -20,7 +20,7 @@
 import {
   SITE_URL, OG_IMAGE, OFFER_PATHS, REFERRALS_PATH,
   ROADMAP_INDEXABLE, FREE_HOOKS_INDEXABLE, RISK_FREE_INDEXABLE, REFERRALS_INDEXABLE,
-  ABOUT_PATH, CONTACT_PATH, PRIVACY_PATH, TERMS_PATH, TRUST_PAGES_PUBLISHED,
+  ABOUT_PATH, CONTACT_PATH, PRIVACY_PATH, TERMS_PATH, LEGAL_NOTICE_PATH, TRUST_PAGES_PUBLISHED,
 } from '../config.js'
 import { jsonLdFor } from './structuredData.js'
 import { PATHS } from '../routes.js'
@@ -160,6 +160,12 @@ export const SITE_SEO = {
   [TERMS_PATH]: {
     title: 'Terms of Service | CONVRT Studio',
     description: 'Terms for using the CONVRT Studio website and its free offers, the legal notice, and how paid services are agreed. For businesses.',
+    ...(TRUST_PAGES_PUBLISHED ? {} : { robots: 'noindex, follow' }),
+    indexable: TRUST_PAGES_PUBLISHED,
+  },
+  [LEGAL_NOTICE_PATH]: {
+    title: 'Legal Notice (Aviso Legal) | CONVRT Studio',
+    description: 'Who operates convrt.studio: the operator, tax ID, postal address and contact details required by Spanish law, plus how the website may be used.',
     ...(TRUST_PAGES_PUBLISHED ? {} : { robots: 'noindex, follow' }),
     indexable: TRUST_PAGES_PUBLISHED,
   },

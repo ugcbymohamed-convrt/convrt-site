@@ -499,7 +499,8 @@ const TRUST_TRAILS = {
   [PATHS.about]: [{ name: 'Home', path: '/' }, { name: 'About', path: PATHS.about }],
   [PATHS.contact]: [{ name: 'Home', path: '/' }, { name: 'Contact', path: PATHS.contact }],
   [PATHS.privacy]: [{ name: 'Home', path: '/' }, { name: 'Privacy Policy', path: PATHS.privacy }],
-  [PATHS.terms]: [{ name: 'Home', path: '/' }, { name: 'Terms and Conditions', path: PATHS.terms }],
+  [PATHS.terms]: [{ name: 'Home', path: '/' }, { name: 'Terms of Service', path: PATHS.terms }],
+  [PATHS.legalNotice]: [{ name: 'Home', path: '/' }, { name: 'Legal Notice', path: PATHS.legalNotice }],
 }
 const TRUST_PAGE_TYPE = { [PATHS.about]: 'AboutPage', [PATHS.contact]: 'ContactPage' }
 export function trustGraph(path, { title, description }) {
@@ -530,6 +531,6 @@ export function jsonLdFor(path, seo = {}) {
   if (path === PATHS.socialMediaVideoProduction) return organicSocialGraph(seo)
   if (path === PATHS.saasVideoProduction) return saasGraph(seo)
   if (path === PATHS.showcase) return ourWorkGraph(seo)
-  if ([PATHS.about, PATHS.contact, PATHS.privacy, PATHS.terms].includes(path)) return trustGraph(path, seo)
+  if ([PATHS.about, PATHS.contact, PATHS.privacy, PATHS.terms, PATHS.legalNotice].includes(path)) return trustGraph(path, seo)
   return undefined
 }

@@ -2,6 +2,7 @@
 // Covers the CONVRT Insights blog foundation: frontmatter + Markdown parsing, article
 // validation, draft/published rules, index state (coming soon vs live, category filter),
 // SEO/structured-data rules, and the indexing configuration. Pure functions — no browser.
+import { TRUST_PAGES_PUBLISHED } from '../src/config.js'
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import fs from 'node:fs'
@@ -269,8 +270,9 @@ test('indexing: no other route is noindexed by the blog rule', () => {
   const sources = (vercel.headers ?? []).map((h) => h.source)
   // The blog rule, plus the two header rules for the private creator pages (tests/creator-seo.test.mjs), plus the two long-cache rules for hashed
   // build assets and fonts (SEO/GEO Batch 1). Nothing else, and only the first three may carry a robots directive.
-  // The four draft trust pages (/about, /contact, /privacy, /terms) also carry a noindex header while they are drafts: see tests/trust-pages.test.mjs.
-  assert.deepEqual(sources, ['/blog', '/creator-onboarding/:path*', '/creator-admin/:path*', '/about', '/contact', '/privacy', '/terms', '/assets/(.*)', '/fonts/(.*)'])
+  // The five trust pages (/about, /contact, /privacy, /terms, /legal-notice) carry a noindex header only while they are drafts: published, none remains (tests/trust-pages.test.mjs).
+  const trust = TRUST_PAGES_PUBLISHED ? [] : ['/about', '/contact', '/privacy', '/terms', '/legal-notice']
+  assert.deepEqual(sources, ['/blog', '/creator-onboarding/:path*', '/creator-admin/:path*', ...trust, '/assets/(.*)', '/fonts/(.*)'])
   for (const h of vercel.headers.filter((x) => x.source.startsWith('/assets') || x.source.startsWith('/fonts'))) assert.deepEqual(h.headers.map((x) => x.key), ['Cache-Control'], `${h.source} sets caching only`)
 })
 
