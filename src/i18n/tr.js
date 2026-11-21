@@ -15,11 +15,12 @@ import { DEFAULT_LOCALE } from './locales.js'
 import { DICTIONARIES } from './dictionaries.js'
 import { localizedPath } from './paths.js'
 import { hasTranslation } from './registry.js'
+import { hasPriceTokens, resolvePriceTokens } from './pricing.js'
 
 export function translate(locale, text) {
   if (locale === DEFAULT_LOCALE) return text
   const hit = DICTIONARIES[locale]?.[text]
-  if (hit !== undefined) return hit
+  if (hit !== undefined) return hasPriceTokens(hit) ? resolvePriceTokens(locale, hit) : hit
   // Record the miss: the build (vite-plugin-static-routes.js) refuses to write a translated page that rendered any untranslated string.
   ;(globalThis.__i18nMisses ||= new Set()).add(`${locale}: ${text}`)
   if (typeof window !== 'undefined' && window.location?.hostname === 'localhost') console.warn(`[i18n] missing ${locale} translation: ${text}`)

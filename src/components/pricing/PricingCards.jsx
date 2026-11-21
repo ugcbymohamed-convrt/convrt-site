@@ -2,7 +2,7 @@ import { OFFER_PATHS } from '../../config.js'
 import { currentLocale } from '../../i18n/locale.js'
 import { resolveCta } from '../../i18n/cta.js'
 import { money } from '../../i18n/money.js'
-import { formatWholeUsdEs } from '../../i18n/es/money.js'
+import { perVariationText } from '../../i18n/pricing.js'
 import {
   SPRINT, SPRINT_PLUS, ORGANIC, ORGANIC_COMMITMENT, CUSTOM_PACKAGES, BILLING_OPTIONS, formatMoney, pricePerVariation, creatorsLine,
   END_TO_END,
@@ -165,7 +165,7 @@ const PerVariation = ({ tone, pkg, billing }) => (
     {BILLING_OPTIONS.map((o) => (
       <span key={o.id} hidden={billing !== o.id} data-billing={o.id}>
         <span className={`inline-flex items-center whitespace-nowrap rounded-full px-2 py-[7px] text-[11.5px] font-bold leading-none ${TONES[tone].chip}`}>
-          {currentLocale() === 'es' ? formatWholeUsdEs(pricePerVariation(pkg, o.id).amount) : pricePerVariation(pkg, o.id).text} {tr('per variation')}
+          {currentLocale() === 'en' ? pricePerVariation(pkg, o.id).text : perVariationText(currentLocale(), pkg[o.id])} {tr('per variation')}
         </span>
       </span>
     ))}

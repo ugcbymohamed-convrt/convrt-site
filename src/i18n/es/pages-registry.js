@@ -8,7 +8,7 @@ import { SAAS_FAQ } from '../../seo/saasFaq.js'
 import { PRICING_FAQ } from '../../seo/pricingFaq.js'
 import { localizeFaq } from '../content.js'
 import {
-  monthlyOfferEs, oneOffOfferEs, coreServiceNodesEs, packageNodesEs, pageServiceEs,
+  monthlyOfferEs, oneOffOfferEs, offersOf, coreServiceNodesEs, packageNodesEs, pageServiceEs,
   SPRINT, SPRINT_PLUS, ORGANIC, ORGANIC_COMMITMENT, CUSTOM_PACKAGES, ES_CORE_SERVICES, tEs,
 } from './jsonld-parts.js'
 import { ORG_ID } from '../../seo/structuredData.js'
@@ -34,10 +34,10 @@ export const ES_PAGE_GRAPH_EXTRAS = {
         name: 'Producción de vídeos UGC',
         serviceType: 'Producción de anuncios UGC en vídeo',
         description: `${ES_CORE_SERVICES.ugc.description} Los vídeos UGC los crean personas reales.`,
-        offers: [
+        ...offersOf([
           monthlyOfferEs(SPRINT.name, SPRINT.monthly, packages), oneOffOfferEs(SPRINT.name, SPRINT.oneOff, packages),
           monthlyOfferEs(SPRINT_PLUS.name, SPRINT_PLUS.monthly, packages), oneOffOfferEs(SPRINT_PLUS.name, SPRINT_PLUS.oneOff, packages),
-        ],
+        ]),
       })],
     }
   },
@@ -66,7 +66,7 @@ export const ES_PAGE_GRAPH_EXTRAS = {
         name: 'Producción y gestión de vídeo orgánico para redes sociales',
         serviceType: ES_CORE_SERVICES.organic.name,
         description: `${ES_CORE_SERVICES.organic.description} Los vídeos están liderados por personas y pueden producirse en varios idiomas.`,
-        offers: [ORGANIC.light, ORGANIC.growth].map((p) => monthlyOfferEs(p.name, p.monthly, packages, `${tEs(ORGANIC_COMMITMENT.summary)} ${tEs(ORGANIC_COMMITMENT.afterInitial)}`)),
+        ...offersOf([ORGANIC.light, ORGANIC.growth].map((p) => monthlyOfferEs(p.name, p.monthly, packages, `${tEs(ORGANIC_COMMITMENT.summary)} ${tEs(ORGANIC_COMMITMENT.afterInitial)}`))),
       })],
     }
   },

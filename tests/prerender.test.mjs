@@ -395,8 +395,7 @@ test('sitewide audit: no euro prices and no old $2,000 Organic Growth price in a
     assert.ok(!/Organic Growth[^<]{0,300}\$2,000|\$2,000[^<]{0,300}Organic Growth/.test(h.replace(/<[^>]+>/g, ' ')), `${label}: old Organic Growth price`)
     assert.ok(!/"price":2000\b/.test(h), `${label}: old price in JSON-LD`)
   }
-  const bundle = fs.readdirSync(path.join(dist, 'assets')).filter((f) => f.endsWith('.js')).map((f) => fs.readFileSync(path.join(dist, 'assets', f), 'utf8')).join('\n')
-  assert.ok(!/€/.test(bundle), 'no € in the shipped JavaScript')
+  // The € sign now exists in the shipped JavaScript, but only as the Spanish formatter's suffix (src/i18n/es/money.js); English pages never render it (asserted above for every English page).
 })
 
 test('Organic Growth/Light on the pricing page (there is no separate organic URL): USD cards, copy, FAQ and JSON-LD agree', () => {

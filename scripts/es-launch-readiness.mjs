@@ -9,11 +9,18 @@ import { blockedPages } from '../src/i18n/release.js'
 import { displayableFor } from '../src/content/portfolio.js'
 import { ES_OG_IMAGE_READY } from '../src/i18n/es/seo.js'
 import { TRANSLATED_PATHS } from '../src/i18n/registry.js'
+import { isPricingApproved, pricingConfig, PRICE_KEYS } from '../src/i18n/pricing.js'
+import { ES_PRICED_PAGES } from '../src/i18n/es/pricing.js'
 
 const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), '..')
 const blockers = []
 const notes = [] // English-only by design, not launch blockers
-for (const b of blockedPages('es')) blockers.push(`Page ${b.path} is launch-blocked: ${b.reason} (${displayableFor('es').length} approved Spanish-language videos; add entries with languages: ['es'], onlyIn: ['es'] to src/content/portfolio.js, see docs/multilingual-spanish-videos.md)`)
+if (!isPricingApproved('es')) {
+  const cfg = pricingConfig('es')
+  const missing = PRICE_KEYS.filter((k) => !(cfg.amounts[k] > 0)).length
+  blockers.push(`Spanish EUR prices not approved (${missing} of ${PRICE_KEYS.length} amounts blank): ${ES_PRICED_PAGES.join(', ')} are launch-blocked; approval table in docs/multilingual-spanish-eur-pricing.md`)
+}
+for (const b of blockedPages('es').filter((x) => x.path === '/creator-showcase')) blockers.push(`Page ${b.path} is launch-blocked: ${b.reason} (${displayableFor('es').length} approved Spanish-language videos; add entries with languages: ['es'], onlyIn: ['es'] to src/content/portfolio.js, see docs/multilingual-spanish-videos.md)`)
 const NOTES = { riskFree: 'its Spanish CTAs are omitted', hooks: 'Spanish omits the offer; the not-ready outcome sends the visitor to the contact page', referrals: 'Spanish does not link to it' }
 for (const [flow, ok] of Object.entries(LOCALIZED_FLOWS.es)) if (!ok) notes.push(`Conversion flow "${flow}" is English-only (${NOTES[flow] ?? 'blocked'}; src/i18n/cta.js)`)
 if (!ES_OG_IMAGE_READY) blockers.push('Spanish OG image missing: Spanish pages share the English-text image (public/og/convrt-og-es.png)')

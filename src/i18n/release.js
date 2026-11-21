@@ -6,11 +6,19 @@
 
 import { hasTranslation } from './registry.js'
 import { displayableFor } from '../content/portfolio.js'
+import { isPricingApproved } from './pricing.js'
+import { ES_PRICED_PAGES } from './es/pricing.js'
 
+/* Spanish pages that carry a price are blocked until the owner has approved every EUR amount (src/i18n/es/pricing.js); a gate lifts by itself when its condition is met. */
 const BLOCKS = {
-  es: { '/creator-showcase': () => displayableFor('es').length === 0 },
+  es: {
+    '/creator-showcase': () => displayableFor('es').length === 0,
+    ...Object.fromEntries(ES_PRICED_PAGES.map((p) => [p, () => !isPricingApproved('es')])),
+  },
 }
+const REASONS = { '/creator-showcase': 'no approved Spanish-language videos yet' }
+const PRICING_REASON = 'Spanish EUR prices not approved yet'
 
-export const releaseBlocker = (locale, basePath) => (BLOCKS[locale]?.[basePath]?.() ? { path: basePath, reason: 'no approved Spanish-language videos yet' } : null)
+export const releaseBlocker = (locale, basePath) => (BLOCKS[locale]?.[basePath]?.() ? { path: basePath, reason: REASONS[basePath] ?? PRICING_REASON } : null)
 export const isReleased = (locale, basePath) => hasTranslation(locale, basePath) && !releaseBlocker(locale, basePath)
 export const blockedPages = (locale) => Object.keys(BLOCKS[locale] ?? {}).map((p) => releaseBlocker(locale, p)).filter(Boolean)

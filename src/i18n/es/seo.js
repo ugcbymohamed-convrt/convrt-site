@@ -11,7 +11,7 @@
    Keyword Planner volumes are rounded, directional estimates, never precise demand. */
 
 import { SPRINT, USAGE_RIGHTS } from '../../seo/businessKnowledge.js'
-import { formatMoneyEs } from './money.js'
+import { priceOf, formatPrice, isPricingApproved } from '../pricing.js'
 
 /* Spanish share image. The default OG image (public/og/convrt-og.png) has ENGLISH text burned into it, so Spanish pages reuse it only until a Spanish version exists. Add
    public/og/convrt-og-es.png (1200x630 PNG, same layout; suggested text in docs/multilingual-spanish-release.md) and set this to true: every Spanish page then switches by itself.
@@ -31,7 +31,10 @@ export const ES_SEO = {
   },
   '/ugc-video-agency': {
     title: 'Vídeos UGC para anuncios | Producción con creadores | CONVRT',
-    description: `Producción de vídeos UGC para anuncios en redes sociales, de principio a fin. Paquetes desde ${formatMoneyEs(SPRINT.monthly)}/mes, con ${USAGE_RIGHTS.includedMonths} meses de derechos de uso mundiales incluidos.`,
+    // The "desde X/mes" price appears only once the owner has approved the EUR amount; until then the description makes no price claim.
+    description: isPricingApproved('es')
+      ? `Producción de vídeos UGC para anuncios en redes sociales, de principio a fin. Paquetes desde ${formatPrice('es', priceOf('es', SPRINT.monthly))}/mes, con ${USAGE_RIGHTS.includedMonths} meses de derechos de uso mundiales incluidos.`
+      : `Producción de vídeos UGC para anuncios en redes sociales, de principio a fin. Paquetes mensuales y puntuales, con ${USAGE_RIGHTS.includedMonths} meses de derechos de uso mundiales incluidos.`,
     ogTitle: 'CONVRT: anuncios UGC pensados para redes sociales de pago',
     ogDescription: 'Anuncios UGC con creadores reales, producidos de principio a fin, con precios y derechos de uso transparentes.',
   },
@@ -59,7 +62,7 @@ export const ES_SEO = {
   '/pricing': {
     title: 'Tarifas UGC y precios de producción de vídeo | CONVRT',
     description:
-      'Paquetes de producción de UGC, anuncios en vídeo y contenido para redes sociales de CONVRT: precios claros en USD, entregables, derechos de uso y política de revisiones.',
+      'Paquetes de producción de UGC, anuncios en vídeo y contenido para redes sociales de CONVRT: precios claros en euros, entregables, derechos de uso y política de revisiones.',
   },
   '/creator-showcase': {
     title: 'Ejemplos de vídeos UGC de creadores | CONVRT',

@@ -28,6 +28,9 @@ import { SITE_URL, OFFER_PATHS, BOOKING_URL } from '../src/config.js'
 import { SPRINT, SPRINT_PLUS, ORGANIC, USAGE_RIGHTS } from '../src/seo/businessKnowledge.js'
 import { buildSitemap, localizedSitemapPaths } from '../src/lib/seo/sitemap.js'
 import { isReleased, releaseBlocker, blockedPages } from '../src/i18n/release.js'
+import { isPricingApproved, pricingConfig, pricingProblems } from '../src/i18n/pricing.js'
+import { ES_PRICED_PAGES } from '../src/i18n/es/pricing.js'
+import { money } from '../src/i18n/money.js'
 import { displayableFor, titleOf, portfolioProblems, forPageLanguage, selectOurWork, selectGallery, selectSpokespersonGallery, selectSaasGallery, selectHero, ENGLISH_LIBRARY } from '../src/content/portfolio.js'
 
 // Pages that are built AND released (the Spanish Showcase is launch-blocked until Spanish-language videos exist).
@@ -99,15 +102,19 @@ test('hreflang: one reciprocal set per translated page (en, es, x-default), only
 })
 
 test('language selector: only live languages are offered, each link points at an equivalent page that exists, otherwise the language home', () => {
+  const onAbout = languageOptions('en', '/about')
+  assert.deepEqual(onAbout.map((o) => [o.code, o.href, o.exact]), [['en', '/about', true], ['es', '/es/about', true]])
+  // while the Spanish EUR prices are not approved the Spanish pricing page is launch-blocked, so the selector falls back to the Spanish home
   const onPricing = languageOptions('en', '/pricing')
-  assert.deepEqual(onPricing.map((o) => [o.code, o.href, o.exact]), [['en', '/pricing', true], ['es', '/es/pricing', true]])
+  assert.deepEqual(onPricing.map((o) => [o.code, o.href, o.exact]), isPricingApproved('es') ? [['en', '/pricing', true], ['es', '/es/pricing', true]] : [['en', '/pricing', true], ['es', '/es/', false]])
   const onBlog = languageOptions('en', '/blog')
   assert.deepEqual(onBlog.map((o) => [o.code, o.href, o.exact]), [['en', '/blog', true], ['es', '/es/', false]], 'an English-only page falls back to the Spanish home')
   assert.equal(switchTarget('es', '/case-studies/graspo'), '/es/')
   assert.equal(switchTarget('en', '/pricing'), '/pricing')
+  assert.equal(switchTarget('en', '/about'), '/about')
   assert.equal(languageOptions('es', '/about').find((o) => o.current).code, 'es')
   assert.deepEqual(languageOptions('en', '/').map((o) => o.label), ['English', 'Español'], 'native names; French and Arabic are not offered until they are live')
-  for (const o of languageOptions('en', '/pricing')) assert.ok(o.code === 'en' || hasTranslation(o.code, '/pricing'))
+  for (const o of languageOptions('en', '/about')) assert.ok(o.code === 'en' || hasTranslation(o.code, '/about'))
   // never browser detection or redirects: the component is plain links and reads nothing from navigator/cookies/geolocation
   const sel = read('src/components/LanguageSelector.jsx') + read('src/i18n/switch.js') + read('src/i18n/locale.js')
   assert.ok(!/navigator\.language|localStorage|sessionStorage|document\.cookie|geolocation|location\.(replace|assign|href\s*=)/.test(sel.replace(/\/\*[\s\S]*?\*\//g, '')))
@@ -145,19 +152,23 @@ test('dictionary: figures in an English sentence survive in its Spanish translat
   for (const [k, v] of Object.entries(DICTIONARIES.es)) {
     if (!/\d/.test(k) || /^\[\[|https?:|mohamed@/.test(k)) continue
     if (OMITTED_FIGURE.test(k)) continue // the free-hooks offer is English-only, so Spanish deliberately leaves the "10 ad hooks" mention out
-    assert.equal(digits(v), digits(k), `figures differ between\n  ${k}\n  ${v}`)
+    // prices are not typed in Spanish: the English key's $ amounts become {{price:…}} tokens resolved from the Spanish pricing configuration
+    const priced = /\{\{[^}]+\}\}/.test(v)
+    assert.equal(priced ? digits(v.replace(/\{\{[^}]+\}\}/g, '')) : digits(v), priced ? digits(k.replace(/\$[\d,.]+/g, '')) : digits(k), `figures differ between\n  ${k}\n  ${v}`)
     checked++
   }
   assert.ok(checked > 40, `checked ${checked} figure-bearing strings`)
 })
 
-test('Spanish money: USD only, amounts exactly as in the business data, Spanish notation', () => {
-  assert.equal(formatMoneyEs(SPRINT.monthly), '3.000 USD')
-  assert.equal(formatMoneyEs(SPRINT.oneOff), '3.500 USD')
-  assert.equal(formatMoneyEs(SPRINT_PLUS.monthly), '5.000 USD')
-  assert.equal(formatMoneyEs(ORGANIC.light.monthly), '1.500 USD')
-  assert.equal(formatMoneyEs(SPRINT.usageExtensions[0].price), '937,50 USD')
-  assert.throws(() => formatMoneyEs({ amount: 1, currency: 'EUR' }))
+test('Spanish money: EUR notation "3.000 €" (non-breaking space), USD kept only for a client\'s real reported figure; no CONVRT USD price can reach a Spanish page', () => {
+  const NB = '\u00a0'
+  assert.equal(formatMoneyEs({ amount: 3000, currency: 'EUR' }), `3.000${NB}€`)
+  assert.equal(formatMoneyEs({ amount: 937.5, currency: 'EUR' }), `937,50${NB}€`)
+  assert.equal(formatMoneyEs({ amount: 1234567, currency: 'EUR' }), `1.234.567${NB}€`)
+  assert.equal(formatMoneyEs({ amount: 3421.25, currency: 'USD' }), `3.421,25${NB}USD`)
+  assert.throws(() => formatMoneyEs({ amount: 1, currency: 'GBP' }))
+  assert.throws(() => money({ amount: 3000, currency: 'USD' }, 'es'), /no key/, 'a USD price object that is not in PRICE_ITEMS is refused for Spanish, never shown in dollars')
+  assert.equal(money(SPRINT.monthly, 'en'), '$3,000', 'English is untouched')
   assert.equal(localizeStat('es', '1,200+'), '1.200+'); assert.equal(localizeStat('es', '10.7M'), '10,7 M'); assert.equal(localizeStat('en', '10.7M'), '10.7M')
 })
 
@@ -292,18 +303,39 @@ test('Spanish pages: client quotes stay verbatim in their original language and 
   assert.match(page('/es/ugc-video-agency'), /<blockquote lang="en"/)
 })
 
-test('USD stays USD: Spanish pages show prices from the business data in US dollars, never euros', () => {
-  const pr = textOf(page('/es/pricing')).join('\n')
-  assert.ok(pr.includes(formatMoneyEs(SPRINT.monthly)) && pr.includes(formatMoneyEs(SPRINT_PLUS.monthly)) && pr.includes(formatMoneyEs(ORGANIC.growth.monthly)))
-  for (const e of SPRINT.usageExtensions) assert.ok(pr.includes(formatMoneyEs(e.price)), String(e.price.amount))
+test('Spanish prices are EUR and owner-approved: while pending every price is a visible placeholder, never a USD amount, and the pages that carry a price are launch-blocked', () => {
+  const cfg = pricingConfig('es')
+  assert.deepEqual(pricingProblems(cfg), [], 'the Spanish pricing configuration is valid')
+  assert.equal(cfg.currency, 'EUR')
+  const PH = cfg.placeholder
+  const priced = []
   for (const p of ES_PAGES) {
-    const t = page(p)
-    assert.ok(!/€|\bEUR\b|\bEuros?\b/.test(t.replace(/<script[\s\S]*?<\/script>/g, '')), `${p}: no euro`)
-    assert.ok(!/\$\s?\d/.test(textOf(t).join('\n')), `${p}: prices use the Spanish "N USD" notation, not "$N"`)
+    const h = page(p), t = textOf(h).join('\n')
+    assert.ok(!/\$\s?\d/.test(t), `${p}: no "$N" amount`)
+    // the only dollars on a Spanish page are a client's real reported result (UGC page) and the Roadmap's ad-spend answer brackets (qualification thresholds, unchanged)
+    const usd = t.match(/[\d.,]+\u00a0?\s?USD|dólar/g) ?? []
+    assert.ok(usd.every((u) => (p === '/es/ugc-video-agency' && /3\.421,25/.test(u)) || (p === '/es/creative-growth-roadmap' && /^(5|20)\.000/.test(u))), `${p}: USD left on a Spanish page: ${usd}`)
+    assert.ok(!/"priceCurrency":"USD"/.test(h), `${p}: no USD price in JSON-LD`)
+    if (!isPricingApproved('es')) {
+      if (t.includes(PH)) priced.push(baseOf(p))
+      assert.ok(!/"price":\d/.test(h), `${p}: no price Offer while the EUR amounts are pending`)
+    }
   }
-  assert.match(page('/es/ugc-video-agency'), /3\.000 USD\/mes/)
-  assert.ok(pr.includes(`${USAGE_RIGHTS.includedMonths} meses de derechos de uso mundiales`))
+  if (!isPricingApproved('es')) {
+    assert.deepEqual(priced.sort(), [...ES_PRICED_PAGES].sort(), 'exactly the pages listed in ES_PRICED_PAGES render a price placeholder (a new priced page must be added to the list)')
+    for (const bp of ES_PRICED_PAGES) {
+      assert.ok(releaseBlocker('es', bp), `${bp} is launch-blocked`)
+      assert.match(headOf(page(localizedPath('es', bp))), /name="robots" content="noindex, follow"/, bp)
+      assert.ok(!fs.readFileSync(path.join(dist, 'sitemap.xml'), 'utf8').includes(localizedPath('es', bp)), `${bp} is not in the sitemap`)
+      assert.ok(!/hreflang/.test(page(bp)), `English ${bp} carries no hreflang to a blocked Spanish page`)
+    }
+    assert.ok(!/desde/.test(ES_SEO['/ugc-video-agency'].description), 'the UGC description makes no price claim until the EUR amount is approved')
+  }
+  // English is untouched: USD notation from the business data
+  assert.match(textOf(page('/pricing')).join('\n'), /\$3,000/)
+  assert.ok(pr_has_no_placeholder(page('/pricing'), PH))
 })
+const pr_has_no_placeholder = (h, ph) => !textOf(h).join('\n').includes(ph)
 
 test('commercial facts match the English source: same figures on /es/pricing as on /pricing', () => {
   const nums = (h) => (textOf(h).join(' ').match(/\d[\d.,]*/g) || []).map((n) => n.replace(/[.,]/g, ''))
@@ -325,7 +357,7 @@ test('JSON-LD: one stable Organization @id across languages; Spanish WebPage/FAQ
     assert.equal(web.url, `${SITE_URL}${p === '/es' ? '/es/' : p}`)
     assert.deepEqual(web.isPartOf, { '@id': `${SITE_URL}/#website` }, p)
     assert.ok(!g.some((n) => n['@type'] === 'WebSite'), `${p}: the WebSite is referenced by @id, not redefined`)
-    assert.ok(!JSON.stringify(g).match(/aggregateRating|review"|"rating|address|geo|areaServed|€/), `${p}: nothing invented`)
+    assert.ok(!JSON.stringify(g).match(/aggregateRating|review"|"rating|address|geo|areaServed/), `${p}: nothing invented`)
     const faq = g.find((n) => n['@type'] === 'FAQPage')
     if (faq) {
       const visible = textOf(page(p)).join('\n')
@@ -400,8 +432,8 @@ test('hydration data: the Spanish pages prerender the same locale the browser de
 
 test('Spanish Showcase release gate: its own creators and videos, never the English library; launch-blocked (noindex, no sitemap, no hreflang) until one exists', () => {
   assert.equal(displayableFor('es').length, 0, 'no approved Spanish-language video exists today')
-  assert.deepEqual(blockedPages('es'), [{ path: '/creator-showcase', reason: 'no approved Spanish-language videos yet' }])
-  assert.ok(releaseBlocker('es', '/creator-showcase') && !releaseBlocker('es', '/pricing'))
+  assert.deepEqual(blockedPages('es').filter((b) => b.path === '/creator-showcase'), [{ path: '/creator-showcase', reason: 'no approved Spanish-language videos yet' }])
+  assert.ok(releaseBlocker('es', '/creator-showcase') && !releaseBlocker('es', '/about'))
   const h = page('/es/creator-showcase')
   assert.match(headOf(h), /name="robots" content="noindex, follow"/)
   assert.ok(!/UGC ad example|Spokesperson video example|example \d/i.test(textOf(h).join('\n')), 'no English-library video appears on the Spanish Showcase')
