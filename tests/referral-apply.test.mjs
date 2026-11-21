@@ -191,14 +191,27 @@ test('a repeat registration (200) is an idempotent success', async () => {
   assert.equal(r.status, 200)
 })
 
-test('unsubscribed / bounced / junk contacts are not reported as success (and the owner is told they were not saved)', async () => {
+test('unsubscribed / bounced / junk contacts: without a working owner alert the form still refuses (never a silent loss)', async () => {
+  for (const status of ['unsubscribed', 'bounced', 'junk']) {
+    const f = fakeFetch({ mlStatus: 200, mlPayload: { data: { status } } })
+    const r = await run(valid(), f)
+    assert.equal(r.status, 409)
+    assert.equal(r.body.error, 'cannot_subscribe')
+  }
+})
+
+test('unsubscribed / bounced / junk contacts can still apply when the owner email is delivered: it carries the application', async () => {
   for (const status of ['unsubscribed', 'bounced', 'junk']) {
     const f = fakeFetch({ mlStatus: 200, mlPayload: { data: { status } } })
     const r = await run(valid(), f, { ...ENV, RESEND_API_KEY: 'k' })
-    assert.equal(r.status, 409)
-    assert.equal(r.body.error, 'cannot_subscribe')
-    assert.match(f.resend()[0].body.subject, /^\[NOT SAVED\]/)
+    assert.equal(r.status, 200, status)
+    assert.deepEqual(r.body, { ok: true })
+    assert.match(f.resend()[0].body.subject, /^\[NOT IN MAILERLITE\]/)
+    assert.ok(f.resend()[0].body.text.includes('previously unsubscribed'))
   }
+  // …but if the owner email itself fails, the application is not claimed as received
+  const f = fakeFetch({ mlStatus: 200, mlPayload: { data: { status: 'unsubscribed' } }, resendStatus: 500 })
+  assert.equal((await run(valid(), f, { ...ENV, RESEND_API_KEY: 'k' })).status, 409)
 })
 
 test('active, unconfirmed and missing subscriber states are all saved applications', async () => {
@@ -651,7 +664,7 @@ test('analytics: V2 event names are used, and no personal data is passed to them
   ])
   assert.ok(!/trackEvent\([^)]*(email|fullName|values\.)/.test(allReferralSource))
   // "submit" is fired when the request starts; "success" only after the server confirmed the save
-  assert.match(SRC.form, /await submitReferral\(values, honeypot\)\s*\n\s*setStatus\('success'\)\s*\n\s*trackEvent\('referral_application_success'\)/)
+  assert.match(SRC.form, /await submitReferral\(values, honeypot, marketingConsent\)\s*\n\s*setStatus\('success'\)\s*\n\s*trackEvent\('referral_application_success'\)/)
 })
 
 test('terms cover every required condition and invent no attribution window or payout deadline', () => {

@@ -21,6 +21,7 @@
 ───────────────────────────────────────────── */
 
 import { sendOwnerAlert } from './notify.js'
+import { MARKETING_GROUP_ENV, consentAlertRow, readConsent, saveSubscriber, unsavedConsent } from './marketing.js'
 
 export const MAILERLITE_ENDPOINT = 'https://connect.mailerlite.com/api/subscribers'
 
@@ -32,11 +33,10 @@ export const INDUSTRY_GROUP_ENV = {
 
 const INDUSTRY_LABEL = { saas: 'SaaS / Software', ecommerce: 'E-commerce / DTC' }
 
-/* Optional: a third group that only consenting contacts are added to, so
-   marketing/nurture emails can be limited to people who ticked the box. */
-export const MARKETING_GROUP_ENV = 'MAILERLITE_GROUP_MARKETING_ID'
+/* The promotional audience: a separate group that only contacts who ticked the optional box are
+   added to (see ./marketing.js). The two groups above are for DELIVERY of the hooks only. */
+export { MARKETING_GROUP_ENV }
 
-const UPSTREAM_TIMEOUT_MS = 8000
 const MAX_EMAIL_LENGTH = 254
 // Pragmatic check — MailerLite performs the authoritative validation (422).
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
@@ -63,19 +63,23 @@ export function validateBody(body) {
     industry,
     email,
     marketingConsent: body.marketingConsent === true,
+    marketingConsentVersion: typeof body.marketingConsentVersion === 'string' ? body.marketingConsentVersion : undefined,
     // Honeypot: real visitors never see or fill this field.
     isBot: typeof body.company === 'string' && body.company.trim() !== '',
   }
 }
 
-export async function processSignup({ body, env = process.env, fetchImpl = globalThis.fetch }) {
+export async function processSignup({ body, env = process.env, fetchImpl = globalThis.fetch, now = () => new Date() }) {
   const parsed = validateBody(body)
   if (parsed.error) return json(parsed.error === 'invalid_email' ? 422 : 400, { ok: false, error: parsed.error })
 
   // Bots get a convincing success and nothing is sent anywhere.
   if (parsed.isBot) return json(200, { ok: true, confirmation: false })
 
-  const result = await saveSignup(parsed, { env, fetchImpl })
+  // Marketing consent is independent of delivery: declining (or an unknown wording) changes nothing below
+  // except that the contact is not put on the marketing list.
+  const consent = readConsent(parsed, `free-hooks-${parsed.industry}`, { now, legacyVersion: 'v1' })
+  const result = await saveSignup(parsed, consent, { env, fetchImpl })
   // Every genuine signup alerts the owner, even when it could not be saved,
   // so no email address that was typed into the form is ever lost.
   await sendOwnerAlert(
@@ -86,7 +90,7 @@ export async function processSignup({ body, env = process.env, fetchImpl = globa
         ['Email', parsed.email],
         ['Industry', INDUSTRY_LABEL[parsed.industry]],
         ['New or repeat', result.created ? 'New subscriber' : 'Already on the list, or not saved'],
-        ['OK to send tips and offers', parsed.marketingConsent ? 'Yes' : 'No'],
+        consentAlertRow(result.consent),
         result.status === 200
           ? ['Saved to MailerLite', result.body.confirmation ? 'Yes (waiting on their confirmation email)' : 'Yes']
           : ['Saved to MailerLite', `NO (${result.body?.error || 'error'}): follow up with them by email`],
@@ -99,10 +103,9 @@ export async function processSignup({ body, env = process.env, fetchImpl = globa
   return result
 }
 
-async function saveSignup(parsed, { env, fetchImpl }) {
+async function saveSignup(parsed, consent, { env, fetchImpl }) {
   const token = env.MAILERLITE_API_TOKEN
   const groupId = env[INDUSTRY_GROUP_ENV[parsed.industry]]
-  const marketingGroupId = env[MARKETING_GROUP_ENV]
 
   if (!token || !GROUP_ID_RE.test(String(groupId || '').trim())) {
     logUpstream('not_configured', {
@@ -110,42 +113,26 @@ async function saveSignup(parsed, { env, fetchImpl }) {
       hasToken: Boolean(token),
       hasGroupId: GROUP_ID_RE.test(String(groupId || '').trim()),
     })
-    return json(503, { ok: false, error: 'unavailable' })
+    return { ...json(503, { ok: false, error: 'unavailable' }), consent: unsavedConsent(consent) }
   }
 
-  const groups = [String(groupId).trim()]
-  if (parsed.marketingConsent && GROUP_ID_RE.test(String(marketingGroupId || '').trim())) {
-    groups.push(String(marketingGroupId).trim())
-  }
+  // Delivery group only. The marketing group and consent record are added by saveSubscriber, and only for an opt-in.
+  const saved = await saveSubscriber({
+    endpoint: MAILERLITE_ENDPOINT,
+    token,
+    base: { email: parsed.email, groups: [String(groupId).trim()] },
+    consent,
+    env,
+    fetchImpl,
+    log: logUpstream,
+  })
+  const withConsent = (r) => ({ ...r, consent: saved.consent })
 
-  const controller = new AbortController()
-  const timer = setTimeout(() => controller.abort(), UPSTREAM_TIMEOUT_MS)
-
-  let res
-  try {
-    res = await fetchImpl(MAILERLITE_ENDPOINT, {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-      },
-      body: JSON.stringify({ email: parsed.email, groups }),
-      signal: controller.signal,
-    })
-  } catch (err) {
-    logUpstream('network_error', { name: err?.name })
-    return json(502, { ok: false, error: 'unavailable' })
-  } finally {
-    clearTimeout(timer)
+  if (saved.networkError) {
+    logUpstream('network_error', { name: saved.networkError })
+    return withConsent(json(502, { ok: false, error: 'unavailable' }))
   }
-
-  let payload = null
-  try {
-    payload = await res.json()
-  } catch {
-    /* non-JSON body */
-  }
+  const { res, data: payload } = saved
 
   // 201 created · 200 already existed (duplicate) — both are idempotent successes.
   if (res.status === 200 || res.status === 201) {
@@ -153,29 +140,30 @@ async function saveSignup(parsed, { env, fetchImpl }) {
     if (status === 'unsubscribed' || status === 'bounced' || status === 'junk') {
       // MailerLite refuses to reactivate these via API, so the automation will not run.
       logUpstream('cannot_resubscribe', { status })
-      return json(409, { ok: false, error: 'cannot_subscribe' })
+      saved.consent.blocked = status
+      return withConsent(json(409, { ok: false, error: 'cannot_subscribe' }))
     }
-    return { ...json(200, { ok: true, confirmation: status === 'unconfirmed' }), created: res.status === 201 }
+    return withConsent({ ...json(200, { ok: true, confirmation: status === 'unconfirmed' }), created: res.status === 201 })
   }
 
   if (res.status === 422) {
-    if (payload?.errors?.email) return json(422, { ok: false, error: 'invalid_email' })
+    if (payload?.errors?.email) return withConsent(json(422, { ok: false, error: 'invalid_email' }))
     logUpstream('validation_error', { message: payload?.message, fields: Object.keys(payload?.errors || {}) })
-    return json(502, { ok: false, error: 'unavailable' })
+    return withConsent(json(502, { ok: false, error: 'unavailable' }))
   }
 
   if (res.status === 429) {
     const retryAfter = res.headers?.get?.('retry-after')
-    return json(429, { ok: false, error: 'rate_limited' }, retryAfter ? { 'Retry-After': retryAfter } : undefined)
+    return withConsent(json(429, { ok: false, error: 'rate_limited' }, retryAfter ? { 'Retry-After': retryAfter } : undefined))
   }
 
   if (res.status === 401 || res.status === 403) {
     logUpstream('auth_error', { status: res.status }) // bad / revoked token
-    return json(503, { ok: false, error: 'unavailable' })
+    return withConsent(json(503, { ok: false, error: 'unavailable' }))
   }
 
   logUpstream('upstream_error', { status: res.status, message: payload?.message })
-  return json(502, { ok: false, error: 'unavailable' })
+  return withConsent(json(502, { ok: false, error: 'unavailable' }))
 }
 
 /* Same-origin guard: a browser POST from another site is rejected. Requests

@@ -4,12 +4,14 @@
      invalid · rate_limited · cannot_subscribe · unavailable · network
    (`.fields` lists the fields the server rejected when kind is "invalid"). */
 
+import { CURRENT_MARKETING_CONSENT_VERSION } from '../content/marketingConsent.js'
+
 const ENDPOINT = '/api/referral-apply'
 const TIMEOUT_MS = 15000
 
 const fail = (kind, extra) => Object.assign(new Error(kind), { kind, ...extra })
 
-export async function submitReferral(values, honeypot) {
+export async function submitReferral(values, honeypot, marketingConsent = false) {
   const controller = new AbortController()
   const timer = setTimeout(() => controller.abort(), TIMEOUT_MS)
 
@@ -18,7 +20,13 @@ export async function submitReferral(values, honeypot) {
     res = await fetch(ENDPOINT, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-      body: JSON.stringify({ ...values, hpCheck: honeypot }),
+      // Optional, separate from the application itself: false (the default) never blocks or changes it.
+      body: JSON.stringify({
+        ...values,
+        hpCheck: honeypot,
+        marketingConsent: marketingConsent === true,
+        ...(marketingConsent === true ? { marketingConsentVersion: CURRENT_MARKETING_CONSENT_VERSION } : {}),
+      }),
       signal: controller.signal,
     })
   } catch {

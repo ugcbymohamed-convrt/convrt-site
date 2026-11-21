@@ -5,6 +5,7 @@ import { EMAIL_RE, submitSignup } from '../../lib/hooksSignup.js'
 import { INDUSTRIES, industryByKey } from '../../lib/hooksLibrary.js'
 import { CONTACT_EMAIL, OFFER_PATHS, PRIVACY_POLICY_URL } from '../../config.js'
 import { Check, primaryBtnClass } from './shared.jsx'
+import MarketingConsent from '../forms/MarketingConsent.jsx'
 
 /* ─────────────────────────────────────────────
    SIGNUP CARD — industry radio cards, then the email form revealed directly
@@ -254,19 +255,8 @@ export default function HooksSignupCard() {
                 </p>
               )}
 
-              {/* Marketing consent is separate from delivery and off by default */}
-              <label className="mt-4 flex cursor-pointer items-start gap-3 text-sm leading-snug text-ink-muted has-[:focus-visible]:[&>span:first-of-type]:ring-2 has-[:focus-visible]:[&>span:first-of-type]:ring-lime/70">
-                <input type="checkbox" checked={consent} disabled={submitting} onChange={(e) => setConsent(e.target.checked)} className="peer sr-only" />
-                <span
-                  aria-hidden="true"
-                  className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-md border border-ink-subtle text-transparent transition-colors peer-checked:border-lime peer-checked:bg-lime peer-checked:text-canvas motion-reduce:transition-none"
-                >
-                  <Check className="h-3.5 w-3.5" />
-                </span>
-                <span>
-                  Also send me occasional creative tips and offers from CONVRT. <span className="text-ink-subtle">(Optional)</span>
-                </span>
-              </label>
+              {/* Marketing consent is separate from delivery, optional and off by default */}
+              <MarketingConsent checked={consent} disabled={submitting} onChange={setConsent} />
 
               <button type="submit" disabled={submitting} className={`${primaryBtnClass} mt-5 w-full`}>
                 {submitting ? 'Sending…' : (<>Send Me My 10 Free Hooks <span aria-hidden="true">→</span></>)}
@@ -275,7 +265,7 @@ export default function HooksSignupCard() {
 
               <p className="mt-3 text-xs leading-relaxed text-ink-subtle">
                 By submitting, you ask CONVRT to email you this resource through our email provider, MailerLite. You may be
-                asked to confirm your email first. Unsubscribe any time.
+                asked to confirm your email first. You get marketing emails only if you tick the box above.
                 {PRIVACY_POLICY_URL && (
                   <>
                     {' '}See our{' '}

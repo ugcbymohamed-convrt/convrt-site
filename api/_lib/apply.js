@@ -19,16 +19,25 @@
    bounced / junk contacts cannot be re-added by a website form.
    A repeat application from the same email updates the saved answers.
 
+   This group is the SERVICE record of the application, never a marketing audience.
+   Only when the applicant ticks the separate, optional "tips and offers" box is the
+   contact also added to the marketing group and given a consent record (see
+   ./marketing.js). Declining changes nothing about the application itself.
+   If the address previously unsubscribed, MailerLite cannot take it again, but the
+   application is NOT refused: it is delivered to the owner by email (Resend) and
+   the applicant is told it was received. Without a working owner alert it is still
+   refused (409), so an application is never silently lost.
+
    The API token only ever lives in process.env (Vercel project settings).
 ───────────────────────────────────────────── */
 
 import { MAILERLITE_ENDPOINT } from './subscribe.js'
+import { consentAlertRow, readConsent, saveSubscriber, unsavedConsent } from './marketing.js'
 import { sendOwnerAlert, RESEND_ENDPOINT, DEFAULT_NOTIFY_TO, DEFAULT_NOTIFY_FROM } from './notify.js'
 import { normalizeApplication, validateApplication } from '../../src/lib/riskFreeQuestions.js'
 
 export const RISK_FREE_GROUP_ENV = 'MAILERLITE_GROUP_RISK_FREE_ID'
 
-const UPSTREAM_TIMEOUT_MS = 8000
 const GROUP_ID_RE = /^\d{1,30}$/
 
 const json = (status, body, headers) => ({ status, body, headers })
@@ -44,9 +53,10 @@ export { RESEND_ENDPOINT, DEFAULT_NOTIFY_TO, DEFAULT_NOTIFY_FROM }
 
 export function notifyOwner(app, result, { env = process.env, fetchImpl = globalThis.fetch } = {}) {
   const saved = result.status === 200
+  const unsubscribed = result.status === 409
   return sendOwnerAlert(
     {
-      subject: `${saved ? '' : '[NOT SAVED] '}New free video application: ${app.fullName}`,
+      subject: `${saved ? '' : unsubscribed ? '[NOT IN MAILERLITE] ' : '[NOT SAVED] '}New free video application: ${app.fullName}`,
       title: 'New application for the 1 FREE video production.',
       rows: [
         ['Name', app.fullName],
@@ -59,7 +69,15 @@ export function notifyOwner(app, result, { env = process.env, fetchImpl = global
         ['Timeline', app.timeline],
         ['Ongoing interest', app.ongoing],
         ['Brief', app.brief || '(none)'],
-        ['Saved to MailerLite', saved ? 'Yes (group: Free Video Applications)' : `NO (${result.body?.error || 'error'}): follow up with them by email`],
+        consentAlertRow(result.consent),
+        [
+          'Saved to MailerLite',
+          saved
+            ? 'Yes (group: Free Video Applications)'
+            : unsubscribed
+              ? 'NO: this address previously unsubscribed or bounced in MailerLite, so it was not re-added. This email is the only copy of the application. The applicant was told it was received: reply to them.'
+              : `NO (${result.body?.error || 'error'}): follow up with them by email`,
+        ],
       ],
       footer: 'Reply to this email to reach the applicant.',
       replyTo: app.email,
@@ -68,7 +86,7 @@ export function notifyOwner(app, result, { env = process.env, fetchImpl = global
   )
 }
 
-export async function processApplication({ body, env = process.env, fetchImpl = globalThis.fetch }) {
+export async function processApplication({ body, env = process.env, fetchImpl = globalThis.fetch, now = () => new Date() }) {
   if (!body || typeof body !== 'object' || Array.isArray(body)) {
     return json(400, { ok: false, error: 'invalid_request' })
   }
@@ -81,23 +99,27 @@ export async function processApplication({ body, env = process.env, fetchImpl = 
   if (Object.keys(errors).length) return json(422, { ok: false, error: 'invalid_application', fields: Object.keys(errors) })
 
   const app = normalizeApplication(body)
-  const result = await saveApplication(app, { env, fetchImpl })
+  // Marketing consent is independent of the application: declining never changes whether it is accepted.
+  const consent = readConsent(body, 'risk-free-application', { now })
+  const result = await saveApplication(app, consent, { env, fetchImpl })
   // Every genuine application alerts the owner, even when it could not be saved,
   // so no email address that was typed into the form is ever lost.
-  await notifyOwner(app, result, { env, fetchImpl })
+  const notified = await notifyOwner(app, result, { env, fetchImpl })
+  // A contact that unsubscribed from MailerLite can still apply: the owner email is the record.
+  if (result.status === 409 && notified) return { ...json(200, { ok: true }), consent: result.consent, savedBy: 'owner_email' }
   return result
 }
 
-async function saveApplication(app, { env, fetchImpl }) {
+async function saveApplication(app, consent, { env, fetchImpl }) {
   const token = env.MAILERLITE_API_TOKEN
   const groupId = String(env[RISK_FREE_GROUP_ENV] || '').trim()
 
   if (!token || !GROUP_ID_RE.test(groupId)) {
     logUpstream('not_configured', { hasToken: Boolean(token), hasGroupId: GROUP_ID_RE.test(groupId) })
-    return json(503, { ok: false, error: 'unavailable' })
+    return { ...json(503, { ok: false, error: 'unavailable' }), consent: unsavedConsent(consent) }
   }
 
-  const payload = {
+  const base = {
     email: app.email,
     fields: {
       name: app.fullName,
@@ -113,62 +135,43 @@ async function saveApplication(app, { env, fetchImpl }) {
     groups: [groupId],
   }
 
-  const controller = new AbortController()
-  const timer = setTimeout(() => controller.abort(), UPSTREAM_TIMEOUT_MS)
+  const saved = await saveSubscriber({ endpoint: MAILERLITE_ENDPOINT, token, base, consent, env, fetchImpl, log: logUpstream })
+  const withConsent = (r) => ({ ...r, consent: saved.consent })
 
-  let res
-  try {
-    res = await fetchImpl(MAILERLITE_ENDPOINT, {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-      },
-      body: JSON.stringify(payload),
-      signal: controller.signal,
-    })
-  } catch (err) {
-    logUpstream('network_error', { name: err?.name })
-    return json(502, { ok: false, error: 'unavailable' })
-  } finally {
-    clearTimeout(timer)
+  if (saved.networkError) {
+    logUpstream('network_error', { name: saved.networkError })
+    return withConsent(json(502, { ok: false, error: 'unavailable' }))
   }
-
-  let data = null
-  try {
-    data = await res.json()
-  } catch {
-    /* non-JSON body */
-  }
+  const { res, data } = saved
 
   // 201 created · 200 already existed and was updated — both are saved applications.
   if (res.status === 200 || res.status === 201) {
     const status = data?.data?.status
     if (status === 'unsubscribed' || status === 'bounced' || status === 'junk') {
       logUpstream('cannot_resubscribe', { status })
-      return json(409, { ok: false, error: 'cannot_subscribe' })
+      saved.consent.blocked = status
+      return withConsent(json(409, { ok: false, error: 'cannot_subscribe' }))
     }
-    return json(200, { ok: true })
+    return withConsent(json(200, { ok: true }))
   }
 
   if (res.status === 422) {
-    if (data?.errors?.email) return json(422, { ok: false, error: 'invalid_application', fields: ['email'] })
+    if (data?.errors?.email) return withConsent(json(422, { ok: false, error: 'invalid_application', fields: ['email'] }))
     // Most likely a custom field key that doesn't exist in MailerLite yet.
     logUpstream('validation_error', { message: data?.message, fields: Object.keys(data?.errors || {}) })
-    return json(502, { ok: false, error: 'unavailable' })
+    return withConsent(json(502, { ok: false, error: 'unavailable' }))
   }
 
   if (res.status === 429) {
     const retryAfter = res.headers?.get?.('retry-after')
-    return json(429, { ok: false, error: 'rate_limited' }, retryAfter ? { 'Retry-After': retryAfter } : undefined)
+    return withConsent(json(429, { ok: false, error: 'rate_limited' }, retryAfter ? { 'Retry-After': retryAfter } : undefined))
   }
 
   if (res.status === 401 || res.status === 403) {
     logUpstream('auth_error', { status: res.status }) // bad / revoked token
-    return json(503, { ok: false, error: 'unavailable' })
+    return withConsent(json(503, { ok: false, error: 'unavailable' }))
   }
 
   logUpstream('upstream_error', { status: res.status, message: data?.message })
-  return json(502, { ok: false, error: 'unavailable' })
+  return withConsent(json(502, { ok: false, error: 'unavailable' }))
 }

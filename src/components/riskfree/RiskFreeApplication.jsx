@@ -13,6 +13,7 @@ import {
 import { submitApplication } from '../../lib/riskFreeApply.js'
 import { Reveal, Check } from '../roadmap/shared.jsx'
 import { ErrorText, Progress, RadioGroup, TextField } from '../forms/fields.jsx'
+import MarketingConsent from '../forms/MarketingConsent.jsx'
 
 /* ─────────────────────────────────────────────
    APPLICATION — six qualification questions, then contact details (kept
@@ -43,6 +44,8 @@ export default function RiskFreeApplication() {
   const [values, setValues] = useState(EMPTY_APPLICATION)
   const [errors, setErrors] = useState({})
   const [honeypot, setHoneypot] = useState('')
+  // Optional and separate from the application: never validated, never required, off by default.
+  const [marketingConsent, setMarketingConsent] = useState(false)
   const [status, setStatus] = useState('idle') // idle | submitting | success
   const [submitError, setSubmitError] = useState(null)
   const startedRef = useRef(false)
@@ -92,7 +95,7 @@ export default function RiskFreeApplication() {
     setStatus('submitting')
     trackEvent('risk_free_application_submitted')
     try {
-      await submitApplication(values, honeypot)
+      await submitApplication(values, honeypot, marketingConsent)
       setStatus('success')
       trackEvent('risk_free_application_success')
     } catch (err) {
@@ -208,6 +211,8 @@ export default function RiskFreeApplication() {
                       </label>
                     </div>
 
+                    <MarketingConsent checked={marketingConsent} disabled={submitting} onChange={setMarketingConsent} className="" />
+
                     {submitError && (
                       <div role="alert"><ErrorText>{SUBMIT_ERROR_COPY[submitError]}</ErrorText></div>
                     )}
@@ -221,7 +226,7 @@ export default function RiskFreeApplication() {
 
                     <p className="text-xs leading-relaxed text-ink-subtle">
                       Your details are sent to CONVRT through our email provider, MailerLite, and used only to review
-                      your application and contact you about it.
+                      your application and contact you about it. We send marketing emails only if you tick the box above.
                       {PRIVACY_POLICY_URL && (
                         <>
                           {' '}See our{' '}

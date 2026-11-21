@@ -15,6 +15,7 @@ import { submitReferral } from '../../lib/referralApply.js'
 import { Reveal, Check } from '../roadmap/shared.jsx'
 import { TermsLink } from './shared.jsx'
 import { CheckboxField, ErrorText, RadioGroup, TextField } from '../forms/fields.jsx'
+import MarketingConsent from '../forms/MarketingConsent.jsx'
 
 /* ─────────────────────────────────────────────
    REGISTRATION FORM — joins the program. Short on purpose: name, email and partner type are
@@ -49,6 +50,8 @@ export default function ReferralForm({ preselect }) {
   const [values, setValues] = useState(EMPTY_REFERRAL)
   const [errors, setErrors] = useState({})
   const [honeypot, setHoneypot] = useState('')
+  // Optional and separate from the required consent below: never validated, off by default.
+  const [marketingConsent, setMarketingConsent] = useState(false)
   const [status, setStatus] = useState('idle') // idle | submitting | success
   const [submitError, setSubmitError] = useState(null)
   const startedRef = useRef(false)
@@ -108,7 +111,7 @@ export default function ReferralForm({ preselect }) {
     setStatus('submitting')
     trackEvent('referral_application_submit')
     try {
-      await submitReferral(values, honeypot)
+      await submitReferral(values, honeypot, marketingConsent)
       setStatus('success')
       trackEvent('referral_application_success')
     } catch (err) {
@@ -230,6 +233,8 @@ export default function ReferralForm({ preselect }) {
                         )}
                         <span className="text-lime" aria-hidden="true"> *</span>
                       </CheckboxField>
+
+                      <MarketingConsent checked={marketingConsent} disabled={submitting} onChange={setMarketingConsent} className="" />
 
                       {submitError && (
                         <div role="alert"><ErrorText>{SUBMIT_ERROR_COPY[submitError]}</ErrorText></div>

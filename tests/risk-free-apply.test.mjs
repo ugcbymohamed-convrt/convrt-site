@@ -282,7 +282,7 @@ test('owner alert: still sent, flagged NOT SAVED, when MailerLite fails or refus
     fn.calls = calls
     return fn
   }
-  const cases = [[mk(500, { message: 'down' }), 502], [mk(201, { data: { status: 'junk' } }), 409], [mk(429, {}), 429]]
+  const cases = [[mk(500, { message: 'down' }), 502], [mk(429, {}), 429]]
   for (const [f, expected] of cases) {
     const r = await run(valid(), f, env)
     assert.equal(r.status, expected)
@@ -297,4 +297,23 @@ test('owner alert: still sent, flagged NOT SAVED, when MailerLite fails or refus
   const r = await run(valid(), f, { RESEND_API_KEY: 'k' })
   assert.equal(r.status, 503)
   assert.equal(resendCalls(f).length, 1)
+})
+
+test('an unsubscribed / bounced / junk contact can still apply: the owner email carries the application, the applicant is told it was received', async () => {
+  const env = { ...ENV, RESEND_API_KEY: 'k' }
+  for (const status of ['unsubscribed', 'bounced', 'junk']) {
+    const calls = []
+    const f = async (url, init) => {
+      calls.push({ url, body: JSON.parse(init.body) })
+      if (url === RESEND_ENDPOINT) return { status: 200, headers: { get: () => null }, json: async () => ({}) }
+      return { status: 200, headers: { get: () => null }, json: async () => ({ data: { status } }) }
+    }
+    const r = await run(valid(), f, env)
+    assert.equal(r.status, 200, status)
+    assert.deepEqual(r.body, { ok: true })
+    const alert = calls.find((c) => c.url === RESEND_ENDPOINT).body
+    assert.match(alert.subject, /^\[NOT IN MAILERLITE\]/)
+    assert.ok(alert.text.includes('previously unsubscribed'))
+    assert.ok(alert.text.includes('jane@example.com'))
+  }
 })

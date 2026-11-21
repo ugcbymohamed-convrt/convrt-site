@@ -30,16 +30,22 @@
    docs/referral-tracker-template.csv). The MailerLite subscriber id is included in the
    owner email so it can serve as the tracker's partner identifier.
 
+   This group is the SERVICE record of a partner application, never a marketing audience. The
+   "consent" checkbox on the form covers reviewing the application and contacting the applicant
+   about it. Promotional email needs the separate, optional, unchecked "tips and offers" box
+   (see ./marketing.js); declining it never changes whether the application is accepted.
+   A previously unsubscribed address can still apply: the owner email carries the application.
+
    The API tokens only ever live in process.env (Vercel project settings).
 ───────────────────────────────────────────── */
 
 import { MAILERLITE_ENDPOINT } from './subscribe.js'
+import { consentAlertRow, readConsent, saveSubscriber, unsavedConsent } from './marketing.js'
 import { sendOwnerAlert } from './notify.js'
 import { normalizeReferral, validateReferral } from '../../src/lib/referralProgram.js'
 
 export const REFERRALS_GROUP_ENV = 'MAILERLITE_GROUP_REFERRALS_ID'
 
-const UPSTREAM_TIMEOUT_MS = 8000
 const GROUP_ID_RE = /^\d{1,30}$/
 
 const json = (status, body, headers) => ({ status, body, headers })
@@ -68,10 +74,11 @@ export function buildSubscriberPayload(partner, groupId) {
 /* Owner alert (optional, best-effort): see ./notify.js. Never throws. */
 export async function notifyOwner(partner, result, submittedAt, { env = process.env, fetchImpl = globalThis.fetch } = {}) {
   const saved = result.status === 200
+  const unsubscribed = result.status === 409
   try {
     return await sendOwnerAlert(
       {
-        subject: `${saved ? '' : '[NOT SAVED] '}New referral partner application: ${partner.fullName} (${partner.program})`,
+        subject: `${saved ? '' : unsubscribed ? '[NOT IN MAILERLITE] ' : '[NOT SAVED] '}New referral partner application: ${partner.fullName} (${partner.program})`,
         title: 'New Referral Partner Program application (registration only; no referral submitted).',
         rows: [
           ['Name', partner.fullName],
@@ -81,9 +88,14 @@ export async function notifyOwner(partner, result, submittedAt, { env = process.
           ['Company / agency', partner.partnerCompany || '(not provided)'],
           ['Website / LinkedIn', partner.partnerWebsite || '(not provided)'],
           ['Submitted (UTC)', submittedAt],
+          consentAlertRow(result.consent),
           [
             'Saved to MailerLite',
-            saved ? 'Yes (group: Referral Partner Applications)' : `NO (${result.body?.error || 'error'}): follow up with them by email`,
+            saved
+              ? 'Yes (group: Referral Partner Applications)'
+              : unsubscribed
+                ? 'NO: this address previously unsubscribed or bounced in MailerLite, so it was not re-added. This email is the only copy of the application. The applicant was told it was received: reply to them.'
+                : `NO (${result.body?.error || 'error'}): follow up with them by email`,
           ],
           ...(result.subscriberId ? [['MailerLite subscriber ID (partner ID)', String(result.subscriberId)]] : []),
         ],
@@ -115,78 +127,71 @@ export async function processReferral({ body, env = process.env, fetchImpl = glo
   if (Object.keys(errors).length) return json(422, { ok: false, error: 'invalid_application', fields: Object.keys(errors) })
 
   const partner = normalizeReferral(body)
-  const result = await saveReferral(partner, { env, fetchImpl })
+  // Marketing consent is independent of the application: declining never changes whether it is accepted.
+  const consent = readConsent(body, 'referral-application', { now })
+  const result = await saveReferral(partner, consent, { env, fetchImpl })
   // Every genuine submission alerts the owner, even when it could not be saved, so no email
-  // address typed into the form is ever lost. The alert is best-effort and never changes `result`.
-  await notifyOwner(partner, result, now().toISOString(), { env, fetchImpl })
+  // address typed into the form is ever lost. The alert is best-effort and never changes `result`,
+  // except that a contact who unsubscribed from MailerLite can still apply when the alert was delivered.
+  const notified = await notifyOwner(partner, result, now().toISOString(), { env, fetchImpl })
+  if (result.status === 409 && notified) return { ...json(200, { ok: true }), consent: result.consent, savedBy: 'owner_email' }
   return result
 }
 
-async function saveReferral(partner, { env, fetchImpl }) {
+async function saveReferral(partner, consent, { env, fetchImpl }) {
   const token = env.MAILERLITE_API_TOKEN
   const groupId = String(env[REFERRALS_GROUP_ENV] || '').trim()
 
   if (!token || !GROUP_ID_RE.test(groupId)) {
     logUpstream('not_configured', { hasToken: Boolean(token), hasGroupId: GROUP_ID_RE.test(groupId) })
-    return json(503, { ok: false, error: 'unavailable' })
+    return { ...json(503, { ok: false, error: 'unavailable' }), consent: unsavedConsent(consent) }
   }
 
-  const controller = new AbortController()
-  const timer = setTimeout(() => controller.abort(), UPSTREAM_TIMEOUT_MS)
+  const saved = await saveSubscriber({
+    endpoint: MAILERLITE_ENDPOINT,
+    token,
+    base: buildSubscriberPayload(partner, groupId),
+    consent,
+    env,
+    fetchImpl,
+    log: logUpstream,
+  })
+  const withConsent = (r) => ({ ...r, consent: saved.consent })
 
-  let res
-  try {
-    res = await fetchImpl(MAILERLITE_ENDPOINT, {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-      },
-      body: JSON.stringify(buildSubscriberPayload(partner, groupId)),
-      signal: controller.signal,
-    })
-  } catch (err) {
-    logUpstream('network_error', { name: err?.name })
-    return json(502, { ok: false, error: 'unavailable' })
-  } finally {
-    clearTimeout(timer)
+  if (saved.networkError) {
+    logUpstream('network_error', { name: saved.networkError })
+    return withConsent(json(502, { ok: false, error: 'unavailable' }))
   }
-
-  let data = null
-  try {
-    data = await res.json()
-  } catch {
-    /* non-JSON body */
-  }
+  const { res, data } = saved
 
   // 201 created · 200 already existed and was updated — both are saved applications.
   if (res.status === 200 || res.status === 201) {
     const status = data?.data?.status
     if (status === 'unsubscribed' || status === 'bounced' || status === 'junk') {
       logUpstream('cannot_resubscribe', { status })
-      return json(409, { ok: false, error: 'cannot_subscribe' })
+      saved.consent.blocked = status
+      return withConsent(json(409, { ok: false, error: 'cannot_subscribe' }))
     }
-    return { ...json(200, { ok: true }), subscriberId: data?.data?.id }
+    return withConsent({ ...json(200, { ok: true }), subscriberId: data?.data?.id })
   }
 
   if (res.status === 422) {
-    if (data?.errors?.email) return json(422, { ok: false, error: 'invalid_application', fields: ['email'] })
+    if (data?.errors?.email) return withConsent(json(422, { ok: false, error: 'invalid_application', fields: ['email'] }))
     // Most likely a custom field key that doesn't exist in MailerLite yet.
     logUpstream('validation_error', { message: data?.message, fields: Object.keys(data?.errors || {}) })
-    return json(502, { ok: false, error: 'unavailable' })
+    return withConsent(json(502, { ok: false, error: 'unavailable' }))
   }
 
   if (res.status === 429) {
     const retryAfter = res.headers?.get?.('retry-after')
-    return json(429, { ok: false, error: 'rate_limited' }, retryAfter ? { 'Retry-After': retryAfter } : undefined)
+    return withConsent(json(429, { ok: false, error: 'rate_limited' }, retryAfter ? { 'Retry-After': retryAfter } : undefined))
   }
 
   if (res.status === 401 || res.status === 403) {
     logUpstream('auth_error', { status: res.status }) // bad / revoked token
-    return json(503, { ok: false, error: 'unavailable' })
+    return withConsent(json(503, { ok: false, error: 'unavailable' }))
   }
 
   logUpstream('upstream_error', { status: res.status, message: data?.message })
-  return json(502, { ok: false, error: 'unavailable' })
+  return withConsent(json(502, { ok: false, error: 'unavailable' }))
 }

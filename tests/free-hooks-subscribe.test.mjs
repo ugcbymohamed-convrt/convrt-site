@@ -190,7 +190,7 @@ test('owner alert: new signup emails mohamed@convrt.studio with email, industry 
   assert.equal(body.reply_to, 'jane@example.com')
   assert.match(body.subject, /hooks/i)
   assert.match(body.subject, /E-commerce/)
-  for (const s of ['jane@example.com', 'E-commerce / DTC', 'New subscriber', 'OK to send tips and offers: Yes']) assert.ok(body.text.includes(s), s)
+  for (const s of ['jane@example.com', 'E-commerce / DTC', 'New subscriber', 'Marketing emails (optional box): Ticked', 'wording v1']) assert.ok(body.text.includes(s), s)
 })
 
 test('owner alert: repeat signups and unconfirmed (double opt-in) are labelled', async () => {
@@ -200,7 +200,7 @@ test('owner alert: repeat signups and unconfirmed (double opt-in) are labelled',
   const { body } = resendCalls(f)[0]
   assert.ok(body.text.includes('Already on the list'))
   assert.ok(body.text.includes('waiting on their confirmation email'))
-  assert.ok(body.text.includes('OK to send tips and offers: No'))
+  assert.ok(body.text.includes('Marketing emails (optional box): Not ticked'))
 })
 
 test('owner alert: Resend failing never fails the signup', async () => {

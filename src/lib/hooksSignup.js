@@ -4,6 +4,8 @@
    `.kind` is one of:
      invalid_email · rate_limited · cannot_subscribe · unavailable · network */
 
+import { CURRENT_MARKETING_CONSENT_VERSION } from '../content/marketingConsent.js'
+
 const ENDPOINT = '/api/free-hooks-subscribe'
 const TIMEOUT_MS = 15000
 
@@ -20,7 +22,14 @@ export async function submitSignup({ industry, email, marketingConsent, company 
     res = await fetch(ENDPOINT, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-      body: JSON.stringify({ industry, email: email.trim(), marketingConsent: Boolean(marketingConsent), company }),
+      // The optional marketing box only ever adds a promise from us; it is never needed for delivery.
+      body: JSON.stringify({
+        industry,
+        email: email.trim(),
+        marketingConsent: marketingConsent === true,
+        ...(marketingConsent === true ? { marketingConsentVersion: CURRENT_MARKETING_CONSENT_VERSION } : {}),
+        company,
+      }),
       signal: controller.signal,
     })
   } catch {
