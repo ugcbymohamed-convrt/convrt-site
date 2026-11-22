@@ -9,13 +9,10 @@ import { PRICING_FAQ } from '../../seo/pricingFaq.js'
 import { localizeFaq } from '../content.js'
 import {
   monthlyOfferEs, oneOffOfferEs, offersOf, coreServiceNodesEs, packageNodesEs, pageServiceEs,
-  SPRINT, SPRINT_PLUS, ORGANIC, CUSTOM_PACKAGES, ES_CORE_SERVICES,
+  SPRINT, SPRINT_PLUS, ORGANIC, ORGANIC_COMMITMENT, CUSTOM_PACKAGES, ES_CORE_SERVICES, tEs,
 } from './jsonld-parts.js'
 import { ORG_ID } from '../../seo/structuredData.js'
 
-/* The Organic page's Offer description. The English data states a six-month initial commitment that is not confirmed (it conflicts with the Pricing page's 3-month monthly terms), so the Spanish Offer
-   points to the package conditions instead, like the visible page copy (src/i18n/es/labels.js ES_ORGANIC_PACKAGES_NOTE). */
-const ES_ORGANIC_OFFER_TERMS = 'Consulta las condiciones de contratación y permanencia en la página de tarifas.'
 
 const L = 'es'
 const pricingUrl = (pageUrl) => pageUrl.replace(/\/es\/[a-z-]+$/, '/es/pricing')
@@ -70,7 +67,7 @@ export const ES_PAGE_GRAPH_EXTRAS = {
         name: 'Producción y gestión de contenido orgánico para redes sociales',
         serviceType: ES_CORE_SERVICES.organic.name,
         description: `${ES_CORE_SERVICES.organic.description} Los vídeos están liderados por personas y pueden producirse en varios idiomas.`,
-        ...offersOf([ORGANIC.light, ORGANIC.growth].map((p) => monthlyOfferEs(p.name, p.monthly, packages, ES_ORGANIC_OFFER_TERMS))),
+        ...offersOf([ORGANIC.light, ORGANIC.growth].map((p) => monthlyOfferEs(p.name, p.monthly, packages, `${tEs(ORGANIC_COMMITMENT.summary)} ${tEs(ORGANIC_COMMITMENT.afterInitial)}`))),
       })],
     }
   },

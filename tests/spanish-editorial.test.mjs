@@ -78,11 +78,12 @@ test('FAQ: the approved question counts, Spanish headings, and visible questions
   }
 })
 
-test('Organic: no six-month commitment on the page, the package note points to the conditions, community management is not customer support', () => {
-  const t = text(page('social-media-video-production'))
-  assert.ok(!/seis meses|6 meses/i.test(t), 'the unconfirmed commitment period must not be stated on the Organic page')
-  assert.ok(!/seis meses|6 meses/i.test(page('social-media-video-production').match(/application\/ld\+json[\s\S]*?<\/script>/)[0]), 'nor in its JSON-LD')
-  assert.match(t, /Consulta las condiciones de contratación y permanencia en la página de tarifas/)
+test('Organic: the owner-confirmed six-month initial commitment is stated, community management is not customer support, no growth promise', () => {
+  const html = page('social-media-video-production')
+  const t = text(html)
+  assert.match(t, /Una colaboración inicial de 6 meses/)
+  assert.match(t, /compromiso de seis meses/)
+  assert.match(html.match(/application\/ld\+json[\s\S]*?<\/script>/)[0], /seis meses/)
   assert.match(t, /La gestión de comunidad no incluye atención al cliente/)
   assert.match(t, /1\.400 €/)
   assert.match(t, /2\.300 €/)

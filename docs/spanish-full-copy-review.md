@@ -11,19 +11,16 @@ or where the editorial copy has a different structure from the English page, the
 | What | Where |
 |---|---|
 | H1 lines, rolling word and secondary CTA of the four service heroes | `src/i18n/es/hero.js` |
-| Spanish FAQ headings (“Todo lo que necesitas saber sobre …”), page-specific stage titles, final-CTA paragraph (+ UGC note), section intros, testimonials note, Organic packages note | `src/i18n/es/labels.js` (read by `UgcFAQ`, `PricingFAQ`, `UgcProcess`, `UgcFinalCTA`, `UgcResults`, `TestingDiagram`, `DeliveryStyles` (shared by SaaS), `ContentSystem`, `OrganicPackages`; each guarded by `currentLocale() === 'es'`) |
+| Spanish FAQ headings (“Todo lo que necesitas saber sobre …”), page-specific stage titles, final-CTA paragraph (+ UGC note), section intros, testimonials note, `src/i18n/es/labels.js` (read by `UgcFAQ`, `PricingFAQ`, `UgcProcess`, `UgcFinalCTA`, `UgcResults`, `TestingDiagram`, `DeliveryStyles` (shared by SaaS), `ContentSystem`, `OrganicPackages`; each guarded by `currentLocale() === 'es'`) |
 | Spanish About page (the editorial text is re-structured, not a translation of the English sections) | `src/i18n/es/about.js`, rendered by `src/TrustPage.jsx` in place of the English sections |
 | 18 Spanish video titles/captions | `src/content/portfolio.js` |
 | UGC type tab (Spanish only) and Spanish language chip (“Español”) | `portfolio.js` (`ES_UGC_CATEGORY`, not in `CATEGORIES`, so English tabs and `tests/creator-showcase.test.mjs` are untouched), `ourwork/icons.jsx`, `VideoCard.jsx`, `UgcGallery.jsx` |
 | Spanish JSON-LD names and the Organic Offer terms | `src/i18n/es/pages-registry.js` |
 
-## Owner decision needed: Organic commitment (six vs three months)
-The business data (`ORGANIC_COMMITMENT`) and the English Organic/Pricing pages state an **initial six-month** commitment for Organic; the Pricing page states **three months** for monthly Paid Social.
-Nothing contractual was changed. On the **Spanish Organic page** the period is no longer stated: the package note reads “Precios sin IVA. Consulta las condiciones de contratación y permanencia en la
-página de tarifas.”, the two FAQ answers that quoted it are neutral, and its JSON-LD Offers say the same (test: `tests/spanish-editorial.test.mjs`).
-Still stating six months (approved commercial data, left as is): the Spanish **Pricing** page (Organic cards, “Compromiso inicial”, “Social orgánico” FAQ and info panel), the Spanish JSON-LD
-package nodes on `/es/pricing`, and the **homepage FAQ** “¿Ofrecéis colaboraciones mensuales?” (homepage session; its English key is `Do you offer monthly retainers?`). Confirm the real term, then change
-`ORGANIC_COMMITMENT` once and restore the Organic wording.
+## Organic commitment (resolved)
+The business data and the English pages state an **initial six-month** commitment for Organic; the Pricing page states **three months** for monthly Paid Social. The owner confirmed (2026-11-22) that **Organic is six months**
+and Paid Social three, so the two are consistent and the Spanish pages keep the six-month wording everywhere (Organic page, its FAQ answers, Offer descriptions in JSON-LD, Pricing). An interim version of this branch
+that replaced the period with a pointer to the package conditions was reverted.
 
 ## Facts checked
 - **Elyon “160+ creatives”** is supported: claims register id `elyon-creatives` (`published-client-reported`), the count published on the Elyon case study (“spans every batch, format and follow-up variation produced since launch”).

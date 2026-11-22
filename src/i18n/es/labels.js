@@ -82,7 +82,3 @@ export const ES_SECTION_INTROS = {
 
 /* Visible note under the UGC page's client testimonials (their wording is kept in the original English). */
 export const ES_TESTIMONIALS_NOTE = 'Opiniones de clientes reproducidas en su idioma original.'
-
-/* Organic packages note. The English note states a six-month initial commitment, which conflicts with the Pricing page's terms for monthly plans and is NOT confirmed (owner decision
-   pending), so the Spanish Organic page points to the package conditions instead of stating a period. */
-export const ES_ORGANIC_PACKAGES_NOTE = 'Precios sin IVA. Consulta las condiciones de contratación y permanencia en la página de tarifas.'
