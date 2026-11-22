@@ -42,12 +42,22 @@ export const HOME_HERO = [
 ]
 
 /* The Spanish homepage hero (owner folder ~/Desktop/SPANISH/Main Page, Front / Left / Right; owner confirmed in chat on 2026-11-22 that these are approved and consented).
-   - Front (the large centre phone) is the CONVRT ad the English homepage also shows (same Cloudflare Stream video). Its on-screen captions are English, so it keeps `languages: ['en']`:
-     the stage's own language label says so honestly. This was the owner's explicit choice (2026-11-22).
+   - Front (the large centre phone) is now the Spanish version of the CONVRT ad (see the entry below); it used to be the English ad, which the English homepage still shows.
    - Left and Right are byte-identical to the Spanish UGC videos es-ugc-2 and es-ugc-1 in src/content/portfolio.js (the same Stream videos, uploaded once), so they carry the same Spanish captions.
    English keeps HOME_HERO unchanged. */
 export const HOME_HERO_ES = [
-  HOME_HERO[0],
+  /* Front (centre phone): the Spanish version of the CONVRT ad, ~/Downloads/CONVRT_AD_SPANISH_FINAL.mp4 (1080x1920, 52.8 s, Spanish speech and captions), uploaded to Cloudflare Stream on 2026-11-22
+     at the owner's request ("replace the front hero main page video with this localized one"). It replaces the English ad that the Spanish homepage showed before (HOME_HERO[0], still the English homepage's). */
+  {
+    id: 'home-hero-es-main',
+    creatorId: 'cv-home-hero',
+    industry: 'unclassified',
+    languages: ['es'],
+    caption: 'CONVRT UGC ad example.',
+    poster: '/portfolio/es-home-hero.webp',
+    source: { cloudflareId: '5904f4189ee4726cb4d7e4272a8b915b' },
+    approval: { ...approval, approvedOn: '2026-11-22' },
+  },
   {
     id: 'home-hero-es-left',
     creatorId: 'es-c01',

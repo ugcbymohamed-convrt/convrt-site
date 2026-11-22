@@ -75,7 +75,8 @@ export const POSTER_FRAMES = {
   '15dd5505109f6821ccdcb13fc3cdc1fd': 9.0, // portfolio:showcase-graspo-1 (home panel graspo); graspo 295K
   '3616606e3ca6d1a85c8a57d7cc2f656f': 3.6, // portfolio:showcase-graspo-2 (home panel graspo); graspo 1.2M
   'c1379ace38f2fa19ef2a45de1bb5d4b1': 4.6, // portfolio:showcase-graspo-3 (home panel graspo); graspo 7.5M
-  '20c642c760e1937953fc33e98f3d859f': 1.6, // home-hero:home-hero-main; home-hero-es:home-hero-main
+  '20c642c760e1937953fc33e98f3d859f': 1.6, // home-hero:home-hero-main
+  '5904f4189ee4726cb4d7e4272a8b915b': 3, // home-hero-es:home-hero-es-main (Spanish CONVRT ad; clear face, open eyes, coffee cup, little caption)
   'a5e60be52e693016bb47bed4c801eb5f': 9.2, // scale VSL (poster, no time)
 }
 

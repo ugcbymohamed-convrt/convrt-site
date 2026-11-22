@@ -554,14 +554,15 @@ test('Spanish videos: 18 approved entries, valid, Spanish-only, opaque creators,
   for (const n of ['Ainhoa', 'Nacar', 'Blázquez', 'Badenes', 'Badia Benlloch']) assert.ok(!repoText.includes(n), `creator name "${n}" must stay out of the repository`)
 })
 
-test('Spanish homepage hero: Front (the existing CONVRT ad, honestly labelled English) in the centre, then the two Spanish videos; English homepage unchanged', () => {
+test('Spanish homepage hero: Front (the Spanish version of the CONVRT ad) in the centre, then the two Spanish videos; English homepage unchanged', () => {
   assert.equal(HOME_HERO_ES.length, 3)
-  assert.equal(HOME_HERO_ES[0], HOME_HERO[0], 'Front is the same Stream video the English homepage shows')
-  assert.deepEqual(HOME_HERO_ES.slice(1).map((v) => v.languages), [['es'], ['es']])
+  assert.notEqual(HOME_HERO_ES[0].source.cloudflareId, HOME_HERO[0].source.cloudflareId, 'Front is no longer the English ad')
+  assert.equal(HOME_HERO_ES[0].source.cloudflareId, '5904f4189ee4726cb4d7e4272a8b915b', 'Front is the Spanish CONVRT ad (CONVRT_AD_SPANISH_FINAL.mp4)')
+  assert.deepEqual(HOME_HERO_ES.map((v) => v.languages), [['es'], ['es'], ['es']])
   const es = page('/es'), en = page('/')
-  assert.deepEqual(posters(es).filter((p) => /home-hero|es-ugc/.test(p)), ['/portfolio/home-hero.webp', '/portfolio/es-ugc-2.webp', '/portfolio/es-ugc-1.webp'])
+  assert.deepEqual(posters(es).filter((p) => /home-hero|es-ugc/.test(p)), ['/portfolio/es-home-hero.webp', '/portfolio/es-ugc-2.webp', '/portfolio/es-ugc-1.webp'])
   assert.ok(es.includes('aria-label="Vídeos UGC de creadores"'), 'the stage has a Spanish accessible name')
-  assert.ok(!/es-ugc/.test(en) && en.includes('ugc-hero-1.webp'), 'the English homepage still shows its own three videos')
+  assert.ok(!/es-ugc|es-home-hero/.test(en) && en.includes('ugc-hero-1.webp') && en.includes('/portfolio/home-hero.webp'), 'the English homepage still shows its own three videos')
 })
 
 test('Spanish UGC and Spokesperson pages: hero stage and gallery use ONLY the provided Spanish videos, in the owner\'s order; no English-library video', () => {

@@ -6,7 +6,7 @@ and the /scale video read the time through `streamPoster()`. Frames are real fra
 generated, uploaded or changed on Cloudflare. Selection: ten candidates per video across its length, reviewed for a clear natural face with open eyes where there is one, a recognisable product, good light and composition,
 no half-cut or motion blur, and as little stray caption as the footage allows (many videos have burned-in subtitles on every frame, so a small caption is sometimes unavoidable).
 
-**67 videos have a chosen frame.** Contact sheet of the chosen frames: `docs/video-thumbnail-contact-sheet.jpg`.
+**68 videos have a chosen frame.** Contact sheet of the chosen frames: `docs/video-thumbnail-contact-sheet.jpg`.
 
 Not changed: the Roadmap explainer keeps its deliberately chosen 25.6 s frame; the self-hosted Adscale clip (`/showcase/adscale-creator.mp4`) is not on Stream and keeps its poster.
 
@@ -23,7 +23,8 @@ Not changed: the Roadmap explainer keeps its deliberately chosen 25.6 s frame; t
 | `18619920…` | 1.6s | portfolio:creator-17 |
 | `1941b043…` | 8.2s | portfolio:es-spokesperson-hero-3 [es] |
 | `1fc1374c…` | 1.7s | portfolio:ugc-hero-3 |
-| `20c642c7…` | 1.6s | home-hero:home-hero-main; home-hero-es:home-hero-main |
+| `20c642c7…` | 1.6s | home-hero:home-hero-main |
+| `5904f418…` | 3s | home-hero-es:home-hero-es-main (Spanish CONVRT ad) |
 | `250a9cb5…` | 3.6s | portfolio:spokesperson-gal-3 |
 | `2bb321f0…` | 27.5s | portfolio:organic-gal-1 |
 | `3058e60f…` | 4.8s | portfolio:creator-05 |
