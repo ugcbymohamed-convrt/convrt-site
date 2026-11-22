@@ -1,6 +1,6 @@
 import { useRef, useEffect, useState } from 'react'
 import { OFFER_PATHS } from '../config.js'
-import { CONVRT_STATS } from '../lib/siteStats.js'
+import { CONVRT_STATS, FOUNDER_EXPERIENCE } from '../lib/siteStats.js'
 import { useTr } from '../i18n/tr.js'
 import { currentLocale } from '../i18n/locale.js'
 import { primaryAction } from '../i18n/cta.js'
@@ -117,13 +117,16 @@ export default function Credibility() {
 
         {/* Headline + CTA below */}
         <div className="mt-14 md:mt-16 flex flex-col items-center text-center gap-10 md:gap-12">
-          <h2 className="font-display font-semibold tracking-display text-ink leading-[1.1] text-3xl md:text-4xl lg:text-[44px] max-w-3xl">
-            {locale === 'en' ? (
-              <>Trusted by <span className="text-lime">{CONVRT_STATS.clients} brands</span> across ecommerce, apps, SaaS, and global consumer markets.</>
-            ) : (
-              <>{tr('Trusted by')} <span className="text-lime">{CONVRT_STATS.clients} {tr('brands')}</span> {tr('across ecommerce, apps, SaaS, and global consumer markets.')}</>
-            )}
-          </h2>
+          <div className="flex flex-col items-center gap-4">
+            <h2 className="font-display font-semibold tracking-display text-ink leading-[1.1] text-3xl md:text-4xl lg:text-[44px] max-w-3xl">
+              {locale === 'en' ? (
+                <>Our founder has worked with <span className="text-lime">{CONVRT_STATS.clients} clients</span> across ecommerce, apps, SaaS, and global consumer markets.</>
+              ) : (
+                <>{tr('Our founder has worked with')} <span className="text-lime">{CONVRT_STATS.clients} {tr('clients')}</span> {tr('across ecommerce, apps, SaaS, and global consumer markets.')}</>
+              )}
+            </h2>
+            <p className="max-w-xl text-sm leading-relaxed text-ink-muted">{tr(FOUNDER_EXPERIENCE.caption)}</p>
+          </div>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
             <a
               href={action.href}

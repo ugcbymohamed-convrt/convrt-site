@@ -17,7 +17,7 @@
 
 import { SITE_URL, CONTACT_EMAIL, BOOKING_URL, INSTAGRAM_URL, COMPANY_LINKEDIN_URL, FOUNDER_LINKEDIN_URL } from '../config.js'
 import { OPERATOR } from '../content/operator.js'
-import { CONVRT_STATS } from '../lib/siteStats.js'
+import { CONVRT_STATS, FOUNDER_EXPERIENCE } from '../lib/siteStats.js'
 
 /** @typedef {{ amount: number, currency: 'USD' }} Money  (all CONVRT pricing is in US dollars) */
 
@@ -583,15 +583,20 @@ export const OWNER_REVIEW_FLAGS = [
                                          (none left after the owner's review of 2026-11-21)
    The wording of every claim is unchanged by the Batch 2 review (2026-11-21); `proposed` is a conservative replacement for the owner to approve, never applied. */
 export const PUBLIC_CLAIMS = [
-  { id: 'stat-clients', claim: `Trusted by ${CONVRT_STATS.clients} brands`, appears: 'homepage credibility strip', source: 'siteStats.js: owner-confirmed Nov 2026; no public corroboration', status: 'owner-confirmed',
-    note: 'Shown beside 13 logos, all confirmed as verified relationships authorised for display (owner, 2026-11-21).' },
-  { id: 'stat-videos', claim: `${CONVRT_STATS.videos} videos produced`, appears: 'homepage final CTA strip', source: 'siteStats.js: owner-confirmed Nov 2026', status: 'owner-confirmed', note: 'Counts videos, not creators.' },
-  { id: 'stat-views', claim: `${CONVRT_STATS.views} views generated`, appears: 'homepage final CTA strip', source: 'siteStats.js: owner-confirmed Nov 2026', status: 'owner-confirmed', note: 'No platform or period is stated on the page.' },
-  { id: 'stat-returning', claim: `${CONVRT_STATS.returningClients} of clients return for more`, appears: 'homepage final CTA strip', source: 'owner-confirmed 2026-11-21; supporting business records exist (kept as published)', status: 'owner-confirmed' },
+  /* The four statistics below are the founder's combined professional experience, NOT CONVRT-Studio-only (owner, 2026-11-22). Their numbers and the verified basis of the returning-client
+     percentage are unchanged; only the attribution on the pages changed. The 13 logos are separate (verified relationships authorised for display). */
+  { id: 'founder-experience-scope', claim: `${CONVRT_STATS.videos} videos, ${CONVRT_STATS.clients} clients, ${CONVRT_STATS.views} views and ${CONVRT_STATS.returningClients} returning clients are ${FOUNDER_EXPERIENCE.scope}.`, appears: 'homepage credibility strip and final CTA strip; /pricing stats row; About "The founder\'s experience"', source: 'owner-confirmed 2026-11-22 (all four figures)', status: 'owner-confirmed',
+    note: 'Never describe these as CONVRT Studio-only, and never attach them to the Organization in structured data. Not part of this scope: client-specific case-study results (Graspo, Elyon), which keep their own periods and qualifiers. The 240+ five-star reviews on ugcbymohamed.com are unconfirmed and are not used anywhere.' },
+  { id: 'stat-clients', claim: `Our founder has worked with ${CONVRT_STATS.clients} clients`, appears: 'homepage credibility strip (with the caption); /pricing "Clients served"', source: `siteStats.js; scope: ${FOUNDER_EXPERIENCE.scope}`, status: 'owner-confirmed',
+    note: 'Shown beside 13 logos, all confirmed as verified relationships authorised for display (owner, 2026-11-21). "Clients", not "brands" (owner, 2026-11-22).' },
+  { id: 'stat-videos', claim: `${CONVRT_STATS.videos} videos produced`, appears: 'homepage final CTA strip; /pricing stats row', source: `siteStats.js; scope: ${FOUNDER_EXPERIENCE.scope}`, status: 'owner-confirmed', note: 'Counts videos, not creators. Founder combined experience, not CONVRT Studio alone.' },
+  { id: 'stat-views', claim: `${CONVRT_STATS.views} views generated`, appears: 'homepage final CTA strip; /pricing stats row', source: `siteStats.js; scope: ${FOUNDER_EXPERIENCE.scope}`, status: 'owner-confirmed', note: 'No platform or period is stated on the page. Founder combined experience, not CONVRT Studio alone.' },
+  { id: 'stat-returning', claim: `${CONVRT_STATS.returningClients} of clients return for more`, appears: 'homepage final CTA strip', source: `owner-confirmed 2026-11-21 (supporting business records exist; calculation basis unchanged); scope: ${FOUNDER_EXPERIENCE.scope}`, status: 'owner-confirmed', note: 'The percentage keeps its existing verified basis; it is not reinterpreted. Founder combined experience, not CONVRT Studio alone.' },
   { id: 'arabic-dialects', claim: PRODUCTION_LANGUAGES.arabicDialects, appears: 'home, UGC and Spokesperson FAQs (not the Organic FAQ)', source: 'owner-confirmed 2026-11-21 (Gulf Arabic and Moroccan Darija)', status: 'owner-confirmed',
     note: 'Dialect-specific messaging is reserved for the future Arabic-language site; the English site keeps this one clause.' },
   { id: 'quality-review', claim: 'Every project goes through our internal creative quality review.', appears: 'home FAQ "What makes CONVRT different?" and UGC FAQ "revisions-and-performance"', source: 'owner-confirmed 2026-11-21: an actual process (kept as published)', status: 'owner-confirmed' },
-  { id: 'hundreds-of-creatives', claim: "After producing hundreds of creatives, we've developed a strong understanding of what captures attention", appears: 'home FAQ "Do you help with concepts and scripting?"', source: 'owner-confirmed 2026-11-21: accurate and substantiable (kept as published)', status: 'owner-confirmed' },
+  { id: 'hundreds-of-creatives', claim: "After producing hundreds of creatives, we've developed a strong understanding of what captures attention", appears: 'home FAQ "Do you help with concepts and scripting?"', source: 'owner-confirmed 2026-11-21: accurate and substantiable (kept as published)', status: 'owner-confirmed',
+    note: 'Scope (CONVRT Studio or the founder\'s wider work) not separately confirmed: left unchanged on purpose (owner, 2026-11-22). Ask before building on it.' },
   { id: 'international-clients', claim: INTERNATIONAL_CLIENTS.text, appears: 'About page ("at a glance" and "Markets, production and languages")', source: 'owner-confirmed 2026-11-21', status: 'owner-confirmed',
     note: 'States clients, not presence: it implies no offices or local legal entities in Europe, the UK, the Middle East or the United States. SEO acquisition priorities remain Europe, the UK, Spain and the Middle East; US businesses are not excluded.' },
   { id: 'production-model', claim: PRODUCTION_MODEL.text, appears: 'About page; Home FAQ "other languages and for other markets"', source: 'owner-confirmed 2026-11-21 (approved wording, verbatim)', status: 'owner-confirmed',

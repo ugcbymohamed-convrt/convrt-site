@@ -1,6 +1,6 @@
 import { useRef, useEffect, useState } from 'react'
 import { CONTACT_EMAIL } from '../config.js'
-import { CONVRT_STATS } from '../lib/siteStats.js'
+import { CONVRT_STATS, FOUNDER_EXPERIENCE } from '../lib/siteStats.js'
 import { useTr } from '../i18n/tr.js'
 import { currentLocale } from '../i18n/locale.js'
 import { primaryAction } from '../i18n/cta.js'
@@ -176,10 +176,11 @@ export default function FinalCTA() {
                 }}
               >
                 <span className="text-sm font-bold text-lime tabular-nums">{localizeStat(locale, pill.value)}</span>
-                <span className="text-xs text-ink-muted">{tr(pill.label)}</span>
+                <span className="text-xs text-ink-muted">{tr(pill.label)}<span aria-hidden="true">*</span></span>
               </div>
             ))}
           </div>
+          <p className="mx-auto mt-4 max-w-xl text-center text-[11.5px] leading-snug text-ink-muted">* {tr(FOUNDER_EXPERIENCE.footnote)}</p>
         </FadeUp>
 
       </div>
