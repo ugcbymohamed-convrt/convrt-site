@@ -4,6 +4,17 @@ Branch `multilingual-foundation-es` (merged with `origin/main` da558ee, which in
 `es: 'live'` (indexable pages, sitemap, hreflang, selector). To merge the code without publishing Spanish, set `'review'` (pages stay reachable by URL, noindex, no sitemap/hreflang/selector).
 Live blocker list: `node scripts/es-launch-readiness.mjs` (exit code 1 while any remain).
 
+## Production release (owner-approved 2026-11-22)
+The Spanish site (`es: 'live'`) was merged into `main` and deployed to Production together with the `spanish-full-copy-review` editorial pass (`docs/spanish-full-copy-review.md`) and the homepage session's work.
+Kept as gated or open on purpose:
+- **Spanish Roadmap** `/es/creative-growth-roadmap`: noindex, no sitemap/hreflang (as in English).
+- **Spanish free-video application** `/es/risk-free-trial`: reachable and working, but noindex and out of the sitemap/hreflang (`ES_FREE_VIDEO_REVIEWED = false`, `src/i18n/release.js`) until the owner and a lawyer have reviewed its consent
+  wording (the marketing checkbox is omitted until a reviewed Spanish consent exists). The homepage block links to it; to hide that block until then, return `null` in `src/components/FreeVideoOffer.jsx`.
+- **Outstanding Spanish legal review:** Privacy, Terms and Legal Notice are English-only and every link to them from Spanish pages is labelled "(en inglés)" (`lang="en"`). Spanish drafts for the lawyer are outside the repo
+  (`CONVRT/Claude/multilingual-es/legal-translation-review/`); what the lawyer must check is in `docs/multilingual-legal-translation-review.md`. The Roadmap's privacy note and the Calendly notice are on the same list.
+- Spanish OG image (`public/og/convrt-og-es.png`) still missing: Spanish pages share the English image.
+- Owner-directed English change included from the homepage session: the English menu no longer lists "How It Works" (translated menus keep it).
+
 ## Pages prepared (native Spanish, same slugs)
 `/es/` · `/es/ugc-video-agency` · `/es/spokesperson-video-production` · `/es/social-media-video-production` · `/es/saas-video-production` · `/es/pricing` · `/es/creator-showcase` (live: 18 Spanish videos) ·
 `/es/about` · `/es/contact` · `/es/creative-growth-roadmap` (the application; `noindex`, like the English page, so no sitemap or hreflang) · `/es/risk-free-trial` (the 1 FREE video application; `noindex` and held by a release gate, see below).
