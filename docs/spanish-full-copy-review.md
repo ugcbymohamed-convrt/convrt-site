@@ -52,5 +52,5 @@ to this file). No header, footer, global CTA, thumbnail (`posterFrames.js`, `str
 `node scripts/i18n-english-parity.mjs <main dist> dist`.
 
 ## Tests
-`tests/spanish-editorial.test.mjs` (new, builds the site): the four headlines, anchors and CTA destinations, FAQ counts and visible-equals-JSON-LD, no six-month claim on the Organic page, Graspo/Elyon figures, About
+`tests/spanish-editorial.test.mjs` (new, builds the site): the four headlines, anchors and CTA destinations, FAQ counts and visible-equals-JSON-LD, the six-month Organic commitment, Graspo/Elyon figures, About
 data attribution and no invented claims, Roadmap option values/privacy wording/noindex, the 13 EUR amounts, Showcase tabs and 18 samples.
