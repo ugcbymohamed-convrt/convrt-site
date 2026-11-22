@@ -1,6 +1,7 @@
-import { posterUrl, titleOf, industryLabel, categoryOf, CATEGORIES, creatorLabel, brandLabel } from '../../content/portfolio.js'
+import { posterUrl, titleOf, industryLabel, categoryOf, CATEGORIES, creatorLabel, brandLabel, languageLabel } from '../../content/portfolio.js'
 import { PlayGlyph } from '../ugc/creatorVideo.jsx'
 import { tr } from '../../i18n/tr.js'
+import { currentLocale } from '../../i18n/locale.js'
 
 /* One portrait (9:16) card. Poster first: there is NO <video> element, stream or download until a visitor opens the card, so a library of
    hundreds of videos costs only its thumbnails. The whole card is one button (the accessible name is "Play video: <title>").
@@ -16,7 +17,8 @@ export default function VideoCard({ item, priority = false, onOpen }) {
   const color = COLOR_OF[categoryOf(item)] ?? NEUTRAL
   const industry = industryLabel(item.industry)
   const title = titleOf(item)
-  const langs = (item.languages ?? []).map((l) => l.toUpperCase()).join(' · ')
+  // Spanish names the language in full ("Español"); English keeps the two-letter code.
+  const langs = (item.languages ?? []).map((l) => (currentLocale() === 'en' ? l.toUpperCase() : languageLabel(l))).join(' · ')
   const who = [brandLabel(item), creatorLabel(item)].filter(Boolean).join(' · ')
   return (
     <button

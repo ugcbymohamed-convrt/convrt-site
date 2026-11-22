@@ -55,7 +55,8 @@ export const UGC_GALLERY = {
 
 function Card({ item, index, playing, onPlay, config }) {
   const sample = item.sample
-  const langs = sample ? 'EN' : (item.languages ?? []).map((l) => l.toUpperCase()).join(' · ')
+  // Spanish pages name the language in full ("UGC · Español"); English keeps the two-letter code.
+  const langs = sample ? 'EN' : (item.languages ?? []).map((l) => (currentLocale() === 'en' ? l.toUpperCase() : languageLabel(l))).join(' · ')
   return (
     <figure className="group relative aspect-[9/16] overflow-hidden rounded-3xl border border-lime/25 bg-surface-1 shadow-[0_26px_60px_-30px_rgba(0,0,0,0.9),0_0_44px_-26px_rgba(213,255,64,0.5)] transition-[transform,border-color,box-shadow] duration-300 hover:-translate-y-1 hover:border-lime/60 hover:shadow-[0_30px_64px_-28px_rgba(0,0,0,0.9),0_0_56px_-18px_rgba(213,255,64,0.55)] motion-reduce:transition-none motion-reduce:hover:translate-y-0">
       {playing ? (

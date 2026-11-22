@@ -1,29 +1,36 @@
-/* Spanish H1 of each service hero: the fixed lines, the words before the rolling word, the rolling words and the width-reserving word. The English H1s are
-   "Human-led UGC ads. Built for paid social. Made to convrt." and so on; these are NOT word-for-word: they keep the rhythm (two statements, then "Hecho para ___.")
-   and the playful last word that rolls. The server HTML holds only the first rolling word ("convertir."), so the indexable H1 is stable. */
+import { CREATOR_SHOWCASE_PATH } from '../../config.js'
+
+/* Spanish H1 and secondary CTA of each service hero. The English H1s are "Human-led UGC ads. Built for paid social. to convrt." and so on; the Spanish headlines are NOT
+   word-for-word (owner-approved editorial copy, Nov 2026): they keep the rhythm (fixed lines, then a last line whose final word rolls). The server HTML holds only the first
+   rolling word, so the indexable H1 is stable ("Creados para convertir.", "Mensajes que conectan.", ...).
+   `secondary` replaces the English CTA object: the label is the approved Spanish one and the href is the English path (localized when rendered) or an in-page anchor. */
 export const ES_HERO = {
   'ugc-h1': {
-    lines: [['Anuncios', 'UGC', 'con', 'personas', 'reales.'], ['Pensados', 'para', 'redes', 'sociales', 'de', 'pago.']],
-    lead: ['Hechos', 'para'],
-    words: ['convertir', 'conectar', 'vender', 'resonar'],
+    lines: [['Anuncios', 'UGC', 'con', 'personas', 'reales.'], ['Pensados', 'para', 'destacar.']],
+    lead: ['Creados', 'para'],
+    words: ['convertir', 'conectar', 'vender'],
     sizer: 'convertir.',
+    secondary: { label: 'Ver ejemplos UGC', href: CREATOR_SHOWCASE_PATH },
   },
   'spokesperson-h1': {
-    lines: [['Vídeos', 'con', 'presentadores', 'reales.'], ['Creados', 'para', 'comunicar.']],
-    lead: ['Hechos', 'para'],
-    words: ['convertir', 'explicar', 'conectar', 'persuadir'],
-    sizer: 'persuadir.',
+    lines: [['Vídeos', 'Spokesperson.'], ['Personas', 'reales.']],
+    lead: ['Mensajes', 'que'],
+    words: ['conectan', 'convencen', 'explican'],
+    sizer: 'convencen.',
+    secondary: { label: 'Ver vídeos', href: CREATOR_SHOWCASE_PATH },
   },
   'organic-h1': {
-    lines: [['Vídeos', 'orgánicos', 'para', 'redes.'], ['Creados', 'para', 'enganchar.']],
-    lead: ['Hechos', 'para'],
-    words: ['convertir', 'conectar', 'inspirar', 'resonar'],
-    sizer: 'convertir.',
+    lines: [['Vídeos', 'orgánicos', 'para', 'redes.'], ['Contenido', 'que', 'engancha.']],
+    lead: ['Una', 'marca', 'que'],
+    words: ['conecta', 'inspira', 'destaca'],
+    sizer: 'conecta.',
+    secondary: { label: 'Cómo trabajamos', href: '#how-it-works' },
   },
   'saas-h1': {
-    lines: [['Vídeos', 'para', 'SaaS.'], ['Creados', 'para', 'explicar.']],
-    lead: ['Hechos', 'para'],
-    words: ['convertir', 'enganchar', 'conectar'],
+    lines: [['Vídeos', 'para', 'SaaS.'], ['Fáciles', 'de', 'entender.']],
+    lead: ['Diseñados', 'para'],
+    words: ['convertir', 'explicar', 'enganchar'],
     sizer: 'enganchar.',
+    secondary: { label: 'Ver formatos', href: '#saas-formats' },
   },
 }

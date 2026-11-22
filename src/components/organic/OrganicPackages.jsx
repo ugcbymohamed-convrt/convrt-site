@@ -6,6 +6,7 @@ import { tr } from '../../i18n/tr.js'
 import { currentLocale } from '../../i18n/locale.js'
 import { localizeConfig } from '../../i18n/content.js'
 import { money } from '../../i18n/money.js'
+import { ES_ORGANIC_PACKAGES_NOTE } from '../../i18n/es/labels.js'
 
 /* "Consistent content. Flexible support." A deliberately LIGHT commercial section: the two published organic packages side by side, a line of what both include and a link to the
    full Pricing page. It is not a second Pricing page: no billing switch, no feature matrix, no FAQ, no usage-rights panel.
@@ -48,7 +49,7 @@ export default function OrganicPackages() {
           {tr('Both include')} {ORGANIC.includedInBoth.map((x) => tr(x).toLowerCase()).join(`, ${tr('plus')} `)}, {tr('across')} {list(ORGANIC.platforms)}.
         </p>
         <p className="mt-2 text-[13.5px] leading-relaxed text-ink-muted">
-          {tr(CARD_NOTES.organic)} {tr(ORGANIC.customerSupportNote)}
+          {currentLocale() === 'es' ? ES_ORGANIC_PACKAGES_NOTE : tr(CARD_NOTES.organic)} {tr(ORGANIC.customerSupportNote)}
         </p>
         <p className="mt-2 text-[13.5px] leading-relaxed text-ink-muted">{tr(CUSTOM_PACKAGES.organic.description)}</p>
         <p className="mt-4 text-[15px]">

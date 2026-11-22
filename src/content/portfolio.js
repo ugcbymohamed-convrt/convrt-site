@@ -92,8 +92,8 @@ export const PORTFOLIO = [
      shows. No uploadDate is recorded, so these entries emit no VideoObject structured data. `type` follows the owner's folder: UGC/ → 'ugc', Spokesperson/ → 'spokesperson'; HERO-* files are the hero stage. */
   {
     id: 'es-ugc-hero-1',
-    title: 'Unboxing y demostración de un producto',
-    caption: 'Unboxing y demostración de un producto.',
+    title: 'Unboxing y demostración de producto',
+    caption: 'Unboxing y demostración de producto.',
     type: 'ugc',
     industry: 'unclassified',
     languages: ['es'],
@@ -107,8 +107,8 @@ export const PORTFOLIO = [
   },
   {
     id: 'es-ugc-hero-2',
-    title: 'Dos creadoras explicando un servicio',
-    caption: 'Dos creadoras explicando un servicio.',
+    title: 'Dos creadoras presentando un servicio',
+    caption: 'Dos creadoras presentando un servicio.',
     type: 'ugc',
     industry: 'unclassified',
     languages: ['es'],
@@ -137,8 +137,8 @@ export const PORTFOLIO = [
   },
   {
     id: 'es-ugc-1',
-    title: 'Café de especialidad: producto y creador a cámara',
-    caption: 'Café de especialidad: producto y creador a cámara.',
+    title: 'Café de especialidad: demostración de producto a cámara',
+    caption: 'Café de especialidad: demostración de producto a cámara.',
     type: 'ugc',
     industry: 'unclassified',
     languages: ['es'],
@@ -152,8 +152,8 @@ export const PORTFOLIO = [
   },
   {
     id: 'es-ugc-2',
-    title: 'Vivienda con piscina: recorrido de una creadora',
-    caption: 'Vivienda con piscina: recorrido de una creadora.',
+    title: 'Recorrido por una vivienda con piscina',
+    caption: 'Recorrido por una vivienda con piscina.',
     type: 'ugc',
     industry: 'unclassified',
     languages: ['es'],
@@ -167,8 +167,8 @@ export const PORTFOLIO = [
   },
   {
     id: 'es-ugc-3',
-    title: 'Viaje y alojamiento: destinos y creadora a cámara',
-    caption: 'Viaje y alojamiento: destinos y creadora a cámara.',
+    title: 'Viaje por paisajes con una aplicación en el móvil',
+    caption: 'Viaje por paisajes con una aplicación en el móvil.',
     type: 'ugc',
     industry: 'unclassified',
     languages: ['es'],
@@ -182,8 +182,8 @@ export const PORTFOLIO = [
   },
   {
     id: 'es-ugc-4',
-    title: 'Creadora explicando el tejido de una prenda',
-    caption: 'Creadora explicando el tejido de una prenda.',
+    title: 'Creadora mostrando los detalles de una prenda',
+    caption: 'Creadora mostrando los detalles de una prenda.',
     type: 'ugc',
     industry: 'unclassified',
     languages: ['es'],
@@ -197,8 +197,8 @@ export const PORTFOLIO = [
   },
   {
     id: 'es-ugc-5',
-    title: 'Creador explicando una solución digital con apoyo en pantalla',
-    caption: 'Creador explicando una solución digital con apoyo en pantalla.',
+    title: 'Creador explicando una solución digital con apoyo visual',
+    caption: 'Creador explicando una solución digital con apoyo visual.',
     type: 'ugc',
     industry: 'unclassified',
     languages: ['es'],
@@ -212,8 +212,8 @@ export const PORTFOLIO = [
   },
   {
     id: 'es-ugc-6',
-    title: 'Rutina diaria con reloj inteligente',
-    caption: 'Rutina diaria con reloj inteligente.',
+    title: 'Rutina diaria con un reloj inteligente',
+    caption: 'Rutina diaria con un reloj inteligente.',
     type: 'ugc',
     industry: 'unclassified',
     languages: ['es'],
@@ -227,8 +227,8 @@ export const PORTFOLIO = [
   },
   {
     id: 'es-spokesperson-hero-1',
-    title: 'Presentador en exteriores hablando a cámara',
-    caption: 'Presentador en exteriores hablando a cámara.',
+    title: 'Spokesperson hablando a cámara en exteriores',
+    caption: 'Presentador hablando a cámara en exteriores.',
     type: 'spokesperson',
     industry: 'unclassified',
     languages: ['es'],
@@ -242,8 +242,8 @@ export const PORTFOLIO = [
   },
   {
     id: 'es-spokesperson-hero-2',
-    title: 'Presentadora con portátil explicando una aplicación',
-    caption: 'Presentadora con portátil explicando una aplicación.',
+    title: 'Presentadora explicando una aplicación con su portátil',
+    caption: 'Presentadora explicando una aplicación con su portátil.',
     type: 'spokesperson',
     industry: 'unclassified',
     languages: ['es'],
@@ -257,8 +257,8 @@ export const PORTFOLIO = [
   },
   {
     id: 'es-spokesperson-hero-3',
-    title: 'Presentadora con preguntas y rótulos en pantalla',
-    caption: 'Presentadora con preguntas y rótulos en pantalla.',
+    title: 'Presentadora respondiendo preguntas con textos en pantalla',
+    caption: 'Presentadora respondiendo preguntas con textos en pantalla.',
     type: 'spokesperson',
     industry: 'unclassified',
     languages: ['es'],
@@ -272,8 +272,8 @@ export const PORTFOLIO = [
   },
   {
     id: 'es-spokesperson-1',
-    title: 'Presentador explicando un servicio profesional con subtítulos',
-    caption: 'Presentador explicando un servicio profesional con subtítulos.',
+    title: 'Spokesperson explicando un servicio profesional',
+    caption: 'Spokesperson explicando un servicio profesional.',
     type: 'spokesperson',
     industry: 'unclassified',
     languages: ['es'],
@@ -287,8 +287,8 @@ export const PORTFOLIO = [
   },
   {
     id: 'es-spokesperson-2',
-    title: 'Presentadora al aire libre con imágenes de apoyo de cocina',
-    caption: 'Presentadora al aire libre con imágenes de apoyo de cocina.',
+    title: 'Presentadora en exteriores con imágenes de cocina',
+    caption: 'Presentadora en exteriores con imágenes de cocina.',
     type: 'spokesperson',
     industry: 'unclassified',
     languages: ['es'],
@@ -302,8 +302,8 @@ export const PORTFOLIO = [
   },
   {
     id: 'es-spokesperson-3',
-    title: 'Presentador con auriculares en estilo pódcast',
-    caption: 'Presentador con auriculares en estilo pódcast.',
+    title: 'Spokesperson con auriculares en formato pódcast',
+    caption: 'Spokesperson con auriculares en formato pódcast.',
     type: 'spokesperson',
     industry: 'unclassified',
     languages: ['es'],
@@ -317,8 +317,8 @@ export const PORTFOLIO = [
   },
   {
     id: 'es-spokesperson-4',
-    title: 'Presentadora en su escritorio con rótulos',
-    caption: 'Presentadora en su escritorio con rótulos.',
+    title: 'Presentadora en su escritorio con textos en pantalla',
+    caption: 'Presentadora en su escritorio con textos en pantalla.',
     type: 'spokesperson',
     industry: 'unclassified',
     languages: ['es'],
@@ -332,8 +332,8 @@ export const PORTFOLIO = [
   },
   {
     id: 'es-spokesperson-5',
-    title: 'Presentador en estudio con rótulos animados',
-    caption: 'Presentador en estudio con rótulos animados.',
+    title: 'Spokesperson en estudio con rótulos animados',
+    caption: 'Spokesperson en estudio con rótulos animados.',
     type: 'spokesperson',
     industry: 'unclassified',
     languages: ['es'],
@@ -1501,6 +1501,9 @@ export const CATEGORIES = [
      Spokesperson). It has a tab only while at least one such video is approved. */
   { id: 'spokesperson', label: 'Spokesperson', color: '#ff6a4d', byType: 'spokesperson' },
 ]
+/* The UGC TYPE filter exists only on the Spanish page: its videos are all 'unclassified' by industry, so without it the Spanish library offered only All + Spokesperson. It is NOT in
+   CATEGORIES, so the English tabs (and tests/creator-showcase.test.mjs) are unchanged; it sits between the industry tabs and Spokesperson. */
+const ES_UGC_CATEGORY = { id: 'ugc', label: 'UGC', color: '#d5ff40', byType: 'ugc' }
 export const CATEGORY_LABELS = Object.fromEntries(CATEGORIES.map((c) => [c.id, c.label]))
 const CATEGORY_ORDER = CATEGORIES.map((c) => c.id)
 const CATEGORY_OF_INDUSTRY = { saas: 'saas', technology: 'saas', ecommerce: 'ecommerce', services: 'services' }
@@ -1508,13 +1511,14 @@ export const categoryOf = (item) => (isClassified(item) ? CATEGORY_OF_INDUSTRY[i
 
 /* Is the video in the filter `categoryId`? An industry filter by its industry group; the Spokesperson filter by the video's type. */
 export const inCategory = (item, categoryId) => {
-  const c = CATEGORIES.find((x) => x.id === categoryId)
+  const c = CATEGORIES.find((x) => x.id === categoryId) ?? (categoryId === ES_UGC_CATEGORY.id ? ES_UGC_CATEGORY : undefined)
   return c?.byType ? typeOf(item) === c.byType : categoryOf(item) === categoryId
 }
 
 /* The tabs /creator-showcase offers: All Work, then each category that has at least one classified video (an empty category is hidden). */
 export const availableCategories = (items) => {
-  return [ALL_CATEGORY, ...CATEGORIES.filter((c) => items.some((i) => inCategory(i, c.id)))]
+  const list = isEs() ? [...CATEGORIES.filter((c) => c.id !== 'spokesperson'), ES_UGC_CATEGORY, ...CATEGORIES.filter((c) => c.id === 'spokesperson')] : CATEGORIES
+  return [ALL_CATEGORY, ...list.filter((c) => items.some((i) => inCategory(i, c.id)))]
 }
 export const countIn = (items, categoryId) => (categoryId === 'all' ? items.length : items.filter((i) => inCategory(i, categoryId)).length)
 export const filterByCategory = (items, categoryId) => (categoryId === 'all' ? items : items.filter((i) => inCategory(i, categoryId)))

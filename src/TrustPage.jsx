@@ -8,6 +8,7 @@ import { TRUST_CONTENT } from './content/trustPages.js'
 import { parsePath } from './i18n/paths.js'
 import { tr, hrefFor } from './i18n/tr.js'
 import { localizeConfig } from './i18n/content.js'
+import { ES_ABOUT } from './i18n/es/about.js'
 
 /* About, Contact, Privacy Policy and Terms: one template, four URLs (PATHS.about / contact / privacy / terms). The words are in src/content/trustPages.js.
    Head and JSON-LD come from the SEO manifest like every other page. While TRUST_PAGES_PUBLISHED is false (src/config.js) the pages are drafts: noindex, no
@@ -37,9 +38,10 @@ function Inline({ text }) {
   })
 }
 
-function localizePage(page, locale) {
+function localizePage(page, locale, key) {
   if (locale === 'en') return page
-  const t = localizeConfig(page, locale)
+  // The Spanish About page is its own editorial text (src/i18n/es/about.js), not a translation of the English sections.
+  const t = locale === 'es' && key === 'about' ? ES_ABOUT : localizeConfig(page, locale)
   const cleaned = (body) => body
     .map((b) => (typeof b === 'string' ? b : { list: b.list.filter((x) => x.trim() !== '') }))
     .filter((b) => (typeof b === 'string' ? b.trim() !== '' : b.list.length > 0))
@@ -52,7 +54,7 @@ export default function TrustPage() {
   const key = KEY_BY_PATH[path] ?? 'about'
   // Other languages: the page's words go through the dictionary. An entry translated to an empty string means "leave this out in that language" (for example a link into an
   // English-only flow); sections left empty disappear. The legal documents (privacy, terms, legal notice) are not translated and are never built in other languages.
-  const page = localizePage(TRUST_CONTENT[key], locale)
+  const page = localizePage(TRUST_CONTENT[key], locale, key)
   useDocumentHead(pageHead(PATHS[key]))
 
   const viewed = useRef(false)

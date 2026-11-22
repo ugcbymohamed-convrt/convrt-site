@@ -4,6 +4,7 @@ import { Section, Reveal, RoadmapCta, GhostCta } from './shared.jsx'
 import { tr } from '../../i18n/tr.js'
 import { currentLocale } from '../../i18n/locale.js'
 import { localizeConfig } from '../../i18n/content.js'
+import { ES_FINAL_CTA } from '../../i18n/es/labels.js'
 
 /* Final CTA: deliberately short, not a sixth content section. The Free Creative Growth Roadmap is open to brands in every industry. */
 
@@ -19,6 +20,7 @@ export const UGC_CTA = {
 
 export default function UgcFinalCTA({ config: configProp = UGC_CTA }) {
   const config = localizeConfig(configProp, currentLocale())
+  const esCta = currentLocale() === 'es' ? ES_FINAL_CTA[config.id] : undefined
   return (
     <Section id="get-started" label={config.id} className="!pt-4 !pb-12 md:!pb-16">
       <Reveal>
@@ -29,12 +31,13 @@ export default function UgcFinalCTA({ config: configProp = UGC_CTA }) {
             <h2 id={config.id} className="mx-auto max-w-2xl font-display text-[1.9rem] font-bold leading-[1.06] tracking-display text-ink sm:text-4xl md:text-[2.6rem]">
               {config.title}
             </h2>
+            {esCta?.text && <p className="mx-auto mt-4 max-w-xl text-base leading-relaxed text-ink-muted">{esCta.text}</p>}
             <div className="mt-6 flex justify-center">
               {config.primary
                 ? <RoadmapCta hero location="final" track={config.track.cta} href={config.primary.href} external={config.primary.external}>{config.primary.label}</RoadmapCta>
                 : <RoadmapCta hero location="final" track={config.track.cta} />}
             </div>
-            {config.note !== null && <p className="mt-4 text-sm text-ink-muted">{config.note ?? tr('Free strategy session. Every industry welcome, subject to a short fit check. No obligation.')}</p>}
+            {config.note !== null && <p className="mt-4 text-sm text-ink-muted">{esCta?.note ?? config.note ?? tr('Free strategy session. Every industry welcome, subject to a short fit check. No obligation.')}</p>}
             <div className="mt-5 flex flex-col items-stretch justify-center gap-3 sm:flex-row sm:items-center">
               <GhostCta href="/pricing#packages" onClick={() => trackEvent(config.track.pricing, { location: 'final' })}>{tr('See Pricing')}</GhostCta>
               <GhostCta href={`mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(config.emailSubject)}`} onClick={() => trackEvent(config.track.email, { location: 'final' })}>

@@ -6,6 +6,7 @@ import { VideoFrame } from './SpokespersonScenes.jsx'
 import { tr } from '../../i18n/tr.js'
 import { currentLocale } from '../../i18n/locale.js'
 import { localizeConfig } from '../../i18n/content.js'
+import { ES_SECTION_INTROS } from '../../i18n/es/labels.js'
 
 /* "One message. Different ways to deliver it." The spokesperson counterpart of the UGC page's creative-testing diagram, with the SAME interaction
    system (src/components/ugc/TestingDiagram.jsx): one scene on a stage at a time, a live caption, one button per state, a one-time pass through the
@@ -166,6 +167,7 @@ export function FormatStage({ content, scenes: SCENES, id }) {
       <div className="mx-auto max-w-2xl text-center">
         <p className="text-xs font-semibold uppercase tracking-[0.16em] text-lime">{eyebrow}</p>
         <h3 className="mt-2 font-display text-xl font-semibold leading-snug tracking-snug text-ink md:text-[1.7rem]">{title}</h3>
+        {currentLocale() === 'es' && ES_SECTION_INTROS[id] && <p className="mx-auto mt-3 max-w-xl text-[15px] leading-relaxed text-ink-muted">{ES_SECTION_INTROS[id]}</p>}
       </div>
 
       <div aria-hidden="true" className="relative mx-auto mt-6 h-[26rem] max-w-2xl overflow-hidden rounded-2xl border border-hairline bg-canvas/50 px-3 py-3 sm:h-[23.5rem]">

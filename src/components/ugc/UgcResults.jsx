@@ -7,6 +7,7 @@ import { tr } from '../../i18n/tr.js'
 import { currentLocale } from '../../i18n/locale.js'
 import { localizeStat } from '../../i18n/format.js'
 import { formatMoneyEs } from '../../i18n/es/money.js'
+import { ES_TESTIMONIALS_NOTE } from '../../i18n/es/labels.js'
 
 /* SECTION 4: results and client feedback, in one compact block.
    • Elyon 5.28x: ONE individual creator-led UGC video, client-reported, early learning phase, never typical or guaranteed (wording
@@ -130,6 +131,8 @@ export default function UgcResults() {
           })}
         </div>
       </div>
+
+      {locale === 'es' && <p className="mt-6 text-center text-[13px] text-ink-muted">{ES_TESTIMONIALS_NOTE}</p>}
 
       <Reveal className="mt-8 flex justify-center">
         <RoadmapCta location="results" />
