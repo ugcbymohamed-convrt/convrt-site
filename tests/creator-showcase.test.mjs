@@ -565,7 +565,7 @@ test('no duplicates: every video in the Showcase is listed once (id, Cloudflare 
   const html = rootOf(page(PATH))
   const shown = html.match(/aria-label="Play video: [^"]*"/g) || []
   assert.equal(new Set(shown).size, shown.length, 'no two cards in the HTML share a label')
-  assert.equal(PORTFOLIO.filter((v) => v.type === 'spokesperson').length, 7)
+  assert.equal(PORTFOLIO.filter((v) => v.type === 'spokesperson' && !v.onlyIn).length, 7, 'English spokesperson videos (Spanish-only entries have onlyIn)')
 })
 
 test('Spokesperson filter: a type filter after the four industry filters; it holds every spokesperson video (whatever its industry) and nothing else, and has no tab without one', () => {

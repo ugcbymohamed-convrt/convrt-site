@@ -5,7 +5,7 @@ Branch `multilingual-foundation-es` (merged with `origin/main` da558ee, which in
 Live blocker list: `node scripts/es-launch-readiness.mjs` (exit code 1 while any remain).
 
 ## Pages prepared (native Spanish, same slugs)
-`/es/` · `/es/ugc-video-agency` · `/es/spokesperson-video-production` · `/es/social-media-video-production` · `/es/saas-video-production` · `/es/pricing` · `/es/creator-showcase` (launch-blocked) ·
+`/es/` · `/es/ugc-video-agency` · `/es/spokesperson-video-production` · `/es/social-media-video-production` · `/es/saas-video-production` · `/es/pricing` · `/es/creator-showcase` (live: 18 Spanish videos) ·
 `/es/about` · `/es/contact` · `/es/creative-growth-roadmap` (the application; `noindex`, like the English page, so no sitemap or hreflang).
 Deliberately English-only: case studies, blog, free hooks, risk-free trial, referrals, /scale, Privacy, Terms, Legal Notice.
 
@@ -19,14 +19,12 @@ Deliberately English-only: case studies, blog, free hooks, risk-free trial, refe
 - [x] English pages differ from `origin/main` only by the selector and hreflang tags (`scripts/i18n-english-parity.mjs`: 0 differences)
 - [x] Spanish Roadmap application: see below
 - [ ] Native-Spanish review of all copy (see the list in the report)
-- [ ] Spanish-language Showcase videos (blocker 1), Spanish OG image (blocker 2), legal set (blocker 3)
+- [x] 18 Spanish videos integrated (home, UGC, Spokesperson, Showcase); SaaS and Organic launch without videos (text-led hero); Showcase gate lifted
+- [ ] Spanish OG image (blocker 1), legal set (blocker 2)
 
 ## Launch blockers
-1. **Spanish Creator Showcase has no videos.** `/es/creator-showcase` is built but `noindex`, out of the sitemap and hreflang, and the selector falls back to the Spanish home (`src/i18n/release.js`).
-   The four service galleries on Spanish pages are empty for the same reason. Exact information needed, and how an approved video flows to the Showcase and the galleries: `docs/multilingual-spanish-videos.md`.
-   Spanish videos use `languages: ['es']` + `onlyIn: ['es']`, so they never change an English page.
-2. **Spanish OG image.** `public/og/convrt-og-es.png` (1200×630) is missing; Spanish pages share the English image until it exists. Requirements in `docs/multilingual-spanish-videos.md`; flip `ES_OG_IMAGE_READY` after adding it.
-3. **Legal pages.** Privacy, Terms and Legal Notice are English-only (linked from Spanish pages, marked `lang="en"`). Unpublished Spanish drafts for review are outside the repo (`CONVRT/Claude/multilingual-es/legal-translation-review/`); `docs/multilingual-legal-translation-review.md` lists what the lawyer must check.
+1. **Spanish OG image.** `public/og/convrt-og-es.png` (1200×630) is missing; Spanish pages share the English image until it exists. Requirements in `docs/multilingual-spanish-videos.md`; flip `ES_OG_IMAGE_READY` after adding it.
+2. **Legal pages.** Privacy, Terms and Legal Notice are English-only (linked from Spanish pages, marked `lang="en"`). Unpublished Spanish drafts for review are outside the repo (`CONVRT/Claude/multilingual-es/legal-translation-review/`); `docs/multilingual-legal-translation-review.md` lists what the lawyer must check.
 
 Not blockers but English-only: free hooks, risk-free trial and referrals (their Spanish CTAs are omitted or send the visitor to the booking call or contact page).
 
@@ -40,14 +38,13 @@ Not blockers but English-only: free hooks, risk-free trial and referrals (their 
 - Calendly renders in the visitor's browser language; the event's own name/description and its confirmation emails stay as set in the Calendly account (English). The owner can localize them in Calendly.
 
 ## Decisions needed from the owner
-1. **Spanish videos:** which creators and videos have written consent for portfolio use, and the spoken language of each (`docs/multilingual-spanish-videos.md`).
-2. **Legal set:** publish lawyer-reviewed Spanish Privacy/Terms/Legal Notice before indexing (recommended), or accept English-only legal links labelled "(en inglés)".
-3. **Spanish OG image:** commission it or publish with the English image.
-4. **Roadmap explainer in Spanish:** provide a Spanish version (audio or burned-in captions), or keep it hidden on the Spanish page.
-5. **Roadmap privacy wording** and the Calendly notice translation: lawyer review.
-6. **Native Spanish review** of all copy before launch.
-7. **Spanish-only video pages and indexing:** a Spanish gallery page follows its English twin's indexability flag. Change only if you want Spanish videos alone to make a page indexable.
-8. **Publishing control:** `es: 'live'` means merging publishes Spanish, including the blocked items above (the Showcase stays noindex by gate). Use `'review'` to merge without publishing.
+1. **Legal set:** publish lawyer-reviewed Spanish Privacy/Terms/Legal Notice before indexing (recommended), or accept English-only legal links labelled "(en inglés)".
+2. **Spanish OG image:** commission it or publish with the English image.
+3. **Roadmap explainer in Spanish:** provide a Spanish version (audio or burned-in captions), or keep it hidden on the Spanish page.
+4. **Roadmap privacy wording** and the Calendly notice translation: lawyer review.
+5. **Native Spanish review** of all copy before launch.
+6. **Spanish-only video pages and indexing:** a Spanish gallery page follows its English twin's indexability flag. Change only if you want Spanish videos alone to make a page indexable.
+7. **Publishing control:** `es: 'live'` means merging publishes Spanish, including the open items above. Use `'review'` to merge without publishing.
 
 Closed: **Spanish prices are EUR** (final, approved amounts), `hreflang="es"`, no language-preference storage, quotes verbatim in English, 20-minute wording (the Calendly event is titled "20-minute strategy call"; the `30min` in the URL is a legacy slug).
 

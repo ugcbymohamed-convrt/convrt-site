@@ -1,11 +1,26 @@
-# Spanish videos: what is needed, and how they reach the site
+# Spanish videos: what is integrated, and how to add more
 
-The Spanish pages never reuse the English library. Spanish-speaking creators exist, but this repository records **no** Spanish-language video yet
-(`node scripts/es-launch-readiness.mjs` prints the current count). Until one is approved the Spanish Creator Showcase stays launch-blocked
-(`noindex`, no sitemap entry, no hreflang, language selector falls back to the Spanish home) and the Spanish service-page galleries stay empty.
-Nothing is generated, guessed or translated to fill the gap.
+**State (2026-11-22):** 18 Spanish videos from the owner's folders (`~/Desktop/SPANISH`: `UGC`, `Spokesperson`, `Main Page`) are uploaded to Cloudflare Stream and live in `src/content/portfolio.js` as Spanish-only entries
+(`languages: ['es']` + `onlyIn: ['es']`). The owner confirmed in chat that all 18 are approved for the website and that the creators agreed to portfolio display. The Spanish Creator Showcase gate has therefore lifted
+(indexable, sitemap, reciprocal hreflang).
 
-## 1. Per-video information the owner must supply
+| Page | What it shows |
+|---|---|
+| `/es/` hero stage | Front (the existing CONVRT ad, byte-identical to the English homepage video; its on-screen captions are English, so it keeps `languages: ['en']` and the stage labels it "Inglés", the owner's explicit choice), then Left and Right (Spanish; the same Stream videos as `es-ugc-2` and `es-ugc-1`) |
+| `/es/ugc-video-agency` | hero stage = the 3 `UGC/HERO-*` videos; gallery = `VIDEOS-SECTION-1..6` |
+| `/es/spokesperson-video-production` | hero stage = the 3 `Spokesperson/HERO-*` videos; gallery = `VIDEOS-SECTION-1..6` |
+| `/es/saas-video-production`, `/es/social-media-video-production` | **no videos** (owner decision): text-led hero, no phones, no gallery |
+| `/es/creator-showcase` | all 18, with the type tabs, "Mostrar más" paging and the lightbox player |
+
+Files: the folders hold 19 files but 18 unique videos on Stream plus the existing English ad: `Main Page/Left` = `UGC/VIDEOS-SECTION-2-2` and `Main Page/Right` = `UGC/VIDEOS-SECTION-1-1` (byte-identical), uploaded once.
+Creators are identified in the code only by opaque ids (`es-c01` … `es-c06`); the id-to-name map, the original file in `CREATORS/Spanish` and each Stream id are kept privately in
+`CONVRT/Claude/multilingual-es/spanish-videos-private-map.csv` (outside the repository; a test fails if a creator name appears in the repository). Names, brands and credits are not shown. No upload date is
+recorded, so none of these videos emits `VideoObject` markup. `es-c06` (UGC-style presenter with headphones, `Spokesperson/VIDEOS-SECTION-3`) has no match in the CREATORS folder: the creator is unidentified.
+
+**Adding a genuine SaaS or Organic Spanish video later:** add a `type: 'saas'` (or `'organic'`) entry with `languages: ['es']`, `onlyIn: ['es']` and `placement: 'hero'` or `'gallery'`. The text-led hero turns back into the phone stage and the gallery section
+appears by itself; nothing else changes (tests/i18n.test.mjs proves the switch).
+
+## 1. Per-video information (for any further video)
 
 One entry per video in `src/content/portfolio.js` (the file's header is the full field reference). Everything marked **required** is a fact only the
 owner or the creator can confirm; none of it may be invented.

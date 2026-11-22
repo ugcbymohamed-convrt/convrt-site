@@ -357,7 +357,7 @@ test('portfolio scales: "Show more" pages through a large library without render
 })
 
 test('portfolio absent: no section, no placeholder, no illustration and no video in the HTML; the hero is a clean text-led hero', () => {
-  assert.equal(selectDisplayable().length, PORTFOLIO.filter(isDisplayable).length)
+  assert.equal(selectDisplayable().length, PORTFOLIO.filter(isDisplayable).filter((v) => !v.onlyIn).length, 'English pages never include Spanish-only videos')
   assert.equal(renderToStaticMarkup(createElement(UgcWork.default, { items: [] })), '', 'the portfolio section renders nothing without approved videos')
   if (selectDisplayable().length > 0) return // once real videos ship, the portfolio is correctly present
   const html = page(PATH)

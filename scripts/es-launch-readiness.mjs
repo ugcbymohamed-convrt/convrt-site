@@ -26,6 +26,7 @@ for (const [flow, ok] of Object.entries(LOCALIZED_FLOWS.es)) if (!ok) notes.push
 if (!ES_OG_IMAGE_READY) blockers.push('Spanish OG image missing: Spanish pages share the English-text image (public/og/convrt-og-es.png)')
 for (const bp of ['/privacy', '/terms', '/legal-notice']) if (!TRANSLATED_PATHS.es.includes(bp)) blockers.push(`Legal page ${bp} is English-only (linked from Spanish pages, marked lang="en")`)
 console.log(`Spanish status: ${LOCALES.es.status}`)
+console.log(`Spanish videos approved: ${displayableFor('es').length} (UGC ${displayableFor('es').filter((v) => v.type === 'ugc').length}, Spokesperson ${displayableFor('es').filter((v) => v.type === 'spokesperson').length}); SaaS and Organic launch without videos (text-led hero)`)
 console.log(blockers.length ? `Launch blockers (${blockers.length}):` : 'No blockers.')
 for (const b of blockers) console.log(` - ${b}`)
 if (notes.length) console.log('English-only flows (not blockers):')

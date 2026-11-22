@@ -40,3 +40,32 @@ export const HOME_HERO = [
     approval,
   },
 ]
+
+/* The Spanish homepage hero (owner folder ~/Desktop/SPANISH/Main Page, Front / Left / Right; owner confirmed in chat on 2026-11-22 that these are approved and consented).
+   - Front (the large centre phone) is the CONVRT ad the English homepage also shows (same Cloudflare Stream video). Its on-screen captions are English, so it keeps `languages: ['en']`:
+     the stage's own language label says so honestly. This was the owner's explicit choice (2026-11-22).
+   - Left and Right are byte-identical to the Spanish UGC videos es-ugc-2 and es-ugc-1 in src/content/portfolio.js (the same Stream videos, uploaded once), so they carry the same Spanish captions.
+   English keeps HOME_HERO unchanged. */
+export const HOME_HERO_ES = [
+  HOME_HERO[0],
+  {
+    id: 'home-hero-es-left',
+    creatorId: 'es-c01',
+    industry: 'unclassified',
+    languages: ['es'],
+    caption: 'Vivienda con piscina: recorrido de una creadora.',
+    poster: '/portfolio/es-ugc-2.webp',
+    source: { cloudflareId: '3e6b7af68da8f3258c2d6f4893b142bd' },
+    approval: { ...approval, approvedOn: '2026-11-22' },
+  },
+  {
+    id: 'home-hero-es-right',
+    creatorId: 'es-c02',
+    industry: 'unclassified',
+    languages: ['es'],
+    caption: 'Café de especialidad: producto y creador a cámara.',
+    poster: '/portfolio/es-ugc-1.webp',
+    source: { cloudflareId: '04b0b9817dea7ad5f29e67d98499e8a4' },
+    approval: { ...approval, approvedOn: '2026-11-22' },
+  },
+]

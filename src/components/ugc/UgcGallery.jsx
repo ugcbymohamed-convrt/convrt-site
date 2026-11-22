@@ -104,7 +104,8 @@ export default function UgcGallery({ items, config: configProp = UGC_GALLERY }) 
   const config = localizeConfig(configProp, currentLocale())
   const preview = usePreviewHost()
   const real = items.slice(0, TOTAL)
-  const sample = real.length === 0 && preview
+  // Stand-in cards are an English-preview layout aid only: a translated page with no genuine video shows no gallery at all (no empty frames, no placeholders), even on a Preview.
+  const sample = real.length === 0 && preview && currentLocale() === 'en'
   const fcfg = config.filter
   const cards = real.length ? real : sample ? Array.from({ length: TOTAL }, (_, i) => ({ id: `sample-${i}`, sample: true, portrait: config.samplePortraits ? config.samplePortraits[i % config.samplePortraits.length] : undefined, ...(fcfg ? { [fcfg.field]: fcfg.options[i % fcfg.options.length].id } : {}) })) : []
   const [chip, setChip] = useState('all')

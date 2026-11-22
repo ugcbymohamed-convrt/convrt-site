@@ -3,7 +3,7 @@ import { usePressFeedback } from '../lib/usePressFeedback.js'
 import { OFFER_PATHS, CREATOR_SHOWCASE_PATH } from '../config.js'
 import { trackEvent } from '../lib/analytics.js'
 import CreatorVideoStage from './ugc/CreatorVideoStage.jsx'
-import { HOME_HERO } from '../content/homeHero.js'
+import { HOME_HERO, HOME_HERO_ES } from '../content/homeHero.js'
 import { useTr, useHref } from '../i18n/tr.js'
 import { currentLocale } from '../i18n/locale.js'
 import { primaryAction, flowAvailable } from '../i18n/cta.js'
@@ -141,7 +141,7 @@ export default function Hero() {
           {/* Right column — the same three-phone video stage as the /ugc-video-agency hero (second on small screens).
               The videos are listed in src/content/homeHero.js; the first is the large centre phone. */}
           <div className="order-2 min-w-0 lg:order-none lg:col-span-6">
-            <CreatorVideoStage items={HOME_HERO} />
+            <CreatorVideoStage items={en ? HOME_HERO : HOME_HERO_ES} label={tr('Creator UGC videos')} />
           </div>
         </div>
       </div>

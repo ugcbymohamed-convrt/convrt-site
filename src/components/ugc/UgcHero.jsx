@@ -26,7 +26,11 @@ import { localizeHero } from '../../i18n/hero.js'
    while a roll is in progress), so the indexable H1 is stable. Nothing rotates for prefers-reduced-motion or data-saver visitors,
    or while the tab is hidden.
 
-   MOBILE ORDER (as on the homepage): headline and description, the phones, then the CTAs. */
+   MOBILE ORDER (as on the homepage): headline and description, the phones, then the CTAs.
+
+   TEXT-LED LAYOUT (translated pages with no genuine video, e.g. /es/saas-video-production and /es/social-media-video-production): no phones, no empty frames, no placeholders.
+   The same headline, description and CTAs are centred in one column with a larger headline and more breathing room. The moment a genuine video exists for that page and language
+   (an entry with `onlyIn` in src/content/portfolio.js) the stage returns by itself. English keeps its current behaviour (the empty three-frame fallback) unchanged. */
 
 /* THE HERO IS CONFIGURATION-DRIVEN. UGC_HERO is this page's content and the default; /spokesperson-video-production passes its own (src/content/spokespersonPage.js)
    and gets the same layout, headline animation, CTA styles, offer cards and phone stage. A config supplies:
@@ -95,7 +99,7 @@ function ReelWord({ words: ROTATING, sizer }) {
   )
 }
 
-function Headline({ config }) {
+function Headline({ config, textLed = false }) {
   const { id, lines: LINES, lead, words, sizer } = config
   let i = 0
   const word = (w, key) => {
@@ -109,7 +113,7 @@ function Headline({ config }) {
   return (
     <h1
       id={id}
-      className="font-display font-semibold text-ink tracking-display-xl leading-[1.05] text-[2rem] min-[400px]:text-[2.5rem] sm:text-[3rem] md:text-[3.4rem] lg:text-[2.4rem] xl:text-[3.35rem]"
+      className={`font-display font-semibold text-ink tracking-display-xl leading-[1.05] ${textLed ? 'text-[2.15rem] min-[400px]:text-[2.6rem] sm:text-[3rem] md:text-[3.2rem] lg:text-[3.4rem] xl:text-[4rem]' : 'text-[2rem] min-[400px]:text-[2.5rem] sm:text-[3rem] md:text-[3.4rem] lg:text-[2.4rem] xl:text-[3.35rem]'}`}
     >
       {LINES.map((words) => (
         <span key={words[0]} className="block">
@@ -147,6 +151,7 @@ export default function UgcHero({ items, config: configProp = UGC_HERO }) {
   const primaryLabel = primary.redirected ? tr(primary.label) : config.primary.label
   const offersAvailable = flowAvailable(locale, 'riskFree') && flowAvailable(locale, 'hooks')
   const hasWork = items.length > 0
+  const textLed = !hasWork && locale !== 'en'
   const primaryPress = usePressFeedback()
   const ghostPress = usePressFeedback()
   const preview = usePreviewHost()
@@ -155,26 +160,26 @@ export default function UgcHero({ items, config: configProp = UGC_HERO }) {
       <div aria-hidden="true" className="pointer-events-none absolute -top-40 left-1/2 h-[560px] w-[1100px] -translate-x-1/2 rounded-full bg-lime/10 blur-[160px]" />
       <div aria-hidden="true" className="pointer-events-none absolute top-[40%] left-1/2 h-[420px] w-[820px] -translate-x-1/2 rounded-full bg-lime/[0.07] blur-[140px]" />
 
-      <div className="relative mx-auto max-w-7xl px-5 pt-6 pb-14 md:px-8 md:pt-8 md:pb-16 lg:pt-10 lg:pb-20">
-        <div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-12 lg:gap-10">
+      <div className={textLed ? 'relative mx-auto max-w-7xl px-5 pt-10 pb-16 md:px-8 md:pt-14 md:pb-20 lg:pt-16 lg:pb-24' : 'relative mx-auto max-w-7xl px-5 pt-6 pb-14 md:px-8 md:pt-8 md:pb-16 lg:pt-10 lg:pb-20'}>
+        <div className={`grid grid-cols-1 items-center gap-8 ${textLed ? '' : 'lg:grid-cols-12 lg:gap-10'}`}>
           {/* Left column: the homepage hero's structure (headline, description, one value line, two CTAs, two free offers).
               Below lg its wrapper is `display: contents`, so the two groups can be ordered around the phones. */}
-          <div className="contents text-center lg:col-span-6 lg:block lg:text-left">
+          <div className={textLed ? 'mx-auto w-full max-w-5xl text-center' : 'contents text-center lg:col-span-6 lg:block lg:text-left'}>
             <div className="order-1 lg:order-none">
-              <Headline config={config} />
-              <p className="cs-fade-up mx-auto mt-6 max-w-xl text-base leading-relaxed text-ink-muted md:mt-8 md:text-lg lg:mx-0" style={{ animationDelay: '520ms' }}>
+              <Headline config={config} textLed={textLed} />
+              <p className={textLed ? 'cs-fade-up mx-auto mt-6 max-w-2xl text-base leading-relaxed text-ink-muted md:mt-8 md:text-lg' : 'cs-fade-up mx-auto mt-6 max-w-xl text-base leading-relaxed text-ink-muted md:mt-8 md:text-lg lg:mx-0'} style={{ animationDelay: '520ms' }}>
                 {config.description}
               </p>
             </div>
 
             <div className="order-3 lg:order-none">
-              <div className="cs-fade-up lg:mt-6" style={{ animationDelay: '600ms' }}>
+              <div className={`cs-fade-up ${textLed ? 'mt-8 md:mt-10' : 'lg:mt-6'}`} style={{ animationDelay: '600ms' }}>
                 {config.leadIn !== null && (
                   <p className="mb-3 text-balance text-[15px] font-medium leading-snug text-ink md:text-base">
                     {config.leadIn ?? (locale === 'en' ? <>Your next 5 ad concepts. Tailored to your brand. <span className="text-lime">On us.</span></> : flowAvailable(locale, 'roadmap') ? <>{tr('Your next 5 ad concepts. Tailored to your brand.')} <span className="text-lime">{tr('On us.')}</span></> : <>{tr('Book a free strategy call.')} <span className="text-lime">{tr('We tell you exactly what you need.')}</span></>)}
                   </p>
                 )}
-                <div className="flex flex-col items-stretch gap-3 sm:flex-row sm:items-center sm:justify-center lg:justify-start">
+                <div className={`flex flex-col items-stretch gap-3 sm:flex-row sm:items-center sm:justify-center ${textLed ? '' : 'lg:justify-start'}`}>
                   <a
                     href={hrefFor(primary.href)}
                     {...(primary.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
@@ -211,9 +216,11 @@ export default function UgcHero({ items, config: configProp = UGC_HERO }) {
             </div>
           </div>
 
+          {!textLed && (
           <div className="order-2 min-w-0 lg:order-none lg:col-span-6">
             {hasWork ? <CreatorVideoStage items={items} label={config.stageLabel} trackPrefix={config.stagePrefix} /> : <PhoneShowcaseFallback portraits={config.previewPortraits && preview} />}
           </div>
+          )}
         </div>
       </div>
     </section>

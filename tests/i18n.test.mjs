@@ -31,7 +31,8 @@ import { isReleased, releaseBlocker, blockedPages } from '../src/i18n/release.js
 import { isPricingApproved, pricingConfig, pricingProblems } from '../src/i18n/pricing.js'
 import { ES_PRICED_PAGES } from '../src/i18n/es/pricing.js'
 import { money } from '../src/i18n/money.js'
-import { displayableFor, titleOf, portfolioProblems, forPageLanguage, selectOurWork, selectGallery, selectSpokespersonGallery, selectSaasGallery, selectHero, ENGLISH_LIBRARY } from '../src/content/portfolio.js'
+import { displayableFor, titleOf, portfolioProblems, forPageLanguage, selectOurWork, selectGallery, selectSpokespersonGallery, selectSaasGallery, selectHero, selectSaasHero, selectOrganicHero, isDisplayable, ENGLISH_LIBRARY } from '../src/content/portfolio.js'
+import { HOME_HERO, HOME_HERO_ES } from '../src/content/homeHero.js'
 
 // Pages that are built AND released (the Spanish Showcase is launch-blocked until Spanish-language videos exist).
 const RELEASED_ES = TRANSLATED_PATHS.es.filter((bp) => isReleased('es', bp))
@@ -346,8 +347,8 @@ test('Spanish prices are the owner-approved EUR amounts: shown everywhere a pric
     assert.ok(!/name="robots"/.test(headOf(page(localizedPath('es', bp)))), `${bp}: indexable`)
     assert.ok(sm.includes(localizedPath('es', bp)) && /hreflang="es"/.test(page(bp)), `${bp}: sitemap + hreflang`)
   }
-  assert.ok(releaseBlocker('es', '/creator-showcase'), 'the Spanish Showcase stays gated until Spanish videos exist')
-  assert.match(headOf(page('/es/creator-showcase')), /name="robots" content="noindex, follow"/)
+  assert.equal(releaseBlocker('es', '/creator-showcase'), null, 'the Spanish Showcase gate lifted because approved Spanish videos exist (see its own test)')
+  assert.ok(releaseBlocker('es', '/creator-showcase') === null && blockedPages('es').length === 0, 'no launch gate is left on any Spanish page')
   // English is untouched: USD notation from the business data, no euro sign
   const en = textOf(page('/pricing')).join('\n')
   assert.match(en, /\$3,000/); assert.ok(!/€/.test(en))
@@ -446,20 +447,21 @@ test('hydration data: the Spanish pages prerender the same locale the browser de
   assert.match(read('src/lib/routes/hydration.js'), /normalizePathname/)
 })
 
-test('Spanish Showcase release gate: its own creators and videos, never the English library; launch-blocked (noindex, no sitemap, no hreflang) until one exists', () => {
-  assert.equal(displayableFor('es').length, 0, 'no approved Spanish-language video exists today')
-  assert.deepEqual(blockedPages('es').filter((b) => b.path === '/creator-showcase'), [{ path: '/creator-showcase', reason: 'no approved Spanish-language videos yet' }])
-  assert.ok(releaseBlocker('es', '/creator-showcase') && !releaseBlocker('es', '/about'))
+test('Spanish Showcase release gate: it lifts only because approved Spanish-spoken videos exist; the gate still holds without them; English pages never see them', () => {
+  assert.equal(displayableFor('es').length, 18, 'the 18 owner-approved Spanish videos')
+  assert.equal(releaseBlocker('es', '/creator-showcase'), null, 'the gate lifted by itself')
+  assert.equal(displayableFor('es', PORTFOLIO.filter((v) => !(v.languages ?? []).includes('es'))).length, 0, 'without Spanish-spoken videos the same rule would block the page again')
   const h = page('/es/creator-showcase')
-  assert.match(headOf(h), /name="robots" content="noindex, follow"/)
+  assert.ok(!/name="robots"/.test(headOf(h)), 'indexable')
+  assert.ok(fs.readFileSync(path.join(dist, 'sitemap.xml'), 'utf8').includes('/es/creator-showcase'), 'in the sitemap')
+  assert.match(page('/creator-showcase'), /hreflang="es"/, 'reciprocal hreflang from the English Showcase')
+  assert.match(h, /hreflang="en"/)
+  assert.equal(switchTarget('es', '/creator-showcase'), '/es/creator-showcase', 'the selector now offers the equivalent page')
+  const labels = h.match(/aria-label="Reproducir vídeo: [^"]*"/g) ?? []
+  assert.equal(labels.length, 12, 'first page of the library (12), with "Mostrar más" for the other 6')
   assert.ok(!/UGC ad example|Spokesperson video example|example \d/i.test(textOf(h).join('\n')), 'no English-library video appears on the Spanish Showcase')
-  assert.match(textOf(h).join('\n'), /La galería en español se está preparando\./)
-  assert.ok(!fs.readFileSync(path.join(dist, 'sitemap.xml'), 'utf8').includes('/es/creator-showcase'))
-  assert.ok(!/hreflang/.test(page('/creator-showcase')), 'the English Showcase carries no hreflang to the blocked page')
-  // the selector never offers the blocked page: it falls back to the Spanish home
-  assert.equal(switchTarget('es', '/creator-showcase'), '/es/')
-  // service-page galleries on Spanish pages hold no English-library video either
-  for (const p of ['/es/ugc-video-agency', '/es/spokesperson-video-production', '/es/social-media-video-production', '/es/saas-video-production']) assert.ok(!/UGC ad example|Spokesperson video example|Organic social video example|SaaS creator example/.test(textOf(page(p)).join('\n')), p)
+  // the English Showcase and English service pages never show a Spanish-only video
+  for (const p of ['/creator-showcase', '/ugc-video-agency', '/spokesperson-video-production', '/']) assert.ok(!/portfolio\/es-/.test(page(p)) && !/es-(ugc|spokesperson)/.test(page(p)), `${p}: no Spanish-only video in English HTML`)
 })
 
 test('Spanish-specific video entries: separate copy per language, never a translation of the English titles; validated', () => {
@@ -520,4 +522,97 @@ test('offer matches destination: Spanish Roadmap CTAs open the Spanish Roadmap; 
   }
   assert.match(read('src/config.js'), /"20-minute strategy call".*"30min" in the URL is a legacy slug/s)
   assert.ok(!/30[- ]minutes?|30 minutos/i.test(ES_PAGES.map((p) => textOf(page(p)).join(' ')).join(' ')), 'no 30-minute claim on any Spanish page')
+})
+
+// ── Spanish video integration (owner folders ~/Desktop/SPANISH, uploaded to Cloudflare Stream 2026-11-22) ───────────────────────────────────────────
+const ES_VIDEOS = PORTFOLIO.filter((v) => v.onlyIn?.includes('es'))
+const posters = (h) => [...h.matchAll(/src="(\/portfolio\/[^"]+\.webp)"/g)].map((m) => m[1])
+const cards = (h) => [...h.matchAll(/(?:aria-label="Reproducir vídeo: ([^"]*)"|alt="([^"]*)")/g)].map((m) => m[1] ?? m[2])
+
+test('Spanish videos: 18 approved entries, valid, Spanish-only, opaque creators, no name/brand/credit shown, no invented upload date, real Cloudflare ids and posters', () => {
+  assert.equal(ES_VIDEOS.length, 18)
+  assert.equal(ES_VIDEOS.filter((v) => v.type === 'ugc').length, 9)
+  assert.equal(ES_VIDEOS.filter((v) => v.type === 'spokesperson').length, 9)
+  assert.equal(ES_VIDEOS.filter((v) => v.placement === 'hero').length, 6, 'three hero videos per service page')
+  const ids = new Set(), cfs = new Set()
+  for (const v of ES_VIDEOS) {
+    assert.deepEqual(portfolioProblems(v), [], v.id)
+    assert.deepEqual(v.languages, ['es']); assert.deepEqual(v.onlyIn, ['es'])
+    assert.ok(isDisplayable(v), `${v.id}: approved`)
+    assert.equal(v.approval.approvedOn, '2026-11-22')
+    assert.match(v.source.cloudflareId, /^[0-9a-f]{32}$/, v.id)
+    assert.ok(fs.existsSync(path.join(ROOT, 'public', v.poster)), `${v.id}: poster exists`)
+    assert.match(v.creatorId, /^es-c\d\d$/, 'opaque creator id (names are kept privately, outside the repository)')
+    assert.ok(!v.creator && !v.brand && !v.productionCredit && !v.uploadDate && v.production === undefined, `${v.id}: no creator name, brand, credit, upload date or production claim`)
+    assert.ok(!ids.has(v.id) && !cfs.has(v.source.cloudflareId), `${v.id}: no duplicate`); ids.add(v.id); cfs.add(v.source.cloudflareId)
+    assert.ok(v.title && v.caption.endsWith('.') && !/[A-Z][a-z]+ [A-Z]/.test(v.title.replace(/^[A-ZÁÉÍÓÚ]\S+ /, '')), `${v.id}: factual Spanish title`)
+  }
+  // the whole repository carries no creator name from the owner's folders
+  const walk = (d) => fs.readdirSync(d, { withFileTypes: true }).flatMap((e) => (e.isDirectory() ? walk(path.join(d, e.name)) : [path.join(d, e.name)]))
+  const repoText = [...walk(path.join(ROOT, 'src')), ...walk(path.join(ROOT, 'docs')), ...walk(path.join(ROOT, 'tests'))].filter((f) => /\.(jsx?|mjs|md|csv)$/.test(f) && !f.endsWith('i18n.test.mjs')).map((f) => fs.readFileSync(f, 'utf8')).join('\n')
+  for (const n of ['Ainhoa', 'Nacar', 'Blázquez', 'Badenes', 'Badia Benlloch']) assert.ok(!repoText.includes(n), `creator name "${n}" must stay out of the repository`)
+})
+
+test('Spanish homepage hero: Front (the existing CONVRT ad, honestly labelled English) in the centre, then the two Spanish videos; English homepage unchanged', () => {
+  assert.equal(HOME_HERO_ES.length, 3)
+  assert.equal(HOME_HERO_ES[0], HOME_HERO[0], 'Front is the same Stream video the English homepage shows')
+  assert.deepEqual(HOME_HERO_ES.slice(1).map((v) => v.languages), [['es'], ['es']])
+  const es = page('/es'), en = page('/')
+  assert.deepEqual(posters(es).filter((p) => /home-hero|es-ugc/.test(p)), ['/portfolio/home-hero.webp', '/portfolio/es-ugc-2.webp', '/portfolio/es-ugc-1.webp'])
+  assert.ok(es.includes('aria-label="Vídeos UGC de creadores"'), 'the stage has a Spanish accessible name')
+  assert.ok(!/es-ugc/.test(en) && en.includes('ugc-hero-1.webp'), 'the English homepage still shows its own three videos')
+})
+
+test('Spanish UGC and Spokesperson pages: hero stage and gallery use ONLY the provided Spanish videos, in the owner\'s order; no English-library video', () => {
+  for (const [p, type] of [['/es/ugc-video-agency', 'ugc'], ['/es/spokesperson-video-production', 'spokesperson']]) {
+    const h = page(p)
+    const mine = ES_VIDEOS.filter((v) => v.type === type)
+    const want = mine.map((v) => v.poster)
+    const got = posters(h)
+    assert.deepEqual(got.filter((x) => /\/portfolio\/es-/.test(x)).slice(0, 3), want.slice(0, 3), `${p}: hero stage, first video is the centre phone`)
+    for (const v of mine) assert.ok(h.includes(v.poster), `${p}: shows ${v.id}`)
+    assert.ok(!got.some((x) => !/\/portfolio\/es-/.test(x) && /ugc-|spokesperson-|creator-|saas-|organic-/.test(x)), `${p}: no English-library poster`)
+    assert.ok(!/\/portfolio\/es-spokesperson/.test(page('/es/ugc-video-agency')), 'spokesperson videos never appear on the UGC page')
+    assert.ok(!/\/portfolio\/es-ugc/.test(page('/es/spokesperson-video-production')), 'UGC videos never appear on the Spokesperson page')
+    assert.match(h, /aria-roledescription="carousel"/, `${p}: the video-led hero stage`)
+    assert.equal(cards(h).filter((c) => mine.some((v) => c === v.caption)).length >= 6, true)
+  }
+})
+
+test('Spanish SaaS and Organic pages launch without videos: a text-led hero, no phones, no stage, no empty gallery, no placeholder; still indexable with JSON-LD, FAQ and CTAs', () => {
+  for (const [p, galleryId] of [['/es/saas-video-production', 'saas-videos'], ['/es/social-media-video-production', 'organic-videos']]) {
+    const h = page(p), body = bodyOf(h)
+    assert.ok(!/<video/.test(body) && !/videodelivery\.net/.test(body) && !/\.mp4/.test(body), `${p}: no video`)
+    assert.ok(!/aria-roledescription="carousel"/.test(body), `${p}: no phone stage`)
+    assert.ok(!/aspect-\[9\/19\.5\]/.test(body), `${p}: no empty phone frames`)
+    assert.ok(!/\/portfolio\//.test(body), `${p}: no portfolio image of any language`)
+    assert.ok(!body.includes(`id="${galleryId}"`), `${p}: the empty gallery section is absent`)
+    assert.ok(!/(sample-\d|Vídeos de ejemplo|se está preparando|próximamente)/i.test(textOf(h).join('\n')), `${p}: no placeholder text`)
+    assert.match(body, /<section aria-labelledby="[^"]+" class="relative overflow-hidden">[\s\S]*?max-w-5xl[^"]*text-center/, `${p}: the centred text-led hero`)
+    assert.equal([...body.matchAll(/<h1[\s>]/g)].length, 1)
+    assert.ok(!/name="robots"/.test(headOf(h)), `${p}: indexable`)
+    assert.ok(jsonLd(h).length >= 1 && /"FAQPage"/.test(JSON.stringify(jsonLd(h))), `${p}: JSON-LD with the FAQ`)
+    assert.ok(body.includes('href="/es/creative-growth-roadmap"') || body.includes('calendly.com'), `${p}: a conversion CTA`)
+  }
+  // English keeps its (empty-frame) fallback hero: unchanged
+  assert.match(bodyOf(page('/saas-video-production')), /aspect-\[9\/19\.5\]/)
+})
+
+test('a genuine Spanish video added later brings the stage back on its own (no redesign): text-led only while there is none', () => {
+  const src = read('src/components/ugc/UgcHero.jsx')
+  assert.match(src, /const textLed = !hasWork && locale !== 'en'/)
+  assert.match(read('src/components/ugc/UgcGallery.jsx'), /real\.length === 0 && preview && currentLocale\(\) === 'en'/, 'no stand-in gallery cards on translated pages, even on a Preview')
+  const v = (type) => ({ id: `es-fixture-${type}`, creatorId: 'es-c99', caption: 'Un ejemplo.', type, languages: ['es'], onlyIn: ['es'], source: { cloudflareId: 'a'.repeat(32) }, approval: { status: 'approved', portfolioUse: true, creatorConsent: true } })
+  for (const [type, sel] of [['saas', selectSaasHero], ['organic', selectOrganicHero]]) {
+    const item = { ...v(type), placement: 'hero' }
+    assert.equal(forPageLanguageAt('/es/x', () => sel([item])).length, 1, `${type}: a Spanish-only video reaches the Spanish page`)
+    assert.equal(sel([item]).length, 0, `${type}: and never the English page`)
+  }
+})
+const forPageLanguageAt = (pathname, fn) => { globalThis.window = { location: { pathname } }; try { return forPageLanguage(fn()) } finally { delete globalThis.window } }
+
+test('Spanish structured data stays factual: no VideoObject (no upload dates exist), JSON-LD valid, no Roadmap/Offer change', () => {
+  for (const p of ES_PAGES) assert.ok(!/"VideoObject"/.test(page(p)), `${p}: no VideoObject for videos without a recorded upload date`)
+  const offers = JSON.stringify(jsonLd(page('/es/pricing'))[0]['@graph'])
+  assert.deepEqual([...offers.matchAll(/"price":([\d.]+),"priceCurrency":"(\w+)"/g)].map((m) => `${m[1]} ${m[2]}`).sort(), ['1400 EUR', '2300 EUR', '2750 EUR', '3250 EUR', '4600 EUR', '5500 EUR', '225 EUR'].sort())
 })
