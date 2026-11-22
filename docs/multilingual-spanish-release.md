@@ -6,7 +6,7 @@ Live blocker list: `node scripts/es-launch-readiness.mjs` (exit code 1 while any
 
 ## Pages prepared (native Spanish, same slugs)
 `/es/` · `/es/ugc-video-agency` · `/es/spokesperson-video-production` · `/es/social-media-video-production` · `/es/saas-video-production` · `/es/pricing` · `/es/creator-showcase` (live: 18 Spanish videos) ·
-`/es/about` · `/es/contact` · `/es/creative-growth-roadmap` (the application; `noindex`, like the English page, so no sitemap or hreflang).
+`/es/about` · `/es/contact` · `/es/creative-growth-roadmap` (the application; `noindex`, like the English page, so no sitemap or hreflang) · `/es/risk-free-trial` (the 1 FREE video application; `noindex` and held by a release gate, see below).
 Deliberately English-only: case studies, blog, free hooks, risk-free trial, referrals, /scale, Privacy, Terms, Legal Notice.
 
 ## Completeness checklist
@@ -26,7 +26,12 @@ Deliberately English-only: case studies, blog, free hooks, risk-free trial, refe
 1. **Spanish OG image.** `public/og/convrt-og-es.png` (1200×630) is missing; Spanish pages share the English image until it exists. Requirements in `docs/multilingual-spanish-videos.md`; flip `ES_OG_IMAGE_READY` after adding it.
 2. **Legal pages.** Privacy, Terms and Legal Notice are English-only (linked from Spanish pages, marked `lang="en"`). Unpublished Spanish drafts for review are outside the repo (`CONVRT/Claude/multilingual-es/legal-translation-review/`); `docs/multilingual-legal-translation-review.md` lists what the lawyer must check.
 
-Not blockers but English-only: free hooks, risk-free trial and referrals (their Spanish CTAs are omitted or send the visitor to the booking call or contact page).
+3. **Spanish free-video page (`/es/risk-free-trial`).** Built and linked from the homepage's secondary free-video block; held out of indexing, sitemap and hreflang by `ES_FREE_VIDEO_REVIEWED = false` (`src/i18n/release.js`) until the owner and the lawyer review it. It uses the existing backend and MailerLite integration unchanged (option values stay English, `marketingConsent` is sent as `false`). **The optional marketing-email checkbox is not shown in Spanish** because its consent wording is versioned and no reviewed Spanish version exists; adding one needs a new recorded version in `src/content/marketingConsent.js`. The privacy-policy link is the English policy, labelled "(en inglés)". Eligibility copy is the English application's, translated; the offer is application-based and subject to approval.
+
+Not blockers but English-only: the 10 free hooks (never promoted in Spanish: no link, banner or CTA; the English offer and the architecture stay, so a Spanish resource can be enabled later by flipping `LOCALIZED_FLOWS.es.hooks` once a page exists) and referrals.
+
+## Spanish homepage copy and terminology (owner-approved, 2026-11-22)
+Homepage copy follows the owner's supplied text section by section. Terminology across all Spanish pages: "creativos" for advertising creative assets (e.g. "creativos diseñados para convertir"; "creatividad" kept only where it is the abstract noun), **Spokesperson** as the service name (nav, cards, footer, CTAs, FAQs, breadcrumbs, JSON-LD names; "presentador/a" still names the person, and the Spokesperson page keeps the keyword "vídeos con presentador" next to the service name in its title/H1), "testear" for ad testing. The CTA label is "5 conceptos gratis" (hero, navigation and every other 5-concepts CTA). Testimonials stay in their original English; the owner's supplied text wrote the Elyon quote as "MOHAMED understood…" in capitals, the verified original reads "Mohamed understood…" and is kept. FAQ answers are unchanged; only the 12 questions were reworded as supplied (the first, "¿Qué hace exactamente CONVRT Studio?", is answered by the existing definition of CONVRT's role).
 
 ## Spanish Roadmap (`/es/creative-growth-roadmap`)
 - The English flow, qualification logic, outcomes, Calendly gate/booking and analytics calls are unchanged (no analytics, API or backend line was touched). The Roadmap is entirely client-side: no request is sent to the backend and there is no consent box.

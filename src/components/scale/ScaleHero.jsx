@@ -4,6 +4,7 @@ import { usePrefersReducedMotion } from '../caseStudies/shared/usePrefersReduced
 import { trackEvent } from '../../lib/analytics.js'
 import DiscoveryCallButton from './DiscoveryCallButton.jsx'
 import VslControls from './VslControls.jsx'
+import { streamPoster } from '../../content/posterFrames.js'
 
 /* ─────────────────────────────────────────────
    VSL is hosted on Cloudflare Stream — same pattern as the homepage
@@ -25,7 +26,7 @@ import VslControls from './VslControls.jsx'
 ───────────────────────────────────────────── */
 const VSL_VIDEO_ID = 'a5e60be52e693016bb47bed4c801eb5f'
 const VSL_HLS = VSL_VIDEO_ID ? `https://videodelivery.net/${VSL_VIDEO_ID}/manifest/video.m3u8` : ''
-const VSL_POSTER = VSL_VIDEO_ID ? `https://videodelivery.net/${VSL_VIDEO_ID}/thumbnails/thumbnail.jpg?height=720` : ''
+const VSL_POSTER = VSL_VIDEO_ID ? streamPoster(VSL_VIDEO_ID, { height: 720 }) : ''
 
 export default function ScaleHero() {
   const sectionRef = useRef(null)

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import Hls from 'hls.js'
+import { streamPoster } from '../../content/posterFrames.js'
 
 /* ─────────────────────────────────────────────
    CONTENT SHOWCASE
@@ -128,12 +129,12 @@ function ShowcasePhone({ video }) {
             <video
               ref={videoRef}
               className="absolute inset-0 w-full h-full object-cover"
-              poster={`https://videodelivery.net/${video.id}/thumbnails/thumbnail.jpg?time=0s&height=600`}
+              poster={streamPoster(video.id, { height: 600 })}
               loop muted playsInline preload="metadata"
             />
           ) : (
             <img
-              src={`https://videodelivery.net/${video.id}/thumbnails/thumbnail.jpg?time=0s&height=600`}
+              src={streamPoster(video.id, { height: 600 })}
               alt="Graspo organic content still"
               loading="lazy"
               className="absolute inset-0 w-full h-full object-cover"

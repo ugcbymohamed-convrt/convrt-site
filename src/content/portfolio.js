@@ -79,6 +79,7 @@
 
 import { currentLocale } from '../i18n/locale.js'
 import { DEFAULT_LOCALE } from '../i18n/locales.js'
+import { streamPoster } from './posterFrames.js'
 import { ES_LANGUAGE_LABELS, ES_INDUSTRY_LABELS, ES_TYPE_LABELS, ES_PRODUCTION_LABELS, captionEs } from '../i18n/es/labels.js'
 
 const ES_APPROVAL = { status: 'approved', portfolioUse: true, creatorConsent: true, approvedBy: 'CONVRT owner (confirmed in chat)', approvedOn: '2026-11-22' }
@@ -1480,7 +1481,7 @@ export const selectShowcase = (id, items = PORTFOLIO) => items.filter((i) => sho
 /* Name shown on a card: only with explicit permission. */
 export const creatorLabel = (item) => (item.creator?.showName === true && item.creator?.displayName ? item.creator.displayName : null)
 
-export const posterUrl = (item) => item.poster ?? `https://videodelivery.net/${item.source.cloudflareId}/thumbnails/thumbnail.jpg?time=0s&height=720`
+export const posterUrl = (item) => item.poster ?? streamPoster(item.source.cloudflareId, { height: 720 })
 export const hlsUrl = (item) => `https://videodelivery.net/${item.source.cloudflareId}/manifest/video.m3u8`
 
 /* ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────

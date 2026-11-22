@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import Hls from 'hls.js'
 import Eyebrow from '../caseStudies/shared/Eyebrow.jsx'
 import { ACCENT } from './theme.js'
+import { streamPoster } from '../../content/posterFrames.js'
 
 /* Real Elyon creative — the same three Cloudflare Stream assets featured
    in the homepage Case Studies carousel, reused here so the case study
@@ -120,12 +121,12 @@ function VideoPhone({ video }) {
             <video
               ref={videoRef}
               className="absolute inset-0 w-full h-full object-cover"
-              poster={`https://videodelivery.net/${video.id}/thumbnails/thumbnail.jpg?time=0s&height=600`}
+              poster={streamPoster(video.id, { height: 600 })}
               loop muted playsInline preload="metadata"
             />
           ) : (
             <img
-              src={`https://videodelivery.net/${video.id}/thumbnails/thumbnail.jpg?time=0s&height=600`}
+              src={streamPoster(video.id, { height: 600 })}
               alt={`Elyon ${video.label} still`}
               loading="lazy"
               className="absolute inset-0 w-full h-full object-cover"

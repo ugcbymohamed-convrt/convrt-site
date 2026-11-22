@@ -103,9 +103,9 @@ export function TextField({
   return (
     <div className="min-w-0">
       <label htmlFor={id} className="block text-sm font-semibold text-ink">
-        {label}{' '}
+        {typeof label === 'string' ? tr(label) : label}{' '}
         {optional
-          ? <span className="font-normal text-ink-subtle">(Optional)</span>
+          ? <span className="font-normal text-ink-subtle">({tr('Optional')})</span>
           : <span className="text-lime" aria-hidden="true">*</span>}
       </label>
       <Tag
@@ -123,7 +123,7 @@ export function TextField({
         className={`${inputClass(error)} ${multiline ? 'min-h-[110px] resize-y' : 'min-h-[50px]'}`}
         {...rest}
       />
-      {hint && !error && <p id={hintId} className="mt-2 text-xs text-ink-subtle">{hint}</p>}
+      {hint && !error && <p id={hintId} className="mt-2 text-xs text-ink-subtle">{typeof hint === 'string' ? tr(hint) : hint}</p>}
       {error && <ErrorText id={errId}>{error}</ErrorText>}
     </div>
   )

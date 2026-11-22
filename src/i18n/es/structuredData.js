@@ -29,20 +29,21 @@ export const faqNodeEs = (items, id) => ({
 const BREADCRUMB_NAMES = {
   '/pricing': 'Tarifas',
   '/ugc-video-agency': 'Agencia de vídeos UGC',
-  '/spokesperson-video-production': 'Vídeos con presentador',
+  '/spokesperson-video-production': 'Vídeos Spokesperson',
   '/social-media-video-production': 'Vídeos para redes sociales',
   '/saas-video-production': 'Producción de vídeo para SaaS',
-  '/creator-showcase': 'Creator Showcase',
+  '/creator-showcase': 'Creadores',
   '/about': 'Sobre CONVRT',
   '/contact': 'Contacto',
   '/creative-growth-roadmap': 'Hoja de ruta de crecimiento creativo',
+  '/risk-free-trial': '1 vídeo gratis',
 }
 
 const PAGE_TYPE = { '/about': 'AboutPage', '/contact': 'ContactPage', '/creator-showcase': 'CollectionPage' }
 
 export function localizedJsonLd(locale, basePath, seo = {}) {
   if (locale !== LOCALE) return undefined
-  if (basePath === '/creative-growth-roadmap') return undefined // like the English page: noindex, no structured data
+  if (basePath === '/creative-growth-roadmap' || basePath === '/risk-free-trial') return undefined // like the English pages: noindex, no structured data
   const url = absoluteUrl(LOCALE, basePath)
   const { title, description } = seoFor(basePath, seo)
   const isHome = basePath === '/'

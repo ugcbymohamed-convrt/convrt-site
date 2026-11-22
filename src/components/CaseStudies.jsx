@@ -6,6 +6,7 @@ import { currentLocale } from '../i18n/locale.js'
 import { primaryAction } from '../i18n/cta.js'
 import { esCaseCopy } from '../i18n/es/cases.js'
 import { selectShowcase } from '../content/portfolio.js'
+import { streamPoster } from '../content/posterFrames.js'
 
 /* ─────────────────────────────────────────────
    SECTION 3 — CASE STUDIES / CREATIVE SHOWCASE
@@ -49,7 +50,7 @@ const CASES = ALL_CASES.filter((c) => c.videos.length === 3)
 /* A video entry is either a Cloudflare Stream id (string) or an object:
    { id, poster? }  – Cloudflare Stream (HLS) with an optional custom poster
    { mp4, poster }  – self-hosted MP4 (no HLS), for clips not uploaded to Stream */
-const cfPoster = (id) => `https://videodelivery.net/${id}/thumbnails/thumbnail.jpg?time=0s&height=600`
+const cfPoster = (id) => streamPoster(id, { height: 600 })
 function videoSource(v) {
   if (typeof v === 'string') return { id: v, mp4: null, poster: cfPoster(v) }
   return { id: v.id ?? null, mp4: v.mp4 ?? null, poster: v.poster ?? cfPoster(v.id) }

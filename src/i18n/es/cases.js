@@ -10,13 +10,13 @@ export function esCaseCopy(id, following) {
     case 'adscale':
       return {
         tab: 'SaaS',
-        title: 'Creatividades largas\nque no se pueden saltar.',
-        body: 'Si piensas que las creatividades largas no funcionan, echa un vistazo a estas. No son solo creatividades: generan confianza, transmiten seguridad y demuestran que «sabemos lo que hacemos». Transiciones cuidadas, imágenes llamativas y una narración tan atractiva que casi es imposible saltarlas.',
+        title: 'Creativos largos que dan\nganas de seguir viendo.',
+        body: '¿Quién dijo que los anuncios largos no funcionan? La clave está en cómo cuentas la historia. Una idea clara, un ritmo cuidado y una buena narrativa pueden convertir un vídeo largo en contenido que apetece ver. Estos ejemplos combinan transiciones fluidas, imágenes llamativas y un mensaje que mantiene el interés de principio a fin.',
       }
     case 'elyon':
       return {
         tab: 'E-commerce',
-        title: 'Más de 100 creatividades testeadas.\nVarios ganadores encontrados.',
+        title: 'Más de 100 creativos testeados.\nVarios ganadores encontrados.',
         body: 'Hemos creado más de 100 piezas de contenido con Elyon Dubai. Desde su lanzamiento en 2025, hemos testeado múltiples conceptos y variaciones. Hasta ahora, ya hemos encontrado muchos formatos que están funcionando muy bien para Elyon. Cuando el producto es de calidad, es mucho más fácil crear contenido genuino que conecte con la gente.',
       }
     case 'graspo':

@@ -8,12 +8,14 @@ import HowItWorks from './components/HowItWorks.jsx'
 import Testimonials from './components/Testimonials.jsx'
 import FAQ from './components/FAQ.jsx'
 import FinalCTA from './components/FinalCTA.jsx'
+import FreeVideoOffer from './components/FreeVideoOffer.jsx'
 import Footer from './components/Footer.jsx'
 import SectionDivider from './components/SectionDivider.jsx'
 import { BLOG_PATH, REFERRALS_PATH } from './config.js'
 import { PATHS, PRIVATE_PATHS } from './routes.js'
 import { scrollToHash } from './lib/scroll.js'
 import { parsePath } from './i18n/paths.js'
+import { currentLocale } from './i18n/locale.js'
 import { hasTranslation } from './i18n/registry.js'
 import { BUILT_LOCALES } from './i18n/locales.js'
 
@@ -102,6 +104,8 @@ function HomePage() {
       <SectionDivider />
       <Services />
       <SectionDivider />
+      {/* Translated homepages only: the secondary free-video offer (the English hero already carries it). */}
+      {currentLocale() !== 'en' && (<><FreeVideoOffer /><SectionDivider /></>)}
       <HowItWorks />
       <SectionDivider />
       <Testimonials />

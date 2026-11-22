@@ -94,14 +94,26 @@ export default function FinalCTA() {
 
         {/* ── Main headline ── */}
         <FadeUp inView={inView} delay={100}>
-          <h2
-            className="font-display font-bold tracking-display leading-[1.04] mb-7"
-            style={{ fontSize: 'clamp(2.5rem, 6vw, 5rem)' }}
-          >
-            <span className="text-ink">{tr('Good brands deserve')} </span>
-            <br className="hidden sm:block" />
-            <span className="text-lime">{tr('better creatives.')}</span>
-          </h2>
+          {locale === 'en' ? (
+            <h2
+              className="font-display font-bold tracking-display leading-[1.04] mb-7"
+              style={{ fontSize: 'clamp(2.5rem, 6vw, 5rem)' }}
+            >
+              <span className="text-ink">{tr('Good brands deserve')} </span>
+              <br className="hidden sm:block" />
+              <span className="text-lime">{tr('better creatives.')}</span>
+            </h2>
+          ) : (
+            /* Three deliberate lines ("Las buenas marcas / merecen mejores / creativos."): the middle line never breaks on tablet and desktop; on a phone it may wrap rather than overflow. */
+            <h2
+              className="font-display font-bold tracking-display leading-[1.04] mb-7"
+              style={{ fontSize: 'clamp(2.2rem, 6vw, 5rem)' }}
+            >
+              <span className="block text-ink">{tr('Good brands deserve')}</span>
+              <span className="block text-ink sm:whitespace-nowrap">{tr('deserve better')}</span>
+              <span className="block text-lime">{tr('better creatives.')}</span>
+            </h2>
+          )}
         </FadeUp>
 
         {/* ── Supporting text ── */}

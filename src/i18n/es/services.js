@@ -5,8 +5,8 @@ export const ES_CORE_SERVICES = {
     description: 'Anuncios UGC con creadores para redes sociales de pago, producidos de principio a fin: estrategia creativa, guion, selección de creadores, grabación y edición.',
   },
   spokesperson: {
-    name: 'Publicidad en vídeo con presentador',
-    description: 'Anuncios con presentador que explican una oferta con claridad y generan confianza, producidos de principio a fin por CONVRT.',
+    name: 'Publicidad en vídeo Spokesperson',
+    description: 'Anuncios Spokesperson que explican una oferta con claridad y generan confianza, producidos de principio a fin por CONVRT.',
   },
   organic: {
     name: 'Producción y gestión de contenido orgánico para redes sociales',

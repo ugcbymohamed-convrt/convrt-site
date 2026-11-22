@@ -4,7 +4,7 @@
    Keyword → page decisions (see docs/multilingual-spanish-seo-map.md): every page has ONE distinct primary Spanish intent so the pages do not compete:
      /es/                                  agencia UGC (umbrella: UGC + presentador + redes sociales)
      /es/ugc-video-agency                  vídeos UGC para anuncios / producción de vídeos UGC
-     /es/spokesperson-video-production     vídeos con presentador / portavoz
+     /es/spokesperson-video-production     vídeos Spokesperson / portavoz
      /es/social-media-video-production     agencia de contenidos en vídeo para redes sociales
      /es/saas-video-production             vídeos explicativos y demos para SaaS
      /es/pricing                           tarifas UGC / precios de producción de vídeo
@@ -19,15 +19,15 @@ import { priceOf, formatPrice, isPricingApproved } from '../pricing.js'
 export const ES_OG_IMAGE_READY = false
 export const ES_OG_IMAGE_PATH = '/og/convrt-og-es.png'
 
-export const ES_OG_IMAGE_ALT = 'CONVRT: creatividades de alto rendimiento diseñadas para convertir. Anuncios UGC, vídeos para SaaS, vídeos con presentador y contenido orgánico para redes sociales.'
+export const ES_OG_IMAGE_ALT = 'CONVRT: creativos de alto rendimiento diseñados para convertir. Anuncios UGC, vídeos para SaaS, vídeos Spokesperson y contenido orgánico para redes sociales.'
 
 export const ES_SEO = {
   '/': {
     title: 'Agencia UGC y de vídeos publicitarios para marcas | CONVRT',
     description:
-      'Agencia de vídeo con creadores reales: anuncios UGC, vídeos con presentador y contenido para redes sociales, para marcas SaaS, e-commerce y apps. En español, inglés, francés y árabe.',
-    ogTitle: 'CONVRT: creatividades de alto rendimiento que convierten',
-    ogDescription: 'Anuncios UGC, vídeos con presentador, contenido orgánico y estrategia creativa, pensados para frenar el scroll y generar acción.',
+      'Agencia de vídeo con creadores reales: anuncios UGC, vídeos Spokesperson y contenido para redes sociales, para marcas SaaS, e-commerce y apps. En español, inglés, francés y árabe.',
+    ogTitle: 'CONVRT: creativos de alto rendimiento que convierten',
+    ogDescription: 'Anuncios UGC, vídeos Spokesperson, contenido orgánico y estrategia creativa, pensados para frenar el scroll y generar acción.',
   },
   '/ugc-video-agency': {
     title: 'Vídeos UGC para anuncios | Producción con creadores | CONVRT',
@@ -39,11 +39,11 @@ export const ES_SEO = {
     ogDescription: 'Anuncios UGC con creadores reales, producidos de principio a fin, con precios y derechos de uso transparentes.',
   },
   '/spokesperson-video-production': {
-    title: 'Vídeos con presentador y portavoz para marcas | CONVRT',
+    title: 'Vídeos Spokesperson | Vídeos con presentador para marcas | CONVRT',
     description:
-      'Vídeos con presentadores humanos reales para webs, demos de producto, apps y publicidad de pago. Producción multilingüe, del guion al montaje final.',
-    ogTitle: 'CONVRT: producción de vídeos con presentador profesional',
-    ogDescription: 'Vídeos con presentador humano y multilingües para webs, demos de producto, apps y publicidad de pago, del guion al montaje final.',
+      'Vídeos Spokesperson con presentadores humanos reales para webs, demos de producto, apps y publicidad de pago. Producción multilingüe, del guion al montaje final.',
+    ogTitle: 'CONVRT: producción de vídeos Spokesperson con presentador profesional',
+    ogDescription: 'Vídeos Spokesperson con presentador humano y multilingües para webs, demos de producto, apps y publicidad de pago, del guion al montaje final.',
   },
   '/social-media-video-production': {
     title: 'Agencia de contenidos en vídeo para redes sociales | CONVRT',
@@ -74,12 +74,17 @@ export const ES_SEO = {
   '/about': {
     title: 'Sobre CONVRT | Estudio de vídeo liderado por su fundador',
     description:
-      'Estudio creativo liderado por su fundador que produce anuncios UGC, vídeos para SaaS, vídeos con presentador y contenido orgánico para redes sociales en español, inglés, francés y árabe.',
+      'Estudio creativo liderado por su fundador que produce anuncios UGC, vídeos para SaaS, vídeos Spokesperson y contenido orgánico para redes sociales en español, inglés, francés y árabe.',
   },
   '/creative-growth-roadmap': {
     title: 'Hoja de ruta de crecimiento creativo gratuita | CONVRT',
     description:
       'Solicita cinco conceptos publicitarios personalizados para tu marca. Ángulos creativos, ganchos y recomendaciones de testeo de CONVRT, presentados en una sesión estratégica gratuita.',
+  },
+  '/risk-free-trial': {
+    title: '1 vídeo gratis: prueba nuestra producción | CONVRT',
+    description:
+      'Solicita un vídeo de prueba gratuito producido por CONVRT, con dos variaciones de gancho para testear. Cada solicitud se revisa y la oferta está sujeta a aprobación y a las condiciones del programa.',
   },
   '/contact': {
     title: 'Contacto | Habla con el estudio de CONVRT',

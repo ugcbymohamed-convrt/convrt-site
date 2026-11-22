@@ -44,9 +44,9 @@ export const ES_PAGE_GRAPH_EXTRAS = {
   '/spokesperson-video-production': (url) => ({
     about: { '@id': `${url}#service` },
     nodes: [pageServiceEs(url, {
-      name: 'Producción de vídeos con presentador',
-      serviceType: 'Producción de vídeos con presentador',
-      description: `${ES_CORE_SERVICES.spokesperson.description} Los vídeos con presentador cuentan con presentadores humanos reales y pueden producirse en varios idiomas.`,
+      name: 'Producción de vídeos Spokesperson',
+      serviceType: 'Producción de vídeos Spokesperson',
+      description: `${ES_CORE_SERVICES.spokesperson.description} Los vídeos Spokesperson cuentan con presentadores humanos reales y pueden producirse en varios idiomas.`,
     })],
   }),
   '/saas-video-production': (url) => ({
@@ -54,7 +54,7 @@ export const ES_PAGE_GRAPH_EXTRAS = {
     nodes: [pageServiceEs(url, {
       name: 'Producción de vídeo para SaaS',
       serviceType: 'Producción de vídeo para SaaS',
-      description: 'Producción de vídeo para empresas de software y apps: vídeos explicativos de SaaS, demostraciones de producto, recorridos por apps, vídeos explicativos animados de producto, presentaciones de software con personas reales y creatividades publicitarias en vídeo, producidos de principio a fin por CONVRT.',
+      description: 'Producción de vídeo para empresas de software y apps: vídeos explicativos de SaaS, demostraciones de producto, recorridos por apps, vídeos explicativos animados de producto, presentaciones de software con personas reales y creativos publicitarios en vídeo, producidos de principio a fin por CONVRT.',
       audience: { '@type': 'Audience', audienceType: 'Empresas de SaaS, software y apps' },
     })],
   }),

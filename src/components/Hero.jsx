@@ -97,9 +97,13 @@ export default function Hero() {
                   {...(action.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
                   onClick={() => trackEvent(action.event, en ? { location: 'hero' } : { page: locale, location: 'hero' })}
                   {...primaryPress}
-                  className="cta-gradient hero-cta group inline-flex w-full sm:w-auto min-h-[64px] md:min-h-[68px] items-center justify-center gap-2.5
+                  className={en ? `cta-gradient hero-cta group inline-flex w-full sm:w-auto min-h-[64px] md:min-h-[68px] items-center justify-center gap-2.5
                              rounded-full px-6 md:px-7 lg:px-6 xl:px-7 py-4 text-base md:text-[17px] font-bold tracking-snug text-canvas
-                             focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-lime"
+                             focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-lime`
+                    : /* translated: a compact one-line label ("5 conceptos gratis"): no wrapping, less horizontal padding */
+                      `cta-gradient hero-cta group inline-flex w-full sm:w-auto min-h-[64px] md:min-h-[68px] items-center justify-center gap-2.5 whitespace-nowrap
+                             rounded-full px-5 md:px-6 py-4 text-base md:text-[17px] font-bold tracking-snug text-canvas
+                             focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-lime`}
                 >
                   {tr(action.label)}
                   <svg viewBox="0 0 12 12" className="h-4 w-4 md:h-[18px] md:w-[18px] transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0 motion-reduce:group-hover:translate-y-0" fill="none" aria-hidden="true">
@@ -110,10 +114,14 @@ export default function Hero() {
                   href={href(CREATOR_SHOWCASE_PATH)}
                   onClick={() => trackEvent('hero_see_our_work_click', { location: 'hero' })}
                   {...ghostPress}
-                  className="hero-cta-ghost group inline-flex w-full sm:w-auto min-h-[48px] sm:min-h-[64px] md:min-h-[68px] items-center justify-center gap-2
+                  className={en ? `hero-cta-ghost group inline-flex w-full sm:w-auto min-h-[48px] sm:min-h-[64px] md:min-h-[68px] items-center justify-center gap-2
                              rounded-full border border-hairline-strong bg-surface-2 px-6 md:px-7 lg:px-5 xl:px-7 py-3 sm:py-4 text-base md:text-[17px] font-semibold tracking-snug text-ink
                              hover:border-ink-muted
-                             focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink"
+                             focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink`
+                    : `hero-cta-ghost group inline-flex w-full sm:w-auto min-h-[48px] sm:min-h-[64px] md:min-h-[68px] items-center justify-center gap-2 whitespace-nowrap
+                             rounded-full border border-hairline-strong bg-surface-2 px-5 md:px-6 py-3 sm:py-4 text-base md:text-[17px] font-semibold tracking-snug text-ink
+                             hover:border-ink-muted
+                             focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink`}
                 >
                   {tr('Explore Videos')}
                   <svg viewBox="0 0 12 12" className="h-3.5 w-3.5 md:h-4 md:w-4 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0 motion-reduce:group-hover:translate-y-0" fill="none" aria-hidden="true">

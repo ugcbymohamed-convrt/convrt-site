@@ -122,7 +122,7 @@ export default function Credibility() {
               {locale === 'en' ? (
                 <>Our founder has worked with <span className="text-lime">{CONVRT_STATS.clients} clients</span> across ecommerce, apps, SaaS, and global consumer markets.</>
               ) : (
-                <>{tr('Our founder has worked with')} <span className="text-lime">{CONVRT_STATS.clients} {tr('clients')}</span> {tr('across ecommerce, apps, SaaS, and global consumer markets.')}</>
+                <>{tr('Our founder has worked with')} <span className="text-lime">{tr('more than')} {CONVRT_STATS.clients.replace('+', '')} {tr('clients')}</span> {tr('across ecommerce, apps, SaaS, and global consumer markets.')}</>
               )}
             </h2>
             <p className="max-w-xl text-sm leading-relaxed text-ink-muted">{tr(FOUNDER_EXPERIENCE.caption)}</p>

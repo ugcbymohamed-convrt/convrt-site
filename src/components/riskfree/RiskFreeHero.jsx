@@ -1,6 +1,8 @@
 import { trackEvent } from '../../lib/analytics.js'
 import { scrollToApply } from '../../lib/roadmapForm.js'
 import { Check } from '../roadmap/shared.jsx'
+import { tr } from '../../i18n/tr.js'
+import { currentLocale } from '../../i18n/locale.js'
 
 /* ─────────────────────────────────────────────
    HERO — leads with the offer ("1 FREE Video Production"), then the
@@ -29,7 +31,7 @@ export default function RiskFreeHero() {
             <div className="inline-flex max-w-full items-center gap-2 rounded-2xl border border-hairline bg-surface-1/60 px-3.5 py-1.5 backdrop-blur sm:rounded-full">
               <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-lime" aria-hidden="true" />
               <span className="text-[10px] font-medium uppercase tracking-[0.14em] text-ink-muted min-[400px]:text-[11px] min-[400px]:tracking-[0.16em] sm:text-xs sm:tracking-[0.18em]">
-                Risk-Free Trial · By Application
+                {tr('Risk-Free Trial · By Application')}
               </span>
             </div>
 
@@ -37,16 +39,23 @@ export default function RiskFreeHero() {
               id="risk-free-h1"
               className="mt-6 font-display font-bold text-ink tracking-display-xl leading-[1.03] text-[2.6rem] min-[400px]:text-[3.2rem] sm:text-[3.6rem] md:text-[4.2rem] lg:text-[3.4rem] xl:text-[4.2rem]"
             >
-              <span className="block">1 <span className="text-lime">FREE</span></span>
-              <span className="block">Video Production</span>
+              {currentLocale() === 'en' ? (
+                <>
+                  <span className="block">1 <span className="text-lime">FREE</span></span>
+                  <span className="block">Video Production</span>
+                </>
+              ) : (
+                <>
+                  <span className="block">{tr('1 video')} <span className="text-lime">{tr('free')}</span></span>
+                  <span className="block">{tr('of production')}</span>
+                </>
+              )}
             </h1>
 
             <p className="mt-6 max-w-xl text-base leading-relaxed text-ink-muted md:text-lg">
-              <span className="font-semibold text-ink">Try CONVRT risk free. See if you qualify.</span>
+              <span className="font-semibold text-ink">{tr('Try CONVRT risk free. See if you qualify.')}</span>
               <br />
-              Apply for a complimentary video ad produced by our team, with two bonus hook variations to test. We
-              review every application and invite the right-fit brands to a short call before anything goes into
-              production.
+              {tr('Apply for a complimentary video ad produced by our team, with two bonus hook variations to test. We review every application and invite the right-fit brands to a short call before anything goes into production.')}
             </p>
 
             <div className="mt-8 flex flex-col items-stretch gap-4 sm:items-start">
@@ -60,12 +69,12 @@ export default function RiskFreeHero() {
                 className="cta-gradient group inline-flex min-h-[52px] w-full items-center justify-center gap-2 rounded-full px-7 py-3.5 text-[15px] font-semibold text-canvas sm:w-auto
                            focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-lime"
               >
-                See If You Qualify
+                {tr('See If You Qualify')}
                 <span aria-hidden="true" className="transition-transform duration-200 group-hover:translate-x-0.5 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0">→</span>
               </a>
               <div className="text-sm leading-relaxed text-ink-subtle">
-                <p>Takes about two minutes. No obligation.</p>
-                <p>Limited availability, reviewed by our team. Subject to fit and production conditions.</p>
+                <p>{tr('Takes about two minutes. No obligation.')}</p>
+                <p>{tr('Limited availability, reviewed by our team. Subject to fit and production conditions.')}</p>
               </div>
             </div>
           </div>
@@ -73,7 +82,7 @@ export default function RiskFreeHero() {
           {/* What's included */}
           <div className="min-w-0 lg:col-span-5">
             <div className="rounded-3xl border border-hairline-strong bg-surface-1 p-6 shadow-[0_40px_90px_-40px_rgba(0,0,0,0.8)] sm:p-8">
-              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-lime">What you get</p>
+              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-lime">{tr('What you get')}</p>
               <ul className="mt-5 space-y-5">
                 {INCLUDED.map((item) => (
                   <li key={item.title} className="flex gap-3.5">
@@ -81,8 +90,8 @@ export default function RiskFreeHero() {
                       <Check className="h-3.5 w-3.5" />
                     </span>
                     <span>
-                      <span className="block font-display text-[17px] font-bold leading-snug tracking-snug text-ink">{item.title}</span>
-                      <span className="mt-0.5 block text-sm leading-snug text-ink-muted">{item.note}</span>
+                      <span className="block font-display text-[17px] font-bold leading-snug tracking-snug text-ink">{tr(item.title)}</span>
+                      <span className="mt-0.5 block text-sm leading-snug text-ink-muted">{tr(item.note)}</span>
                     </span>
                   </li>
                 ))}

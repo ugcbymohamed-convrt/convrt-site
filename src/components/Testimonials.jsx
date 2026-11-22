@@ -228,7 +228,7 @@ export default function Testimonials() {
             >
               {tr('Trusted by brands that')}{' '}
               <span className="text-lime">{tr('came back')}</span>
-              {' '}{tr('for more.')}
+              {currentLocale() === 'en' && <>{' '}{tr('for more.')}</>}
             </h2>
           </FadeUp>
 

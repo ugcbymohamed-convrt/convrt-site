@@ -15,22 +15,22 @@ export const ES_INDUSTRY_LABELS = {
 }
 
 export const ES_TYPE_LABELS = {
-  ugc: 'UGC', spokesperson: 'Presentador', organic: 'Social orgánico', saas: 'Vídeo para SaaS', demo: 'Demo de producto', testimonial: 'Testimonio',
-  interview: 'Entrevista en la calle', social: 'Social orgánico', ad: 'Creatividad publicitaria',
+  ugc: 'UGC', spokesperson: 'Spokesperson', organic: 'Social orgánico', saas: 'Vídeo para SaaS', demo: 'Demo de producto', testimonial: 'Testimonio',
+  interview: 'Entrevista en la calle', social: 'Social orgánico', ad: 'Creativo publicitario',
 }
 
 export const ES_PRODUCTION_LABELS = { independent: 'Creador independiente', convrt: 'Producido por CONVRT' }
 
-export const ES_CATEGORY_LABELS = { all: 'Todo el trabajo', ecommerce: 'E-commerce', saas: 'SaaS', services: 'Servicios', other: 'Otros', spokesperson: 'Presentador' }
+export const ES_CATEGORY_LABELS = { all: 'Todo el trabajo', ecommerce: 'E-commerce', saas: 'SaaS', services: 'Servicios', other: 'Otros', spokesperson: 'Spokesperson' }
 
 export const ES_ORGANIC_STYLE_LABELS = { educational: 'Educativo', entertaining: 'Entretenido', product: 'Centrado en el producto', founder: 'Con el fundador' }
-export const ES_SAAS_FORMAT_LABELS = { explainer: 'Explicativos de producto', demo: 'Demos de producto', presenter: 'Con presentador', animated: 'Animados', ad: 'Anuncios' }
+export const ES_SAAS_FORMAT_LABELS = { explainer: 'Explicativos de producto', demo: 'Demos de producto', presenter: 'Spokesperson', animated: 'Animados', ad: 'Anuncios' }
 
 const CAPTION_PATTERNS = [
   [/^CONVRT UGC ad example\.?$/, () => 'Ejemplo de anuncio UGC de CONVRT.'],
   [/^Creator-led UGC ad example (\d+)\.?$/, (n) => `Ejemplo de anuncio UGC con creador ${n}.`],
   [/^UGC ad example (\d+)\.?$/, (n) => `Ejemplo de anuncio UGC ${n}.`],
-  [/^Spokesperson video example (\d+)\.?$/, (n) => `Ejemplo de vídeo con presentador ${n}.`],
+  [/^Spokesperson video example (\d+)\.?$/, (n) => `Ejemplo de vídeo Spokesperson ${n}.`],
   [/^Organic social video example (\d+)\.?$/, (n) => `Ejemplo de vídeo orgánico para redes sociales ${n}.`],
   [/^SaaS creator example (\d+)\.?$/, (n) => `Ejemplo de creador para SaaS ${n}.`],
 ]

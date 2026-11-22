@@ -13,10 +13,14 @@ import { ES_PRICED_PAGES } from './es/pricing.js'
 const BLOCKS = {
   es: {
     '/creator-showcase': () => displayableFor('es').length === 0,
+    '/risk-free-trial': () => !ES_FREE_VIDEO_REVIEWED,
     ...Object.fromEntries(ES_PRICED_PAGES.map((p) => [p, () => !isPricingApproved('es')])),
   },
 }
-const REASONS = { '/creator-showcase': 'no approved Spanish-language videos yet' }
+/* The Spanish free-video application is built and reachable (the homepage links to it), but stays out of indexing, the sitemap and hreflang until the owner and the lawyer have reviewed it
+   (its consent wording, the omitted marketing checkbox and the eligibility copy). Flip to true after that review. */
+export const ES_FREE_VIDEO_REVIEWED = false
+const REASONS = { '/creator-showcase': 'no approved Spanish-language videos yet', '/risk-free-trial': 'Spanish free-video page awaiting owner/legal review' }
 const PRICING_REASON = 'Spanish EUR prices not approved yet'
 
 export const releaseBlocker = (locale, basePath) => (BLOCKS[locale]?.[basePath]?.() ? { path: basePath, reason: REASONS[basePath] ?? PRICING_REASON } : null)

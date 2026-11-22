@@ -2,23 +2,22 @@
 export default {
   // Header / menu
   'Services': 'Servicios',
-  'Creator Showcase': 'Creator Showcase',
+  'Creator Showcase': "Creadores",
   'Case Studies': 'Casos de éxito',
   'How It Works': 'Cómo funciona',
   'Pricing': 'Tarifas',
   'Blog': 'Blog',
   'Contact': 'Contacto',
-  'Book a Creative Call': 'Reservar una llamada creativa',
-  'Get 5 Free Ad Concepts': 'Recibe 5 conceptos publicitarios gratis',
+  'Book a Creative Call': "Reservar una llamada",
+  'Get 5 Free Ad Concepts': "5 conceptos gratis",
   'Toggle menu': 'Abrir o cerrar el menú',
   'Language': 'Idioma',
 
   // Footer
-  'A performance creative studio building UGC ads, spokesperson videos, organic social content, and creative strategy for brands that want content with one purpose: conversion.':
-    'Un estudio creativo de alto rendimiento que crea anuncios UGC, vídeos con presentador, contenido orgánico para redes sociales y estrategia creativa para marcas que quieren contenido con un único objetivo: convertir.',
+  'A performance creative studio building UGC ads, spokesperson videos, organic social content, and creative strategy for brands that want content with one purpose: conversion.': "Un estudio creativo de alto rendimiento que crea anuncios UGC, vídeos Spokesperson, contenido orgánico para redes sociales y estrategia creativa para marcas que quieren contenido con un único objetivo: convertir.",
   'Studio': 'Estudio',
   'UGC Video Agency': 'Agencia de vídeos UGC',
-  'Spokesperson Videos': 'Vídeos con presentador',
+  'Spokesperson Videos': "Vídeos Spokesperson",
   'Organic Social Videos': 'Vídeos para redes sociales',
   'SaaS Video Production': 'Producción de vídeo para SaaS',
   'About': 'Sobre CONVRT',
