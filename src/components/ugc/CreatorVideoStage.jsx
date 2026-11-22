@@ -253,7 +253,7 @@ function StagePhone({ item, slot, n, index, active, load, wantPlay, muted, playi
       <PhoneShell active={active}>
         <img
           src={posterUrl(item)}
-          alt=""
+          alt={item.caption}
           width="540"
           height="1170"
           decoding="async"
@@ -268,7 +268,7 @@ function StagePhone({ item, slot, n, index, active, load, wantPlay, muted, playi
           playsInline
           preload="none"
           poster={posterUrl(item)}
-          aria-label={item.caption}
+          aria-hidden="true"
           className="absolute inset-0 h-full w-full object-cover"
         />
         {/* the inactive phones are dimmed with an overlay (cheaper to animate than a filter) */}

@@ -1,5 +1,5 @@
 import { OFFER_PATHS } from '../../config.js'
-import { CONVRT_STATS } from '../../lib/siteStats.js'
+import { CONVRT_STATS, FOUNDER_EXPERIENCE } from '../../lib/siteStats.js'
 import { withUtm } from '../../lib/analytics.js'
 import { SPRINT, SPRINT_PLUS, ORGANIC_STAGES, ORGANIC, ORGANIC_CTA, PRODUCTION_LANGUAGES } from '../../seo/businessKnowledge.js'
 
@@ -234,10 +234,11 @@ function OrganicOfferCard() {
   )
 }
 
+/* `founder`: the figure is the founder's combined professional experience (see siteStats.js), marked with an asterisk and explained under the row. */
 const STATS = [
-  { value: CONVRT_STATS.views, label: 'Views generated' },
-  { value: CONVRT_STATS.videos, label: 'Videos produced' },
-  { value: CONVRT_STATS.clients, label: 'Clients served' },
+  { value: CONVRT_STATS.views, label: 'Views generated', founder: true },
+  { value: CONVRT_STATS.videos, label: 'Videos produced', founder: true },
+  { value: CONVRT_STATS.clients, label: 'Clients served', founder: true },
   { value: String(PRODUCTION_LANGUAGES.core.length), label: 'Core production languages' },
 ]
 
@@ -260,10 +261,11 @@ export default function PhilosophySection({ service }) {
           {STATS.map((s) => (
             <li key={s.label} className="bg-surface-1/90 px-3 py-4 text-center">
               <p className="font-display text-xl font-bold leading-none tracking-display tabular-nums text-ink md:text-2xl">{s.value}</p>
-              <p className="mt-1.5 text-[11.5px] leading-tight text-ink-muted">{s.label}</p>
+              <p className="mt-1.5 text-[11.5px] leading-tight text-ink-muted">{s.label}{s.founder && <span aria-hidden="true">*</span>}</p>
             </li>
           ))}
         </ul>
+        <p className="mt-3 text-center text-[11.5px] leading-snug text-ink-muted">* {FOUNDER_EXPERIENCE.footnote}</p>
       </div>
     </section>
   )

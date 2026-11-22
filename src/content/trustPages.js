@@ -13,6 +13,7 @@
 import { CONTACT_EMAIL, BOOKING_URL, OFFER_PATHS, CREATOR_SHOWCASE_PATH, PRIVACY_PATH, TERMS_PATH, LEGAL_NOTICE_PATH, COMPANY_LINKEDIN_URL, INSTAGRAM_URL, LEGAL_NOTICE_DETAILS_APPROVED } from '../config.js'
 import { BRAND, CREATOR_ALLOCATION, PRODUCTION_LANGUAGES, PRODUCTION_MODEL, INTERNATIONAL_CLIENTS, TALENT, USAGE_RIGHTS, TAX } from '../seo/businessKnowledge.js'
 import { ELYON_PROOF } from './ugcProof.js'
+import { CONVRT_STATS } from '../lib/siteStats.js'
 import { ORGANIC_PROOF } from './organicSocialPage.js'
 import { OPERATOR } from './operator.js'
 import { CURRENT_MARKETING_CONSENT_VERSION, marketingConsentText } from './marketingConsent.js'
@@ -87,6 +88,12 @@ export const TRUST_CONTENT = {
         body: [
           `CONVRT Studio is run by its founder, ${founder.name}, ${founder.jobTitle}. The studio is operated as ${OPERATOR.structure}. You can follow the studio on [[LinkedIn|${COMPANY_LINKEDIN_URL}]] and [[Instagram|${INSTAGRAM_URL}]]; the founder also has a personal [[LinkedIn profile|${founder.linkedin}]].`,
           'Creative strategy, scripts, creator casting, filming and editing are handled in one place, so you deal with one studio instead of coordinating several suppliers.',
+        ],
+      },
+      {
+        heading: "The founder's experience",
+        body: [
+          `The figures quoted on this site (${CONVRT_STATS.videos} videos produced, ${CONVRT_STATS.clients} clients served, ${CONVRT_STATS.views} views generated and ${CONVRT_STATS.returningClients} returning clients) are the founder's combined professional experience, including CONVRT Studio and other professional creative production work. They are not statistics for projects delivered under the CONVRT Studio brand alone. Results specific to individual clients are described in our case studies, [[Graspo|/case-studies/graspo]] and [[Elyon Dubai|/case-studies/elyon]], each with its own period and qualifiers.`,
         ],
       },
       {

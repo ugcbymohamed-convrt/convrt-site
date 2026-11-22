@@ -1,6 +1,6 @@
 import { useRef, useEffect, useState } from 'react'
 import { OFFER_PATHS, CONTACT_EMAIL } from '../config.js'
-import { CONVRT_STATS } from '../lib/siteStats.js'
+import { CONVRT_STATS, FOUNDER_EXPERIENCE } from '../lib/siteStats.js'
 
 /* ─────────────────────────────────────────────
    FINAL CTA — Cinematic close
@@ -170,10 +170,11 @@ export default function FinalCTA() {
                 }}
               >
                 <span className="text-sm font-bold text-lime tabular-nums">{pill.value}</span>
-                <span className="text-xs text-ink-muted">{pill.label}</span>
+                <span className="text-xs text-ink-muted">{pill.label}<span aria-hidden="true">*</span></span>
               </div>
             ))}
           </div>
+          <p className="mx-auto mt-4 max-w-xl text-center text-[11.5px] leading-snug text-ink-muted">* {FOUNDER_EXPERIENCE.footnote}</p>
         </FadeUp>
 
       </div>

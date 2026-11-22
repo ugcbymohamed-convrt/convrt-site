@@ -254,7 +254,7 @@ test('public claims register: every claim has a source and a status; the figures
   assert.deepEqual(CONVRT_STATS, { videos: '1,200+', views: '40M+', clients: '500+', returningClients: '50%+' })
   assert.equal(PRODUCTION_LANGUAGES.arabicDialects, 'Gulf and Moroccan Arabic dialects')
   const h = textOf(page('/'))
-  assert.ok(h.includes('500+ brands') && h.includes('1,200+') && h.includes('40M+') && h.includes('50%+'))
+  assert.ok(h.includes('500+ clients') && !h.includes('500+ brands') && h.includes('1,200+') && h.includes('40M+') && h.includes('50%+'))
   assert.ok(!/50%\+/.test(read('src/components/FinalCTA.jsx')) || /CONVRT_STATS\.returningClients/.test(read('src/components/FinalCTA.jsx')), 'the 50%+ figure is read from the stats file, not typed')
   // the dialect clause is exactly the same sentence on the three pages that carry it, and absent from the Organic FAQ (kept concise: the dialect story is for the future Arabic site)
   for (const f of [HOME_FAQ.find((x) => /other languages/.test(x.q)), UGC_FAQ.find((x) => x.id === 'languages-and-international'), SPOKESPERSON_FAQ.find((x) => /languages/i.test(x.q))]) {
