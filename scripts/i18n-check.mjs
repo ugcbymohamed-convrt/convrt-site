@@ -17,10 +17,10 @@ const walk = (d, out = []) => { for (const e of fs.readdirSync(d, { withFileType
    the case-study pages, the blog, the referral and free-hooks pages, /scale and the private creator pages stay English (links to them keep their English URL). */
 export const OUT_OF_SCOPE = {
   ar: [
-    'components/saas/', 'components/spokesperson/', 'components/organic/', 'components/referrals/', 'components/hooks/', 'components/blog/', 'components/scale/', 'components/creator/',
-    'components/elyon/', 'components/graspo/', 'components/caseStudies/', 'components/ugc/UgcHeroRoadmap',
-    'SaasVideoPage.jsx', 'SpokespersonVideoPage.jsx', 'OrganicSocialVideoPage.jsx', 'TrustPage.jsx', 'ReferralsPage.jsx', 'FreeHooksPage.jsx', 'BlogPage.jsx', 'BlogArticlePage.jsx',
-    'CaseStudiesPage.jsx', 'ElyonCaseStudyPage.jsx', 'GraspoCaseStudyPage.jsx', 'ScalePage.jsx', 'CreatorAdminPage.jsx', 'CreatorOnboardingPage.jsx', 'CreatorLegalPage.jsx', 'OfferPlaceholderPage.jsx',
+    'components/referrals/', 'components/hooks/', 'components/blog/', 'components/scale/', 'components/creator/',
+    'components/elyon/', 'components/ugc/UgcHeroRoadmap',
+    'TrustPage.jsx', 'ReferralsPage.jsx', 'FreeHooksPage.jsx', 'BlogPage.jsx', 'BlogArticlePage.jsx',
+    'ElyonCaseStudyPage.jsx', 'ScalePage.jsx', 'CreatorAdminPage.jsx', 'CreatorOnboardingPage.jsx', 'CreatorLegalPage.jsx', 'OfferPlaceholderPage.jsx',
     'CreativeTestingSprintPage.jsx_UNUSED',
   ],
 }

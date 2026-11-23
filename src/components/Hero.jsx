@@ -7,6 +7,7 @@ import { HOME_HERO, HOME_HERO_ES, HOME_HERO_AR } from '../content/homeHero.js'
 import { useTr, useHref } from '../i18n/tr.js'
 import { currentLocale } from '../i18n/locale.js'
 import { primaryAction, flowAvailable } from '../i18n/cta.js'
+import { AR_HERO_OFFERS } from '../i18n/ar/heroOffers.js'
 
 const ROTATING_WORDS = ['convert', 'resonate', 'sell', 'connect']
 // Spanish rotating words complete "Creatividades de alto rendimiento diseñadas para ___" (see src/i18n/es/dict-home.js).
@@ -147,6 +148,20 @@ export default function Hero() {
               </div>
             </div>
             )}
+            {/* Arabic: the same two free offers under the same label, in Arabic. The free video links to its (Arabic) application; the 10 hooks library is not available in Arabic yet, so that card is a
+                clearly marked "قريبًا" (coming soon) tile: not a link, not a download (src/i18n/ar/heroOffers.js). */}
+            {locale === 'ar' && (
+            <div className="mt-8 md:mt-10 max-w-xl mx-auto lg:mx-0">
+              <p className="text-left text-[13px] text-ink-muted">{tr("Not ready yet? We've got two more FREE ways to start.")}</p>
+              <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-left">
+                {SECONDARY_OFFERS.map((offer) => {
+                  const ar = AR_HERO_OFFERS[offer.id]
+                  const available = offer.id === 'video' ? flowAvailable('ar', 'riskFree') : flowAvailable('ar', 'hooks')
+                  return <SecondaryOffer key={offer.id} offer={{ ...offer, ...ar, href: available ? href(offer.href) : undefined }} soon={!available} />
+                })}
+              </div>
+            </div>
+            )}
             </div>
           </div>
 
@@ -166,16 +181,18 @@ export default function Hero() {
    lines (short card); from sm up the icon shares a row with the title so two
    cards fit side by side in the left column without wrapping. */
 
-export function SecondaryOffer({ offer }) {
+export function SecondaryOffer({ offer, soon = false }) {
   const Icon = offer.icon
+  /* `soon`: the offer is not available in this language yet. It is drawn like the others but is a plain element, never a link: no href, no click, no hover lift, and its call to action says it is coming. */
+  const Wrap = soon ? 'div' : 'a'
+  const linkProps = soon ? { 'aria-disabled': 'true' } : { href: offer.href, onClick: () => trackEvent(offer.event, { location: 'hero' }) }
   return (
-    <a
-      href={offer.href}
-      onClick={() => trackEvent(offer.event, { location: 'hero' })}
-      className={`group grid grid-cols-[auto_1fr] items-center gap-x-3 rounded-2xl border p-3.5 sm:p-4
-                  transition-[transform,border-color,background-color,box-shadow] duration-200 hover:-translate-y-0.5
+    <Wrap
+      {...linkProps}
+      className={`${soon ? 'cursor-default opacity-90' : 'hover:-translate-y-0.5'} group grid grid-cols-[auto_1fr] items-center gap-x-3 rounded-2xl border p-3.5 sm:p-4
+                  transition-[transform,border-color,background-color,box-shadow] duration-200
                   motion-reduce:transition-none motion-reduce:hover:translate-y-0
-                  focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 ${offer.card}`}
+                  focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 ${soon ? offer.card.replace(/hover:\S+/g, '') : offer.card}`}
     >
       <span className={`col-start-1 row-start-1 row-span-3 sm:row-span-1 flex h-10 w-10 items-center justify-center rounded-xl border sm:h-9 sm:w-9 ${offer.iconTile}`}>
         <Icon />
@@ -184,11 +201,13 @@ export function SecondaryOffer({ offer }) {
       <span className="col-start-2 row-start-2 mt-0.5 text-[13px] leading-snug text-ink-muted sm:col-start-1 sm:col-span-2 sm:mt-2.5">{offer.description}</span>
       <span className={`col-start-2 row-start-3 mt-1.5 inline-flex items-center gap-1 text-[13px] font-semibold sm:col-start-1 sm:col-span-2 ${offer.ctaText}`}>
         {offer.cta}
-        <svg viewBox="0 0 12 12" className="h-3 w-3 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0 motion-reduce:group-hover:translate-y-0" fill="none" aria-hidden="true">
-          <path d="M3 9L9 3M9 3H4M9 3V8" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
+        {!soon && (
+          <svg viewBox="0 0 12 12" className="h-3 w-3 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0 motion-reduce:group-hover:translate-y-0" fill="none" aria-hidden="true">
+            <path d="M3 9L9 3M9 3H4M9 3V8" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        )}
       </span>
-    </a>
+    </Wrap>
   )
 }
 

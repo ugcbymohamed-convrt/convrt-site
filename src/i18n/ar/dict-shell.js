@@ -1,6 +1,6 @@
 /* Arabic dictionary — shell area (English string → Arabic). Written to docs/multilingual-arabic.md's style guide. Price tokens ({{price:key}}) are resolved by src/i18n/pricing.js. */
 export default {
-  "Get 5 Free Ad Concepts": "احصل على 5 أفكار إعلانية مخصصة",
+  "Get 5 Free Ad Concepts": "احصل على 5 أفكار إعلانية مجانًا",
   "Primary": "الرئيسية",
   "Services": "الخدمات",
   "Creator Showcase": "معرض صُنّاع المحتوى",
@@ -15,9 +15,9 @@ export default {
   "Case Studies": "دراسات الحالة",
   "Book a Creative Call": "احجز مكالمة إبداعية",
   "SaaS Video Production": "إنتاج فيديوهات SaaS",
-  "Spokesperson Videos": "فيديوهات بمقدّمين",
+  "Spokesperson Videos": "فيديوهات Spokesperson",
   "Get in touch": "تواصل معنا",
-  "A performance creative studio building UGC ads, spokesperson videos, organic social content, and creative strategy for brands that want content with one purpose: conversion.": "استوديو إبداعي متخصص في الأداء، يُنتج إعلانات UGC وفيديوهات بمقدّمين ومحتوى عضويًا للسوشيال ميديا واستراتيجية إبداعية، للعلامات التي تريد محتوى لهدف واحد: التحويل.",
+  "A performance creative studio building UGC ads, spokesperson videos, organic social content, and creative strategy for brands that want content with one purpose: conversion.": "استوديو إبداعي متخصص في الأداء، يُنتج إعلانات UGC وفيديوهات Spokesperson ومحتوى عضوي للسوشيال ميديا واستراتيجية إبداعية، للعلامات التي تريد محتوى لهدف واحد: التحويل.",
   "Studio": "الاستوديو",
   "UGC Video Agency": "وكالة فيديوهات UGC",
   "About": "عن CONVRT",

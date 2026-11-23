@@ -27,6 +27,10 @@ const BREADCRUMB_NAMES = {
   '/pricing': 'الأسعار',
   '/ugc-video-agency': 'وكالة UGC',
   '/creator-showcase': 'صُنّاع المحتوى',
+  '/spokesperson-video-production': 'فيديوهات Spokesperson',
+  '/social-media-video-production': 'فيديوهات للسوشيال ميديا',
+  '/saas-video-production': 'فيديوهات شرح التطبيقات (SaaS)',
+  '/case-studies/graspo': 'دراسة حالة Graspo',
 }
 
 const PAGE_TYPE = { '/creator-showcase': 'CollectionPage' }
@@ -38,6 +42,7 @@ export function localizedJsonLd(locale, basePath, seo = {}) {
   const { title, description } = { ...seo, ...AR_SEO[basePath] }
   const isHome = basePath === '/'
   const trail = isHome ? null : [{ name: 'الرئيسية', path: '/ar/' }, { name: BREADCRUMB_NAMES[basePath], path: `/ar${basePath}` }]
+  // (the case study's breadcrumb, like the English one, is a two-level trail: Home > the study)
   const extras = AR_PAGE_GRAPH_EXTRAS[basePath]?.(url) ?? { nodes: [] }
   const faq = isHome ? homeFaqFor(LOCALE) : AR_PAGE_FAQ[basePath]
   return graph([
@@ -51,6 +56,7 @@ export function localizedJsonLd(locale, basePath, seo = {}) {
       isPartOf: { '@id': WEBSITE_ID },
       ...(isHome ? { about: { '@id': ORG_ID } } : {}),
       ...(extras.about ? { about: extras.about } : {}),
+      ...(extras.mentions ? { mentions: extras.mentions } : {}),
       ...(trail ? { breadcrumb: { '@id': `${url}#breadcrumb` } } : {}),
       inLanguage: LOCALE,
     },

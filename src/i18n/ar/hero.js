@@ -10,6 +10,27 @@ export const AR_HERO = {
     lead: ['مصمّمة', 'كي'],
     words: ['تُقنع', 'تؤثّر', 'تُلهم'],
     sizer: 'تُقنع.',
-    secondary: { label: 'شاهد أعمالنا', href: CREATOR_SHOWCASE_PATH },
+    secondary: { label: 'مكتبة الفيديوهات', href: CREATOR_SHOWCASE_PATH },
+  },
+  'spokesperson-h1': {
+    lines: [['فيديوهات', 'Spokesperson'], ['بمقدّمين', 'حقيقيين.']],
+    lead: ['رسائل', 'واضحة', 'كي'],
+    words: ['تُقنع', 'تُوضّح', 'تؤثّر'],
+    sizer: 'تُوضّح.',
+    secondary: { label: 'مكتبة الفيديوهات', href: CREATOR_SHOWCASE_PATH },
+  },
+  'organic-h1': {
+    lines: [['فيديوهات', 'للسوشيال', 'ميديا'], ['تجذب', 'الانتباه.']],
+    lead: ['محتوى', 'مصمّم', 'كي'],
+    words: ['يجذب', 'يُلهم', 'يُقنع'],
+    sizer: 'يُلهم.',
+    secondary: { label: 'كيف نعمل', href: '#how-it-works' },
+  },
+  'saas-h1': {
+    lines: [['فيديوهات', 'شرح', 'SaaS'], ['سهلة', 'الفهم.']],
+    lead: ['مصمّمة', 'كي'],
+    words: ['تشرح', 'تُبسّط', 'تُقنع'],
+    sizer: 'تُبسّط.',
+    secondary: { label: 'شاهد الصيغ', href: '#saas-formats' },
   },
 }

@@ -9,6 +9,7 @@ import roadmap from './dict-roadmap.js'
 import geo from './dict-geo.js'
 import riskfree from './dict-riskfree.js'
 import extras from './dict-extras.js'
+import pages from './dict-pages.js'
 
-export default { ...shell, ...home, ...services, ...pricing, ...showcase, ...roadmap, ...geo, ...riskfree, ...extras }
-export const PARTS = { shell, home, services, pricing, showcase, roadmap, geo, riskfree, extras }
+export default { ...shell, ...home, ...services, ...pricing, ...showcase, ...roadmap, ...geo, ...riskfree, ...extras, ...pages }
+export const PARTS = { shell, home, services, pricing, showcase, roadmap, geo, riskfree, extras, pages }

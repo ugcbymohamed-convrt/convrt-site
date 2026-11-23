@@ -71,7 +71,7 @@ export default {
   "From performance-driven video ads to consistent organic content, find the right creative partnership for your brand.": "من الإعلانات المرئية المبنية على الأداء إلى المحتوى العضوي المتواصل، اختر الشراكة الإبداعية المناسبة لعلامتك التجارية.",
   "What are you looking to achieve?": "ما الذي تريد تحقيقه؟",
   "Scale my ads": "توسيع نطاق إعلاناتي",
-  "UGC, spokesperson videos and creative testing.": "فيديوهات UGC، وفيديوهات بمقدّمين، واختبار الأفكار الإبداعية.",
+  "UGC, spokesperson videos and creative testing.": "فيديوهات UGC، وفيديوهات Spokesperson، واختبار الأفكار الإبداعية.",
   "Grow my socials": "تنمية حساباتي على السوشيال ميديا",
   "Content, publishing and organic community growth.": "المحتوى والنشر ونمو مجتمع المتابعين بشكل عضوي.",
   "Billing option": "خيار الفوترة",

@@ -1,7 +1,7 @@
 /* Arabic dictionary — roadmap area (English string → Arabic). Written to docs/multilingual-arabic.md's style guide. Price tokens ({{price:key}}) are resolved by src/i18n/pricing.js. */
 export default {
-  "Your next 5 ad concepts. Tailored to your brand.": "أفكارك الإعلانية الـ5 التالية، مصمَّمة لعلامتك التجارية",
-  "On us.": "علينا.",
+  "Your next 5 ad concepts. Tailored to your brand.": "أفكارك الإعلانية الخمس التالية، مخصصة لعلامتك التجارية.",
+  "On us.": "مجانًا.",
   "Free Creative Strategy · By Application": "استراتيجية إبداعية مجانية · بعد تقديم الطلب",
   "Your Next 5 Ad Concepts.": "أفكارك الإعلانية الـ5 التالية.",
   "Built for Your Brand.": "مصمَّمة لعلامتك التجارية.",
