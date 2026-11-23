@@ -15,7 +15,7 @@ import { primaryAction } from '../i18n/cta.js'
 // mobile menu, the footer, and the hero/CTA buttons — nothing is removed.
 // `englishOnly`: the page exists only in English (no translation yet), so other languages' menus do not list it (never a link from a translated page into
 // an untranslated one). It appears in a language's menu by itself once the page is translated and registered in src/i18n/registry.js.
-// `notInEnglish`: left out of the ENGLISH menu only (owner, Nov 2026, to give the language selector more room); translated menus keep it. The section is still on the page and in the footer.
+// `notInEnglish`: left out of the ENGLISH and FRENCH menus (owner, Nov 2026, to give the language selector more room); the other translated menus keep it. The section is still on the page and in the footer.
 const links = [
   { label: 'Services', href: '#services' },
   { label: 'Creator Showcase', href: CREATOR_SHOWCASE_PATH },
@@ -61,7 +61,8 @@ export default function Nav() {
   const onHome = basePath === '/'
   const homePrefix = onHome ? '' : localizedPath(locale, '/')
   const resolveHref = (href) => (href.startsWith('#') ? `${homePrefix}${href}` : localHref(href, locale))
-  const visibleLinks = links.filter((l) => (locale === 'en' ? !l.notInEnglish : !l.englishOnly))
+  // English and French (the languages on the redesigned homepage) leave How It Works out of the menu (more room for the language selector); French also leaves out the English-only pages.
+  const visibleLinks = links.filter((l) => (locale === 'en' ? !l.notInEnglish : locale === 'fr' ? !l.englishOnly && !l.notInEnglish : !l.englishOnly))
   const action = primaryAction(locale)
 
   // /scale is a paid-acquisition page with its own in-page booking modal

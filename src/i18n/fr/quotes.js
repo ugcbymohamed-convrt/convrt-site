@@ -12,3 +12,11 @@ export const FR_QUOTE_TRANSLATIONS = {
     'Les vidéos UGC qu’il a créées étaient exactement ce qu’il nous fallait pour développer nos publicités. Nous sommes déjà revenus pour une deuxième commande et prévoyons de continuer à travailler ensemble sur le long terme.',
 }
 export const FR_QUOTE_LABELS = { translation: 'Traduction française', original: 'Avis d’origine (anglais)' }
+
+/* The short line shown first in the homepage reviews (components/home/ClientReviews.jsx): the French translation of the English excerpt in src/content/reviews.js (itself a verbatim part of the full
+   review), and the words picked out in lime (a verbatim part of the French line). Same faithfulness rule: nothing is added, no result, number or promise the original does not contain. */
+export const FR_REVIEW_EXCERPTS = {
+  elyon: { excerpt: 'Les vidéos sont de grande qualité, livrées dans les délais, et la communication a été excellente du début à la fin.', highlight: 'grande qualité' },
+  adscale: { excerpt: 'Les vidéos UGC qu’il a créées étaient exactement ce qu’il nous fallait pour développer nos publicités.', highlight: 'développer nos publicités' },
+  talk360: { excerpt: 'À chaque collaboration, la qualité s’améliore.', highlight: 'la qualité s’améliore' },
+}

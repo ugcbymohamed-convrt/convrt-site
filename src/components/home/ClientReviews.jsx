@@ -1,5 +1,8 @@
 import { useRef, useState } from 'react'
 import { REVIEWS } from '../../content/reviews.js'
+import { useTr } from '../../i18n/tr.js'
+import { currentLocale } from '../../i18n/locale.js'
+import { editorial } from '../../i18n/editorial.js'
 
 /* THE ENGLISH HOMEPAGE'S CLIENT REVIEWS: an editorial feature, deliberately the opposite of the cinematic stage above it (typography only: no cards, no glow, no stage).
 
@@ -13,10 +16,10 @@ import { REVIEWS } from '../../content/reviews.js'
 
 const SERIF = 'font-editorial'
 
-function Excerpt({ review }) {
-  const i = review.excerpt.indexOf(review.highlight)
-  if (i === -1) return review.excerpt
-  return <>{review.excerpt.slice(0, i)}<span className="text-lime">{review.highlight}</span>{review.excerpt.slice(i + review.highlight.length)}</>
+function Excerpt({ excerpt, highlight }) {
+  const i = excerpt.indexOf(highlight)
+  if (i === -1) return excerpt
+  return <>{excerpt.slice(0, i)}<span className="text-lime">{highlight}</span>{excerpt.slice(i + highlight.length)}</>
 }
 
 /* the quote size follows its length so every excerpt sets in a similar number of lines */
@@ -40,6 +43,9 @@ const Mark = ({ className = '' }) => (
 )
 
 export default function ClientReviews() {
+  const tr = useTr()
+  const locale = currentLocale()
+  const ed = editorial(locale)
   const [activeId, setActiveId] = useState(LIST[0].id)
   const tabRefs = useRef({})
 
@@ -58,10 +64,10 @@ export default function ClientReviews() {
   return (
     <section id="testimonials" aria-labelledby="reviews-heading" className="relative overflow-hidden py-16 md:py-24">
       <div className="relative mx-auto max-w-7xl px-5 md:px-8">
-        <h2 id="reviews-heading" className="sr-only">Great work. Strong relationships. Repeat collaborations.</h2>
+        <h2 id="reviews-heading" className="sr-only">{tr('Great work. Strong relationships. Repeat collaborations.')}</h2>
         <div className="inline-flex items-center gap-3">
           <span className="h-px w-12 bg-lime md:w-24" aria-hidden="true" />
-          <span className="text-sm font-semibold uppercase tracking-[0.22em] text-lime md:text-base">Client Reviews</span>
+          <span className="text-sm font-semibold uppercase tracking-[0.22em] text-lime md:text-base">{tr('Client Reviews')}</span>
         </div>
 
         <div className="mt-8 grid grid-cols-1 gap-x-10 gap-y-10 md:mt-12 lg:grid-cols-[minmax(0,0.3fr)_minmax(0,1fr)_minmax(290px,0.36fr)] lg:gap-x-12">
@@ -72,6 +78,11 @@ export default function ClientReviews() {
           <div className="grid lg:border-l lg:border-lime lg:pl-10 xl:pl-12">
             {LIST.map((r) => {
               const on = r.id === activeId
+              // French: a LABELLED translation first (never presented as the client's own French), the verbatim English original kept under "Read full review". Spanish and the rest: the client's own English words, marked lang="en".
+              const fx = ed?.reviewExcerpts?.[r.id]
+              const fullFr = ed?.quoteTranslations?.[r.full]
+              const excerpt = fx?.excerpt ?? r.excerpt
+              const highlight = fx?.highlight ?? r.highlight
               return (
                 <figure
                   key={r.id}
@@ -81,13 +92,14 @@ export default function ClientReviews() {
                   inert={on ? undefined : ''}
                   className={`[grid-area:1/1] flex flex-col transition-[opacity,transform] duration-300 ease-out motion-reduce:transition-none ${on ? 'translate-y-0 opacity-100' : 'invisible translate-y-3 opacity-0'}`}
                 >
-                  <blockquote className={`${SERIF} ${quoteSize(r.excerpt)} font-normal leading-[1.1] tracking-[-0.01em] text-ink [text-wrap:balance]`}>
-                    <p>“<Excerpt review={r} />”</p>
+                  {fx && <p className="mb-4 text-[11px] font-semibold uppercase tracking-[0.14em] text-lime">{ed.quoteLabels.translation}</p>}
+                  <blockquote lang={locale === 'en' || fx ? undefined : 'en'} className={`${SERIF} ${quoteSize(excerpt)} font-normal leading-[1.1] tracking-[-0.01em] text-ink [text-wrap:balance]`}>
+                    <p>“<Excerpt excerpt={excerpt} highlight={highlight} />”</p>
                   </blockquote>
                   <figcaption className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3 md:mt-10">
                     <img
                       src={r.logo}
-                      alt={`${r.brand} logo`}
+                      alt={locale === 'en' ? `${r.brand} logo` : `${r.brand} ${tr('logo')}`}
                       loading="lazy"
                       decoding="async"
                       draggable="false"
@@ -96,16 +108,26 @@ export default function ClientReviews() {
                     />
                     <span aria-hidden="true" className="hidden h-10 w-px bg-white/25 sm:block" />
                     <span className="text-[12px] font-medium uppercase leading-relaxed tracking-[0.2em] text-ink-muted md:text-[13px]">
-                      <span className="block sm:inline">{r.category}</span>
-                      {r.repeat && <span className="sm:before:mx-2 sm:before:content-['·'] block text-lime sm:inline">Repeat client</span>}
+                      <span className="block sm:inline">{tr(r.category)}</span>
+                      {r.repeat && <span className="sm:before:mx-2 sm:before:content-['·'] block text-lime sm:inline">{tr('Repeat client')}</span>}
                     </span>
                   </figcaption>
                   <details className="group mt-5">
                     <summary className="inline-flex min-h-[44px] cursor-pointer list-none items-center gap-2 text-[13.5px] font-semibold text-ink-muted transition-colors hover:text-lime focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-lime [&::-webkit-details-marker]:hidden">
                       <span aria-hidden="true" className="inline-flex h-5 w-5 items-center justify-center rounded-full border border-current text-[13px] leading-none transition-transform duration-300 group-open:rotate-45 motion-reduce:transition-none">+</span>
-                      Read full review
+                      {tr('Read full review')}
                     </summary>
-                    <p className="mt-2 max-w-2xl text-[15px] leading-[1.7] text-ink-muted">{r.full}</p>
+                    {fullFr ? (
+                      <div className="mt-2 max-w-2xl text-[15px] leading-[1.7] text-ink-muted">
+                        <p>{fullFr}</p>
+                        <p className="mt-3 border-t border-hairline pt-3 text-[13px] leading-relaxed">
+                          <span className="font-semibold text-ink-subtle">{ed.quoteLabels.original} : </span>
+                          <q lang="en">{r.full}</q>
+                        </p>
+                      </div>
+                    ) : (
+                      <p lang={locale === 'en' ? undefined : 'en'} className="mt-2 max-w-2xl text-[15px] leading-[1.7] text-ink-muted">{r.full}</p>
+                    )}
                   </details>
                 </figure>
               )
@@ -113,7 +135,7 @@ export default function ClientReviews() {
           </div>
 
           {/* the client list */}
-          <div role="tablist" aria-label="Choose a client review" className="grid grid-cols-3 gap-2 lg:block lg:self-start lg:pt-3">
+          <div role="tablist" aria-label={tr('Choose a client review')} className="grid grid-cols-3 gap-2 lg:block lg:self-start lg:pt-3">
             {LIST.map((r, i) => {
               const on = r.id === activeId
               return (
@@ -132,13 +154,14 @@ export default function ClientReviews() {
                 >
                   <span aria-hidden="true" className={`absolute left-0 top-3 h-[calc(100%-1.5rem)] w-[3px] rounded-full bg-lime transition-opacity duration-300 motion-reduce:transition-none lg:top-1/2 lg:h-12 lg:-translate-y-1/2 ${on ? 'opacity-100' : 'opacity-0'}`} />
                   <span className={`block text-[12px] font-bold uppercase tracking-[0.16em] transition-colors duration-300 motion-reduce:transition-none lg:text-[1.35rem] lg:tracking-[0.12em] ${on ? 'text-ink' : 'text-ink-muted group-hover:text-ink'}`}>{r.brand}</span>
-                  <span className={`mt-1.5 hidden text-[12px] font-medium uppercase tracking-[0.16em] transition-colors duration-300 sm:block lg:whitespace-nowrap lg:text-[11px] lg:tracking-[0.12em] motion-reduce:transition-none ${on ? 'text-ink-muted' : 'text-ink-subtle'}`}>{r.category}</span>
+                  <span className={`mt-1.5 hidden text-[12px] font-medium uppercase tracking-[0.16em] transition-colors duration-300 sm:block lg:whitespace-nowrap lg:text-[11px] lg:tracking-[0.12em] motion-reduce:transition-none ${on ? 'text-ink-muted' : 'text-ink-subtle'}`}>{tr(r.category)}</span>
                 </button>
               )
             })}
           </div>
         </div>
 
+        {ed?.testimonialsNote && <p className="mt-8 text-[12.5px] leading-relaxed text-ink-subtle">{ed.testimonialsNote}</p>}
         <div aria-hidden="true" className="mt-14 h-px w-full bg-lime md:mt-20" />
       </div>
     </section>

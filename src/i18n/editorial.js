@@ -7,7 +7,7 @@ import * as ES from './es/labels.js'
 import * as FR from './fr/labels.js'
 import { formatMoneyEs } from './es/money.js'
 import { formatMoneyFr } from './fr/money.js'
-import { FR_QUOTE_TRANSLATIONS, FR_QUOTE_LABELS } from './fr/quotes.js'
+import { FR_QUOTE_TRANSLATIONS, FR_QUOTE_LABELS, FR_REVIEW_EXCERPTS } from './fr/quotes.js'
 
 export const EDITORIAL = {
   es: {
@@ -21,7 +21,7 @@ export const EDITORIAL = {
     caption: FR.captionFr, faqTitles: FR.FR_FAQ_TITLES, stageTitles: FR.FR_STAGE_TITLES, finalCta: FR.FR_FINAL_CTA, sectionIntros: FR.FR_SECTION_INTROS,
     testimonialsNote: FR.FR_TESTIMONIALS_NOTE, formatMoney: formatMoneyFr, homeLabel: 'CONVRT — accueil', quoteLang: 'en',
     fallbackNote: 'en anglais',
-    quoteTranslations: FR_QUOTE_TRANSLATIONS, quoteLabels: FR_QUOTE_LABELS,
+    quoteTranslations: FR_QUOTE_TRANSLATIONS, quoteLabels: FR_QUOTE_LABELS, reviewExcerpts: FR_REVIEW_EXCERPTS,
     turnaround: (a, b) => `${a.days} jours ouvrés pour ${a.name} et ${b.days} pour ${b.name}, à compter de la validation des concepts et des scripts, et non du paiement.`,
   },
 }

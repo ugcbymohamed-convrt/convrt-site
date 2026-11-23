@@ -33,3 +33,31 @@ export const shortestDelta = (from, target, n) => {
 export const easeInOutCubic = (k) => (k < 0.5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2)
 export const ROTATION_MS = 720
 
+
+/* ── TWO LANDSCAPE VIDEOS (the French client stage) ─────────────────────────────────────────────────────────────────────────────────────────────────────────
+   Two 16:9 frames share the same platform: one dominant in front, one slightly behind it, higher, smaller and turned a little toward the centre, resting on the right so it stays clearly visible and
+   clickable. Selecting the rear frame brings it forward while the front one travels back to the rear spot; on the way the two swing past each other on opposite sides (a small sideways bulge, the card
+   moving forward on the left, the one moving back on the right), and the layer order flips at the half-way point, so the exchange reads as one rotating showcase, never a replacement and never a bounce.
+   `b` = how far a frame is from the front (0 = front, 1 = rear), measured the short way round the ring of two, so it is continuous whichever direction the position moves.
+   Lengths: x in front-frame WIDTHS, y in front-frame HEIGHTS (translate percentages), exactly as the three-portrait `pose`. */
+export const ringDistance = (i, pos, n) => {
+  const m = (((pos % n) + n) % n)
+  const d = Math.abs(i - m)
+  return Math.min(d, n - d)
+}
+export function pose2(i, pos) {
+  const b = Math.min(1, ringDistance(i, pos, 2))
+  const arc = Math.sin(Math.PI * b) // 0 at both rests, 1 half-way
+  const side = i === 0 ? -1 : 1 // frame 0 swings out to the left when it moves, frame 1 to the right: a fixed identity, so the same exchange looks the same both ways
+  return {
+    x: 0.64 * b + side * 0.2 * arc,
+    y: -0.15 * b - 0.03 * arc,
+    scale: 1 - 0.22 * b,
+    scaleY: 1 - 0.22 * b,
+    rot: -15 * b,
+    z: Math.round((1 - b) * 100),
+    shade: b * 0.36,
+  }
+}
+/** The pose of video `i` for a stage of `n` videos: the two-frame layout when there are two, the three-frame orbit otherwise. */
+export const poseFor = (i, pos, n = 3) => (n === 2 ? pose2(i, pos) : pose(i, pos, n))

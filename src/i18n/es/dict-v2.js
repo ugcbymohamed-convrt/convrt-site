@@ -1,0 +1,20 @@
+/* Spanish dictionary: the redesigned homepage sections shared with English (client stage and reviews; Nov 2026 revision). Keys are the exact English strings. */
+export default {
+  "Brands from the founder's professional experience": "Marcas de la experiencia profesional del fundador",
+  "Videos from": "Vídeos de",
+  "Choose a side video to bring it to the front.": "Elige un vídeo lateral para traerlo al frente.",
+  "Founder experience": "Experiencia del fundador",
+  "Worked with": "Ha trabajado con",
+  "Founder experience across CONVRT Studio and other creative production work.": "Experiencia del fundador en CONVRT Studio y en otros trabajos de producción creativa.",
+  "Client work by industry": "Trabajo con clientes por sector",
+  "Printing": "Impresión",
+  "Client case studies and service page": "Casos de clientes y página de servicio",
+  "Explore SaaS video production": "Descubre la producción de vídeo para SaaS (en inglés)",
+  "Read the Graspo case study": "Lee el caso práctico de Graspo (en inglés)",
+  "Explore All Creators": "Ver todos los creadores",
+  "Great work. Strong relationships. Repeat collaborations.": "Buen trabajo. Relaciones sólidas. Colaboraciones que se repiten.",
+  "logo": "logotipo",
+  "Repeat client": "Cliente recurrente",
+  "Read full review": "Leer la opinión completa",
+  "Choose a client review": "Elige una opinión de cliente",
+}

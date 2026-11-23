@@ -1,6 +1,6 @@
 /* French dictionary: site shell (navigation, footer, shared labels). Keys are the exact English strings. */
 export default {
-  "Get 5 Free Ad Concepts": "Recevoir 5 concepts sur mesure",
+  "Get 5 Free Ad Concepts": "Recevoir 5 concepts gratuits",
   "Primary": "Navigation principale",
   "Services": "Services",
   "Creator Showcase": "Créateurs",

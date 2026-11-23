@@ -6,7 +6,8 @@ import CreatorVideoStage from './ugc/CreatorVideoStage.jsx'
 import { HOME_HERO, HOME_HERO_ES, HOME_HERO_FR } from '../content/homeHero.js'
 import { useTr, useHref } from '../i18n/tr.js'
 import { currentLocale } from '../i18n/locale.js'
-import { primaryAction, flowAvailable } from '../i18n/cta.js'
+import { primaryAction, flowAvailable, hooksComingSoon } from '../i18n/cta.js'
+import { FR_HOME_HERO } from '../i18n/fr/hero.js'
 
 const HOME_HERO_BY_LOCALE = { es: HOME_HERO_ES, fr: HOME_HERO_FR }
 const ROTATING_WORDS = ['convert', 'resonate', 'sell', 'connect']
@@ -93,15 +94,15 @@ export default function Hero() {
                 12 offer→button, 32 / 40 button→secondary, 12 label→cards. */}
             <div className="lg:mt-6">
               <p className="mb-3 text-balance text-[15px] md:text-base font-medium leading-snug text-ink">
-                {en ? <>Your next 5 ad concepts. Tailored to your brand. <span className="text-lime">On us.</span></> : flowAvailable(locale, 'roadmap') ? <>{tr('Your next 5 ad concepts. Tailored to your brand.')} <span className="text-lime">{tr('On us.')}</span></> : <>{tr('Book a free strategy call.')} <span className="text-lime">{tr('We tell you exactly what you need.')}</span></>}
+                {en ? <>Your next 5 ad concepts. Tailored to your brand. <span className="text-lime">On us.</span></> : locale === 'fr' ? <>{FR_HOME_HERO.offerLine[0]} <span className="text-lime">{FR_HOME_HERO.offerLine[1]}</span></> : flowAvailable(locale, 'roadmap') ? <>{tr('Your next 5 ad concepts. Tailored to your brand.')} <span className="text-lime">{tr('On us.')}</span></> : <>{tr('Book a free strategy call.')} <span className="text-lime">{tr('We tell you exactly what you need.')}</span></>}
               </p>
-              <div className="flex flex-col items-stretch gap-3 sm:flex-row sm:items-center sm:justify-center lg:justify-start">
+              <div className={`flex flex-col items-stretch gap-3 sm:flex-row sm:items-center sm:justify-center lg:justify-start${locale === 'fr' ? ' sm:flex-wrap' : ''}`}>
                 <a
                   href={action.href}
                   {...(action.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
                   onClick={() => trackEvent(action.event, en ? { location: 'hero' } : { page: locale, location: 'hero' })}
                   {...primaryPress}
-                  className={en ? `cta-gradient hero-cta group inline-flex w-full sm:w-auto min-h-[64px] md:min-h-[68px] items-center justify-center gap-2.5
+                  className={en || locale === 'fr' ? `cta-gradient hero-cta group inline-flex w-full sm:w-auto min-h-[64px] md:min-h-[68px] items-center justify-center gap-2.5
                              rounded-full px-6 md:px-7 lg:px-6 xl:px-7 py-4 text-base md:text-[17px] font-bold tracking-snug text-canvas
                              focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-lime`
                     : /* translated: a compact one-line label ("5 conceptos gratis"): no wrapping, less horizontal padding */
@@ -118,7 +119,7 @@ export default function Hero() {
                   href={href(CREATOR_SHOWCASE_PATH)}
                   onClick={() => trackEvent('hero_see_our_work_click', { location: 'hero' })}
                   {...ghostPress}
-                  className={en ? `hero-cta-ghost group inline-flex w-full sm:w-auto min-h-[48px] sm:min-h-[64px] md:min-h-[68px] items-center justify-center gap-2
+                  className={en || locale === 'fr' ? `hero-cta-ghost group inline-flex w-full sm:w-auto min-h-[48px] sm:min-h-[64px] md:min-h-[68px] items-center justify-center gap-2
                              rounded-full border border-hairline-strong bg-surface-2 px-6 md:px-7 lg:px-5 xl:px-7 py-3 sm:py-4 text-base md:text-[17px] font-semibold tracking-snug text-ink
                              hover:border-ink-muted
                              focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink`
@@ -136,13 +137,13 @@ export default function Hero() {
             </div>
 
             {/* Level 2 — compact secondary offers under a quiet, left-aligned label */}
-            {/* The two free offers lead to English-only forms: shown only in languages where their flow is translated (src/i18n/cta.js). */}
-            {flowAvailable(locale, 'riskFree') && flowAvailable(locale, 'hooks') && (
+            {/* The two free offers lead to English-only forms: shown only in languages where their flow is translated (src/i18n/cta.js). French: the free video is translated and live, the hooks card is a non-clickable « Bientôt disponible ». */}
+            {flowAvailable(locale, 'riskFree') && (flowAvailable(locale, 'hooks') || hooksComingSoon(locale)) && (
             <div className="mt-8 md:mt-10 max-w-xl mx-auto lg:mx-0">
-              <p className="text-left text-[13px] text-ink-muted">{tr("Not ready yet? We've got two more FREE ways to start.")}</p>
+              <p className="text-left text-[13px] text-ink-muted">{locale === 'fr' ? FR_HOME_HERO.offersLabel : tr("Not ready yet? We've got two more FREE ways to start.")}</p>
               <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-left">
                 {SECONDARY_OFFERS.map((offer) => (
-                  <SecondaryOffer key={offer.id} offer={offer} />
+                  <SecondaryOffer key={offer.id} offer={offer} copy={locale === 'fr' ? FR_HOME_HERO.offers[offer.id] : null} soon={offer.id === 'hooks' && !flowAvailable(locale, 'hooks')} />
                 ))}
               </div>
             </div>
@@ -166,8 +167,32 @@ export default function Hero() {
    lines (short card); from sm up the icon shares a row with the title so two
    cards fit side by side in the left column without wrapping. */
 
-export function SecondaryOffer({ offer }) {
+export function SecondaryOffer({ offer, copy = null, soon = false }) {
   const Icon = offer.icon
+  const title = copy ? <>{copy.title[0]} <span className={offer.id === 'video' ? 'text-lime' : 'text-[#F472B6]'}>{copy.title[1]}</span></> : offer.title
+  const inner = (
+    <>
+      <span className={`col-start-1 row-start-1 row-span-3 sm:row-span-1 flex h-10 w-10 items-center justify-center rounded-xl border sm:h-9 sm:w-9 ${offer.iconTile}`}>
+        <Icon />
+      </span>
+      <span className="col-start-2 row-start-1 text-[15px] sm:text-base font-semibold leading-tight tracking-snug text-ink">{title}</span>
+      <span className="col-start-2 row-start-2 mt-0.5 text-[13px] leading-snug text-ink-muted sm:col-start-1 sm:col-span-2 sm:mt-2.5">{copy ? copy.description : offer.description}</span>
+      {soon ? (
+        <span className={`col-start-2 row-start-3 mt-1.5 inline-flex items-center text-[13px] font-semibold sm:col-start-1 sm:col-span-2 ${offer.ctaText}`}>
+          <span className="rounded-full border border-current/40 px-2.5 py-0.5 text-[12px] leading-snug">{copy ? copy.cta : offer.cta}</span>
+        </span>
+      ) : (
+        <span className={`col-start-2 row-start-3 mt-1.5 inline-flex items-center gap-1 text-[13px] font-semibold sm:col-start-1 sm:col-span-2 ${offer.ctaText}`}>
+          {copy ? copy.cta : offer.cta}
+          <svg viewBox="0 0 12 12" className="h-3 w-3 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0 motion-reduce:group-hover:translate-y-0" fill="none" aria-hidden="true">
+            <path d="M3 9L9 3M9 3H4M9 3V8" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </span>
+      )}
+    </>
+  )
+  // A free offer that is not available yet is a still card, never a link (no download, no hover lift).
+  if (soon) return <div className={`grid grid-cols-[auto_1fr] items-center gap-x-3 rounded-2xl border p-3.5 sm:p-4 opacity-75 ${offer.card.replace(/hover:[^\s]+/g, '')}`}>{inner}</div>
   return (
     <a
       href={offer.href}
@@ -177,17 +202,7 @@ export function SecondaryOffer({ offer }) {
                   motion-reduce:transition-none motion-reduce:hover:translate-y-0
                   focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 ${offer.card}`}
     >
-      <span className={`col-start-1 row-start-1 row-span-3 sm:row-span-1 flex h-10 w-10 items-center justify-center rounded-xl border sm:h-9 sm:w-9 ${offer.iconTile}`}>
-        <Icon />
-      </span>
-      <span className="col-start-2 row-start-1 text-[15px] sm:text-base font-semibold leading-tight tracking-snug text-ink">{offer.title}</span>
-      <span className="col-start-2 row-start-2 mt-0.5 text-[13px] leading-snug text-ink-muted sm:col-start-1 sm:col-span-2 sm:mt-2.5">{offer.description}</span>
-      <span className={`col-start-2 row-start-3 mt-1.5 inline-flex items-center gap-1 text-[13px] font-semibold sm:col-start-1 sm:col-span-2 ${offer.ctaText}`}>
-        {offer.cta}
-        <svg viewBox="0 0 12 12" className="h-3 w-3 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0 motion-reduce:group-hover:translate-y-0" fill="none" aria-hidden="true">
-          <path d="M3 9L9 3M9 3H4M9 3V8" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-      </span>
+      {inner}
     </a>
   )
 }

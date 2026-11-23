@@ -99,24 +99,29 @@ function resolvePage(path) {
 }
 
 function HomePage() {
-  /* English homepage narrative (design review, Nov 2026): credibility → client work (one connected block, no divider between them) → services → process → creators → reviews → conversion.
-     Other languages keep their own homepage sections until their separate design review. */
-  const en = currentLocale() === 'en'
+  /* Homepage narrative (design review, Nov 2026): credibility → client work (one connected block, no divider between them) → services → process → creators → reviews → conversion.
+     ENGLISH carries all of it. SPANISH and FRENCH use the same client-work stage and review section (components/home/IndustryShowcase.jsx, ClientReviews.jsx; the French stage has one client on two landscape
+     videos). The creator carousel is English and French (Spanish has no equivalent yet); Spanish keeps its secondary free-video section because its hero does not carry the free offers, French mirrors English
+     (its hero carries them). Arabic is not built in this release. */
+  const locale = currentLocale()
+  const en = locale === 'en'
+  const synced = en || locale === 'es' || locale === 'fr'
+  const creators = en || locale === 'fr'
   return (
     <>
       <Hero />
       <Credibility />
-      {en ? <IndustryShowcase /> : (<><SectionDivider /><CaseStudies /></>)}
+      {synced ? <IndustryShowcase /> : (<><SectionDivider /><CaseStudies /></>)}
       <SectionDivider />
       <Services />
       <SectionDivider />
-      {/* Translated homepages only: the secondary free-video offer (the English hero already carries it). */}
-      {!en && (<><FreeVideoOffer /><SectionDivider /></>)}
+      {/* The secondary free-video offer: only where the hero does not carry it (Spanish and the languages without the redesign). */}
+      {!en && locale !== 'fr' && (<><FreeVideoOffer /><SectionDivider /></>)}
       <HowItWorks />
       {/* The creator carousel draws its own leading divider. */}
-      {en && <><Suspense fallback={<div aria-hidden="true" className="min-h-[760px]" />}><HomeCreators /></Suspense><SectionDivider /></>}
-      {!en && <SectionDivider />}
-      {en ? <ClientReviews /> : <Testimonials />}
+      {creators && <><Suspense fallback={<div aria-hidden="true" className="min-h-[760px]" />}><HomeCreators /></Suspense><SectionDivider /></>}
+      {!creators && <SectionDivider />}
+      {synced ? <ClientReviews /> : <Testimonials />}
       <SectionDivider />
       <FinalCTA />
       <SectionDivider />

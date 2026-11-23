@@ -9,7 +9,8 @@ import riskfree from './dict-riskfree.js'
 import scenes from './dict-scenes.js'
 import geo from './dict-geo.js'
 import trust from './dict-trust.js'
+import v2 from './dict-v2.js'
 import runtime from './dict-runtime.js'
 
-export default { ...shell, ...home, ...services, ...pricing, ...showcase, ...roadmap, ...riskfree, ...scenes, ...geo, ...trust, ...runtime }
-export const PARTS = { shell, home, services, pricing, showcase, roadmap, riskfree, scenes, geo, trust, runtime }
+export default { ...shell, ...home, ...services, ...pricing, ...showcase, ...roadmap, ...riskfree, ...scenes, ...geo, ...trust, ...v2, ...runtime }
+export const PARTS = { shell, home, services, pricing, showcase, roadmap, riskfree, scenes, geo, trust, runtime, v2 }

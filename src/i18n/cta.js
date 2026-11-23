@@ -35,3 +35,6 @@ export function primaryAction(locale) {
   return { kind: 'booking', label: 'Book a Creative Call', href: BOOKING_URL, external: true, event: 'primary_cta_click' }
 }
 
+
+/* The 10 free hooks have no French version yet: the French hero shows their card as a still « Bientôt disponible » (no link, no download). Never an English hooks download from a French page. */
+export const hooksComingSoon = (locale) => locale === 'fr' && !flowAvailable(locale, 'hooks')

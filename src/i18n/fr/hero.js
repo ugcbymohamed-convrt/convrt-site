@@ -13,3 +13,15 @@ export const FR_HERO = {
     secondary: { label: 'Voir les exemples UGC', href: CREATOR_SHOWCASE_PATH },
   },
 }
+
+/* THE FRENCH HOMEPAGE HERO: the English hero's structure exactly (headline, description, offer line, two CTAs, then the free offers underneath), with short French copy.
+   One-line offer label (« 5 concepts publicitaires offerts »): five personalized ad CONCEPTS, never five produced videos. CTA « Recevoir 5 concepts gratuits » (the label of primaryAction('fr'), in
+   dict-shell.js). The 1 free video offer is the real, translated application; the 10 free hooks have no French version yet, so that card is shown as « Bientôt disponible » and is not a link. */
+export const FR_HOME_HERO = {
+  offerLine: ['5 concepts publicitaires', 'offerts'], // the second part is set in lime
+  offersLabel: 'Pas encore prêt ? Deux autres façons de commencer, gratuitement.',
+  offers: {
+    video: { title: ['1 vidéo', 'GRATUITE'], description: 'Testez notre production sans risque.', cta: 'Voir si vous êtes éligible' },
+    hooks: { title: ['10 hooks publicitaires', 'GRATUITS'], description: 'Des accroches inédites pour vos prochaines pubs.', cta: 'Bientôt disponible' },
+  },
+}

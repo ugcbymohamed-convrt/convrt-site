@@ -15,6 +15,13 @@ export const POSTER_FRAMES = {
   '5b1058e9c68ab7b05bd24858ceaadb9c': 2.1, // portfolio:fr-ugc-hero-3 [fr]
   '7c681c012def2539e7c32c99889d8662': 18.6, // portfolio:fr-ugc-1 [fr]
   'a273a9e766e0baf7eed8a6ad72c8892b': 6.3, // portfolio:fr-ugc-2 [fr]
+  '06d0cf7f9cea77275b486f62144b3708': 0.4, // home-hero-fr:home-hero-fr-main (French-dubbed CONVRT ad; clear face, open eyes, coffee cup, only the comment bubble on screen)
+  '8797ae3fba20c95e9d9d10eefda840c9': 3.4, // portfolio:fr-mohamed-comma [fr]
+  'a4a52503d855717880ed6dcbaca724b5': 1.9, // portfolio:fr-mohamed-route-facile [fr]
+  '5639f5ff6b02b7501b946aef4466ad4c': 19.6, // portfolio:fr-mohamed-skycop [fr]
+  'e4e8c66b5d6fef3d15ddf31ebcd17550': 22.1, // portfolio:fr-mohamed-tripmap [fr]
+  '9eedb31ea2296e96882de394b0a7e3a7': 3.0, // portfolio:fr-showcase-fixd-1 (French client stage, landscape)
+  '490a0502253d32c4b22085077b396437': 3.0, // portfolio:fr-showcase-fixd-2 (French client stage, landscape)
   '6c04c13dbb9ff7042f30e028b7394fe6': 4.5, // portfolio:es-ugc-hero-1 [es]
   '816d316906f79fe216d6f62079a0047f': 23.8, // portfolio:es-ugc-hero-2 [es]
   '75e7a204d0d4d2c75fe1ad19f0348461': 3.9, // portfolio:es-ugc-hero-3 [es]

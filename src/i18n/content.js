@@ -48,7 +48,7 @@ const looksLikeCode = (v) => /^(\/|https?:|mailto:|#|[a-z0-9_-]+$)/.test(v) && !
 export function localizeConfig(value, locale, overrides = {}, key = '') {
   if (locale === DEFAULT_LOCALE) return value
   if (typeof value === 'string') {
-    if (NON_TEXT_KEYS.has(key) || looksLikeCode(value)) return value
+    if (!value.trim() || NON_TEXT_KEYS.has(key) || looksLikeCode(value)) return value // an empty string is not text
     // Figures ("10.7M", "75", "5.28x") change notation only, never value.
     if (/^\d[\d.,]*[KM]?x?\+?$/.test(value)) return localizeStat(locale, value)
     return translate(locale, value)
