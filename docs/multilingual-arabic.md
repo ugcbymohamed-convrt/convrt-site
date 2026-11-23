@@ -46,6 +46,24 @@ Twelve Arabic-speaking creator videos (Cloudflare Stream `AR-CREATOR-nn`, upload
 - Three clips from the same folder (`AR-CREATOR-06`, `-09`, `-12`) have **English** on-screen captions, so they were uploaded but are **not used**.
 - The approval flags rest on the brief's wording ("approved Arabic-speaking creators"): the owner should confirm portfolio permission and creator consent for each creator before Production.
 
+### The 12 videos in use
+| Entry | Stream id | Upload name (source file) | Placement | Caption (describes the footage only) |
+|---|---|---|---|---|
+| `ar-ugc-hero-1` | `442dfb5fe6a49dffd032ecd920414512` | AR-CREATOR-01 (default.mp4) | hero stage (home + UGC page) | صانع محتوى يشرح خدمة رقمية أمام الكاميرا |
+| `ar-ugc-hero-2` | `e76683d744c46ecfe8e1fb53b273b926` | -02 (default-2) | hero stage (home + UGC page) | صانعة محتوى تقدّم خدمة تعليمية أمام الكاميرا |
+| `ar-ugc-hero-3` | `7f68e3f6c92e70395cad4876fcb389a8` | -03 (default-3) | hero stage (home + UGC page) | صانع محتوى يعرض مزايا منتج برسوم توضيحية |
+| `ar-ugc-1` | `6d550ed3188d606de1b28dfd389c3abd` | -04 (default-4) | gallery + Showcase | صانع محتوى يتحدث عن فكرة مشروع بخلفيات مرئية |
+| `ar-ugc-2` | `ad0e4e3babf8a7dc94a67df48d48399a` | -05 (IMG_0181) | gallery + Showcase | عرض منتج شاي وتجربة تحضيره |
+| `ar-ugc-3` | `49313eccb88e9b95a4985d59777d8e41` | -07 (IMG_1073) | gallery + Showcase | عرض عطر أمام الكاميرا |
+| `ar-ugc-4` | `a073ed5202bdd7c83de8312cefa3e419` | -08 (IMG_4287) | gallery + Showcase | جولة تعريفية في مشروع عقاري |
+| `ar-ugc-5` | `10c436de7f9b0c5bfbdee723aff56659` | -10 (IMG_5289) | gallery + Showcase | عرض منتجات شوكولاتة في الهواء الطلق |
+| `ar-ugc-6` | `fa580c253a9bb4d64b04c1226de96819` | -11 (IMG_7416) | gallery + Showcase | صانع محتوى يشرح خدمة تقنية للجمهور |
+| `ar-ugc-7` | `0241249ccf242630f097d03ac8cc11b9` | -13 (IMG_8504) | gallery + Showcase | مقطع بأسلوب الحياة يعرض خدمة عبر تطبيق |
+| `ar-ugc-8` | `002d9dab913f13496e6513e4a7761ec9` | -14 (IMG_9010) | gallery + Showcase | فيديو يشرح فكرة محتوى المستخدمين بأسلوب بصري |
+| `ar-ugc-9` | `583c9f5132d0cfe0f2eb26ea1df73446` | -15 (IMG_9881) | gallery + Showcase | عرض منتج رياضي واستخداماته |
+
+Not used (English on-screen captions): `0cf5d213…` (-06, IMG_0769), `73591233…` (-09, IMG_4545), `60c9247e…` (-12, IMG_7827). They remain on Stream and can be deleted by the owner.
+
 ## Owner / legal review before Production
 1. Confirm creator consent + portfolio use for the 12 Arabic videos (and the spoken language of each: Arabic was set from the on-screen Arabic captions, no audio transcription was possible here).
 2. Arabic **free-video application** (`/ar/risk-free-trial`): consent wording, eligibility and hedges need owner + lawyer review (`AR_FREE_VIDEO_REVIEWED` in `release.js`, currently `false`: noindex, no sitemap/hreflang).
