@@ -58,3 +58,13 @@ Rebuilt to the approved reference image as a visual specification (`src/componen
 - **Videos:** the featured frame is 200 of the reference's 1436 px (13.93 % of the scene width); side videos are about 76 % of it, mirrored, tilted, hanging slightly lower. Rotation is unchanged (see Revision #2) and only moves the videos.
 - **Text:** eyebrow, "Worked with / 500+ clients" and the disclosure only. The client description, the SaaS link and the case-study list are no longer drawn; their destinations (`/saas-video-production`, `/case-studies/elyon`, `/case-studies/graspo`) stay in the HTML as a visually hidden "Client case studies and service page" navigation that appears when a keyboard user focuses a link.
 - **Selector and buttons:** the selector overlaps the podium front; the two buttons are centred under it, at the reference size.
+
+---
+
+## Revision #4 (Nov 2026): larger videos
+
+The founder / client-work stage was too compressed, so the scene now grows instead of fitting one screen.
+
+- **Sizes:** on the 1436 px design grid the featured video is 320 px wide (22.28 %; 321 px at 1440, 334 px at 1920) and the side videos about 250 px (78 %; 257 px at 1440), with a clear gap between frames. Aspect ratios are unchanged. The design grid is now 1436 x 896 (`xl:aspect-[1436/896]`): the section is about 1010 px tall at 1440 and no height, `vh` or overflow constraint shrinks it; the buttons may sit below the first screen.
+- **Room:** `StudioEnvironment.jsx` scales the whole reference room by K = 1.6 about the new stage centre (podium, ring light, walls, floor, shadows), so the look is unchanged at the larger size. The headline block sits in a narrower left column (about 17 % of the width) and the stage is shifted right to give the videos room.
+- **Responsive:** the on-scene layout now starts at `xl` (1280 px); below it the text stacks above the scene, which is shown at a large scale and centred on the stage (about 312 px featured at 1024, 274 px at 768, 217 px on a 390 px phone with the side videos peeking in; swipe, tap on a side video or the arrow keys bring one forward). The selector overlaps the podium front and the buttons stack under it. No horizontal overflow at 1920, 1440, 1280, 1024, 768, 390 and 360.

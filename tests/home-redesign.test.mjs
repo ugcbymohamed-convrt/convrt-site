@@ -88,18 +88,25 @@ test('client work: the studio scene with three posters, the client selector in o
 
 test('studio scene: drawn on the reference grid with CSS only; compact; the three videos have the reference proportions; the podium stays put', () => {
   const env = read('src/components/home/StudioEnvironment.jsx')
-  assert.ok(env.includes('const W = 1436') && env.includes('const H = 560'), 'the reference design grid')
+  assert.ok(env.includes('const W = 1436') && env.includes('const H = 896') && env.includes('const K = 1.6'), 'the design grid: the reference room scaled for larger videos')
   assert.ok(!/<img|<canvas|new Image|three|webgl|url\(/i.test(env.replace(/\/\*[\s\S]*?\*\//g, '')), 'no image, canvas, WebGL or external asset')
   for (const k of ['ring light', 'podium, upper tier', 'podium, lower tier', 'floor', 'left wall', 'right wall']) assert.ok(env.includes(k), k)
   assert.ok(!/animation|transition|@keyframes/.test(env), 'the environment never moves (only the videos rotate)')
   const show = read('src/components/home/IndustryShowcase.jsx')
-  assert.ok(show.includes('lg:aspect-[1436/560]'), 'the section keeps the reference proportions instead of growing tall')
+  assert.ok(show.includes('xl:aspect-[1436/896]'), 'on a large desktop the scene keeps one proportion and grows with the page width')
+  assert.ok(!/100vh|100svh|h-screen|min-h-screen|max-h-\[|overflow-y/.test(show), 'no viewport-height or fixed-height constraint shrinks the section')
   // reference geometry: side videos about 70-76% of the featured one, mirrored, a little lower; the featured frame is not huge (about 14% of the scene width)
   const [c, r, l] = [pose(0, 0), pose(1, 0), pose(2, 0)]
-  assert.ok(r.scale >= 0.7 && r.scale <= 0.78 && Math.abs(r.x + l.x) < 1e-9 && r.x > 1.0 && r.x < 1.07, `side width ${r.scale}, offset ${r.x}`)
+  assert.ok(r.scale >= 0.7 && r.scale <= 0.8 && Math.abs(r.x + l.x) < 1e-9 && r.x > 1.0 && r.x < 1.12, `side width ${r.scale}, offset ${r.x}`)
+  // enlarged: on the 1436 px design grid the featured video is 320 px (target 310-360) and the side videos about 250 px (target 245-290), at a clear gap from it
+  const featured = 0.2228 * 1436
+  assert.ok(featured >= 310 && featured <= 360 && featured * r.scale >= 245 && featured * r.scale <= 290, `featured ${featured}, side ${featured * r.scale}`)
+  assert.ok(r.x - 0.5 - 0.5 * r.scale > 0.1, 'a visible gap between the featured video and each side video')
   assert.ok(r.y > 0.04 && r.y < 0.09 && c.y === 0, 'side videos hang a little lower than the featured one')
   assert.ok(r.scaleY < r.scale && r.scaleY > 0.6, 'side frames foreshorten a little')
-  assert.ok(read('src/components/home/RotaryStage.jsx').includes("width: '13.93%'"), 'featured video = 200 of the 1436 px reference width')
+  assert.ok(read('src/components/home/RotaryStage.jsx').includes("width: '22.28%'"), 'featured video = 320 of the 1436 px design grid')
+  // below xl the scene is shown larger than the screen (never shrunk to fit), centred on the stage, so the featured video stays 215-310 px wide on phones and tablets
+  assert.ok(show.includes('w-[250vw] sm:w-[min(160vw,1400px)]') && show.includes('-translate-x-[59.19%]'))
   // the podium and background are a separate layer from the rotating videos
   assert.ok(!/StudioEnvironment/.test(read('src/components/home/RotaryStage.jsx')))
 })
@@ -171,9 +178,9 @@ test('CTAs: "Become our next client" and "I\'m a creator" sit under the client s
   assert.match(s, new RegExp(`<a href="${OFFER_PATHS.roadmap}"[^>]*cta-gradient[^>]*>[\\s\\S]*?Become our next client`))
   assert.match(s, /<a href="https:\/\/forms\.gle\/Bg8ubU2tnmMj88m7A" target="_blank" rel="noopener noreferrer"[^>]*>[\s\S]*?I'm a creator/)
   assert.ok(s.indexOf('Become our next client') > s.indexOf('role="tablist"'), 'the buttons come after the client selector')
-  assert.match(s, /lg:absolute lg:left-1\/2 lg:top-\[85\.4%\]/, 'centred under the composition, where the reference has them')
+  assert.match(s, /xl:absolute xl:left-\[57\.8%\] xl:top-\[85\.6%\]/, 'centred under the composition')
   assert.equal((h.match(/Become our next client/g) || []).length, 1); assert.equal((h.match(/I'm a creator/g) || []).length, 1)
-  assert.match(s, /min-h-\[56px\] px-8 text-base[^"]*lg:min-h-\[max\(46px,3\.85cqw\)\]/, 'large pills, the reference size on the scene (about 55 px tall at 1436 px), moderately larger than the old px-6 py-3 text-sm')
+  assert.match(s, /min-h-\[56px\] px-8 text-base[^"]*xl:min-h-\[max\(52px,4\.1cqw\)\]/, 'large pills, the reference size on the scene (about 55 px tall at 1436 px), moderately larger than the old px-6 py-3 text-sm')
 })
 
 // ── 4. page order ────────────────────────────────────────────────────────────────────────

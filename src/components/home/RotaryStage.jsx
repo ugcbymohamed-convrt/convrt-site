@@ -162,8 +162,8 @@ export default function RotaryStage({ items, label }) {
       onClickCapture={(e) => { if (drag.current?.moved) { e.preventDefault(); e.stopPropagation() } }}
       className="absolute inset-0 touch-pan-y select-none focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-lime/60"
     >
-      {/* the three videos: the holder is the CENTRE video's box, as a share of the scene (centre of the reference's featured frame); everything else is measured in its own width */}
-      <div className="absolute aspect-[9/15.4] -translate-x-1/2 -translate-y-1/2 [perspective:900px]" style={{ left: '53.27%', top: '32.9%', width: '13.93%' }}>
+      {/* the three videos: the holder is the CENTRE video's box as a share of the scene (22.28 % = 320 of the 1436 px grid, so about 320-345 px on a large desktop); everything else is measured in its own width */}
+      <div className="absolute aspect-[9/15.4] -translate-x-1/2 -translate-y-1/2 [perspective:1400px]" style={{ left: '59.19%', top: '32.8%', width: '22.28%' }}>
         {items.map((item, i) => (
           <Phone
             key={item.id}
