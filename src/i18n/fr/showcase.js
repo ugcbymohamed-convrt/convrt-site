@@ -4,7 +4,7 @@
    WHICH CLIENT AND WHY (owner brief, 2026-11-23): the French section tells one story: the client came back to commission more work after the first project. The only horizontal (16:9) client
    videos in the owner's French folder are FIXD1 and FIXD2 (CONVRT/CREATORS/French/Mohamed), and FIXD is one of the 13 verified client relationships authorised for display
    (businessKnowledge.js, 'client-logos'). The owner's brief states that this client returned for more work; NO count of orders, revenue or campaign result is recorded anywhere, so none is shown.
-   The copy says only what the brief says. TO CONFIRM with the owner before Production: that FIXD is the client meant, and the wording « d'autres » (more than one further project).
+   The copy says only what the brief says. OWNER CONFIRMATION (chat, 2026-11-23): FIXD is the client meant, and it returned for additional work after the initial project. The number of further projects was not stated and is not shown; the copy claims no count, revenue or result.
 
    The videos are the portfolio entries tagged `showcase: 'fixd'` in src/content/portfolio.js (French-only). The first is the front frame. */
 export const FR_SHOWCASE = {
