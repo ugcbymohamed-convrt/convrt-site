@@ -16,7 +16,7 @@ market-size or creator-availability claim exists in this repository, and none ma
 4. **Copy:** same nine pages; same drift-guarded dictionary (`src/i18n/fr/*`); French money notation ("3 000 USD", narrow no-break space) in `src/i18n/fr/money.js`; French number/typography rules (espaces insécables before « : ; ? ! »).
 5. **Same blockers as Spanish:** localized conversion flows, legal set, OG image text, owner approval.
 
-## Arabic (GCC-first) — to do
+## Arabic (GCC-first) — SUPERSEDED: implemented on `arabic-localization`, see `docs/multilingual-arabic.md` (the list below is the original backlog)
 1. **Research (not started):** Arabic Keyword Planner exports for UAE and Saudi Arabia (the owner already holds English UAE/UK/US sets; no Arabic export exists); GCC SERP validation (وكالة UGC، إنتاج فيديو إعلاني، فيديو تعريفي لـ SaaS …); local competitors; pricing expectations in USD vs AED/SAR (prices stay USD by decision, but display convention must be agreed).
 2. **Language policy:** Modern Standard Arabic as the professional website language; creator showcase may offer Gulf Arabic and Moroccan Darija **only where the data verifies the creator's dialect** (English FAQ already states both dialect options; the portfolio has no Arabic-labelled video today).
 3. **GCC positioning:** UAE and Saudi first without excluding other Arabic-speaking clients; no office, licence or location claims; the Graspo (Arabic-first organic) and Elyon Dubai case studies are verified proof that may be translated once permission/wording is checked.
