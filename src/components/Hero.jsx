@@ -189,8 +189,8 @@ export function SecondaryOffer({ offer, soon = false }) {
   return (
     <Wrap
       {...linkProps}
-      className={`${soon ? 'cursor-default opacity-90' : 'hover:-translate-y-0.5'} group grid grid-cols-[auto_1fr] items-center gap-x-3 rounded-2xl border p-3.5 sm:p-4
-                  transition-[transform,border-color,background-color,box-shadow] duration-200
+      className={`group grid grid-cols-[auto_1fr] items-center gap-x-3 rounded-2xl border p-3.5 sm:p-4
+                  transition-[transform,border-color,background-color,box-shadow] duration-200 ${soon ? 'cursor-default opacity-90' : 'hover:-translate-y-0.5'}
                   motion-reduce:transition-none motion-reduce:hover:translate-y-0
                   focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 ${soon ? offer.card.replace(/hover:\S+/g, '') : offer.card}`}
     >
