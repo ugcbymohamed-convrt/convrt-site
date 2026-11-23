@@ -651,7 +651,7 @@ test('Spanish homepage: approved copy, one-line short CTA (hero and navigation),
   for (const p of ES_PAGES) {
     const x = textOf(page(p)).join('\n')
     assert.ok(!/listos para rendir/i.test(x), `${p}: "listos para rendir"`)
-    assert.ok(!/\bcreatividades\b/i.test(x.replace('Creatividades\ndiseñadas para', '')), `${p}: "creatividades" (only the owner-approved homepage headline may use it)`)
+    assert.ok(!/\bcreatividades\b/i.test(x.replace('Creatividades\ndiseñadas para', '').replace('creatividades para tus campañas', '')), `${p}: "creatividades" (only the owner-approved homepage headline and the Pricing selector line may use it)`)
     assert.ok(!/vídeos? con presentador(?!es)/i.test(x.replace(/Vídeos con presentadores/g, '')), `${p}: the service is "Spokesperson", not "con presentador"`)
   }
   assert.match(headOf(page('/es/spokesperson-video-production')), /<title>Vídeos Spokesperson \| Vídeos con presentador/)

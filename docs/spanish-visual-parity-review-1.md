@@ -23,3 +23,13 @@ English output is unchanged (`node scripts/i18n-english-parity.mjs <main dist> d
 
 ## Tests
 `tests/spanish-visual-parity.test.mjs` (builds the site): hero copy, card behaviour, carousel, testimonials, pricing, Roadmap, UGC. Pinned tests in `tests/i18n.test.mjs`, `tests/pricing.test.mjs` and `tests/spanish-editorial.test.mjs` were updated for the intended copy changes.
+
+## Review 2: Spanish pricing refinement and sitewide copy audit
+Same branch, English output unchanged (parity script: every English page IDENTICAL).
+- **Selector:** Spanish copy "Escalar mis anuncios" / "Crecer en redes" with short descriptions; the selector is `max-w-3xl` in other languages (English `max-w-2xl`) so both descriptions sit on two lines and the cards stay equal height.
+- **Package cards (`PricingCards.jsx`, non-English only):** the package name is `whitespace-nowrap`, the badge is shortened ("Más testeo", "Recomendado") and drops below the name only if it cannot fit; at 1024-1279 the badge and pill are slightly compact so Sprint Plus and Organic Growth stay on one row. Descriptions, the "versiones finales" pill (shares a row with the per-version pill), the concept line, "Derechos de uso mundiales, 6 meses" and the end-to-end box were shortened (copy first, no font shrinking).
+- **Terms note (`PartnershipTerms.jsx`, non-English only):** a short commitment line + a quieter second line, billing-aware: Paid monthly "Compromiso inicial de 3 meses. Después, mes a mes con 30 días de preaviso."; Paid one-off "Un único lote de producción creativa, sin compromiso recurrente."; Organic "Compromiso inicial de 6 meses. Después, según el acuerdo aplicable." (the Paid month-to-month terms are never applied to Organic: what follows its initial period is not confirmed in `businessKnowledge.js`). A separate "¿Quieres saber más?" row links to the existing UGC / Spokesperson / Organic pages.
+- **Other Spanish copy:** Organic cadence chips and custom description, the pricing promo card heading, and four case-study headings that wrapped to four lines.
+- **Open:** the owner's brief proposed "Después, mes a mes con 30 días de preaviso" for Organic too; kept as "según el acuerdo aplicable" until the owner confirms the post-initial Organic terms.
+- **Tests:** `tests/spanish-visual-parity.test.mjs` (terms by group and billing, English unchanged, links, selector/cards, amounts and deliverables).
+

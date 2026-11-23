@@ -664,7 +664,7 @@ test('concise notes under the cards, from the central config; full policies stay
   assert.ok(!/three-month|month-to-month|30 days/.test(CARD_NOTES.organic), 'Paid terms never on the Organic note')
   const terms = read('src/components/pricing/PartnershipTerms.jsx')
   assert.match(terms, /CARD_NOTES\.paid/); assert.match(terms, /CARD_NOTES\.organic/)
-  assert.ok(!/<p[\s\S]*<p[\s\S]*<p/.test(terms.slice(terms.indexOf('function Note'), terms.indexOf('export const PaidTerms'))), 'one paragraph per note')
+  assert.ok(!/<p[\s\S]*<p[\s\S]*<p/.test(terms.slice(terms.indexOf('function Note'), terms.indexOf('/* Other languages'))), 'one paragraph per note')
   // the underlying approved policies are still in the knowledge base and the FAQ
   assert.equal(PARTNERSHIP_TERMS.oneOff, 'One creative production batch, without a recurring commitment.')
   assert.match(faq('minimum-commitment'), /Custom project terms are agreed individually/)

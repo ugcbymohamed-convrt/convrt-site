@@ -132,7 +132,7 @@ test('Pricing: the thirteen approved EUR amounts are all on the Spanish page and
   for (const a of ['2.750 €', '3.250 €', '850 €', '1.375 €', '2.400 €', '4.600 €', '5.500 €', '1.550 €', '2.500 €', '4.350 €', '225 €', '1.400 €', '2.300 €']) assert.ok(t.includes(a), a)
   assert.ok(t.includes('183 € por versión') && t.includes('217 € por versión') && t.includes('153 € por versión'))
   assert.ok(!/creativos de testeo/.test(t) && t.includes('versiones finales de anuncio'))
-  assert.match(t, /Los paquetes mensuales tienen un compromiso inicial de 3 meses/)
+  assert.match(t, /Compromiso inicial de 3 meses\. Después, mes a mes con 30 días de preaviso\./)
 })
 
 test('Creator Showcase: 18 samples, UGC and Spokesperson filters on the Spanish page only, language named in full, English tabs unchanged', () => {

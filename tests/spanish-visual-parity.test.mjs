@@ -159,3 +159,84 @@ test('how-it-works and services copy on the Spanish homepage', () => {
   assert.match(t, /Tus primeros 5 conceptos\. Gratis\./)
   assert.match(t, /De la idea al vídeo final\./)
 })
+
+/* ── Review 2: Spanish pricing refinement ─────────────────────────────────────────────── */
+import { createElement } from 'react'
+import { renderToStaticMarkup } from 'react-dom/server'
+import react from '@vitejs/plugin-react'
+import { createServer } from 'vite'
+import { CARD_NOTES, COMMITMENT, ORGANIC_COMMITMENT, PARTNERSHIP_TERMS, GOALS } from '../src/seo/businessKnowledge.js'
+
+let vite, Terms
+const renderAt = (pathname, node) => {
+  const prev = globalThis.window
+  globalThis.window = { location: { pathname } }
+  try { return text(renderToStaticMarkup(node)) } finally { if (prev === undefined) delete globalThis.window; else globalThis.window = prev }
+}
+before(async () => {
+  vite = await createServer({ root: ROOT, configFile: false, plugins: [react()], server: { middlewareMode: true }, appType: 'custom', logLevel: 'silent' })
+  Terms = await vite.ssrLoadModule('/src/components/pricing/PartnershipTerms.jsx')
+})
+after(async () => { await vite?.close() })
+
+test('pricing terms (Spanish): the commitment follows the selected group AND billing option', () => {
+  const monthly = renderAt('/es/pricing', createElement(Terms.PaidTerms, { billing: 'monthly' }))
+  assert.match(monthly, /Compromiso inicial de 3 meses\. Después, mes a mes con 30 días de preaviso\./)
+  assert.match(monthly, /Precios sin IVA\. También disponibles proyectos puntuales\./)
+  assert.equal(COMMITMENT.initialMonths, 3); assert.equal(COMMITMENT.cancellationNoticeDays, 30)
+
+  const oneOff = renderAt('/es/pricing', createElement(Terms.PaidTerms, { billing: 'oneOff' }))
+  assert.match(oneOff, /Un único lote de producción creativa, sin compromiso recurrente\./)
+  assert.ok(!/3 meses|preaviso|mes a mes/.test(oneOff.replace('plan mensual', '')), 'a one-off project is never shown with a minimum commitment')
+  assert.match(oneOff, /Precios sin IVA\./)
+  assert.equal(PARTNERSHIP_TERMS.oneOff, 'One creative production batch, without a recurring commitment.')
+
+  const organic = renderAt('/es/pricing', createElement(Terms.OrganicTerms))
+  assert.match(organic, /Compromiso inicial de 6 meses\./)
+  assert.ok(!/3 meses|30 días|mes a mes/.test(organic), 'Paid terms never appear on the Organic note')
+  assert.ok(!/mes a mes/.test(organic), 'what follows the Organic initial period is not confirmed, so no month-to-month claim')
+  assert.equal(ORGANIC_COMMITMENT.initialMonths, 6)
+  assert.match(organic, /Precios sin IVA\./)
+})
+
+test('pricing terms (English): unchanged text, still not billing-aware', () => {
+  for (const b of ['monthly', 'oneOff']) {
+    const t = renderAt('/pricing', createElement(Terms.PaidTerms, { billing: b }))
+    assert.ok(t.includes(CARD_NOTES.paid.replace(/’/g, '’')), b)
+    assert.match(t, /See how our UGC production works/)
+  }
+  assert.ok(renderAt('/pricing', createElement(Terms.OrganicTerms)).includes(CARD_NOTES.organic))
+})
+
+test('pricing terms: the "learn more" row keeps the existing destinations and adds no page', () => {
+  const html = (() => {
+    const prev = globalThis.window; globalThis.window = { location: { pathname: '/es/pricing' } }
+    try { return renderToStaticMarkup(createElement(Terms.PaidTerms, { billing: 'monthly' })) } finally { if (prev === undefined) delete globalThis.window; else globalThis.window = prev }
+  })()
+  assert.ok(html.includes('href="/es/ugc-video-agency"'))
+  assert.ok(html.includes('href="/es/spokesperson-video-production"'))
+  const t = text(html)
+  assert.match(t, /¿Quieres saber más\?/); assert.match(t, /Cómo funciona nuestro UGC/); assert.match(t, /Vídeos con portavoz/)
+})
+
+test('pricing selector and cards: short Spanish copy, package names never wrap, badges stay on the title row', () => {
+  const t = text(page('pricing'))
+  assert.deepEqual(GOALS.map((g) => g.id), ['paid', 'organic'], 'selector options unchanged')
+  assert.match(t, /Escalar mis anuncios Anuncios UGC, vídeos con portavoz y creatividades para tus campañas\./)
+  assert.match(t, /Crecer en redes Vídeos, publicaciones y gestión de comunidad\./)
+  assert.match(t, /Prueba nuevos conceptos y descubre qué conecta con tu audiencia\./)
+  assert.match(t, /Más conceptos, más creadores y más opciones para tus campañas\./)
+  assert.match(t, /Más testeo/)
+  const cards = read('src/components/pricing/PricingCards.jsx')
+  assert.match(cards, /whitespace-nowrap lg:px-3\.5 xl:px-4/, 'the package name is nowrap in other languages')
+  assert.match(cards, /flex-wrap gap-y-2/, 'a badge that cannot fit drops below instead of squeezing the name')
+  // English keeps its exact original classes (byte-level parity is checked by scripts/i18n-english-parity.mjs)
+  assert.match(cards, /\$\{en \? '' : ' flex-wrap/)
+})
+
+test('pricing amounts and deliverables are untouched by the copy refinement', () => {
+  const t = text(page('pricing'))
+  for (const a of ['2.750 €', '3.250 €', '4.600 €', '5.500 €', '1.400 €', '2.300 €']) assert.ok(t.includes(a), a)
+  for (const d of ['15 versiones finales', '30 versiones finales', '183 € por versión', '153 € por versión', '217 € por versión', '5 conceptos únicos, 3 versiones cada uno.', '10 conceptos únicos, 3 versiones cada uno.', '2 rondas de revisiones por concepto', 'Hasta 3 creadores o presentadores', 'Hasta 5 creadores o presentadores', 'Compromiso inicial de 6 meses']) assert.ok(t.includes(d), d)
+  assert.ok(!/\$\s?\d/.test(t), 'no USD on the Spanish page')
+})
