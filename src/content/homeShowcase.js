@@ -54,7 +54,8 @@ export const SHOWCASE_INDUSTRIES = [
   },
 ]
 
-/* The case studies that exist, always linked (crawlable) under the showcase whichever industry is open. */
+/* The case studies that exist, always linked (crawlable) whichever industry is open. (The English homepage no longer draws this list: its destinations are in the visually hidden client navigation of
+   IndustryShowcase.jsx; kept for other uses.) */
 export const SHOWCASE_CASE_STUDY_LINKS = [
   { href: '/case-studies/elyon', label: 'Elyon Dubai' },
   { href: '/case-studies/graspo', label: 'Graspo' },

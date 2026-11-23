@@ -51,7 +51,9 @@ test('founder statement: "Worked with 500+ clients" with the owner-approved foun
   assert.ok(s.includes(`Worked with <span class="block text-lime">${CONVRT_STATS.clients} clients</span>`), 'two-line heading, figure from siteStats, lime')
   assert.match(textOf(s), /Founder experience Worked with 500\+ clients/)
   assert.ok(textOf(s).includes(FOUNDER_EXPERIENCE.captionShort) && /^Founder experience across CONVRT Studio and other creative production work\.$/.test(FOUNDER_EXPERIENCE.captionShort))
-  assert.ok(textOf(s).includes('Across ecommerce, SaaS, apps and consumer markets.'))
+  // the approved reference carries only the eyebrow, the heading and a short disclosure: none of the former client copy is drawn any more
+  const drawn = textOf(s.replace(/<nav aria-label="Client case studies[\s\S]*?<\/nav>/, ''))
+  for (const gone of ["Long-form creatives that can't be skipped", 'Aesthetic transitions', 'Explore SaaS video production', 'Full case studies:', '100+ creatives tested', '6 million views']) assert.ok(!drawn.includes(gone), gone)
   assert.ok(!/(500\+ clients (served|of CONVRT)|CONVRT.{0,20}500\+)/i.test(textOf(s)), 'never implies the 500+ clients were all CONVRT clients')
   assert.ok(h.indexOf('id="showcase"') > h.indexOf('id="clients"'))
   const between = h.slice(h.indexOf('</section>', h.indexOf('id="clients"')), h.indexOf('id="showcase"'))
@@ -59,7 +61,7 @@ test('founder statement: "Worked with 500+ clients" with the owner-approved foun
 })
 
 // ── 2. industry showcase ─────────────────────────────────────────────────────────────────
-test('client work: cinematic stage with three posters, the client selector in order, every client text and the case-study links in the HTML', () => {
+test('client work: the studio scene with three posters, the client selector in order, destinations of all three clients in the HTML', () => {
   const h = bodyOf(page('/'))
   const s = sectionOf(h, 'showcase')
   assert.ok(!/Work that speaks|for itself\.|Real brands, real budgets|CASE STUDIES|>Case Studies<\/span>/.test(h.replace(/<nav[\s\S]*?<\/nav>|<footer[\s\S]*?<\/footer>/g, '')), 'the old section introduction is gone')
@@ -68,28 +70,47 @@ test('client work: cinematic stage with three posters, the client selector in or
   assert.deepEqual(tabs, ['Adscale, SaaS', 'Elyon Dubai, E-commerce', 'Graspo, Printing'])
   assert.match(s, /role="tablist"/); assert.equal((s.match(/aria-selected="true"/g) || []).length, 1)
   for (const c of SHOWCASE_INDUSTRIES) {
-    assert.ok(s.includes(c.headline) && s.includes(c.client), c.id)
-    assert.ok(s.includes(`href="${c.link.href}"`), `${c.id}: link ${c.link.href}`)
-    assert.ok(s.includes(`src="${c.logo.src}"`), `${c.id}: the real client logo`)
+    assert.ok(s.includes(`src="${c.logo.src}"`) && s.includes(`alt="${c.logo.alt}"`), `${c.id}: the real client logo`)
+    assert.ok(s.includes(`href="${c.link.href}"`), `${c.id}: destination ${c.link.href} stays in the HTML`)
   }
-  for (const href of ['/case-studies/graspo', '/case-studies/elyon']) assert.ok(s.includes(`href="${href}"`), href)
-  assert.equal((s.match(/role="tabpanel"/g) || []).length, 3)
-  assert.equal((s.match(/role="tabpanel"[^>]*hidden/g) || []).length, 2, 'the other two clients are in the HTML but hidden')
+  for (const href of ['/case-studies/graspo', '/case-studies/elyon', PATHS.saasVideoProduction]) assert.ok(s.includes(`href="${href}"`), href)
+  assert.match(s, /<nav aria-label="Client case studies and service page" class="sr-only">/, 'the destinations are a visually hidden client navigation (drawn only when a keyboard user focuses a link)')
+  assert.equal((s.match(/role="tabpanel"/g) || []).length, 1, 'the one stage the selector controls')
   // the stage: three videos of the first client, centre one playable, sides only selectable, nothing playing
   assert.match(s, /role="group" aria-roledescription="carousel" aria-label="Adscale videos\./)
   assert.equal((s.match(/aria-label="Play video 1 of 3: /g) || []).length, 1)
   assert.equal((s.match(/aria-label="Show video [23] of 3"/g) || []).length, 2)
   assert.ok(!/<video/.test(s) && !/autoplay/i.test(s), 'posters only: no video element or stream on load')
-  assert.ok(/aria-label="Previous video"/.test(s) && /aria-label="Next video"/.test(s))
+  assert.ok(/>Previous video<\/button>/.test(s) && />Next video<\/button>/.test(s), 'keyboard / screen-reader controls exist (not drawn)')
   assert.equal((s.match(/<img[^>]*width="405"/g) || []).length, 3)
+  assert.ok(!/<canvas|<svg[^>]*viewBox="0 0 1436/.test(s), 'the studio is CSS, not an image or canvas')
 })
+
+test('studio scene: drawn on the reference grid with CSS only; compact; the three videos have the reference proportions; the podium stays put', () => {
+  const env = read('src/components/home/StudioEnvironment.jsx')
+  assert.ok(env.includes('const W = 1436') && env.includes('const H = 560'), 'the reference design grid')
+  assert.ok(!/<img|<canvas|new Image|three|webgl|url\(/i.test(env.replace(/\/\*[\s\S]*?\*\//g, '')), 'no image, canvas, WebGL or external asset')
+  for (const k of ['ring light', 'podium, upper tier', 'podium, lower tier', 'floor', 'left wall', 'right wall']) assert.ok(env.includes(k), k)
+  assert.ok(!/animation|transition|@keyframes/.test(env), 'the environment never moves (only the videos rotate)')
+  const show = read('src/components/home/IndustryShowcase.jsx')
+  assert.ok(show.includes('lg:aspect-[1436/560]'), 'the section keeps the reference proportions instead of growing tall')
+  // reference geometry: side videos about 70-76% of the featured one, mirrored, a little lower; the featured frame is not huge (about 14% of the scene width)
+  const [c, r, l] = [pose(0, 0), pose(1, 0), pose(2, 0)]
+  assert.ok(r.scale >= 0.7 && r.scale <= 0.78 && Math.abs(r.x + l.x) < 1e-9 && r.x > 1.0 && r.x < 1.07, `side width ${r.scale}, offset ${r.x}`)
+  assert.ok(r.y > 0.04 && r.y < 0.09 && c.y === 0, 'side videos hang a little lower than the featured one')
+  assert.ok(r.scaleY < r.scale && r.scaleY > 0.6, 'side frames foreshorten a little')
+  assert.ok(read('src/components/home/RotaryStage.jsx').includes("width: '13.93%'"), 'featured video = 200 of the 1436 px reference width')
+  // the podium and background are a separate layer from the rotating videos
+  assert.ok(!/StudioEnvironment/.test(read('src/components/home/RotaryStage.jsx')))
+})
+
 
 test('rotary stage maths: the centre video is upright and largest, the sides sit left and right, a rotation follows a curved orbit and passes the third video behind', () => {
   const at = (pos) => [0, 1, 2].map((i) => pose(i, pos))
   const [a, b, c] = at(0)
   assert.deepEqual([a.x, a.rot, a.scale, a.z], [0, 0, 1, 100], 'centre: upright, full size, in front')
   assert.ok(b.x > 0.9 && c.x < -0.9 && Math.abs(b.x + c.x) < 1e-9, 'next video right, previous video left, symmetric')
-  assert.ok(b.scale < 1 && b.scale > 0.7 && b.z < a.z && b.rot < 0 && c.rot > 0 && Math.abs(b.rot) < 25, 'sides: smaller, farther back, tilted a little toward the centre')
+  assert.ok(b.scale < 1 && b.scale > 0.7 && b.z < a.z && b.rot < 0 && c.rot > 0 && Math.abs(b.rot) < 30, 'sides: smaller, farther back, tilted toward the centre')
   assert.ok(b.shade <= 0.2 && a.shade === 0, 'sides are only gently dimmed')
   // every integer position is a clean arrangement with three distinct slots (no duplicated or overlapping video)
   for (const pos of [0, 1, 2]) {
@@ -110,7 +131,7 @@ test('rotary stage maths: the centre video is upright and largest, the sides sit
   assert.equal(behind.z, 0); assert.ok(behind.z < Math.min(pose(0, 0.5).z, pose(1, 0.5).z), 'the third video passes behind')
   // the rotation is continuous and returns to the same arrangement every full turn
   for (const i of [0, 1, 2]) assert.deepEqual(poseStyle(pose(i, 0)), poseStyle(pose(i, 3)), `video ${i}: a full turn returns to the same pose`)
-  assert.ok(poseStyle(pose(0, 0)).transform.endsWith('scale(1) rotateY(0deg)') && !/NaN|undefined/.test(poseStyle(pose(1, 0.37)).transform))
+  assert.ok(poseStyle(pose(0, 0)).transform.endsWith('scale(1, 1) rotateY(0deg)') && !/NaN|undefined/.test(poseStyle(pose(1, 0.37)).transform))
 })
 
 test('rotary stage logic: shortest direction, ease-in-out, 550-750 ms, and a click mid-rotation retargets from the current position', () => {
@@ -150,8 +171,9 @@ test('CTAs: "Become our next client" and "I\'m a creator" sit under the client s
   assert.match(s, new RegExp(`<a href="${OFFER_PATHS.roadmap}"[^>]*cta-gradient[^>]*>[\\s\\S]*?Become our next client`))
   assert.match(s, /<a href="https:\/\/forms\.gle\/Bg8ubU2tnmMj88m7A" target="_blank" rel="noopener noreferrer"[^>]*>[\s\S]*?I'm a creator/)
   assert.ok(s.indexOf('Become our next client') > s.indexOf('role="tablist"'), 'the buttons come after the client selector')
+  assert.match(s, /lg:absolute lg:left-1\/2 lg:top-\[85\.4%\]/, 'centred under the composition, where the reference has them')
   assert.equal((h.match(/Become our next client/g) || []).length, 1); assert.equal((h.match(/I'm a creator/g) || []).length, 1)
-  assert.match(s, /min-h-\[58px\][^"]*px-9 py-4 text-base font-bold/, 'moderately larger than the old px-6 py-3 text-sm')
+  assert.match(s, /min-h-\[56px\] px-8 text-base[^"]*lg:min-h-\[max\(46px,3\.85cqw\)\]/, 'large pills, the reference size on the scene (about 55 px tall at 1436 px), moderately larger than the old px-6 py-3 text-sm')
 })
 
 // ── 4. page order ────────────────────────────────────────────────────────────────────────

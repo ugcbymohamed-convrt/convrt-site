@@ -46,3 +46,15 @@ Supersedes the founder block, industry-showcase layout and reviews layout descri
 - **Client switch:** a short fade (190 ms), the stage re-mounts on the new client's first video; client text and links for all three clients stay in the HTML.
 - **Reviews** (`ClientReviews.jsx`): one featured quote in an editorial system serif (`font-editorial`, a system font stack: no font file was added), vector opening mark, lime rule, vertical client list (Adscale default), long lime rule. All three reviews are in the HTML (inactive ones invisible and `inert`, stacked in one grid cell so nothing shifts); excerpts verbatim; full originals behind "Read full review"; no stars.
 - Spanish and every other page: unchanged (only the English homepage differs from Production, plus the SaaS and Spokesperson hero orders from revision #1).
+
+---
+
+## Revision #3 (Nov 2026): strict visual correction of the founder / client-work scene
+
+Rebuilt to the approved reference image as a visual specification (`src/components/home/IndustryShowcase.jsx`, `StudioEnvironment.jsx`, `RotaryStage.jsx`, `src/lib/rotary.js`).
+
+- **One scene on a fixed 1436 x 560 design grid** (`lg:aspect-[1436/560]`): everything inside is positioned in percentages of it and text in container-query units, so the composition keeps the reference proportions at any desktop width (capped at 1500 px). Below `lg` the same scene is shown at a legible scale (cropped at its sides, side videos peeking) with the text above and the selector and buttons below.
+- **Environment (CSS only, never animated):** dark curved walls with a lit olive wall on the right, the sweeping lime ring light in the ceiling, a glossy olive-grey floor, and a two-tier raised podium with visible front faces and a continuous lit rim. Nothing is an image, canvas or WebGL.
+- **Videos:** the featured frame is 200 of the reference's 1436 px (13.93 % of the scene width); side videos are about 76 % of it, mirrored, tilted, hanging slightly lower. Rotation is unchanged (see Revision #2) and only moves the videos.
+- **Text:** eyebrow, "Worked with / 500+ clients" and the disclosure only. The client description, the SaaS link and the case-study list are no longer drawn; their destinations (`/saas-video-production`, `/case-studies/elyon`, `/case-studies/graspo`) stay in the HTML as a visually hidden "Client case studies and service page" navigation that appears when a keyboard user focuses a link.
+- **Selector and buttons:** the selector overlaps the podium front; the two buttons are centred under it, at the reference size.

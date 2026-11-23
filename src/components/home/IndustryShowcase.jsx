@@ -2,45 +2,50 @@ import { useEffect, useRef, useState } from 'react'
 import { primaryAction } from '../../i18n/cta.js'
 import { CONVRT_STATS, FOUNDER_EXPERIENCE } from '../../lib/siteStats.js'
 import { selectShowcase } from '../../content/portfolio.js'
-import { SHOWCASE_INDUSTRIES, SHOWCASE_CASE_STUDY_LINKS } from '../../content/homeShowcase.js'
+import { SHOWCASE_INDUSTRIES } from '../../content/homeShowcase.js'
 import RotaryStage from './RotaryStage.jsx'
+import StudioEnvironment from './StudioEnvironment.jsx'
 
-/* THE ENGLISH HOMEPAGE'S FOUNDER EXPERIENCE + CLIENT WORK (cinematic studio).
+/* THE ENGLISH HOMEPAGE'S FOUNDER EXPERIENCE + CLIENT WORK: one cinematic studio scene, built to the approved reference (a strict visual specification).
 
-   LEFT   the founder statement: "Worked with" plus the clients figure (it comes from siteStats.js) with the owner-approved disclosure under it (this is the FOUNDER's combined experience, not CONVRT-only),
-          then the active client's short description and link.
-   STAGE  three of that client's videos on a lit circular platform (RotaryStage): the centre one is featured, a click on either side video rotates it into the centre along a curved path.
-   BELOW  the client selector (Adscale · SaaS, Elyon Dubai · E-commerce, Graspo · Printing, in this fixed order) and the two main conversion buttons.
-
-   CRAWLABLE: all three clients' descriptions and links are in the page HTML (inactive panels are `hidden`), both case-study links are always visible, and the server render shows the first client's
-   posters. Switching client re-mounts the stage with a short fade (immediate for prefers-reduced-motion), so no video of the previous client keeps playing. Copy: src/content/homeShowcase.js; videos: the
-   `showcase` portfolio entries. The Spanish homepage keeps the older CaseStudies section (see App.jsx). */
+   THE SCENE   is drawn on a fixed 1436 x 560 design grid and scales as a whole (everything inside is positioned in percentages of it, text in container-query units), so the composition keeps the reference's
+               proportions at any desktop width: the founder text at the left, three floating videos above a raised two-tier podium in a curved studio (StudioEnvironment), the client selector overlapping the podium's
+               front, the two CTAs under it. From `lg` up the text, selector and buttons are placed ON the scene; below `lg` the scene is shown at a legible scale (cropped at its sides, the side videos peeking in)
+               with the text above it and the selector and buttons below.
+   THE VIDEOS  are the active client's three `showcase` portfolio entries (RotaryStage: a click, swipe or arrow key on a side video orbits it into the centre; nothing plays by itself).
+   THE TEXT    is deliberately short: eyebrow, "Worked with" plus the clients figure (it comes from siteStats.js) and the owner-approved disclosure that this is the FOUNDER's combined experience.
+   CRAWLABLE   the destinations of the three clients (Adscale -> the SaaS page, Elyon Dubai and Graspo -> their case studies) stay in the HTML as a visually hidden list that appears when a keyboard user focuses it;
+               the descriptions in src/content/homeShowcase.js are kept for the other pages and tests, not drawn here.
+   Switching client fades the stage out and in (190 ms, immediate for prefers-reduced-motion) and re-mounts it on the new client's first video, so nothing of the previous client keeps playing.
+   The Spanish homepage keeps the older CaseStudies section (see App.jsx). */
 
 const Arrow = () => (
-  <svg viewBox="0 0 12 12" className="h-4 w-4" fill="none" aria-hidden="true"><path d="M3 9L9 3M9 3H4M9 3V8" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
+  <svg viewBox="0 0 12 12" className="h-[1em] w-[1em]" fill="none" aria-hidden="true"><path d="M3 9L9 3M9 3H4M9 3V8" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" /></svg>
 )
 
-/* The two main conversion buttons, closing the section. Same destinations as before (the Roadmap, or the booking link where the Roadmap is unavailable; the creator application form). */
+/* The two main conversion buttons. Same destinations as before (the Roadmap, or the booking link where the Roadmap is unavailable; the creator application form). Below `lg` they stack on a phone; on the
+   scene they are the reference's two equal-height pills (sizes follow the scene). */
 export function ShowcaseCtas() {
   const action = primaryAction('en')
+  const base = 'group inline-flex items-center justify-center gap-[0.5em] rounded-full font-bold whitespace-nowrap min-h-[56px] px-8 text-base lg:min-h-[max(46px,3.85cqw)] lg:px-[max(22px,2.6cqw)] lg:text-[max(14px,1.08cqw)]'
   return (
-    <div className="flex flex-col items-stretch justify-center gap-3 sm:flex-row sm:items-center sm:gap-4">
+    <div className="flex flex-col items-stretch justify-center gap-3 sm:flex-row sm:items-center lg:gap-[max(14px,1.2cqw)]">
       <a
         href={action.href}
         {...(action.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
-        className="cta-gradient group inline-flex min-h-[58px] items-center justify-center gap-2.5 rounded-full px-9 py-4 text-base font-bold text-canvas focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-lime sm:min-w-[250px]"
+        className={`cta-gradient ${base} text-canvas focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-lime`}
       >
         Become our next client
-        <svg viewBox="0 0 12 12" className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 motion-reduce:transition-none" fill="none" aria-hidden="true"><path d="M3 9L9 3M9 3H4M9 3V8" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" /></svg>
+        <span className="transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 motion-reduce:transition-none"><Arrow /></span>
       </a>
       <a
         href="https://forms.gle/Bg8ubU2tnmMj88m7A"
         target="_blank"
         rel="noopener noreferrer"
-        className="group inline-flex min-h-[58px] items-center justify-center gap-2.5 rounded-full bg-ink px-9 py-4 text-base font-bold text-canvas transition-[background-color,transform] duration-150 hover:bg-white active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink motion-reduce:transition-none sm:min-w-[250px]"
+        className={`${base} bg-ink text-canvas transition-[background-color,transform] duration-150 hover:bg-white active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink motion-reduce:transition-none`}
       >
         I'm a creator
-        <svg viewBox="0 0 12 12" className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 motion-reduce:transition-none" fill="none" aria-hidden="true"><path d="M3 9L9 3M9 3H4M9 3V8" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" /></svg>
+        <span className="transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 motion-reduce:transition-none"><Arrow /></span>
       </a>
     </div>
   )
@@ -76,85 +81,83 @@ export default function IndustryShowcase() {
   }
 
   return (
-    <section id="showcase" tabIndex={-1} aria-labelledby="showcase-heading" className="relative overflow-hidden pb-16 pt-8 md:pb-24 md:pt-14 scroll-mt-[72px] md:scroll-mt-24 focus:outline-none">
-      <div aria-hidden="true" className="pointer-events-none absolute left-1/2 top-[30%] h-[520px] w-[1100px] -translate-x-1/2 rounded-full bg-lime/[0.035] blur-[150px]" />
-      <div className="relative mx-auto max-w-7xl px-5 md:px-8">
-        <div className="grid grid-cols-1 gap-x-8 gap-y-6 lg:grid-cols-12 lg:gap-y-0">
-          {/* founder statement */}
-          <div className="text-center lg:col-span-4 lg:row-start-1 lg:self-end lg:pb-8 lg:text-left">
-            <div className="inline-flex items-center gap-2.5">
-              <span className="h-px w-7 bg-lime" aria-hidden="true" />
-              <span className="text-[11px] font-semibold uppercase tracking-[0.22em] text-lime">Founder experience</span>
+    <section id="showcase" tabIndex={-1} aria-labelledby="showcase-heading" className="relative overflow-hidden pb-12 pt-6 md:pb-16 md:pt-10 scroll-mt-[72px] md:scroll-mt-24 focus:outline-none">
+      <div className="relative mx-auto w-full max-w-[1500px] [container-type:inline-size] lg:aspect-[1436/560]">
+        {/* founder statement: stacked above the scene below lg, placed on it from lg */}
+        <div className="relative z-10 px-5 text-center md:px-8 lg:absolute lg:left-[7.66%] lg:top-[19.6%] lg:w-[25%] lg:px-0 lg:text-left">
+          <div className="inline-flex items-center gap-[0.9em] text-[11px] lg:text-[max(9.5px,0.76cqw)]">
+            <span className="h-px w-[1.8em] bg-lime" aria-hidden="true" />
+            <span className="font-semibold uppercase tracking-[0.22em] text-lime">Founder experience</span>
+          </div>
+          <h2 id="showcase-heading" className="mt-4 font-display text-[2.6rem] font-bold leading-[1.02] tracking-display-xl text-ink min-[420px]:text-5xl md:text-[3.4rem] lg:mt-[1.1cqw] lg:text-[max(30px,3.28cqw)] lg:leading-[1.04]">
+            Worked with{' '}<span className="block text-lime">{CONVRT_STATS.clients} clients</span>
+          </h2>
+          <p className="mx-auto mt-4 max-w-sm text-[15px] leading-relaxed text-ink-muted lg:mx-0 lg:mt-[1.1cqw] lg:max-w-[22cqw] lg:text-[max(12px,0.92cqw)] lg:leading-[1.5]">{FOUNDER_EXPERIENCE.captionShort}</p>
+        </div>
+
+        {/* the scene: environment + the rotary videos */}
+        <div className="relative mt-3 overflow-hidden lg:absolute lg:inset-0 lg:mt-0 lg:overflow-visible">
+          <div className={`relative left-1/2 aspect-[1436/560] w-[min(276vw,1400px)] -translate-x-1/2 transition-opacity duration-[190ms] motion-reduce:transition-none lg:left-0 lg:w-full lg:translate-x-0 ${fading ? 'opacity-0' : 'opacity-100'}`}>
+            <StudioEnvironment />
+            <div id="showcase-panel" role="tabpanel" aria-labelledby={`showcase-tab-${pickedId}`} className="absolute inset-0">
+              <RotaryStage key={shown.id} items={shown.items} label={`${shown.client} videos. Choose a side video to bring it to the front.`} />
             </div>
-            <h2 id="showcase-heading" className="mt-5 font-display text-[2.6rem] font-bold leading-[1.02] tracking-display-xl text-ink min-[420px]:text-5xl md:text-[3.4rem] lg:text-[3.2rem] xl:text-[4rem]">
-              Worked with{' '}<span className="block text-lime">{CONVRT_STATS.clients} clients</span>
-            </h2>
-            <p className="mx-auto mt-5 max-w-sm text-[15px] leading-relaxed text-ink-muted md:text-base lg:mx-0">{FOUNDER_EXPERIENCE.captionShort}</p>
-            <p className="mx-auto mt-1 max-w-sm text-[13px] leading-relaxed text-ink-subtle lg:mx-0">Across ecommerce, SaaS, apps and consumer markets.</p>
-          </div>
-
-          {/* the stage */}
-          <div className={`order-2 transition-opacity duration-[190ms] motion-reduce:transition-none lg:order-none lg:col-span-8 lg:col-start-5 lg:row-span-2 lg:row-start-1 ${fading ? 'opacity-0' : 'opacity-100'}`}>
-            <RotaryStage key={shown.id} items={shown.items} label={`${shown.client} videos. Choose a side video to bring it to the front.`} />
-          </div>
-
-          {/* the active client */}
-          <div className="order-4 lg:order-none lg:col-span-4 lg:row-start-2 lg:self-start">
-            <div className="relative mx-auto max-w-md border-l-2 border-lime/70 pl-5 text-left lg:mx-0">
-              {SHOWCASE_INDUSTRIES.map((c) => {
-                const on = c.id === pickedId
-                return (
-                  <div key={c.id} role="tabpanel" id={`showcase-panel-${c.id}`} aria-labelledby={`showcase-tab-${c.id}`} hidden={!on} className="sc-panel-in">
-                    <h3 className="font-display text-xl font-bold leading-tight tracking-display text-ink md:text-[1.4rem]">{c.headline}</h3>
-                    <p className="mt-2 text-[15px] leading-relaxed text-ink-muted">{c.text}</p>
-                    <a href={c.link.href} className="group mt-3 inline-flex min-h-[44px] items-center gap-2 text-[15px] font-semibold text-lime underline-offset-4 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-lime">
-                      {c.link.label}
-                      <span className="transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 motion-reduce:transition-none"><Arrow /></span>
-                    </a>
-                  </div>
-                )
-              })}
-              <p className="mt-1 text-xs text-ink-subtle">
-                Full case studies:{' '}
-                {SHOWCASE_CASE_STUDY_LINKS.map((l, i) => (
-                  <span key={l.href}>{i > 0 && ' · '}<a href={l.href} className="underline underline-offset-2 transition-colors hover:text-lime">{l.label}</a></span>
-                ))}
-              </p>
-            </div>
-          </div>
-
-          {/* the client selector, under the stage */}
-          <div className="relative z-10 order-3 lg:order-none lg:col-span-8 lg:col-start-5 lg:row-start-3 lg:-mt-14">
-            <div role="tablist" aria-label="Client work by industry" className="mx-auto grid max-w-xl grid-cols-3 gap-1.5 rounded-[22px] border border-white/10 bg-black/45 p-1.5 shadow-[0_24px_60px_-30px_rgba(0,0,0,0.95)] backdrop-blur-md">
-              {industries.map((c, i) => {
-                const on = c.id === pickedId
-                return (
-                  <button
-                    key={c.id}
-                    ref={(el) => { tabRefs.current[c.id] = el }}
-                    type="button"
-                    role="tab"
-                    id={`showcase-tab-${c.id}`}
-                    aria-selected={on}
-                    aria-controls={`showcase-panel-${c.id}`}
-                    aria-label={`${c.client}, ${c.label}`}
-                    tabIndex={on ? 0 : -1}
-                    onClick={() => select(c.id)}
-                    onKeyDown={(e) => onTabKeyDown(e, i)}
-                    className={`flex min-h-[64px] flex-col items-center justify-center gap-1 rounded-2xl border px-2 py-2.5 transition-[background-color,border-color] duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-lime motion-reduce:transition-none ${on ? 'border-lime/70 bg-lime/[0.07]' : 'border-transparent hover:bg-white/[0.05]'}`}
-                  >
-                    <img src={c.logo.src} alt={c.logo.alt} width={c.logo.w} height={c.logo.h} loading="lazy" decoding="async" draggable="false" style={{ height: `${c.selectorHeight}px`, width: 'auto', maxWidth: '100%', filter: 'brightness(0) invert(1)', opacity: on ? 1 : 0.6 }} className="object-contain transition-opacity duration-300 motion-reduce:transition-none" />
-                    <span className={`text-[11px] font-medium leading-none transition-colors duration-300 motion-reduce:transition-none ${on ? 'text-lime' : 'text-ink-muted'}`}>{c.label}</span>
-                  </button>
-                )
-              })}
-            </div>
-          </div>
-
-          <div className="order-5 mt-4 lg:order-none lg:col-span-12 lg:row-start-4 lg:mt-12">
-            <ShowcaseCtas />
           </div>
         </div>
+
+        {/* the client selector, overlapping the front of the podium */}
+        <div className="relative z-20 mx-auto -mt-[min(34vw,175px)] w-full max-w-[26rem] px-5 md:px-0 lg:absolute lg:left-[31.3%] lg:top-[63.7%] lg:mx-0 lg:mt-0 lg:w-[39.7%] lg:max-w-none">
+          <div role="tablist" aria-label="Client work by industry" className="grid grid-cols-3 gap-[0.35rem] rounded-[22px] border border-white/[0.09] bg-[rgba(8,9,6,0.7)] p-[0.35rem] shadow-[0_24px_50px_-20px_rgba(0,0,0,0.95)] backdrop-blur-md lg:gap-[0.5cqw] lg:rounded-[1.6cqw] lg:p-[0.45cqw]">
+            {industries.map((c, i) => {
+              const on = c.id === pickedId
+              return (
+                <button
+                  key={c.id}
+                  ref={(el) => { tabRefs.current[c.id] = el }}
+                  type="button"
+                  role="tab"
+                  id={`showcase-tab-${c.id}`}
+                  aria-selected={on}
+                  aria-controls="showcase-panel"
+                  aria-label={`${c.client}, ${c.label}`}
+                  tabIndex={on ? 0 : -1}
+                  onClick={() => select(c.id)}
+                  onKeyDown={(e) => onTabKeyDown(e, i)}
+                  className={`flex min-h-[66px] flex-col items-center justify-center gap-[0.3rem] rounded-[17px] border px-2 py-2 transition-[background-color,border-color,box-shadow] duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-lime motion-reduce:transition-none lg:min-h-0 lg:gap-[0.4cqw] lg:rounded-[1.25cqw] lg:py-[0.75cqw] ${on ? 'border-lime/80 bg-black/30 shadow-[0_0_24px_-5px_rgba(213,255,64,0.6),inset_0_0_14px_rgba(213,255,64,0.12)]' : 'border-transparent hover:bg-white/[0.05]'}`}
+                >
+                  <img
+                    src={c.logo.src}
+                    alt={c.logo.alt}
+                    width={c.logo.w}
+                    height={c.logo.h}
+                    loading="lazy"
+                    decoding="async"
+                    draggable="false"
+                    style={{ '--lh': `${c.selectorHeight}px`, '--lhc': `${(c.selectorHeight / 14.36).toFixed(3)}cqw`, width: 'auto', maxWidth: '100%', filter: 'brightness(0) invert(1)', opacity: on ? 1 : 0.66 }}
+                    className="h-[var(--lh)] object-contain transition-opacity duration-300 motion-reduce:transition-none lg:h-[var(--lhc)]"
+                  />
+                  <span className={`font-medium leading-none transition-colors duration-300 motion-reduce:transition-none text-[11px] lg:text-[max(9.5px,0.8cqw)] ${on ? 'text-lime' : 'text-ink-muted'}`}>{c.label}</span>
+                </button>
+              )
+            })}
+          </div>
+        </div>
+
+        {/* the buttons: centred under the composition */}
+        <div className="relative z-20 mt-6 px-5 md:px-8 lg:absolute lg:left-1/2 lg:top-[85.4%] lg:mt-0 lg:-translate-x-1/2 lg:px-0">
+          <ShowcaseCtas />
+        </div>
+
+        {/* destinations of the three clients: in the HTML for search engines and screen readers, drawn only when a keyboard user focuses them */}
+        <nav aria-label="Client case studies and service page" className="sr-only">
+          <ul>
+            {SHOWCASE_INDUSTRIES.map((c) => (
+              <li key={c.id}>
+                <a href={c.link.href} className="focus-visible:not-sr-only focus-visible:absolute focus-visible:bottom-2 focus-visible:left-2 focus-visible:z-30 focus-visible:rounded-full focus-visible:bg-black focus-visible:px-4 focus-visible:py-2 focus-visible:text-sm focus-visible:text-lime">{c.link.label}</a>
+              </li>
+            ))}
+          </ul>
+        </nav>
       </div>
     </section>
   )

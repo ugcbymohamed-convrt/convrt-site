@@ -20,10 +20,6 @@ import { pose, poseStyle, shortestDelta, easeInOutCubic, ROTATION_MS, round4 as 
    MOTION          • prefers-reduced-motion: the selection changes at once (no orbit)
    The pose maths below is pure and also used for the server-rendered markup, so hydration matches. */
 
-const Chevron = ({ dir }) => (
-  <svg viewBox="0 0 12 12" className="h-4 w-4" fill="none" aria-hidden="true"><path d={dir < 0 ? 'M8 2L4 6l4 4' : 'M4 2l4 4-4 4'} stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
-)
-
 function Phone({ item, i, n, active, moving, onSelect, setEl, setShade }) {
   const ref = useRef(null)
   const [armed, setArmed] = useState(false) // the visitor pressed play once: the stream is attached from then on
@@ -46,10 +42,10 @@ function Phone({ item, i, n, active, moving, onSelect, setEl, setShade }) {
   return (
     <div ref={setEl} className="absolute left-1/2 top-1/2 w-full will-change-transform" style={poseStyle(pose(i, 0, n))}>
       <div
-        className={`group relative aspect-[9/16.7] rounded-[24px] bg-[#0b0b0c] p-[4px] ring-1 transition-[box-shadow,--tw-ring-color] duration-500 motion-reduce:transition-none md:rounded-[32px] md:p-[5px] ${active ? 'ring-lime/60' : 'ring-white/15 group-hover:ring-lime/40'}`}
-        style={{ boxShadow: active ? '0 40px 70px -26px rgba(0,0,0,0.95), 0 0 70px -22px rgba(213,255,64,0.38)' : '0 30px 56px -26px rgba(0,0,0,0.9)' }}
+        className={`group relative aspect-[9/15.4] rounded-[13%/7.6%] p-[2.5%] ring-1 transition-[box-shadow] duration-500 motion-reduce:transition-none ${active ? 'ring-lime/60' : 'ring-white/30 group-hover:ring-lime/40'}`}
+        style={{ background: 'linear-gradient(150deg, #a9ac9a 0%, #3a3c33 28%, #17181a 55%, #4a4d40 100%)', boxShadow: active ? '0 26px 44px -22px rgba(0,0,0,0.95), 0 0 46px -14px rgba(213,255,64,0.42), inset 0 1px 0 rgba(255,255,255,0.45), inset 0 0 0 1px rgba(255,255,255,0.08)' : '0 20px 36px -20px rgba(0,0,0,0.9), inset 0 1px 0 rgba(255,255,255,0.4), inset 0 0 0 1px rgba(255,255,255,0.07)' }}
       >
-        <div className="relative h-full w-full overflow-hidden rounded-[20px] bg-black md:rounded-[27px]">
+        <div className="relative h-full w-full overflow-hidden rounded-[11%/6.4%] bg-black">
           <img src={posterUrl(item)} alt={captionOf(item)} width="405" height="720" loading={i === 0 ? 'eager' : 'lazy'} decoding="async" draggable="false" className="absolute inset-0 h-full w-full object-cover" />
           {armed && (
             <video ref={ref} playsInline preload="none" poster={posterUrl(item)} controls={active && !moving} aria-label={captionOf(item)} className="absolute inset-0 h-full w-full bg-black object-cover" />
@@ -62,7 +58,7 @@ function Phone({ item, i, n, active, moving, onSelect, setEl, setShade }) {
               aria-label={`Play video ${i + 1} of ${n}: ${captionOf(item)}`}
               className="absolute inset-0 z-10 flex items-center justify-center focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-4 focus-visible:outline-lime"
             >
-              <span className="flex h-14 w-14 items-center justify-center rounded-full border border-lime/60 bg-lime/20 text-ink backdrop-blur transition-transform duration-200 group-hover:scale-110 motion-reduce:transition-none"><PlayGlyph className="h-6 w-6" /></span>
+              <span className="flex aspect-square w-[26%] min-w-[34px] items-center justify-center rounded-full border border-lime/60 bg-black/45 text-ink backdrop-blur transition-transform duration-200 group-hover:scale-110 motion-reduce:transition-none"><PlayGlyph className="h-[44%] w-[44%]" /></span>
             </button>
           )}
           {!active && (
@@ -73,27 +69,9 @@ function Phone({ item, i, n, active, moving, onSelect, setEl, setShade }) {
               className="absolute inset-0 z-10 cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-4 focus-visible:outline-lime"
             />
           )}
-          <span aria-hidden="true" className="pointer-events-none absolute inset-0 z-10 rounded-[20px] ring-1 ring-inset ring-white/10 md:rounded-[27px]" />
+          <span aria-hidden="true" className="pointer-events-none absolute inset-0 z-10 rounded-[11%/6.4%] ring-1 ring-inset ring-white/10" />
         </div>
       </div>
-    </div>
-  )
-}
-
-/* The lit circular platform and the curved studio around it: CSS gradients, borders and shadows only (no image, no canvas, no WebGL). Purely decorative. */
-function Environment() {
-  return (
-    <div aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-visible">
-      {/* curved architecture */}
-      <div className="absolute left-1/2 top-[-14%] h-[118%] w-[150%] -translate-x-1/2 rounded-[50%] border border-white/[0.05]" />
-      <div className="absolute left-1/2 top-[4%] h-[96%] w-[120%] -translate-x-1/2 rounded-[50%] border border-white/[0.07]" style={{ background: 'radial-gradient(ellipse 60% 55% at 50% 58%, rgba(213,255,64,0.075), transparent 70%)' }} />
-      {/* ring light behind the videos */}
-      <div className="absolute left-1/2 top-[3%] h-[34%] w-[84%] -translate-x-1/2 rounded-[50%]" style={{ border: '2px solid transparent', borderTopColor: 'rgba(224,255,110,0.7)', boxShadow: '0 -22px 60px -18px rgba(213,255,64,0.4)', WebkitMaskImage: 'linear-gradient(180deg,#000 0%,transparent 58%)', maskImage: 'linear-gradient(180deg,#000 0%,transparent 58%)' }} />
-      {/* platform: glow ring, lit top surface with a visible edge, contact shadow */}
-      <div className="absolute bottom-[0%] left-1/2 h-[26%] w-[98%] -translate-x-1/2 rounded-[50%] border border-lime/20" style={{ background: 'radial-gradient(ellipse at 50% 38%, rgba(213,255,64,0.13), rgba(10,10,11,0) 66%)', boxShadow: '0 0 90px -24px rgba(213,255,64,0.4)' }} />
-      <div className="absolute bottom-[4.5%] left-1/2 h-[19%] w-[78%] -translate-x-1/2 rounded-[50%]" style={{ background: 'linear-gradient(180deg,#262a1b 0%,#0e0f0b 72%)', boxShadow: 'inset 0 2px 0 rgba(224,255,110,0.65), inset 0 -12px 26px rgba(0,0,0,0.65), 0 9px 0 -1px #15170f, 0 10px 0 0 rgba(213,255,64,0.32), 0 26px 44px -12px #000' }} />
-      <div className="absolute bottom-[9.5%] left-1/2 h-[7%] w-[30%] -translate-x-1/2 rounded-[50%] bg-black/80 blur-xl" />
-      <div className="absolute bottom-[11%] left-1/2 h-[4%] w-[46%] -translate-x-1/2 rounded-[50%] blur-lg" style={{ background: 'radial-gradient(ellipse, rgba(213,255,64,0.45), transparent 70%)' }} />
     </div>
   )
 }
@@ -167,47 +145,46 @@ export default function RotaryStage({ items, label }) {
     const dx = e.clientX - d.x
     if (Math.abs(dx) > 45) select(activeRef.current + (dx < 0 ? 1 : -1))
   }
-  const pad = (v) => String(v).padStart(2, '0')
 
   return (
-    <div ref={root} className="relative">
-      <div
-        role="group"
-        aria-roledescription="carousel"
-        aria-label={label}
-        tabIndex={0}
-        onKeyDown={onKeyDown}
-        onPointerDown={onPointerDown}
-        onPointerMove={onPointerMove}
-        onPointerUp={onPointerUp}
-        onPointerCancel={() => { drag.current = null }}
-        onClickCapture={(e) => { if (drag.current?.moved) { e.preventDefault(); e.stopPropagation() } }}
-        className="relative h-[372px] touch-pan-y select-none [perspective:1500px] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-lime/70 min-[420px]:h-[410px] md:h-[500px] lg:h-[560px]"
-      >
-        <Environment />
-        <div className="absolute left-1/2 top-[43%] aspect-[9/16.7] w-[150px] -translate-x-1/2 -translate-y-1/2 min-[420px]:w-[168px] md:w-[212px] lg:w-[250px]">
-          {items.map((item, i) => (
-            <Phone
-              key={item.id}
-              item={item}
-              i={i}
-              n={n}
-              active={i === active}
-              moving={moving}
-              onSelect={() => select(i)}
-              setEl={(el) => { phoneEls.current[i] = el }}
-              setShade={(el) => { shadeEls.current[i] = el }}
-            />
-          ))}
-        </div>
+    <div
+      ref={root}
+      id="showcase-stage"
+      role="group"
+      aria-roledescription="carousel"
+      aria-label={label}
+      tabIndex={0}
+      onKeyDown={onKeyDown}
+      onPointerDown={onPointerDown}
+      onPointerMove={onPointerMove}
+      onPointerUp={onPointerUp}
+      onPointerCancel={() => { drag.current = null }}
+      onClickCapture={(e) => { if (drag.current?.moved) { e.preventDefault(); e.stopPropagation() } }}
+      className="absolute inset-0 touch-pan-y select-none focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-lime/60"
+    >
+      {/* the three videos: the holder is the CENTRE video's box, as a share of the scene (centre of the reference's featured frame); everything else is measured in its own width */}
+      <div className="absolute aspect-[9/15.4] -translate-x-1/2 -translate-y-1/2 [perspective:900px]" style={{ left: '53.27%', top: '32.9%', width: '13.93%' }}>
+        {items.map((item, i) => (
+          <Phone
+            key={item.id}
+            item={item}
+            i={i}
+            n={n}
+            active={i === active}
+            moving={moving}
+            onSelect={() => select(i)}
+            setEl={(el) => { phoneEls.current[i] = el }}
+            setShade={(el) => { shadeEls.current[i] = el }}
+          />
+        ))}
       </div>
-
+      {/* status and the two keyboard controls: not drawn (the reference shows none); arrow keys, swipe and a click on a side video are the visible ways, these are for assistive technology */}
+      <span className="sr-only" aria-live="polite">{`Video ${active + 1} of ${n}`}</span>
       {n > 1 && (
-        <div className="mt-1 flex items-center justify-center gap-4 md:pointer-events-none md:absolute md:inset-x-0 md:top-[43%] md:mt-0 md:justify-between">
-          <button type="button" onClick={() => select(activeRef.current - 1)} aria-label="Previous video" className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-black/40 text-ink-muted backdrop-blur transition-colors hover:border-lime/60 hover:text-lime focus-visible:outline focus-visible:outline-2 focus-visible:outline-lime md:pointer-events-auto"><Chevron dir={-1} /></button>
-          <span className="min-w-[3.5rem] text-center text-sm font-semibold tabular-nums text-ink-muted md:sr-only" aria-live="polite"><span className="text-ink">{pad(active + 1)}</span> / {pad(n)}</span>
-          <button type="button" onClick={() => select(activeRef.current + 1)} aria-label="Next video" className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-black/40 text-ink-muted backdrop-blur transition-colors hover:border-lime/60 hover:text-lime focus-visible:outline focus-visible:outline-2 focus-visible:outline-lime md:pointer-events-auto"><Chevron dir={1} /></button>
-        </div>
+        <>
+          <button type="button" onClick={() => select(activeRef.current - 1)} className="sr-only focus-visible:not-sr-only focus-visible:absolute focus-visible:bottom-2 focus-visible:left-2 focus-visible:z-30 focus-visible:rounded-full focus-visible:bg-black focus-visible:px-3 focus-visible:py-2 focus-visible:text-sm focus-visible:text-lime">Previous video</button>
+          <button type="button" onClick={() => select(activeRef.current + 1)} className="sr-only focus-visible:not-sr-only focus-visible:absolute focus-visible:bottom-2 focus-visible:right-2 focus-visible:z-30 focus-visible:rounded-full focus-visible:bg-black focus-visible:px-3 focus-visible:py-2 focus-visible:text-sm focus-visible:text-lime">Next video</button>
+        </>
       )}
     </div>
   )
