@@ -24,6 +24,8 @@ export default {
       fontFamily: {
         sans: ['Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'sans-serif'],
         display: ['Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'sans-serif'],
+        /* Editorial serif for the client-review quotation (English homepage). A system stack on purpose: no font file is downloaded; it resolves to Iowan Old Style / Palatino on Apple devices, Palatino Linotype / Georgia on Windows, Noto Serif on Android. */
+        editorial: ['"Iowan Old Style"', '"Palatino Linotype"', 'Palatino', '"Book Antiqua"', 'Georgia', '"Noto Serif"', '"Times New Roman"', 'serif'],
       },
       letterSpacing: {
         'display-xl': '-0.045em',

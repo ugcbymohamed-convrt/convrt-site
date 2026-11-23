@@ -179,8 +179,8 @@ test('data: the homepage client panels still show exactly the same videos, in th
   assert.deepEqual(selectShowcase('graspo').map(key), ['15dd5505109f6821ccdcb13fc3cdc1fd', '3616606e3ca6d1a85c8a57d7cc2f656f', 'c1379ace38f2fa19ef2a45de1bb5d4b1'])
   assert.deepEqual(selectShowcase('adscale').map((v) => v.poster), [undefined, '/showcase/adscale-agentic-poster.webp', '/showcase/adscale-creator-poster.webp'])
   const home = rootOf(page('/'))
-  for (const id of ['8d4dbbeabac272bddb23068c91037af8']) assert.ok(home.includes(`videodelivery.net/${id}/thumbnails`), 'homepage poster for the first Adscale video')
-  assert.ok(home.includes('/showcase/adscale-agentic-poster.webp') && home.includes('/showcase/adscale-creator-poster.webp'))
+  // the English homepage stage shows the owner-supplied frames (homeStagePoster); the Spanish homepage keeps the poster fields above
+  assert.ok(home.includes('/showcase/adscale-jail-poster.webp') && home.includes('/showcase/adscale-coffee-poster.webp') && home.includes('/showcase/adscale-women-poster.webp'))
 })
 
 test('data: validation rejects bad entries; language is optional until confirmed', () => {
@@ -307,7 +307,8 @@ test('motion: every animation honours prefers-reduced-motion', () => {
 // ── internal links ──────────────────────────────────────────────────────────────────────
 test('links: nav, footer, homepage CTA and the UGC page all lead to /creator-showcase, once each, without duplicates', () => {
   const home = rootOf(page('/'))
-  assert.equal((home.match(/href="\/creator-showcase"/g) || []).length, 3, 'desktop nav (the mobile menu is closed), footer and the hero button')
+  assert.equal((home.match(/href="\/creator-showcase"/g) || []).length, 4, 'desktop nav (the mobile menu is closed), footer, the hero button and the "Explore All Creators" button under the homepage creator carousel')
+  assert.match(home, /<a href="\/creator-showcase"[^>]*>\s*Explore All Creators/, 'the homepage creator carousel button')
   assert.match(home, /<a href="\/creator-showcase"[^>]*>\s*Explore Videos/, 'the homepage "Explore Videos" button')
   assert.equal((home.match(/>Creator Showcase</g) || []).length, 2, 'one nav link and one footer link')
   assert.ok(!/>(See Our Work|Our Work)</.test(home), 'no "Our Work" label is left on the homepage')
@@ -435,7 +436,7 @@ test('regression: the nine homepage client videos stay homepage-only: not in /cr
   // Batch 2 added two descriptive links to the published case studies (their hrefs contain the slugs); the anchors name no client and no client video is shown.
   assert.ok(!/adscale|elyon|graspo/i.test(our.replace(/<script[\s\S]*?<\/script>/g, '').replace(/href="\/case-studies\/(graspo|elyon)"/g, '')), 'no client name on /creator-showcase')
   const home = rootOf(page('/'))
-  assert.ok(home.includes('id="showcase"') && home.includes('/showcase/adscale-creator-poster.webp'), 'the homepage client showcase is intact')
+  assert.ok(home.includes('id="showcase"') && home.includes('/showcase/adscale-women-poster.webp'), 'the homepage client showcase is intact')
 })
 
 test('regression: the 11 original portfolio entries are intact (ids, media, permissions); only the five that sit in the E-commerce folder were classified', () => {

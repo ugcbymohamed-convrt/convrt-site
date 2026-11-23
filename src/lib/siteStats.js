@@ -19,6 +19,8 @@ export const CONVRT_STATS = {
 export const FOUNDER_EXPERIENCE = {
   /** Short caption under the homepage client headline. */
   caption: 'Combined professional experience, including CONVRT Studio and other professional creative production work.',
+  /** English homepage only (design review, Nov 2026): the one-line version under the founder headline. Owner-approved wording; it still names the founder and CONVRT Studio and says the experience is wider than CONVRT. */
+  captionShort: 'Founder experience across CONVRT Studio and other creative production work.',
   /** Footnote shown under the stat strips (home final CTA, pricing); the strips mark each figure with an asterisk. */
   footnote: "Our founder's combined professional experience, including CONVRT Studio and other professional creative production work.",
   /** Plain-language scope for the claims register. */

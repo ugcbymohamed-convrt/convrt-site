@@ -193,6 +193,60 @@ export function PhoneShowcaseFallback({ portraits = false }) {
   )
 }
 
+/* THE HERO PLAYER UI: the centre play button, and the bottom pill with play / pause, the seek bar and the sound button. It is the one control design for every featured video (the homepage hero, the service-page
+   heroes and the homepage client stage reuse it unchanged), so a video looks and behaves the same wherever it is played. `barClass` (default none: the hero is unchanged) lets a caller change when the bottom bar is shown. */
+export function HeroPlayerControls({ item, playing, muted, progress, nudge = false, barClass = '', onTogglePlay, onToggleMute, onSeek }) {
+  return (
+    <>
+      {!playing && (
+        <button
+          type="button"
+          onClick={onTogglePlay}
+          aria-label={`${tr('Play video:')} ${captionOf(item)}`}
+          className="group absolute inset-0 z-10 flex items-center justify-center focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-4 focus-visible:outline-lime"
+        >
+          <span className={`flex h-14 w-14 items-center justify-center rounded-full border border-white/30 bg-black/45 text-ink backdrop-blur transition-transform duration-200 group-hover:scale-110 motion-reduce:transition-none ${nudge ? 'ugc-nudge' : ''}`}>
+            <PlayGlyph />
+          </span>
+        </button>
+      )}
+      <div className={`absolute inset-x-3 bottom-3.5 z-20 md:inset-x-4 md:bottom-5 ${barClass}`.trim()} onPointerDown={(e) => e.stopPropagation()}>
+        <div className="flex items-center gap-2 rounded-full bg-black/55 py-1.5 pl-1.5 pr-1.5 backdrop-blur-md">
+          <button
+            type="button"
+            onClick={onTogglePlay}
+            aria-label={playing ? tr('Pause video') : tr('Play video')}
+            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-lime md:h-10 md:w-10"
+          >
+            {playing ? <PauseGlyph /> : <PlayGlyph className="h-4 w-4" />}
+          </button>
+          <input
+            type="range"
+            min="0"
+            max="1000"
+            step="1"
+            value={Math.round(progress * 1000)}
+            onChange={(e) => onSeek(Number(e.target.value) / 1000)}
+            onKeyDown={(e) => e.stopPropagation()}
+            aria-label={tr('Seek video')}
+            className="ugc-seek min-w-0 flex-1"
+            style={{ '--p': `${Math.round(progress * 1000) / 10}%` }}
+          />
+          <button
+            type="button"
+            onClick={onToggleMute}
+            aria-label={muted ? tr('Turn sound on') : tr('Turn sound off')}
+            aria-pressed={!muted}
+            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-lime md:h-10 md:w-10"
+          >
+            <SoundGlyph muted={muted} />
+          </button>
+        </div>
+      </div>
+    </>
+  )
+}
+
 /* One phone. The <video> element exists from the start (so a paused phone keeps its last frame and never flashes back to the poster),
    but its source is attached only when `load` is true. */
 function StagePhone({ item, slot, n, index, active, load, wantPlay, muted, playing, nudge, onSelect, onPlaying, onProgress, onTogglePlay, onToggleMute, onSoundBlocked, progress }) {
@@ -274,53 +328,7 @@ function StagePhone({ item, slot, n, index, active, load, wantPlay, muted, playi
         <div aria-hidden="true" className={`pointer-events-none absolute inset-0 bg-black transition-opacity motion-reduce:transition-none ${active ? 'opacity-0' : 'opacity-40'}`} style={{ transitionDuration: `${MS}ms` }} />
 
         {active ? (
-          <>
-            {!playing && (
-              <button
-                type="button"
-                onClick={onTogglePlay}
-                aria-label={`${tr('Play video:')} ${captionOf(item)}`}
-                className="group absolute inset-0 z-10 flex items-center justify-center focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-4 focus-visible:outline-lime"
-              >
-                <span className={`flex h-14 w-14 items-center justify-center rounded-full border border-white/30 bg-black/45 text-ink backdrop-blur transition-transform duration-200 group-hover:scale-110 motion-reduce:transition-none ${nudge ? 'ugc-nudge' : ''}`}>
-                  <PlayGlyph />
-                </span>
-              </button>
-            )}
-            <div className="absolute inset-x-3 bottom-3.5 z-20 md:inset-x-4 md:bottom-5" onPointerDown={(e) => e.stopPropagation()}>
-              <div className="flex items-center gap-2 rounded-full bg-black/55 py-1.5 pl-1.5 pr-1.5 backdrop-blur-md">
-                <button
-                  type="button"
-                  onClick={onTogglePlay}
-                  aria-label={playing ? tr('Pause video') : tr('Play video')}
-                  className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-lime md:h-10 md:w-10"
-                >
-                  {playing ? <PauseGlyph /> : <PlayGlyph className="h-4 w-4" />}
-                </button>
-                <input
-                  type="range"
-                  min="0"
-                  max="1000"
-                  step="1"
-                  value={Math.round(progress * 1000)}
-                  onChange={(e) => seek(Number(e.target.value) / 1000)}
-                  onKeyDown={(e) => e.stopPropagation()}
-                  aria-label={tr('Seek video')}
-                  className="ugc-seek min-w-0 flex-1"
-                  style={{ '--p': `${Math.round(progress * 1000) / 10}%` }}
-                />
-                <button
-                  type="button"
-                  onClick={onToggleMute}
-                  aria-label={muted ? tr('Turn sound on') : tr('Turn sound off')}
-                  aria-pressed={!muted}
-                  className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-lime md:h-10 md:w-10"
-                >
-                  <SoundGlyph muted={muted} />
-                </button>
-              </div>
-            </div>
-          </>
+          <HeroPlayerControls item={item} playing={playing} muted={muted} progress={progress} nudge={nudge} onTogglePlay={onTogglePlay} onToggleMute={onToggleMute} onSeek={seek} />
         ) : (
           <button
             type="button"
