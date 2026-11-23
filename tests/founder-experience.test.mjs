@@ -54,7 +54,7 @@ test('the literal figures live in siteStats.js only (components and pages read t
 test('homepage: "clients" not "brands", founder attribution in the headline and caption, footnote under the strip, every figure marked, labels unchanged', () => {
   const h = unesc(page('/')).replace(/<!-- -->/g, '')
   // English design review (Nov 2026): the owner-approved two-line wording. The figure still comes from siteStats and is still attributed to the founder.
-  assert.match(h, /Founder experience[\s\S]{0,400}Worked with <span class="block text-lime">500\+ clients<\/span>/)
+  assert.match(h, /Founder experience[\s\S]{0,400}Worked with <span class="block text-lime sm:inline">500\+ clients<\/span>/)
   assert.ok(!/Trusted by(<[^>]+>|\s)*500\+/.test(h) && !/500\+ brands/.test(h))
   assert.ok(h.includes(FOUNDER_EXPERIENCE.captionShort) && /^Founder experience across CONVRT Studio and other creative production work\.$/.test(FOUNDER_EXPERIENCE.captionShort), 'the English homepage shows the owner-approved one-line disclosure')
   assert.ok(FOUNDER_EXPERIENCE.caption.includes('CONVRT Studio and other professional creative production work'), 'the long caption (Spanish homepage, claims register) is unchanged')

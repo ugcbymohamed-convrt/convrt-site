@@ -11,11 +11,11 @@ export function pose(i, pos, n = 3) {
   const c = Math.cos(theta)
   const t = (c + 1) / 2 // 1 at the front, 0 at the very back
   return {
-    x: s * 1.236, // sideways, in phone widths: a side video's centre sits 1.07 widths from the centre, leaving a clear gap between the frames
+    x: s * 1.2, // sideways, in phone widths: a side video's centre sits 1.04 widths from the centre, leaving a clear gap between the frames
     y: (1 - t) * 0.085, // the side videos hang slightly lower than the featured one, as in the reference (in phone heights)
-    scale: 0.7 + 0.3 * t, // width: a side video is about 78 % of the featured one (e.g. 250 px beside a 320 px featured video)
-    scaleY: 0.55 + 0.45 * t, // height: a little smaller still, the way the tilted frames foreshorten in the reference
-    rot: -s * 32 + 0, // side videos turn a little toward the centre; the front one is exactly 0
+    scale: 0.8 + 0.2 * t, // a side video is 85 % of the featured one (e.g. 263 px beside a 310 px featured video)
+    scaleY: 0.8 + 0.2 * t, // the same: frames are never squashed, they stay true 9:16
+    rot: -s * 20 + 0, // side videos turn a little toward the centre; the front one is exactly 0
     z: Math.round(t * 100),
     shade: (1 - t) * 0.16, // gentle dimming for depth, never heavy
   }

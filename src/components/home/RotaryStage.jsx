@@ -42,10 +42,10 @@ function Phone({ item, i, n, active, moving, onSelect, setEl, setShade }) {
   return (
     <div ref={setEl} className="absolute left-1/2 top-1/2 w-full will-change-transform" style={poseStyle(pose(i, 0, n))}>
       <div
-        className={`group relative aspect-[9/15.4] rounded-[13%/7.6%] p-[2.5%] ring-1 transition-[box-shadow] duration-500 motion-reduce:transition-none ${active ? 'ring-lime/60' : 'ring-white/30 group-hover:ring-lime/40'}`}
+        className={`group relative aspect-[9/16] rounded-[12%/6.7%] p-[2.5%] ring-1 transition-[box-shadow] duration-500 motion-reduce:transition-none ${active ? 'ring-lime/60' : 'ring-white/30 group-hover:ring-lime/40'}`}
         style={{ background: 'linear-gradient(150deg, #a9ac9a 0%, #3a3c33 28%, #17181a 55%, #4a4d40 100%)', boxShadow: active ? '0 26px 44px -22px rgba(0,0,0,0.95), 0 0 46px -14px rgba(213,255,64,0.42), inset 0 1px 0 rgba(255,255,255,0.45), inset 0 0 0 1px rgba(255,255,255,0.08)' : '0 20px 36px -20px rgba(0,0,0,0.9), inset 0 1px 0 rgba(255,255,255,0.4), inset 0 0 0 1px rgba(255,255,255,0.07)' }}
       >
-        <div className="relative h-full w-full overflow-hidden rounded-[11%/6.4%] bg-black">
+        <div className="relative h-full w-full overflow-hidden rounded-[10%/5.6%] bg-black">
           <img src={posterUrl(item)} alt={captionOf(item)} width="405" height="720" loading={i === 0 ? 'eager' : 'lazy'} decoding="async" draggable="false" className="absolute inset-0 h-full w-full object-cover" />
           {armed && (
             <video ref={ref} playsInline preload="none" poster={posterUrl(item)} controls={active && !moving} aria-label={captionOf(item)} className="absolute inset-0 h-full w-full bg-black object-cover" />
@@ -69,7 +69,7 @@ function Phone({ item, i, n, active, moving, onSelect, setEl, setShade }) {
               className="absolute inset-0 z-10 cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-4 focus-visible:outline-lime"
             />
           )}
-          <span aria-hidden="true" className="pointer-events-none absolute inset-0 z-10 rounded-[11%/6.4%] ring-1 ring-inset ring-white/10" />
+          <span aria-hidden="true" className="pointer-events-none absolute inset-0 z-10 rounded-[10%/5.6%] ring-1 ring-inset ring-white/10" />
         </div>
       </div>
     </div>
@@ -162,8 +162,8 @@ export default function RotaryStage({ items, label }) {
       onClickCapture={(e) => { if (drag.current?.moved) { e.preventDefault(); e.stopPropagation() } }}
       className="absolute inset-0 touch-pan-y select-none focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-lime/60"
     >
-      {/* the three videos: the holder is the CENTRE video's box as a share of the scene (22.28 % = 320 of the 1436 px grid, so about 320-345 px on a large desktop); everything else is measured in its own width */}
-      <div className="absolute aspect-[9/15.4] -translate-x-1/2 -translate-y-1/2 [perspective:1400px]" style={{ left: '59.19%', top: '32.8%', width: '22.28%' }}>
+      {/* the three videos: the holder is the CENTRE video's box as a share of the scene (24.22 % = 310 of the 1280 px grid); everything else is measured in its own width. Every frame is exactly 9:16 */}
+      <div className="absolute aspect-[9/16] -translate-x-1/2 -translate-y-1/2 [perspective:1500px]" style={{ left: '50%', top: '41.2%', width: '24.22%' }}>
         {items.map((item, i) => (
           <Phone
             key={item.id}

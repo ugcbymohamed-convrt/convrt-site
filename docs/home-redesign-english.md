@@ -68,3 +68,16 @@ The founder / client-work stage was too compressed, so the scene now grows inste
 - **Sizes:** on the 1436 px design grid the featured video is 320 px wide (22.28 %; 321 px at 1440, 334 px at 1920) and the side videos about 250 px (78 %; 257 px at 1440), with a clear gap between frames. Aspect ratios are unchanged. The design grid is now 1436 x 896 (`xl:aspect-[1436/896]`): the section is about 1010 px tall at 1440 and no height, `vh` or overflow constraint shrinks it; the buttons may sit below the first screen.
 - **Room:** `StudioEnvironment.jsx` scales the whole reference room by K = 1.6 about the new stage centre (podium, ring light, walls, floor, shadows), so the look is unchanged at the larger size. The headline block sits in a narrower left column (about 17 % of the width) and the stage is shifted right to give the videos room.
 - **Responsive:** the on-scene layout now starts at `xl` (1280 px); below it the text stacks above the scene, which is shown at a large scale and centred on the stage (about 312 px featured at 1024, 274 px at 768, 217 px on a 390 px phone with the side videos peeking in; swipe, tap on a side video or the arrow keys bring one forward). The selector overlaps the podium front and the buttons stack under it. No horizontal overflow at 1920, 1440, 1280, 1024, 768, 390 and 360.
+
+---
+
+## Revision #5 (Nov 2026): centred composition
+
+The founder / client-work section is one symmetrical, centred composition on a single vertical axis (no left-text / right-videos split):
+
+1. centred eyebrow "FOUNDER EXPERIENCE", 2. centred headline "Worked with 500+ clients" (one line from `sm`, two on a phone), 3. centred disclosure, then 4. the stage (three true 9:16 videos on a lit podium), 5. the client selector tucked against the podium front, 6. the two CTAs close beneath it.
+
+- **Videos:** featured 310 px wide (24.22 % of the 1280 px design grid), sides 85 % of it (263 px), a clear gap between frames, one uniform scale so the frames are never squashed (every frame is exactly 9:16); tilt is a gentle 17 degrees.
+- **Scene:** `StudioEnvironment.jsx` is re-fitted (K = 1.55, 1280 x 740 grid, centre axis); the podium is slimmer so it supports the videos; the green glow and wall seams are calmer.
+- **Spacing:** text-to-stage gap about 40 px, selector overlapping the podium, buttons 28-32 px under it; no absolute overlays, everything is in normal flow (the section is about 1070 px tall on a large desktop).
+- **Responsive:** the scene scales with the page down to 900 px, then is shown larger than the screen and centred on the featured video (218 px at 768, 217 px on a 390 px phone with the side videos peeking in; swipe, tap on a side video or the arrow keys bring one forward). No horizontal overflow at 1920, 1440, 1280, 1024, 768, 390 and 360.
