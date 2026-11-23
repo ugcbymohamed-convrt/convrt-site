@@ -1,3 +1,4 @@
+import { forward } from '../../lib/rtl.js'
 import { useEffect, useRef, useState } from 'react'
 import { trackEvent } from '../../lib/analytics.js'
 import { scrollToElement } from '../../lib/scroll.js'
@@ -225,7 +226,7 @@ export default function RiskFreeApplication() {
 
                     <div>
                       <button type="submit" disabled={submitting} className={`${primaryBtn} w-full`}>
-                        {submitting ? tr('Submitting…') : (<>{tr('Submit My Application')} <span aria-hidden="true">→</span></>)}
+                        {submitting ? tr('Submitting…') : (<>{tr('Submit My Application')} <span aria-hidden="true">{forward()}</span></>)}
                       </button>
                       <p className="mt-3 text-center text-sm text-ink-muted">{tr('Free to apply. No obligation.')}</p>
                     </div>

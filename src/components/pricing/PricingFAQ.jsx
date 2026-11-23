@@ -1,3 +1,4 @@
+import { stepOfArrow } from '../../lib/rtl.js'
 import { useState, useCallback } from 'react'
 import { PRICING_FAQ, FAQ_CATEGORIES } from '../../seo/pricingFaq.js'
 import { SectionHeader } from './shared.jsx'
@@ -80,7 +81,7 @@ export default function PricingFAQ() {
     if (!['ArrowRight', 'ArrowLeft', 'Home', 'End'].includes(e.key)) return
     e.preventDefault()
     const n = FAQ_CATEGORIES.length
-    const next = e.key === 'Home' ? 0 : e.key === 'End' ? n - 1 : (idx + (e.key === 'ArrowRight' ? 1 : -1) + n) % n
+    const next = e.key === 'Home' ? 0 : e.key === 'End' ? n - 1 : (idx + stepOfArrow(e.key) + n) % n
     setCategory(FAQ_CATEGORIES[next].id)
     setOpenId(null)
     document.getElementById(`faq-tab-${FAQ_CATEGORIES[next].id}`)?.focus()

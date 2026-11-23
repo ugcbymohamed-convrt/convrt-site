@@ -643,7 +643,7 @@ test('gallery: a horizontal scroller of up to 10 approved videos before Results;
   const src = read('src/components/ugc/UgcGallery.jsx')
   assert.match(src, /const TOTAL = 10/)
   assert.ok(/overflow-x-auto/.test(src) && /snap-x/.test(src) && /lg:w-\[calc\(\(100%-3rem\)\/4\)\]/.test(src), 'four cards visible on a laptop, native horizontal scrolling (trackpad swipe)')
-  assert.ok(/ArrowRight/.test(src) && /Scroll videos left/.test(src) && /Scroll videos right/.test(src) && /pointerType !== 'mouse'/.test(src), 'keyboard, buttons and mouse drag')
+  assert.ok(/stepOfArrow/.test(src) && /Scroll videos left/.test(src) && /Scroll videos right/.test(src) && /pointerType !== 'mouse'/.test(src), 'keyboard, buttons and mouse drag')
   assert.ok(/Explore UGC Videos/.test(src) && /CREATOR_SHOWCASE_PATH/.test(src), 'the button under the gallery')
   assert.ok(/usePreviewHost/.test(src) && /endsWith\('\.vercel\.app'\)/.test(read('src/lib/previewHost.js')) && !/convrt\.studio/.test(read('src/lib/previewHost.js')), 'stand-ins only on preview hosts')
   // with approved videos the gallery renders them

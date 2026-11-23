@@ -1,3 +1,4 @@
+import { forward } from '../../lib/rtl.js'
 import { trackEvent } from '../../lib/analytics.js'
 import { scrollToApply } from '../../lib/roadmapForm.js'
 import { useInView } from '../caseStudies/shared/useInView.js'
@@ -64,7 +65,7 @@ export function ApplyButton({ location, className = '', children = 'Apply for Yo
                   focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-lime ${className}`}
     >
       {typeof children === 'string' ? tr(children) : children}
-      <span aria-hidden="true" className="transition-transform duration-200 group-hover:translate-x-0.5 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0">→</span>
+      <span aria-hidden="true" className="transition-transform duration-200 group-hover:translate-x-0.5 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0">{forward()}</span>
     </a>
   )
 }

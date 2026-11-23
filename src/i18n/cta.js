@@ -16,7 +16,7 @@ import { hrefFor } from './tr.js'
 export const LOCALIZED_FLOWS = {
   es: { roadmap: true, riskFree: true, hooks: false, referrals: false },
   fr: { roadmap: false, riskFree: false, hooks: false, referrals: false },
-  ar: { roadmap: false, riskFree: false, hooks: false, referrals: false },
+  ar: { roadmap: true, riskFree: true, hooks: false, referrals: false },
 }
 
 /* A CTA as authored in English, resolved for a language: a CTA that points at a flow which is not translated yet becomes the booking call (label = a dictionary

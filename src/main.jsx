@@ -6,11 +6,20 @@ import { preloadForPath } from './lib/routes/preload.js'
 import { initConsent } from './lib/consent.js'
 import { readLanguageChoice } from './lib/languagePreference.js'
 import { currentLocale } from './i18n/locale.js'
+import { LOCALES } from './i18n/locales.js'
 import './index.css'
 
 /* Every public page ships as static HTML (see vite-plugin-static-routes.js). When the HTML in #root was
    rendered for this exact URL, hydrate it (React attaches to the existing markup: no flash, no re-render).
    Otherwise (404 page, unknown/modified URLs, "/case-studies?case=elyon") render fresh, as before. */
+
+/* A translated page already ships <html lang dir> in its static HTML (src/lib/routes/headTags.js); this only guarantees the same values when the page is rendered without the prerender (the dev server, an unknown URL),
+   so right-to-left layout and the language-scoped CSS never depend on how the HTML was produced. English is left alone. */
+if (currentLocale() !== 'en') {
+  const { htmlLang, dir } = LOCALES[currentLocale()]
+  if (document.documentElement.lang !== htmlLang) document.documentElement.lang = htmlLang
+  if (document.documentElement.dir !== dir) document.documentElement.dir = dir
+}
 
 const container = document.getElementById('root')
 const app = (

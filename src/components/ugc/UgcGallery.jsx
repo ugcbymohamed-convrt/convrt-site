@@ -10,6 +10,7 @@ import { PlayGlyph } from './creatorVideo.jsx'
 import { tr, hrefFor } from '../../i18n/tr.js'
 import { currentLocale } from '../../i18n/locale.js'
 import { localizeConfig } from '../../i18n/content.js'
+import { isRtlPage, stepOfArrow, scrollOffset, scrollAlong, forward } from '../../lib/rtl.js'
 import { Player } from './UgcWork.jsx'
 import { PORTRAITS } from './illustrations.jsx'
 
@@ -97,9 +98,12 @@ function Card({ item, index, playing, onPlay, config }) {
   )
 }
 
-const Chevron = ({ dir }) => (
-  <svg viewBox="0 0 12 12" className="h-4 w-4" fill="none" aria-hidden="true"><path d={dir < 0 ? 'M8 2L4 6l4 4' : 'M4 2l4 4-4 4'} stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
+const Chevron = ({ dir: dirProp }) => {
+  const dir = isRtlPage() ? -dirProp : dirProp // the arrow points the way the button scrolls on screen
+  return (
+    <svg viewBox="0 0 12 12" className="h-4 w-4" fill="none" aria-hidden="true"><path d={dir < 0 ? 'M8 2L4 6l4 4' : 'M4 2l4 4-4 4'} stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
 )
+}
 
 export default function UgcGallery({ items, config: configProp = UGC_GALLERY }) {
   const config = localizeConfig(configProp, currentLocale())
@@ -125,7 +129,7 @@ export default function UgcGallery({ items, config: configProp = UGC_GALLERY }) 
     if (!el) return
     const max = el.scrollWidth - el.clientWidth
     const thumb = Math.min(100, (el.clientWidth / el.scrollWidth) * 100)
-    setBar({ thumb, left: max > 0 ? (el.scrollLeft / max) * (100 - thumb) : 0, prev: el.scrollLeft > 4, next: el.scrollLeft < max - 4 })
+    setBar({ thumb, left: max > 0 ? (scrollOffset(el) / max) * (100 - thumb) : 0, prev: scrollOffset(el) > 4, next: scrollOffset(el) < max - 4 })
   }, [])
   useEffect(() => {
     const el = scroller.current
@@ -148,12 +152,12 @@ export default function UgcGallery({ items, config: configProp = UGC_GALLERY }) 
     const el = scroller.current
     if (!el) return
     const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
-    el.scrollBy({ left: dir * el.clientWidth * 0.8, behavior: reduce ? 'auto' : 'smooth' })
+    scrollAlong(el, dir * el.clientWidth * 0.8, reduce ? 'auto' : 'smooth')
     trackEvent(`${config.track}_gallery_scroll`, { how: 'button' })
   }
   const onKeyDown = (e) => {
-    if (e.key === 'ArrowRight') { e.preventDefault(); by(1) }
-    if (e.key === 'ArrowLeft') { e.preventDefault(); by(-1) }
+    const step = stepOfArrow(e.key)
+    if (step) { e.preventDefault(); by(step) }
   }
   /* mouse drag (touch and trackpad scroll natively) */
   const onPointerDown = (e) => {
@@ -236,7 +240,7 @@ export default function UgcGallery({ items, config: configProp = UGC_GALLERY }) 
 
         <div className="mt-2 flex items-center gap-4">
           <div aria-hidden="true" className="relative h-1 flex-1 overflow-hidden rounded-full bg-white/10">
-            <span className="absolute inset-y-0 rounded-full bg-lime transition-[left] duration-150 motion-reduce:transition-none" style={{ width: `${bar.thumb}%`, left: `${bar.left}%` }} />
+            <span className="absolute inset-y-0 rounded-full bg-lime transition-[left] duration-150 motion-reduce:transition-none" style={isRtlPage() ? { width: `${bar.thumb}%`, right: `${bar.left}%` } : { width: `${bar.thumb}%`, left: `${bar.left}%` }} />
           </div>
           <div className="flex items-center gap-2">
             {[-1, 1].map((dir) => (
@@ -245,7 +249,7 @@ export default function UgcGallery({ items, config: configProp = UGC_GALLERY }) 
                 type="button"
                 onClick={() => by(dir)}
                 disabled={dir < 0 ? !bar.prev : !bar.next}
-                aria-label={dir < 0 ? tr('Scroll videos left') : tr('Scroll videos right')}
+                aria-label={(dir < 0) !== isRtlPage() ? tr('Scroll videos left') : tr('Scroll videos right')}
                 className="flex h-11 w-11 items-center justify-center rounded-full border border-lime/40 bg-surface-2 text-lime transition-colors hover:bg-lime hover:text-canvas focus-visible:outline focus-visible:outline-2 focus-visible:outline-lime disabled:cursor-default disabled:border-hairline disabled:text-ink-muted disabled:hover:bg-surface-2 disabled:hover:text-ink-muted"
               >
                 <Chevron dir={dir} />
@@ -257,7 +261,7 @@ export default function UgcGallery({ items, config: configProp = UGC_GALLERY }) 
 
       <div className="mt-9 flex justify-center">
         <GhostCta href={config.cta.href} onClick={() => trackEvent(`${config.track}_see_all_videos_click`, { location: 'gallery' })}>
-          {`${config.cta.label} `}<span aria-hidden="true">→</span>
+          {`${config.cta.label} `}<span aria-hidden="true">{forward()}</span>
         </GhostCta>
       </div>
     </Section>

@@ -1,3 +1,4 @@
+import { forward } from '../../lib/rtl.js'
 import { useEffect, useRef, useState } from 'react'
 import { trackEvent } from '../../lib/analytics.js'
 import { ELYON_PROOF, UGC_TESTIMONIALS } from '../../content/ugcProof.js'
@@ -7,7 +8,8 @@ import { tr } from '../../i18n/tr.js'
 import { currentLocale } from '../../i18n/locale.js'
 import { localizeStat } from '../../i18n/format.js'
 import { formatMoneyEs } from '../../i18n/es/money.js'
-import { ES_TESTIMONIALS_NOTE } from '../../i18n/es/labels.js'
+import { editorial } from '../../i18n/editorial.js'
+import { formatMoneyAr } from '../../i18n/ar/money.js'
 
 /* SECTION 4: results and client feedback, in one compact block.
    • Elyon 5.28x: ONE individual creator-led UGC video, client-reported, early learning phase, never typical or guaranteed (wording
@@ -54,7 +56,9 @@ function RoasNumber({ value, locale }) {
 export default function UgcResults() {
   const e = ELYON_PROOF
   const locale = currentLocale()
-  const revenue = locale === 'en' ? e.revenue : formatMoneyEs({ amount: Number(e.revenue.replace(/[$,]/g, '')), currency: 'USD' })
+  const revenueAmount = { amount: Number(e.revenue.replace(/[$,]/g, '')), currency: 'USD' }
+  // The client's real reported revenue was earned in dollars: Arabic shows it as "$3,421.25", Spanish as "3.421,25 USD"; never converted.
+  const revenue = locale === 'en' ? e.revenue : locale === 'ar' ? formatMoneyAr(revenueAmount) : formatMoneyEs(revenueAmount)
   return (
     <Section id="results" label="ugc-results-heading" glow>
       <Reveal>
@@ -87,7 +91,7 @@ export default function UgcResults() {
                   <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-lime" />{tr('Client-reported results')}</figcaption>
                 <ul className="space-y-2">
                   {CLIENT_MESSAGES.map((m) => (
-                    <li key={m} lang={locale === 'en' ? undefined : 'en'} className="w-fit max-w-full rounded-2xl rounded-tl-md border border-white/10 bg-surface-2 px-4 py-2.5 text-[15px] font-medium leading-snug text-ink">
+                    <li key={m} lang={locale === 'en' ? undefined : 'en'} dir={locale === 'ar' ? 'ltr' : undefined} className="w-fit max-w-full rounded-2xl rounded-tl-md border border-white/10 bg-surface-2 px-4 py-2.5 text-[15px] font-medium leading-snug text-ink">
                       {m}
                     </li>
                   ))}
@@ -96,7 +100,7 @@ export default function UgcResults() {
 
               <p className="mt-4 max-w-xl text-[13px] leading-relaxed text-ink-muted">{tr('One individual creative, client-reported during an early learning phase. Not typical, not a guarantee. Results depend on brand, offer, audience and budget.')}</p>
               <p className="mt-2.5 text-[15px]">
-                <TextLink href={e.caseStudyHref} onClick={() => trackEvent('ugc_case_study_click', { location: 'results' })}>{tr('Read the full Elyon case study')}{' '}<span aria-hidden="true">→</span>
+                <TextLink href={e.caseStudyHref} onClick={() => trackEvent('ugc_case_study_click', { location: 'results' })}>{tr('Read the full Elyon case study')}{' '}<span aria-hidden="true">{forward()}</span>
                 </TextLink>
               </p>
             </div>
@@ -121,7 +125,7 @@ export default function UgcResults() {
                     className="h-7 w-auto max-w-[140px] object-contain object-left"
                     style={{ filter: 'brightness(0) invert(1)' }}
                   />
-                  <blockquote lang={locale === 'en' ? undefined : 'en'} className="mt-4 flex-1 text-[15px] leading-relaxed text-ink">&ldquo;{t.quote}&rdquo;</blockquote>
+                  <blockquote lang={locale === 'en' ? undefined : 'en'} dir={locale === 'ar' ? 'ltr' : undefined} className="mt-4 flex-1 text-[15px] leading-relaxed text-ink">&ldquo;{t.quote}&rdquo;</blockquote>
                   <figcaption className="mt-4 text-sm text-ink-muted">
                     <span className="font-semibold text-ink">{t.brand}</span> · {tr(t.category)}
                   </figcaption>
@@ -132,7 +136,7 @@ export default function UgcResults() {
         </div>
       </div>
 
-      {locale === 'es' && <p className="mt-6 text-center text-[13px] text-ink-muted">{ES_TESTIMONIALS_NOTE}</p>}
+      {editorial(locale)?.TESTIMONIALS_NOTE && <p className="mt-6 text-center text-[13px] text-ink-muted">{editorial(locale).TESTIMONIALS_NOTE}</p>}
 
       <Reveal className="mt-8 flex justify-center">
         <RoadmapCta location="results" />

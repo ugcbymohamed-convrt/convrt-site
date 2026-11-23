@@ -26,7 +26,16 @@ export const TRANSLATED_PATHS = {
   ],
   // French and Arabic: nothing is translated yet, so nothing is routed. See docs/multilingual-french-arabic-backlog.md.
   fr: [],
-  ar: [],
+  // Arabic (one shared website for the UAE and Saudi Arabia, USD): the homepage, the UGC service page (the ONLY Arabic service page in this phase), pricing, the Creator Showcase and the two
+  // application flows. About, Contact, the other service pages and the legal pages stay English-only: links to them keep their English URL (never a dead /ar/ URL).
+  ar: [
+    '/',
+    '/ugc-video-agency',
+    '/pricing',
+    '/creator-showcase',
+    '/creative-growth-roadmap',
+    '/risk-free-trial',
+  ],
 }
 
 export const hasTranslation = (locale, basePath) => (TRANSLATED_PATHS[locale] ?? []).includes(basePath)

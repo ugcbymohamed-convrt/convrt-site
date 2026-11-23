@@ -1,3 +1,4 @@
+import { stepOfArrow } from '../../lib/rtl.js'
 import { OFFER_PATHS } from '../../config.js'
 import { currentLocale } from '../../i18n/locale.js'
 import { resolveCta } from '../../i18n/cta.js'
@@ -293,7 +294,7 @@ export function BillingSwitch({ value, onChange }) {
   const onKeyDown = (e) => {
     if (!['ArrowRight', 'ArrowLeft', 'ArrowDown', 'ArrowUp'].includes(e.key)) return
     e.preventDefault()
-    const dir = e.key === 'ArrowRight' || e.key === 'ArrowDown' ? 1 : -1
+    const dir = e.key === 'ArrowDown' ? 1 : e.key === 'ArrowUp' ? -1 : stepOfArrow(e.key)
     const next = BILLING_OPTIONS[(idx + dir + BILLING_OPTIONS.length) % BILLING_OPTIONS.length]
     onChange(next.id)
     document.getElementById(`billing-${next.id}`)?.focus()

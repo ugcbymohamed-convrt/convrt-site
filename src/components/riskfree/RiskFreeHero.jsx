@@ -1,3 +1,4 @@
+import { forward } from '../../lib/rtl.js'
 import { trackEvent } from '../../lib/analytics.js'
 import { scrollToApply } from '../../lib/roadmapForm.js'
 import { Check } from '../roadmap/shared.jsx'
@@ -70,7 +71,7 @@ export default function RiskFreeHero() {
                            focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-lime"
               >
                 {tr('See If You Qualify')}
-                <span aria-hidden="true" className="transition-transform duration-200 group-hover:translate-x-0.5 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0">→</span>
+                <span aria-hidden="true" className="transition-transform duration-200 group-hover:translate-x-0.5 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0">{forward()}</span>
               </a>
               <div className="text-sm leading-relaxed text-ink-subtle">
                 <p>{tr('Takes about two minutes. No obligation.')}</p>

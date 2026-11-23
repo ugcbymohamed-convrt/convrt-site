@@ -1,3 +1,4 @@
+import { forward } from './lib/rtl.js'
 import { useDocumentHead } from './lib/useDocumentHead.js'
 import { PATHS } from './routes.js'
 import { tr, hrefFor } from './i18n/tr.js'
@@ -57,7 +58,7 @@ export default function NotFoundPage() {
             href={hrefFor(PATHS.home)}
             className="cta-gradient group inline-flex min-h-[52px] items-center justify-center gap-2 rounded-full px-7 py-3.5 text-[15px] font-semibold text-canvas
                        focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-lime"
-          >{tr('Back to the homepage')}<span aria-hidden="true" className="transition-transform duration-200 group-hover:translate-x-0.5 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0">→</span>
+          >{tr('Back to the homepage')}<span aria-hidden="true" className="transition-transform duration-200 group-hover:translate-x-0.5 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0">{forward()}</span>
           </a>
         </div>
 
@@ -69,7 +70,7 @@ export default function NotFoundPage() {
                 className="group flex h-full flex-col rounded-2xl border border-hairline bg-surface-1/70 p-4 transition-colors duration-200 hover:border-lime/40 hover:bg-surface-2/60 motion-reduce:transition-none
                            focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-lime"
               >
-                <span className="text-[15px] font-semibold tracking-snug text-ink transition-colors group-hover:text-lime">{tr(l.label)} →</span>
+                <span className="text-[15px] font-semibold tracking-snug text-ink transition-colors group-hover:text-lime">{tr(l.label)} {forward()}</span>
                 <span className="mt-1 text-[13px] leading-snug text-ink-muted">{tr(l.hint)}</span>
               </a>
             </li>

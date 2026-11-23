@@ -160,7 +160,7 @@ function ReviewCard({ review, inView, delay }) {
 
           {/* ── Review text ── */}
           {/* The quote is the client's own English wording (published with permission): it is never machine- or re-translated; other languages mark it lang="en". */}
-          <blockquote lang={locale === 'en' ? undefined : 'en'} className="flex-1 text-[15px] leading-[1.78] text-ink-subtle">
+          <blockquote lang={locale === 'en' ? undefined : 'en'} dir={locale === 'ar' ? 'ltr' : undefined} className="flex-1 text-[15px] leading-[1.78] text-ink-subtle">
             {review.text}
           </blockquote>
 

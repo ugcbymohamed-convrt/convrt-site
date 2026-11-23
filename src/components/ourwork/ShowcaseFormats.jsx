@@ -1,3 +1,4 @@
+import { forward } from '../../lib/rtl.js'
 import { PATHS } from '../../routes.js'
 import { CATEGORIES, categoryOf, typeOf } from '../../content/portfolio.js'
 import { trackEvent } from '../../lib/analytics.js'
@@ -40,7 +41,7 @@ export default function ShowcaseFormats({ items }) {
                 <h3 className="font-display text-[1.05rem] font-semibold leading-snug tracking-snug text-ink">{tr(f.title)}</h3>
                 <p className="mt-1.5 text-[14px] leading-relaxed text-ink-muted">{tr(f.text)}</p>
                 <p className="mt-3 text-[14.5px]">
-                  <TextLink href={hrefFor(f.href)} onClick={() => trackEvent('showcase_service_link_click', { service: f.type })}>{tr(f.label)} <span aria-hidden="true">→</span></TextLink>
+                  <TextLink href={hrefFor(f.href)} onClick={() => trackEvent('showcase_service_link_click', { service: f.type })}>{tr(f.label)} <span aria-hidden="true">{forward()}</span></TextLink>
                 </p>
               </li>
             ))}

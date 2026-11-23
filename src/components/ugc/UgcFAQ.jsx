@@ -5,7 +5,8 @@ import { Section, Head, Reveal, TextLink } from './shared.jsx'
 import { tr, T } from '../../i18n/tr.js'
 import { currentLocale } from '../../i18n/locale.js'
 import { localizeFaq } from '../../i18n/content.js'
-import { ES_FAQ_TITLES, ES_SECTION_INTROS } from '../../i18n/es/labels.js'
+import { ES_FAQ_TITLES } from '../../i18n/es/labels.js'
+import { editorial } from '../../i18n/editorial.js'
 
 /* SECTION 5: FAQ (14 questions). EVERY question and answer is always in the DOM (and so in the prerendered HTML). Collapsed answers stay in
    the document but are visibility:hidden, so they are out of the tab order and accessibility tree. The same UGC_FAQ array feeds
@@ -94,7 +95,7 @@ export default function UgcFAQ({ config = UGC_FAQ_CONFIG }) {
     <Section id={`${prefix}-faq`} label={`${prefix}-faq-heading`}>
       <div className="mx-auto max-w-3xl">
         <Reveal>
-          <Head id={`${prefix}-faq-heading`} eyebrow={tr('FAQ')} title={title} intro={currentLocale() === 'es' ? ES_SECTION_INTROS[`${prefix}-faq`] : undefined} />
+          <Head id={`${prefix}-faq-heading`} eyebrow={tr('FAQ')} title={title} intro={editorial(currentLocale())?.SECTION_INTROS?.[`${prefix}-faq`]} />
         </Reveal>
         <div className="mt-8 h-px bg-white/[0.06]" />
         {items.map((item) => (

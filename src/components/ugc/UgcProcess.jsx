@@ -226,7 +226,9 @@ function UgcProcessFooter() {
         <span className="font-semibold text-ink">{tr('Production turnaround:')}</span>{' '}
         {currentLocale() === 'en'
           ? <>{SPRINT.turnaroundBusinessDays} business days for the {SPRINT.name} and{' '}{SPRINT_PLUS.turnaroundBusinessDays} for {SPRINT_PLUS.name}, counted from the moment you approve concepts and scripts. {TURNAROUND.note}</>
-          : <>{SPRINT.turnaroundBusinessDays} días laborables para {SPRINT.name} y {SPRINT_PLUS.turnaroundBusinessDays} para {SPRINT_PLUS.name}, a partir de la aprobación de los conceptos y guiones, no desde el pago.</>}
+          : currentLocale() === 'ar'
+            ? <><bdi>{SPRINT.turnaroundBusinessDays}</bdi> أيام عمل لـ <bdi>{SPRINT.name}</bdi> و<bdi>{SPRINT_PLUS.turnaroundBusinessDays}</bdi> يومًا لـ <bdi>{SPRINT_PLUS.name}</bdi>، تُحسب من لحظة اعتمادك للأفكار والنصوص، وليس من تاريخ الدفع.</>
+            : <>{SPRINT.turnaroundBusinessDays} días laborables para {SPRINT.name} y {SPRINT_PLUS.turnaroundBusinessDays} para {SPRINT_PLUS.name}, a partir de la aprobación de los conceptos y guiones, no desde el pago.</>}
       </p>
       <p className="mx-auto mt-2 max-w-3xl text-center text-xs text-ink-muted">{tr('Scenes are illustrative. The portraits are for illustration only.')}</p>
     </>

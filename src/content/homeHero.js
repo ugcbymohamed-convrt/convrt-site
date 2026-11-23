@@ -79,3 +79,38 @@ export const HOME_HERO_ES = [
     approval: { ...approval, approvedOn: '2026-11-22' },
   },
 ]
+
+/* The Arabic homepage hero: three of the approved Arabic-speaking creator videos (the same Stream videos and posters as the first three entries of the Arabic UGC hero in src/content/portfolio.js, uploaded once).
+   There is no Arabic version of the CONVRT ad, so the centre phone is a creator video too, never the English ad. Captions describe only what the footage shows. English keeps HOME_HERO unchanged. */
+export const HOME_HERO_AR = [
+  {
+    id: 'home-hero-ar-main',
+    creatorId: 'ar-c01',
+    industry: 'unclassified',
+    languages: ['ar'],
+    caption: 'صانع محتوى يشرح خدمة رقمية أمام الكاميرا.',
+    poster: '/portfolio/ar-ugc-hero-1.webp',
+    source: { cloudflareId: '442dfb5fe6a49dffd032ecd920414512' },
+    approval: { ...approval, approvedOn: '2026-11-23' },
+  },
+  {
+    id: 'home-hero-ar-left',
+    creatorId: 'ar-c02',
+    industry: 'unclassified',
+    languages: ['ar'],
+    caption: 'صانعة محتوى تقدّم خدمة تعليمية أمام الكاميرا.',
+    poster: '/portfolio/ar-ugc-hero-2.webp',
+    source: { cloudflareId: 'e76683d744c46ecfe8e1fb53b273b926' },
+    approval: { ...approval, approvedOn: '2026-11-23' },
+  },
+  {
+    id: 'home-hero-ar-right',
+    creatorId: 'ar-c03',
+    industry: 'unclassified',
+    languages: ['ar'],
+    caption: 'صانع محتوى يعرض مزايا منتج برسوم توضيحية.',
+    poster: '/portfolio/ar-ugc-hero-3.webp',
+    source: { cloudflareId: '7f68e3f6c92e70395cad4876fcb389a8' },
+    approval: { ...approval, approvedOn: '2026-11-23' },
+  },
+]

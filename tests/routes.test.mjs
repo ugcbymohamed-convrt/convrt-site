@@ -211,8 +211,18 @@ test('HTTP: translated pages answer 200 (with and without the trailing slash); u
       assert.match(body, /<html lang="es">/, `${url} declares Spanish`)
     }
   }
-  // French and Arabic are prepared, not built: no page exists, so the host answers 404 (never a fake English page under /fr or /ar).
-  for (const p of ['/fr', '/fr/', '/fr/pricing', '/ar', '/ar/', '/ar/pricing', '/de/', '/es/this-page-does-not-exist', '/es/blog', '/es/privacy', '/es/case-studies/graspo', '/es/pricing/extra']) {
+  // Arabic pages answer 200 as right-to-left Arabic documents.
+  for (const p of allLocalizedPaths(['ar'])) {
+    for (const url of [p, p === '/ar' ? '/ar/' : `${p}/`]) {
+      const r = await get(url)
+      assert.equal(r.status, 200, url)
+      const body = await r.text()
+      assert.ok(body.includes(`<div id="root" data-ssr-path="${p}">`), `${url} is not its prerendered page`)
+      assert.match(body, /<html lang="ar" dir="rtl">/, `${url} declares Arabic, right-to-left`)
+    }
+  }
+  // French is prepared, not built; Arabic pages that do not exist (only the UGC service page is Arabic in this phase) answer 404, never a fake English page.
+  for (const p of ['/fr', '/fr/', '/fr/pricing', '/ar/about', '/ar/contact', '/ar/spokesperson-video-production', '/ar/saas-video-production', '/ar/social-media-video-production', '/ar/blog', '/ar/this-page-does-not-exist', '/de/', '/es/this-page-does-not-exist', '/es/blog', '/es/privacy', '/es/case-studies/graspo', '/es/pricing/extra']) {
     const r = await get(p)
     assert.equal(r.status, 404, p)
     assert.match(await r.text(), /name="robots" content="noindex, follow"/, p)

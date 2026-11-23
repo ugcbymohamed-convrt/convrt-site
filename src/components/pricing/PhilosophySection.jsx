@@ -1,3 +1,4 @@
+import { forward } from '../../lib/rtl.js'
 import { OFFER_PATHS } from '../../config.js'
 import { currentLocale } from '../../i18n/locale.js'
 import { resolveCta } from '../../i18n/cta.js'
@@ -91,7 +92,7 @@ function OrganicPhilosophy() {
           </li>
         ))}
       </ol>
-      <a href="/case-studies/graspo" className="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-lime transition-colors hover:text-lime-light">{tr('See how we grew Graspo')}{' '}<span aria-hidden="true">→</span>
+      <a href="/case-studies/graspo" className="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-lime transition-colors hover:text-lime-light">{tr('See how we grew Graspo')}{' '}<span aria-hidden="true">{forward()}</span>
       </a>
     </div>
   )

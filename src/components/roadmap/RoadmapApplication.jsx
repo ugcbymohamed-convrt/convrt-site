@@ -1,3 +1,4 @@
+import { forward } from '../../lib/rtl.js'
 import { useEffect, useRef, useState } from 'react'
 import { trackEvent } from '../../lib/analytics.js'
 import { scrollToElement } from '../../lib/scroll.js'
@@ -167,7 +168,7 @@ export default function RoadmapApplication() {
                       value={values.investment} error={errors.investment} onChange={set('investment')} columns={1}
                     />
 
-                    <button type="submit" className={`${primaryBtn} w-full`}>{tr('Continue')}{' '}<span aria-hidden="true">→</span>
+                    <button type="submit" className={`${primaryBtn} w-full`}>{tr('Continue')}{' '}<span aria-hidden="true">{forward()}</span>
                     </button>
 
                     <p className="text-xs leading-relaxed text-ink-subtle">
@@ -262,7 +263,7 @@ function Alternative({ kind, headingRef, onChange }) {
           className={`${primaryBtn} group`}
         >
           {tr(alt.cta)}
-          <span aria-hidden="true" className="transition-transform duration-200 group-hover:translate-x-0.5 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0">→</span>
+          <span aria-hidden="true" className="transition-transform duration-200 group-hover:translate-x-0.5 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0">{forward()}</span>
         </a>
         <button
           type="button"

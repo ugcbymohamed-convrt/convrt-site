@@ -1,3 +1,4 @@
+import { forward } from '../lib/rtl.js'
 import { useRef, useEffect, useState, useCallback } from 'react'
 import { CONTACT_EMAIL } from '../config.js'
 import { homeFaqFor } from '../i18n/content.js'
@@ -107,7 +108,7 @@ function FAQItem({ item, isOpen, onToggle }) {
             ))}
             {[item.link, ...(item.moreLinks ?? [])].filter(Boolean).map((l) => (
               <a key={l.href} href={href(l.href)} className="w-fit text-[15px] text-lime underline underline-offset-2 hover:text-lime-light transition-colors">
-                {l.label} →
+                {l.label} {forward()}
               </a>
             ))}
           </div>

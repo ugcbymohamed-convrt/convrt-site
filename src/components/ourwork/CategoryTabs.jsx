@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { CATEGORY_ICONS, Chevron } from './icons.jsx'
 import { tr } from '../../i18n/tr.js'
+import { isRtlPage, scrollOffset, scrollAlong } from '../../lib/rtl.js'
 
 /* The horizontal category selector: All Work + one pill per category that has videos (the caller passes only those).
 
@@ -19,7 +20,7 @@ export default function CategoryTabs({ tabs, activeId, counts, onSelect }) {
     const el = scroller.current
     if (!el) return
     const max = el.scrollWidth - el.clientWidth
-    setEdge({ prev: el.scrollLeft > 4, next: el.scrollLeft < max - 4 })
+    setEdge({ prev: scrollOffset(el) > 4, next: scrollOffset(el) < max - 4 })
   }, [])
 
   useEffect(() => {
@@ -41,16 +42,18 @@ export default function CategoryTabs({ tabs, activeId, counts, onSelect }) {
     const el = scroller.current
     const btn = el?.querySelector('[aria-pressed="true"]')
     if (!el || !btn) return
-    const target = btn.offsetLeft - (el.clientWidth - btn.offsetWidth) / 2
     const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
-    el.scrollTo({ left: Math.max(0, target), behavior: reduce ? 'auto' : 'smooth' })
+    const max = el.scrollWidth - el.clientWidth
+    const target = btn.offsetLeft - (el.clientWidth - btn.offsetWidth) / 2
+    // Right-to-left rows scroll from 0 (start, on the right) to -max: the pill's physical offset is converted to that range.
+    el.scrollTo({ left: isRtlPage() ? Math.min(0, Math.max(-max, target - max)) : Math.max(0, target), behavior: reduce ? 'auto' : 'smooth' })
   }, [activeId])
 
   const by = (dir) => {
     const el = scroller.current
     if (!el) return
     const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
-    el.scrollBy({ left: dir * el.clientWidth * 0.7, behavior: reduce ? 'auto' : 'smooth' })
+    scrollAlong(el, dir * el.clientWidth * 0.7, reduce ? 'auto' : 'smooth')
   }
 
   return (

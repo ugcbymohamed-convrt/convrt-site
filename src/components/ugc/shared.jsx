@@ -1,3 +1,4 @@
+import { forward } from '../../lib/rtl.js'
 import { trackEvent, withUtm } from '../../lib/analytics.js'
 import { usePressFeedback } from '../../lib/usePressFeedback.js'
 import { OFFER_PATHS } from '../../config.js'
@@ -83,7 +84,7 @@ export function RoadmapCta({ location, className = '', hero = false, children = 
       className={`${hero ? 'hero-cta ' : ''}cta-gradient group inline-flex min-h-[52px] items-center justify-center gap-2 rounded-full px-7 py-3.5 text-[15px] font-semibold text-canvas focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-lime ${className}`}
     >
       {label}
-      <span aria-hidden="true" className="transition-transform duration-200 group-hover:translate-x-0.5 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0">→</span>
+      <span aria-hidden="true" className="transition-transform duration-200 group-hover:translate-x-0.5 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0">{forward()}</span>
     </a>
   )
 }

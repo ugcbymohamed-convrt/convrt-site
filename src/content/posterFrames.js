@@ -10,6 +10,18 @@
    A video that is not listed keeps its current poster (the Roadmap explainer keeps its deliberately chosen 25.6 s frame). Inventory and contact sheet: docs/video-thumbnails.md. */
 
 export const POSTER_FRAMES = {
+  '442dfb5fe6a49dffd032ecd920414512': 13.0, // portfolio:ar-ugc-hero-1 [ar]
+  'e76683d744c46ecfe8e1fb53b273b926': 15.6, // portfolio:ar-ugc-hero-2 [ar]
+  '7f68e3f6c92e70395cad4876fcb389a8': 24.9, // portfolio:ar-ugc-hero-3 [ar]
+  '6d550ed3188d606de1b28dfd389c3abd': 33.2, // portfolio:ar-ugc-1 [ar]
+  'ad0e4e3babf8a7dc94a67df48d48399a': 30.4, // portfolio:ar-ugc-2 [ar]
+  '49313eccb88e9b95a4985d59777d8e41': 7.3, // portfolio:ar-ugc-3 [ar]
+  'a073ed5202bdd7c83de8312cefa3e419': 20.8, // portfolio:ar-ugc-4 [ar]
+  '10c436de7f9b0c5bfbdee723aff56659': 6.4, // portfolio:ar-ugc-5 [ar]
+  'fa580c253a9bb4d64b04c1226de96819': 39.6, // portfolio:ar-ugc-6 [ar]
+  '0241249ccf242630f097d03ac8cc11b9': 14.5, // portfolio:ar-ugc-7 [ar]
+  '002d9dab913f13496e6513e4a7761ec9': 10.3, // portfolio:ar-ugc-8 [ar]
+  '583c9f5132d0cfe0f2eb26ea1df73446': 6.4, // portfolio:ar-ugc-9 [ar]
   '6c04c13dbb9ff7042f30e028b7394fe6': 4.5, // portfolio:es-ugc-hero-1 [es]
   '816d316906f79fe216d6f62079a0047f': 23.8, // portfolio:es-ugc-hero-2 [es]
   '75e7a204d0d4d2c75fe1ad19f0348461': 3.9, // portfolio:es-ugc-hero-3 [es]
