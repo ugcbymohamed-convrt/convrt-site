@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
-import { OFFER_PATHS } from '../../config.js'
 import GraspoHeroScene from './GraspoHeroScene.jsx'
+import { useTr } from '../../i18n/tr.js'
+import { isEnglish } from '../caseStudies/format.js'
+import { heroCta } from '../caseStudies/cta.js'
 
 /* ─────────────────────────────────────────────
    GRASPO CASE STUDY — HERO
@@ -33,6 +35,9 @@ function FadeUp({ children, inView, delay = 0, className = '' }) {
 }
 
 export default function GraspoHero() {
+  const tr = useTr()
+  const en = isEnglish()
+  const cta = heroCta()
   const [inView, setInView] = useState(false)
   const ref = useRef(null)
 
@@ -59,7 +64,7 @@ export default function GraspoHero() {
           >
             <span className="h-1.5 w-1.5 rounded-full animate-pulse" style={{ background: ACCENT }} />
             <span className="text-xs font-semibold uppercase tracking-[0.2em]" style={{ color: ACCENT }}>
-              Graspo × CONVRT, Case Study
+              {tr('Graspo × CONVRT, Case Study')}
             </span>
           </div>
         </FadeUp>
@@ -69,27 +74,28 @@ export default function GraspoHero() {
             className="font-display font-bold tracking-display-xl leading-[1.05] text-[clamp(1.9rem,5vw,3.6rem)]"
             style={{ color: ACCENT }}
           >
-            6 months
+            {tr('6 months')}
           </p>
-          <h1 className="mt-2 font-display font-bold text-ink tracking-display-xl leading-[1.05] text-[clamp(1.9rem,5vw,3.6rem)] md:whitespace-nowrap">
-            10.7M views. 75 inbound leads.
+          {/* The English headline stays on one line from md up; the Spanish one is longer, so its two sentences stack instead of overflowing. */}
+          <h1 className={`mt-2 font-display font-bold text-ink tracking-display-xl leading-[1.05] text-[clamp(1.9rem,5vw,3.6rem)] ${en ? 'md:whitespace-nowrap' : ''}`}>
+            {en ? '10.7M views. 75 inbound leads.' : <><span className="block">{tr('10.7M views.')}</span><span className="block">{tr('75 inbound leads.')}</span></>}
           </h1>
         </FadeUp>
 
         <FadeUp inView={inView} delay={180}>
           <p className="mt-7 text-base md:text-lg text-ink-muted leading-relaxed max-w-3xl mx-auto">
-            Graspo is an established European printing company. CONVRT built its Arabic-first
-            social presence, turning printing expertise into millions of views and real MENA inquiries.
+            {tr('Graspo is an established European printing company. CONVRT built its Arabic-first social presence, turning printing expertise into millions of views and real MENA inquiries.')}
           </p>
         </FadeUp>
 
         <FadeUp inView={inView} delay={260}>
           <div className="mt-9 flex flex-col sm:flex-row items-center justify-center gap-4">
             <a
-              href={OFFER_PATHS.roadmap}
+              href={cta.href}
+              {...cta.attrs}
               className="cta-gradient inline-flex items-center gap-2 rounded-full px-7 py-3.5 text-sm font-semibold text-canvas"
             >
-              Book a Creative Call
+              {cta.label}
               <svg viewBox="0 0 12 12" className="h-3.5 w-3.5" fill="none">
                 <path d="M3 9L9 3M9 3H4M9 3V8" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
@@ -98,7 +104,7 @@ export default function GraspoHero() {
               href="https://www.instagram.com/graspo_khaleej/" target="_blank" rel="noopener noreferrer"
               className="inline-flex items-center gap-2 rounded-full border border-hairline px-7 py-3.5 text-sm font-medium text-ink-muted hover:text-ink hover:border-hairline-strong transition-colors"
             >
-              See the page
+              {tr('See the page')}
             </a>
           </div>
         </FadeUp>
@@ -111,10 +117,10 @@ export default function GraspoHero() {
               {PROJECT_INFO.map((item) => (
                 <div key={item.label}>
                   <dt className="text-[10px] font-bold uppercase tracking-[0.18em] text-ink-subtle">
-                    {item.label}
+                    {tr(item.label)}
                   </dt>
                   <dd className="mt-2 text-[14px] leading-snug text-ink font-medium">
-                    {item.value}
+                    {item.value === 'Graspo' ? item.value : tr(item.value)}
                   </dd>
                 </div>
               ))}

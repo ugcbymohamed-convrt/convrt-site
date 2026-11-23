@@ -1,6 +1,9 @@
 import { useInView } from '../caseStudies/shared/useInView.js'
 import Eyebrow from '../caseStudies/shared/Eyebrow.jsx'
 import { ACCENT, ACCENT_LIGHT } from './theme.js'
+import { useTr } from '../../i18n/tr.js'
+import { ELYON_EARLY_TEST as EARLY, ELYON_STANDOUT as STANDOUT } from '../../caseStudies/data.js'
+import { stat, usd, isEnglish, cx } from '../caseStudies/format.js'
 
 /* ─────────────────────────────────────────────
    PERFORMANCE
@@ -12,21 +15,22 @@ import { ACCENT, ACCENT_LIGHT } from './theme.js'
 const PROOF_BASE = '/case-studies/elyon/proof'
 
 export default function ElyonPerformance() {
+  const tr = useTr()
+  const en = isEnglish()
   const [ref, visible] = useInView(0.1)
 
   return (
     <section className="relative py-14 md:py-20">
       <div ref={ref} className="mx-auto max-w-5xl px-5 md:px-8">
         <div className="max-w-2xl mx-auto mb-12 md:mb-14 text-center">
-          <Eyebrow label="Performance" accent={ACCENT} className="mb-6" />
+          <Eyebrow label={tr('Performance')} accent={ACCENT} className="mb-6" />
           <h2 className="font-display font-bold text-ink tracking-display leading-[1.05] text-3xl md:text-[44px]">
-            Creative that didn't just get watched.
+            {tr("Creative that didn't just get watched.")}
             <br />
-            It sold perfume.
+            {tr('It sold perfume.')}
           </h2>
           <p className="mt-6 text-[15px] md:text-base text-ink-muted leading-relaxed">
-            Two verified snapshots from two different moments in the campaign. They are kept separate
-            below on purpose, not added together.
+            {tr('Two verified snapshots from two different moments in the campaign. They are kept separate below on purpose, not added together.')}
           </p>
         </div>
 
@@ -42,34 +46,33 @@ export default function ElyonPerformance() {
           }}
         >
           <p className="text-center text-[11px] font-bold uppercase tracking-[0.2em]" style={{ color: ACCENT }}>
-            Performance Snapshot 1 &middot; Early Test
+            {tr('Performance Snapshot 1')} &middot; {tr('Early Test')}
           </p>
 
           <div className="mt-7 flex flex-col md:flex-row items-center justify-center gap-6 md:gap-4">
-            <Stat value="$229.89" label="Ad Spend" visible={visible} delay={80} />
+            <Stat value={usd(EARLY.spend)} label={tr('Ad Spend')} visible={visible} delay={80} />
             <Arrow />
-            <Stat value="$835" label="Purchase Value" visible={visible} delay={180} />
+            <Stat value={usd(EARLY.purchaseValue)} label={tr('Purchase Value')} visible={visible} delay={180} />
             <Arrow />
-            <Stat value="3.63x" label="Average ROAS" accent visible={visible} delay={280} big />
+            <Stat value={stat(EARLY.averageRoas)} label={tr('Average ROAS')} accent visible={visible} delay={280} big />
           </div>
 
           <div className="mt-7 grid grid-cols-2 gap-4 max-w-md mx-auto">
-            <MiniStat label="Top creative" value="5.10x ROAS" visible={visible} delay={380} />
-            <MiniStat label="Second strong creative" value="3.17x ROAS" visible={visible} delay={440} />
+            <MiniStat label={tr('Top creative')} value={en ? `${EARLY.topCreative} ROAS` : tr(`${EARLY.topCreative} ROAS`)} visible={visible} delay={380} />
+            <MiniStat label={tr('Second strong creative')} value={en ? `${EARLY.secondCreative} ROAS` : tr(`${EARLY.secondCreative} ROAS`)} visible={visible} delay={440} />
           </div>
 
           <p className="mt-6 text-center text-[12.5px] text-ink-subtle leading-relaxed max-w-lg mx-auto">
-            Four creatives, over two days, on a cold ad account still in the learning phase with an
-            unoptimised setup.
+            {tr('Four creatives, over two days, on a cold ad account still in the learning phase with an unoptimised setup.')}
           </p>
 
-          <ProofBadge src={`${PROOF_BASE}/proof-early-test.webp`} label="Client-verified via WhatsApp" />
+          <ProofBadge src={`${PROOF_BASE}/proof-early-test.webp`} label={tr('Client-verified via WhatsApp')} />
         </div>
 
         {/* ── Divider callout ── */}
         <div className="my-8 flex items-center justify-center gap-3 text-ink-subtle">
           <span className="h-px w-10" style={{ background: 'rgba(201,166,104,0.25)' }} />
-          <span className="text-[11px] uppercase tracking-[0.18em]">A separate result, weeks later</span>
+          <span className="text-[11px] uppercase tracking-[0.18em]">{tr('A separate result, weeks later')}</span>
           <span className="h-px w-10" style={{ background: 'rgba(201,166,104,0.25)' }} />
         </div>
 
@@ -85,27 +88,26 @@ export default function ElyonPerformance() {
           }}
         >
           <p className="text-[11px] font-bold uppercase tracking-[0.2em]" style={{ color: ACCENT }}>
-            Performance Snapshot 2 &middot; Standout Result
+            {tr('Performance Snapshot 2')} &middot; {tr('Standout Result')}
           </p>
           <h3
             className="mt-4 font-display font-bold leading-[1.05] text-[clamp(1.7rem,5vw,3.2rem)]"
             style={{ color: ACCENT_LIGHT }}
           >
-            One creative. Nine sales.
+            {tr('One creative. Nine sales.')}
           </h3>
 
           <div className="mt-7 flex flex-col sm:flex-row items-center justify-center gap-10 sm:gap-14">
-            <BigStat value="$3,421.25" label="Revenue" visible={visible} delay={260} />
-            <BigStat value="9" label="Purchases" visible={visible} delay={340} />
-            <BigStat value="5.28x" label="ROAS" accent visible={visible} delay={420} />
+            <BigStat value={usd(STANDOUT.revenue)} label={tr('Revenue')} visible={visible} delay={260} />
+            <BigStat value={STANDOUT.purchases} label={tr('Purchases')} visible={visible} delay={340} />
+            <BigStat value={stat(STANDOUT.roas)} label="ROAS" accent visible={visible} delay={420} />
           </div>
 
           <p className="mt-7 text-[13px] text-ink-muted leading-relaxed max-w-md mx-auto">
-            The client sent these Meta results directly, unprompted, because the creative was
-            performing strongly.
+            {tr('The client sent these Meta results directly, unprompted, because the creative was performing strongly.')}
           </p>
 
-          <ProofBadge src={`${PROOF_BASE}/proof-nine-sales.webp`} label="Client-verified via WhatsApp" center />
+          <ProofBadge src={`${PROOF_BASE}/proof-nine-sales.webp`} label={tr('Client-verified via WhatsApp')} center />
         </div>
       </div>
     </section>
@@ -132,6 +134,13 @@ function ProofBadge({ src, label, center = false }) {
   )
 }
 
+/* "3.421,25 USD" (Spanish): the number is the figure, the currency code is a smaller suffix, so the longer Spanish notation never overflows a phone. English values have no suffix. */
+function Amount({ value }) {
+  const m = /^(.*\S)\s(USD)$/.exec(value)
+  if (!m) return value
+  return (<>{m[1]}<span className="ml-[0.2em] text-[0.42em] font-semibold tracking-wide">{`\u00a0${m[2]}`}</span></>)
+}
+
 function Stat({ value, label, visible, delay = 0, accent = false, big = false }) {
   return (
     <div
@@ -146,7 +155,7 @@ function Stat({ value, label, visible, delay = 0, accent = false, big = false })
         className={`font-display font-bold tabular-nums leading-none ${big ? 'text-[clamp(2rem,5vw,3rem)]' : 'text-[clamp(1.6rem,4vw,2.3rem)]'}`}
         style={{ color: accent ? ACCENT : '#ffffff' }}
       >
-        {value}
+        <Amount value={value} />
       </span>
       <span className="mt-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-ink-subtle">
         {label}
@@ -169,7 +178,7 @@ function BigStat({ value, label, visible, delay = 0, accent = false }) {
         className="font-display font-black tabular-nums leading-none text-[clamp(2.4rem,7vw,4.2rem)]"
         style={{ color: accent ? ACCENT : '#ffffff' }}
       >
-        {value}
+        <Amount value={value} />
       </span>
       <span className="mt-3 text-[11.5px] font-semibold uppercase tracking-[0.16em] text-ink-subtle">
         {label}

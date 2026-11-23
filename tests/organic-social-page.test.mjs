@@ -264,7 +264,7 @@ test('proof: only the published Graspo organic result (figures match its case st
   assert.equal(ORGANIC_PROOF.results.length, 1)
   assert.deepEqual(ORGANIC_PROOF.testimonials, [], 'there is no organic testimonial yet, so none is shown')
   // the same figures, from the same published case study (Meta Business Suite, 1 Jan to 19 Jun 2026)
-  const metrics = read('src/components/graspo/GraspoMetrics.jsx')
+  const metrics = read('src/caseStudies/data.js') // the case study's figures live in one data module (GRASPO_METRICS)
   assert.ok(metrics.includes("value: '10.7M'") && metrics.includes("value: '3.4M'") && metrics.includes("value: '75'"))
   assert.equal(r.metric, '10.7M')
   assert.deepEqual(r.secondary, [{ value: '3.4M', label: 'accounts reached' }, { value: '75', label: 'unique inbound leads' }])

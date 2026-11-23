@@ -209,8 +209,8 @@ test('no commercial figure is hard-coded in the UGC components or FAQ (all read 
 test('Elyon 5.28x: one creator-led UGC video, client-reported, early learning phase, with the case-study link; no invented metrics', () => {
   const t = textOf(page(PATH))
   assert.deepEqual([ELYON_PROOF.roas, ELYON_PROOF.purchases, ELYON_PROOF.revenue], ['5.28x', 9, '$3,421.25'])
-  const src = read('src/components/elyon/ElyonPerformance.jsx')
-  assert.ok(src.includes('value="5.28x"') && src.includes('value="9"') && src.includes('value="$3,421.25"'), 'figures match the Elyon case study')
+  const src = read('src/caseStudies/data.js') // the case study's figures live in one data module (ELYON_STANDOUT)
+  assert.ok(src.includes("roas: '5.28x'") && src.includes("purchases: '9'") && src.includes("en: '$3,421.25'"), 'figures match the Elyon case study')
   assert.equal((t.match(/5\.28x/g) || []).length >= 1, true)
   assert.match(t, /5\.28x ROAS, one UGC video/)
   assert.match(t, /9 Purchases/) && assert.match(t, /\$3,421\.25 Reported revenue/)

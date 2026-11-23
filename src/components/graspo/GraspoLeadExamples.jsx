@@ -1,3 +1,5 @@
+import { useTr } from '../../i18n/tr.js'
+
 const ACCENT = '#d5ff40'
 
 /* Anonymized, drawn directly from the inbound lead tracker.
@@ -43,20 +45,20 @@ const LEADS = [
 ]
 
 export default function GraspoLeadExamples() {
+  const tr = useTr()
   return (
     <section className="relative py-16 md:py-24">
       <div className="mx-auto max-w-7xl px-5 md:px-8 text-center">
         <div className="max-w-2xl mx-auto mb-12 md:mb-14">
           <div className="inline-flex items-center gap-2 rounded-full border border-hairline bg-surface-1/60 px-4 py-1.5 mb-6 backdrop-blur">
             <span className="h-1.5 w-1.5 rounded-full animate-pulse" style={{ background: ACCENT }} />
-            <span className="text-xs font-medium uppercase tracking-[0.18em] text-ink-muted">What Those Leads Looked Like</span>
+            <span className="text-xs font-medium uppercase tracking-[0.18em] text-ink-muted">{tr('What Those Leads Looked Like')}</span>
           </div>
           <h2 className="font-display font-bold text-ink tracking-display leading-[1.05] text-3xl md:text-[44px]">
-            Not random Instagram DMs.
+            {tr('Not random Instagram DMs.')}
           </h2>
           <p className="mt-6 text-[15px] md:text-base text-ink-muted leading-relaxed">
-            Six real examples from the inbound tracker, anonymized, but unedited in substance.
-            Specific quantities, specs and next steps, from people who buy printing for a living.
+            {tr('Six real examples from the inbound tracker, anonymized, but unedited in substance. Specific quantities, specs and next steps, from people who buy printing for a living.')}
           </p>
         </div>
 
@@ -70,13 +72,13 @@ export default function GraspoLeadExamples() {
                 className="inline-flex w-fit items-center rounded-full px-3 py-1 text-[10.5px] font-semibold uppercase tracking-[0.1em]"
                 style={{ background: 'rgba(213,255,64,0.12)', color: ACCENT, border: '1px solid rgba(213,255,64,0.25)' }}
               >
-                {lead.tag}
+                {tr(lead.tag)}
               </span>
-              <h3 className="mt-4 font-display font-bold text-ink text-[17px] leading-snug">{lead.title}</h3>
-              <p className="mt-2.5 text-[13px] text-ink-muted leading-relaxed flex-1">{lead.detail}</p>
+              <h3 className="mt-4 font-display font-bold text-ink text-[17px] leading-snug">{tr(lead.title)}</h3>
+              <p className="mt-2.5 text-[13px] text-ink-muted leading-relaxed flex-1">{tr(lead.detail)}</p>
               <div className="mt-5 pt-4 border-t border-hairline flex items-center justify-center gap-2">
                 <span className="h-1.5 w-1.5 rounded-full" style={{ background: ACCENT }} />
-                <span className="text-[11.5px] font-medium text-ink-subtle">{lead.status}</span>
+                <span className="text-[11.5px] font-medium text-ink-subtle">{tr(lead.status)}</span>
               </div>
             </div>
           ))}

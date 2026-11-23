@@ -6,7 +6,7 @@ import { localizeStat } from '../../i18n/format.js'
 import { CONVRT_STATS, FOUNDER_EXPERIENCE } from '../../lib/siteStats.js'
 import { withUtm } from '../../lib/analytics.js'
 import { SPRINT, SPRINT_PLUS, ORGANIC_STAGES, ORGANIC, ORGANIC_CTA, PRODUCTION_LANGUAGES } from '../../seo/businessKnowledge.js'
-import { tr } from '../../i18n/tr.js'
+import { tr, hrefFor } from '../../i18n/tr.js'
 
 /* SECTION 2: creative philosophy + credibility + the free Roadmap offer, as one cohesive block.
    Left: the philosophy for the selected goal (Paid: the concept-to-variation diagram for the STANDARD Sprint; Organic:
@@ -91,7 +91,7 @@ function OrganicPhilosophy() {
           </li>
         ))}
       </ol>
-      <a href="/case-studies/graspo" className="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-lime transition-colors hover:text-lime-light">{tr('See how we grew Graspo')}{' '}<span aria-hidden="true">→</span>
+      <a href={hrefFor('/case-studies/graspo')} className="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-lime transition-colors hover:text-lime-light">{tr('See how we grew Graspo')}{' '}<span aria-hidden="true">→</span>
       </a>
     </div>
   )

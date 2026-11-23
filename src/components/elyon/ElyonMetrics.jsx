@@ -1,14 +1,12 @@
 import { useInView } from '../caseStudies/shared/useInView.js'
 import { ACCENT } from './theme.js'
+import { useTr } from '../../i18n/tr.js'
+import { ELYON_METRICS as METRICS } from '../../caseStudies/data.js'
+import { stat, isEnglish } from '../caseStudies/format.js'
 
-const METRICS = [
-  { value: '160+', label: 'Creatives Produced', sub: 'Full library, and counting' },
-  { value: '4', label: 'Production Locations', sub: 'Prague, Almería, Granada, Marbella' },
-  { value: '5.28x', label: 'Peak ROAS', sub: 'Single standout creative' },
-  { value: '3.63x', label: 'Average ROAS', sub: 'Early four-creative test' },
-]
 
 export default function ElyonMetrics() {
+  const tr = useTr()
   const [wrapRef, visible] = useInView()
 
   return (
@@ -36,17 +34,22 @@ export default function ElyonMetrics() {
                 className="relative font-display font-bold tracking-display leading-none text-[clamp(1.9rem,4vw,2.6rem)] tabular-nums"
                 style={{ color: ACCENT }}
               >
-                {m.value}
+                {stat(m.value)}
               </p>
-              <p className="relative mt-3 text-[13px] font-semibold text-ink">{m.label}</p>
-              <p className="relative mt-1 text-[11.5px] text-ink-subtle">{m.sub}</p>
+              <p className="relative mt-3 text-[13px] font-semibold text-ink">{tr(m.label)}</p>
+              <p className="relative mt-1 text-[11.5px] text-ink-subtle">{tr(m.sub)}</p>
             </div>
           ))}
         </div>
         <p className="mt-5 text-center text-xs text-ink-subtle">
-          160+ spans every batch, format and follow-up variation produced since launch, not a single
-          delivery. Source: client-shared Meta Ads Manager results and internal production tracker.
+          {tr('160+ spans every batch, format and follow-up variation produced since launch, not a single delivery. Source: client-shared Meta Ads Manager results and internal production tracker.')}
         </p>
+        {/* Spanish only: the limitation the UGC page states for the same results (docs/spanish-case-studies.md). The English page is unchanged. */}
+        {!isEnglish() && (
+          <p className="mx-auto mt-2 max-w-2xl text-center text-xs text-ink-subtle">
+            {tr('ROAS figures are reported by the client and relate to specific creatives and moments; they are not typical and not guaranteed.')}
+          </p>
+        )}
       </div>
     </section>
   )

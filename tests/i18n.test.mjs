@@ -17,6 +17,7 @@ import { alternatesFor, absoluteUrl } from '../src/i18n/seo.js'
 import { ES_SEO } from '../src/i18n/es/seo.js'
 import { DICTIONARIES } from '../src/i18n/dictionaries.js'
 import { PARTS } from '../src/i18n/es/index.js'
+import { LINK_LABEL_OVERRIDES } from '../src/i18n/es/dict-casestudies.js'
 import { missingFor } from '../scripts/i18n-check.mjs'
 import { localizeStat } from '../src/i18n/format.js'
 import { formatMoneyEs } from '../src/i18n/es/money.js'
@@ -37,7 +38,7 @@ import { HOME_HERO, HOME_HERO_ES } from '../src/content/homeHero.js'
 // Pages that are built AND released (the Spanish Showcase is launch-blocked until Spanish-language videos exist).
 const RELEASED_ES = TRANSLATED_PATHS.es.filter((bp) => isReleased('es', bp))
 // Released AND indexable: only these get hreflang and a sitemap entry (the Roadmap is a paid-traffic landing page, noindex in English, so its Spanish twin follows).
-const INDEXABLE_ES = RELEASED_ES.filter((bp) => SITE_SEO[bp].indexable !== false)
+const INDEXABLE_ES = RELEASED_ES.filter((bp) => SITE_SEO[bp].indexable !== false && !SITE_SEO[bp].canonicalPath) // a duplicate (/case-studies) is never in the sitemap or hreflang
 
 const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), '..')
 const read = (p) => fs.readFileSync(path.join(ROOT, p), 'utf8')
@@ -69,12 +70,14 @@ test('paths: English URLs never change; other languages live under their prefix 
   assert.deepEqual(parsePath('/'), { locale: 'en', basePath: '/' })
   assert.deepEqual(parsePath('/blog/some-article'), { locale: 'en', basePath: '/blog/some-article' })
   assert.deepEqual(parsePath('/escape'), { locale: 'en', basePath: '/escape' }, 'only an exact language segment is a locale')
-  assert.deepEqual(allLocalizedPaths(['es']), ['/es', '/es/ugc-video-agency', '/es/spokesperson-video-production', '/es/social-media-video-production', '/es/saas-video-production', '/es/pricing', '/es/creator-showcase', '/es/about', '/es/contact', '/es/creative-growth-roadmap', '/es/risk-free-trial'])
+  assert.deepEqual(allLocalizedPaths(['es']), ['/es', '/es/ugc-video-agency', '/es/spokesperson-video-production', '/es/social-media-video-production', '/es/saas-video-production', '/es/pricing', '/es/creator-showcase', '/es/about', '/es/contact', '/es/case-studies', '/es/case-studies/graspo', '/es/case-studies/elyon', '/es/creative-growth-roadmap', '/es/risk-free-trial'])
 })
 
 test('every translated path is a real English page with SEO data and a Spanish title/description/OG copy', () => {
   for (const bp of TRANSLATED_PATHS.es) {
     assert.ok(SITE_SEO[bp], `${bp} has English SEO data`)
+    // /case-studies is the duplicate of the default study (it canonicalises to /case-studies/graspo): it has no head of its own, in either language
+    if (SITE_SEO[bp].canonicalPath) { assert.equal(ES_SEO[bp], undefined, `${bp} is a duplicate: no Spanish SEO entry of its own`); continue }
     const e = ES_SEO[bp]
     assert.ok(e && e.title && e.description, `${bp} has Spanish SEO copy`)
     assert.ok(e.title.length <= 66, `${bp} title is not truncated in search results (${e.title.length})`)
@@ -84,7 +87,7 @@ test('every translated path is a real English page with SEO data and a Spanish t
   }
   assert.equal(new Set(Object.values(ES_SEO).map((e) => e.title)).size, Object.keys(ES_SEO).length, 'unique Spanish titles')
   assert.equal(new Set(Object.values(ES_SEO).map((e) => e.description)).size, Object.keys(ES_SEO).length, 'unique Spanish descriptions')
-  assert.deepEqual(Object.keys(ES_SEO).sort(), [...TRANSLATED_PATHS.es].sort(), 'no Spanish SEO entry exists for a page that is not translated')
+  assert.deepEqual(Object.keys(ES_SEO).sort(), TRANSLATED_PATHS.es.filter((bp) => !SITE_SEO[bp].canonicalPath).sort(), 'no Spanish SEO entry exists for a page that is not translated')
 })
 
 test('hreflang: one reciprocal set per translated page (en, es, x-default), only for indexable pages; none for untranslated pages', () => {
@@ -110,7 +113,8 @@ test('language selector: only live languages are offered, each link points at an
   assert.deepEqual(onPricing.map((o) => [o.code, o.href, o.exact]), isPricingApproved('es') ? [['en', '/pricing', true], ['es', '/es/pricing', true]] : [['en', '/pricing', true], ['es', '/es/', false]])
   const onBlog = languageOptions('en', '/blog')
   assert.deepEqual(onBlog.map((o) => [o.code, o.href, o.exact]), [['en', '/blog', true], ['es', '/es/', false]], 'an English-only page falls back to the Spanish home')
-  assert.equal(switchTarget('es', '/case-studies/graspo'), '/es/')
+  assert.equal(switchTarget('es', '/case-studies/graspo'), '/es/case-studies/graspo', 'the case studies exist in Spanish now')
+  assert.equal(switchTarget('es', '/blog'), '/es/', 'an English-only page still falls back to the Spanish home')
   assert.equal(switchTarget('en', '/pricing'), '/pricing')
   assert.equal(switchTarget('en', '/about'), '/about')
   assert.equal(languageOptions('es', '/about').find((o) => o.current).code, 'es')
@@ -138,6 +142,7 @@ test('dictionary: complete for every literal tr()/<T> in the source, no empty va
   const seen = new Map()
   for (const [part, dict] of Object.entries(PARTS)) {
     for (const [k, v] of Object.entries(dict)) {
+      if (seen.has(k) && part === 'casestudies' && k in LINK_LABEL_OVERRIDES) { assert.ok(!/\(en inglés\)/.test(v), `override "${k.slice(0, 40)}" must drop the old English-only label`); seen.set(k, v); continue }
       if (seen.has(k)) assert.equal(seen.get(k), v, `duplicate key "${k.slice(0, 50)}" disagrees between dictionary parts (${part})`)
       seen.set(k, v)
       if (v === '') assert.ok(PARTS.trust === dict, `empty translation only allowed in dict-trust.js: "${k.slice(0, 60)}"`)
@@ -235,7 +240,7 @@ const baseOf = (p) => parsePath(p).basePath
 test('Spanish pages: real static HTML with html lang="es", no dir, one self-referencing canonical, localized title/description/H1, indexable', () => {
   for (const p of ES_PAGES) {
     const h = page(p)
-    const bp = baseOf(p)
+    const bp = SITE_SEO[baseOf(p)].canonicalPath ?? baseOf(p) // /es/case-studies is the Spanish default study: it carries that study's head and canonicalises to it
     assert.match(h, /^<!doctype html>\s*<html lang="es">/i, p)
     assert.ok(!/<html[^>]*\sdir=/.test(h), `${p}: LTR languages carry no dir attribute`)
     assert.deepEqual(tag(h, /<link rel="canonical" href="([^"]+)"/g), [absoluteUrl('es', bp)], `${p}: self-referencing canonical`)
@@ -260,7 +265,7 @@ test('hreflang in the built HTML is reciprocal: each Spanish page and its Englis
     assert.equal(set(en).split('|')[0], 'en,es,x-default', bp)
   }
   // English pages with NO translation carry no hreflang at all
-  for (const p of ['/blog', '/case-studies/graspo', '/privacy', '/terms', '/legal-notice', '/free-hooks', '/creative-growth-roadmap', ...TRANSLATED_PATHS.es.filter((bp) => !INDEXABLE_ES.includes(bp)), ...TRANSLATED_PATHS.es.filter((bp) => !INDEXABLE_ES.includes(bp)).map((bp) => localizedPath('es', bp))]) assert.ok(!/hreflang/.test(page(p)), `${p} has no hreflang`)
+  for (const p of ['/blog', '/privacy', '/terms', '/legal-notice', '/free-hooks', '/creative-growth-roadmap', ...TRANSLATED_PATHS.es.filter((bp) => !INDEXABLE_ES.includes(bp)), ...TRANSLATED_PATHS.es.filter((bp) => !INDEXABLE_ES.includes(bp)).map((bp) => localizedPath('es', bp))]) assert.ok(!/hreflang/.test(page(p)), `${p} has no hreflang`)
   assert.ok(!/hreflang="(fr|ar)/.test(ES_PAGES.map(page).join('') + TRANSLATED_PATHS.es.map(page).join('')))
 })
 
@@ -321,7 +326,7 @@ test('Spanish prices are the owner-approved EUR amounts: shown everywhere a pric
     assert.ok(!/\$\s?\d/.test(t), `${p}: no "$N" amount`)
     // the only dollars on a Spanish page are a client's real reported result (UGC page) and the Roadmap's ad-spend answer brackets (qualification thresholds, unchanged)
     const usd = t.match(/[\d.,]+ ?\s?USD|dólar/g) ?? []
-    assert.ok(usd.every((u) => (p === '/es/ugc-video-agency' && /3\.421,25/.test(u)) || (['/es/creative-growth-roadmap', '/es/risk-free-trial'].includes(p) && /^(5|20)\.000/.test(u))), `${p}: USD left on a Spanish page: ${usd}`)
+    assert.ok(usd.every((u) => (p === '/es/ugc-video-agency' && /3\.421,25/.test(u)) || (/^\/es\/case-studies/.test(p) && /^(0|229,89|835|3\.421,25) ?\s?USD$/.test(u.trim())) || (['/es/creative-growth-roadmap', '/es/risk-free-trial'].includes(p) && /^(5|20)\.000/.test(u))), `${p}: USD left on a Spanish page: ${usd}`)
     assert.ok(!/"priceCurrency":"USD"/.test(h), `${p}: no USD price in JSON-LD`)
   }
   // /es/pricing: every approved amount and the derived per-variation figures
@@ -372,7 +377,7 @@ test('JSON-LD: one stable Organization @id across languages; Spanish WebPage/FAQ
     assert.deepEqual(org, orgEn, `${p}: the Organization node is identical in every language`)
     const web = g.find((n) => /Page$/.test(n['@type']))
     assert.equal(web.inLanguage, 'es', p)
-    assert.equal(web.url, `${SITE_URL}${p === '/es' ? '/es/' : p}`)
+    assert.equal(web.url, `${SITE_URL}${p === '/es' ? '/es/' : p === '/es/case-studies' ? '/es/case-studies/graspo' : p}`)
     assert.deepEqual(web.isPartOf, { '@id': `${SITE_URL}/#website` }, p)
     assert.ok(!g.some((n) => n['@type'] === 'WebSite'), `${p}: the WebSite is referenced by @id, not redefined`)
     assert.ok(!JSON.stringify(g.filter((n) => n['@type'] !== 'Organization')).match(/aggregateRating|review"|"rating|address|geo|areaServed/), `${p}: nothing invented (the Organization node, incl. its country-only address, is asserted identical to English above)`)

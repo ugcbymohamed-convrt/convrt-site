@@ -6,6 +6,7 @@ import { usePrefersReducedMotion } from './components/caseStudies/shared/usePref
 import { CASE_STUDIES, DEFAULT_CASE_STUDY_ID, isValidCaseStudyId, getCaseStudy } from './caseStudies/registry.js'
 import GraspoCaseStudyPage from './GraspoCaseStudyPage.jsx'
 import ElyonCaseStudyPage from './ElyonCaseStudyPage.jsx'
+import { useTr, hrefFor } from './i18n/tr.js'
 
 const PAGES = {
   graspo: GraspoCaseStudyPage,
@@ -33,6 +34,7 @@ function resolveInitialId() {
 }
 
 export default function CaseStudiesPage() {
+  const tr = useTr()
   const [activeId, setActiveId] = useState(resolveInitialId)
   const [renderedId, setRenderedId] = useState(activeId)
   const [phase, setPhase] = useState('idle') // 'idle' | 'out' | 'in'
@@ -123,9 +125,9 @@ export default function CaseStudiesPage() {
       {/* Same breadcrumb row as the service pages. Two levels on purpose: /case-studies is a duplicate of the Graspo study, so it is not a breadcrumb parent (see caseStudyGraph in src/seo/structuredData.js). */}
       <nav aria-label="Breadcrumb" className="mx-auto max-w-7xl px-5 pt-2 md:px-8">
         <ol className="flex items-center gap-2 text-[13px] text-ink-subtle">
-          <li><a href="/" className="transition-colors hover:text-ink">Home</a></li>
+          <li><a href={hrefFor('/')} className="transition-colors hover:text-ink">{tr('Home')}</a></li>
           <li aria-hidden="true">/</li>
-          <li aria-current="page" className="text-ink-muted">{shown.label} case study</li>
+          <li aria-current="page" className="text-ink-muted">{tr(`${shown.label} case study`)}</li>
         </ol>
       </nav>
       <div className="relative pt-8 md:pt-12">
@@ -133,10 +135,10 @@ export default function CaseStudiesPage() {
         <div className="mx-auto max-w-2xl px-5 pb-7 text-center md:px-8 md:pb-9">
           <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-hairline bg-surface-1/60 px-3 py-1.5 text-xs font-medium text-ink-muted backdrop-blur">
             <span className="h-1.5 w-1.5 rounded-full bg-lime" />
-            Our Work
+            {tr('Our Work')}
           </div>
           <p className="font-display font-bold text-ink tracking-display leading-[1.05] text-4xl md:text-[52px]">
-            Case Studies
+            {tr('Case Studies')}
           </p>
         </div>
 

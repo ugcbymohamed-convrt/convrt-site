@@ -1,23 +1,12 @@
 import { useEffect, useRef, useState } from 'react'
+import { useTr } from '../../i18n/tr.js'
+import { GRASPO_LEAD_CATEGORIES as CATEGORIES, GRASPO_LEADS_BY_MONTH as MONTHS } from '../../caseStudies/data.js'
+import { pct, isEnglish, cx } from '../caseStudies/format.js'
 
 const ACCENT = '#d5ff40'
 
-const CATEGORIES = [
-  { label: 'Book & catalog printing', count: 37, color: '#a3e600' },
-  { label: 'B2B cooperation / agency / samples', count: 14, color: '#c2f227' },
-  { label: 'Shipping / MOQ questions', count: 10, color: '#d5ff40' },
-  { label: 'General printing / pricing', count: 9, color: '#e2ff70' },
-  { label: 'Premium / other print', count: 5, color: '#eeffa3' },
-]
 const TOTAL_LEADS = CATEGORIES.reduce((sum, c) => sum + c.count, 0)
 
-const MONTHS = [
-  { label: 'Feb', count: 10 },
-  { label: 'Mar', count: 20 },
-  { label: 'Apr', count: 6 },
-  { label: 'May', count: 30, peak: true },
-  { label: 'Jun', count: 9 },
-]
 const MAX_MONTH = Math.max(...MONTHS.map((m) => m.count))
 
 function useInView(threshold = 0.15) {
@@ -37,6 +26,8 @@ function useInView(threshold = 0.15) {
 }
 
 export default function GraspoLeadComposition() {
+  const tr = useTr()
+  const en = isEnglish()
   const [ref, visible] = useInView()
 
   return (
@@ -45,20 +36,20 @@ export default function GraspoLeadComposition() {
         <div className="max-w-2xl mx-auto mb-12 md:mb-16 text-center">
           <div className="inline-flex items-center gap-2 rounded-full border border-hairline bg-surface-1/60 px-4 py-1.5 mb-6 backdrop-blur">
             <span className="h-1.5 w-1.5 rounded-full animate-pulse" style={{ background: ACCENT }} />
-            <span className="text-xs font-medium uppercase tracking-[0.18em] text-ink-muted">Lead Composition &amp; Momentum</span>
+            <span className="text-xs font-medium uppercase tracking-[0.18em] text-ink-muted">{tr('Lead Composition & Momentum')}</span>
           </div>
           <h2 className="font-display font-bold text-ink tracking-display leading-[1.05] text-3xl md:text-[44px]">
-            Consistent demand, not
+            {tr('Consistent demand, not')}
             <br />
-            one viral accident.
+            {tr('one viral accident.')}
           </h2>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10">
           {/* Category breakdown */}
           <div className="lg:col-span-7 rounded-3xl border border-hairline bg-surface-1/40 px-7 py-8 md:px-9 md:py-9">
-            <p className="text-sm font-semibold text-ink mb-1">What the 75 leads were about</p>
-            <p className="text-[12px] text-ink-subtle mb-6">By inquiry group, {TOTAL_LEADS} unique leads</p>
+            <p className="text-sm font-semibold text-ink mb-1">{tr('What the 75 leads were about')}</p>
+            <p className="text-[12px] text-ink-subtle mb-6">{en ? <>By inquiry group, {TOTAL_LEADS} unique leads</> : tr(`By inquiry group, ${TOTAL_LEADS} unique leads`)}</p>
 
             <div className="h-4 w-full rounded-full overflow-hidden flex bg-surface-3 mb-6">
               {CATEGORIES.map((c, i) => (
@@ -78,10 +69,10 @@ export default function GraspoLeadComposition() {
                 <div key={c.label} className="flex items-center justify-between gap-4">
                   <div className="flex items-center gap-2.5 min-w-0">
                     <span className="h-2.5 w-2.5 rounded-full shrink-0" style={{ background: c.color }} />
-                    <span className="text-[13px] text-ink-muted truncate">{c.label}</span>
+                    <span className={cx('text-[13px] text-ink-muted', en && 'truncate')}>{tr(c.label)}</span>
                   </div>
                   <span className="text-[13px] font-semibold text-ink tabular-nums shrink-0">
-                    {c.count} <span className="text-ink-subtle font-normal">({Math.round((c.count / TOTAL_LEADS) * 100)}%)</span>
+                    {c.count} <span className="text-ink-subtle font-normal">({pct(Math.round((c.count / TOTAL_LEADS) * 100))})</span>
                   </span>
                 </div>
               ))}
@@ -90,8 +81,8 @@ export default function GraspoLeadComposition() {
 
           {/* Monthly momentum */}
           <div className="lg:col-span-5 rounded-3xl border border-hairline bg-surface-1/40 px-7 py-8 md:px-9 md:py-9">
-            <p className="text-sm font-semibold text-ink mb-1">Leads by month</p>
-            <p className="text-[12px] text-ink-subtle mb-8">Feb – Jun 2026</p>
+            <p className="text-sm font-semibold text-ink mb-1">{tr('Leads by month')}</p>
+            <p className="text-[12px] text-ink-subtle mb-8">{tr('Feb – Jun 2026')}</p>
 
             <div className="flex items-end justify-between gap-3 h-40">
               {MONTHS.map((m, i) => (
@@ -108,13 +99,12 @@ export default function GraspoLeadComposition() {
                       transition: `height 0.8s cubic-bezier(0.22,1,0.36,1) ${0.1 + i * 0.09}s`,
                     }}
                   />
-                  <span className="text-[11px] text-ink-subtle">{m.label}</span>
+                  <span className="text-[11px] text-ink-subtle">{tr(m.label)}</span>
                 </div>
               ))}
             </div>
             <p className="mt-6 text-[12.5px] text-ink-muted leading-relaxed">
-              <span className="font-semibold text-ink">May was the strongest month,</span> 30 unique
-              leads, as content momentum compounded rather than spiked and faded.
+              <span className="font-semibold text-ink">{tr('May was the strongest month,')}</span>{' '}{tr('30 unique leads, as content momentum compounded rather than spiked and faded.')}
             </p>
           </div>
         </div>

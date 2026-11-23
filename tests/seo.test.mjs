@@ -125,7 +125,7 @@ test('manifest: case-study social copy is kept separate from the search title', 
 test('pages use the shared head: no page re-implements title/meta handling', () => {
   for (const f of ['CreativeTestingSprintPage', 'GraspoCaseStudyPage', 'ElyonCaseStudyPage', 'ScalePage', 'RoadmapPage', 'FreeHooksPage', 'RiskFreePage']) {
     const src = read(`src/${f}.jsx`)
-    assert.match(src, /useDocumentHead\(pageHead\(/, f)
+    assert.match(src, /useDocumentHead\((pageHead|caseStudyHead)\(/, f)
     assert.ok(!/document\.title\s*=/.test(src), `${f} still sets document.title itself`)
   }
 })

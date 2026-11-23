@@ -2,6 +2,7 @@ import Logo from './Logo.jsx'
 import LanguageSelector from './LanguageSelector.jsx'
 import { parsePath, localizedPath } from '../i18n/paths.js'
 import { translate, localHref } from '../i18n/tr.js'
+import { hasTranslation } from '../i18n/registry.js'
 import CookieSettingsLink from './CookieSettingsLink.jsx'
 import { SERVICE_LABELS } from '../seo/businessKnowledge.js'
 import { CONTACT_EMAIL, REFERRALS_PATH, CREATOR_SHOWCASE_PATH, ABOUT_PATH, CONTACT_PATH, PRIVACY_PATH, TERMS_PATH, LEGAL_NOTICE_PATH, TRUST_PAGES_PUBLISHED, COMPANY_LINKEDIN_URL, INSTAGRAM_URL } from '../config.js'
@@ -43,7 +44,7 @@ export default function Footer() {
               <li><a className="hover:text-ink transition-colors" href={h('/social-media-video-production')}>{tr(SERVICE_LABELS.organic)}</a></li>
               <li><a className="hover:text-ink transition-colors" href={h('/saas-video-production')}>{tr('SaaS Video Production')}</a></li>
               <li><a className="hover:text-ink transition-colors" href={h(CREATOR_SHOWCASE_PATH)}>{tr('Creator Showcase')}</a></li>
-              {en && <li><a className="hover:text-ink transition-colors" href="/case-studies">Case Studies</a></li>}
+              {(en || hasTranslation(locale, '/case-studies')) && <li><a className="hover:text-ink transition-colors" href={h('/case-studies')}>{tr('Case Studies')}</a></li>}
               <li><a className="hover:text-ink transition-colors" href={h('/pricing')}>{tr('Pricing')}</a></li>
               {TRUST_PAGES_PUBLISHED && <li><a className="hover:text-ink transition-colors" href={h(ABOUT_PATH)}>{tr('About')}</a></li>}
               {en && <li><a className="hover:text-ink transition-colors" href="/blog">Blog</a></li>}

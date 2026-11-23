@@ -1,6 +1,6 @@
 import SectionDivider from './components/SectionDivider.jsx'
 import { useDocumentHead } from './lib/useDocumentHead.js'
-import { pageHead } from './seo/siteSeo.js'
+import { caseStudyHead } from './caseStudies/head.js'
 import FinalCTA from './components/FinalCTA.jsx'
 import NextCaseStudy from './components/caseStudies/NextCaseStudy.jsx'
 import RelatedService from './components/caseStudies/RelatedService.jsx'
@@ -15,7 +15,7 @@ import ElyonProof from './components/elyon/ElyonProof.jsx'
 import ElyonResult from './components/elyon/ElyonResult.jsx'
 
 export default function ElyonCaseStudyPage() {
-  useDocumentHead(pageHead('/case-studies/elyon'))
+  useDocumentHead(caseStudyHead('/case-studies/elyon'))
 
   return (
     <>

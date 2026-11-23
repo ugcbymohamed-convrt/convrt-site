@@ -1,6 +1,6 @@
 import SectionDivider from './components/SectionDivider.jsx'
 import { useDocumentHead } from './lib/useDocumentHead.js'
-import { pageHead } from './seo/siteSeo.js'
+import { caseStudyHead } from './caseStudies/head.js'
 import FinalCTA from './components/FinalCTA.jsx'
 import NextCaseStudy from './components/caseStudies/NextCaseStudy.jsx'
 import RelatedService from './components/caseStudies/RelatedService.jsx'
@@ -17,7 +17,7 @@ import GraspoLeadComposition from './components/graspo/GraspoLeadComposition.jsx
 import GraspoResult from './components/graspo/GraspoResult.jsx'
 
 export default function GraspoCaseStudyPage() {
-  useDocumentHead(pageHead('/case-studies/graspo'))
+  useDocumentHead(caseStudyHead('/case-studies/graspo'))
 
   return (
     <>

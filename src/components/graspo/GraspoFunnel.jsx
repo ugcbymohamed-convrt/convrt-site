@@ -1,4 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
+import { useTr } from '../../i18n/tr.js'
+import { GRASPO_FUNNEL as STAGES } from '../../caseStudies/data.js'
+import { stat, isEnglish, cx } from '../caseStudies/format.js'
 
 /* ─────────────────────────────────────────────
    ATTENTION → DEMAND
@@ -10,14 +13,6 @@ import { useEffect, useRef, useState } from 'react'
 ───────────────────────────────────────────── */
 
 const ACCENT = '#d5ff40'
-
-const STAGES = [
-  { value: '10.7M', label: 'Total views', desc: 'Facebook + Instagram, Jan–Jun 2026', pct: 100 },
-  { value: '3.4M', label: 'Accounts reached', desc: 'Unique people who saw the content', pct: 74 },
-  { value: '75', label: 'Unique inbound leads', desc: 'Real inquiries across Meta, email & WhatsApp', pct: 46 },
-  { value: '26', label: 'High-priority opportunities', desc: 'Qualified for active follow-up', pct: 30 },
-  { value: '10', label: 'Advanced / quotation-stage', desc: 'Offer sent or being prepared, samples shipped, or moved to WhatsApp/sales', pct: 18 },
-]
 
 function useInView(threshold = 0.15) {
   const ref = useRef(null)
@@ -36,6 +31,8 @@ function useInView(threshold = 0.15) {
 }
 
 export default function GraspoFunnel() {
+  const tr = useTr()
+  const en = isEnglish()
   const [ref, visible] = useInView()
 
   return (
@@ -44,14 +41,13 @@ export default function GraspoFunnel() {
         <div className="text-center max-w-2xl mx-auto mb-14 md:mb-16">
           <div className="inline-flex items-center gap-2 rounded-full border border-hairline bg-surface-1/60 px-4 py-1.5 mb-6 backdrop-blur">
             <span className="h-1.5 w-1.5 rounded-full animate-pulse" style={{ background: ACCENT }} />
-            <span className="text-xs font-medium uppercase tracking-[0.18em] text-ink-muted">Attention → Demand</span>
+            <span className="text-xs font-medium uppercase tracking-[0.18em] text-ink-muted">{tr('Attention → Demand')}</span>
           </div>
           <h2 className="font-display font-bold text-ink tracking-display leading-[1.05] text-3xl md:text-[44px]">
-            The social funnel, start to finish.
+            {tr('The social funnel, start to finish.')}
           </h2>
           <p className="mt-6 text-[15px] text-ink-muted leading-relaxed">
-            This is the funnel observed during the management period, not a claim that every
-            view produced an inquiry. It's what happened between a content strategy and a sales team's inbox.
+            {tr("This is the funnel observed during the management period, not a claim that every view produced an inquiry. It's what happened between a content strategy and a sales team's inbox.")}
           </p>
         </div>
 
@@ -82,11 +78,11 @@ export default function GraspoFunnel() {
                       className="shrink-0 font-display font-bold tabular-nums"
                       style={{ fontSize: 'clamp(1.5rem, 3vw, 2.1rem)', color: i === 0 ? ACCENT : '#ffffff' }}
                     >
-                      {s.value}
+                      {stat(s.value)}
                     </span>
                     <div className="min-w-0">
-                      <p className="text-[14px] font-semibold text-ink truncate">{s.label}</p>
-                      <p className="text-[11.5px] text-ink-subtle truncate">{s.desc}</p>
+                      <p className={cx('text-[14px] font-semibold text-ink', en && 'truncate')}>{tr(s.label)}</p>
+                      <p className={cx('text-[11.5px] text-ink-subtle', en ? 'truncate' : 'leading-snug')}>{tr(s.desc)}</p>
                     </div>
                   </div>
                 </div>
