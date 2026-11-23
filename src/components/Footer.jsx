@@ -14,11 +14,31 @@ export default function Footer() {
   const en = locale === 'en'
   const onHome = basePath === '/'
   const homePrefix = onHome ? '' : localizedPath(locale, '/')
+  /* The Studio menu, in this order (the same links as before; some exist only in English or only once the trust pages are published). It is shown in two balanced halves. */
+  const STUDIO_LINKS = [
+    { key: 'services', href: `${homePrefix}#services`, label: tr('Services') },
+    { key: 'ugc', href: h('/ugc-video-agency'), label: tr('UGC Video Agency') },
+    { key: 'spokesperson', href: h('/spokesperson-video-production'), label: tr('Spokesperson Videos') },
+    { key: 'organic', href: h('/social-media-video-production'), label: tr(SERVICE_LABELS.organic) },
+    { key: 'saas', href: h('/saas-video-production'), label: tr('SaaS Video Production') },
+    { key: 'showcase', href: h(CREATOR_SHOWCASE_PATH), label: tr('Creator Showcase') },
+    en && { key: 'case-studies', href: '/case-studies', label: 'Case Studies' },
+    { key: 'pricing', href: h('/pricing'), label: tr('Pricing') },
+    TRUST_PAGES_PUBLISHED && { key: 'about', href: h(ABOUT_PATH), label: tr('About') },
+    en && { key: 'blog', href: '/blog', label: 'Blog' },
+    { key: 'how', href: `${homePrefix}#how-it-works`, label: tr('How It Works') },
+    { key: 'clients', href: `${homePrefix}#clients`, label: tr('Clients') },
+    en && { key: 'referrals', href: REFERRALS_PATH, label: 'Referral Program' },
+    { key: 'contact', href: TRUST_PAGES_PUBLISHED ? h(CONTACT_PATH) : `${homePrefix}#contact`, label: tr('Contact') },
+  ].filter(Boolean)
+  const half = Math.ceil(STUDIO_LINKS.length / 2)
   return (
     <footer className="border-t border-hairline bg-canvas">
       <div className="mx-auto max-w-7xl px-5 py-14 md:px-8 md:py-16">
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-8">
-          <div className="md:col-span-6">
+        {/* THREE EQUAL COLUMNS from md up. Left: the brand (logo, description, languages) with "Get in touch" under it. Right (two thirds): the Studio menu, one heading and the list split into two
+            balanced columns, so the long list no longer runs down one tall column. Same links in the same order as before; on a phone everything stacks and the two list halves sit side by side. */}
+        <div className="grid grid-cols-1 gap-10 md:grid-cols-3 md:gap-8 lg:gap-12">
+          <div>
             <Logo />
             <p className="mt-5 max-w-sm text-sm text-ink-muted leading-relaxed">
               {en ? (
@@ -30,53 +50,45 @@ export default function Footer() {
               ) : tr('A performance creative studio building UGC ads, spokesperson videos, organic social content, and creative strategy for brands that want content with one purpose: conversion.')}
             </p>
             <LanguageSelector variant="inline" className="mt-5 text-sm text-ink-muted" />
+
+            <div className="mt-8">
+              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-ink-subtle">
+                {tr('Get in touch')}
+              </p>
+              <ul className="mt-4 space-y-2.5 text-sm text-ink-muted">
+                <li>
+                  <a className="hover:text-ink transition-colors" href={`mailto:${CONTACT_EMAIL}`}>
+                    {CONTACT_EMAIL}
+                  </a>
+                </li>
+                <li className="flex gap-3 pt-2">
+                  <Social href={COMPANY_LINKEDIN_URL} label={tr('CONVRT on LinkedIn')}>
+                    <rect x="3" y="3" width="14" height="14" rx="2" stroke="currentColor" strokeWidth="1.4" fill="none" />
+                    <path d="M6 8.5V14M6 6.5v.01M9 14v-3a2 2 0 014 0v3M9 14V8.5" stroke="currentColor" strokeWidth="1.4" fill="none" strokeLinecap="round" />
+                  </Social>
+                  <Social href={INSTAGRAM_URL} label={tr('CONVRT on Instagram')}>
+                    <rect x="3" y="3" width="14" height="14" rx="4.5" stroke="currentColor" strokeWidth="1.4" fill="none" />
+                    <circle cx="10" cy="10" r="3.2" stroke="currentColor" strokeWidth="1.4" fill="none" />
+                    <circle cx="14.2" cy="5.8" r="0.9" fill="currentColor" />
+                  </Social>
+                </li>
+              </ul>
+            </div>
           </div>
 
-          <div className="md:col-span-3">
+          <nav aria-label={tr('Studio')} className="md:col-span-2">
             <p className="text-xs font-semibold uppercase tracking-[0.16em] text-ink-subtle">
               {tr('Studio')}
             </p>
-            <ul className="mt-4 space-y-2.5 text-sm text-ink-muted">
-              <li><a className="hover:text-ink transition-colors" href={`${homePrefix}#services`}>{tr('Services')}</a></li>
-              <li><a className="hover:text-ink transition-colors" href={h('/ugc-video-agency')}>{tr('UGC Video Agency')}</a></li>
-              <li><a className="hover:text-ink transition-colors" href={h('/spokesperson-video-production')}>{tr('Spokesperson Videos')}</a></li>
-              <li><a className="hover:text-ink transition-colors" href={h('/social-media-video-production')}>{tr(SERVICE_LABELS.organic)}</a></li>
-              <li><a className="hover:text-ink transition-colors" href={h('/saas-video-production')}>{tr('SaaS Video Production')}</a></li>
-              <li><a className="hover:text-ink transition-colors" href={h(CREATOR_SHOWCASE_PATH)}>{tr('Creator Showcase')}</a></li>
-              {en && <li><a className="hover:text-ink transition-colors" href="/case-studies">Case Studies</a></li>}
-              <li><a className="hover:text-ink transition-colors" href={h('/pricing')}>{tr('Pricing')}</a></li>
-              {TRUST_PAGES_PUBLISHED && <li><a className="hover:text-ink transition-colors" href={h(ABOUT_PATH)}>{tr('About')}</a></li>}
-              {en && <li><a className="hover:text-ink transition-colors" href="/blog">Blog</a></li>}
-              <li><a className="hover:text-ink transition-colors" href={`${homePrefix}#how-it-works`}>{tr('How It Works')}</a></li>
-              <li><a className="hover:text-ink transition-colors" href={`${homePrefix}#clients`}>{tr('Clients')}</a></li>
-              {en && <li><a className="hover:text-ink transition-colors" href={REFERRALS_PATH}>Referral Program</a></li>}
-              <li><a className="hover:text-ink transition-colors" href={TRUST_PAGES_PUBLISHED ? h(CONTACT_PATH) : `${homePrefix}#contact`}>{tr('Contact')}</a></li>
-            </ul>
-          </div>
-
-          <div className="md:col-span-3">
-            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-ink-subtle">
-              {tr('Get in touch')}
-            </p>
-            <ul className="mt-4 space-y-2.5 text-sm text-ink-muted">
-              <li>
-                <a className="hover:text-ink transition-colors" href={`mailto:${CONTACT_EMAIL}`}>
-                  {CONTACT_EMAIL}
-                </a>
-              </li>
-              <li className="flex gap-3 pt-2">
-                <Social href={COMPANY_LINKEDIN_URL} label={tr('CONVRT on LinkedIn')}>
-                  <rect x="3" y="3" width="14" height="14" rx="2" stroke="currentColor" strokeWidth="1.4" fill="none" />
-                  <path d="M6 8.5V14M6 6.5v.01M9 14v-3a2 2 0 014 0v3M9 14V8.5" stroke="currentColor" strokeWidth="1.4" fill="none" strokeLinecap="round" />
-                </Social>
-                <Social href={INSTAGRAM_URL} label={tr('CONVRT on Instagram')}>
-                  <rect x="3" y="3" width="14" height="14" rx="4.5" stroke="currentColor" strokeWidth="1.4" fill="none" />
-                  <circle cx="10" cy="10" r="3.2" stroke="currentColor" strokeWidth="1.4" fill="none" />
-                  <circle cx="14.2" cy="5.8" r="0.9" fill="currentColor" />
-                </Social>
-              </li>
-            </ul>
-          </div>
+            <div className="mt-4 grid grid-cols-2 gap-x-8 gap-y-2.5 text-sm text-ink-muted md:gap-x-12 [&>ul]:space-y-2.5">
+              <ul>
+                {STUDIO_LINKS.slice(0, half).map((l) => <li key={l.key}><a className="hover:text-ink transition-colors" href={l.href}>{l.label}</a></li>)}
+              </ul>
+              <ul>
+                {STUDIO_LINKS.slice(half).map((l) => <li key={l.key}><a className="hover:text-ink transition-colors" href={l.href}>{l.label}</a></li>)}
+              </ul>
+            </div>
+          </nav>
         </div>
 
         <div className="mt-12 pt-6 border-t border-hairline flex flex-col md:flex-row md:items-center md:justify-between gap-3 text-xs text-ink-subtle">
