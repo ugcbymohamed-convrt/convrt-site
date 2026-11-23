@@ -64,6 +64,34 @@ Twelve Arabic-speaking creator videos (Cloudflare Stream `AR-CREATOR-nn`, upload
 
 Not used (English on-screen captions): `0cf5d213…` (-06, IMG_0769), `73591233…` (-09, IMG_4545), `60c9247e…` (-12, IMG_7827). They remain on Stream and can be deleted by the owner.
 
+## Revision 2 (owner brief, 2026-11-23): design parity with the English homepage, four service pages, Graspo case study
+
+The English site is the visual source of truth; `origin/main` (English design review #1, the services dropdown, the footer) was merged into `arabic-localization`.
+
+**What changed**
+- **Homepage = the English composition** (`App.jsx`, `Credibility.jsx`: `en || ar`): hero, logo strip + founder headline, the cinematic client stage, services, process, creator carousel, reviews, final CTA. Components are shared and locale-aware, never copied:
+  `IndustryShowcase` (client data from `SHOWCASE_INDUSTRIES_AR` in `src/content/homeShowcase.js`: Graspo = الطباعة, One Royal = التجارة, nothing else), `RotaryStage` (the stage scene is a `dir="ltr"` island; the ring is mirrored with `pose(..., mirror)` so the NEXT video stands on the left;
+  arrows and swipe use `stepOfArrow` / `stepOfSwipe`; videos are never flipped), `ClientReviews` (Arabic wording in `src/i18n/ar/reviews.js`), `HomeCreators` (Arabic videos tagged `homeCreator`).
+- **Navigation**: brighter Arabic labels (CSS, `:lang(ar) header nav a`), lime hover/focus; CTA = «احصل على 5 أفكار إعلانية مجانًا» everywhere (nav, hero, Roadmap, pricing, services).
+- **Hero**: rolling-word baseline fixed at the cause (an `overflow:hidden` inline-block takes its bottom edge as baseline; Arabic now clips with `clip-path`, and `.ugc-reel` aligns on the baseline with the headline's own line height; verified by a probe at 390/1440 for every word). Subtitle: فيديوهات Spokesperson, محتوى عضوي.
+  Offer line «أفكارك الإعلانية الخمس التالية، مخصصة لعلامتك التجارية. مجانًا.» (مجانًا in lime). Secondary CTA «مكتبة الفيديوهات». Free offers under the CTAs: the free video (links to the Arabic application) and the 10 hooks as a «قريبًا» tile (not a link: `src/i18n/ar/heroOffers.js`).
+- **Four Arabic service pages** (`/ar/ugc-video-agency`, `/ar/spokesperson-video-production`, `/ar/social-media-video-production`, `/ar/saas-video-production`): the existing configuration-driven pages with Arabic dictionary entries (`dict-pages.js`, translated from the approved Spanish sentences), Arabic H1s (`ar/hero.js`), FAQs, JSON-LD, hreflang, sitemap. The SaaS page has NO video gallery (text-led layout, no placeholders).
+- **Graspo case study** `/ar/case-studies/graspo` (`GraspoCaseStudyArPage.jsx`, `src/content/graspoCaseAr.js`; the header of that file lists exactly what is used and what is left out).
+- **Videos** (`portfolio.js`, all `languages: ['ar']` + `onlyIn: ['ar']`): Mohamed ×3 (`AR-MOHAMED-01..03`), One Royal ×3 (Mohamed presenting, `AR-ONEROYAL-01..03`), Graspo ×3 (the same Stream videos as the English Graspo panel, copied as Arabic-only entries so the English pages are untouched).
+- **RTL layer bug fixed**: the mirror used to ADD the swapped side without removing the original (`ml-5` gave a margin on both sides, `border-l` a border on both). The plugin now resets the original side in a rule one `:not()` below the mirrored value, so elements with both `ml-*` and `mr-*` keep both mirrored values. Also fixed: an escaped `\:before` inside a Tailwind class name was mistaken for a pseudo-element.
+
+**Evidence rules applied**
+- **View counts** (`views` on a portfolio entry, rendered by `ViewsBadge`): only the figures the English Graspo case study already publishes for the same Stream ids (7.5M, 1.2M, 295K; Meta Business Suite, Jan to Jun 2026). The owner's brief said "about 7M, 5M and 3M": the records support 7.5M / 1.2M / 295K (and 1.9M in the top-content list), so those are shown; nothing is summed per video or inferred from file names, and no badge says anything but views.
+- The Arabic case study leaves out the English study's lead figures (75 / 26 / 10), funnel and lead examples (their evidence is an internal tracker and client messages); no lead, ROAS, revenue or conversion claim is made in Arabic.
+- Reviews: the three published English reviews, translated at the owner's request (this overrides "never translate a client quote" for that section only); no label, no stars, no extra praise. A native reader should confirm the wording.
+
+**Open items for the owner** (see also the list above)
+1. A One Royal LOGO file is not in the repository or the owner's folders: the selector shows the name as text. Supply `public/clients/oneroyal.(png|svg)` and set it as `logo` in `SHOWCASE_INDUSTRIES_AR`.
+2. Confirm creator/brand consent for the Mohamed, One Royal and Graspo videos (they were approved by the brief; recorded in `AR_BRAND_APPROVAL`). One Royal script 3 shows sample profit figures on screen (client content, not a site claim): confirm it is fit to show.
+3. Classification: the One Royal videos are `spokesperson` (a presenter to camera); Mohamed's bag and clothing videos are `ugc`, the app video `spokesperson`. Change `type` if you see them differently. Spoken language `ar` is set from the Arabic captions; the audio was not transcribed.
+4. The Sharjah book-fair clip in the Mohamed folder features third parties (an author and a publisher's staff) and was NOT uploaded.
+5. Graspo's case-study lead/funnel sections stay English-only; say if the Arabic page should carry them with their evidence.
+
 ## Owner / legal review before Production
 1. Confirm creator consent + portfolio use for the 12 Arabic videos (and the spoken language of each: Arabic was set from the on-screen Arabic captions, no audio transcription was possible here).
 2. Arabic **free-video application** (`/ar/risk-free-trial`): consent wording, eligibility and hedges need owner + lawyer review (`AR_FREE_VIDEO_REVIEWED` in `release.js`, currently `false`: noindex, no sitemap/hreflang).

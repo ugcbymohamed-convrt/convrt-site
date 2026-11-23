@@ -154,7 +154,7 @@ export default {
   "See how we grew Graspo": "شاهد كيف نمّينا Graspo (بالإنجليزية)",
   "Your free Creative Growth Roadmap": "خطة النمو الإبداعية المجانية الخاصة بك",
   "Your next": "احصل على",
-  "5 winning ad concepts.": "5 أفكار إعلانية مخصصة لعلامتك.",
+  "5 winning ad concepts.": "5 أفكار إعلانية مجانًا.",
   "Five personalized creative ideas for your brand, built around your product and audience.": "خمس أفكار إبداعية مخصصة لعلامتك، مبنية على منتجك وجمهورك، تساعدك على استكشاف زوايا جديدة والعثور على فرص للاختبار.",
   "Completely free. No obligation.": "مجانية تمامًا ودون أي التزام.",
   "PRODUCT DEMO": "عرض المنتج",
