@@ -627,8 +627,8 @@ html:lang(ar) .font-display, html:lang(ar) .font-sans, html:lang(ar) button, htm
 :lang(ar) h1 { line-height: 1.3; }
 html[dir='rtl'] { direction: rtl; }
 /* Latin runs (brand names, e-mail addresses, URLs, phone numbers, amounts) keep left-to-right order inside Arabic text. Components mark them with <bdi> or dir="ltr"; inputs below default to LTR. */
-:lang(ar) input[type='email'], :lang(ar) input[type='url'], :lang(ar) input[type='tel'], :lang(ar) input[type='number'] { direction: ltr; text-align: right; }
-:lang(ar) input[type='email']::placeholder, :lang(ar) input[type='url']::placeholder, :lang(ar) input[type='tel']::placeholder { text-align: right; }
+:lang(ar) input[type='email'], :lang(ar) input[type='url'], :lang(ar) input[type='tel'], :lang(ar) input[type='number'], :lang(ar) input[autocomplete='url'], :lang(ar) input[name='website'] { direction: ltr; text-align: right; }
+:lang(ar) input[type='email']::placeholder, :lang(ar) input[type='url']::placeholder, :lang(ar) input[type='tel']::placeholder, :lang(ar) input[autocomplete='url']::placeholder { text-align: right; }
 
 /* Arabic: the small "nudge" of an arrow on hover goes the other way (the arrow glyphs themselves are mirrored in the components, see forward() in src/lib/rtl.js). */
 :lang(ar) .group:hover .group-hover\:translate-x-0\.5 { --tw-translate-x: -0.125rem; }

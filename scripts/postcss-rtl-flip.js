@@ -9,6 +9,7 @@
    What is deliberately NOT flipped:
    • `left: 50%` / `right: 50%` — the centring idiom (`left-1/2 -translate-x-1/2`) is symmetric and must keep working in both directions;
    • anything inside @keyframes (a motion path is not a layout side); review those by hand (see docs/multilingual-arabic.md);
+   • left-to-right islands: every mirrored selector ends in :not([dir="ltr"] *):not([dir="ltr"]), so an element marked dir="ltr" (English quotes, code) and its descendants keep their designed layout;
    • rules that are already scoped to [dir="rtl"] / :dir(rtl), so hand-written overrides and Tailwind's own rtl: variants win and are never mirrored twice.
    The copy is inserted straight after the original rule, so responsive variants keep their cascade order (md:ml-0 still overrides ml-4 in RTL). */
 
@@ -21,6 +22,14 @@ const VALUE_FLIPPED = new Set(['text-align', 'float', 'clear', 'transform-origin
 function inKeyframes(node) {
   for (let p = node.parent; p; p = p.parent) if (p.type === 'atrule' && /keyframes$/i.test(p.name)) return true
   return false
+}
+
+/* A left-to-right ISLAND (an element with dir="ltr" inside the page, e.g. an English client quote) keeps its original, un-mirrored layout: the mirrored copy must not match the island or anything inside it.
+   The exclusion is added to the LAST compound selector, before any pseudo-element (::before, ::placeholder, ::-webkit-scrollbar ...), which cannot be followed by more selectors. */
+const ISLAND = ':not([dir="ltr"] *):not([dir="ltr"])'
+function outsideLtrIslands(selector) {
+  const m = selector.match(/::|:(?:before|after|first-line|first-letter)\b/)
+  return m ? `${selector.slice(0, m.index)}${ISLAND}${selector.slice(m.index)}` : `${selector}${ISLAND}`
 }
 
 const plugin = () => ({
@@ -49,7 +58,7 @@ const plugin = () => ({
         }
       })
       if (!flipped.length) continue
-      const mirror = rule.selectors.map((s) => `[dir="rtl"] ${s}`)
+      const mirror = rule.selectors.map((s) => `[dir="rtl"] ${outsideLtrIslands(s)}`)
       const next = rule.next()
       if (next?.type === 'rule' && next.selectors.join(',') === mirror.join(',')) continue // already mirrored (running the plugin twice must not stack copies)
       const copy = new Rule({ selectors: mirror })

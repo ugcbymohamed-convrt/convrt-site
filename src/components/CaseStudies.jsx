@@ -5,6 +5,7 @@ import { useTr } from '../i18n/tr.js'
 import { currentLocale } from '../i18n/locale.js'
 import { primaryAction } from '../i18n/cta.js'
 import { esCaseCopy } from '../i18n/es/cases.js'
+import { arCaseCopy } from '../i18n/ar/cases.js'
 import { selectShowcase } from '../content/portfolio.js'
 import { streamPoster } from '../content/posterFrames.js'
 
@@ -67,7 +68,7 @@ export default function CaseStudies() {
   const base = CASES.find((c) => c.id === activeId)
   if (!base) return null
   // Spanish: the same cases (same videos, same figures), with Spanish tab/title/body from src/i18n/es/cases.js.
-  const localize = (c) => (locale === 'es' ? { ...c, ...esCaseCopy(c.id, GRASPO_FOLLOWING) } : c)
+  const localize = (c) => (locale === 'es' ? { ...c, ...esCaseCopy(c.id, GRASPO_FOLLOWING) } : locale === 'ar' ? { ...c, ...arCaseCopy(c.id, GRASPO_FOLLOWING) } : c)
   const active = localize(base)
 
   return (
