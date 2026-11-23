@@ -212,7 +212,7 @@ test('HTTP: translated pages answer 200 (with and without the trailing slash); u
     }
   }
   // French and Arabic are prepared, not built: no page exists, so the host answers 404 (never a fake English page under /fr or /ar).
-  for (const p of ['/fr', '/fr/', '/fr/pricing', '/ar', '/ar/', '/ar/pricing', '/de/', '/es/this-page-does-not-exist', '/es/blog', '/es/privacy', '/es/case-studies/graspo', '/es/pricing/extra']) {
+  for (const p of ['/fr', '/fr/', '/fr/pricing', '/ar', '/ar/', '/ar/pricing', '/de/', '/es/this-page-does-not-exist', '/es/blog', '/es/privacy', '/es/case-studies/other', '/es/pricing/extra']) {
     const r = await get(p)
     assert.equal(r.status, 404, p)
     assert.match(await r.text(), /name="robots" content="noindex, follow"/, p)

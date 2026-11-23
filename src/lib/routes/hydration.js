@@ -6,13 +6,14 @@
    instead (exactly as before prerendering existed). Pure: unit-tested. */
 
 import { DEFAULT_CASE_STUDY_ID, isValidCaseStudyId } from '../../caseStudies/registry.js'
+import { parsePath } from '../../i18n/paths.js'
 
 export const normalizePathname = (pathname) => pathname.replace(/\/$/, '') || '/'
 
 export function canHydrate({ pathname, search = '', hash = '', ssrPath }) {
   const path = normalizePathname(pathname)
   if (!ssrPath || ssrPath !== path) return false
-  if (path === '/case-studies') {
+  if (parsePath(path).basePath === '/case-studies') {
     const fromQuery = new URLSearchParams(search).get('case')
     if (fromQuery && isValidCaseStudyId(fromQuery) && fromQuery !== DEFAULT_CASE_STUDY_ID) return false
     const fromHash = hash.replace('#', '')

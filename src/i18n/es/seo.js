@@ -12,6 +12,12 @@
 
 import { SPRINT, USAGE_RIGHTS } from '../../seo/businessKnowledge.js'
 import { priceOf, formatPrice, isPricingApproved } from '../pricing.js'
+import { localizeStat } from '../format.js'
+import { GRASPO_METRICS } from '../../caseStudies/data.js'
+import { ELYON_PROOF } from '../../content/ugcProof.js'
+
+const es = (v) => localizeStat('es', v)
+const graspoFigure = (label) => es(GRASPO_METRICS.find((m) => m.label === label).value)
 
 /* Spanish share image. The default OG image (public/og/convrt-og.png) has ENGLISH text burned into it, so Spanish pages reuse it only until a Spanish version exists. Add
    public/og/convrt-og-es.png (1200x630 PNG, same layout; suggested text in docs/multilingual-spanish-release.md) and set this to true: every Spanish page then switches by itself.
@@ -85,6 +91,20 @@ export const ES_SEO = {
     title: '1 vídeo gratis: prueba nuestra producción | CONVRT',
     description:
       'Solicita un vídeo de prueba gratuito producido por CONVRT, con dos variaciones de gancho para testear. Cada solicitud se revisa y la oferta está sujeta a aprobación y a las condiciones del programa.',
+  },
+  // The two case studies (/es/case-studies is their duplicate default and canonicalises to /es/case-studies/graspo, so it has no entry of its own).
+  // Figures come from the data modules, never retyped; the Elyon 5.28x keeps its "reported by the client" and "one video" qualifiers.
+  '/case-studies/graspo': {
+    title: `Caso de éxito Graspo: ${graspoFigure('Total Views')} de visualizaciones orgánicas | CONVRT`,
+    description: `Cómo CONVRT construyó la presencia orgánica de Graspo, pensada en árabe: ${graspoFigure('Total Views')} de visualizaciones, ${graspoFigure('Accounts Reached')} de cuentas alcanzadas y ${graspoFigure('Unique Inbound Leads')} leads entrantes únicos, de enero a junio de 2026.`,
+    ogTitle: `Graspo × CONVRT: de la experiencia en impresión a ${graspoFigure('Total Views')} de visualizaciones orgánicas y demanda cualificada en MENA`,
+    ogDescription: 'Un caso de gestión de contenido en redes sociales: cómo una estrategia pensada en árabe desde el origen, la producción y la gestión de los contactos entrantes convirtieron a Graspo en un nombre reconocido en Arabia Saudí, Irak, Marruecos, Egipto y el resto de la región MENA.',
+  },
+  '/case-studies/elyon': {
+    title: 'Caso de éxito Elyon Dubai: anuncios de lujo con creadores | CONVRT',
+    description: `Cómo CONVRT creó un sistema repetible de anuncios con creadores para Elyon Dubai: más de ${es(ELYON_PROOF.creativesProduced).replace('+', '')} creativos, entrevistas en la calle y un vídeo con un ROAS de ${es(ELYON_PROOF.roas)} comunicado por el cliente.`,
+    ogTitle: 'Elyon Dubai × CONVRT: creativos de rendimiento para una marca de fragancias de lujo',
+    ogDescription: 'Anuncios con creadores, entrevistas en la calle y testeo creativo continuo, convertidos en compras y ROAS medibles para Elyon Dubai.',
   },
   '/contact': {
     title: 'Contacto | Habla con el estudio de CONVRT',

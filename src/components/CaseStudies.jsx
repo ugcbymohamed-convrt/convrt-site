@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
 import { attachHls } from '../lib/hls.js'
 import { GRASPO_FOLLOWING } from '../lib/siteStats.js'
-import { useTr } from '../i18n/tr.js'
+import { useTr, hrefFor } from '../i18n/tr.js'
 import { currentLocale } from '../i18n/locale.js'
 import { primaryAction } from '../i18n/cta.js'
 import { esCaseCopy } from '../i18n/es/cases.js'
@@ -187,10 +187,10 @@ export default function CaseStudies() {
               style={{ animationDelay: '220ms' }}
             >
               {tr('Read the full case studies:')}{' '}
-              {/* The full case studies exist in English only: from other languages the links say so and are marked lang="en". */}
-              <a href="/case-studies/graspo" {...(locale === 'en' ? {} : { lang: 'en' })} className="hover:text-lime underline underline-offset-2 transition-colors">Graspo</a>
+              {/* Spanish has its own case-study pages (/es/case-studies/…): hrefFor() points there; other languages without a translation would get the English page. */}
+              <a href={hrefFor('/case-studies/graspo')} className="hover:text-lime underline underline-offset-2 transition-colors">Graspo</a>
               {' · '}
-              <a href="/case-studies/elyon" {...(locale === 'en' ? {} : { lang: 'en' })} className="hover:text-lime underline underline-offset-2 transition-colors">Elyon Dubai</a>
+              <a href={hrefFor('/case-studies/elyon')} className="hover:text-lime underline underline-offset-2 transition-colors">Elyon Dubai</a>
             </p>
           </div>
 

@@ -19,6 +19,10 @@ export const TRANSLATED_PATHS = {
     '/creator-showcase',
     '/about',
     '/contact',
+    // The case studies. /case-studies renders the default study (Graspo) and canonicalises to it, exactly as in English (src/seo/siteSeo.js).
+    '/case-studies',
+    '/case-studies/graspo',
+    '/case-studies/elyon',
     // The Free Creative Growth Roadmap application (noindex like the English page, so never in the sitemap or hreflang): translated end to end.
     '/creative-growth-roadmap',
     // The 1 FREE video application (noindex like the English page and, on top of that, held by a release gate until the owner and the lawyer have reviewed it: src/i18n/release.js).

@@ -1,6 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
 import Hls from 'hls.js'
 import { streamPoster } from '../../content/posterFrames.js'
+import { useTr } from '../../i18n/tr.js'
+import { GRASPO_VIDEOS as VIDEOS } from '../../caseStudies/data.js'
+import { stat } from '../caseStudies/format.js'
 
 /* ─────────────────────────────────────────────
    CONTENT SHOWCASE
@@ -12,13 +15,8 @@ import { streamPoster } from '../../content/posterFrames.js'
 
 const ACCENT = '#d5ff40'
 
-const VIDEOS = [
-  { id: '15dd5505109f6821ccdcb13fc3cdc1fd', views: '295K' },
-  { id: '3616606e3ca6d1a85c8a57d7cc2f656f', views: '1.2M' },
-  { id: 'c1379ace38f2fa19ef2a45de1bb5d4b1', views: '7.5M' },
-]
-
 export default function GraspoShowcase() {
+  const tr = useTr()
   return (
     <section id="showcase" className="relative py-16 md:py-24 overflow-hidden">
       <div
@@ -30,14 +28,13 @@ export default function GraspoShowcase() {
         <div className="max-w-2xl mb-12 md:mb-14 text-center mx-auto">
           <div className="inline-flex items-center gap-2 rounded-full border border-hairline bg-surface-1/60 px-4 py-1.5 mb-6 backdrop-blur">
             <span className="h-1.5 w-1.5 rounded-full animate-pulse" style={{ background: ACCENT }} />
-            <span className="text-xs font-medium uppercase tracking-[0.18em] text-ink-muted">The Content</span>
+            <span className="text-xs font-medium uppercase tracking-[0.18em] text-ink-muted">{tr('The Content')}</span>
           </div>
           <h2 className="font-display font-bold text-ink tracking-display leading-[1.05] text-3xl md:text-[44px]">
-            What actually ran on the feed.
+            {tr('What actually ran on the feed.')}
           </h2>
           <p className="mt-6 text-[15px] md:text-base text-ink-muted leading-relaxed">
-            Native, platform-ready short-form video, built to stop the scroll of someone who
-            might genuinely need a print run, not just to look good in a portfolio.
+            {tr('Native, platform-ready short-form video, built to stop the scroll of someone who might genuinely need a print run, not just to look good in a portfolio.')}
           </p>
         </div>
 
@@ -52,6 +49,7 @@ export default function GraspoShowcase() {
 }
 
 function ShowcasePhone({ video }) {
+  const tr = useTr()
   const wrapperRef = useRef(null)
   const videoRef = useRef(null)
   const [inView, setInView] = useState(false)
@@ -135,7 +133,7 @@ function ShowcasePhone({ video }) {
           ) : (
             <img
               src={streamPoster(video.id, { height: 600 })}
-              alt="Graspo organic content still"
+              alt={tr('Graspo organic content still')}
               loading="lazy"
               className="absolute inset-0 w-full h-full object-cover"
             />
@@ -149,7 +147,7 @@ function ShowcasePhone({ video }) {
           <button
             type="button"
             onClick={() => setMuted((m) => !m)}
-            aria-label={muted ? 'Unmute' : 'Mute'}
+            aria-label={muted ? tr('Unmute') : tr('Mute')}
             className="absolute bottom-3 right-3 z-30 h-8 w-8 rounded-full flex items-center justify-center bg-black/55 backdrop-blur-md text-white transition-colors hover:bg-black/75 active:scale-95"
           >
             {muted
@@ -165,10 +163,10 @@ function ShowcasePhone({ video }) {
       </div>
       <p className="mt-4 text-center">
         <span className="block font-display font-bold leading-none text-2xl md:text-[28px] tabular-nums" style={{ color: ACCENT }}>
-          {video.views}
+          {stat(video.views)}
         </span>
         <span className="mt-1.5 block text-[10.5px] font-semibold uppercase tracking-[0.16em] text-ink-subtle">
-          views
+          {tr('views')}
         </span>
       </p>
     </div>

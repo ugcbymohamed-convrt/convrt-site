@@ -1,5 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
 import { GRASPO_FOLLOWING } from '../../lib/siteStats.js'
+import { useTr } from '../../i18n/tr.js'
+import { GRASPO_IG_COUNTRIES as IG_COUNTRIES, GRASPO_FB_COUNTRIES as FB_COUNTRIES, GRASPO_DEMOGRAPHICS as DEMO } from '../../caseStudies/data.js'
+import { esGraspoFollowing } from '../../i18n/es/casestudies.js'
+import { stat, pct, isEnglish } from '../caseStudies/format.js'
 
 /* ─────────────────────────────────────────────
    AUDIENCE / MENA REACH
@@ -8,24 +12,6 @@ import { GRASPO_FOLLOWING } from '../../lib/siteStats.js'
 ───────────────────────────────────────────── */
 
 const ACCENT = '#d5ff40'
-
-const IG_COUNTRIES = [
-  { name: 'Saudi Arabia', pct: 17 },
-  { name: 'Iraq', pct: 14.2 },
-  { name: 'Morocco', pct: 8.3 },
-  { name: 'Algeria', pct: 7.7 },
-  { name: 'Egypt', pct: 7.6 },
-  { name: 'United Arab Emirates', pct: 5.8 },
-]
-
-const FB_COUNTRIES = [
-  { name: 'Egypt', pct: 22.8 },
-  { name: 'Algeria', pct: 10.1 },
-  { name: 'Iraq', pct: 8.4 },
-  { name: 'Syria', pct: 7.1 },
-  { name: 'Morocco', pct: 6.8 },
-  { name: 'Yemen', pct: 4.3 },
-]
 
 function useInView(threshold = 0.15) {
   const ref = useRef(null)
@@ -44,6 +30,8 @@ function useInView(threshold = 0.15) {
 }
 
 export default function GraspoAudience() {
+  const tr = useTr()
+  const en = isEnglish()
   const [ref, visible] = useInView()
   const maxPct = 25
 
@@ -53,24 +41,22 @@ export default function GraspoAudience() {
         <div className="max-w-2xl mx-auto mb-12 md:mb-16 text-center">
           <div className="inline-flex items-center gap-2 rounded-full border border-hairline bg-surface-1/60 px-4 py-1.5 mb-6 backdrop-blur">
             <span className="h-1.5 w-1.5 rounded-full animate-pulse" style={{ background: ACCENT }} />
-            <span className="text-xs font-medium uppercase tracking-[0.18em] text-ink-muted">Audience / MENA Reach</span>
+            <span className="text-xs font-medium uppercase tracking-[0.18em] text-ink-muted">{tr('Audience / MENA Reach')}</span>
           </div>
           <h2 className="font-display font-bold text-ink tracking-display leading-[1.05] text-3xl md:text-[44px]">
-            Millions of views are useless
+            {tr('Millions of views are useless')}
             <br />
-            if they're the wrong audience.
+            {tr("if they're the wrong audience.")}
           </h2>
           <p className="mt-6 text-[15px] md:text-base text-ink-muted leading-relaxed">
-            Graspo's content wasn't just watched at scale, it was watched in the exact markets
-            where its print buyers, publishers and agencies actually operate. The same countries
-            show up on both sides: in the analytics, and in the inbound leads.
+            {tr("Graspo's content wasn't just watched at scale, it was watched in the exact markets where its print buyers, publishers and agencies actually operate. The same countries show up on both sides: in the analytics, and in the inbound leads.")}
           </p>
         </div>
 
         {/* Country rankings */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10">
-          <CountryPanel title="Instagram, top countries" countries={IG_COUNTRIES} visible={visible} maxPct={maxPct} delayBase={0} />
-          <CountryPanel title="Facebook, top countries" countries={FB_COUNTRIES} visible={visible} maxPct={maxPct} delayBase={0.4} color="#3b82f6" />
+          <CountryPanel title={tr('Instagram, top countries')} countries={IG_COUNTRIES} visible={visible} maxPct={maxPct} delayBase={0} />
+          <CountryPanel title={tr('Facebook, top countries')} countries={FB_COUNTRIES} visible={visible} maxPct={maxPct} delayBase={0.4} color="#3b82f6" />
         </div>
 
         {/* Age & gender */}
@@ -78,31 +64,38 @@ export default function GraspoAudience() {
           <DemoCard
             platform="Instagram"
             followers={GRASPO_FOLLOWING.instagram}
-            genderSplit="83% men · 17% women"
-            peakAge="25–34"
+            genderSplit={tr(DEMO.instagram.genderSplit)}
+            peakAge={DEMO.instagram.peakAge}
             color={ACCENT}
           />
           <DemoCard
             platform="Facebook"
             followers={GRASPO_FOLLOWING.facebook}
-            genderSplit="96% men · 4% women"
-            peakAge="35–44"
+            genderSplit={tr(DEMO.facebook.genderSplit)}
+            peakAge={DEMO.facebook.peakAge}
             color="#3b82f6"
           />
         </div>
 
-        <p className="mt-6 text-[13px] text-ink-subtle leading-relaxed max-w-2xl mx-auto text-center">
-          Working-age adults, overwhelmingly male, concentrated in the 25–44 range, the
-          demographic most likely to hold purchasing or procurement decisions for a printing
-          project, not a passive consumer audience. Both followings have kept growing since the
-          report window, now {GRASPO_FOLLOWING.facebook} on Facebook, {GRASPO_FOLLOWING.instagram} on Instagram and {GRASPO_FOLLOWING.tiktok} on TikTok ({GRASPO_FOLLOWING.combined} combined).
-        </p>
+        {en ? (
+          <p className="mt-6 text-[13px] text-ink-subtle leading-relaxed max-w-2xl mx-auto text-center">
+            Working-age adults, overwhelmingly male, concentrated in the 25–44 range, the
+            demographic most likely to hold purchasing or procurement decisions for a printing
+            project, not a passive consumer audience. Both followings have kept growing since the
+            report window, now {GRASPO_FOLLOWING.facebook} on Facebook, {GRASPO_FOLLOWING.instagram} on Instagram and {GRASPO_FOLLOWING.tiktok} on TikTok ({GRASPO_FOLLOWING.combined} combined).
+          </p>
+        ) : (
+          <p className="mt-6 text-[13px] text-ink-subtle leading-relaxed max-w-2xl mx-auto text-center">
+            {tr('Working-age adults, overwhelmingly male, concentrated in the 25–44 range, the demographic most likely to hold purchasing or procurement decisions for a printing project, not a passive consumer audience.')} {esGraspoFollowing(GRASPO_FOLLOWING)}
+          </p>
+        )}
       </div>
     </section>
   )
 }
 
 function CountryPanel({ title, countries, visible, maxPct, delayBase = 0, color = ACCENT }) {
+  const tr = useTr()
   return (
     <div className="rounded-3xl border border-hairline bg-surface-1/40 px-7 py-7 md:px-8 md:py-8">
       <p className="text-sm font-semibold text-ink mb-6">{title}</p>
@@ -110,8 +103,8 @@ function CountryPanel({ title, countries, visible, maxPct, delayBase = 0, color 
         {countries.map((c, i) => (
           <div key={c.name}>
             <div className="flex items-baseline justify-between mb-1.5">
-              <span className="text-[13px] text-ink-muted">{c.name}</span>
-              <span className="text-[12px] font-semibold text-ink tabular-nums">{c.pct}%</span>
+              <span className="text-[13px] text-ink-muted">{tr(c.name)}</span>
+              <span className="text-[12px] font-semibold text-ink tabular-nums">{pct(c.pct)}</span>
             </div>
             <div className="h-2 w-full rounded-full bg-surface-3 overflow-hidden">
               <div
@@ -131,16 +124,17 @@ function CountryPanel({ title, countries, visible, maxPct, delayBase = 0, color 
 }
 
 function DemoCard({ platform, followers, genderSplit, peakAge, color }) {
+  const tr = useTr()
   return (
     <div className="rounded-3xl border border-hairline bg-surface-1/40 px-7 py-6 flex items-center justify-between gap-4">
       <div>
         <p className="text-xs font-semibold uppercase tracking-[0.14em]" style={{ color }}>{platform}</p>
         <p className="mt-1.5 text-[13px] text-ink-muted">{genderSplit}</p>
-        <p className="text-[13px] text-ink-muted">Peak age group: <span className="text-ink font-medium">{peakAge}</span></p>
+        <p className="text-[13px] text-ink-muted">{tr('Peak age group:')} <span className="text-ink font-medium">{peakAge}</span></p>
       </div>
       <div className="text-right shrink-0">
-        <p className="font-display font-bold text-2xl text-ink tabular-nums">{followers}</p>
-        <p className="text-[11px] text-ink-subtle">followers today</p>
+        <p className="font-display font-bold text-2xl text-ink tabular-nums">{stat(followers)}</p>
+        <p className="text-[11px] text-ink-subtle">{tr('followers today')}</p>
       </div>
     </div>
   )

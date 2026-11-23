@@ -3,17 +3,16 @@ import Hls from 'hls.js'
 import Eyebrow from '../caseStudies/shared/Eyebrow.jsx'
 import { ACCENT } from './theme.js'
 import { streamPoster } from '../../content/posterFrames.js'
+import { useTr } from '../../i18n/tr.js'
+import { ELYON_VIDEOS as VIDEOS } from '../../caseStudies/data.js'
+import { isEnglish } from '../caseStudies/format.js'
 
 /* Real Elyon creative — the same three Cloudflare Stream assets featured
    in the homepage Case Studies carousel, reused here so the case study
    plays actual campaign content, not stand-ins. */
-const VIDEOS = [
-  { id: 'fa02007b36fae2b3bb68c97cdd00e9fc', label: 'Creator-Led Ad' },
-  { id: '0905b814e2ba3950197b5bfe1cefae38', label: 'Street Interview' },
-  { id: '9e6cb8438c9b0c1ab8b55953718eddde', label: 'Performance Concept' },
-]
 
 export default function ElyonShowcase() {
+  const tr = useTr()
   return (
     <section className="relative py-14 md:py-20 overflow-hidden">
       <div
@@ -23,13 +22,12 @@ export default function ElyonShowcase() {
       />
       <div className="relative mx-auto max-w-7xl px-5 md:px-8">
         <div className="max-w-2xl mb-12 md:mb-14 text-center mx-auto">
-          <Eyebrow label="The Creative" accent={ACCENT} className="mb-6" />
+          <Eyebrow label={tr('The Creative')} accent={ACCENT} className="mb-6" />
           <h2 className="font-display font-bold text-ink tracking-display leading-[1.05] text-3xl md:text-[44px]">
-            What actually ran on paid social.
+            {tr('What actually ran on paid social.')}
           </h2>
           <p className="mt-6 text-[15px] md:text-base text-ink-muted leading-relaxed">
-            Real campaign creative from the Elyon library, built to earn attention and still look
-            like it belongs to a luxury fragrance brand.
+            {tr('Real campaign creative from the Elyon library, built to earn attention and still look like it belongs to a luxury fragrance brand.')}
           </p>
         </div>
 
@@ -44,6 +42,7 @@ export default function ElyonShowcase() {
 }
 
 function VideoPhone({ video }) {
+  const tr = useTr()
   const wrapperRef = useRef(null)
   const videoRef = useRef(null)
   const [inView, setInView] = useState(false)
@@ -127,7 +126,7 @@ function VideoPhone({ video }) {
           ) : (
             <img
               src={streamPoster(video.id, { height: 600 })}
-              alt={`Elyon ${video.label} still`}
+              alt={isEnglish() ? `Elyon ${video.label} still` : `${tr('Elyon still')}: ${tr(video.label)}`}
               loading="lazy"
               className="absolute inset-0 w-full h-full object-cover"
             />
@@ -141,7 +140,7 @@ function VideoPhone({ video }) {
           <button
             type="button"
             onClick={() => setMuted((m) => !m)}
-            aria-label={muted ? 'Unmute' : 'Mute'}
+            aria-label={muted ? tr('Unmute') : tr('Mute')}
             className="absolute bottom-3 right-3 z-30 h-8 w-8 rounded-full flex items-center justify-center bg-black/55 backdrop-blur-md text-white transition-colors hover:bg-black/75 active:scale-95"
           >
             {muted
@@ -157,7 +156,7 @@ function VideoPhone({ video }) {
       </div>
       <p className="mt-4 text-center">
         <span className="block text-[10.5px] font-semibold uppercase tracking-[0.16em]" style={{ color: ACCENT }}>
-          {video.label}
+          {tr(video.label)}
         </span>
       </p>
     </div>

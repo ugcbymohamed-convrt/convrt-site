@@ -78,7 +78,7 @@ test('FAQ component renders the shared data (and its links); services/hero/foote
   assert.ok(read('src/components/Hero.jsx').includes('From creative strategy and scripting to creator casting, filming and editing. We produce human-led UGC ads, SaaS videos, spokesperson videos and organic social content, ready to perform.'))
   assert.match(read('src/components/Footer.jsx'), /href=\{h\('\/pricing'\)\}>Pricing<\/a>/)
   const cs = read('src/components/CaseStudies.jsx')
-  assert.ok(cs.includes('href="/case-studies/graspo"') && cs.includes('href="/case-studies/elyon"') && !cs.includes('case=elyon'), 'case-study links point at the canonical study pages')
+  assert.ok(cs.includes("href={hrefFor('/case-studies/graspo')}") && cs.includes("href={hrefFor('/case-studies/elyon')}") && !cs.includes('case=elyon'), 'case-study links point at the canonical study pages')
   assert.ok(!/activeId === 'graspo' && \(/.test(cs.slice(cs.indexOf('Always-present'))), 'the links are no longer conditional on the selected tab')
 })
 
