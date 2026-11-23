@@ -31,6 +31,9 @@ export const faqNodeFr = (items, id) => ({
 const BREADCRUMB_NAMES = {
   '/pricing': 'Tarifs',
   '/ugc-video-agency': 'Agence UGC',
+  '/spokesperson-video-production': 'Vidéos avec porte-parole',
+  '/social-media-video-production': 'Vidéos pour les réseaux sociaux',
+  '/saas-video-production': 'Vidéos pour le SaaS',
   '/creator-showcase': 'Créateurs',
 }
 

@@ -24,11 +24,15 @@ export const TRANSLATED_PATHS = {
     // The 1 FREE video application (noindex like the English page and, on top of that, held by a release gate until the owner and the lawyer have reviewed it: src/i18n/release.js).
     '/risk-free-trial',
   ],
-  // French (France-first, Nov 2026): the homepage, the ONE approved French service page (UGC), pricing, the creator showcase and the two conversion flows. Everything else
-  // (spokesperson, SaaS, organic, About, Contact, blog, case studies) is deliberately not translated yet: French pages link to the English page and say so.
+  // French (France-first, Nov 2026): the homepage, the four service pages (UGC, spokesperson, organic social, SaaS: native French, no video galleries, see
+  // docs/multilingual-french-release.md), pricing, the creator showcase and the two conversion flows. Everything else (About, Contact, blog, case studies, legal)
+  // is deliberately not translated yet: French pages link to the English page and say so.
   fr: [
     '/',
     '/ugc-video-agency',
+    '/spokesperson-video-production',
+    '/social-media-video-production',
+    '/saas-video-production',
     '/pricing',
     '/creator-showcase',
     '/creative-growth-roadmap',

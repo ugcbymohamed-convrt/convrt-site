@@ -12,6 +12,30 @@ export const FR_HERO = {
     sizer: 'lancements.',
     secondary: { label: 'Voir les exemples UGC', href: CREATOR_SHOWCASE_PATH },
   },
+  /* The three other French service pages (no video stage: the hero is text-led, see UgcHero). Native headlines, not word for word. Each H1 carries its page's primary keyword
+     (FR_PRIMARY_KEYWORDS in seo.js) and none borrows « agence UGC ». The server HTML holds only the first rolling word. The secondary button goes to the in-page section, never to a
+     video gallery. A   keeps the colon attached to the word before it. */
+  'spokesperson-h1': {
+    lines: [['Vidéos', 'avec', 'porte-parole :'], ['de', 'vrais', 'présentateurs']],
+    lead: ['pour'],
+    words: ['convaincre', 'expliquer', 'présenter', 'démontrer'],
+    sizer: 'convaincre.',
+    secondary: { label: 'Voir comment nous travaillons', href: '#how-it-works' },
+  },
+  'saas-h1': {
+    lines: [['Vidéos', 'explicatives', 'SaaS :'], ['conçues', 'pour', 'expliquer']],
+    lead: ['et'],
+    words: ['convaincre', 'engager', 'captiver'],
+    sizer: 'convaincre.',
+    secondary: { label: 'Voir les formats', href: '#saas-formats' },
+  },
+  'organic-h1': {
+    lines: [['Vidéos', 'pour', 'les', 'réseaux', 'sociaux :'], ['du', 'contenu', 'organique', 'pensé']],
+    lead: ['pour'],
+    words: ['engager', 'inspirer', 'convaincre'],
+    sizer: 'convaincre.',
+    secondary: { label: 'Voir comment nous travaillons', href: '#how-it-works' },
+  },
 }
 
 /* THE FRENCH HOMEPAGE HERO: the English hero's structure exactly (headline, description, offer line, two CTAs, then the free offers underneath), with short French copy.

@@ -6,6 +6,11 @@
      /fr/ugc-video-agency       agence UGC (P1: "agence ugc" 500, "agence ugc france" 50): the agency-buying intent, one page, no city pages (no French office is claimed)
      /fr/pricing                tarifs UGC / prix de production vidéo (decision-stage terms with no measured volume, still buyer-relevant)
      /fr/creator-showcase       exemples de vidéos UGC de créateurs francophones
+   /fr/spokesperson-video-production   vidéo avec porte-parole (seed "vidéo porte parole", "vidéo avec présentateur": no measured volume; adjacent "vidéo présentation entreprise" 500). Own page: the
+                                       presenter-led, scripted video for site, demos, apps and ads, never "agence UGC"
+   /fr/saas-video-production           vidéo explicative SaaS (seeds "vidéo explicative saas", "vidéo démonstration logiciel", "agence vidéo saas": no measured volume): explainers, product demos, animated videos
+   /fr/social-media-video-production   vidéos pour les réseaux sociaux, contenu organique ("agence vidéo réseaux sociaux" 50, "agence production vidéo réseaux sociaux" seed): short-form organic video, never paid UGC
+   Distinct primary keyword per page: FR_PRIMARY_KEYWORDS below (tests/french-services.test.mjs checks each one is in its page's title and H1 and that no page borrows another's).
    The homepage deliberately does NOT target "agence UGC" as its primary phrase, so the two pages do not compete; it introduces UGC and links to the dedicated page. */
 
 import { SPRINT, USAGE_RIGHTS } from '../../seo/businessKnowledge.js'
@@ -18,6 +23,15 @@ export const FR_OG_IMAGE_READY = true // public/og/convrt-og-fr.png: same layout
 export const FR_OG_IMAGE_PATH = '/og/convrt-og-fr.png'
 
 export const FR_OG_IMAGE_ALT = 'CONVRT : des vidéos publicitaires pensées pour capter l’attention. Publicités UGC, vidéos avec porte-parole et contenus pour les réseaux sociaux.'
+
+/* The primary keyword of each French service page (one each, so the pages never compete: « agence UGC » belongs to /fr/ugc-video-agency only). The rounded Keyword Planner volumes, when
+   any, are in the header above; most of these seeds have none, so no volume is quoted anywhere. */
+export const FR_PRIMARY_KEYWORDS = {
+  '/ugc-video-agency': 'agence UGC',
+  '/spokesperson-video-production': 'porte-parole',
+  '/saas-video-production': 'vidéo explicative SaaS',
+  '/social-media-video-production': 'réseaux sociaux',
+}
 
 export const FR_SEO = {
   '/': {
@@ -35,6 +49,27 @@ export const FR_SEO = {
       : `Agence UGC : production de vidéos UGC pour vos publicités sur les réseaux sociaux, de la stratégie au montage. Offres mensuelles et ponctuelles, avec ${USAGE_RIGHTS.includedMonths} mois de droits d’utilisation mondiaux inclus.`,
     ogTitle: 'CONVRT : des publicités UGC pensées pour les réseaux sociaux payants',
     ogDescription: 'Des publicités UGC portées par de vrais créateurs, produites de A à Z, avec des tarifs et des droits d’utilisation transparents.',
+  },
+  '/spokesperson-video-production': {
+    title: 'Vidéo avec porte-parole : de vrais présentateurs | CONVRT',
+    description:
+      'Production de vidéos avec porte-parole : de vrais présentateurs face caméra, en plusieurs langues, pour votre site, vos démos produit, vos applications et vos publicités. Du script au montage.',
+    ogTitle: 'CONVRT : production de vidéos avec porte-parole',
+    ogDescription: 'Des vidéos avec porte-parole portées par de vrais présentateurs, en plusieurs langues, pour votre site, vos démos produit, vos applications et vos publicités.',
+  },
+  '/saas-video-production': {
+    title: 'Vidéo explicative SaaS : démos produit et publicités | CONVRT',
+    description:
+      'Production vidéo SaaS pour les éditeurs de logiciels et d’applications : vidéos explicatives, démonstrations produit, vidéos animées et publicités, du concept à la livraison.',
+    ogTitle: 'CONVRT : production vidéo SaaS pour les éditeurs de logiciels et d’applications',
+    ogDescription: 'Vidéos explicatives, démonstrations produit, vidéos animées et publicités pour les logiciels : stratégie, script, présentateurs, motion design et montage au même endroit.',
+  },
+  '/social-media-video-production': {
+    title: 'Vidéos pour les réseaux sociaux : contenu organique | CONVRT',
+    description:
+      'Production de vidéos organiques pour les réseaux sociaux : contenu court porté par des humains, de la stratégie à la publication et à l’animation de communauté sur Facebook, Instagram et TikTok.',
+    ogTitle: 'CONVRT : production et gestion de vidéos organiques pour les réseaux sociaux',
+    ogDescription: 'Des vidéos courtes portées par des humains pour vos réseaux sociaux, de la stratégie de contenu et du script au tournage, au montage, à la publication et à l’animation de communauté.',
   },
   '/pricing': {
     title: 'Tarifs UGC et production vidéo publicitaire | CONVRT',

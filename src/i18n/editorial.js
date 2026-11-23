@@ -21,6 +21,7 @@ export const EDITORIAL = {
     caption: FR.captionFr, faqTitles: FR.FR_FAQ_TITLES, stageTitles: FR.FR_STAGE_TITLES, finalCta: FR.FR_FINAL_CTA, sectionIntros: FR.FR_SECTION_INTROS,
     testimonialsNote: FR.FR_TESTIMONIALS_NOTE, formatMoney: formatMoneyFr, homeLabel: 'CONVRT — accueil', quoteLang: 'en',
     fallbackNote: 'en anglais',
+    wholeSentenceLists: true, // lists inside a sentence are translated as one sentence (French articles and elision), see OrganicPackages.jsx
     quoteTranslations: FR_QUOTE_TRANSLATIONS, quoteLabels: FR_QUOTE_LABELS, reviewExcerpts: FR_REVIEW_EXCERPTS,
     turnaround: (a, b) => `${a.days} jours ouvrés pour ${a.name} et ${b.days} pour ${b.name}, à compter de la validation des concepts et des scripts, et non du paiement.`,
   },

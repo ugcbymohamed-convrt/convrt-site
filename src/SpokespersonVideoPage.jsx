@@ -13,11 +13,12 @@ import { useDocumentHead } from './lib/useDocumentHead.js'
 import { pageHead } from './seo/siteSeo.js'
 import { PATHS } from './routes.js'
 import { SPOKESPERSON_FAQ } from './seo/spokespersonFaq.js'
-import { selectSpokespersonHero, selectSpokespersonGallery, forPageLanguage, orderedBy } from './content/portfolio.js'
+import { selectSpokespersonHero, selectSpokespersonGallery, orderedBy } from './content/portfolio.js'
 import {
   SPOKESPERSON_HERO, SPOKESPERSON_STAGES, SPOKESPERSON_PROCESS, SPOKESPERSON_GALLERY, SPOKESPERSON_CTA, SPOKESPERSON_PATH_LABEL, SPOKESPERSON_VIDEO_ORDER,
 } from './content/spokespersonPage.js'
 import { tr, T, hrefFor } from './i18n/tr.js'
+import { serviceVideos } from './i18n/serviceVideos.js'
 
 /* /spokesperson-video-production: the Spokesperson service page. It reuses the UGC page's architecture and design system, and each section is
    the same configuration-driven component fed with spokesperson content (src/content/spokespersonPage.js):
@@ -57,8 +58,8 @@ export default function SpokespersonVideoPage() {
     trackEvent('spokesperson_page_view')
   }, [])
 
-  const heroItems = orderedBy(forPageLanguage(selectSpokespersonHero()), SPOKESPERSON_VIDEO_ORDER.hero)
-  const galleryItems = forPageLanguage(selectSpokespersonGallery())
+  const heroItems = orderedBy(serviceVideos(selectSpokespersonHero()), SPOKESPERSON_VIDEO_ORDER.hero)
+  const galleryItems = serviceVideos(selectSpokespersonGallery())
 
   return (
     <>

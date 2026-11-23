@@ -13,3 +13,10 @@ export const FR_CORE_SERVICES = {
     description: 'Stratégie de contenu, production, publication sur les comptes du client, rapports de performance et animation sur Facebook, Instagram et TikTok.',
   },
 }
+
+/* SaaS is a core service in the English data (CORE_SERVICES), but the French homepage graph lists only the three services it always had, so it is kept out of FR_CORE_SERVICES (the
+   homepage JSON-LD is unchanged). Used only by the /fr/saas-video-production Service node. Same meaning as CORE_SERVICES.saas. */
+export const FR_SAAS_SERVICE = {
+  name: 'Production vidéo SaaS',
+  description: 'Production vidéo pour les éditeurs de logiciels et d’applications : vidéos explicatives SaaS, démonstrations produit, présentations de l’application, vidéos explicatives animées, présentations de logiciels portées par des humains et publicités vidéo, produites de A à Z par CONVRT.',
+}

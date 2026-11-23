@@ -11,6 +11,9 @@ import geo from './dict-geo.js'
 import trust from './dict-trust.js'
 import v2 from './dict-v2.js'
 import runtime from './dict-runtime.js'
+import spokesperson from './dict-spokesperson.js'
+import saas from './dict-saas.js'
+import organic from './dict-organic.js'
 
-export default { ...shell, ...home, ...services, ...pricing, ...showcase, ...roadmap, ...riskfree, ...scenes, ...geo, ...trust, ...v2, ...runtime }
-export const PARTS = { shell, home, services, pricing, showcase, roadmap, riskfree, scenes, geo, trust, runtime, v2 }
+export default { ...shell, ...home, ...services, ...pricing, ...showcase, ...roadmap, ...riskfree, ...scenes, ...geo, ...trust, ...v2, ...runtime, ...spokesperson, ...saas, ...organic }
+export const PARTS = { shell, home, services, pricing, showcase, roadmap, riskfree, scenes, geo, trust, runtime, v2, spokesperson, saas, organic }

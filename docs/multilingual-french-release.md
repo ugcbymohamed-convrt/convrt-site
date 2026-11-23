@@ -8,13 +8,13 @@ Baseline: Production `main` (afc0da4). The unmerged `english-design-review-1` (c
 | URL | Purpose | Source | Search intent | CTA |
 |---|---|---|---|---|
 | `/fr/` | Broad commercial video production | English home | agence vidéo publicitaire, production vidéo publicitaire, création de contenus (P1/P2) | `/fr/creative-growth-roadmap` |
-| `/fr/ugc-video-agency` | The one French service page | English UGC page + a French-only "L'essentiel" block | agence UGC (P1: 500 rounded searches, High ads competition) | Roadmap, pricing |
+| `/fr/ugc-video-agency` | French service page (UGC) | English UGC page + a French-only "L'essentiel" block | agence UGC (P1: 500 rounded searches, High ads competition) | Roadmap, pricing |
 | `/fr/pricing` | EUR packages, rights, FAQ | English pricing | tarifs UGC / prix vidéo UGC (no measured volume) | Roadmap |
 | `/fr/creator-showcase` | 5 French-spoken creator videos | English showcase | exemples de vidéos UGC francophones | Roadmap |
 | `/fr/creative-growth-roadmap` | Free 5-concept application (noindex like English) | English Roadmap | n/a | Calendly gate |
 | `/fr/risk-free-trial` | 1 free video application (noindex, HELD until owner/legal review) | English page | n/a | application |
 
-Not translated on purpose (French links say « en anglais »): Spokesperson, SaaS, Organic Social, About, Contact, Privacy/Terms/Legal Notice, case studies, blog, referrals, 10 free hooks. Nav hides them; footer, service cards and FAQ links show them with the note.
+Not translated on purpose (French links say « en anglais »): About, Contact, Privacy/Terms/Legal Notice, case studies, blog, referrals, 10 free hooks. Nav hides them; footer, service cards and FAQ links show them with the note. (Spokesperson, SaaS and Organic Social were in this list until the scope change below.)
 
 ## Copy
 Native French (`docs/multilingual-french-copy-guide.md`), written from the English meaning and the owner's brief, not from Spanish. Homepage H1: « Des vidéos publicitaires pensées pour [convertir | convaincre | marquer | vendre] ». UGC H1: « Agence UGC : des vidéos authentiques pour vos [publicités | campagnes | lancements] ». The homepage does not target « agence UGC » (no cannibalization). Hero CTA: « Recevoir 5 concepts sur mesure » (shortened from « …5 concepts publicitaires sur mesure » so the one-line button fits; the line above it says « Vos 5 prochains concepts publicitaires. Sur mesure pour votre marque. Offerts. »).
@@ -40,3 +40,23 @@ French Roadmap (client-side qualification, Calendly gate) and free-video applica
 2. Creator agreements and language confirmation (above).
 3. Decide `fr-FR` vs `fr` for hreflang; decide whether the French Contact/About pages are needed.
 4. Spanish handoff: none of the French work changes a Spanish string; Spanish pages gain only the French language option.
+
+## French service pages: Spokesperson, SaaS, Organic Social (branch `fr-services`, Nov 2026)
+Scope change (owner): a French visitor is never sent to English for a service. `/fr/spokesperson-video-production`, `/fr/social-media-video-production` and `/fr/saas-video-production` are native French pages (same slugs as English), registered in `src/i18n/registry.js`; `isFallbackPath()` is therefore false for them and every « (en anglais) » note on a link to them disappeared by itself (home cards, footer, pricing, FAQ links). Pages that stay English-only (About, Contact, legal, case studies, blog) keep the note. Two dictionary values that carried the note by hand (`See spokesperson video production`, `See organic social video production` in `dict-pricing.js`) were edited.
+
+| URL | Primary keyword | H1 | Price | CTA |
+|---|---|---|---|---|
+| `/fr/spokesperson-video-production` | « vidéo avec porte-parole » | Vidéos avec porte-parole : de vrais présentateurs pour convaincre. | only inside the FAQ (Sprint / Sprint Plus, EUR tokens) | Roadmap |
+| `/fr/saas-video-production` | « vidéo explicative SaaS » | Vidéos explicatives SaaS : conçues pour expliquer et convaincre. | none (custom-scoped) | Roadmap |
+| `/fr/social-media-video-production` | « vidéos pour les réseaux sociaux » (contenu organique) | Vidéos pour les réseaux sociaux : du contenu organique pensé pour engager. | Organic Light / Growth cards + FAQ (EUR tokens) | strategy call (Calendly), like English |
+
+Keywords: `FR_PRIMARY_KEYWORDS` in `src/i18n/fr/seo.js` (one each; « agence UGC » stays on the UGC page; a test checks no page borrows it). The research CSVs give no measured volume for the three seeds (« vidéo porte parole », « vidéo explicative saas »: blank; « agence vidéo réseaux sociaux »: 50), so no volume is quoted.
+
+Content: faithful adaptation of the English pages (`src/i18n/fr/dict-spokesperson.js`, `dict-saas.js`, `dict-organic.js`, keyed by the English sentence; FAQ through `localizeFaq`). Facts come only from the English pages and `businessKnowledge.js`; prices are `{{price:key}}` tokens (EUR, the Spanish-approved table), the Organic Light vs Growth wording is the English one, and the Graspo result keeps its qualifiers (link labelled « en anglais »: the case study is English-only). JSON-LD (`fr/pages-registry.js`): Organization (one identity), WebPage, BreadcrumbList, one Service per page with a stable `…/fr/<slug>#service` @id (same convention as the Spanish and UGC pages), FAQPage from the visible FAQ; Organic keeps its two Offers, the other two have none. No rating, review, office, foundingDate or invented result.
+
+### No videos on these pages (decision) and how to add a gallery later
+The three French pages have no three-phone hero stage, no showcase gallery, no placeholder and no « coming soon » section, and the layout leaves no gap (the hero is the text-led one the Spanish video-less pages already use; the gallery renders nothing, divider included). One switch controls it: `FR_SERVICE_PAGE_VIDEOS = false` in `src/i18n/fr/servicePages.js`, read by `serviceVideos()` (`src/i18n/serviceVideos.js`), which the three page components call instead of `forPageLanguage()` (English and Spanish behave exactly as before). To add a French gallery later: (1) add approved French-spoken videos to `src/content/portfolio.js` for the page's type (`type: 'spokesperson' | 'organic' | 'saas'` or `alsoOn`, `languages: ['fr']`, `onlyIn: ['fr']`, no invented title or credit), (2) set the flag to `true`, (3) re-check the hero secondary button (`fr/hero.js` points to the in-page section) and add French copy for any new gallery heading. The hero stage and the gallery then return by themselves; The "NO videos" test in `tests/french-services.test.mjs` pins the flag to `false` and the markup to no video, so update it in the same commit when you flip the flag.
+
+`scripts/i18n-check.mjs`: the French scope exclusions for these pages were removed, so their strings are required. Tests: `tests/french-services.test.mjs`.
+
+Copy a native reviewer should check: the three H1s and titles, « formules sur mesure » for custom packages, « cadrer » (scope), « présentateur » vs « porte-parole », « avec l’arabe comme langue principale » (Graspo, English: Arabic-first), « leads », the hero secondary buttons, and the editorial intros under the formats and content-system headings (French-only sentences, no new facts).
