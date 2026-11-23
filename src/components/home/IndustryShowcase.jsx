@@ -9,7 +9,7 @@ import StudioEnvironment from './StudioEnvironment.jsx'
 /* THE ENGLISH HOMEPAGE'S FOUNDER EXPERIENCE + CLIENT WORK: one centred, symmetrical composition on a single vertical axis.
 
    ORDER   1 eyebrow "FOUNDER EXPERIENCE"  2 headline "Worked with" + the clients figure (it comes from siteStats.js)  3 the owner-approved disclosure (this is the FOUNDER's combined experience, not CONVRT-only)
-           4 the studio scene: three true 9:16 videos of equal height on a lit podium (the featured one 310 px wide with a soft lime backlight, the sides 300 px)  5 the client selector, overlapping the front of the podium  6 the two main CTAs.
+           4 the studio scene: three true 9:16 videos on a lit podium (the featured one 320 px wide in a lime halo, the sides about 250 px, tucked slightly behind it)  5 the client selector, overlapping the front of the podium  6 the two main CTAs.
    SCENE   is drawn on a fixed 1280 x 740 design grid (StudioEnvironment + RotaryStage) and scales as a whole; the videos stay 185-310 px wide from a phone to a desktop (below 640 px the scene is shown larger than the
            screen and centred on the featured video, the side videos peeking in at the edges; swipe, tap or the arrow keys bring one forward).
    THE VIDEOS are the active client's three `showcase` portfolio entries (a click, swipe or arrow key on a side video orbits it into the centre; nothing plays by itself).
@@ -95,8 +95,8 @@ export default function IndustryShowcase() {
           <p className="mx-auto mt-4 max-w-md text-balance text-[15px] leading-relaxed text-ink-muted md:max-w-xl md:text-base">{FOUNDER_EXPERIENCE.captionShort}</p>
         </div>
 
-        {/* 4: the scene (environment + the rotary videos). Below 640 px it is wider than the screen and centred on the featured video. */}
-        <div className="relative mt-4 overflow-hidden md:mt-2">
+        {/* 4: the scene (environment + the rotary videos). Below 640 px it is wider than the screen and centred on the featured video. The wrapper's top padding is headroom so the featured card's halo is never cut off at the top. */}
+        <div className="relative -mt-3 overflow-hidden pt-10">
           <div className={`relative left-1/2 aspect-[1280/740] w-[230vw] -translate-x-1/2 transition-opacity duration-[190ms] motion-reduce:transition-none sm:w-[max(100%,900px)] ${fading ? 'opacity-0' : 'opacity-100'}`}>
             <StudioEnvironment />
             <div id="showcase-panel" role="tabpanel" aria-labelledby={`showcase-tab-${pickedId}`} className="absolute inset-0">

@@ -11,13 +11,13 @@ export function pose(i, pos, n = 3) {
   const c = Math.cos(theta)
   const t = (c + 1) / 2 // 1 at the front, 0 at the very back
   return {
-    x: s * 1.045, // sideways, in phone widths: a side video's centre sits 0.905 widths from the centre, so it tucks slightly (about 6 % of a width) behind the featured card
+    x: s * 0.958, // sideways, in phone widths: a side video's centre sits 0.83 widths from the centre, so it tucks slightly (about 6 % of a width) behind the featured card
     y: 0, // all three cards share one top line and one baseline
-    scale: 0.92 + 0.08 * t, // a side video is 94 % of the featured one: still a large, true-portrait card, but clearly supporting it
-    scaleY: 0.92 + 0.08 * t, // the same: frames are never squashed, they stay true 9:16
-    rot: -s * 14 + 0, // side videos turn a little toward the centre; the front one is exactly 0
+    scale: 0.74 + 0.26 * t, // a side video is about 80 % of the featured one (258 px beside a 320 px featured video), the proportion the hero stage uses
+    scaleY: 0.74 + 0.26 * t, // the same: frames are never squashed, they stay true 9:16
+    rot: -s * 17 + 0, // side videos turn a little toward the centre; the front one is exactly 0
     z: Math.round(t * 100),
-    shade: (1 - t) * 0.26, // gentle dimming for depth, never heavy
+    shade: (1 - t) * 0.32, // gentle dimming for depth, never heavy
   }
 }
 export const poseStyle = (p) => ({

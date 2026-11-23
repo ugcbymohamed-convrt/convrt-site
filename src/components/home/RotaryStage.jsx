@@ -66,8 +66,8 @@ function Phone({ item, i, n, active, moving, onSelect, setEl, setShade }) {
   return (
     <div ref={setEl} className="absolute left-1/2 top-1/2 w-full will-change-transform" style={poseStyle(pose(i, 0, n))}>
       <div
-        className={`group relative aspect-[9/16] rounded-[12%/6.7%] p-[2.5%] ring-1 transition-[box-shadow] duration-500 motion-reduce:transition-none ${active ? 'ring-lime/60' : 'ring-white/30 group-hover:ring-lime/40'}`}
-        style={{ background: 'linear-gradient(150deg, #a9ac9a 0%, #3a3c33 28%, #17181a 55%, #4a4d40 100%)', boxShadow: active ? '0 0 0 1px rgba(213,255,64,0.5), 0 0 34px 2px rgba(213,255,64,0.5), 0 0 70px rgba(0,0,0,0.75), 0 34px 54px -22px rgba(0,0,0,1), inset 0 1px 0 rgba(255,255,255,0.5), inset 0 0 0 1px rgba(255,255,255,0.1)' : '0 18px 30px -18px rgba(0,0,0,0.9), inset 0 1px 0 rgba(255,255,255,0.3), inset 0 0 0 1px rgba(255,255,255,0.06)' }}
+        className={`group relative aspect-[9/16] rounded-[12%/6.7%] p-[2.5%] ring-1 transition-[box-shadow] duration-500 motion-reduce:transition-none ${active ? 'ring-lime/70' : 'ring-white/25 group-hover:ring-lime/40'}`}
+        style={{ background: 'linear-gradient(150deg, #a9ac9a 0%, #3a3c33 28%, #17181a 55%, #4a4d40 100%)', boxShadow: active ? '0 0 0 1.5px rgba(213,255,64,0.85), 0 0 22px 3px rgba(213,255,64,0.75), 0 0 60px 6px rgba(213,255,64,0.4), 0 40px 60px -20px rgba(0,0,0,1), inset 0 1px 0 rgba(255,255,255,0.5), inset 0 0 0 1px rgba(255,255,255,0.1)' : '0 18px 30px -18px rgba(0,0,0,0.9), inset 0 1px 0 rgba(255,255,255,0.3), inset 0 0 0 1px rgba(255,255,255,0.06)' }}
       >
         <div className="relative h-full w-full overflow-hidden rounded-[10%/5.6%] bg-black">
           <img src={posterUrl(item)} alt={captionOf(item)} width="405" height="720" loading={i === 0 ? 'eager' : 'lazy'} decoding="async" draggable="false" className="absolute inset-0 h-full w-full object-cover" />
@@ -179,11 +179,13 @@ export default function RotaryStage({ items, label }) {
       onClickCapture={(e) => { if (drag.current?.moved) { e.preventDefault(); e.stopPropagation() } }}
       className="absolute inset-0 touch-pan-y select-none focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-lime/60"
     >
-      {/* the three videos: the holder is the CENTRE video's box as a share of the scene (24.22 % = 310 of the 1280 px grid); everything else is measured in its own width. Every frame is exactly 9:16 */}
-      <div className="absolute aspect-[9/16] -translate-x-1/2 -translate-y-1/2 [perspective:1500px]" style={{ left: '50%', top: '41.2%', width: '24.22%' }}>
-        {/* the active-video backlight: a clearly visible lime LED glow around the edges and behind the featured slot, brightest at the card's edge and fading outward. It sits (z 60) BETWEEN the featured card (z 100)
-            and the supporting cards (z 25): it lights their inner edges but never covers the featured video. It stays put; the videos rotate through it. */}
-        <span aria-hidden="true" className="pointer-events-none absolute left-1/2 top-1/2 h-[128%] w-[170%] -translate-x-1/2 -translate-y-1/2 rounded-[46%]" style={{ zIndex: 60, background: 'radial-gradient(ellipse 50% 50% at 50% 50%, rgba(213,255,64,0.55) 0%, rgba(213,255,64,0.44) 52%, rgba(213,255,64,0.2) 72%, rgba(213,255,64,0.06) 88%, rgba(213,255,64,0) 100%)', filter: 'blur(22px)' }} />
+      {/* the three videos: the holder is the CENTRE video's box as a share of the scene (24.22 % = 320 of the 1280 px grid); everything else is measured in its own width. Every frame is exactly 9:16 */}
+      <div className="absolute aspect-[9/16] -translate-x-1/2 -translate-y-1/2 [perspective:1500px]" style={{ left: '50%', top: '41.2%', width: '25%' }}>
+        {/* THE ACTIVE-VIDEO HALO. Two layers behind the featured card, both in the holder (which is NOT clipped: no overflow-hidden ancestor between here and the scene's own edges):
+            1 a wide, soft lime aura (z 55); 2 a lime LED ring hugging the card's edges (z 60), blurred, so a bright halo is visible around the top, sides and corners and falls off outward.
+            Both sit BETWEEN the supporting cards (z <= 25... they are lit from behind) and the featured card (z 100): the halo never covers the featured video. They stay put; the videos rotate through them. */}
+        <span aria-hidden="true" className="pointer-events-none absolute left-1/2 top-1/2 h-[138%] w-[176%] -translate-x-1/2 -translate-y-1/2 rounded-[46%]" style={{ zIndex: 55, background: 'radial-gradient(ellipse 50% 50% at 50% 50%, rgba(213,255,64,0.5) 0%, rgba(213,255,64,0.34) 55%, rgba(213,255,64,0.12) 78%, rgba(213,255,64,0) 100%)', filter: 'blur(28px)' }} />
+        <span aria-hidden="true" className="pointer-events-none absolute left-1/2 top-1/2 h-[105%] w-[105%] -translate-x-1/2 -translate-y-1/2 rounded-[13%/7.3%]" style={{ zIndex: 60, border: '7px solid rgba(213,255,64,0.95)', boxShadow: '0 0 46px 10px rgba(213,255,64,0.6), inset 0 0 22px rgba(213,255,64,0.5)', filter: 'blur(9px)' }} />
         {items.map((item, i) => (
           <Phone
             key={item.id}

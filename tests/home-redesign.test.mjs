@@ -98,17 +98,17 @@ test('studio scene: drawn on the reference grid with CSS only; compact; the thre
   assert.ok(!/100vh|100svh|h-screen|min-h-screen|max-h-\[|overflow-y/.test(show), 'no viewport-height or fixed-height constraint shrinks the section')
   // centred layout: the featured video is 310 px (target 290-320), the side videos 85 % of it (263 px, target 250-280), a modest difference, true 9:16, a clear gap between frames
   const [c, r, l] = [pose(0, 0), pose(1, 0), pose(2, 0)]
-  assert.ok(r.scale >= 0.92 && r.scale < 1 && Math.abs(r.x + l.x) < 1e-9 && r.x > 0.8 && r.x < 1.0, `side width ${r.scale}, offset ${r.x}`)
-  const featured = 0.2422 * 1280
-  assert.ok(featured >= 290 && featured <= 320 && featured * r.scale >= 285 && featured * r.scale < featured, `featured ${featured}, side ${featured * r.scale}: large portrait side cards, the middle one only slightly larger`)
+  assert.ok(r.scale >= 0.75 && r.scale <= 0.85 && Math.abs(r.x + l.x) < 1e-9 && r.x > 0.8 && r.x < 1.0, `side width ${r.scale}, offset ${r.x}`)
+  const featured = 0.25 * 1280
+  assert.ok(featured >= 290 && featured <= 320 && featured * r.scale >= 240 && featured * r.scale <= 270, `featured ${featured}, side ${featured * r.scale}: clearly smaller supporting cards (the hero stage uses 80 %), still true portrait`)
   const tuck = 0.5 + 0.5 * r.scale - r.x
   assert.ok(tuck > 0.03 && tuck < 0.12, `each side card tucks slightly (${tuck.toFixed(3)} of a width) behind the featured card, never hiding much of it`)
   assert.ok(c.z > r.z && c.z > l.z && c.z === 100, 'the featured card is the front layer')
-  assert.ok(r.shade > c.shade && r.shade <= 0.3, 'the supporting cards recede gently')
-  assert.equal(r.scaleY, r.scale, 'frames are never squashed: uniform scale keeps them true 9:16')
+  assert.ok(r.shade > c.shade && r.shade <= 0.35, 'the supporting cards recede')
+  assert.equal(r.scaleY, r.scale, 'frames are never squashed: uniform scale keeps them true 9:16 (no short, fat side cards)')
   assert.ok(r.y === 0 && l.y === 0 && c.y === 0, 'all three cards share one top line and one baseline')
   const stage = read('src/components/home/RotaryStage.jsx')
-  assert.ok(stage.includes("width: '24.22%'") && stage.includes("left: '50%'"), 'the featured video: 310 of the 1280 px grid, on the centre axis')
+  assert.ok(stage.includes("width: '25%'") && stage.includes("left: '50%'"), 'the featured video: 320 of the 1280 px grid, on the centre axis')
   assert.ok((stage.match(/aspect-\[9\/16\]/g) || []).length >= 2 && !/9\/15/.test(stage), 'every frame is exactly 9:16')
   // below 640 px the scene is shown larger than the screen and centred on the stage (never shrunk to fit)
   assert.ok(show.includes('w-[230vw]') && show.includes('sm:w-[max(100%,900px)]') && show.includes('-translate-x-1/2'))
@@ -121,15 +121,15 @@ test('rotary stage maths: the centre video is upright and largest, the sides sit
   const at = (pos) => [0, 1, 2].map((i) => pose(i, pos))
   const [a, b, c] = at(0)
   assert.deepEqual([a.x, a.rot, a.scale, a.z], [0, 0, 1, 100], 'centre: upright, full size, in front')
-  assert.ok(b.x > 0.9 && c.x < -0.9 && Math.abs(b.x + c.x) < 1e-9, 'next video right, previous video left, symmetric')
+  assert.ok(b.x > 0.8 && c.x < -0.8 && Math.abs(b.x + c.x) < 1e-9, 'next video right, previous video left, symmetric')
   assert.ok(b.scale < 1 && b.scale > 0.7 && b.z < a.z && b.rot < 0 && c.rot > 0 && Math.abs(b.rot) < 30, 'sides: smaller, farther back, tilted toward the centre')
-  assert.ok(b.shade <= 0.2 && a.shade === 0, 'sides are only gently dimmed')
+  assert.ok(b.shade <= 0.35 && a.shade === 0, 'sides are only gently dimmed')
   // every integer position is a clean arrangement with three distinct slots (no duplicated or overlapping video)
   for (const pos of [0, 1, 2]) {
     const p = at(pos)
     assert.equal(p.filter((x) => Math.abs(x.x) < 1e-9 && x.rot === 0 && x.scale === 1).length, 1, `pos ${pos}: exactly one active video`)
     assert.equal(new Set(p.map((x) => x.z)).size, 2, `pos ${pos}: one front, two equal-depth sides`)
-    assert.ok(p[pos].z === 100 && p.filter((x) => x.x > 0.9).length === 1 && p.filter((x) => x.x < -0.9).length === 1)
+    assert.ok(p[pos].z === 100 && p.filter((x) => x.x > 0.8).length === 1 && p.filter((x) => x.x < -0.8).length === 1)
   }
   // rotating toward the right-hand video (position 0 -> 1): it must move along a CURVE, not a straight line
   const start = pose(1, 0), end = pose(1, 1), mid = pose(1, 0.5)
@@ -138,7 +138,7 @@ test('rotary stage maths: the centre video is upright and largest, the sides sit
   assert.ok(mid.scale >= lerp(start.scale, end.scale) && mid.z > start.z, 'it comes forward on the way in')
   // the previous centre video swings out to the left in FRONT of the left slot, and the third video passes behind everything
   const out = pose(0, 0.5)
-  assert.ok(out.x < -0.85 && out.z > pose(0, 1).z, 'the old centre video orbits out and settles back')
+  assert.ok(out.x < -0.8 && out.z > pose(0, 1).z, 'the old centre video orbits out and settles back')
   const behind = pose(2, 0.5)
   assert.equal(behind.z, 0); assert.ok(behind.z < Math.min(pose(0, 0.5).z, pose(1, 0.5).z), 'the third video passes behind')
   // the rotation is continuous and returns to the same arrangement every full turn
@@ -199,9 +199,10 @@ test('centred composition: eyebrow, headline, disclosure, then the stage, the se
 
 test('polish: equal-height side cards, a lime backlight behind the featured video, the hero player UI, a larger brand selector, more room above the buttons', () => {
   const stage = read('src/components/home/RotaryStage.jsx')
-  assert.ok(/rgba\(213,255,64,0\.55\) 0%/.test(stage) && /h-\[128%\] w-\[170%\]/.test(stage) && /filter: 'blur\(22px\)'/.test(stage), 'a clearly visible blurred lime glow, larger than the featured card')
-  assert.ok(/zIndex: 60/.test(stage), 'the glow layer sits between the supporting cards (z 25) and the featured card (z 100)')
-  assert.ok(/0 0 34px 2px rgba\(213,255,64,0\.5\)/.test(stage) && /0 0 70px rgba\(0,0,0,0\.75\)/.test(stage), 'the featured card has a lime edge glow and a dark depth shadow onto its neighbours')
+  assert.ok(/h-\[138%\] w-\[176%\]/.test(stage) && /filter: 'blur\(28px\)'/.test(stage) && /zIndex: 55/.test(stage), 'a wide soft lime aura behind the featured card')
+  assert.ok(/h-\[105%\] w-\[105%\]/.test(stage) && /border: '7px solid rgba\(213,255,64,0\.95\)'/.test(stage) && /0 0 46px 10px rgba\(213,255,64,0\.6\)/.test(stage) && /zIndex: 60/.test(stage), 'a lime LED ring hugging the card edges, blurred, with an outer glow: a real halo around the top, sides and corners')
+  assert.ok(/0 0 22px 3px rgba\(213,255,64,0\.75\)/.test(stage) && /0 0 60px 6px rgba\(213,255,64,0\.4\)/.test(stage) && /0 40px 60px -20px rgba\(0,0,0,1\)/.test(stage), 'the featured frame itself carries a lime edge glow and a dark depth shadow')
+  assert.ok(read('src/components/home/IndustryShowcase.jsx').includes('overflow-hidden pt-10'), 'headroom above the stage: the halo is not clipped at the top')
   assert.ok(stage.indexOf('active-video backlight') < stage.indexOf('items.map((item, i) => ('), 'the glow is drawn before (behind) the videos')
   // the hero player UI is ONE component, used by the homepage hero's stage and by this stage
   const hero = read('src/components/ugc/CreatorVideoStage.jsx')

@@ -99,3 +99,11 @@ The founder / client-work section is one symmetrical, centred composition on a s
 - **Layering:** the featured card is the front layer (z 100). The side cards are 94 % of its size, tuck about 6 % of a width behind it (`x` offset 0.905 widths), tilt 14 degrees and recede a little (26 % shade); they stay large, true 9:16 and fully recognisable.
 - **Backlight:** a clearly visible blurred lime glow (`RotaryStage.jsx`, 170 % x 128 % of the featured card, brightest at its edge, fading outward) sits at z 60, between the supporting cards and the featured card, so it radiates from behind the front card and lights the neighbours' inner edges without covering the video. The featured frame also gets a lime edge glow and a dark depth shadow onto the cards behind it.
 - The hero-style player stays on the active card only; the podium was slimmed to the tighter arrangement. Rotation, selector, CTAs and responsive behaviour are unchanged.
+
+---
+
+## Revision #8 (Nov 2026): closer to the hero composition
+
+- **Hierarchy:** one featured card (320 px wide, 569 px tall at the 1280 grid) and two clearly supporting cards at about 80 % (258 px), the proportion the hero stage uses; uniform scale so the side cards are never squashed (true 9:16), tilted 17 degrees, dimmed 24 %, and tucked about 7 % of a width behind the featured card.
+- **Halo (explicit fix for the earlier, too faint glow):** two layers behind the featured card in an unclipped holder: a wide soft lime aura (z 55, `blur(28px)`) and a lime LED ring hugging the card edges (z 60, 7 px border, `blur(9px)`, `0 0 46px 10px` outer glow), plus a lime edge glow (`0 0 22px 3px`, `0 0 60px 6px`) and a dark depth shadow on the featured frame itself. The stage wrapper has 40 px of headroom (`pt-10`) so the halo is not cut off at the top. The halo sits between the supporting cards (z 25) and the featured card (z 100): visible around the top, sides and corners, never over the video.
+- Hero-style player stays on the featured card only; podium and side shadows re-fitted; rotation, selector and CTAs unchanged.
