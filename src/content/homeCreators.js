@@ -5,7 +5,7 @@
    permission is recorded); the private name-to-id map lives outside the repository (CONVRT/Claude/multilingual-es/spanish-videos-private-map.csv).
 
    creator es-c01 → es-ugc-hero-1 (unboxing)            · creator es-c02 → es-spokesperson-hero-1 (presenter outdoors)
-   creator es-c03 → es-ugc-hero-2 (service explained)   · creator es-c06 → es-spokesperson-3 (podcast-style presenter)
+   creator es-c03 → es-ugc-hero-2 (service explained)   · creator es-c06 → es-spokesperson-3 (podcast-style presenter; the creator the owner asked to include, confirmed 2026-11-23)
    creator es-c04 → es-ugc-hero-3 (glasses collection)  · creator es-c05 → es-ugc-4 (garment details)
    extras        → es-ugc-5 (digital solution, es-c02) and es-spokesperson-hero-2 (app walkthrough, es-c01)
    An id whose video is not approved (isDisplayable) is skipped, never replaced by an invented entry. */

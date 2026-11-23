@@ -15,7 +15,7 @@ English output is unchanged (`node scripts/i18n-english-parity.mjs <main dist> d
 | UGC / service heroes | `src/i18n/es/hero.js`, `dict-services.js`; locale-specific H1 sizes and `text-wrap: balance` in `UgcHero.jsx`. |
 
 ## Deliberate decisions
-- The six creators are identified only by `creatorId` (es-c01..es-c06); no creator name is shown or stored. The owner called one of them "Luis"; the private map does not name him, so es-c06 (the podcast presenter) is **assumed**: confirm.
+- The six creators are identified only by `creatorId` (es-c01..es-c06); no creator name is shown or stored. The owner called one of them "Luis"; the private map does not name him, and the owner **confirmed (2026-11-23) that creator es-c06 (the podcast presenter) is the one meant**. No name is shown or stored.
 - "Creatividades diseñadas para conectar." is the owner's headline and the only approved exception to the "creativos" terminology rule.
 - The 10 free hooks have no Spanish page; the card stays a non-link until `LOCALIZED_FLOWS.es.hooks` is set on purpose.
 - `/es/risk-free-trial` stays release-gated (`noindex`, not in sitemap/hreflang) although the hero now links to it; its consent differs from English (the Spanish page omits the marketing-consent checkbox pending review).
