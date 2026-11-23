@@ -3,12 +3,12 @@ import Nav from './components/Nav.jsx'
 import Hero from './components/Hero.jsx'
 import Credibility from './components/Credibility.jsx'
 import CaseStudies from './components/CaseStudies.jsx'
+import CreatorsShowcase from './components/CreatorsShowcase.jsx'
 import Services from './components/Services.jsx'
 import HowItWorks from './components/HowItWorks.jsx'
 import Testimonials from './components/Testimonials.jsx'
 import FAQ from './components/FAQ.jsx'
 import FinalCTA from './components/FinalCTA.jsx'
-import FreeVideoOffer from './components/FreeVideoOffer.jsx'
 import Footer from './components/Footer.jsx'
 import SectionDivider from './components/SectionDivider.jsx'
 import { BLOG_PATH, REFERRALS_PATH } from './config.js'
@@ -99,13 +99,11 @@ function HomePage() {
     <>
       <Hero />
       <Credibility />
-      <SectionDivider />
-      <CaseStudies />
+      {/* English: the three client case-study panels. Spanish: the creator carousel (eight real Spanish creator videos); the case studies stay reachable from the menu, footer and their own pages. */}
+      {currentLocale() === 'en' ? (<><SectionDivider /><CaseStudies /></>) : <CreatorsShowcase />}
       <SectionDivider />
       <Services />
       <SectionDivider />
-      {/* Translated homepages only: the secondary free-video offer (the English hero already carries it). */}
-      {currentLocale() !== 'en' && (<><FreeVideoOffer /><SectionDivider /></>)}
       <HowItWorks />
       <SectionDivider />
       <Testimonials />

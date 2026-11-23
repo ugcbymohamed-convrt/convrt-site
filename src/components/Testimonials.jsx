@@ -1,6 +1,7 @@
 import { useRef, useEffect, useState } from 'react'
 import { useTr } from '../i18n/tr.js'
 import { currentLocale } from '../i18n/locale.js'
+import { ES_TESTIMONIALS } from '../i18n/es/testimonials.js'
 
 /* ─────────────────────────────────────────────
    SECTION — SOCIAL PROOF / TESTIMONIALS
@@ -159,9 +160,10 @@ function ReviewCard({ review, inView, delay }) {
           <StarRow count={review.stars} color="#d5ff40" />
 
           {/* ── Review text ── */}
-          {/* The quote is the client's own English wording (published with permission): it is never machine- or re-translated; other languages mark it lang="en". */}
-          <blockquote lang={locale === 'en' ? undefined : 'en'} className="flex-1 text-[15px] leading-[1.78] text-ink-subtle">
-            {review.text}
+          {/* The published wording is the client's own English (REVIEWS[].text, never edited). Spanish pages show a translation of it (src/i18n/es/testimonials.js, owner-approved Nov 2026) under the
+              disclosure "Testimonios originales en inglés, traducidos al español."; any other language keeps the English marked lang="en". */}
+          <blockquote lang={locale === 'en' ? undefined : locale === 'es' && ES_TESTIMONIALS[review.id] ? 'es' : 'en'} className="flex-1 text-[15px] leading-[1.78] text-ink-subtle">
+            {locale === 'es' && ES_TESTIMONIALS[review.id] ? ES_TESTIMONIALS[review.id] : review.text}
           </blockquote>
 
           {/* ── Bottom row: brand info ── */}

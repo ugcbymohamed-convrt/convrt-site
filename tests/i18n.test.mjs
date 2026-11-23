@@ -297,12 +297,14 @@ test('Spanish pages contain no leftover English: every visible sentence is Spani
   }
 })
 
-test('Spanish pages: client quotes stay verbatim in their original language and are marked lang="en"; the note says so', () => {
+test('Spanish pages: the homepage shows the owner-approved Spanish translations of the three testimonials (marked lang="es", with the disclosure); the UGC page keeps the originals verbatim (lang="en")', () => {
   const home = page('/es')
-  assert.ok((home.match(/<blockquote lang="en"/g) || []).length >= 3)
-  assert.ok(home.includes('Mohamed understood the concept really well'))
-  assert.match(home, /Las opiniones se muestran en el idioma original de los clientes \(inglés\)\./)
+  assert.ok((home.match(/<blockquote lang="es"/g) || []).length >= 3)
+  assert.ok(!home.includes('Mohamed understood the concept really well'), 'the English original is not shown on the Spanish homepage')
+  for (const q of ['Mohamed entendió muy bien el concepto', 'Trabajar con Mohamad fue un auténtico placer', 'Los vídeos son increíbles, otra vez']) assert.ok(home.includes(q), q)
+  assert.match(home, /Testimonios originales en inglés, traducidos al español\./)
   assert.match(page('/es/ugc-video-agency'), /<blockquote lang="en"/)
+  assert.ok(page('/').includes('Mohamed understood the concept really well'), 'English homepage unchanged')
 })
 
 // The owner's FINAL approved Spanish-market EUR prices (2026-11-21). Pinned here so a change to src/i18n/es/pricing.js cannot slip through without a deliberate test edit.
@@ -560,7 +562,7 @@ test('Spanish homepage hero: Front (the Spanish version of the CONVRT ad) in the
   assert.equal(HOME_HERO_ES[0].source.cloudflareId, '5904f4189ee4726cb4d7e4272a8b915b', 'Front is the Spanish CONVRT ad (CONVRT_AD_SPANISH_FINAL.mp4)')
   assert.deepEqual(HOME_HERO_ES.map((v) => v.languages), [['es'], ['es'], ['es']])
   const es = page('/es'), en = page('/')
-  assert.deepEqual(posters(es).filter((p) => /home-hero|es-ugc/.test(p)), ['/portfolio/es-home-hero.webp', '/portfolio/es-ugc-2.webp', '/portfolio/es-ugc-1.webp'])
+  assert.deepEqual(posters(es).filter((p) => /home-hero|es-ugc/.test(p)).slice(0, 3), ['/portfolio/es-home-hero.webp', '/portfolio/es-ugc-2.webp', '/portfolio/es-ugc-1.webp'], 'the hero stage (the creator carousel further down follows)')
   assert.ok(es.includes('aria-label="Vídeos UGC de creadores"'), 'the stage has a Spanish accessible name')
   assert.ok(!/es-ugc|es-home-hero/.test(en) && en.includes('ugc-hero-1.webp') && en.includes('/portfolio/home-hero.webp'), 'the English homepage still shows its own three videos')
 })
@@ -589,7 +591,10 @@ test('Spanish SaaS and Organic pages launch without videos: a text-led hero, no 
     assert.ok(!/aspect-\[9\/19\.5\]/.test(body), `${p}: no empty phone frames`)
     assert.ok(!/\/portfolio\//.test(body), `${p}: no portfolio image of any language`)
     assert.ok(!body.includes(`id="${galleryId}"`), `${p}: the empty gallery section is absent`)
-    assert.ok(!/(sample-\d|Vídeos de ejemplo|se está preparando|próximamente)/i.test(textOf(h).join('\n')), `${p}: no placeholder text`)
+    assert.ok(!/(sample-\d|Vídeos de ejemplo|se está preparando)/i.test(textOf(h).join('\n')), `${p}: no placeholder text`)
+    // the only "Próximamente" is the quiet, non-clickable 10-hooks offer card (owner, Nov 2026)
+    assert.equal((textOf(h).join('\n').match(/Próximamente/g) ?? []).length, 1, `${p}: exactly one coming-soon card`)
+    assert.match(body, /aria-disabled="true"[^>]*>(?:(?!<a ).)*?10 hooks/s, `${p}: the hooks card is aria-disabled`)
     assert.match(body, /<section aria-labelledby="[^"]+" class="relative overflow-hidden">[\s\S]*?max-w-5xl[^"]*text-center/, `${p}: the centred text-led hero`)
     assert.equal([...body.matchAll(/<h1[\s>]/g)].length, 1)
     assert.ok(!/name="robots"/.test(headOf(h)), `${p}: indexable`)
@@ -623,9 +628,9 @@ test('Spanish structured data stays factual: no VideoObject (no upload dates exi
 // ── Spanish homepage copy, terminology, CTAs, free-video offer, hooks ──────────────────────────────────────────────────────────────────────────────
 test('Spanish homepage: approved copy, one-line short CTA (hero and navigation), 3-line final headline, terminology rules', () => {
   const h = page('/es'), t = textOf(h).join('\n'), body = bodyOf(h)
-  assert.match(t, /Creativos de alto rendimiento\ndiseñados para\nconvertir/)
-  assert.match(t, /Producimos anuncios UGC con personas reales, vídeos para SaaS, vídeos Spokesperson y contenido orgánico para redes sociales\. Creativos listos para testear\./)
-  assert.match(t, /Tus próximos 5 conceptos publicitarios, a medida de tu marca\s*\ny por nuestra cuenta\./)
+  assert.match(t, /Creatividades\ndiseñadas para\nconectar/, 'owner-approved headline (Nov 2026)')
+  assert.match(t, /Estrategia, guiones, casting, grabación y edición\. Producimos anuncios UGC con personas reales, vídeos para SaaS, vídeos Spokesperson y contenido orgánico listo para publicar\./)
+  assert.match(t, /Tus próximos 5 conceptos\. A tu medida\.\s*\nGratis\./)
   assert.equal((body.match(/>5 conceptos gratis</g) ?? []).length >= 2 || (t.match(/^5 conceptos gratis$/gm) ?? []).length >= 3, true, 'the short label is used in the navigation, the hero and the other 5-concepts CTAs')
   assert.ok(!/Recibe 5 conceptos publicitarios gratis/.test(t))
   // hero CTA: compact, no wrapping, same destination as before (the Spanish Roadmap)
@@ -634,25 +639,33 @@ test('Spanish homepage: approved copy, one-line short CTA (hero and navigation),
   assert.match(t, /Nuestro fundador ha trabajado con\s+más de\s+500\s+clientes\s+de e-commerce, apps, SaaS y otros sectores\./)
   assert.match(t, /Las buenas marcas\nmerecen mejores\ncreativos\./)
   assert.ok(/class="block text-ink sm:whitespace-nowrap">merecen mejores</.test(body), 'the middle line of the final headline never wraps from tablet up')
-  for (const s of ['Qué hacemos', 'Creativos en vídeo para', 'Anuncios UGC', 'Vídeos Spokesperson', 'Contenido orgánico para redes sociales', '¿No tienes claro qué servicio necesitas?', 'Reservar una llamada', 'Prueba a trabajar con nosotros.', 'Solicitar 1 vídeo gratis', 'Oferta sujeta a revisión y aprobación.', 'Marcas que confiaron en nosotros.', '¿Qué hace exactamente CONVRT Studio?', '¿En qué se diferencia un vídeo UGC de un vídeo Spokesperson?', '¿Te queda alguna duda?']) assert.ok(t.includes(s), s)
+  for (const s of ['Qué hacemos', 'Creativos en vídeo para', 'Anuncios UGC', 'Vídeos Spokesperson', 'Contenido orgánico para redes sociales', '¿No tienes claro qué servicio necesitas?', 'Reservar una llamada', 'Marcas que confiaron en nosotros.', '¿Qué hace exactamente CONVRT Studio?', '¿En qué se diferencia un vídeo UGC de un vídeo Spokesperson?', '¿Te queda alguna duda?']) assert.ok(t.includes(s), s)
   // verbatim original testimonials (English), approved labels
-  for (const q of ['Mohamed understood the concept really well', 'Working with Mohamad was an absolute pleasure', 'The videos are amazing again']) assert.ok(t.includes(q), q)
+  for (const q of ['Mohamed entendió muy bien el concepto', 'Trabajar con Mohamad fue un auténtico placer', 'Los vídeos son increíbles, otra vez']) assert.ok(t.includes(q), q)
   // terminology: no "creatividad(es)" for ad creative assets, no "listos para rendir", Spokesperson stays the service name
   for (const p of ES_PAGES) {
     const x = textOf(page(p)).join('\n')
     assert.ok(!/listos para rendir/i.test(x), `${p}: "listos para rendir"`)
-    assert.ok(!/\bcreatividades\b/i.test(x), `${p}: "creatividades"`)
+    assert.ok(!/\bcreatividades\b/i.test(x.replace('Creatividades\ndiseñadas para', '')), `${p}: "creatividades" (only the owner-approved homepage headline may use it)`)
     assert.ok(!/vídeos? con presentador(?!es)/i.test(x.replace(/Vídeos con presentadores/g, '')), `${p}: the service is "Spokesperson", not "con presentador"`)
   }
   assert.match(headOf(page('/es/spokesperson-video-production')), /<title>Vídeos Spokesperson \| Vídeos con presentador/)
 })
 
-test('Spanish free-video offer: a secondary homepage block pointing to the existing application (real route, translated, held for review); the five free concepts stay primary; the 10 free hooks are never promoted in Spanish', () => {
-  const h = page('/es'), body = bodyOf(h)
-  assert.ok(body.includes('id="free-video"') && body.includes('href="/es/risk-free-trial"'))
+test('Spanish free offers: the hero shows the same two cards as English: 1 free video (a link to the existing, held application) and 10 free hooks (visible, NOT clickable, "Próximamente"); the five free concepts stay primary', () => {
+  const h = page('/es'), body = bodyOf(h), t = textOf(h).join('\n')
+  assert.ok(!body.includes('id="free-video"'), 'the separate homepage block is gone: the hero cards replace it')
+  assert.equal((body.match(/href="\/es\/risk-free-trial"/g) ?? []).length, 1, 'one link to the application (the hero card)')
+  assert.match(t, /¿Aún no\? Tienes otras dos formas gratis de empezar\./)
+  assert.match(t, /1 vídeo\s*\nGRATIS/)
+  assert.match(t, /Prueba nuestra producción sin riesgo\./)
+  assert.match(t, /Comprueba si encajas/)
+  assert.match(t, /10 hooks\s*\nGRATIS/)
+  assert.match(t, /Ideas para tus próximos anuncios\./)
+  assert.match(t, /Próximamente/)
+  assert.match(body, /<div aria-disabled="true"[^>]*>(?:(?!<a ).)*?10 hooks(?:(?!<a ).)*?Próximamente/s, 'the hooks card is a non-interactive div, never an anchor')
+  assert.ok(!/href="[^"]*hooks/i.test(body), 'no link to a hooks page')
   assert.ok(fs.existsSync(path.join(dist, 'es/risk-free-trial/index.html')), 'the destination exists')
-  assert.equal((body.match(/href="\/es\/risk-free-trial"/g) ?? []).length, 1, 'one secondary block, not a navigation item')
-  assert.ok(body.indexOf('id="free-video"') > body.indexOf('id="services"') || body.indexOf('id="free-video"') > 0)
   assert.match(headOf(page('/es/risk-free-trial')), /name="robots" content="noindex, follow"/)
   assert.ok(!fs.readFileSync(path.join(dist, 'sitemap.xml'), 'utf8').includes('risk-free-trial'))
   assert.ok(!/hreflang/.test(page('/risk-free-trial')), 'no hreflang to the held page')
@@ -667,7 +680,7 @@ test('Spanish free-video offer: a secondary homepage block pointing to the exist
   for (const p of ES_PAGES) {
     const x = page(p)
     assert.ok(!/href="[^"]*free-hooks/.test(x), `${p}: no hooks link`)
-    assert.ok(!/ganchos (publicitarios )?gratis|10 (ganchos|FREE)|Free Ad Hooks/i.test(textOf(x).join('\n')), `${p}: no hooks promotion`)
+    assert.ok(!/ganchos (publicitarios )?gratis|10 FREE|Free Ad Hooks/i.test(textOf(x).join('\n')), `${p}: no English hooks promotion`)
   }
   assert.equal(LOCALIZED_FLOWS.es.hooks, false)
   // the English homepage hero still carries both free offers

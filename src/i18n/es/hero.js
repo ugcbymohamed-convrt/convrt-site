@@ -6,9 +6,9 @@ import { CREATOR_SHOWCASE_PATH } from '../../config.js'
    `secondary` replaces the English CTA object: the label is the approved Spanish one and the href is the English path (localized when rendered) or an in-page anchor. */
 export const ES_HERO = {
   'ugc-h1': {
-    lines: [['Anuncios', 'UGC', 'con', 'personas', 'reales.'], ['Pensados', 'para', 'destacar.']],
-    lead: ['Creados', 'para'],
-    words: ['convertir', 'conectar', 'vender'],
+    lines: [['UGC', 'con', 'personas', 'reales.'], ['Para', 'tus', 'anuncios.']],
+    lead: ['Para'],
+    words: ['conectar', 'convertir', 'destacar'],
     sizer: 'convertir.',
     secondary: { label: 'Ver ejemplos UGC', href: CREATOR_SHOWCASE_PATH },
   },

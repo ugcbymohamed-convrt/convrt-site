@@ -100,7 +100,7 @@ export default function PricingFAQ() {
             role="tablist"
             aria-label={tr('FAQ categories')}
             onKeyDown={onKeyDown}
-            className="flex max-w-full flex-wrap justify-center gap-1.5 rounded-3xl border border-hairline bg-surface-1/60 p-1.5 backdrop-blur-md"
+            className={`flex max-w-full ${currentLocale() === 'en' ? 'flex-wrap justify-center' : 'flex-nowrap justify-start overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden md:flex-wrap md:justify-center md:overflow-visible'} gap-1.5 rounded-3xl border border-hairline bg-surface-1/60 p-1.5 backdrop-blur-md`}
           >
             {FAQ_CATEGORIES.map((c) => {
               const active = c.id === category

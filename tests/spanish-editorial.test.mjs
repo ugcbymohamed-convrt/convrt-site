@@ -38,7 +38,7 @@ const text = (html) => html.replace(/<script[\s\S]*?<\/script>/g, ' ').replace(/
 test('hero: the four Spanish H1s are the approved editorial headlines and every secondary CTA goes to a real place', () => {
   assert.deepEqual(Object.keys(ES_HERO).sort(), ['organic-h1', 'saas-h1', 'spokesperson-h1', 'ugc-h1'])
   const h1 = (p) => text(page(p).match(/<h1[\s\S]*?<\/h1>/)[0]).replace(/\s+\./g, '.')
-  assert.match(h1('ugc-video-agency'), /Anuncios UGC con personas reales\. Pensados para destacar\. Creados para convertir\./)
+  assert.match(h1('ugc-video-agency'), /UGC con personas reales\. Para tus anuncios\. Para conectar\./)
   assert.match(h1('spokesperson-video-production'), /Vídeos Spokesperson\. Personas reales\. Mensajes que conectan\./)
   assert.match(h1('social-media-video-production'), /Vídeos orgánicos para redes\. Contenido que engancha\. Una marca que conecta\./)
   assert.match(h1('saas-video-production'), /Vídeos para SaaS\. Fáciles de entender\. Diseñados para convertir\./)
@@ -60,7 +60,7 @@ test('CTAs: Organic uses "Hablemos de tus redes" into the booking flow; the othe
     assert.match(text(html), /5 conceptos gratis/, p)
     assert.ok(html.includes('href="/es/creative-growth-roadmap"'), `${p} links to the Spanish Roadmap`)
   }
-  assert.match(text(page('creative-growth-roadmap')), /Solicitar mis 5 conceptos gratis/)
+  assert.match(text(page('creative-growth-roadmap')), /Solicitar mis 5 conceptos/)
 })
 
 test('FAQ: the approved question counts, Spanish headings, and visible questions = JSON-LD questions', () => {

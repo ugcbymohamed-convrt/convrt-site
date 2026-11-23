@@ -9,8 +9,8 @@ import { currentLocale } from '../i18n/locale.js'
 import { primaryAction, flowAvailable } from '../i18n/cta.js'
 
 const ROTATING_WORDS = ['convert', 'resonate', 'sell', 'connect']
-// Spanish rotating words complete "Creatividades de alto rendimiento diseñadas para ___" (see src/i18n/es/dict-home.js).
-const ROTATING_WORDS_ES = ['convertir', 'conectar', 'vender', 'resonar']
+// Spanish rotating words complete "Creatividades diseñadas para ___" (owner-approved headline, Nov 2026; see src/i18n/es/dict-home.js). The first word is the one in the prerendered H1.
+const ROTATING_WORDS_ES = ['conectar', 'convertir', 'vender', 'destacar']
 
 /* Secondary offers — Level 2 in the hero's attention hierarchy. Each has its own
    accent (lime for the video offer, pink for the hooks library) so the
@@ -20,6 +20,8 @@ export const SECONDARY_OFFERS = [
     id: 'video',
     icon: IconClapper,
     title: <>1 <span className="text-lime">FREE</span> Video</>,
+    titleEs: <>1 vídeo <span className="text-lime">GRATIS</span></>,
+    flow: 'riskFree',
     description: 'Try our production risk-free.',
     cta: 'See if you qualify',
     href: OFFER_PATHS.riskFree,
@@ -32,6 +34,8 @@ export const SECONDARY_OFFERS = [
     id: 'hooks',
     icon: IconBolt,
     title: <>10 <span className="text-[#F472B6]">FREE</span> Ad Hooks</>,
+    titleEs: <>10 hooks <span className="text-[#F472B6]">GRATIS</span></>,
+    flow: 'hooks',
     description: 'Fresh hooks for your next ads.',
     cta: 'Get free hooks',
     href: OFFER_PATHS.hooks,
@@ -132,8 +136,8 @@ export default function Hero() {
             </div>
 
             {/* Level 2 — compact secondary offers under a quiet, left-aligned label */}
-            {/* The two free offers lead to English-only forms: shown only in languages where their flow is translated (src/i18n/cta.js). */}
-            {flowAvailable(locale, 'riskFree') && flowAvailable(locale, 'hooks') && (
+            {/* The two free offers: English shows both. Other languages show both cards too, but a card whose flow is not translated yet (src/i18n/cta.js) is drawn as a quiet, non-clickable "Próximamente" card, never a link into an English form. */}
+            {offersShown(locale) && (
             <div className="mt-8 md:mt-10 max-w-xl mx-auto lg:mx-0">
               <p className="text-left text-[13px] text-ink-muted">{tr("Not ready yet? We've got two more FREE ways to start.")}</p>
               <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-left">
@@ -162,24 +166,53 @@ export default function Hero() {
    lines (short card); from sm up the icon shares a row with the title so two
    cards fit side by side in the left column without wrapping. */
 
+/* English always shows both cards. Another language shows both as well: a card whose flow is translated links to its (translated) page; a card whose flow is not translated yet is a quiet, non-interactive
+   card with a "coming soon" tag (no link, no tab stop; aria-disabled). */
+export const offersShown = (locale) => locale === 'en' || flowAvailable(locale, 'riskFree') || flowAvailable(locale, 'hooks')
+
 export function SecondaryOffer({ offer }) {
   const Icon = offer.icon
+  const tr = useTr()
+  const hrefFn = useHref()
+  const locale = currentLocale()
+  const en = locale === 'en'
+  const title = en ? offer.title : offer.titleEs
+  const description = en ? offer.description : tr(offer.description)
+  const layout = `group grid grid-cols-[auto_1fr] items-center gap-x-3 rounded-2xl border p-3.5 sm:p-4`
+  const iconTile = (
+    <span className={`col-start-1 row-start-1 row-span-3 sm:row-span-1 flex h-10 w-10 items-center justify-center rounded-xl border sm:h-9 sm:w-9 ${offer.iconTile}`}>
+      <Icon />
+    </span>
+  )
+  const body = (
+    <>
+      <span className="col-start-2 row-start-1 text-[15px] sm:text-base font-semibold leading-tight tracking-snug text-ink">{title}</span>
+      <span className="col-start-2 row-start-2 mt-0.5 text-[13px] leading-snug text-ink-muted sm:col-start-1 sm:col-span-2 sm:mt-2.5">{description}</span>
+    </>
+  )
+  if (!en && !flowAvailable(locale, offer.flow)) {
+    return (
+      <div aria-disabled="true" className={`${layout} cursor-default select-none border-hairline bg-surface-1/50 opacity-80`}>
+        {iconTile}
+        {body}
+        <span className="col-start-2 row-start-3 mt-1.5 inline-flex w-fit items-center rounded-full border border-hairline-strong bg-surface-2 px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-[0.1em] text-ink-muted sm:col-start-1 sm:col-span-2">{tr('Coming soon')}</span>
+      </div>
+    )
+  }
+  const cta = en ? offer.cta : tr(offer.cta)
   return (
     <a
-      href={offer.href}
+      href={en ? offer.href : hrefFn(offer.href)}
       onClick={() => trackEvent(offer.event, { location: 'hero' })}
-      className={`group grid grid-cols-[auto_1fr] items-center gap-x-3 rounded-2xl border p-3.5 sm:p-4
+      className={`${layout}
                   transition-[transform,border-color,background-color,box-shadow] duration-200 hover:-translate-y-0.5
                   motion-reduce:transition-none motion-reduce:hover:translate-y-0
                   focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 ${offer.card}`}
     >
-      <span className={`col-start-1 row-start-1 row-span-3 sm:row-span-1 flex h-10 w-10 items-center justify-center rounded-xl border sm:h-9 sm:w-9 ${offer.iconTile}`}>
-        <Icon />
-      </span>
-      <span className="col-start-2 row-start-1 text-[15px] sm:text-base font-semibold leading-tight tracking-snug text-ink">{offer.title}</span>
-      <span className="col-start-2 row-start-2 mt-0.5 text-[13px] leading-snug text-ink-muted sm:col-start-1 sm:col-span-2 sm:mt-2.5">{offer.description}</span>
+      {iconTile}
+      {body}
       <span className={`col-start-2 row-start-3 mt-1.5 inline-flex items-center gap-1 text-[13px] font-semibold sm:col-start-1 sm:col-span-2 ${offer.ctaText}`}>
-        {offer.cta}
+        {cta}
         <svg viewBox="0 0 12 12" className="h-3 w-3 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0 motion-reduce:group-hover:translate-y-0" fill="none" aria-hidden="true">
           <path d="M3 9L9 3M9 3H4M9 3V8" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
         </svg>

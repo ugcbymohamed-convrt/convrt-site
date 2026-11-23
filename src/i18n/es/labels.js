@@ -50,7 +50,7 @@ export const ES_FAQ_TITLES = {
   spokesperson: ['Todo lo que necesitas saber', 'sobre nuestros vídeos Spokesperson.'],
   saas: ['Todo lo que necesitas saber', 'sobre nuestros vídeos para SaaS.'],
   organic: ['Todo lo que necesitas saber', 'sobre nuestro contenido orgánico.'],
-  pricing: ['Resolvemos tus dudas', 'sobre paquetes y tarifas.'],
+  pricing: ['Dudas sobre precios,', 'resueltas.'],
 }
 
 /* Spanish stage titles that differ per page although the English key is shared (e.g. "Delivery & Distribution" is on both the Spokesperson and SaaS pages). Keyed by the process section's

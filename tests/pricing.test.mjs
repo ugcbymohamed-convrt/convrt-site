@@ -728,7 +728,7 @@ test('service-aware CTAs: Paid keeps the Roadmap offer; Organic uses the organic
   assert.match(organicCard, /ORGANIC_CTA\.href/)
   const fin = strip(read('src/components/pricing/PricingFinalCTA.jsx'))
   assert.match(fin, /<div hidden=\{service !== 'paid'\}>\s*<CtaLink href=\{rcta\.href\} external=\{rcta\.external\}>\{tr\(rcta\.label\)\}<\/CtaLink>/)
-  assert.match(fin, /<div hidden=\{service !== 'organic'\}>\s*<CtaLink href=\{ORGANIC_CTA\.href\} external=\{ORGANIC_CTA\.external\}>\{tr\(ORGANIC_CTA\.label\)\}<\/CtaLink>/)
+  assert.match(fin, /<div hidden=\{service !== 'organic'\}>\s*<CtaLink href=\{ORGANIC_CTA\.href\} external=\{ORGANIC_CTA\.external\}>\{currentLocale\(\) === 'en' \? tr\(ORGANIC_CTA\.label\) : 'Discuss your strategy'\}<\/CtaLink>/)
   assert.match(read('src/CreativeTestingSprintPage.jsx'), /<PricingFinalCTA service=\{service\} \/>/)
   // The global navigation CTA is untouched.
   assert.match(read('src/components/Nav.jsx'), /const ctaHref = onScalePage \? BOOKING_URL : onRoadmapPage \? '#apply' : action\.href/)

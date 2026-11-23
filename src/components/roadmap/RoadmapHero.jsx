@@ -1,6 +1,7 @@
 import { ApplyButton } from './shared.jsx'
 import ConceptCardsVisual from './ConceptCardsVisual.jsx'
 import { tr } from '../../i18n/tr.js'
+import { currentLocale } from '../../i18n/locale.js'
 
 /* ─────────────────────────────────────────────
    HERO — the offer, one CTA, and a stack of five colour-coded concept cards
@@ -26,7 +27,7 @@ export default function RoadmapHero() {
               <span className="text-[10px] font-medium uppercase tracking-[0.14em] text-ink-muted min-[400px]:text-[11px] min-[400px]:tracking-[0.16em] sm:text-xs sm:tracking-[0.18em]">{tr('Free Creative Strategy · By Application')}</span>
             </div>
 
-            <h1 className="mt-6 font-display font-bold text-ink tracking-display-xl leading-[1.03] text-[2.2rem] min-[400px]:text-[2.75rem] sm:text-[3rem] md:text-[3.5rem] lg:text-[2.75rem] xl:text-[3.6rem]">
+            <h1 className={`mt-6 font-display font-bold text-ink tracking-display-xl leading-[1.03] text-[2.2rem] min-[400px]:text-[2.75rem] sm:text-[3rem] md:text-[3.5rem] ${currentLocale() === 'en' ? 'lg:text-[2.75rem] xl:text-[3.6rem]' : 'lg:text-[2.55rem] xl:text-[3.35rem]'}`}>
               <span className="block">{tr('Your Next 5 Ad Concepts.')}</span>
               <span className="block">{tr('Built for Your Brand.')}</span>
               <span className="block text-lime">{tr('On Us.')}</span>

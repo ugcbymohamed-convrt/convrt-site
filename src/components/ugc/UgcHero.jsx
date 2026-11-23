@@ -3,7 +3,7 @@ import { trackEvent, withUtm } from '../../lib/analytics.js'
 import { usePressFeedback } from '../../lib/usePressFeedback.js'
 import { usePreviewHost } from '../../lib/previewHost.js'
 import { OFFER_PATHS, CREATOR_SHOWCASE_PATH } from '../../config.js'
-import { SECONDARY_OFFERS, SecondaryOffer } from '../Hero.jsx'
+import { SECONDARY_OFFERS, SecondaryOffer, offersShown } from '../Hero.jsx'
 import CreatorVideoStage, { PhoneShowcaseFallback } from './CreatorVideoStage.jsx'
 import { useAutoplayAllowed } from './creatorVideo.jsx'
 import { tr, hrefFor } from '../../i18n/tr.js'
@@ -113,7 +113,7 @@ function Headline({ config, textLed = false }) {
   return (
     <h1
       id={id}
-      className={`font-display font-semibold text-ink tracking-display-xl leading-[1.05] ${textLed ? 'text-[2.15rem] min-[400px]:text-[2.6rem] sm:text-[3rem] md:text-[3.2rem] lg:text-[3.4rem] xl:text-[4rem]' : 'text-[2rem] min-[400px]:text-[2.5rem] sm:text-[3rem] md:text-[3.4rem] lg:text-[2.4rem] xl:text-[3.35rem]'}`}
+      className={`font-display font-semibold text-ink tracking-display-xl leading-[1.05] ${textLed ? `text-[2.15rem] min-[400px]:text-[2.6rem] sm:text-[3rem] md:text-[3.2rem] lg:text-[3.4rem] xl:text-[4rem]${currentLocale() === 'en' ? '' : ' [text-wrap:balance]'}` : currentLocale() === 'en' ? 'text-[2rem] min-[400px]:text-[2.5rem] sm:text-[3rem] md:text-[3.4rem] lg:text-[2.4rem] xl:text-[3.35rem]' : 'text-[1.85rem] min-[400px]:text-[2.3rem] sm:text-[2.7rem] md:text-[3.1rem] lg:text-[2.2rem] xl:text-[3.05rem] [text-wrap:balance]'}`}
     >
       {LINES.map((words) => (
         <span key={words[0]} className="block">
@@ -149,7 +149,7 @@ export default function UgcHero({ items, config: configProp = UGC_HERO }) {
   // Other languages: a primary CTA into the English-only Roadmap becomes the booking call; the free-offer cards are shown only where their flows are translated.
   const primary = resolveCta(locale, configProp.primary)
   const primaryLabel = primary.redirected ? tr(primary.label) : config.primary.label
-  const offersAvailable = flowAvailable(locale, 'riskFree') && flowAvailable(locale, 'hooks')
+  const offersAvailable = offersShown(locale)
   const hasWork = items.length > 0
   const textLed = !hasWork && locale !== 'en'
   const primaryPress = usePressFeedback()
