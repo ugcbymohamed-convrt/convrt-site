@@ -91,3 +91,11 @@ The founder / client-work section is one symmetrical, centred composition on a s
 - **Hero player UI:** the featured video uses the hero's controls (play button, bottom pill with play / pause, seek bar, sound). They were extracted unchanged into `HeroPlayerControls` in `components/ugc/CreatorVideoStage.jsx`, which the hero stage itself now renders too (the UGC, Spokesperson, SaaS, Spanish and homepage-hero HTML is identical to before). The hero player has no time read-out, so none was added.
 - **Brand selector:** larger logos (about 1.65 x), 15 px industry labels, taller cards, wider container.
 - **Spacing:** the buttons sit clearly lower under the selector (48 px, 64 px from `md`).
+
+---
+
+## Revision #7 (Nov 2026): the active video is dominant
+
+- **Layering:** the featured card is the front layer (z 100). The side cards are 94 % of its size, tuck about 6 % of a width behind it (`x` offset 0.905 widths), tilt 14 degrees and recede a little (26 % shade); they stay large, true 9:16 and fully recognisable.
+- **Backlight:** a clearly visible blurred lime glow (`RotaryStage.jsx`, 170 % x 128 % of the featured card, brightest at its edge, fading outward) sits at z 60, between the supporting cards and the featured card, so it radiates from behind the front card and lights the neighbours' inner edges without covering the video. The featured frame also gets a lime edge glow and a dark depth shadow onto the cards behind it.
+- The hero-style player stays on the active card only; the podium was slimmed to the tighter arrangement. Rotation, selector, CTAs and responsive behaviour are unchanged.

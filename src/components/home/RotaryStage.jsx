@@ -67,7 +67,7 @@ function Phone({ item, i, n, active, moving, onSelect, setEl, setShade }) {
     <div ref={setEl} className="absolute left-1/2 top-1/2 w-full will-change-transform" style={poseStyle(pose(i, 0, n))}>
       <div
         className={`group relative aspect-[9/16] rounded-[12%/6.7%] p-[2.5%] ring-1 transition-[box-shadow] duration-500 motion-reduce:transition-none ${active ? 'ring-lime/60' : 'ring-white/30 group-hover:ring-lime/40'}`}
-        style={{ background: 'linear-gradient(150deg, #a9ac9a 0%, #3a3c33 28%, #17181a 55%, #4a4d40 100%)', boxShadow: active ? '0 26px 44px -22px rgba(0,0,0,0.95), 0 0 46px -14px rgba(213,255,64,0.5), inset 0 1px 0 rgba(255,255,255,0.45), inset 0 0 0 1px rgba(255,255,255,0.08)' : '0 20px 36px -20px rgba(0,0,0,0.9), inset 0 1px 0 rgba(255,255,255,0.4), inset 0 0 0 1px rgba(255,255,255,0.07)' }}
+        style={{ background: 'linear-gradient(150deg, #a9ac9a 0%, #3a3c33 28%, #17181a 55%, #4a4d40 100%)', boxShadow: active ? '0 0 0 1px rgba(213,255,64,0.5), 0 0 34px 2px rgba(213,255,64,0.5), 0 0 70px rgba(0,0,0,0.75), 0 34px 54px -22px rgba(0,0,0,1), inset 0 1px 0 rgba(255,255,255,0.5), inset 0 0 0 1px rgba(255,255,255,0.1)' : '0 18px 30px -18px rgba(0,0,0,0.9), inset 0 1px 0 rgba(255,255,255,0.3), inset 0 0 0 1px rgba(255,255,255,0.06)' }}
       >
         <div className="relative h-full w-full overflow-hidden rounded-[10%/5.6%] bg-black">
           <img src={posterUrl(item)} alt={captionOf(item)} width="405" height="720" loading={i === 0 ? 'eager' : 'lazy'} decoding="async" draggable="false" className="absolute inset-0 h-full w-full object-cover" />
@@ -181,8 +181,9 @@ export default function RotaryStage({ items, label }) {
     >
       {/* the three videos: the holder is the CENTRE video's box as a share of the scene (24.22 % = 310 of the 1280 px grid); everything else is measured in its own width. Every frame is exactly 9:16 */}
       <div className="absolute aspect-[9/16] -translate-x-1/2 -translate-y-1/2 [perspective:1500px]" style={{ left: '50%', top: '41.2%', width: '24.22%' }}>
-        {/* the active-video backlight: a soft lime LED glow centred behind the featured slot (it stays put; the videos rotate in front of it) */}
-        <span aria-hidden="true" className="pointer-events-none absolute left-1/2 top-1/2 h-[116%] w-[132%] -translate-x-1/2 -translate-y-1/2 rounded-[44%]" style={{ background: 'radial-gradient(ellipse 50% 50% at 50% 50%, rgba(213,255,64,0.36) 0%, rgba(213,255,64,0.15) 42%, rgba(213,255,64,0) 72%)', filter: 'blur(26px)' }} />
+        {/* the active-video backlight: a clearly visible lime LED glow around the edges and behind the featured slot, brightest at the card's edge and fading outward. It sits (z 60) BETWEEN the featured card (z 100)
+            and the supporting cards (z 25): it lights their inner edges but never covers the featured video. It stays put; the videos rotate through it. */}
+        <span aria-hidden="true" className="pointer-events-none absolute left-1/2 top-1/2 h-[128%] w-[170%] -translate-x-1/2 -translate-y-1/2 rounded-[46%]" style={{ zIndex: 60, background: 'radial-gradient(ellipse 50% 50% at 50% 50%, rgba(213,255,64,0.55) 0%, rgba(213,255,64,0.44) 52%, rgba(213,255,64,0.2) 72%, rgba(213,255,64,0.06) 88%, rgba(213,255,64,0) 100%)', filter: 'blur(22px)' }} />
         {items.map((item, i) => (
           <Phone
             key={item.id}

@@ -98,10 +98,13 @@ test('studio scene: drawn on the reference grid with CSS only; compact; the thre
   assert.ok(!/100vh|100svh|h-screen|min-h-screen|max-h-\[|overflow-y/.test(show), 'no viewport-height or fixed-height constraint shrinks the section')
   // centred layout: the featured video is 310 px (target 290-320), the side videos 85 % of it (263 px, target 250-280), a modest difference, true 9:16, a clear gap between frames
   const [c, r, l] = [pose(0, 0), pose(1, 0), pose(2, 0)]
-  assert.ok(r.scale >= 0.95 && r.scale < 1 && Math.abs(r.x + l.x) < 1e-9 && r.x > 1.0 && r.x < 1.2, `side width ${r.scale}, offset ${r.x}`)
+  assert.ok(r.scale >= 0.92 && r.scale < 1 && Math.abs(r.x + l.x) < 1e-9 && r.x > 0.8 && r.x < 1.0, `side width ${r.scale}, offset ${r.x}`)
   const featured = 0.2422 * 1280
-  assert.ok(featured >= 290 && featured <= 320 && featured * r.scale >= 295 && featured * r.scale < featured, `featured ${featured}, side ${featured * r.scale}: equal-height portrait cards, the middle one only slightly larger`)
-  assert.ok(r.x - 0.5 - 0.5 * r.scale > 0.1, 'a visible gap between the featured video and each side video')
+  assert.ok(featured >= 290 && featured <= 320 && featured * r.scale >= 285 && featured * r.scale < featured, `featured ${featured}, side ${featured * r.scale}: large portrait side cards, the middle one only slightly larger`)
+  const tuck = 0.5 + 0.5 * r.scale - r.x
+  assert.ok(tuck > 0.03 && tuck < 0.12, `each side card tucks slightly (${tuck.toFixed(3)} of a width) behind the featured card, never hiding much of it`)
+  assert.ok(c.z > r.z && c.z > l.z && c.z === 100, 'the featured card is the front layer')
+  assert.ok(r.shade > c.shade && r.shade <= 0.3, 'the supporting cards recede gently')
   assert.equal(r.scaleY, r.scale, 'frames are never squashed: uniform scale keeps them true 9:16')
   assert.ok(r.y === 0 && l.y === 0 && c.y === 0, 'all three cards share one top line and one baseline')
   const stage = read('src/components/home/RotaryStage.jsx')
@@ -135,7 +138,7 @@ test('rotary stage maths: the centre video is upright and largest, the sides sit
   assert.ok(mid.scale >= lerp(start.scale, end.scale) && mid.z > start.z, 'it comes forward on the way in')
   // the previous centre video swings out to the left in FRONT of the left slot, and the third video passes behind everything
   const out = pose(0, 0.5)
-  assert.ok(out.x < -1 && out.z > pose(0, 1).z, 'the old centre video orbits out and settles back')
+  assert.ok(out.x < -0.85 && out.z > pose(0, 1).z, 'the old centre video orbits out and settles back')
   const behind = pose(2, 0.5)
   assert.equal(behind.z, 0); assert.ok(behind.z < Math.min(pose(0, 0.5).z, pose(1, 0.5).z), 'the third video passes behind')
   // the rotation is continuous and returns to the same arrangement every full turn
@@ -196,7 +199,9 @@ test('centred composition: eyebrow, headline, disclosure, then the stage, the se
 
 test('polish: equal-height side cards, a lime backlight behind the featured video, the hero player UI, a larger brand selector, more room above the buttons', () => {
   const stage = read('src/components/home/RotaryStage.jsx')
-  assert.ok(/rgba\(213,255,64,0\.36\)/.test(stage) && /pointer-events-none absolute left-1\/2 top-1\/2 h-\[116%\] w-\[132%\]/.test(stage) && /filter: 'blur\(26px\)'/.test(stage), 'soft blurred lime glow centred behind the featured slot')
+  assert.ok(/rgba\(213,255,64,0\.55\) 0%/.test(stage) && /h-\[128%\] w-\[170%\]/.test(stage) && /filter: 'blur\(22px\)'/.test(stage), 'a clearly visible blurred lime glow, larger than the featured card')
+  assert.ok(/zIndex: 60/.test(stage), 'the glow layer sits between the supporting cards (z 25) and the featured card (z 100)')
+  assert.ok(/0 0 34px 2px rgba\(213,255,64,0\.5\)/.test(stage) && /0 0 70px rgba\(0,0,0,0\.75\)/.test(stage), 'the featured card has a lime edge glow and a dark depth shadow onto its neighbours')
   assert.ok(stage.indexOf('active-video backlight') < stage.indexOf('items.map((item, i) => ('), 'the glow is drawn before (behind) the videos')
   // the hero player UI is ONE component, used by the homepage hero's stage and by this stage
   const hero = read('src/components/ugc/CreatorVideoStage.jsx')

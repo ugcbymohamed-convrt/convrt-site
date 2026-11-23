@@ -61,7 +61,7 @@ export default function StudioEnvironment() {
       <div
         className="absolute rounded-[50%]"
         style={{
-          ...b(352, 350, 830, 54),
+          ...b(375, 350, 780, 54),
           background: 'linear-gradient(90deg, #5a5e38 0%, #383c20 14%, #23261a 50%, #383c20 86%, #5a5e38 100%)',
           borderBottom: S('4px solid rgba(196,232,84,0.7)'),
           boxShadow: S('inset 0 3px 9px rgba(222,232,160,0.42), 0 9px 0 -1px #2e321e, 0 18px 0 -1px #181a0f, 0 26px 0 -1px #0a0b07, 0 27px 0 -1px rgba(150,182,48,0.4), 0 40px 44px -6px rgba(0,0,0,0.95)'),
@@ -71,7 +71,7 @@ export default function StudioEnvironment() {
       <div
         className="absolute rounded-[50%]"
         style={{
-          ...b(408, 322, 715, 40),
+          ...b(425, 322, 680, 40),
           background: 'linear-gradient(90deg, #6b7048 0%, #3a3f22 12%, #1f2312 50%, #3a3f22 88%, #6b7048 100%)',
           borderBottom: S('5px solid rgba(244,255,196,0.99)'),
           boxShadow: S('inset 0 5px 12px rgba(225,240,150,0.34), 0 9px 0 -1px #343920, 0 18px 0 -1px #1c1f11, 0 27px 0 -1px #0b0c07, 0 0 46px rgba(190,240,60,0.5), 0 46px 46px -10px #000'),
@@ -81,8 +81,8 @@ export default function StudioEnvironment() {
       <div className="absolute rounded-[50%]" style={{ ...b(412, 324, 700, 34), background: 'linear-gradient(180deg, rgba(255,255,225,0.2), rgba(255,255,225,0.03) 55%, transparent)' }} />
       {/* glossy reflections of the videos on the top surface, and the shadows they cast */}
       <div className="absolute rounded-[50%]" style={{ ...b(660, 338, 212, 30), background: 'radial-gradient(ellipse, rgba(0,0,0,0.7), transparent 72%)', filter: S('blur(5px)') }} />
-      <div className="absolute rounded-[50%]" style={{ ...b(470, 330, 160, 22), background: 'radial-gradient(ellipse, rgba(0,0,0,0.5), transparent 72%)', filter: S('blur(5px)') }} />
-      <div className="absolute rounded-[50%]" style={{ ...b(913, 330, 160, 22), background: 'radial-gradient(ellipse, rgba(0,0,0,0.5), transparent 72%)', filter: S('blur(5px)') }} />
+      <div className="absolute rounded-[50%]" style={{ ...b(500, 330, 160, 22), background: 'radial-gradient(ellipse, rgba(0,0,0,0.5), transparent 72%)', filter: S('blur(5px)') }} />
+      <div className="absolute rounded-[50%]" style={{ ...b(866, 330, 160, 22), background: 'radial-gradient(ellipse, rgba(0,0,0,0.5), transparent 72%)', filter: S('blur(5px)') }} />
       <div className="absolute rounded-[50%]" style={{ ...b(690, 346, 150, 12), background: 'radial-gradient(ellipse, rgba(213,255,64,0.34), transparent 72%)', filter: S('blur(5px)') }} />
 
       {/* the scene melts into the page: top and bottom fade to the page colour */}
