@@ -290,7 +290,7 @@ test('no Arabic page exists in the build, and nothing links to one', () => {
 test('Spanish pages contain no leftover English: every visible sentence is Spanish except verbatim client quotes (lang="en"), brand and package names', () => {
   const EN = new Set('the and your with you our for are this that from what how will we of its is to can has have be or not it by at an on in as but'.split(' '))
   const ES = new Set('el la los las de del y en que un una con para por tu tus su sus es se no al lo como más pero si o a'.split(' '))
-  const verbatim = /It has 9 sales|Roas 5\.28|Mohamed understood the concept|Working with Mohamad|The videos are amazing again|The UGC videos he created/
+  const verbatim = /It has 9 sales|Roas 5\.28|Mohamed understood the concept|Working with Mohamad|The videos are amazing again|The UGC videos he created|scale our ads|^.?The videos are$|high quality|delivered on time|communication throughout|quality just keeps getting better|Every time we work together/
   for (const p of ES_PAGES) {
     for (const line of textOf(page(p))) {
       if (verbatim.test(line)) continue
@@ -636,10 +636,12 @@ test('Spanish homepage: approved copy, one-line short CTA (hero and navigation),
   // hero CTA: compact, no wrapping, same destination as before (the Spanish Roadmap)
   assert.match(body, /href="\/es\/creative-growth-roadmap" class="cta-gradient hero-cta[^"]*whitespace-nowrap[^"]*px-5 md:px-6/)
   // founder section, services, final headline
-  assert.match(t, /Nuestro fundador ha trabajado con\s+más de\s+500\s+clientes\s+de e-commerce, apps, SaaS y otros sectores\./)
+  // the founder statement lives with the redesigned client stage (same section as English): « Experiencia del fundador · Ha trabajado con 500+ clientes »
+  assert.match(t, /Experiencia del fundador/)
+  assert.match(t, /Ha trabajado con\s+500\+\s+clientes/)
   assert.match(t, /Las buenas marcas\nmerecen mejores\ncreativos\./)
   assert.ok(/class="block text-ink sm:whitespace-nowrap">merecen mejores</.test(body), 'the middle line of the final headline never wraps from tablet up')
-  for (const s of ['Qué hacemos', 'Creativos en vídeo para', 'Anuncios UGC', 'Vídeos Spokesperson', 'Contenido orgánico para redes sociales', '¿No tienes claro qué servicio necesitas?', 'Reservar una llamada', 'Prueba a trabajar con nosotros.', 'Solicitar 1 vídeo gratis', 'Oferta sujeta a revisión y aprobación.', 'Marcas que confiaron en nosotros.', '¿Qué hace exactamente CONVRT Studio?', '¿En qué se diferencia un vídeo UGC de un vídeo Spokesperson?', '¿Te queda alguna duda?']) assert.ok(t.includes(s), s)
+  for (const s of ['Qué hacemos', 'Creativos en vídeo para', 'Anuncios UGC', 'Vídeos Spokesperson', 'Contenido orgánico para redes sociales', '¿No tienes claro qué servicio necesitas?', 'Reservar una llamada', 'Prueba a trabajar con nosotros.', 'Solicitar 1 vídeo gratis', 'Oferta sujeta a revisión y aprobación.', '¿Qué hace exactamente CONVRT Studio?', '¿En qué se diferencia un vídeo UGC de un vídeo Spokesperson?', '¿Te queda alguna duda?']) assert.ok(t.includes(s), s)
   // verbatim original testimonials (English), approved labels
   for (const q of ['Mohamed understood the concept really well', 'Working with Mohamad was an absolute pleasure', 'The videos are amazing again']) assert.ok(t.includes(q), q)
   // terminology: no "creatividad(es)" for ad creative assets, no "listos para rendir", Spokesperson stays the service name

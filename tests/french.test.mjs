@@ -163,8 +163,26 @@ test('French share image: a real 1200x630 PNG exists and every French page uses 
 })
 
 // ── creators ───────────────────────────────────────────────────────────────────────────────────────────────────
-test('French creator videos: five valid, French-only, opaque creators, real Cloudflare ids and posters, no name/brand/credit shown, no invented upload date', () => {
-  const fr = PORTFOLIO.filter((i) => (i.onlyIn ?? []).includes('fr'))
+test('French creator videos: nine valid French-only gallery videos (five of two opaque creators, four of the founder) and two landscape client-stage videos; real Cloudflare ids and posters; no brand/credit shown, no invented upload date', () => {
+  const all = PORTFOLIO.filter((i) => (i.onlyIn ?? []).includes('fr'))
+  assert.equal(all.length, 11)
+  const stage = all.filter((v) => v.showcase === 'fixd')
+  assert.equal(stage.length, 2)
+  for (const v of stage) {
+    assert.deepEqual(portfolioProblems(v), [], v.id); assert.equal(v.orientation, 'landscape'); assert.deepEqual(v.languages, ['fr']); assert.deepEqual(v.onlyIn, ['fr'])
+    assert.match(v.source.cloudflareId, /^[0-9a-f]{32}$/); assert.ok(fs.existsSync(path.join(ROOT, 'public', v.poster)), v.poster)
+    assert.equal(v.approval.portfolioUse, false); assert.equal(v.approval.creatorConsent, false); assert.ok(!isDisplayable(v), 'client-stage only: never in a gallery or the Showcase')
+    assert.equal(v.uploadDate, undefined)
+  }
+  // the founder: shown by first name and role (owner: Mohamed is the founder and a creator), nothing more is claimed
+  const founder = all.filter((v) => v.creatorId === 'fr-c03' && !v.showcase)
+  assert.equal(founder.length, 4)
+  for (const v of founder) {
+    assert.deepEqual(portfolioProblems(v), [], v.id); assert.equal(v.creator.displayName, 'Mohamed, fondateur de CONVRT'); assert.equal(v.creator.showName, true)
+    assert.equal(v.brand, undefined); assert.equal(v.productionCredit, undefined); assert.equal(v.uploadDate, undefined); assert.equal(v.production, undefined); assert.ok(isDisplayable(v)); assert.equal(v.placement, 'gallery')
+    assert.match(v.source.cloudflareId, /^[0-9a-f]{32}$/); assert.ok(fs.existsSync(path.join(ROOT, 'public', v.poster)), v.poster)
+  }
+  const fr = all.filter((v) => !v.showcase && v.creatorId !== 'fr-c03')
   assert.equal(fr.length, 5)
   for (const v of fr) {
     assert.deepEqual(portfolioProblems(v), [], v.id)
@@ -174,8 +192,8 @@ test('French creator videos: five valid, French-only, opaque creators, real Clou
     assert.equal(v.uploadDate, undefined); assert.equal(v.creator, undefined); assert.equal(v.brand, undefined); assert.equal(v.productionCredit, undefined)
     assert.ok(isDisplayable(v)); assert.equal(v.industry, 'unclassified'); assert.equal(v.production, undefined)
   }
-  assert.equal(new Set(fr.map((v) => v.source.cloudflareId)).size, 5)
-  assert.equal(displayableFor('fr').length, 5)
+  assert.equal(new Set(all.map((v) => v.source.cloudflareId)).size, 11)
+  assert.equal(displayableFor('fr').length, 9)
   // never on English pages or in the English library; never the English library on French pages
   assert.ok(!ENGLISH_LIBRARY.some((i) => (i.onlyIn ?? []).includes('fr')))
   assert.ok(fr.every((v) => !displayableFor('es').includes(v)))
@@ -189,7 +207,15 @@ test('French creator videos: five valid, French-only, opaque creators, real Clou
 test('French homepage hero uses only French-spoken videos that are also in the portfolio (same Stream ids)', () => {
   const ids = new Set(PORTFOLIO.filter((i) => (i.onlyIn ?? []).includes('fr')).map((i) => i.source.cloudflareId))
   assert.equal(HOME_HERO_FR.length, 3)
-  for (const h of HOME_HERO_FR) { assert.ok(ids.has(h.source.cloudflareId)); assert.deepEqual(h.languages, ['fr']); assert.ok(isDisplayable(h)) }
+  for (const h of HOME_HERO_FR) { assert.deepEqual(h.languages, ['fr']); assert.ok(isDisplayable(h)) }
+  // centre = the French-dubbed CONVRT advertisement (its own Stream upload, not a creator video); left = the French female creator, right = the French male creator (the same Stream videos as the UGC hero)
+  const [main, left, right] = HOME_HERO_FR
+  assert.equal(main.source.cloudflareId, '06d0cf7f9cea77275b486f62144b3708'); assert.equal(main.creatorId, 'cv-home-hero')
+  assert.ok(ids.has(left.source.cloudflareId) && ids.has(right.source.cloudflareId))
+  assert.equal(left.creatorId, 'fr-c01'); assert.equal(right.creatorId, 'fr-c02')
+  // Comma (the founder's football-shirt video) is NOT a hero video: it is in the carousel and the showcase
+  const comma = PORTFOLIO.find((i) => i.id === 'fr-mohamed-comma')
+  assert.ok(comma && !HOME_HERO_FR.some((h) => h.source.cloudflareId === comma.source.cloudflareId))
 })
 
 // ── a real production build ────────────────────────────────────────────────────────────────────────────────────
@@ -341,9 +367,11 @@ test('French pages: no VideoObject, no invented claims; CONVRT presents no Frenc
     assert.ok(!/bureau à (Paris|Lyon)|notre bureau|notre équipe (parisienne|française)|basés? (à|en) (Paris|France)|garantie? (de )?(ROAS|conversions|ventes)/i.test(t), p)
   }
   const home = textOf(page('/fr')).join(' ')
-  assert.match(home, /Expérience professionnelle cumulée du fondateur, chez CONVRT Studio et dans le cadre d’autres projets de production créative/)
-  assert.match(home, /Expérience professionnelle cumulée de notre fondateur/)
-  assert.match(home, /Notre fondateur a travaillé avec plus de 500 clients/)
+  // The French homepage's client stage is a single repeat-business story (no founder statistics in it); the statistics strip further down keeps its asterisk and its attribution.
+  assert.match(home, /Un premier projet\. Puis d’autres\./)
+  assert.match(home, /Une collaboration qui s’est poursuivie au-delà de la première vidéo\./)
+  assert.match(home, /Expérience professionnelle cumulée de notre fondateur/, 'the figures that remain are attributed to the founder’s combined experience')
+  assert.ok(!/Notre fondateur a travaillé avec plus de 500 clients/.test(home), 'the old founder headline is replaced by the client story')
 })
 
 test('independent creators: the French showcase and UGC page say the videos are creators’ examples, not necessarily CONVRT productions', () => {

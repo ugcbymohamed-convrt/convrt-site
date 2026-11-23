@@ -161,7 +161,7 @@ export default function ClientReviews() {
           </div>
         </div>
 
-        {ed?.testimonialsNote && <p className="mt-8 text-[12.5px] leading-relaxed text-ink-subtle">{ed.testimonialsNote}</p>}
+        {locale !== 'en' && <p className="mt-8 text-[12.5px] leading-relaxed text-ink-subtle">{ed?.reviewExcerpts ? ed.testimonialsNote : tr('Reviews are shown in the clients’ original language (English).')}</p>}
         <div aria-hidden="true" className="mt-14 h-px w-full bg-lime md:mt-20" />
       </div>
     </section>

@@ -13,6 +13,8 @@ export default {
   "Read the Graspo case study": "Lee el caso práctico de Graspo (en inglés)",
   "Explore All Creators": "Ver todos los creadores",
   "Great work. Strong relationships. Repeat collaborations.": "Buen trabajo. Relaciones sólidas. Colaboraciones que se repiten.",
+  "Real creators. Real presence.": "Creadores reales. Presencia real.",
+  "Ready for your brand.": "Listos para tu marca.",
   "logo": "logotipo",
   "Repeat client": "Cliente recurrente",
   "Read full review": "Leer la opinión completa",

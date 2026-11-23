@@ -422,10 +422,10 @@ test('regression: production attribution is unknown unless confirmed, and a labe
   assert.ok(/productionLabel\(item\)/.test(lb) && /\.filter\(Boolean\)/.test(lb), 'the player mentions production only when known')
 })
 
-test('regression: the nine homepage client videos stay homepage-only: not in /creator-showcase, the UGC page or the sitemap data, permissions untouched', () => {
+test('regression: the nine homepage client videos (and the two French client-stage videos) stay homepage-only: not in /creator-showcase, the UGC page or the sitemap data, permissions untouched', () => {
   const clients = PORTFOLIO.filter((v) => v.showcase)
-  assert.equal(clients.length, 9)
-  assert.deepEqual([...new Set(clients.map((v) => v.showcase))].sort(), ['adscale', 'elyon', 'graspo'])
+  assert.equal(clients.length, 11, 'nine English/Spanish client-panel videos + the two French FIXD landscape videos')
+  assert.deepEqual([...new Set(clients.map((v) => v.showcase))].sort(), ['adscale', 'elyon', 'fixd', 'graspo'])
   for (const v of clients) {
     assert.equal(v.approval.portfolioUse, false, `${v.id}: portfolioUse stays false`)
     assert.equal(v.approval.creatorConsent, false, `${v.id}: creatorConsent stays false`)

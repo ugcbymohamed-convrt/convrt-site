@@ -143,7 +143,7 @@ export default function Hero() {
               <p className="text-left text-[13px] text-ink-muted">{locale === 'fr' ? FR_HOME_HERO.offersLabel : tr("Not ready yet? We've got two more FREE ways to start.")}</p>
               <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-left">
                 {SECONDARY_OFFERS.map((offer) => (
-                  <SecondaryOffer key={offer.id} offer={offer} copy={locale === 'fr' ? FR_HOME_HERO.offers[offer.id] : null} soon={offer.id === 'hooks' && !flowAvailable(locale, 'hooks')} />
+                  <SecondaryOffer key={offer.id} offer={offer} copy={locale === 'fr' ? FR_HOME_HERO.offers[offer.id] : null} to={locale === 'en' ? undefined : href(offer.href)} soon={offer.id === 'hooks' && !flowAvailable(locale, 'hooks')} />
                 ))}
               </div>
             </div>
@@ -167,7 +167,7 @@ export default function Hero() {
    lines (short card); from sm up the icon shares a row with the title so two
    cards fit side by side in the left column without wrapping. */
 
-export function SecondaryOffer({ offer, copy = null, soon = false }) {
+export function SecondaryOffer({ offer, copy = null, soon = false, to }) {
   const Icon = offer.icon
   const title = copy ? <>{copy.title[0]} <span className={offer.id === 'video' ? 'text-lime' : 'text-[#F472B6]'}>{copy.title[1]}</span></> : offer.title
   const inner = (
@@ -195,7 +195,7 @@ export function SecondaryOffer({ offer, copy = null, soon = false }) {
   if (soon) return <div className={`grid grid-cols-[auto_1fr] items-center gap-x-3 rounded-2xl border p-3.5 sm:p-4 opacity-75 ${offer.card.replace(/hover:[^\s]+/g, '')}`}>{inner}</div>
   return (
     <a
-      href={offer.href}
+      href={to ?? offer.href}
       onClick={() => trackEvent(offer.event, { location: 'hero' })}
       className={`group grid grid-cols-[auto_1fr] items-center gap-x-3 rounded-2xl border p-3.5 sm:p-4
                   transition-[transform,border-color,background-color,box-shadow] duration-200 hover:-translate-y-0.5

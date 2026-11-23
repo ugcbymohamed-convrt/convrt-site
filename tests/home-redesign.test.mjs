@@ -389,14 +389,17 @@ test('the UGC page and the shared file order are untouched by the ordering helpe
 })
 
 // ── 8. Spanish and the other pages ───────────────────────────────────────────────────────
-test('Spanish homepage keeps its own sections: old case-study panels, reviews and CTA; none of the new English sections', () => {
+test('Spanish homepage (Nov 2026 revision): the SAME client stage and review design as English with Spanish text; no creator carousel; the verbatim English reviews stay', () => {
   const h = bodyOf(page('/es'))
-  assert.ok(h.includes('Proyectos que hablan') && h.includes('id="showcase"') && h.includes('id="testimonials"'))
-  assert.ok(!/showcase-tab-|home-creators|Read full review|Real creators/.test(h))
-  assert.ok(h.includes('Quiero anuncios como estos') && /Nuestro fundador ha trabajado con/.test(textOf(h)))
-  assert.ok(textOf(sectionOf(h, 'clients')).includes('Experiencia profesional'), 'Spanish keeps the long founder caption')
-  // the Spanish review wording is the same source, unchanged
-  for (const r of REVIEWS) assert.ok(textOf(h).includes(r.full), r.id)
+  assert.ok(h.includes('id="showcase"') && h.includes('id="testimonials"') && h.includes('role="tablist"') && h.includes('showcase-stage'), 'the redesigned stage, selector and reviews')
+  assert.ok(!/Proyectos que hablan|Quiero anuncios como estos|home-creators|Real creators/.test(h), 'none of the old Spanish case-study panels, and no creator carousel (not requested for Spanish)')
+  const t = textOf(h)
+  assert.ok(t.includes('Experiencia del fundador') && /Ha trabajado con\s+500\+\s+clientes/.test(t))
+  assert.ok(t.includes('Opiniones de clientes'))
+  // the review wording is the same source, unchanged: the clients' own English words (lang="en"), complete behind "Leer la opinión completa"
+  assert.ok(t.includes('Leer la opinión completa'))
+  for (const r of REVIEWS) assert.ok(t.includes(r.full) && t.includes(r.excerpt), r.id)
+  assert.equal((h.match(/<figure[^>]*role="tabpanel"/g) || []).length, 3)
 })
 
 test('SEO and structure are untouched: homepage head and JSON-LD carry no review, rating or video markup; the case-study pages are still linked', () => {
@@ -412,7 +415,7 @@ test('motion and accessibility: the new animations are off for prefers-reduced-m
   assert.match(css, /@media \(prefers-reduced-motion: reduce\) \{\s*\.sc-panel-in \{ animation: none; \}/)
   assert.ok(!/\.rv-card/.test(css), 'the old review-card styles are gone')
   const showcase = read('src/components/home/IndustryShowcase.jsx')
-  for (const k of ['role="tablist"', 'role="tab"', 'aria-selected', 'ArrowRight: 1', "matchMedia?.('(prefers-reduced-motion: reduce)')", 'motion-reduce:']) assert.ok(showcase.includes(k), k)
+  for (const k of ["'tablist'", 'role="tab"', 'aria-selected', 'ArrowRight: 1', "matchMedia?.('(prefers-reduced-motion: reduce)')", 'motion-reduce:']) assert.ok(showcase.includes(k), k)
   const stage = read('src/components/home/RotaryStage.jsx')
   for (const k of ["e.key === 'ArrowRight'", "e.key === 'ArrowLeft'", 'tabIndex={0}', 'aria-roledescription="carousel"', 'onPointerUp', 'motion-reduce:']) assert.ok(stage.includes(k), k)
   const reviews = read('src/components/home/ClientReviews.jsx')
