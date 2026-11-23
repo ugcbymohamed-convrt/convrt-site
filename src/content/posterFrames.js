@@ -10,6 +10,12 @@
    A video that is not listed keeps its current poster (the Roadmap explainer keeps its deliberately chosen 25.6 s frame). Inventory and contact sheet: docs/video-thumbnails.md. */
 
 export const POSTER_FRAMES = {
+  'a32cb282a9ef41333b79f86da02a46ad': 22.2, // portfolio:ar-mohamed-zory [ar]
+  '9e7fca5cfa5146f40a26d0e2d066ed14': 6.5, // portfolio:ar-mohamed-clothing [ar]
+  '1bb5e1f61c5c4efb56c378f568ca0f5b': 27.7, // portfolio:ar-mohamed-bag [ar]
+  'a256f8f429c8e2d26256e894af970dbf': 18.8, // portfolio:ar-oneroyal-1 [ar]
+  '871ea801a38e653cd48c036374966382': 5.8, // portfolio:ar-oneroyal-2 [ar]
+  '8bc61e80a5240cde3f16a90f63dbc4fa': 11.6, // portfolio:ar-oneroyal-3 [ar]
   '442dfb5fe6a49dffd032ecd920414512': 13.0, // portfolio:ar-ugc-hero-1 [ar]
   'e76683d744c46ecfe8e1fb53b273b926': 15.6, // portfolio:ar-ugc-hero-2 [ar]
   '7f68e3f6c92e70395cad4876fcb389a8': 24.9, // portfolio:ar-ugc-hero-3 [ar]

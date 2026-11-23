@@ -28,7 +28,7 @@ function inKeyframes(node) {
    The exclusion is added to the LAST compound selector, before any pseudo-element (::before, ::placeholder, ::-webkit-scrollbar ...), which cannot be followed by more selectors. */
 const ISLAND = ':not([dir="ltr"] *):not([dir="ltr"])'
 function outsideLtrIslands(selector) {
-  const m = selector.match(/::|:(?:before|after|first-line|first-letter)\b/)
+  const m = selector.match(/(?<!\\)(?:::|:(?:before|after|first-line|first-letter)\b)/) // not an ESCAPED colon (Tailwind's `sm\:before\:mx-2` is a class NAME)
   return m ? `${selector.slice(0, m.index)}${ISLAND}${selector.slice(m.index)}` : `${selector}${ISLAND}`
 }
 

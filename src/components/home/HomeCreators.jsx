@@ -1,6 +1,8 @@
 import UgcGallery from '../ugc/UgcGallery.jsx'
 import { CREATOR_SHOWCASE_PATH } from '../../config.js'
 import { selectHomeCreators } from '../../content/portfolio.js'
+import { T } from '../../i18n/tr.js'
+import { currentLocale } from '../../i18n/locale.js'
 
 /* THE ENGLISH HOMEPAGE'S "REAL CREATORS" CAROUSEL (after Services and How It Works).
 
@@ -22,6 +24,12 @@ export const HOME_CREATORS_GALLERY = {
   sampleNote: '',
 }
 
+/* The Arabic homepage's carousel: the same component and design. The heading is built from <T> so the JSX translates; every other line is a string the dictionary translates (UgcGallery -> localizeConfig). */
+export const HOME_CREATORS_GALLERY_AR = {
+  ...HOME_CREATORS_GALLERY,
+  title: <span className="block text-balance"><T>Real creators. Real presence.</T>{' '}<span className="text-lime"><T>Ready for your brand.</T></span></span>,
+}
+
 export default function HomeCreators() {
-  return <UgcGallery items={selectHomeCreators()} config={HOME_CREATORS_GALLERY} />
+  return <UgcGallery items={selectHomeCreators()} config={currentLocale() === 'ar' ? HOME_CREATORS_GALLERY_AR : HOME_CREATORS_GALLERY} />
 }

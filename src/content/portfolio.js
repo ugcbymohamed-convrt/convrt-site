@@ -87,9 +87,171 @@ import { ES_LANGUAGE_LABELS, ES_INDUSTRY_LABELS, ES_TYPE_LABELS, ES_PRODUCTION_L
 import { AR_LANGUAGE_LABELS, AR_INDUSTRY_LABELS, AR_TYPE_LABELS, AR_PRODUCTION_LABELS, captionAr } from '../i18n/ar/labels.js'
 
 const AR_APPROVAL = { status: 'approved', portfolioUse: true, creatorConsent: true, approvedBy: 'CONVRT owner (Arabic site brief, 2026-11-23: approved Arabic-speaking creator videos)', approvedOn: '2026-11-23' }
+/* Arabic revision (owner brief 2026-11-23): Mohamed (the founder), One Royal and Graspo. brandDisplay: the owner asked for the clients to be named. See the entries' comment. */
+const AR_BRAND_APPROVAL = { ...AR_APPROVAL, brandDisplay: true, approvedBy: 'CONVRT owner (Arabic revision brief, 2026-11-23: feature Mohamed, One Royal and the Graspo videos)' }
 const ES_APPROVAL = { status: 'approved', portfolioUse: true, creatorConsent: true, approvedBy: 'CONVRT owner (confirmed in chat)', approvedOn: '2026-11-22' }
 
 export const PORTFOLIO = [
+  /* ── ARABIC REVISION (owner brief 2026-11-23): Mohamed (the founder), One Royal and Graspo ─────────────────────────────────────────────────────────────────────────────────────────────
+     Mohamed's videos come from ~/Desktop/CONVRT/CREATORS/Arabic/Mohamed (EDIT_CAPTIONS_MUSIC, V2-POLISHED-MUSIC, ZORY-AI-MOHAMED) and its OneRoyal folder (scripts 2, 3 and 5); they were re-encoded to
+     1080 p and uploaded to Cloudflare Stream on 2026-11-23 as AR-MOHAMED-01..03 and AR-ONEROYAL-01..03. A fourth file (the Sharjah book-fair clip) features third parties, so it was NOT uploaded.
+     Mohamed is the CONVRT founder and presents on camera; the owner asked for these to be featured (this brief), so portfolioUse and creatorConsent are true. One Royal (a trading brand) and Graspo are
+     shown by name on the owner's instruction (brandDisplay). The three Graspo entries are the SAME three Stream videos as the English homepage's Graspo panel (showcase-graspo-1..3), copied here as
+     Arabic-only entries (the English entries and the English pages are unchanged); their `views` are the figures already published on the English Graspo case study (src/components/graspo/GraspoShowcase.jsx,
+     Meta Business Suite, Jan to Jun 2026), mapped by Stream id: nothing here is estimated. The owner's brief mentioned "7M, 5M and 3M"; the records support 7.5M, 1.2M and 295K, so those are used.
+     `production: 'convrt'` only for Graspo (the published case study documents CONVRT's content work); Mohamed's and One Royal's production is left unset. */
+  {
+    id: 'ar-graspo-1',
+    title: 'فيديو عضوي لشركة Graspo (1)',
+    caption: 'فيديو عضوي قصير لشركة Graspo للطباعة، من العمل الموثّق في دراسة الحالة.',
+    type: 'organic',
+    industry: 'unclassified',
+    languages: ['ar'],
+    onlyIn: ['ar'],
+    source: { cloudflareId: 'c1379ace38f2fa19ef2a45de1bb5d4b1' },
+    creatorId: 'ar-graspo-c1',
+    brand: 'Graspo',
+    production: 'convrt',
+    views: '7.5M',
+    showcase: 'graspo',
+    placement: 'hero',
+    caseStudyHref: '/case-studies/graspo',
+    approval: AR_BRAND_APPROVAL,
+  },
+  {
+    id: 'ar-graspo-2',
+    title: 'فيديو عضوي لشركة Graspo (2)',
+    caption: 'فيديو عضوي قصير لشركة Graspo للطباعة، من العمل الموثّق في دراسة الحالة.',
+    type: 'organic',
+    industry: 'unclassified',
+    languages: ['ar'],
+    onlyIn: ['ar'],
+    source: { cloudflareId: '3616606e3ca6d1a85c8a57d7cc2f656f' },
+    creatorId: 'ar-graspo-c2',
+    brand: 'Graspo',
+    production: 'convrt',
+    views: '1.2M',
+    showcase: 'graspo',
+    placement: 'hero',
+    caseStudyHref: '/case-studies/graspo',
+    approval: AR_BRAND_APPROVAL,
+  },
+  {
+    id: 'ar-graspo-3',
+    title: 'فيديو عضوي لشركة Graspo (3)',
+    caption: 'فيديو عضوي قصير لشركة Graspo للطباعة، من العمل الموثّق في دراسة الحالة.',
+    type: 'organic',
+    industry: 'unclassified',
+    languages: ['ar'],
+    onlyIn: ['ar'],
+    source: { cloudflareId: '15dd5505109f6821ccdcb13fc3cdc1fd' },
+    creatorId: 'ar-graspo-c3',
+    brand: 'Graspo',
+    production: 'convrt',
+    views: '295K',
+    showcase: 'graspo',
+    placement: 'hero',
+    caseStudyHref: '/case-studies/graspo',
+    approval: AR_BRAND_APPROVAL,
+  },
+  {
+    id: 'ar-oneroyal-1',
+    title: 'كفّ عن مراقبة صفقتك طوال الوقت',
+    caption: 'فيديو بمقدّم لعلامة One Royal في مجال التداول: «كفّ عن مراقبة صفقتك».',
+    type: 'spokesperson',
+    industry: 'unclassified',
+    languages: ['ar'],
+    onlyIn: ['ar'],
+    source: { cloudflareId: 'a256f8f429c8e2d26256e894af970dbf' },
+    poster: '/portfolio/ar-oneroyal-1.webp',
+    creatorId: 'ar-mohamed',
+    creator: { displayName: 'Mohamed', showName: true },
+    brand: 'One Royal',
+    showcase: 'oneroyal',
+    placement: 'hero',
+    approval: AR_BRAND_APPROVAL,
+  },
+  {
+    id: 'ar-oneroyal-2',
+    title: 'التداول: السوشيال ميديا مقابل الواقع',
+    caption: 'فيديو بمقدّم لعلامة One Royal في مجال التداول: «السوشيال ميديا مقابل الواقع».',
+    type: 'spokesperson',
+    industry: 'unclassified',
+    languages: ['ar'],
+    onlyIn: ['ar'],
+    source: { cloudflareId: '871ea801a38e653cd48c036374966382' },
+    poster: '/portfolio/ar-oneroyal-2.webp',
+    creatorId: 'ar-mohamed',
+    creator: { displayName: 'Mohamed', showName: true },
+    brand: 'One Royal',
+    showcase: 'oneroyal',
+    placement: 'hero',
+    approval: AR_BRAND_APPROVAL,
+  },
+  {
+    id: 'ar-oneroyal-3',
+    title: 'ليت أحدًا أخبرني بهذا',
+    caption: 'فيديو بمقدّم لعلامة One Royal في مجال التداول: «ليت أحدًا أخبرني بهذا».',
+    type: 'spokesperson',
+    industry: 'unclassified',
+    languages: ['ar'],
+    onlyIn: ['ar'],
+    source: { cloudflareId: '8bc61e80a5240cde3f16a90f63dbc4fa' },
+    poster: '/portfolio/ar-oneroyal-3.webp',
+    creatorId: 'ar-mohamed',
+    creator: { displayName: 'Mohamed', showName: true },
+    brand: 'One Royal',
+    showcase: 'oneroyal',
+    placement: 'gallery',
+    approval: AR_BRAND_APPROVAL,
+  },
+  {
+    id: 'ar-mohamed-zory',
+    title: 'تقديم تطبيق لتصميم الديكور الداخلي',
+    caption: 'Mohamed، مؤسس CONVRT، يقدّم تطبيقًا لتصميم الديكور الداخلي ويعرض شاشاته.',
+    type: 'spokesperson',
+    industry: 'unclassified',
+    languages: ['ar'],
+    onlyIn: ['ar'],
+    source: { cloudflareId: 'a32cb282a9ef41333b79f86da02a46ad' },
+    poster: '/portfolio/ar-mohamed-zory.webp',
+    creatorId: 'ar-mohamed',
+    creator: { displayName: 'Mohamed', showName: true },
+    placement: 'hero',
+    approval: AR_BRAND_APPROVAL,
+  },
+  {
+    id: 'ar-mohamed-clothing',
+    homeCreator: 2,
+    title: 'عرض قطعة ملابس وشرح جودتها',
+    caption: 'Mohamed، مؤسس CONVRT، يعرض قطعة ملابس ويتحدث عن جودتها ومقاسها وألوانها.',
+    type: 'ugc',
+    industry: 'unclassified',
+    languages: ['ar'],
+    onlyIn: ['ar'],
+    source: { cloudflareId: '9e7fca5cfa5146f40a26d0e2d066ed14' },
+    poster: '/portfolio/ar-mohamed-clothing.webp',
+    creatorId: 'ar-mohamed',
+    creator: { displayName: 'Mohamed', showName: true },
+    placement: 'gallery',
+    approval: AR_BRAND_APPROVAL,
+  },
+  {
+    id: 'ar-mohamed-bag',
+    homeCreator: 1,
+    title: 'عرض حقيبة رياضية في النادي',
+    caption: 'Mohamed، مؤسس CONVRT، يعرض حقيبة رياضية في النادي وفي الهواء الطلق.',
+    type: 'ugc',
+    industry: 'unclassified',
+    languages: ['ar'],
+    onlyIn: ['ar'],
+    source: { cloudflareId: '1bb5e1f61c5c4efb56c378f568ca0f5b' },
+    poster: '/portfolio/ar-mohamed-bag.webp',
+    creatorId: 'ar-mohamed',
+    creator: { displayName: 'Mohamed', showName: true },
+    placement: 'gallery',
+    approval: AR_BRAND_APPROVAL,
+  },
   /* ── ARABIC VIDEOS (owner folder ~/Desktop/CONVRT/CREATORS/Arabic: default*.mp4 and the "Milad" folder; uploaded to Cloudflare Stream 2026-11-23 as AR-CREATOR-nn) ───────────────────────────────
      Arabic-only entries: `languages: ['ar']` + `onlyIn: ['ar']`, so they appear on /ar/ pages only (the Arabic Showcase, the UGC gallery and hero, the homepage hero) and never change an English or
      Spanish page. The Arabic brief (2026-11-23) states these are approved Arabic-speaking creator videos for the homepage and the Showcase; that is recorded in `approval` below and flagged for the
@@ -144,6 +306,7 @@ export const PORTFOLIO = [
   },
   {
     id: 'ar-ugc-1',
+    homeCreator: 3,
     title: 'صانع محتوى يتحدث عن فكرة مشروع بخلفيات مرئية',
     caption: 'صانع محتوى يتحدث عن فكرة مشروع بخلفيات مرئية.',
     type: 'ugc',
@@ -159,6 +322,7 @@ export const PORTFOLIO = [
   },
   {
     id: 'ar-ugc-2',
+    homeCreator: 4,
     title: 'عرض منتج شاي وتجربة تحضيره',
     caption: 'عرض منتج شاي وتجربة تحضيره.',
     type: 'ugc',
@@ -174,6 +338,7 @@ export const PORTFOLIO = [
   },
   {
     id: 'ar-ugc-3',
+    homeCreator: 5,
     title: 'عرض عطر أمام الكاميرا',
     caption: 'عرض عطر أمام الكاميرا.',
     type: 'ugc',
@@ -189,6 +354,7 @@ export const PORTFOLIO = [
   },
   {
     id: 'ar-ugc-4',
+    homeCreator: 6,
     title: 'جولة تعريفية في مشروع عقاري',
     caption: 'جولة تعريفية في مشروع عقاري.',
     type: 'ugc',
@@ -204,6 +370,7 @@ export const PORTFOLIO = [
   },
   {
     id: 'ar-ugc-5',
+    homeCreator: 7,
     title: 'عرض منتجات شوكولاتة في الهواء الطلق',
     caption: 'عرض منتجات شوكولاتة في الهواء الطلق.',
     type: 'ugc',
@@ -219,6 +386,7 @@ export const PORTFOLIO = [
   },
   {
     id: 'ar-ugc-6',
+    homeCreator: 8,
     title: 'صانع محتوى يشرح خدمة تقنية للجمهور',
     caption: 'صانع محتوى يشرح خدمة تقنية للجمهور.',
     type: 'ugc',
@@ -1624,6 +1792,7 @@ export function portfolioProblems(item) {
   }
   if (item.placement !== undefined && item.placement !== 'hero' && item.placement !== 'gallery') p.push("placement must be 'hero' or 'gallery'")
   if (item.showcase !== undefined && !/^[a-z][a-z0-9-]*$/.test(item.showcase)) p.push('showcase must be a lowercase slug')
+  if (item.views !== undefined && !(typeof item.views === 'string' && /^\d+(\.\d+)?[KM]$/.test(item.views))) p.push("views must be a verified figure like '7.5M' or '295K' (copy it from the published case study; never estimate)")
   if (item.homeCreator !== undefined && !(Number.isInteger(item.homeCreator) && item.homeCreator >= 1 && item.homeCreator <= 20)) p.push('homeCreator must be a whole number from 1 to 20 (its position in the homepage creator carousel)')
   if (item.uploadDate !== undefined && !/^\d{4}-\d{2}-\d{2}(T[\d:.+Z-]+)?$/.test(item.uploadDate)) p.push('uploadDate must be an ISO date (YYYY-MM-DD)')
   if (hasMp4 && !item.poster) p.push('an mp4 source needs a poster image')
@@ -1685,12 +1854,12 @@ const selectSaas = (items) => selectDisplayable(items).filter((i) => servesPage(
 export const selectSaasHero = (items = PORTFOLIO) => selectSaas(items).filter((i) => placementOn(i, 'saas') === 'hero')
 export const selectSaasGallery = (items = PORTFOLIO) => selectSaas(items).filter((i) => placementOn(i, 'saas') !== 'hero')
 
-/* The English homepage "Real creators" carousel: approved videos (full approval: portfolio use AND creator consent) tagged `homeCreator`, whose spoken language is CONFIRMED English (a video
+/* The homepage "Real creators" carousel (English; the Arabic homepage has the same carousel with Arabic-language videos tagged the same way): approved videos (full approval: portfolio use AND creator consent) tagged `homeCreator`, whose spoken language is CONFIRMED English (a video
    with no recorded language is never guessed into the list), in `homeCreator` order. Nothing is invented to fill a gap: fewer than eight approved videos simply show fewer. */
 export const HOME_CREATORS_MAX = 8
 export const selectHomeCreators = (items = PORTFOLIO) =>
   selectDisplayable(items)
-    .filter((i) => i.homeCreator !== undefined && (i.languages ?? []).includes('en'))
+    .filter((i) => i.homeCreator !== undefined && (i.languages ?? []).includes(currentLocale()))
     .sort((a, b) => a.homeCreator - b.homeCreator)
     .slice(0, HOME_CREATORS_MAX)
 
@@ -1702,7 +1871,12 @@ export const orderedBy = (items, ids = []) => {
 }
 
 /* Homepage client panel `id` ('adscale' | 'elyon' | 'graspo'). */
-export const selectShowcase = (id, items = PORTFOLIO) => items.filter((i) => shownIn(i, currentLocale()) && isShowcaseable(i) && i.showcase === id)
+/* A language site with its OWN videos for that client (entries limited to it with `onlyIn`, e.g. the Arabic Graspo and One Royal entries) shows only those, never the English ones as well. */
+export const selectShowcase = (id, items = PORTFOLIO) => {
+  const all = items.filter((i) => shownIn(i, currentLocale()) && isShowcaseable(i) && i.showcase === id)
+  const own = currentLocale() === DEFAULT_LOCALE ? [] : all.filter((i) => i.onlyIn?.includes(currentLocale()))
+  return own.length ? own : all
+}
 
 /* Name shown on a card: only with explicit permission. */
 export const creatorLabel = (item) => (item.creator?.showName === true && item.creator?.displayName ? item.creator.displayName : null)

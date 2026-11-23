@@ -1,5 +1,9 @@
 import { useRef, useState } from 'react'
 import { REVIEWS } from '../../content/reviews.js'
+import { AR_REVIEWS } from '../../i18n/ar/reviews.js'
+import { useTr } from '../../i18n/tr.js'
+import { currentLocale } from '../../i18n/locale.js'
+import { stepOfArrow } from '../../lib/rtl.js'
 
 /* THE ENGLISH HOMEPAGE'S CLIENT REVIEWS: an editorial feature, deliberately the opposite of the cinematic stage above it (typography only: no cards, no glow, no stage).
 
@@ -25,7 +29,9 @@ const quoteSize = (text) => (text.length > 85
   : 'text-[1.95rem] min-[420px]:text-[2.2rem] md:text-[3rem] lg:text-[3rem] xl:text-[3.6rem] 2xl:text-[4.5rem]')
 
 const ORDER = ['adscale', 'elyon', 'talk360']
-const LIST = ORDER.map((id) => REVIEWS.find((r) => r.id === id)).filter(Boolean)
+const LIST_EN = ORDER.map((id) => REVIEWS.find((r) => r.id === id)).filter(Boolean)
+/* Arabic: the same three reviews, in the owner-approved Arabic wording (src/i18n/ar/reviews.js). */
+const LIST_AR = LIST_EN.map((r) => ({ ...r, ...AR_REVIEWS[r.id] }))
 
 /* the oversized opening mark: two filled drops, drawn as a vector so it looks the same on every device (no font dependency) */
 const Mark = ({ className = '' }) => (
@@ -40,6 +46,9 @@ const Mark = ({ className = '' }) => (
 )
 
 export default function ClientReviews() {
+  const ar = currentLocale() === 'ar'
+  const tr = useTr()
+  const LIST = ar ? LIST_AR : LIST_EN
   const [activeId, setActiveId] = useState(LIST[0].id)
   const tabRefs = useRef({})
 
@@ -48,7 +57,7 @@ export default function ClientReviews() {
     if (focus) tabRefs.current[id]?.focus()
   }
   const onKeyDown = (e, i) => {
-    const step = { ArrowDown: 1, ArrowRight: 1, ArrowUp: -1, ArrowLeft: -1 }[e.key]
+    const step = { ArrowDown: 1, ArrowUp: -1 }[e.key] ?? (stepOfArrow(e.key) || undefined)
     if (step === undefined && e.key !== 'Home' && e.key !== 'End') return
     e.preventDefault()
     const next = e.key === 'Home' ? 0 : e.key === 'End' ? LIST.length - 1 : (i + step + LIST.length) % LIST.length
@@ -58,10 +67,10 @@ export default function ClientReviews() {
   return (
     <section id="testimonials" aria-labelledby="reviews-heading" className="relative overflow-hidden py-16 md:py-24">
       <div className="relative mx-auto max-w-7xl px-5 md:px-8">
-        <h2 id="reviews-heading" className="sr-only">Great work. Strong relationships. Repeat collaborations.</h2>
+        <h2 id="reviews-heading" className="sr-only">{ar ? tr('Great work. Strong relationships. Repeat collaborations.') : 'Great work. Strong relationships. Repeat collaborations.'}</h2>
         <div className="inline-flex items-center gap-3">
           <span className="h-px w-12 bg-lime md:w-24" aria-hidden="true" />
-          <span className="text-sm font-semibold uppercase tracking-[0.22em] text-lime md:text-base">Client Reviews</span>
+          <span className="text-sm font-semibold uppercase tracking-[0.22em] text-lime md:text-base">{ar ? tr('Client Reviews') : 'Client Reviews'}</span>
         </div>
 
         <div className="mt-8 grid grid-cols-1 gap-x-10 gap-y-10 md:mt-12 lg:grid-cols-[minmax(0,0.3fr)_minmax(0,1fr)_minmax(290px,0.36fr)] lg:gap-x-12">
@@ -82,12 +91,12 @@ export default function ClientReviews() {
                   className={`[grid-area:1/1] flex flex-col transition-[opacity,transform] duration-300 ease-out motion-reduce:transition-none ${on ? 'translate-y-0 opacity-100' : 'invisible translate-y-3 opacity-0'}`}
                 >
                   <blockquote className={`${SERIF} ${quoteSize(r.excerpt)} font-normal leading-[1.1] tracking-[-0.01em] text-ink [text-wrap:balance]`}>
-                    <p>“<Excerpt review={r} />”</p>
+                    <p>{ar ? '«' : '“'}<Excerpt review={r} />{ar ? '»' : '”'}</p>
                   </blockquote>
                   <figcaption className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3 md:mt-10">
                     <img
                       src={r.logo}
-                      alt={`${r.brand} logo`}
+                      alt={ar ? `${tr('Logo of')} ${r.brand}` : `${r.brand} logo`}
                       loading="lazy"
                       decoding="async"
                       draggable="false"
@@ -97,13 +106,13 @@ export default function ClientReviews() {
                     <span aria-hidden="true" className="hidden h-10 w-px bg-white/25 sm:block" />
                     <span className="text-[12px] font-medium uppercase leading-relaxed tracking-[0.2em] text-ink-muted md:text-[13px]">
                       <span className="block sm:inline">{r.category}</span>
-                      {r.repeat && <span className="sm:before:mx-2 sm:before:content-['·'] block text-lime sm:inline">Repeat client</span>}
+                      {r.repeat && <span className="sm:before:mx-2 sm:before:content-['·'] block text-lime sm:inline">{ar ? tr('Repeat client') : 'Repeat client'}</span>}
                     </span>
                   </figcaption>
                   <details className="group mt-5">
                     <summary className="inline-flex min-h-[44px] cursor-pointer list-none items-center gap-2 text-[13.5px] font-semibold text-ink-muted transition-colors hover:text-lime focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-lime [&::-webkit-details-marker]:hidden">
                       <span aria-hidden="true" className="inline-flex h-5 w-5 items-center justify-center rounded-full border border-current text-[13px] leading-none transition-transform duration-300 group-open:rotate-45 motion-reduce:transition-none">+</span>
-                      Read full review
+                      {ar ? tr('Read full review') : 'Read full review'}
                     </summary>
                     <p className="mt-2 max-w-2xl text-[15px] leading-[1.7] text-ink-muted">{r.full}</p>
                   </details>
@@ -113,7 +122,7 @@ export default function ClientReviews() {
           </div>
 
           {/* the client list */}
-          <div role="tablist" aria-label="Choose a client review" className="grid grid-cols-3 gap-2 lg:block lg:self-start lg:pt-3">
+          <div role="tablist" aria-label={ar ? tr('Choose a client review') : 'Choose a client review'} className="grid grid-cols-3 gap-2 lg:block lg:self-start lg:pt-3">
             {LIST.map((r, i) => {
               const on = r.id === activeId
               return (

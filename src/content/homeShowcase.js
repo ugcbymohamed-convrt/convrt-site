@@ -60,3 +60,35 @@ export const SHOWCASE_CASE_STUDY_LINKS = [
   { href: '/case-studies/elyon', label: 'Elyon Dubai' },
   { href: '/case-studies/graspo', label: 'Graspo' },
 ]
+
+/* THE ARABIC HOMEPAGE'S CLIENT SHOWCASE (owner brief 2026-11-23): the SAME component and design as the English one, with exactly TWO clients: Graspo (printing) and One Royal (trade).
+   The videos are the Arabic portfolio entries tagged `showcase: 'graspo'` / `showcase: 'oneroyal'` (src/content/portfolio.js; the Graspo ones are the same Stream videos as the English Graspo panel).
+   Nothing is invented: no figure, headline or project outcome is attached to One Royal (none is on record). Graspo has a published case study (translated: /ar/case-studies/graspo); One Royal has no
+   case study, so its crawlable destination is the Spokesperson page, the service its videos belong to.
+   MISSING ASSET: a One Royal LOGO file is not in the repository or the owner's folders (searched CLIENT LOGOS, CONVRT-LOGO and the Arabic creator folders). Until `public/clients/oneroyal.png` (or .svg)
+   is supplied and set as `logo` below, the selector shows the client's NAME as text, never a substitute or invented logo. */
+export const SHOWCASE_INDUSTRIES_AR = [
+  {
+    id: 'printing',
+    number: '01',
+    label: 'الطباعة',
+    clientId: 'graspo',
+    client: 'Graspo',
+    logo: { src: '/clients/graspo.png', alt: 'Graspo', w: 619, h: 279, height: 62 },
+    selectorHeight: 30,
+    link: { href: '/case-studies/graspo', label: 'اقرأ دراسة حالة Graspo' },
+    accent: '#10b981',
+  },
+  {
+    id: 'trade',
+    number: '02',
+    label: 'التجارة',
+    clientId: 'oneroyal',
+    client: 'One Royal',
+    logo: null, // see MISSING ASSET above
+    selectorHeight: 30,
+    link: { href: '/spokesperson-video-production', label: 'استكشف فيديوهات Spokesperson' },
+    accent: '#f59e0b',
+  },
+]
+export const showcaseIndustriesFor = (locale) => (locale === 'ar' ? SHOWCASE_INDUSTRIES_AR : SHOWCASE_INDUSTRIES)

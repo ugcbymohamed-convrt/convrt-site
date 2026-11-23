@@ -2,7 +2,10 @@ import { useEffect, useRef, useState } from 'react'
 import { primaryAction } from '../../i18n/cta.js'
 import { CONVRT_STATS, FOUNDER_EXPERIENCE } from '../../lib/siteStats.js'
 import { selectShowcase } from '../../content/portfolio.js'
-import { SHOWCASE_INDUSTRIES } from '../../content/homeShowcase.js'
+import { showcaseIndustriesFor } from '../../content/homeShowcase.js'
+import { useTr, localHref } from '../../i18n/tr.js'
+import { currentLocale } from '../../i18n/locale.js'
+import { stepOfArrow } from '../../lib/rtl.js'
 import RotaryStage from './RotaryStage.jsx'
 import StudioEnvironment from './StudioEnvironment.jsx'
 
@@ -26,7 +29,10 @@ const Arrow = () => (
 /* The two main conversion buttons. Same destinations as before (the Roadmap, or the booking link where the Roadmap is unavailable; the creator application form). Below `lg` they stack on a phone; on the
    scene they are the reference's two equal-height pills (sizes follow the scene). */
 export function ShowcaseCtas() {
-  const action = primaryAction('en')
+  const locale = currentLocale()
+  const en = locale === 'en'
+  const tr = useTr()
+  const action = primaryAction(locale)
   const base = 'group inline-flex items-center justify-center gap-[0.5em] rounded-full font-bold whitespace-nowrap min-h-[58px] px-9 text-base'
   return (
     <div className="flex flex-col items-stretch justify-center gap-3 sm:flex-row sm:items-center">
@@ -35,10 +41,11 @@ export function ShowcaseCtas() {
         {...(action.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
         className={`cta-gradient ${base} text-canvas focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-lime`}
       >
-        Become our next client
+        {en ? 'Become our next client' : tr('Become our next client')}
         <span className="transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 motion-reduce:transition-none"><Arrow /></span>
       </a>
-      <a
+      {/* creator recruitment is an English-only Google Form: not offered from other languages */}
+      {en && <a
         href="https://forms.gle/Bg8ubU2tnmMj88m7A"
         target="_blank"
         rel="noopener noreferrer"
@@ -46,12 +53,16 @@ export function ShowcaseCtas() {
       >
         I'm a creator
         <span className="transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 motion-reduce:transition-none"><Arrow /></span>
-      </a>
+      </a>}
     </div>
   )
 }
 
 export default function IndustryShowcase() {
+  const locale = currentLocale()
+  const en = locale === 'en'
+  const tr = useTr()
+  const SHOWCASE_INDUSTRIES = showcaseIndustriesFor(locale)
   // A client is offered only with its three videos (never a half-empty stage).
   const industries = SHOWCASE_INDUSTRIES.map((c) => ({ ...c, items: selectShowcase(c.clientId).slice(0, 3) })).filter((c) => c.items.length === 3)
   const [shownId, setShownId] = useState(industries[0]?.id) // the client whose videos are on the stage
@@ -75,7 +86,7 @@ export default function IndustryShowcase() {
     timer.current = window.setTimeout(() => { setShownId(id); setFading(false) }, 190)
   }
   const onTabKeyDown = (e, i) => {
-    const step = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 }[e.key]
+    const step = { ArrowDown: 1, ArrowUp: -1 }[e.key] ?? (stepOfArrow(e.key) || undefined)
     if (step === undefined && e.key !== 'Home' && e.key !== 'End') return
     e.preventDefault()
     const next = e.key === 'Home' ? 0 : e.key === 'End' ? industries.length - 1 : (i + step + industries.length) % industries.length
@@ -89,13 +100,13 @@ export default function IndustryShowcase() {
         <div className="relative z-10 px-5 text-center md:px-8">
           <div className="inline-flex items-center gap-3 text-[11px] md:text-xs">
             <span className="h-px w-8 bg-lime" aria-hidden="true" />
-            <span className="font-semibold uppercase tracking-[0.22em] text-lime">Founder experience</span>
+            <span className="font-semibold uppercase tracking-[0.22em] text-lime">{en ? 'Founder experience' : tr('Founder experience')}</span>
             <span className="h-px w-8 bg-lime" aria-hidden="true" />
           </div>
           <h2 id="showcase-heading" className="mx-auto mt-4 font-display text-[2.4rem] font-bold leading-[1.04] tracking-display-xl text-ink min-[420px]:text-[2.9rem] md:text-[3.5rem] lg:text-[4rem]">
-            Worked with{' '}<span className="block text-lime sm:inline">{CONVRT_STATS.clients} clients</span>
+            {en ? <>Worked with{' '}<span className="block text-lime sm:inline">{CONVRT_STATS.clients} clients</span></> : <>{tr('Worked with')}{' '}<span className="block text-lime sm:inline">{tr('more than')} {CONVRT_STATS.clients.replace('+', '')} {tr('clients')}</span></>}
           </h2>
-          <p className="mx-auto mt-4 max-w-md text-balance text-[15px] leading-relaxed text-ink-muted md:max-w-xl md:text-base">{FOUNDER_EXPERIENCE.captionShort}</p>
+          <p className="mx-auto mt-4 max-w-md text-balance text-[15px] leading-relaxed text-ink-muted md:max-w-xl md:text-base">{en ? FOUNDER_EXPERIENCE.captionShort : tr(FOUNDER_EXPERIENCE.captionShort)}</p>
         </div>
 
         {/* 4: the scene (environment + the rotary videos). Below 640 px it is wider than the screen and centred on the featured video. The wrapper's top padding is headroom so the featured card's halo is never cut off at the top. */}
@@ -103,14 +114,14 @@ export default function IndustryShowcase() {
           <div className={`relative left-1/2 aspect-[1280/740] w-[230vw] -translate-x-1/2 transition-opacity duration-[190ms] motion-reduce:transition-none sm:w-[max(100%,900px)] ${fading ? 'opacity-0' : 'opacity-100'}`}>
             <StudioEnvironment />
             <div id="showcase-panel" role="tabpanel" aria-labelledby={`showcase-tab-${pickedId}`} className="absolute inset-0">
-              <RotaryStage key={shown.id} autoPlayOnView={!visitorChose} items={shown.items} label={`${shown.client} videos. Choose a side video to bring it to the front.`} />
+              <RotaryStage key={shown.id} autoPlayOnView={!visitorChose} items={shown.items} label={en ? `${shown.client} videos. Choose a side video to bring it to the front.` : `${tr('Videos of')} ${shown.client}. ${tr('Choose a side video to bring it to the front.')}`} />
             </div>
           </div>
         </div>
 
         {/* 5: the client selector, overlapping the front of the podium and centred on the same axis */}
         <div className="relative z-20 mx-auto -mt-[27vw] w-full max-w-[42rem] px-5 sm:-mt-[min(max(11.7vw,105px),150px)] md:px-0">
-          <div role="tablist" aria-label="Client work by industry" className="grid grid-cols-3 gap-[0.4rem] rounded-[26px] border border-white/[0.09] bg-[rgba(8,9,6,0.74)] p-[0.45rem] shadow-[0_24px_50px_-20px_rgba(0,0,0,0.95)] backdrop-blur-md">
+          <div role="tablist" aria-label={en ? 'Client work by industry' : tr('Client work by industry')} className={`grid ${industries.length === 2 ? 'mx-auto max-w-md grid-cols-2' : 'grid-cols-3'} gap-[0.4rem] rounded-[26px] border border-white/[0.09] bg-[rgba(8,9,6,0.74)] p-[0.45rem] shadow-[0_24px_50px_-20px_rgba(0,0,0,0.95)] backdrop-blur-md`}>
             {industries.map((c, i) => {
               const on = c.id === pickedId
               return (
@@ -128,7 +139,7 @@ export default function IndustryShowcase() {
                   onKeyDown={(e) => onTabKeyDown(e, i)}
                   className={`flex min-h-[96px] flex-col items-center justify-center gap-[0.55rem] rounded-[20px] border px-2 py-3 sm:min-h-[122px] sm:gap-[0.7rem] sm:py-4 transition-[background-color,border-color,box-shadow] duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-lime motion-reduce:transition-none ${on ? 'border-lime/80 bg-black/30 shadow-[0_0_24px_-5px_rgba(213,255,64,0.6),inset_0_0_14px_rgba(213,255,64,0.12)]' : 'border-transparent hover:bg-white/[0.05]'}`}
                 >
-                  <img
+                  {c.logo ? <img
                     src={c.logo.src}
                     alt={c.logo.alt}
                     width={c.logo.w}
@@ -138,7 +149,10 @@ export default function IndustryShowcase() {
                     draggable="false"
                     style={{ '--lh': `${c.selectorHeight}px`, width: 'auto', maxWidth: '100%', filter: 'brightness(0) invert(1)', opacity: on ? 1 : 0.7 }}
                     className="h-[calc(var(--lh)*1.3)] object-contain transition-opacity duration-300 motion-reduce:transition-none sm:h-[calc(var(--lh)*1.65)]"
-                  />
+                  /> : (
+                    /* a client without a logo file yet: its NAME, set as a wordmark (never a substitute logo) */
+                    <span dir="ltr" lang="en" className="flex items-center font-display text-[17px] font-bold leading-none tracking-tight text-ink transition-opacity duration-300 motion-reduce:transition-none sm:text-[22px]" style={{ height: `calc(var(--lh) * 1.3)`, '--lh': `${c.selectorHeight}px`, opacity: on ? 1 : 0.7 }}>{c.client}</span>
+                  )}
                   <span className={`text-[13px] font-semibold leading-none transition-colors duration-300 motion-reduce:transition-none sm:text-[15px] ${on ? 'text-lime' : 'text-ink-muted'}`}>{c.label}</span>
                 </button>
               )
@@ -152,11 +166,11 @@ export default function IndustryShowcase() {
         </div>
 
         {/* destinations of the three clients: in the HTML for search engines and screen readers, drawn only when a keyboard user focuses them */}
-        <nav aria-label="Client case studies and service page" className="sr-only">
+        <nav aria-label={en ? 'Client case studies and service page' : tr('Client case studies and service page')} className="sr-only">
           <ul>
             {SHOWCASE_INDUSTRIES.map((c) => (
               <li key={c.id}>
-                <a href={c.link.href} className="focus-visible:not-sr-only focus-visible:absolute focus-visible:bottom-2 focus-visible:left-2 focus-visible:z-30 focus-visible:rounded-full focus-visible:bg-black focus-visible:px-4 focus-visible:py-2 focus-visible:text-sm focus-visible:text-lime">{c.link.label}</a>
+                <a href={en ? c.link.href : localHref(c.link.href, locale)} className="focus-visible:not-sr-only focus-visible:absolute focus-visible:bottom-2 focus-visible:left-2 focus-visible:z-30 focus-visible:rounded-full focus-visible:bg-black focus-visible:px-4 focus-visible:py-2 focus-visible:text-sm focus-visible:text-lime">{c.link.label}</a>
               </li>
             ))}
           </ul>

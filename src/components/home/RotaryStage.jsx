@@ -4,6 +4,9 @@ import { posterUrl, hlsUrl, captionOf } from '../../content/portfolio.js'
 import { HeroPlayerControls } from '../ugc/CreatorVideoStage.jsx'
 import { useAutoplayAllowed } from '../ugc/creatorVideo.jsx'
 import { pose, poseStyle, shortestDelta, easeInOutCubic, ROTATION_MS, round4 as f } from '../../lib/rotary.js'
+import { isRtlPage, stepOfArrow, stepOfSwipe } from '../../lib/rtl.js'
+import { useTr } from '../../i18n/tr.js'
+import { currentLocale } from '../../i18n/locale.js'
 
 /* THE ROTARY VIDEO STAGE (English homepage, client work).
 
@@ -28,7 +31,7 @@ const BAR_UNTIL_STARTED = 'pointer-events-none opacity-0 transition-opacity dura
 /* The English stage's poster: an owner-supplied frame (`homeStagePoster`) where there is one, otherwise the video's usual poster. */
 const stagePoster = (item) => item.homeStagePoster ?? posterUrl(item)
 
-function Phone({ item, i, n, active, moving, inView, autoMode, onSelect, setEl, setShade }) {
+function Phone({ item, i, n, active, moving, inView, autoMode, onSelect, setEl, setShade, mirror, showLabel }) {
   const ref = useRef(null)
   const [armed, setArmed] = useState(false) // the visitor pressed play once: the stream is attached from then on
   const [playing, setPlaying] = useState(false)
@@ -92,7 +95,7 @@ function Phone({ item, i, n, active, moving, inView, autoMode, onSelect, setEl, 
   }
 
   return (
-    <div ref={setEl} className="absolute left-1/2 top-1/2 w-full will-change-transform" style={poseStyle(pose(i, 0, n))}>
+    <div ref={setEl} className="absolute left-1/2 top-1/2 w-full will-change-transform" style={poseStyle(pose(i, 0, n, mirror))}>
       <div
         className={`group relative aspect-[9/16] rounded-[12%/6.7%] p-[2.5%] ring-1 transition-[box-shadow] duration-500 motion-reduce:transition-none ${active ? 'ring-lime/70' : 'ring-white/25 group-hover:ring-lime/40'}`}
         style={{ background: 'linear-gradient(150deg, #a9ac9a 0%, #3a3c33 28%, #17181a 55%, #4a4d40 100%)', boxShadow: active ? '0 0 0 1.5px rgba(213,255,64,0.85), 0 0 20px 3px rgba(213,255,64,0.6), 0 0 54px 5px rgba(213,255,64,0.3), 0 40px 60px -20px rgba(0,0,0,1), inset 0 1px 0 rgba(255,255,255,0.5), inset 0 0 0 1px rgba(255,255,255,0.1)' : '0 18px 30px -18px rgba(0,0,0,0.9), inset 0 1px 0 rgba(255,255,255,0.3), inset 0 0 0 1px rgba(255,255,255,0.06)' }}
@@ -102,7 +105,7 @@ function Phone({ item, i, n, active, moving, inView, autoMode, onSelect, setEl, 
           {armed && (
             <video ref={ref} playsInline preload="none" poster={stagePoster(item)} aria-label={captionOf(item)} className="absolute inset-0 h-full w-full bg-black object-cover" />
           )}
-          <span ref={setShade} aria-hidden="true" className="pointer-events-none absolute inset-0 bg-black" style={{ opacity: f(pose(i, 0, n).shade) }} />
+          <span ref={setShade} aria-hidden="true" className="pointer-events-none absolute inset-0 bg-black" style={{ opacity: f(pose(i, 0, n, mirror).shade) }} />
           {active && !moving && (
             <HeroPlayerControls item={item} playing={playing} muted={muted} progress={progress} barClass={armed ? '' : BAR_UNTIL_STARTED} onTogglePlay={toggle} onToggleMute={() => setMuted((m) => !m)} onSeek={seek} />
           )}
@@ -110,7 +113,7 @@ function Phone({ item, i, n, active, moving, inView, autoMode, onSelect, setEl, 
             <button
               type="button"
               onClick={onSelect}
-              aria-label={`Show video ${i + 1} of ${n}`}
+              aria-label={showLabel(i + 1, n)}
               className="absolute inset-0 z-10 cursor-pointer bg-lime/0 transition-colors duration-300 hover:bg-lime/[0.07] focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-4 focus-visible:outline-lime motion-reduce:transition-none"
             />
           )}
@@ -123,6 +126,11 @@ function Phone({ item, i, n, active, moving, inView, autoMode, onSelect, setEl, 
 
 export default function RotaryStage({ items, label, autoPlayOnView = false }) {
   const n = items.length
+  const mirror = isRtlPage()
+  const tr = useTr()
+  const en = currentLocale() === 'en'
+  /* The few spoken strings (assistive technology only). English keeps its exact wording; other languages read them from their dictionary. */
+  const showLabel = (a, b) => (en ? `Show video ${a} of ${b}` : `${tr('Show video')} ${a} / ${b}`)
   const [active, setActive] = useState(0)
   const [moving, setMoving] = useState(false)
   const posRef = useRef(0)
@@ -137,13 +145,13 @@ export default function RotaryStage({ items, label, autoPlayOnView = false }) {
 
   const apply = useCallback((pos) => {
     for (let i = 0; i < n; i += 1) {
-      const p = pose(i, pos, n)
+      const p = pose(i, pos, n, mirror)
       const el = phoneEls.current[i]
       if (el) { const st = poseStyle(p); el.style.transform = st.transform; el.style.zIndex = String(st.zIndex) }
       const sh = shadeEls.current[i]
       if (sh) sh.style.opacity = String(f(p.shade))
     }
-  }, [n])
+  }, [n, mirror])
 
   const select = useCallback((target) => {
     const t = ((target % n) + n) % n
@@ -180,8 +188,8 @@ export default function RotaryStage({ items, label, autoPlayOnView = false }) {
   }, [])
 
   const onKeyDown = (e) => {
-    if (e.key === 'ArrowRight') { e.preventDefault(); select(activeRef.current + 1) }
-    if (e.key === 'ArrowLeft') { e.preventDefault(); select(activeRef.current - 1) }
+    const step = stepOfArrow(e.key)
+    if (step) { e.preventDefault(); select(activeRef.current + step) }
   }
   const onPointerDown = (e) => { drag.current = { x: e.clientX, moved: false } }
   const onPointerMove = (e) => { if (drag.current && Math.abs(e.clientX - drag.current.x) > 10) drag.current.moved = true }
@@ -190,7 +198,7 @@ export default function RotaryStage({ items, label, autoPlayOnView = false }) {
     drag.current = null
     if (!d) return
     const dx = e.clientX - d.x
-    if (Math.abs(dx) > 45) select(activeRef.current + (dx < 0 ? 1 : -1))
+    if (Math.abs(dx) > 45) select(activeRef.current + stepOfSwipe(dx))
   }
 
   return (
@@ -229,15 +237,17 @@ export default function RotaryStage({ items, label, autoPlayOnView = false }) {
             onSelect={() => select(i)}
             setEl={(el) => { phoneEls.current[i] = el }}
             setShade={(el) => { shadeEls.current[i] = el }}
+            mirror={mirror}
+            showLabel={showLabel}
           />
         ))}
       </div>
       {/* status and the two keyboard controls: not drawn (the reference shows none); arrow keys, swipe and a click on a side video are the visible ways, these are for assistive technology */}
-      <span className="sr-only" aria-live="polite">{`Video ${active + 1} of ${n}`}</span>
+      <span className="sr-only" aria-live="polite">{en ? `Video ${active + 1} of ${n}` : `${tr('Video')} ${active + 1} / ${n}`}</span>
       {n > 1 && (
         <>
-          <button type="button" onClick={() => select(activeRef.current - 1)} className="sr-only focus-visible:not-sr-only focus-visible:absolute focus-visible:bottom-2 focus-visible:left-2 focus-visible:z-30 focus-visible:rounded-full focus-visible:bg-black focus-visible:px-3 focus-visible:py-2 focus-visible:text-sm focus-visible:text-lime">Previous video</button>
-          <button type="button" onClick={() => select(activeRef.current + 1)} className="sr-only focus-visible:not-sr-only focus-visible:absolute focus-visible:bottom-2 focus-visible:right-2 focus-visible:z-30 focus-visible:rounded-full focus-visible:bg-black focus-visible:px-3 focus-visible:py-2 focus-visible:text-sm focus-visible:text-lime">Next video</button>
+          <button type="button" onClick={() => select(activeRef.current - 1)} className="sr-only focus-visible:not-sr-only focus-visible:absolute focus-visible:bottom-2 focus-visible:left-2 focus-visible:z-30 focus-visible:rounded-full focus-visible:bg-black focus-visible:px-3 focus-visible:py-2 focus-visible:text-sm focus-visible:text-lime">{tr('Previous video')}</button>
+          <button type="button" onClick={() => select(activeRef.current + 1)} className="sr-only focus-visible:not-sr-only focus-visible:absolute focus-visible:bottom-2 focus-visible:right-2 focus-visible:z-30 focus-visible:rounded-full focus-visible:bg-black focus-visible:px-3 focus-visible:py-2 focus-visible:text-sm focus-visible:text-lime">{tr('Next video')}</button>
         </>
       )}
     </div>

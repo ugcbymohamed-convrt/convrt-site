@@ -10,6 +10,7 @@ import geo from './dict-geo.js'
 import riskfree from './dict-riskfree.js'
 import extras from './dict-extras.js'
 import pages from './dict-pages.js'
+import revision from './dict-revision.js'
 
-export default { ...shell, ...home, ...services, ...pricing, ...showcase, ...roadmap, ...geo, ...riskfree, ...extras, ...pages }
-export const PARTS = { shell, home, services, pricing, showcase, roadmap, geo, riskfree, extras, pages }
+export default { ...shell, ...home, ...services, ...pricing, ...showcase, ...roadmap, ...geo, ...riskfree, ...extras, ...pages, ...revision }
+export const PARTS = { shell, home, services, pricing, showcase, roadmap, geo, riskfree, extras, pages, revision }

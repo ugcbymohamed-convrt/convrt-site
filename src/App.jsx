@@ -101,7 +101,9 @@ function resolvePage(path) {
 function HomePage() {
   /* English homepage narrative (design review, Nov 2026): credibility → client work (one connected block, no divider between them) → services → process → creators → reviews → conversion.
      Other languages keep their own homepage sections until their separate design review. */
-  const en = currentLocale() === 'en'
+  const locale = currentLocale()
+  /* English and Arabic share the redesigned composition (Arabic: owner brief 2026-11-23, same components with Arabic data); Spanish keeps its own sections until its design review. */
+  const en = locale === 'en' || locale === 'ar'
   return (
     <>
       <Hero />

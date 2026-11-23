@@ -6,7 +6,7 @@
    That is the drift guard: a Spanish page can never silently show a stale or mismatched claim. */
 
 import { HOME_FAQ } from '../seo/homeFaq.js'
-import { translate, hrefFor, englishOnly } from './tr.js'
+import { translate, hrefFor, englishOnly, T } from './tr.js'
 import { localizeStat } from './format.js'
 import { OFFER_PATHS, REFERRALS_PATH } from '../config.js'
 import { flowAvailable } from './cta.js'
@@ -39,7 +39,7 @@ export function localizeFaq(items, locale) {
 }
 
 /* Keys that are never text: ids, routes, analytics names, CSS/selector hooks. Everything else that is a string leaf is translated. */
-const NON_TEXT_KEYS = new Set(['quote', 'id', 'headingId', 'href', 'src', 'track', 'trackPrefix', 'stagePrefix', 'prefix', 'field', 'event', 'external', 'type', 'color', 'accent', 'icon', 'key', 'slug', 'name_en'])
+const NON_TEXT_KEYS = new Set(['className', 'style', 'quote', 'id', 'headingId', 'href', 'src', 'track', 'trackPrefix', 'stagePrefix', 'prefix', 'field', 'event', 'external', 'type', 'color', 'accent', 'icon', 'key', 'slug', 'name_en'])
 const looksLikeCode = (v) => /^(\/|https?:|mailto:|#|[a-z0-9_-]+$)/.test(v) && !/\s/.test(v)
 
 /* Deep-translates a content/config object: every string leaf that is text goes through the dictionary; ids, URLs and tracking names are left alone.
@@ -47,13 +47,14 @@ const looksLikeCode = (v) => /^(\/|https?:|mailto:|#|[a-z0-9_-]+$)/.test(v) && !
 export function localizeConfig(value, locale, overrides = {}, key = '') {
   if (locale === DEFAULT_LOCALE) return value
   if (typeof value === 'string') {
-    if (NON_TEXT_KEYS.has(key) || looksLikeCode(value)) return value
+    if (NON_TEXT_KEYS.has(key) || looksLikeCode(value) || !value.trim()) return value
     // Figures ("10.7M", "75", "5.28x") change notation only, never value.
     if (/^\d[\d.,]*[KM]?x?\+?$/.test(value)) return localizeStat(locale, value)
     return translate(locale, value)
   }
   if (Array.isArray(value)) return value.map((v) => localizeConfig(v, locale, {}, key))
   if (value && typeof value === 'object' && Object.getPrototypeOf(value) === Object.prototype) {
+    if (value.$$typeof && value.type === T) return value // a <T> element translates itself when it renders: translating its text here as well would look the translation up again
     const out = {}
     for (const [k, v] of Object.entries(value)) {
       if (Object.prototype.hasOwnProperty.call(overrides, k)) out[k] = overrides[k]

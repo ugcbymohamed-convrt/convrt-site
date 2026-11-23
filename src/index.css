@@ -654,3 +654,19 @@ html[dir='rtl'] { direction: rtl; }
   .sc-panel-in { animation: none; }
 }
 
+
+/* ── Arabic revision (owner brief 2026-11-23) ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── */
+/* NAVIGATION CONTRAST. The Arabic labels set in the regular weight of the Arabic face read dimmer than the English ones at the same grey; the top bar and the mobile menu use the near-white of the English
+   headings instead (same size, same weight scale, no bold), and the hover/focus colour is the brand lime. The dropdown, language selector and CTA are unchanged. */
+:lang(ar) header nav a, :lang(ar) header nav a[aria-haspopup] { color: #e9e9ec; }
+:lang(ar) header nav a:hover, :lang(ar) header nav a:focus-visible, :lang(ar) header nav .group:hover > a, :lang(ar) header nav .group:focus-within > a { color: #d5ff40; }
+:lang(ar) header nav ul a { color: #d4d4d8; }
+:lang(ar) header nav ul a:hover, :lang(ar) header nav ul a:focus-visible { color: #fff; }
+:lang(ar) header .lg\:hidden.border-t a, :lang(ar) header .lg\:hidden.border-t a:not(.nav-cta) { color: #e9e9ec; }
+:lang(ar) header .lg\:hidden.border-t a:not(.nav-cta):hover { color: #d5ff40; }
+/* ROTATING HEADLINE WORD. The word sits in an inline-block that clips its animation with overflow:hidden; for such a box the browser takes the BOTTOM EDGE as its baseline, which lifts the word above the
+   rest of the line (more visibly in the Arabic face, whose line box is taller). clip-path clips the same area without touching the baseline, so the box keeps the baseline of its own text and the word
+   shares the baseline of the words around it, at every width and for every word. */
+:lang(ar) h1 .inline-block.overflow-hidden { overflow: visible; clip-path: inset(0); }
+/* CLIENT REVIEWS: the English section sets its quotes in a serif; the Arabic quote uses the site's Arabic face, a little smaller and with the open line height Arabic needs. */
+html:lang(ar) blockquote.font-editorial { font-family: var(--font-ar); font-weight: 500; line-height: 1.5; font-size: clamp(1.5rem, 1.1rem + 2.1vw, 3rem); text-wrap: balance; }

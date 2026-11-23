@@ -48,7 +48,7 @@ export default function Credibility() {
   const locale = currentLocale()
   const action = primaryAction(locale)
   /* English (design review, Nov 2026): the statement flows straight into the industry showcase below it (no bottom rule, tighter bottom padding) and the two buttons now close the showcase. Other languages keep their layout. */
-  const en = locale === 'en'
+  const en = locale === 'en' || locale === 'ar' // Arabic uses the English composition (owner brief 2026-11-23): the founder statement and the buttons live with the client showcase below
   return (
     <section id="clients" className={en ? 'relative border-t border-hairline bg-canvas overflow-hidden' : 'relative border-y border-hairline bg-canvas overflow-hidden'}>
       {/*
@@ -119,7 +119,7 @@ export default function Credibility() {
               </div>
             </>
           )
-          return en ? <div role="group" aria-label="Brands from the founder's professional experience">{rows}</div> : rows
+          return en ? <div role="group" aria-label={locale === 'en' ? "Brands from the founder's professional experience" : tr("Brands from the founder's professional experience")}>{rows}</div> : rows
         })()}
 
         {/* Headline + CTA below. English: the founder statement now lives with the client-work stage (components/home/IndustryShowcase.jsx). */}
