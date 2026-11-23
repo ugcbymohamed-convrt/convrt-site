@@ -156,6 +156,12 @@ test('French SEO copy: one distinct primary intent per page; homepage is not an 
   assert.match(FR_SEO['/ugc-video-agency'].description, /2\u202f750\u00a0€ HT\/mois/)
 })
 
+test('French share image: a real 1200x630 PNG exists and every French page uses it for og:image and twitter:image', () => {
+  const f = path.join(ROOT, 'public/og/convrt-og-fr.png')
+  const b = fs.readFileSync(f)
+  assert.equal(b.subarray(1, 4).toString(), 'PNG'); assert.equal(b.readUInt32BE(16), 1200); assert.equal(b.readUInt32BE(20), 630)
+})
+
 // ── creators ───────────────────────────────────────────────────────────────────────────────────────────────────
 test('French creator videos: five valid, French-only, opaque creators, real Cloudflare ids and posters, no name/brand/credit shown, no invented upload date', () => {
   const fr = PORTFOLIO.filter((i) => (i.onlyIn ?? []).includes('fr'))
@@ -222,6 +228,14 @@ test('French pages: real static HTML, html lang="fr-FR", no dir, one self-refere
   const h1 = (p) => page(p).match(/<h1[\s\S]*?<\/h1>/)[0].replace(/<[^>]+>/g, ' ').replace(/[\s\u00a0]+/g, ' ').trim()
   assert.match(h1('/fr'), /^Des vidéos publicitaires pensées pour convertir$/)
   assert.match(h1('/fr/ugc-video-agency'), /^Agence UGC : des vidéos authentiques pour vos publicités\.?$/)
+})
+
+test('French pages use the French share image with a French alt text', () => {
+  for (const p of FR_URLS) {
+    const h = headOf(page(p))
+    assert.match(h, /property="og:image" content="https:\/\/www\.convrt\.studio\/og\/convrt-og-fr\.png"/, p)
+    assert.match(h, /og:image:alt" content="CONVRT : des vidéos publicitaires/, p)
+  }
 })
 
 test('robots: indexable French pages have none; the Roadmap and the held free-video page are noindex', () => {

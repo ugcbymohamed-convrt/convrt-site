@@ -77,7 +77,7 @@ export default function Hero() {
             <h1 className="font-display font-semibold text-ink tracking-display-xl leading-[1.02] text-[48px] sm:text-[50px] md:text-[54px] lg:text-[60px] xl:text-[70px]">
               <span className="block">{tr('Performance creatives')}</span>{' '}
               <span className="block">
-                {tr('engineered to')} <RotatingWord words={en ? ROTATING_WORDS : ROTATING_BY_LOCALE[locale]} />
+                {tr('engineered to')} <RotatingWord words={en ? ROTATING_WORDS : ROTATING_BY_LOCALE[locale]} padX={locale === 'fr'} />
               </span>
             </h1>
 
@@ -212,7 +212,7 @@ function IconBolt() {
 
 /* ---------- Rotating headline word ---------- */
 
-function RotatingWord({ words }) {
+function RotatingWord({ words, padX = false }) {
   const [index, setIndex] = useState(0)
 
   useEffect(() => {
@@ -228,7 +228,7 @@ function RotatingWord({ words }) {
   const widest = words.reduce((a, b) => (a.length >= b.length ? a : b), '')
 
   return (
-    <span className="relative inline-block align-baseline overflow-hidden pb-[0.12em]">
+    <span className={`relative inline-block align-baseline overflow-hidden pb-[0.12em]${padX ? ' px-[0.06em]' : ''}`}>
       {/* Invisible sizing element — reserves space for the widest word + underline padding */}
       {/* The widest word is drawn by CSS (::after reads data-word), not as text, so the heading's text is
           "Performance creatives engineered to <current word>" for search engines and screen readers, and nothing else changes. */}

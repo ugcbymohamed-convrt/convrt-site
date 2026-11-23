@@ -133,10 +133,13 @@ function Headline({ config, textLed = false }) {
 const PRIMARY_CTA = `cta-gradient hero-cta group inline-flex w-full sm:w-auto min-h-[64px] md:min-h-[68px] items-center justify-center gap-2.5
                              rounded-full px-6 md:px-7 lg:px-6 xl:px-7 py-4 text-base md:text-[17px] font-bold tracking-snug text-canvas
                              focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-lime`
+/* French: the labels are longer than the English ones ("Recevoir 5 concepts sur mesure"), so the two buttons stay on one line each (nowrap, a little less padding), like the French homepage hero. */
+const PRIMARY_CTA_FR = PRIMARY_CTA.replace('px-6 md:px-7 lg:px-6 xl:px-7', 'px-5 md:px-6 whitespace-nowrap')
 const GHOST_CTA = `hero-cta-ghost group inline-flex w-full sm:w-auto min-h-[48px] sm:min-h-[64px] md:min-h-[68px] items-center justify-center gap-2
                              rounded-full border border-hairline-strong bg-surface-2 px-6 md:px-7 lg:px-5 xl:px-7 py-3 sm:py-4 text-base md:text-[17px] font-semibold tracking-snug text-ink
                              hover:border-ink-muted
                              focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink`
+const GHOST_CTA_FR = GHOST_CTA.replace('px-6 md:px-7 lg:px-5 xl:px-7', 'px-5 md:px-6 whitespace-nowrap')
 const Arrow = ({ cls }) => (
   <svg viewBox="0 0 12 12" className={`${cls} transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0 motion-reduce:group-hover:translate-y-0`} fill="none" aria-hidden="true">
     <path d="M3 9L9 3M9 3H4M9 3V8" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" />
@@ -188,7 +191,7 @@ export default function UgcHero({ items, config: configProp = UGC_HERO }) {
                       if (primary.external) e.currentTarget.href = withUtm(primary.href)
                     }}
                     {...primaryPress}
-                    className={PRIMARY_CTA}
+                    className={locale === 'fr' ? PRIMARY_CTA_FR : PRIMARY_CTA}
                   >
                     {primaryLabel}
                     <Arrow cls="h-4 w-4 md:h-[18px] md:w-[18px]" />
@@ -197,7 +200,7 @@ export default function UgcHero({ items, config: configProp = UGC_HERO }) {
                     href={hrefFor(config.secondary.href)}
                     onClick={() => trackEvent(config.track.work, { location: 'hero' })}
                     {...ghostPress}
-                    className={GHOST_CTA}
+                    className={locale === 'fr' ? GHOST_CTA_FR : GHOST_CTA}
                   >
                     {config.secondary.label}
                     <Arrow cls="h-3.5 w-3.5 md:h-4 md:w-4" />

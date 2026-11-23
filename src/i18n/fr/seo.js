@@ -14,7 +14,7 @@ import { priceOf, formatPrice, isPricingApproved } from '../pricing.js'
 /* French share image. The default OG image (public/og/convrt-og.png) has ENGLISH text burned into it, so French pages reuse it only until a French version exists. Add
    public/og/convrt-og-fr.png (1200x630 PNG, same layout) and set this to true: every French page then switches by itself.
    tests/i18n.test.mjs checks that the file exists, is 1200x630 PNG, whenever this is true. */
-export const FR_OG_IMAGE_READY = false
+export const FR_OG_IMAGE_READY = true // public/og/convrt-og-fr.png: same layout as the English image, French text (rendered from HTML with the site's Inter font)
 export const FR_OG_IMAGE_PATH = '/og/convrt-og-fr.png'
 
 export const FR_OG_IMAGE_ALT = 'CONVRT : des vidéos publicitaires pensées pour capter l’attention. Publicités UGC, vidéos avec porte-parole et contenus pour les réseaux sociaux.'

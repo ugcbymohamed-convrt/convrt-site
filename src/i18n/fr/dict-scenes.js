@@ -65,8 +65,13 @@ export default {
   "All": "Toutes",
 
   // Pricing, UGC page chrome
-  "Pricing questions,": "Vos questions sur les offres",
-  "UGC video production,": "Vidéos UGC :",
+  "Pricing questions,": "Vos questions sur les offres,",
+  "UGC video production,": "Vos questions sur la production UGC,",
+  "answered.": "nos réponses.",
+  "Rec": "Enreg.",
+  "and": "et",
+  "We write the script": "Nous écrivons le script",
+  "You approve": "Vous validez",
   "Free strategy session. Every industry welcome, subject to a short fit check. No obligation.": "Session stratégique offerte. Tous les secteurs sont les bienvenus, après un court échange pour vérifier que l’offre convient. Sans engagement.",
   "2 · Learn what resonates": "2 · Identifier ce qui fonctionne",
   "Next batch builds on it": "Le lot suivant s’appuie dessus",
