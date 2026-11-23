@@ -247,7 +247,8 @@ test('play when reached: the front Adscale video starts muted when the stage is 
   const s = sectionOf(bodyOf(page('/')), 'showcase')
   assert.ok(!/<video/.test(s))
   // the exact frames the owner supplied
-  assert.deepEqual(selectShowcase('adscale').map((v) => v.poster), ['/showcase/adscale-jail-poster.webp', '/showcase/adscale-coffee-poster.webp', '/showcase/adscale-women-poster.webp'])
+  assert.deepEqual(selectShowcase('adscale').map((v) => v.homeStagePoster), ['/showcase/adscale-jail-poster.webp', '/showcase/adscale-coffee-poster.webp', '/showcase/adscale-women-poster.webp'])
+  assert.deepEqual(selectShowcase('adscale').map((v) => v.poster), [undefined, '/showcase/adscale-agentic-poster.webp', '/showcase/adscale-creator-poster.webp'], 'the Spanish homepage keeps its posters')
   for (const f of ['jail', 'coffee', 'women']) {
     const buf = fs.readFileSync(path.join(ROOT, `public/showcase/adscale-${f}-poster.webp`))
     assert.equal(buf.toString('ascii', 0, 4), 'RIFF'); assert.equal(buf.toString('ascii', 8, 12), 'WEBP')

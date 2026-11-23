@@ -45,6 +45,7 @@
        category: 'UGC · Paid social',          // optional free label (the UGC hero stage uses it)
        placement: 'gallery',                   // UGC and Spokesperson pages: 'hero' = the three-phone stage (first hero item = the large centre phone, at most 3),
                                                // 'gallery' (default) = the horizontal gallery under it (at most 10)
+       homeStagePoster: '/showcase/x.webp',    // optional, ENGLISH homepage client stage only: a poster that replaces `poster` there (the Spanish homepage keeps `poster`)
        showcase: 'elyon',                      // homepage only: tag a video with a client panel ('adscale' | 'elyon' | 'graspo') to show it there
        homeCreator: 3,                         // optional, ENGLISH homepage only: this video is in the homepage's "Real creators" carousel, in this position (1 = first). Only an approved video
                                                // (full approval) whose spoken language is confirmed English is shown; nothing else is needed. See selectHomeCreators().
@@ -1168,7 +1169,7 @@ export const PORTFOLIO = [
     caption: 'Adscale creative 1.',
     industry: 'saas',
     source: { cloudflareId: '8d4dbbeabac272bddb23068c91037af8' },
-    poster: '/showcase/adscale-jail-poster.webp', // owner-supplied frame: 0 s ("How to get out of 2-3x ROAS Jail")
+    homeStagePoster: '/showcase/adscale-jail-poster.webp', // ENGLISH homepage stage only: the owner-supplied frame, 0 s ("How to get out of 2-3x ROAS Jail")
     creatorId: 'cs-adscale-1',
     brand: 'Adscale',
     showcase: 'adscale',
@@ -1184,7 +1185,8 @@ export const PORTFOLIO = [
     caption: 'Adscale creative 2.',
     industry: 'saas',
     source: { cloudflareId: '08abef50c734085f25f345cdde4b1e33' },
-    poster: '/showcase/adscale-coffee-poster.webp', // owner-supplied frame: 47.5 s (the coffee scene)
+    poster: '/showcase/adscale-agentic-poster.webp',
+    homeStagePoster: '/showcase/adscale-coffee-poster.webp', // ENGLISH homepage stage only: the owner-supplied frame, 47.5 s (the coffee scene)
     creatorId: 'cs-adscale-2',
     brand: 'Adscale',
     showcase: 'adscale',
@@ -1200,7 +1202,8 @@ export const PORTFOLIO = [
     caption: 'Adscale creative 3.',
     industry: 'saas',
     source: { mp4: '/showcase/adscale-creator.mp4' },
-    poster: '/showcase/adscale-women-poster.webp', // owner-supplied frame: 4.5 s ("Meta / Google ... ACTUALLY")
+    poster: '/showcase/adscale-creator-poster.webp',
+    homeStagePoster: '/showcase/adscale-women-poster.webp', // ENGLISH homepage stage only: the owner-supplied frame, 4.5 s ("Meta / Google ... ACTUALLY")
     creatorId: 'cs-adscale-3',
     brand: 'Adscale',
     showcase: 'adscale',

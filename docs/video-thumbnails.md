@@ -8,12 +8,12 @@ no half-cut or motion blur, and as little stray caption as the footage allows (m
 
 **68 videos have a chosen frame.** Contact sheet of the chosen frames: `docs/video-thumbnail-contact-sheet.jpg`.
 
-Not changed: the Roadmap explainer keeps its deliberately chosen 25.6 s frame; the self-hosted Adscale clip (`/showcase/adscale-creator.mp4`) is not on Stream and keeps its own poster (owner-supplied 4.5 s frame, `/showcase/adscale-women-poster.webp`; the older `adscale-creator-poster.webp` / `adscale-agentic-poster.webp` files stay for the Referrals page).
+Not changed: the Roadmap explainer keeps its deliberately chosen 25.6 s frame; the self-hosted Adscale clip (`/showcase/adscale-creator.mp4`) is not on Stream and keeps its poster.
 
 | Stream id | Frame | Appears in |
 |---|---|---|
 | `04b0b981…` | 24.5s | portfolio:es-ugc-1 [es]; home-hero-es:home-hero-es-right |
-| `08abef50…` | 47.5s | portfolio:showcase-adscale-2 (home panel adscale); owner-supplied frame, same-origin `/showcase/adscale-coffee-poster.webp` |
+| `08abef50…` | 37.5s | portfolio:showcase-adscale-2 (home panel adscale) |
 | `0905b814…` | 10.6s | portfolio:showcase-elyon-2 (home panel elyon); elyon case study: Street Interview |
 | `0b429c9c…` | 5.6s | portfolio:saas-creator-2 |
 | `0d3a810e…` | 14.8s | portfolio:spokesperson-hero-3 |
@@ -49,7 +49,7 @@ Not changed: the Roadmap explainer keeps its deliberately chosen 25.6 s frame; t
 | `816d3169…` | 23.8s | portfolio:es-ugc-hero-2 [es] |
 | `8766cb0a…` | 10.1s | portfolio:es-ugc-6 [es] |
 | `8b15247d…` | 10.2s | portfolio:ugc-gal-6 |
-| `8d4dbbea…` | 0s | portfolio:showcase-adscale-1 (home panel adscale); owner-supplied first frame, same-origin `/showcase/adscale-jail-poster.webp` |
+| `8d4dbbea…` | 69.4s | portfolio:showcase-adscale-1 (home panel adscale) |
 | `8d8051df…` | 24.8s | portfolio:creator-06 |
 | `93584825…` | 3.9s | portfolio:creator-10 |
 | `9bbc9020…` | 1s | portfolio:creator-02 |
