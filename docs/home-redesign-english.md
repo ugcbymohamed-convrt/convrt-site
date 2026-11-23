@@ -107,3 +107,11 @@ The founder / client-work section is one symmetrical, centred composition on a s
 - **Hierarchy:** one featured card (320 px wide, 569 px tall at the 1280 grid) and two clearly supporting cards at about 80 % (258 px), the proportion the hero stage uses; uniform scale so the side cards are never squashed (true 9:16), tilted 17 degrees, dimmed 24 %, and tucked about 7 % of a width behind the featured card.
 - **Halo (explicit fix for the earlier, too faint glow):** two layers behind the featured card in an unclipped holder: a wide soft lime aura (z 55, `blur(28px)`) and a lime LED ring hugging the card edges (z 60, 7 px border, `blur(9px)`, `0 0 46px 10px` outer glow), plus a lime edge glow (`0 0 22px 3px`, `0 0 60px 6px`) and a dark depth shadow on the featured frame itself. The stage wrapper has 40 px of headroom (`pt-10`) so the halo is not cut off at the top. The halo sits between the supporting cards (z 25) and the featured card (z 100): visible around the top, sides and corners, never over the video.
 - Hero-style player stays on the featured card only; podium and side shadows re-fitted; rotation, selector and CTAs unchanged.
+
+---
+
+## Revision #9 (Nov 2026): three small refinements
+
+- **Softer glow:** the aura, ring glow and frame glow are about 20 % less intense (the aura also reaches less far to the sides); the thin bright lime edge stays.
+- **Control bar on demand:** before a video is started only the big play button is drawn. The bottom bar (play / pause, seek, sound) shows on hover or keyboard focus (hidden with opacity only, so it stays reachable by keyboard) and stays once the video has been started, so on a touchscreen one tap on the play button starts it and the bar is then permanent. This is a new `barClass` option of the shared `HeroPlayerControls` (default none, so the hero is unchanged).
+- **Side videos:** clicking (or tapping, swiping, or using the arrow keys) a side video brings it to the centre and the halo, active ring and player controls are then on it; it is playable but never autoplays. Side cards now tint lime on hover to show they are selectable.

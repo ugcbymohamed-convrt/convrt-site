@@ -194,8 +194,8 @@ export function PhoneShowcaseFallback({ portraits = false }) {
 }
 
 /* THE HERO PLAYER UI: the centre play button, and the bottom pill with play / pause, the seek bar and the sound button. It is the one control design for every featured video (the homepage hero, the service-page
-   heroes and the homepage client stage reuse it unchanged), so a video looks and behaves the same wherever it is played. */
-export function HeroPlayerControls({ item, playing, muted, progress, nudge = false, onTogglePlay, onToggleMute, onSeek }) {
+   heroes and the homepage client stage reuse it unchanged), so a video looks and behaves the same wherever it is played. `barClass` (default none: the hero is unchanged) lets a caller change when the bottom bar is shown. */
+export function HeroPlayerControls({ item, playing, muted, progress, nudge = false, barClass = '', onTogglePlay, onToggleMute, onSeek }) {
   return (
     <>
       {!playing && (
@@ -210,7 +210,7 @@ export function HeroPlayerControls({ item, playing, muted, progress, nudge = fal
           </span>
         </button>
       )}
-      <div className="absolute inset-x-3 bottom-3.5 z-20 md:inset-x-4 md:bottom-5" onPointerDown={(e) => e.stopPropagation()}>
+      <div className={`absolute inset-x-3 bottom-3.5 z-20 md:inset-x-4 md:bottom-5 ${barClass}`.trim()} onPointerDown={(e) => e.stopPropagation()}>
         <div className="flex items-center gap-2 rounded-full bg-black/55 py-1.5 pl-1.5 pr-1.5 backdrop-blur-md">
           <button
             type="button"

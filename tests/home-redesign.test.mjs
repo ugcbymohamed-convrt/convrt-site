@@ -199,9 +199,9 @@ test('centred composition: eyebrow, headline, disclosure, then the stage, the se
 
 test('polish: equal-height side cards, a lime backlight behind the featured video, the hero player UI, a larger brand selector, more room above the buttons', () => {
   const stage = read('src/components/home/RotaryStage.jsx')
-  assert.ok(/h-\[138%\] w-\[176%\]/.test(stage) && /filter: 'blur\(28px\)'/.test(stage) && /zIndex: 55/.test(stage), 'a wide soft lime aura behind the featured card')
-  assert.ok(/h-\[105%\] w-\[105%\]/.test(stage) && /border: '7px solid rgba\(213,255,64,0\.95\)'/.test(stage) && /0 0 46px 10px rgba\(213,255,64,0\.6\)/.test(stage) && /zIndex: 60/.test(stage), 'a lime LED ring hugging the card edges, blurred, with an outer glow: a real halo around the top, sides and corners')
-  assert.ok(/0 0 22px 3px rgba\(213,255,64,0\.75\)/.test(stage) && /0 0 60px 6px rgba\(213,255,64,0\.4\)/.test(stage) && /0 40px 60px -20px rgba\(0,0,0,1\)/.test(stage), 'the featured frame itself carries a lime edge glow and a dark depth shadow')
+  assert.ok(/h-\[134%\] w-\[164%\]/.test(stage) && /filter: 'blur\(28px\)'/.test(stage) && /zIndex: 55/.test(stage), 'a wide soft lime aura behind the featured card')
+  assert.ok(/h-\[105%\] w-\[105%\]/.test(stage) && /border: '7px solid rgba\(213,255,64,0\.9\)'/.test(stage) && /0 0 40px 8px rgba\(213,255,64,0\.48\)/.test(stage) && /zIndex: 60/.test(stage), 'a lime LED ring hugging the card edges, blurred, with an outer glow: a real halo around the top, sides and corners')
+  assert.ok(/0 0 20px 3px rgba\(213,255,64,0\.6\)/.test(stage) && /0 0 54px 5px rgba\(213,255,64,0\.3\)/.test(stage) && /0 40px 60px -20px rgba\(0,0,0,1\)/.test(stage), 'the featured frame itself carries a lime edge glow and a dark depth shadow')
   assert.ok(read('src/components/home/IndustryShowcase.jsx').includes('overflow-hidden pt-10'), 'headroom above the stage: the halo is not clipped at the top')
   assert.ok(stage.indexOf('active-video backlight') < stage.indexOf('items.map((item, i) => ('), 'the glow is drawn before (behind) the videos')
   // the hero player UI is ONE component, used by the homepage hero's stage and by this stage
@@ -217,6 +217,22 @@ test('polish: equal-height side cards, a lime backlight behind the featured vide
   const show = read('src/components/home/IndustryShowcase.jsx')
   assert.ok(show.includes('calc(var(--lh)*1.65)') && show.includes('sm:text-[15px]') && show.includes('sm:min-h-[122px]') && show.includes('max-w-[42rem]'), 'larger logos, industry labels and cards')
   assert.ok(show.includes('mt-12 px-5 md:mt-16'), 'the buttons sit clearly lower than the selector')
+})
+
+test('interaction: the control bar shows on hover, focus or once started (never permanently before); side videos are selectable with a visible hover state; the hero is unchanged', () => {
+  const stage = read('src/components/home/RotaryStage.jsx')
+  assert.ok(/const BAR_UNTIL_STARTED = 'pointer-events-none opacity-0 [^']*group-hover:opacity-100[^']*group-focus-within:opacity-100'/.test(stage), 'hidden with opacity only (so it stays keyboard-reachable), shown on hover and on focus-within')
+  assert.ok(stage.includes("barClass={armed ? '' : BAR_UNTIL_STARTED}"), 'once the video has been started the bar is permanent (touch screens: the big play button starts it)')
+  assert.ok(/hover:bg-lime\/\[0\.07\]/.test(stage) && /cursor-pointer/.test(stage) && /onClick=\{onSelect\}/.test(stage), 'a side video shows it is selectable and a click brings it to the centre (the halo stays on the centre slot)')
+  // the shared controls take the class as an option and default to the unchanged hero markup
+  const hero = read('src/components/ugc/CreatorVideoStage.jsx')
+  assert.ok(hero.includes("barClass = ''") && hero.includes('${barClass}`.trim()'))
+  assert.ok(!hero.includes('BAR_UNTIL_STARTED'), 'the hero stage never hides its bar')
+  const h = bodyOf(page('/'))
+  const s = sectionOf(h, 'showcase')
+  assert.match(s, /class="absolute inset-x-3 bottom-3\.5 z-20 md:inset-x-4 md:bottom-5 pointer-events-none opacity-0 /, 'the featured card\'s bar is hidden until hover, focus or start')
+  const home = h.replace(s, '')
+  assert.ok(!/pointer-events-none opacity-0 transition-opacity duration-200 motion-reduce:transition-none group-hover/.test(home), 'the homepage hero bar is untouched')
 })
 
 // ── 4. page order ────────────────────────────────────────────────────────────────────────
