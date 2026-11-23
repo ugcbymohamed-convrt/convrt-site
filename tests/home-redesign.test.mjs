@@ -78,7 +78,7 @@ test('client work: the studio scene with three posters, the client selector in o
   assert.equal((s.match(/role="tabpanel"/g) || []).length, 1, 'the one stage the selector controls')
   // the stage: three videos of the first client, centre one playable, sides only selectable, nothing playing
   assert.match(s, /role="group" aria-roledescription="carousel" aria-label="Adscale videos\./)
-  assert.equal((s.match(/aria-label="Play video 1 of 3: /g) || []).length, 1)
+  assert.equal((s.match(/aria-label="Play video: /g) || []).length, 1, 'one play button, on the featured video, the hero one')
   assert.equal((s.match(/aria-label="Show video [23] of 3"/g) || []).length, 2)
   assert.ok(!/<video/.test(s) && !/autoplay/i.test(s), 'posters only: no video element or stream on load')
   assert.ok(/>Previous video<\/button>/.test(s) && />Next video<\/button>/.test(s), 'keyboard / screen-reader controls exist (not drawn)')
@@ -98,12 +98,12 @@ test('studio scene: drawn on the reference grid with CSS only; compact; the thre
   assert.ok(!/100vh|100svh|h-screen|min-h-screen|max-h-\[|overflow-y/.test(show), 'no viewport-height or fixed-height constraint shrinks the section')
   // centred layout: the featured video is 310 px (target 290-320), the side videos 85 % of it (263 px, target 250-280), a modest difference, true 9:16, a clear gap between frames
   const [c, r, l] = [pose(0, 0), pose(1, 0), pose(2, 0)]
-  assert.ok(r.scale >= 0.8 && r.scale <= 0.9 && Math.abs(r.x + l.x) < 1e-9 && r.x > 1.0 && r.x < 1.1, `side width ${r.scale}, offset ${r.x}`)
+  assert.ok(r.scale >= 0.95 && r.scale < 1 && Math.abs(r.x + l.x) < 1e-9 && r.x > 1.0 && r.x < 1.2, `side width ${r.scale}, offset ${r.x}`)
   const featured = 0.2422 * 1280
-  assert.ok(featured >= 290 && featured <= 320 && featured * r.scale >= 250 && featured * r.scale <= 280, `featured ${featured}, side ${featured * r.scale}`)
+  assert.ok(featured >= 290 && featured <= 320 && featured * r.scale >= 295 && featured * r.scale < featured, `featured ${featured}, side ${featured * r.scale}: equal-height portrait cards, the middle one only slightly larger`)
   assert.ok(r.x - 0.5 - 0.5 * r.scale > 0.1, 'a visible gap between the featured video and each side video')
   assert.equal(r.scaleY, r.scale, 'frames are never squashed: uniform scale keeps them true 9:16')
-  assert.ok(r.y > 0.04 && r.y < 0.09 && c.y === 0, 'side videos hang a little lower than the featured one')
+  assert.ok(r.y === 0 && l.y === 0 && c.y === 0, 'all three cards share one top line and one baseline')
   const stage = read('src/components/home/RotaryStage.jsx')
   assert.ok(stage.includes("width: '24.22%'") && stage.includes("left: '50%'"), 'the featured video: 310 of the 1280 px grid, on the centre axis')
   assert.ok((stage.match(/aspect-\[9\/16\]/g) || []).length >= 2 && !/9\/15/.test(stage), 'every frame is exactly 9:16')
@@ -132,7 +132,7 @@ test('rotary stage maths: the centre video is upright and largest, the sides sit
   const start = pose(1, 0), end = pose(1, 1), mid = pose(1, 0.5)
   const lerp = (u, v) => (u + v) / 2
   assert.ok(Math.abs(mid.x - lerp(start.x, end.x)) > 0.3, 'sideways travel is not linear')
-  assert.ok(mid.scale > lerp(start.scale, end.scale) + 0.02 && mid.z > start.z, 'it comes forward on the way in')
+  assert.ok(mid.scale >= lerp(start.scale, end.scale) && mid.z > start.z, 'it comes forward on the way in')
   // the previous centre video swings out to the left in FRONT of the left slot, and the third video passes behind everything
   const out = pose(0, 0.5)
   assert.ok(out.x < -1 && out.z > pose(0, 1).z, 'the old centre video orbits out and settles back')
@@ -156,7 +156,8 @@ test('rotary stage logic: shortest direction, ease-in-out, 550-750 ms, and a cli
   assert.ok(/style\.transform/.test(apply) && !/style\.(width|height|top|left|margin)/.test(apply), 'only transform, z-index and opacity change per frame (no layout)')
   // playback: the stream is attached only after a press on the centre video, rotating away pauses, side videos cannot be played
   assert.ok(/if \(!armed\) return undefined/.test(src) && /useEffect\(\(\) => \{ if \(!active\) ref\.current\?\.pause\?\.\(\) \}, \[active\]\)/.test(src))
-  assert.ok(/\{active && !armed && \(\s*<button/.test(src) && /\{!active && \(\s*<button[\s\S]{0,200}onClick=\{onSelect\}/.test(src), 'play button only on the active phone; side phones only select')
+  assert.ok(src.includes("import { HeroPlayerControls } from '../ugc/CreatorVideoStage.jsx'") && /\{active && !moving && \(\s*<HeroPlayerControls/.test(src), 'the active video carries the hero player UI')
+  assert.ok(/\{!active && \(\s*<button[\s\S]{0,200}onClick=\{onSelect\}/.test(src) && !/\bcontrols=/.test(src), 'side videos only select; no native controls, no second control design')
   assert.ok(/IntersectionObserver/.test(src) && /v\.pause\(\)/.test(src), 'paused when out of view')
   assert.ok(!/autoPlay|autoplay/.test(src))
 })
@@ -190,7 +191,26 @@ test('centred composition: eyebrow, headline, disclosure, then the stage, the se
   const order = [at('Founder experience'), at('id="showcase-heading"'), at(FOUNDER_EXPERIENCE.captionShort), at('id="showcase-stage"'), at('role="tablist"'), at('Become our next client'), at("I'm a creator")]
   assert.deepEqual([...order].sort((a, b) => a - b), order)
   assert.match(s.slice(0, s.indexOf('id="showcase-stage"')), /text-center/, 'the text block is centred')
-  assert.ok(/mx-auto -mt-\[27vw\][^"]*max-w-\[34rem\]/.test(s) && /sm:-mt-\[min\(max\(11\.7vw,105px\),150px\)\]/.test(s), 'the selector is centred and tucked against the podium')
+  assert.ok(/mx-auto -mt-\[27vw\][^"]*max-w-\[42rem\]/.test(s) && /sm:-mt-\[min\(max\(11\.7vw,105px\),150px\)\]/.test(s), 'the selector is centred and tucked against the podium')
+})
+
+test('polish: equal-height side cards, a lime backlight behind the featured video, the hero player UI, a larger brand selector, more room above the buttons', () => {
+  const stage = read('src/components/home/RotaryStage.jsx')
+  assert.ok(/rgba\(213,255,64,0\.36\)/.test(stage) && /pointer-events-none absolute left-1\/2 top-1\/2 h-\[116%\] w-\[132%\]/.test(stage) && /filter: 'blur\(26px\)'/.test(stage), 'soft blurred lime glow centred behind the featured slot')
+  assert.ok(stage.indexOf('active-video backlight') < stage.indexOf('items.map((item, i) => ('), 'the glow is drawn before (behind) the videos')
+  // the hero player UI is ONE component, used by the homepage hero's stage and by this stage
+  const hero = read('src/components/ugc/CreatorVideoStage.jsx')
+  assert.ok(hero.includes('export function HeroPlayerControls') && hero.includes('<HeroPlayerControls item={item}'), 'the hero stage renders its controls through the shared component')
+  assert.ok(/ugc-seek/.test(hero.slice(hero.indexOf('export function HeroPlayerControls'), hero.indexOf('/* One phone.'))) && /bg-black\/55 py-1\.5 pl-1\.5 pr-1\.5 backdrop-blur-md/.test(hero))
+  const h = bodyOf(page('/'))
+  const s = sectionOf(h, 'showcase')
+  assert.match(s, /aria-label="Play video: [^"]*"/, 'the same play button (and label) as the hero')
+  assert.match(s, /aria-label="Seek video"[^>]*class="ugc-seek min-w-0 flex-1"/, 'the hero seek bar')
+  assert.match(s, /aria-label="Turn sound (on|off)"/)
+  // brand selector: larger logos and labels, taller cards
+  const show = read('src/components/home/IndustryShowcase.jsx')
+  assert.ok(show.includes('calc(var(--lh)*1.65)') && show.includes('sm:text-[15px]') && show.includes('sm:min-h-[122px]') && show.includes('max-w-[42rem]'), 'larger logos, industry labels and cards')
+  assert.ok(show.includes('mt-12 px-5 md:mt-16'), 'the buttons sit clearly lower than the selector')
 })
 
 // ── 4. page order ────────────────────────────────────────────────────────────────────────

@@ -81,3 +81,13 @@ The founder / client-work section is one symmetrical, centred composition on a s
 - **Scene:** `StudioEnvironment.jsx` is re-fitted (K = 1.55, 1280 x 740 grid, centre axis); the podium is slimmer so it supports the videos; the green glow and wall seams are calmer.
 - **Spacing:** text-to-stage gap about 40 px, selector overlapping the podium, buttons 28-32 px under it; no absolute overlays, everything is in normal flow (the section is about 1070 px tall on a large desktop).
 - **Responsive:** the scene scales with the page down to 900 px, then is shown larger than the screen and centred on the featured video (218 px at 768, 217 px on a 390 px phone with the side videos peeking in; swipe, tap on a side video or the arrow keys bring one forward). No horizontal overflow at 1920, 1440, 1280, 1024, 768, 390 and 360.
+
+---
+
+## Revision #6 (Nov 2026): final polish
+
+- **Equal-height cards:** the three videos are now equal portrait screens on one top line and one baseline (side cards 97 % of the featured one, no vertical offset, gentle 12 degree tilt, a little more space between frames); the featured one is distinguished by its frame, glow and controls.
+- **Active glow:** a soft, blurred lime backlight sits behind the featured slot (`RotaryStage.jsx`); it stays put while the videos rotate in front of it.
+- **Hero player UI:** the featured video uses the hero's controls (play button, bottom pill with play / pause, seek bar, sound). They were extracted unchanged into `HeroPlayerControls` in `components/ugc/CreatorVideoStage.jsx`, which the hero stage itself now renders too (the UGC, Spokesperson, SaaS, Spanish and homepage-hero HTML is identical to before). The hero player has no time read-out, so none was added.
+- **Brand selector:** larger logos (about 1.65 x), 15 px industry labels, taller cards, wider container.
+- **Spacing:** the buttons sit clearly lower under the selector (48 px, 64 px from `md`).

@@ -9,7 +9,7 @@ import StudioEnvironment from './StudioEnvironment.jsx'
 /* THE ENGLISH HOMEPAGE'S FOUNDER EXPERIENCE + CLIENT WORK: one centred, symmetrical composition on a single vertical axis.
 
    ORDER   1 eyebrow "FOUNDER EXPERIENCE"  2 headline "Worked with" + the clients figure (it comes from siteStats.js)  3 the owner-approved disclosure (this is the FOUNDER's combined experience, not CONVRT-only)
-           4 the studio scene: three true 9:16 videos on a lit podium (the featured one about 310 px wide, the sides about 263 px)  5 the client selector, overlapping the front of the podium  6 the two main CTAs.
+           4 the studio scene: three true 9:16 videos of equal height on a lit podium (the featured one 310 px wide with a soft lime backlight, the sides 300 px)  5 the client selector, overlapping the front of the podium  6 the two main CTAs.
    SCENE   is drawn on a fixed 1280 x 740 design grid (StudioEnvironment + RotaryStage) and scales as a whole; the videos stay 185-310 px wide from a phone to a desktop (below 640 px the scene is shown larger than the
            screen and centred on the featured video, the side videos peeking in at the edges; swipe, tap or the arrow keys bring one forward).
    THE VIDEOS are the active client's three `showcase` portfolio entries (a click, swipe or arrow key on a side video orbits it into the centre; nothing plays by itself).
@@ -106,8 +106,8 @@ export default function IndustryShowcase() {
         </div>
 
         {/* 5: the client selector, overlapping the front of the podium and centred on the same axis */}
-        <div className="relative z-20 mx-auto -mt-[27vw] w-full max-w-[34rem] px-5 sm:-mt-[min(max(11.7vw,105px),150px)] md:px-0">
-          <div role="tablist" aria-label="Client work by industry" className="grid grid-cols-3 gap-[0.35rem] rounded-[22px] border border-white/[0.09] bg-[rgba(8,9,6,0.72)] p-[0.4rem] shadow-[0_24px_50px_-20px_rgba(0,0,0,0.95)] backdrop-blur-md">
+        <div className="relative z-20 mx-auto -mt-[27vw] w-full max-w-[42rem] px-5 sm:-mt-[min(max(11.7vw,105px),150px)] md:px-0">
+          <div role="tablist" aria-label="Client work by industry" className="grid grid-cols-3 gap-[0.4rem] rounded-[26px] border border-white/[0.09] bg-[rgba(8,9,6,0.74)] p-[0.45rem] shadow-[0_24px_50px_-20px_rgba(0,0,0,0.95)] backdrop-blur-md">
             {industries.map((c, i) => {
               const on = c.id === pickedId
               return (
@@ -123,7 +123,7 @@ export default function IndustryShowcase() {
                   tabIndex={on ? 0 : -1}
                   onClick={() => select(c.id)}
                   onKeyDown={(e) => onTabKeyDown(e, i)}
-                  className={`flex min-h-[76px] flex-col items-center justify-center gap-[0.4rem] rounded-[17px] border px-2 py-2.5 transition-[background-color,border-color,box-shadow] duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-lime motion-reduce:transition-none ${on ? 'border-lime/80 bg-black/30 shadow-[0_0_24px_-5px_rgba(213,255,64,0.6),inset_0_0_14px_rgba(213,255,64,0.12)]' : 'border-transparent hover:bg-white/[0.05]'}`}
+                  className={`flex min-h-[96px] flex-col items-center justify-center gap-[0.55rem] rounded-[20px] border px-2 py-3 sm:min-h-[122px] sm:gap-[0.7rem] sm:py-4 transition-[background-color,border-color,box-shadow] duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-lime motion-reduce:transition-none ${on ? 'border-lime/80 bg-black/30 shadow-[0_0_24px_-5px_rgba(213,255,64,0.6),inset_0_0_14px_rgba(213,255,64,0.12)]' : 'border-transparent hover:bg-white/[0.05]'}`}
                 >
                   <img
                     src={c.logo.src}
@@ -133,10 +133,10 @@ export default function IndustryShowcase() {
                     loading="lazy"
                     decoding="async"
                     draggable="false"
-                    style={{ height: `${Math.round(c.selectorHeight * 1.15)}px`, width: 'auto', maxWidth: '100%', filter: 'brightness(0) invert(1)', opacity: on ? 1 : 0.66 }}
-                    className="object-contain transition-opacity duration-300 motion-reduce:transition-none"
+                    style={{ '--lh': `${c.selectorHeight}px`, width: 'auto', maxWidth: '100%', filter: 'brightness(0) invert(1)', opacity: on ? 1 : 0.7 }}
+                    className="h-[calc(var(--lh)*1.3)] object-contain transition-opacity duration-300 motion-reduce:transition-none sm:h-[calc(var(--lh)*1.65)]"
                   />
-                  <span className={`text-xs font-medium leading-none transition-colors duration-300 motion-reduce:transition-none ${on ? 'text-lime' : 'text-ink-muted'}`}>{c.label}</span>
+                  <span className={`text-[13px] font-semibold leading-none transition-colors duration-300 motion-reduce:transition-none sm:text-[15px] ${on ? 'text-lime' : 'text-ink-muted'}`}>{c.label}</span>
                 </button>
               )
             })}
@@ -144,7 +144,7 @@ export default function IndustryShowcase() {
         </div>
 
         {/* 6: the buttons, close under the selector so they read as part of the same composition */}
-        <div className="relative z-20 mt-7 px-5 md:mt-8 md:px-8">
+        <div className="relative z-20 mt-12 px-5 md:mt-16 md:px-8">
           <ShowcaseCtas />
         </div>
 
