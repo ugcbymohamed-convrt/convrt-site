@@ -1,6 +1,7 @@
 import { useRef, useEffect, useState } from 'react'
 import { useTr } from '../i18n/tr.js'
 import { currentLocale } from '../i18n/locale.js'
+import ClientQuote from './ClientQuote.jsx'
 
 /* ─────────────────────────────────────────────
    SECTION — SOCIAL PROOF / TESTIMONIALS
@@ -160,9 +161,7 @@ function ReviewCard({ review, inView, delay }) {
 
           {/* ── Review text ── */}
           {/* The quote is the client's own English wording (published with permission): it is never machine- or re-translated; other languages mark it lang="en". */}
-          <blockquote lang={locale === 'en' ? undefined : 'en'} className="flex-1 text-[15px] leading-[1.78] text-ink-subtle">
-            {review.text}
-          </blockquote>
+          <ClientQuote text={review.text} className="flex-1 text-[15px] leading-[1.78] text-ink-subtle" />
 
           {/* ── Bottom row: brand info ── */}
           <div className="pt-2 border-t border-hairline">

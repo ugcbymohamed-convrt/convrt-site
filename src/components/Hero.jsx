@@ -3,14 +3,18 @@ import { usePressFeedback } from '../lib/usePressFeedback.js'
 import { OFFER_PATHS, CREATOR_SHOWCASE_PATH } from '../config.js'
 import { trackEvent } from '../lib/analytics.js'
 import CreatorVideoStage from './ugc/CreatorVideoStage.jsx'
-import { HOME_HERO, HOME_HERO_ES } from '../content/homeHero.js'
+import { HOME_HERO, HOME_HERO_ES, HOME_HERO_FR } from '../content/homeHero.js'
 import { useTr, useHref } from '../i18n/tr.js'
 import { currentLocale } from '../i18n/locale.js'
 import { primaryAction, flowAvailable } from '../i18n/cta.js'
 
+const HOME_HERO_BY_LOCALE = { es: HOME_HERO_ES, fr: HOME_HERO_FR }
 const ROTATING_WORDS = ['convert', 'resonate', 'sell', 'connect']
 // Spanish rotating words complete "Creatividades de alto rendimiento diseñadas para ___" (see src/i18n/es/dict-home.js).
 const ROTATING_WORDS_ES = ['convertir', 'conectar', 'vender', 'resonar']
+// French rotating words complete « Des vidéos publicitaires pensées pour ___ » (see src/i18n/fr/dict-home.js). All four are intransitive, so each reads as a full sentence.
+const ROTATING_WORDS_FR = ['convertir', 'convaincre', 'marquer', 'vendre']
+const ROTATING_BY_LOCALE = { es: ROTATING_WORDS_ES, fr: ROTATING_WORDS_FR }
 
 /* Secondary offers — Level 2 in the hero's attention hierarchy. Each has its own
    accent (lime for the video offer, pink for the hooks library) so the
@@ -73,7 +77,7 @@ export default function Hero() {
             <h1 className="font-display font-semibold text-ink tracking-display-xl leading-[1.02] text-[48px] sm:text-[50px] md:text-[54px] lg:text-[60px] xl:text-[70px]">
               <span className="block">{tr('Performance creatives')}</span>{' '}
               <span className="block">
-                {tr('engineered to')} <RotatingWord words={en ? ROTATING_WORDS : ROTATING_WORDS_ES} />
+                {tr('engineered to')} <RotatingWord words={en ? ROTATING_WORDS : ROTATING_BY_LOCALE[locale]} />
               </span>
             </h1>
 
@@ -149,7 +153,7 @@ export default function Hero() {
           {/* Right column — the same three-phone video stage as the /ugc-video-agency hero (second on small screens).
               The videos are listed in src/content/homeHero.js; the first is the large centre phone. */}
           <div className="order-2 min-w-0 lg:order-none lg:col-span-6">
-            <CreatorVideoStage items={en ? HOME_HERO : HOME_HERO_ES} label={tr('Creator UGC videos')} />
+            <CreatorVideoStage items={en ? HOME_HERO : HOME_HERO_BY_LOCALE[locale]} label={tr('Creator UGC videos')} />
           </div>
         </div>
       </div>

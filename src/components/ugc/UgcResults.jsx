@@ -6,8 +6,8 @@ import { useAutoplayAllowed } from './creatorVideo.jsx'
 import { tr } from '../../i18n/tr.js'
 import { currentLocale } from '../../i18n/locale.js'
 import { localizeStat } from '../../i18n/format.js'
-import { formatMoneyEs } from '../../i18n/es/money.js'
-import { ES_TESTIMONIALS_NOTE } from '../../i18n/es/labels.js'
+import { editorial } from '../../i18n/editorial.js'
+import ClientQuote from '../ClientQuote.jsx'
 
 /* SECTION 4: results and client feedback, in one compact block.
    • Elyon 5.28x: ONE individual creator-led UGC video, client-reported, early learning phase, never typical or guaranteed (wording
@@ -54,7 +54,7 @@ function RoasNumber({ value, locale }) {
 export default function UgcResults() {
   const e = ELYON_PROOF
   const locale = currentLocale()
-  const revenue = locale === 'en' ? e.revenue : formatMoneyEs({ amount: Number(e.revenue.replace(/[$,]/g, '')), currency: 'USD' })
+  const revenue = locale === 'en' ? e.revenue : editorial(locale).formatMoney({ amount: Number(e.revenue.replace(/[$,]/g, '')), currency: 'USD' })
   return (
     <Section id="results" label="ugc-results-heading" glow>
       <Reveal>
@@ -121,7 +121,7 @@ export default function UgcResults() {
                     className="h-7 w-auto max-w-[140px] object-contain object-left"
                     style={{ filter: 'brightness(0) invert(1)' }}
                   />
-                  <blockquote lang={locale === 'en' ? undefined : 'en'} className="mt-4 flex-1 text-[15px] leading-relaxed text-ink">&ldquo;{t.quote}&rdquo;</blockquote>
+                  <ClientQuote text={t.quote} typographic className="mt-4 flex-1 text-[15px] leading-relaxed text-ink" innerClass="text-[15px] leading-relaxed text-ink" outerClass="mt-4 flex flex-1 flex-col gap-3" />
                   <figcaption className="mt-4 text-sm text-ink-muted">
                     <span className="font-semibold text-ink">{t.brand}</span> · {tr(t.category)}
                   </figcaption>
@@ -132,7 +132,7 @@ export default function UgcResults() {
         </div>
       </div>
 
-      {locale === 'es' && <p className="mt-6 text-center text-[13px] text-ink-muted">{ES_TESTIMONIALS_NOTE}</p>}
+      {editorial(locale)?.testimonialsNote && <p className="mt-6 text-center text-[13px] text-ink-muted">{editorial(locale).testimonialsNote}</p>}
 
       <Reveal className="mt-8 flex justify-center">
         <RoadmapCta location="results" />

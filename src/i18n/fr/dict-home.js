@@ -1,0 +1,111 @@
+/* French dictionary: homepage sections (hero, credibility, client panels, services, how it works, reviews, final CTA, FAQ chrome).
+   Keys are the exact English strings; values are native French copy, rewritten for a French business audience (see docs/multilingual-french-copy-guide.md). */
+export default {
+  // Hero. H1 = « Des vidéos publicitaires / pensées pour [convertir | convaincre | marquer | vendre] » (the rolling words live in src/components/Hero.jsx).
+  "Performance creatives": "Des vidéos publicitaires",
+  "engineered to": "pensées pour",
+  "From creative strategy and scripting to creator casting, filming and editing. We produce human-led UGC ads, SaaS videos, spokesperson videos and organic social content, ready to perform.":
+    "De la stratégie créative au montage, nous produisons des publicités UGC avec de vraies personnes, des vidéos avec porte-parole, des vidéos SaaS et des contenus pour les réseaux sociaux, pensés pour performer.",
+  "Explore Videos": "Voir nos réalisations",
+
+  // Founder credibility (the figures are the founder's combined experience: the attribution caption lives in dict-geo.js)
+  "more than": "plus de",
+  "across ecommerce, apps, SaaS, and global consumer markets.": "dans l’e-commerce, les applications, le SaaS et les marchés grand public du monde entier.",
+  "Become our next client": "Devenir notre prochain client",
+
+  // Client panels
+  "Work that speaks": "Des réalisations qui",
+  "for itself.": "parlent d’elles-mêmes.",
+  "Real brands, real budgets — three case studies from clients who trusted us with their creative.": "De vraies marques, de vrais budgets : trois exemples de clients qui nous ont confié leurs créations publicitaires.",
+  "Get creatives like these": "Obtenir des vidéos comme celles-ci",
+  "Read the full case studies:": "Lire les études de cas complètes (en anglais) :",
+  "View": "Voir",
+  "Unmute": "Activer le son",
+  "Play": "Lire",
+
+  // Services
+  "What We Offer": "Ce que nous proposons",
+  "Video creative for": "Des vidéos créatives pour",
+  "paid and organic social.": "la publicité et les réseaux sociaux.",
+  "Creative strategy and full video production,": "Stratégie créative et production vidéo complète,",
+  "from concept and creator casting to finished, platform-ready videos.": "du concept et de la sélection des créateurs jusqu’aux vidéos finales, prêtes à publier.",
+  "Not sure which service fits?": "Un doute sur le service qui vous convient ?",
+  "We'll tell you exactly what you need in a free 20-minute strategy call.": "Lors d’un appel stratégique offert de 20 minutes, nous vous disons précisément ce dont vous avez besoin.",
+  "Need to test creative concepts first?": "Besoin de tester d’abord des concepts créatifs ?",
+  "Explore packages and pricing": "Découvrir les offres et les tarifs",
+  "UGC Video Ads": "Publicités UGC",
+  "Human-led UGC ads built to capture attention and test creative angles.": "Des publicités UGC portées par de vraies personnes, conçues pour capter l’attention et tester plusieurs angles créatifs.",
+  "UGC Ads": "Publicités UGC",
+  "Creator-Led": "Avec des créateurs",
+  "Creative Testing": "Test créatif",
+  "Explore Service": "Découvrir le service",
+  "Product demos, explainers and video ads that make software easier to understand.": "Démos produit, vidéos explicatives et publicités vidéo qui rendent un logiciel plus facile à comprendre.",
+  "Product Demos": "Démos produit",
+  "Explainers": "Vidéos explicatives",
+  "Video Ads": "Publicités vidéo",
+  "Professional, multilingual presenters for ads, demonstrations and brand messages.": "Des porte-parole professionnels et multilingues pour vos publicités, vos démonstrations et vos messages de marque.",
+  "Human-Led": "Incarné par des humains",
+  "Multilingual": "Multilingue",
+  "Organic social videos, content planning, publishing and community management.": "Vidéos organiques pour les réseaux sociaux, planification des contenus, publication et animation de communauté.",
+  "Organic Video": "Vidéo organique",
+  "Posting": "Publication",
+  "Community": "Communauté",
+
+  // How it works
+  "From free ideas": "De l’idée offerte",
+  "to finished videos.": "à la vidéo finale.",
+  "Start with five creative ideas tailored to your brand. See the direction, decide if we’re a fit, and let us handle production from start to finish.":
+    "Commencez par cinq idées créatives pensées pour votre marque. Découvrez la direction proposée, voyez si nous sommes faits pour travailler ensemble, puis laissez-nous gérer la production de A à Z.",
+  "Discovery": "Découverte",
+  "Free Creative Growth Roadmap": "Feuille de route créative offerte",
+  "We learn about your brand, audience and goals, then develop five personalized ad concepts for you.": "Nous apprenons à connaître votre marque, votre audience et vos objectifs, puis nous imaginons cinq concepts publicitaires personnalisés pour vous.",
+  "We walk through the ideas together, exploring creative angles and opportunities tailored to your business.": "Nous passons les idées en revue avec vous et explorons des angles créatifs et des opportunités adaptés à votre activité.",
+  "5 free ad concepts": "5 concepts publicitaires offerts",
+  "Your Decision": "Votre décision",
+  "Like the Direction? Let’s Work Together.": "La direction vous plaît ? Travaillons ensemble.",
+  "Review your creative roadmap and decide whether you’d like CONVRT to bring those ideas to life.": "Étudiez votre feuille de route créative et décidez si vous souhaitez que CONVRT donne vie à ces idées.",
+  "If we’re a good fit, we agree on the project scope, deliverables and next steps before production begins.": "Si nous sommes faits pour travailler ensemble, nous convenons du périmètre du projet, des livrables et des prochaines étapes avant le début de la production.",
+  "No obligation": "Sans engagement",
+  "Production": "Production",
+  "From Concepts to Creatives": "Du concept à la vidéo",
+  "Once approved, we turn the creative direction into scripts, select the right talent, and handle filming and editing.": "Une fois la direction validée, nous la transformons en scripts, choisissons les bons créateurs et nous occupons du tournage et du montage.",
+  "Strategy, scripting, creator casting, production and post-production — all managed by CONVRT.": "Stratégie, scripts, sélection des créateurs, production et post-production : tout est piloté par CONVRT.",
+  "End-to-end production": "Production de A à Z",
+  "Delivery": "Livraison",
+  "Review, Refine & Launch": "Relire, ajuster, lancer",
+  "Review your videos, request revisions within the agreed scope, and receive approved creatives ready for your channels.": "Visionnez vos vidéos, demandez des modifications dans le cadre convenu et recevez des vidéos validées, prêtes pour vos canaux.",
+  "Your finished videos are delivered in the agreed formats, ready for your team to publish or use in campaigns.": "Vos vidéos finales vous sont livrées dans les formats convenus, prêtes à être publiées ou utilisées dans vos campagnes.",
+  "Ready-to-use videos": "Vidéos prêtes à l’emploi",
+  "Start with five free ad concepts.": "Commencez par cinq concepts publicitaires offerts.",
+  "For qualifying brands. We present five tailored ad concepts in a complimentary strategy session, with no obligation to hire CONVRT.": "Pour les marques éligibles. Nous présentons cinq concepts publicitaires sur mesure lors d’une session stratégique offerte, sans obligation de travailler avec CONVRT.",
+
+  // Client reviews
+  "Client Reviews": "Avis clients",
+  "Trusted by brands that": "Ils nous font confiance,",
+  "came back": "et ils reviennent.",
+  "Most of our clients come back for additional creatives, testing, and long-term collaboration.": "La plupart de nos clients reviennent pour de nouvelles créations, des tests supplémentaires et une collaboration sur le long terme.",
+  "Reviews are shown in the clients’ original language (English).": "Les avis clients sont rédigés en anglais. Chaque traduction française est signalée comme telle, avec l’avis d’origine en dessous.",
+  "Repeat Client": "Client fidèle",
+  "Luxury Fragrance · E-commerce": "Parfumerie de luxe · E-commerce",
+  "SaaS · Paid Social": "SaaS · Social payant",
+  "Mobile App · International": "Application mobile · International",
+
+  // Final CTA (three deliberate lines: « Les bonnes marques / méritent de meilleures / vidéos publicitaires. »)
+  "Let's create together": "Créons ensemble",
+  "Good brands deserve": "Les bonnes marques",
+  "deserve better": "méritent de meilleures",
+  "better creatives.": "vidéos publicitaires.",
+  "Whether you need paid social creatives, UGC, spokesperson ads, or a long-term creative partner, we build content designed for modern attention.": "Publicités pour les réseaux sociaux, UGC, vidéos avec porte-parole ou partenaire créatif sur le long terme : nous concevons des contenus pensés pour capter l’attention d’aujourd’hui.",
+  "Send us an email": "Nous écrire",
+  "Videos produced": "Vidéos produites",
+  "Views generated": "Vues générées",
+  "of clients return for more": "de clients reviennent",
+
+  // FAQ chrome
+  "FAQ": "FAQ",
+  "Things brands": "Les questions que se posent",
+  "usually ask.": "souvent les marques.",
+  "We believe good creative partnerships start with clarity.": "Pour nous, un bon partenariat créatif commence par la clarté.",
+  "Still have questions?": "Encore des questions ?",
+  "Reach us directly, we're happy to answer anything before you commit to anything.": "Écrivez-nous directement : nous répondons volontiers à toutes vos questions avant tout engagement.",
+}

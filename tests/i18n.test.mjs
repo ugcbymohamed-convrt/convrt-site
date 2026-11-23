@@ -43,17 +43,18 @@ const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), '..')
 const read = (p) => fs.readFileSync(path.join(ROOT, p), 'utf8')
 
 // ── 1. pure checks ─────────────────────────────────────────────────────────────────────────────────────────────
-test('locales: English, Spanish, French and Arabic are registered; Arabic is right-to-left; only English and Spanish are live', () => {
+test('locales: English, Spanish, French and Arabic are registered; Arabic is right-to-left; English, Spanish and French are live; Arabic is only prepared', () => {
   assert.deepEqual(LOCALE_CODES, ['en', 'es', 'fr', 'ar'])
   assert.equal(LOCALES.ar.dir, 'rtl')
   for (const c of ['en', 'es', 'fr']) assert.equal(LOCALES[c].dir, 'ltr')
   assert.deepEqual(LOCALES.en.prefix, '')
   assert.equal(LOCALES.es.prefix, '/es'); assert.equal(LOCALES.fr.prefix, '/fr'); assert.equal(LOCALES.ar.prefix, '/ar')
-  assert.deepEqual(LIVE_LOCALES, ['en', 'es'])
-  assert.deepEqual(BUILT_LOCALES, ['en', 'es'], 'French and Arabic are prepared: no routes are built for them')
-  assert.ok(isLive('es') && !isLive('fr') && !isLive('ar'))
-  assert.deepEqual(TRANSLATED_PATHS.fr, []); assert.deepEqual(TRANSLATED_PATHS.ar, [])
-  assert.deepEqual(allLocalizedPaths(['fr', 'ar']), [])
+  assert.deepEqual(LIVE_LOCALES, ['en', 'es', 'fr'])
+  assert.deepEqual(BUILT_LOCALES, ['en', 'es', 'fr'], 'Arabic is prepared: no routes are built for it')
+  assert.ok(isLive('es') && isLive('fr') && !isLive('ar'))
+  assert.equal(LOCALES.fr.htmlLang, 'fr-FR')
+  assert.deepEqual(TRANSLATED_PATHS.fr, ['/', '/ugc-video-agency', '/pricing', '/creator-showcase', '/creative-growth-roadmap', '/risk-free-trial']); assert.deepEqual(TRANSLATED_PATHS.ar, [])
+  assert.deepEqual(allLocalizedPaths(['ar']), [])
 })
 
 test('paths: English URLs never change; other languages live under their prefix with the same slugs', () => {
@@ -92,30 +93,31 @@ test('hreflang: one reciprocal set per translated page (en, es, x-default), only
   assert.deepEqual(alternatesFor('/creative-growth-roadmap', SITE_SEO['/creative-growth-roadmap']), [], 'the noindex Roadmap carries no hreflang in either language')
   for (const bp of INDEXABLE_ES) {
     const set = alternatesFor(bp, SITE_SEO[bp])
-    assert.deepEqual(set.map((a) => a.hreflang), ['en', 'es', 'x-default'], bp)
+    const withFr = isReleased('fr', bp)
+    assert.deepEqual(set.map((a) => a.hreflang), withFr ? ['en', 'es', 'fr-FR', 'x-default'] : ['en', 'es', 'x-default'], bp)
     assert.equal(set[0].href, `${SITE_URL}${bp}`)
     assert.equal(set[1].href, absoluteUrl('es', bp))
-    assert.equal(set[2].href, set[0].href, 'x-default is the English page')
+    assert.equal(set.at(-1).href, set[0].href, 'x-default is the English page')
   }
   assert.deepEqual(alternatesFor('/blog', { indexable: true }), [], 'a page without a translation has no hreflang')
   assert.deepEqual(alternatesFor('/pricing', { indexable: false }), [], 'a noindex page never carries hreflang')
-  assert.ok(!JSON.stringify(TRANSLATED_PATHS.es.map((bp) => alternatesFor(bp, SITE_SEO[bp]))).match(/\/(fr|ar)\b/), 'no hreflang for unpublished languages')
+  assert.ok(!JSON.stringify(TRANSLATED_PATHS.es.map((bp) => alternatesFor(bp, SITE_SEO[bp]))).match(/\/ar\b/), 'no hreflang for unpublished languages (Arabic)')
 })
 
 test('language selector: only live languages are offered, each link points at an equivalent page that exists, otherwise the language home', () => {
   const onAbout = languageOptions('en', '/about')
-  assert.deepEqual(onAbout.map((o) => [o.code, o.href, o.exact]), [['en', '/about', true], ['es', '/es/about', true]])
+  assert.deepEqual(onAbout.map((o) => [o.code, o.href, o.exact]), [['en', '/about', true], ['es', '/es/about', true], ['fr', '/fr/', false]], 'French has no About page: the selector falls back to the French home')
   // while the Spanish EUR prices are not approved the Spanish pricing page is launch-blocked, so the selector falls back to the Spanish home
   const onPricing = languageOptions('en', '/pricing')
-  assert.deepEqual(onPricing.map((o) => [o.code, o.href, o.exact]), isPricingApproved('es') ? [['en', '/pricing', true], ['es', '/es/pricing', true]] : [['en', '/pricing', true], ['es', '/es/', false]])
+  assert.deepEqual(onPricing.map((o) => [o.code, o.href, o.exact]), isPricingApproved('es') ? [['en', '/pricing', true], ['es', '/es/pricing', true], ['fr', '/fr/pricing', true]] : [['en', '/pricing', true], ['es', '/es/', false], ['fr', '/fr/pricing', true]])
   const onBlog = languageOptions('en', '/blog')
-  assert.deepEqual(onBlog.map((o) => [o.code, o.href, o.exact]), [['en', '/blog', true], ['es', '/es/', false]], 'an English-only page falls back to the Spanish home')
+  assert.deepEqual(onBlog.map((o) => [o.code, o.href, o.exact]), [['en', '/blog', true], ['es', '/es/', false], ['fr', '/fr/', false]], 'an English-only page falls back to each language home')
   assert.equal(switchTarget('es', '/case-studies/graspo'), '/es/')
   assert.equal(switchTarget('en', '/pricing'), '/pricing')
   assert.equal(switchTarget('en', '/about'), '/about')
   assert.equal(languageOptions('es', '/about').find((o) => o.current).code, 'es')
-  assert.deepEqual(languageOptions('en', '/').map((o) => o.label), ['English', 'Español'], 'native names; French and Arabic are not offered until they are live')
-  for (const o of languageOptions('en', '/about')) assert.ok(o.code === 'en' || hasTranslation(o.code, '/about'))
+  assert.deepEqual(languageOptions('en', '/').map((o) => o.label), ['English', 'Español', 'Français'], 'native names; Arabic is not offered until it is live')
+  for (const o of languageOptions('en', '/about')) assert.ok(o.code === 'en' || o.exact === hasTranslation(o.code, '/about'))
   // never browser detection or redirects: the component is plain links and reads nothing from navigator/cookies/geolocation
   const sel = read('src/components/LanguageSelector.jsx') + read('src/i18n/switch.js') + read('src/i18n/locale.js')
   assert.ok(!/navigator\.language|localStorage|sessionStorage|document\.cookie|geolocation|location\.(replace|assign|href\s*=)/.test(sel.replace(/\/\*[\s\S]*?\*\//g, '')))
@@ -124,12 +126,14 @@ test('language selector: only live languages are offered, each link points at an
 test('sitemap: English entries are unchanged; Spanish canonical URLs are added for live, indexable translations only', () => {
   const xml = buildSitemap()
   for (const p of ['/', '/pricing', '/ugc-video-agency', '/creator-showcase', '/about']) assert.ok(xml.includes(`<loc>${SITE_URL}${p}</loc>`), `English ${p} still listed`)
-  const es = localizedSitemapPaths()
+  const all = localizedSitemapPaths()
+  const es = all.filter((p) => p.startsWith('/es'))
   assert.deepEqual(es, INDEXABLE_ES.map((bp) => localizedPath('es', bp)))
+  assert.ok(all.filter((p) => p.startsWith('/fr')).every((p) => p === '/fr/' || p.startsWith('/fr/')), 'French canonicals are listed (tests/french.test.mjs checks them)')
   assert.ok(!es.includes('/es/creative-growth-roadmap'), 'the noindex Roadmap is never in the sitemap')
   assert.ok(!es.includes('/es/creator-showcase') || displayableFor('es').length > 0, 'the Spanish Showcase is listed only once Spanish-language videos exist')
   for (const p of es) assert.ok(xml.includes(`<loc>${SITE_URL}${p}</loc>`), p)
-  assert.ok(!/<loc>[^<]*\/(fr|ar)(\/|<)/.test(xml), 'no French or Arabic URL')
+  assert.ok(!/<loc>[^<]*\/ar(\/|<)/.test(xml), 'no Arabic URL')
   assert.ok(!/privacy|terms|legal-notice/.test(es.join()), 'the legal pages are not translated')
 })
 
@@ -143,7 +147,8 @@ test('dictionary: complete for every literal tr()/<T> in the source, no empty va
       if (v === '') assert.ok(PARTS.trust === dict, `empty translation only allowed in dict-trust.js: "${k.slice(0, 60)}"`)
     }
   }
-  assert.equal(DICTIONARIES.fr, undefined); assert.equal(DICTIONARIES.ar, undefined)
+  assert.equal(DICTIONARIES.ar, undefined)
+  assert.ok(DICTIONARIES.fr && Object.keys(DICTIONARIES.fr).length > 500, 'the French dictionary exists (tests/french.test.mjs checks it)')
 })
 
 const OMITTED_FIGURE = /free library of 10 ad hooks/
@@ -173,8 +178,8 @@ test('Spanish money: EUR notation "3.000 €" (non-breaking space), USD kept onl
   assert.equal(localizeStat('es', '1,200+'), '1.200+'); assert.equal(localizeStat('es', '10.7M'), '10,7 M'); assert.equal(localizeStat('en', '10.7M'), '10.7M')
 })
 
-test('conversion flows: the Roadmap and the 1 FREE video application are translated for Spanish; the 10 free hooks and referrals stay English-only (never promoted in Spanish); French and Arabic have none', () => {
-  for (const l of ['fr', 'ar']) for (const f of ['roadmap', 'riskFree', 'hooks', 'referrals']) assert.equal(LOCALIZED_FLOWS[l][f], false, `${l}.${f}`)
+test('conversion flows: the Roadmap and the 1 FREE video application are translated for Spanish; the 10 free hooks and referrals stay English-only (never promoted in Spanish); Arabic has none (French: tests/french.test.mjs)', () => {
+  for (const l of ['ar']) for (const f of ['roadmap', 'riskFree', 'hooks', 'referrals']) assert.equal(LOCALIZED_FLOWS[l][f], false, `${l}.${f}`)
   assert.equal(LOCALIZED_FLOWS.es.roadmap, true)
   assert.equal(LOCALIZED_FLOWS.es.riskFree, true)
   for (const f of ['hooks', 'referrals']) assert.equal(LOCALIZED_FLOWS.es[f], false, `es.${f}`)
@@ -257,11 +262,11 @@ test('hreflang in the built HTML is reciprocal: each Spanish page and its Englis
     const en = page(bp), es = page(localizedPath('es', bp))
     const set = (h) => tag(h, /<link rel="alternate" hreflang="([^"]+)" href="[^"]+"/g).join(',') + '|' + tag(h, /<link rel="alternate" hreflang="[^"]+" href="([^"]+)"/g).join(',')
     assert.equal(set(en), set(es), bp)
-    assert.equal(set(en).split('|')[0], 'en,es,x-default', bp)
+    assert.equal(set(en).split('|')[0], isReleased('fr', bp) ? 'en,es,fr-FR,x-default' : 'en,es,x-default', bp)
   }
   // English pages with NO translation carry no hreflang at all
   for (const p of ['/blog', '/case-studies/graspo', '/privacy', '/terms', '/legal-notice', '/free-hooks', '/creative-growth-roadmap', ...TRANSLATED_PATHS.es.filter((bp) => !INDEXABLE_ES.includes(bp)), ...TRANSLATED_PATHS.es.filter((bp) => !INDEXABLE_ES.includes(bp)).map((bp) => localizedPath('es', bp))]) assert.ok(!/hreflang/.test(page(p)), `${p} has no hreflang`)
-  assert.ok(!/hreflang="(fr|ar)/.test(ES_PAGES.map(page).join('') + TRANSLATED_PATHS.es.map(page).join('')))
+  assert.ok(!/hreflang="ar/.test(ES_PAGES.map(page).join('') + TRANSLATED_PATHS.es.map(page).join('')))
 })
 
 test('English pages keep their canonical, robots and sitemap entries (the Spanish release leaves them untouched)', () => {
@@ -275,10 +280,10 @@ test('English pages keep their canonical, robots and sitemap entries (the Spanis
   for (const p of ['/', '/pricing', '/ugc-video-agency', '/spokesperson-video-production', '/social-media-video-production', '/saas-video-production', '/creator-showcase', '/about', '/contact', '/privacy', '/terms', '/legal-notice']) assert.ok(sm.includes(`<loc>${SITE_URL}${p === '/' ? '/' : p}</loc>`), p)
 })
 
-test('no French or Arabic page exists in the build, and nothing links to one', () => {
-  assert.ok(!fs.existsSync(path.join(dist, 'fr')) && !fs.existsSync(path.join(dist, 'ar')))
+test('no Arabic page exists in the build, and nothing links to one', () => {
+  assert.ok(!fs.existsSync(path.join(dist, 'ar')))
   const all = [...ES_PAGES, ...TRANSLATED_PATHS.es].map(page).join('\n')
-  assert.ok(!/href="\/(fr|ar)(\/|")/.test(all) && !/hreflang="(fr|ar)/.test(all))
+  assert.ok(!/href="\/ar(\/|")/.test(all) && !/hreflang="ar/.test(all))
   assert.ok(fs.existsSync(path.join(dist, '404.html')))
 })
 

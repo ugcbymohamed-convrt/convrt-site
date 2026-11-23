@@ -80,11 +80,95 @@
 import { currentLocale } from '../i18n/locale.js'
 import { DEFAULT_LOCALE } from '../i18n/locales.js'
 import { streamPoster } from './posterFrames.js'
-import { ES_LANGUAGE_LABELS, ES_INDUSTRY_LABELS, ES_TYPE_LABELS, ES_PRODUCTION_LABELS, captionEs } from '../i18n/es/labels.js'
+import { editorial } from '../i18n/editorial.js'
 
+const FR_APPROVAL = { status: 'approved', portfolioUse: true, creatorConsent: true, approvedBy: 'CONVRT owner (French creator folder supplied for the French site; signed portfolio agreements to be confirmed)', approvedOn: '2026-11-23' }
 const ES_APPROVAL = { status: 'approved', portfolioUse: true, creatorConsent: true, approvedBy: 'CONVRT owner (confirmed in chat)', approvedOn: '2026-11-22' }
 
 export const PORTFOLIO = [
+  /* ── FRENCH VIDEOS (owner folder ~/Desktop/CONVRT/CREATORS/French, uploaded to Cloudflare Stream 2026-11-23 for the French site) ─────────────────────────────────────────────────────────
+     French-only entries: `languages: ['fr']` + `onlyIn: ['fr']`, so they appear on /fr/ pages only (the French Showcase, the UGC gallery and hero, the homepage hero) and never change an English or Spanish page.
+     SOURCE: the five videos of the two French-speaking creators in that folder whose on-screen captions are French. A sixth file (a phone-case ad, captions in English) is NOT used: its spoken language is
+     unconfirmed. Creators are identified only by opaque ids (fr-c01, fr-c02; the name map is private, outside the repository); creator names, brands and production credits are NOT shown (no showName /
+     brandDisplay / creditDisplay). The footage itself shows brand names the creators filmed for; the page copy never names them. Titles describe only what the footage shows. No uploadDate is recorded,
+     so these entries emit no VideoObject structured data. `type` is 'ugc' (the folder's own category; the owner has not classified them further) and the industry stays 'unclassified'.
+     APPROVAL: the owner supplied this folder for the French site. The creators came through the creator portfolio onboarding (Creator Portfolio Agreement: limited website display); the signed records
+     must be confirmed in the admin before Production (docs/multilingual-french-release.md). Spoken language: French captions confirm it for these five; no audio transcript was run. */
+  {
+    id: 'fr-ugc-hero-1',
+    title: 'Complément alimentaire : démonstration du produit face caméra.',
+    caption: 'Complément alimentaire : démonstration du produit face caméra.',
+    type: 'ugc',
+    industry: 'unclassified',
+    languages: ['fr'],
+    onlyIn: ['fr'],
+    source: { cloudflareId: 'c1dd083d5550608a139f656670bd77a5' },
+    poster: '/portfolio/fr-ugc-hero-1.webp',
+    creatorId: 'fr-c01',
+    category: 'UGC · Publicité avec créateur',
+    placement: 'hero',
+    approval: FR_APPROVAL,
+  },
+  {
+    id: 'fr-ugc-hero-2',
+    title: 'Application pour voyager : un créateur raconte son expérience.',
+    caption: 'Application pour voyager : un créateur raconte son expérience.',
+    type: 'ugc',
+    industry: 'unclassified',
+    languages: ['fr'],
+    onlyIn: ['fr'],
+    source: { cloudflareId: '0346ed0881533220ba77bc4b3d4c26f9' },
+    poster: '/portfolio/fr-ugc-hero-2.webp',
+    creatorId: 'fr-c02',
+    category: 'UGC · Publicité avec créateur',
+    placement: 'hero',
+    approval: FR_APPROVAL,
+  },
+  {
+    id: 'fr-ugc-hero-3',
+    title: 'Application de gestion de patrimoine : démonstration à l’écran, face caméra.',
+    caption: 'Application de gestion de patrimoine : démonstration à l’écran, face caméra.',
+    type: 'ugc',
+    industry: 'unclassified',
+    languages: ['fr'],
+    onlyIn: ['fr'],
+    source: { cloudflareId: '5b1058e9c68ab7b05bd24858ceaadb9c' },
+    poster: '/portfolio/fr-ugc-hero-3.webp',
+    creatorId: 'fr-c01',
+    category: 'UGC · Publicité avec créateur',
+    placement: 'hero',
+    approval: FR_APPROVAL,
+  },
+  {
+    id: 'fr-ugc-1',
+    title: 'Entreprise de toiture : un créateur présente le service.',
+    caption: 'Entreprise de toiture : un créateur présente le service.',
+    type: 'ugc',
+    industry: 'unclassified',
+    languages: ['fr'],
+    onlyIn: ['fr'],
+    source: { cloudflareId: '7c681c012def2539e7c32c99889d8662' },
+    poster: '/portfolio/fr-ugc-1.webp',
+    creatorId: 'fr-c02',
+    category: 'UGC · Publicité avec créateur',
+    placement: 'gallery',
+    approval: FR_APPROVAL,
+  },
+  {
+    id: 'fr-ugc-2',
+    title: 'Application de jeu mobile : démonstration à l’écran et réactions.',
+    caption: 'Application de jeu mobile : démonstration à l’écran et réactions.',
+    type: 'ugc',
+    industry: 'unclassified',
+    languages: ['fr'],
+    onlyIn: ['fr'],
+    source: { cloudflareId: 'a273a9e766e0baf7eed8a6ad72c8892b' },
+    poster: '/portfolio/fr-ugc-2.webp',
+    creatorId: 'fr-c02',
+    category: 'UGC · Publicité avec créateur',
+    placement: 'gallery',
+    approval: FR_APPROVAL,
+  },
   /* ── SPANISH VIDEOS (owner folders ~/Desktop/SPANISH: UGC, Spokesperson; uploaded to Cloudflare Stream 2026-11-22) ─────────────────────────────────────────────────────────────
      Spanish-only entries: `languages: ['es']` + `onlyIn: ['es']`, so they appear on /es/ pages only (the Spanish Showcase and the UGC / Spokesperson galleries and heroes) and never change an English page.
      The owner confirmed in chat (2026-11-22) that all 18 are approved for the website and that the creators agreed to portfolio display. Creators are identified only by opaque ids (the name-to-id
@@ -1339,26 +1423,27 @@ export const saasFormatLabel = (id) => SAAS_FORMATS.find((f) => f.id === id)?.la
 
 const titleCase = (slug) => slug.replace(/[-_]+/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())
 /* The label helpers below speak the language of the page being rendered (from the URL; English everywhere unless the page is /es/…). The data itself stays English. */
-const isEs = () => currentLocale() === 'es'
-export const languageLabel = (code) => (isEs() ? ES_LANGUAGE_LABELS[code] : LANGUAGE_LABELS[code]) ?? code.toUpperCase()
+/* `ed()` = the editorial data of the page's language (src/i18n/editorial.js), or null on English pages. */
+const ed = () => editorial()
+export const languageLabel = (code) => (ed()?.languageLabels ?? LANGUAGE_LABELS)[code] ?? code.toUpperCase()
 
 /* An industry that has not been confirmed. It is internal: it is never shown as a label and never becomes a tab. */
 export const UNCLASSIFIED = 'unclassified'
 export const isClassified = (item) => Boolean(item.industry) && item.industry !== UNCLASSIFIED
 /* '' for an unconfirmed industry, so nothing is displayed (callers drop empty labels). */
-export const industryLabel = (slug) => (!slug || slug === UNCLASSIFIED ? '' : (isEs() ? ES_INDUSTRY_LABELS[slug] : INDUSTRY_LABELS[slug]) ?? titleCase(slug))
+export const industryLabel = (slug) => (!slug || slug === UNCLASSIFIED ? '' : (ed()?.industryLabels ?? INDUSTRY_LABELS)[slug] ?? titleCase(slug))
 export const typeOf = (item) => item.type
-export const typeLabel = (item) => (item.type ? (isEs() ? ES_TYPE_LABELS[item.type] : TYPE_LABELS[item.type]) ?? titleCase(item.type) : '')
+export const typeLabel = (item) => (item.type ? (ed()?.typeLabels ?? TYPE_LABELS)[item.type] ?? titleCase(item.type) : '')
 /* A video's caption in the page's language: generic captions ("UGC ad example 5.") are translated; a hand-written one is shown as written. */
 /* LANGUAGE-SPECIFIC COPY. An entry may carry `i18n: { es: { title, caption } }`: copy WRITTEN for that language's page (the Spanish Showcase has its own creators and videos, not translations of the English
    ones). Resolution on a /es/ page: the entry's own `i18n.es` text, else (for the generic placeholder captions only) the pattern translation, else the entry's own text as written. */
-const own = (item, field) => (isEs() ? item.i18n?.es?.[field] : undefined)
-export const captionOf = (item) => own(item, 'caption') ?? (isEs() ? captionEs(item.caption) ?? item.caption : item.caption)
-export const titleOf = (item) => own(item, 'title') ?? (isEs() ? captionEs(item.title ?? item.caption) ?? item.title ?? item.caption : item.title ?? item.caption)
+const own = (item, field) => (ed() ? item.i18n?.[currentLocale()]?.[field] : undefined)
+export const captionOf = (item) => own(item, 'caption') ?? (ed() ? ed().caption(item.caption) ?? item.caption : item.caption)
+export const titleOf = (item) => own(item, 'title') ?? (ed() ? ed().caption(item.title ?? item.caption) ?? item.title ?? item.caption : item.title ?? item.caption)
 
 /* PRODUCTION ATTRIBUTION. 'independent' = a creator's own example; 'convrt' = produced through CONVRT; unset = unknown (nothing is claimed). */
 export const PRODUCTION_LABELS = { independent: 'Independent creator', convrt: 'Produced by CONVRT' }
-export const productionLabel = (item) => (isEs() ? ES_PRODUCTION_LABELS : PRODUCTION_LABELS)[item.production] ?? ''
+export const productionLabel = (item) => (ed()?.productionLabels ?? PRODUCTION_LABELS)[item.production] ?? ''
 export const isConvrtProduction = (item) => item.production === 'convrt'
 
 /* Brand name and credit line: shown only with the explicit permission recorded in the approval. */
@@ -1501,9 +1586,9 @@ export const CATEGORIES = [
      Spokesperson). It has a tab only while at least one such video is approved. */
   { id: 'spokesperson', label: 'Spokesperson', color: '#ff6a4d', byType: 'spokesperson' },
 ]
-/* The UGC TYPE filter exists only on the Spanish page: its videos are all 'unclassified' by industry, so without it the Spanish library offered only All + Spokesperson. It is NOT in
+/* The UGC TYPE filter exists only on translated pages (Spanish, French): its videos are all 'unclassified' by industry, so without it the Spanish library offered only All + Spokesperson. It is NOT in
    CATEGORIES, so the English tabs (and tests/creator-showcase.test.mjs) are unchanged; it sits between the industry tabs and Spokesperson. */
-const ES_UGC_CATEGORY = { id: 'ugc', label: 'UGC', color: '#d5ff40', byType: 'ugc' }
+const TRANSLATED_UGC_CATEGORY = { id: 'ugc', label: 'UGC', color: '#d5ff40', byType: 'ugc' }
 export const CATEGORY_LABELS = Object.fromEntries(CATEGORIES.map((c) => [c.id, c.label]))
 const CATEGORY_ORDER = CATEGORIES.map((c) => c.id)
 const CATEGORY_OF_INDUSTRY = { saas: 'saas', technology: 'saas', ecommerce: 'ecommerce', services: 'services' }
@@ -1511,13 +1596,13 @@ export const categoryOf = (item) => (isClassified(item) ? CATEGORY_OF_INDUSTRY[i
 
 /* Is the video in the filter `categoryId`? An industry filter by its industry group; the Spokesperson filter by the video's type. */
 export const inCategory = (item, categoryId) => {
-  const c = CATEGORIES.find((x) => x.id === categoryId) ?? (categoryId === ES_UGC_CATEGORY.id ? ES_UGC_CATEGORY : undefined)
+  const c = CATEGORIES.find((x) => x.id === categoryId) ?? (categoryId === TRANSLATED_UGC_CATEGORY.id ? TRANSLATED_UGC_CATEGORY : undefined)
   return c?.byType ? typeOf(item) === c.byType : categoryOf(item) === categoryId
 }
 
 /* The tabs /creator-showcase offers: All Work, then each category that has at least one classified video (an empty category is hidden). */
 export const availableCategories = (items) => {
-  const list = isEs() ? [...CATEGORIES.filter((c) => c.id !== 'spokesperson'), ES_UGC_CATEGORY, ...CATEGORIES.filter((c) => c.id === 'spokesperson')] : CATEGORIES
+  const list = ed() ? [...CATEGORIES.filter((c) => c.id !== 'spokesperson'), TRANSLATED_UGC_CATEGORY, ...CATEGORIES.filter((c) => c.id === 'spokesperson')] : CATEGORIES
   return [ALL_CATEGORY, ...list.filter((c) => items.some((i) => inCategory(i, c.id)))]
 }
 export const countIn = (items, categoryId) => (categoryId === 'all' ? items.length : items.filter((i) => inCategory(i, categoryId)).length)

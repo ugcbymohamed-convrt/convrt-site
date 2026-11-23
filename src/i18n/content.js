@@ -6,7 +6,8 @@
    That is the drift guard: a Spanish page can never silently show a stale or mismatched claim. */
 
 import { HOME_FAQ } from '../seo/homeFaq.js'
-import { translate, hrefFor } from './tr.js'
+import { translate, hrefFor, isFallbackPath } from './tr.js'
+import { editorial } from './editorial.js'
 import { localizeStat } from './format.js'
 import { OFFER_PATHS, REFERRALS_PATH } from '../config.js'
 import { flowAvailable } from './cta.js'
@@ -14,7 +15,12 @@ import { DEFAULT_LOCALE } from './locales.js'
 
 const localizeHref = (href, locale) => hrefFor(href, locale)
 
-const localizeLink = (l, locale) => (l ? { ...l, label: translate(locale, l.label), href: localizeHref(l.href, locale) } : l)
+/* A link whose target exists only in English says so in languages that declare a fallback note (French: « (en anglais) »); languages whose every target is translated are unchanged. */
+const withNote = (label, href, locale) => {
+  const note = editorial(locale)?.fallbackNote
+  return note && href.startsWith('/') && isFallbackPath(href.split('#')[0].split('?')[0], locale) ? `${label} (${note})` : label
+}
+const localizeLink = (l, locale) => (l ? { ...l, label: withNote(translate(locale, l.label), l.href, locale), href: localizeHref(l.href, locale) } : l)
 
 /* A link into a flow that is not translated for this language is dropped (never a link from a Spanish page into an English form). */
 const FLOW_OF = { [OFFER_PATHS.roadmap]: 'roadmap', [OFFER_PATHS.hooks]: 'hooks', [OFFER_PATHS.riskFree]: 'riskFree', [REFERRALS_PATH]: 'referrals' }

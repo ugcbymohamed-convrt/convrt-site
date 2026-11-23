@@ -1,7 +1,8 @@
 import Logo from './Logo.jsx'
 import LanguageSelector from './LanguageSelector.jsx'
 import { parsePath, localizedPath } from '../i18n/paths.js'
-import { translate, localHref } from '../i18n/tr.js'
+import { translate, localHref, isFallbackPath } from '../i18n/tr.js'
+import { editorial } from '../i18n/editorial.js'
 import CookieSettingsLink from './CookieSettingsLink.jsx'
 import { SERVICE_LABELS } from '../seo/businessKnowledge.js'
 import { CONTACT_EMAIL, REFERRALS_PATH, CREATOR_SHOWCASE_PATH, ABOUT_PATH, CONTACT_PATH, PRIVACY_PATH, TERMS_PATH, LEGAL_NOTICE_PATH, TRUST_PAGES_PUBLISHED, COMPANY_LINKEDIN_URL, INSTAGRAM_URL } from '../config.js'
@@ -11,6 +12,10 @@ export default function Footer() {
   const { locale, basePath } = parsePath(typeof window !== 'undefined' ? window.location.pathname : '/')
   const tr = (t) => translate(locale, t)
   const h = (p) => localHref(p, locale)
+  // A link to a page that exists only in English says so (French: « (en anglais) ») and declares the language of its target.
+  const note = editorial(locale)?.fallbackNote
+  const fb = (p) => Boolean(note) && isFallbackPath(p, locale)
+  const L = (p, label, extra = '') => <a className="hover:text-ink transition-colors" href={h(p)} {...(fb(p) ? { hrefLang: 'en' } : {})}>{tr(label)}{fb(p) ? ` (${note})` : ''}{extra}</a>
   const en = locale === 'en'
   const onHome = basePath === '/'
   const homePrefix = onHome ? '' : localizedPath(locale, '/')
@@ -38,19 +43,19 @@ export default function Footer() {
             </p>
             <ul className="mt-4 space-y-2.5 text-sm text-ink-muted">
               <li><a className="hover:text-ink transition-colors" href={`${homePrefix}#services`}>{tr('Services')}</a></li>
-              <li><a className="hover:text-ink transition-colors" href={h('/ugc-video-agency')}>{tr('UGC Video Agency')}</a></li>
-              <li><a className="hover:text-ink transition-colors" href={h('/spokesperson-video-production')}>{tr('Spokesperson Videos')}</a></li>
-              <li><a className="hover:text-ink transition-colors" href={h('/social-media-video-production')}>{tr(SERVICE_LABELS.organic)}</a></li>
-              <li><a className="hover:text-ink transition-colors" href={h('/saas-video-production')}>{tr('SaaS Video Production')}</a></li>
+              <li>{L('/ugc-video-agency', 'UGC Video Agency')}</li>
+              <li>{L('/spokesperson-video-production', 'Spokesperson Videos')}</li>
+              <li>{L('/social-media-video-production', SERVICE_LABELS.organic)}</li>
+              <li>{L('/saas-video-production', 'SaaS Video Production')}</li>
               <li><a className="hover:text-ink transition-colors" href={h(CREATOR_SHOWCASE_PATH)}>{tr('Creator Showcase')}</a></li>
               {en && <li><a className="hover:text-ink transition-colors" href="/case-studies">Case Studies</a></li>}
               <li><a className="hover:text-ink transition-colors" href={h('/pricing')}>{tr('Pricing')}</a></li>
-              {TRUST_PAGES_PUBLISHED && <li><a className="hover:text-ink transition-colors" href={h(ABOUT_PATH)}>{tr('About')}</a></li>}
+              {TRUST_PAGES_PUBLISHED && <li>{L(ABOUT_PATH, 'About')}</li>}
               {en && <li><a className="hover:text-ink transition-colors" href="/blog">Blog</a></li>}
               <li><a className="hover:text-ink transition-colors" href={`${homePrefix}#how-it-works`}>{tr('How It Works')}</a></li>
               <li><a className="hover:text-ink transition-colors" href={`${homePrefix}#clients`}>{tr('Clients')}</a></li>
               {en && <li><a className="hover:text-ink transition-colors" href={REFERRALS_PATH}>Referral Program</a></li>}
-              <li><a className="hover:text-ink transition-colors" href={TRUST_PAGES_PUBLISHED ? h(CONTACT_PATH) : `${homePrefix}#contact`}>{tr('Contact')}</a></li>
+              <li>{TRUST_PAGES_PUBLISHED ? L(CONTACT_PATH, 'Contact') : <a className="hover:text-ink transition-colors" href={`${homePrefix}#contact`}>{tr('Contact')}</a>}</li>
             </ul>
           </div>
 

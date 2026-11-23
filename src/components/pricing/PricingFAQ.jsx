@@ -4,7 +4,7 @@ import { SectionHeader } from './shared.jsx'
 import { tr } from '../../i18n/tr.js'
 import { currentLocale } from '../../i18n/locale.js'
 import { localizeFaq } from '../../i18n/content.js'
-import { ES_FAQ_TITLES } from '../../i18n/es/labels.js'
+import { editorial } from '../../i18n/editorial.js'
 
 /* Categorized pricing FAQ. EVERY question and answer is always in the DOM (and therefore in the prerendered HTML);
    the category selector only decides which group is visible (the others carry `hidden`). Accordion answers also stay
@@ -92,7 +92,7 @@ export default function PricingFAQ() {
         <SectionHeader
           id="pricing-faq-heading"
           eyebrow="FAQ"
-          title={currentLocale() === 'es' ? <>{ES_FAQ_TITLES.pricing[0]}{' '}<span className="text-lime">{ES_FAQ_TITLES.pricing[1]}</span></> : <>{tr('Pricing questions,')}{' '}<span className="text-lime">{tr('answered.')}</span></>}
+          title={editorial()?.faqTitles.pricing ? <>{editorial().faqTitles.pricing[0]}{' '}<span className="text-lime">{editorial().faqTitles.pricing[1]}</span></> : <>{tr('Pricing questions,')}{' '}<span className="text-lime">{tr('answered.')}</span></>}
         />
 
         <div className="mb-6 flex justify-center">

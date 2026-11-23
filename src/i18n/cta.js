@@ -15,7 +15,7 @@ import { hrefFor } from './tr.js'
 
 export const LOCALIZED_FLOWS = {
   es: { roadmap: true, riskFree: true, hooks: false, referrals: false },
-  fr: { roadmap: false, riskFree: false, hooks: false, referrals: false },
+  fr: { roadmap: true, riskFree: true, hooks: false, referrals: false },
   ar: { roadmap: false, riskFree: false, hooks: false, referrals: false },
 }
 

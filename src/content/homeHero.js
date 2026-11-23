@@ -79,3 +79,12 @@ export const HOME_HERO_ES = [
     approval: { ...approval, approvedOn: '2026-11-22' },
   },
 ]
+
+/* The French homepage hero: the same three French-spoken videos as the first phones of the French UGC page (src/content/portfolio.js, fr-ugc-hero-1..3; owner folder CREATORS/French, uploaded 2026-11-23).
+   Centre = fr-ugc-hero-1. They are French creators' own examples, not CONVRT productions; the page says so under the stage (CREATOR_EXAMPLES_NOTE). English and Spanish keep their own heroes. */
+const frApproval = { ...approval, approvedOn: '2026-11-23' }
+export const HOME_HERO_FR = [
+  { id: 'home-hero-fr-main', creatorId: 'fr-c01', industry: 'unclassified', languages: ['fr'], caption: 'Complément alimentaire : démonstration du produit face caméra.', poster: '/portfolio/fr-ugc-hero-1.webp', source: { cloudflareId: 'c1dd083d5550608a139f656670bd77a5' }, approval: frApproval },
+  { id: 'home-hero-fr-left', creatorId: 'fr-c02', industry: 'unclassified', languages: ['fr'], caption: 'Application pour voyager : un créateur raconte son expérience.', poster: '/portfolio/fr-ugc-hero-2.webp', source: { cloudflareId: '0346ed0881533220ba77bc4b3d4c26f9' }, approval: frApproval },
+  { id: 'home-hero-fr-right', creatorId: 'fr-c01', industry: 'unclassified', languages: ['fr'], caption: 'Application de gestion de patrimoine : démonstration à l’écran, face caméra.', poster: '/portfolio/fr-ugc-hero-3.webp', source: { cloudflareId: '5b1058e9c68ab7b05bd24858ceaadb9c' }, approval: frApproval },
+]

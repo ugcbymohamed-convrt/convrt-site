@@ -283,7 +283,7 @@ test('public claims register: every claim has a source and a status; the figures
 
 // ── links ────────────────────────────────────────────────────────────────────────────────
 test('every internal link on every prerendered page resolves to a real page, section or file', () => {
-  const known = new Set([...KNOWN_PATHS, '/blog', '/es', ...allLocalizedPaths(['es'])])
+  const known = new Set([...KNOWN_PATHS, '/blog', '/es', '/fr', ...allLocalizedPaths(['es', 'fr'])])
   const bad = []
   const walk = (d) => fs.readdirSync(d, { withFileTypes: true }).flatMap((e) => (e.isDirectory() ? walk(path.join(d, e.name)) : [path.join(d, e.name)]))
   const files = walk(dist).filter((f) => f.endsWith('index.html'))

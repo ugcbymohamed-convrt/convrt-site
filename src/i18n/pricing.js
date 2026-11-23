@@ -14,6 +14,7 @@
 import { SPRINT, SPRINT_PLUS, ORGANIC, RAW_FOOTAGE } from '../seo/businessKnowledge.js'
 import { DEFAULT_LOCALE } from './locales.js'
 import { ES_PRICING } from './es/pricing.js'
+import { FR_PRICING } from './fr/pricing.js'
 
 /* THE LIST OF PRICES: every amount in the business data that is shown to a visitor. `usd` is the business-data object itself (its identity is the lookup key). */
 const ext = (id, pkg, name) => pkg.usageExtensions.map((e) => ({ key: `${id}.ext${e.months}`, label: `${name}: usage-rights extension, ${e.months} months (whole creative batch)`, usd: e.price }))
@@ -33,7 +34,7 @@ const KEY_OF = new Map(PRICE_ITEMS.map((i) => [i.usd, i.key]))
 const ITEM = Object.fromEntries(PRICE_ITEMS.map((i) => [i.key, i]))
 
 /* One entry per language that has its own pricing. English is not listed: it uses the business data directly. */
-export const PRICING = { es: ES_PRICING }
+export const PRICING = { es: ES_PRICING, fr: FR_PRICING }
 export const pricingConfig = (locale) => PRICING[locale] ?? null
 export const hasOwnPricing = (locale) => locale !== DEFAULT_LOCALE
 export const isPricingApproved = (locale, config = pricingConfig(locale)) => locale === DEFAULT_LOCALE || (config?.status === 'approved' && pricingProblems(config).length === 0)

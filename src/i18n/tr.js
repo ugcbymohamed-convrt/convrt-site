@@ -16,11 +16,15 @@ import { DICTIONARIES } from './dictionaries.js'
 import { localizedPath } from './paths.js'
 import { hasTranslation } from './registry.js'
 import { hasPriceTokens, resolvePriceTokens } from './pricing.js'
+import { frTypography } from './fr/typography.js'
 
 export function translate(locale, text) {
   if (locale === DEFAULT_LOCALE) return text
   const hit = DICTIONARIES[locale]?.[text]
-  if (hit !== undefined) return hasPriceTokens(hit) ? resolvePriceTokens(locale, hit) : hit
+  if (hit !== undefined) {
+    const out = hasPriceTokens(hit) ? resolvePriceTokens(locale, hit) : hit
+    return locale === 'fr' ? frTypography(out) : out
+  }
   // Record the miss: the build (vite-plugin-static-routes.js) refuses to write a translated page that rendered any untranslated string.
   ;(globalThis.__i18nMisses ||= new Set()).add(`${locale}: ${text}`)
   if (typeof window !== 'undefined' && window.location?.hostname === 'localhost') console.warn(`[i18n] missing ${locale} translation: ${text}`)
@@ -44,6 +48,8 @@ export function hrefFor(href, locale = currentLocale()) {
   const [path, ...rest] = href.split('#')
   return `${localHref(path, locale)}${rest.length ? `#${rest.join('#')}` : ''}`
 }
+/* True when a link from a page in `locale` to `basePath` lands on the ENGLISH page because that page has no translation (src/i18n/registry.js). Used to say so on the link. */
+export const isFallbackPath = (basePath, locale = currentLocale()) => locale !== DEFAULT_LOCALE && !hasTranslation(locale, basePath)
 export const useHref = () => {
   const locale = currentLocale()
   return (basePath) => localHref(basePath, locale)

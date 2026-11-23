@@ -5,7 +5,7 @@ import { useAutoplayAllowed } from './creatorVideo.jsx'
 import { MiniPhone, ArrowDown, ArrowRight, delay } from './illustrations.jsx'
 import { tr } from '../../i18n/tr.js'
 import { currentLocale } from '../../i18n/locale.js'
-import { ES_SECTION_INTROS } from '../../i18n/es/labels.js'
+import { editorial } from '../../i18n/editorial.js'
 
 /* The creative-testing illustration: ONE interaction, three steps, one short sentence each. Every number comes from the package data
    (SPRINT / SPRINT_PLUS in src/seo/businessKnowledge.js): today 5 concepts x 3 versions = 15 finished ad versions.
@@ -180,7 +180,7 @@ export default function TestingDiagram() {
       <div className="mx-auto max-w-2xl text-center">
         <p className="text-xs font-semibold uppercase tracking-[0.16em] text-lime">{tr('Structured creative testing')}</p>
         <h3 className="mt-2 font-display text-xl font-semibold leading-snug tracking-snug text-ink md:text-[1.7rem]">{tr(`${Cap(word(SPRINT.variationsPerConcept))} versions of every concept. Then you learn.`)}</h3>
-        {currentLocale() === 'es' && <p className="mx-auto mt-3 max-w-xl text-[15px] leading-relaxed text-ink-muted">{ES_SECTION_INTROS['ugc-testing']}</p>}
+        {editorial()?.sectionIntros?.['ugc-testing'] && <p className="mx-auto mt-3 max-w-xl text-[15px] leading-relaxed text-ink-muted">{editorial().sectionIntros['ugc-testing']}</p>}
       </div>
 
       {/* the stage: one thing on screen at a time */}

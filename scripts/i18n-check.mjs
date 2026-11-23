@@ -24,9 +24,15 @@ export function literalKeys() {
   return keys
 }
 
+/* Pages a language does not have are not its business: French has no Spokesperson, SaaS or Organic Social page (docs/multilingual-french-release.md), so the strings that only those pages'
+   components use are not required in the French dictionary. A string a French page ALSO uses is still required (it is found through the French files, or by the build's render check). */
+const SCOPE_EXCLUDED = {
+  fr: [/(^|\/)(Spokesperson|Saas|OrganicSocial)VideoPage\.jsx$/, /components\/(spokesperson|saas|organic)\//, /content\/(spokespersonPage|saasPage|organicSocialPage)\.js$/],
+}
 export function missingFor(locale) {
   const dict = DICTIONARIES[locale] ?? {}
-  return [...literalKeys()].filter(([k]) => !(k in dict)).map(([k, f]) => ({ key: k, file: path.relative(ROOT, f) }))
+  const excluded = SCOPE_EXCLUDED[locale] ?? []
+  return [...literalKeys()].filter(([k, f]) => !(k in dict) && !excluded.some((re) => re.test(path.relative(ROOT, f)))).map(([k, f]) => ({ key: k, file: path.relative(ROOT, f) }))
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {

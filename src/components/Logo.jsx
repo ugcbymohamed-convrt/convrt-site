@@ -1,4 +1,5 @@
 import { parsePath, localizedPath } from '../i18n/paths.js'
+import { editorial } from '../i18n/editorial.js'
 
 export default function Logo({ className = '', size = 'h-12 md:h-16' }) {
   const { locale, basePath } = parsePath(typeof window !== 'undefined' ? window.location.pathname : '/')
@@ -7,7 +8,7 @@ export default function Logo({ className = '', size = 'h-12 md:h-16' }) {
     <a
       href={onHome ? '#top' : localizedPath(locale, '/')}
       className={`inline-flex items-center text-ink hover:text-white transition-colors ${className}`}
-      aria-label={locale === 'en' ? 'CONVRT — home' : 'CONVRT — inicio'}
+      aria-label={editorial(locale)?.homeLabel ?? 'CONVRT — home'}
     >
       <svg
         viewBox="0 0 1171.5 459.27"
