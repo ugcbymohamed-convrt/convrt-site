@@ -14,22 +14,17 @@ export default function Footer() {
   const en = locale === 'en'
   const onHome = basePath === '/'
   const homePrefix = onHome ? '' : localizedPath(locale, '/')
-  /* The Studio menu, in this order (the same links as before; some exist only in English or only once the trust pages are published). It is shown in two balanced halves. */
+  /* The Studio menu mirrors the top menu (owner, Nov 2026): the same links in the same order, and nothing else. The individual service pages are linked from the Services menu in the top bar on every page; About
+     moved to the bottom row beside the legal links. English: Services, Creator Showcase, Case Studies, Pricing, Blog, Contact, Refer & Earn. Other languages list only what their own top menu lists. */
   const STUDIO_LINKS = [
     { key: 'services', href: `${homePrefix}#services`, label: tr('Services') },
-    { key: 'ugc', href: h('/ugc-video-agency'), label: tr('UGC Video Agency') },
-    { key: 'spokesperson', href: h('/spokesperson-video-production'), label: tr('Spokesperson Videos') },
-    { key: 'organic', href: h('/social-media-video-production'), label: tr(SERVICE_LABELS.organic) },
-    { key: 'saas', href: h('/saas-video-production'), label: tr('SaaS Video Production') },
     { key: 'showcase', href: h(CREATOR_SHOWCASE_PATH), label: tr('Creator Showcase') },
     en && { key: 'case-studies', href: '/case-studies', label: 'Case Studies' },
+    !en && { key: 'how', href: `${homePrefix}#how-it-works`, label: tr('How It Works') },
     { key: 'pricing', href: h('/pricing'), label: tr('Pricing') },
-    TRUST_PAGES_PUBLISHED && { key: 'about', href: h(ABOUT_PATH), label: tr('About') },
     en && { key: 'blog', href: '/blog', label: 'Blog' },
-    { key: 'how', href: `${homePrefix}#how-it-works`, label: tr('How It Works') },
-    { key: 'clients', href: `${homePrefix}#clients`, label: tr('Clients') },
-    en && { key: 'referrals', href: REFERRALS_PATH, label: 'Referral Program' },
     { key: 'contact', href: TRUST_PAGES_PUBLISHED ? h(CONTACT_PATH) : `${homePrefix}#contact`, label: tr('Contact') },
+    en && { key: 'referrals', href: REFERRALS_PATH, label: 'Refer & Earn' },
   ].filter(Boolean)
   const half = Math.ceil(STUDIO_LINKS.length / 2)
   return (
@@ -96,6 +91,7 @@ export default function Footer() {
           <p className="flex flex-wrap items-center gap-x-4 gap-y-1">
             {/* The legal documents exist only in English (approved text). From other languages the links say so and are marked lang="en"; a reviewed translation is
                 prepared in docs/multilingual-legal-translation-review.md and is NOT published. */}
+            {TRUST_PAGES_PUBLISHED && <a className="underline-offset-4 transition-colors hover:text-ink hover:underline" href={h(ABOUT_PATH)}>{tr('About')}</a>}
             {TRUST_PAGES_PUBLISHED && <a className="underline-offset-4 transition-colors hover:text-ink hover:underline" href={PRIVACY_PATH} {...(en ? {} : { lang: 'en' })}>{en ? 'Privacy Policy' : tr('Privacy Policy (in English)')}</a>}
             {TRUST_PAGES_PUBLISHED && <a className="underline-offset-4 transition-colors hover:text-ink hover:underline" href={TERMS_PATH} {...(en ? {} : { lang: 'en' })}>{en ? 'Terms' : tr('Terms (in English)')}</a>}
             {TRUST_PAGES_PUBLISHED && <a className="underline-offset-4 transition-colors hover:text-ink hover:underline" href={LEGAL_NOTICE_PATH} {...(en ? {} : { lang: 'en' })}>{en ? 'Legal Notice' : tr('Legal Notice (in English)')}</a>}

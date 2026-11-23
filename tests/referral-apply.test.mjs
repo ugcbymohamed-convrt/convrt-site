@@ -468,7 +468,7 @@ test('the production bundle, when built, contains no secret names', { skip: !exi
 test('the endpoint is registered in the Vite dev middleware and the page route + footer link exist', () => {
   assert.match(readFileSync(join(ROOT, 'vite.config.js'), 'utf8'), /'referral-apply'/)
   assert.match(readFileSync(join(ROOT, 'src/App.jsx'), 'utf8'), /\[REFERRALS_PATH\]: ReferralsPage/)
-  assert.match(readFileSync(join(ROOT, 'src/components/Footer.jsx'), 'utf8'), /Referral Program/)
+  assert.match(readFileSync(join(ROOT, 'src/components/Footer.jsx'), 'utf8'), /Refer & Earn/)
 })
 
 
