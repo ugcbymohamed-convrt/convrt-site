@@ -158,11 +158,11 @@ test('rotary stage logic: shortest direction, ease-in-out, 550-750 ms, and a cli
   const apply = src.slice(src.indexOf('const apply = useCallback'), src.indexOf('const select = useCallback'))
   assert.ok(/style\.transform/.test(apply) && !/style\.(width|height|top|left|margin)/.test(apply), 'only transform, z-index and opacity change per frame (no layout)')
   // playback: the stream is attached only after a press on the centre video, rotating away pauses, side videos cannot be played
-  assert.ok(/if \(!armed\) return undefined/.test(src) && /useEffect\(\(\) => \{ if \(!active\) ref\.current\?\.pause\?\.\(\) \}, \[active\]\)/.test(src))
+  assert.ok(/if \(!armed\) return undefined/.test(src) && /useEffect\(\(\) => \{ if \(!active\) \{ ref\.current\?\.pause\?\.\(\); userPaused\.current = true \} \}, \[active\]\)/.test(src))
   assert.ok(src.includes("import { HeroPlayerControls } from '../ugc/CreatorVideoStage.jsx'") && /\{active && !moving && \(\s*<HeroPlayerControls/.test(src), 'the active video carries the hero player UI')
   assert.ok(/\{!active && \(\s*<button[\s\S]{0,200}onClick=\{onSelect\}/.test(src) && !/\bcontrols=/.test(src), 'side videos only select; no native controls, no second control design')
   assert.ok(/IntersectionObserver/.test(src) && /v\.pause\(\)/.test(src), 'paused when out of view')
-  assert.ok(!/autoPlay|autoplay/.test(src))
+  assert.ok(!/\bautoPlay\b=|<video[^>]*\bautoplay\b/i.test(src), 'no autoplay attribute on any video: starting by itself is explicit logic (see the play-when-reached test)')
 })
 
 test('industry showcase data: Adscale is the verified SaaS client (no invented case study or result); every industry has exactly its three client videos', () => {
@@ -233,6 +233,27 @@ test('interaction: the control bar shows on hover, focus or once started (never 
   assert.match(s, /class="absolute inset-x-3 bottom-3\.5 z-20 md:inset-x-4 md:bottom-5 pointer-events-none opacity-0 /, 'the featured card\'s bar is hidden until hover, focus or start')
   const home = h.replace(s, '')
   assert.ok(!/pointer-events-none opacity-0 transition-opacity duration-200 motion-reduce:transition-none group-hover/.test(home), 'the homepage hero bar is untouched')
+})
+
+test('play when reached: the front Adscale video starts muted when the stage is scrolled into view, only that one, only once, never against the visitor; the three posters are the owner-supplied frames', () => {
+  const stage = read('src/components/home/RotaryStage.jsx')
+  assert.ok(/autoMode=\{autoPlayOnView && autoAllowed && i === 0\}/.test(stage), 'only the first (front) video, only when asked, never for reduced-motion / data-saver visitors')
+  assert.ok(/threshold: 0\.35/.test(stage) && /setInView\(e\.isIntersecting\)/.test(stage), 'triggered by the stage reaching the screen')
+  assert.ok(/inView && autoMode && !armed && !autoStarted\.current/.test(stage) && /autoStarted\.current = true\s+setMuted\(true\)\s+setArmed\(true\)/.test(stage), 'started once, muted')
+  assert.ok(/v\.muted = muted/.test(stage.slice(stage.indexOf('useEffect(() => {\n    if (!armed) return undefined'))), 'the muted state is applied before play()')
+  assert.ok(/userPaused\.current = true/.test(stage) && /!userPaused\.current && v\.paused/.test(stage), 'a visitor pause (or rotating away) is never overridden')
+  assert.ok(read('src/components/home/IndustryShowcase.jsx').includes('autoPlayOnView={!visitorChose}'), 'once the visitor picks another client nothing starts by itself')
+  // server HTML: still posters only (nothing downloads or plays before the visitor gets there)
+  const s = sectionOf(bodyOf(page('/')), 'showcase')
+  assert.ok(!/<video/.test(s))
+  // the exact frames the owner supplied
+  assert.deepEqual(selectShowcase('adscale').map((v) => v.poster), ['/showcase/adscale-jail-poster.webp', '/showcase/adscale-coffee-poster.webp', '/showcase/adscale-women-poster.webp'])
+  for (const f of ['jail', 'coffee', 'women']) {
+    const buf = fs.readFileSync(path.join(ROOT, `public/showcase/adscale-${f}-poster.webp`))
+    assert.equal(buf.toString('ascii', 0, 4), 'RIFF'); assert.equal(buf.toString('ascii', 8, 12), 'WEBP')
+  }
+  for (const f of ['jail', 'coffee', 'women']) assert.ok(s.includes(`/showcase/adscale-${f}-poster.webp`), f)
+  assert.ok(s.indexOf('adscale-jail-poster.webp') < s.indexOf('adscale-coffee-poster.webp') && s.indexOf('adscale-jail-poster.webp') < s.indexOf('adscale-women-poster.webp'), 'the jail video is the front (first) one')
 })
 
 // ── 4. page order ────────────────────────────────────────────────────────────────────────

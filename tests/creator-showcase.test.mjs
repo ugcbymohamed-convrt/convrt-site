@@ -177,10 +177,10 @@ test('data: the homepage client panels still show exactly the same videos, in th
   assert.deepEqual(selectShowcase('adscale').map(key), ['8d4dbbeabac272bddb23068c91037af8', '08abef50c734085f25f345cdde4b1e33', '/showcase/adscale-creator.mp4'])
   assert.deepEqual(selectShowcase('elyon').map(key), ['fa02007b36fae2b3bb68c97cdd00e9fc', '0905b814e2ba3950197b5bfe1cefae38', '9e6cb8438c9b0c1ab8b55953718eddde'])
   assert.deepEqual(selectShowcase('graspo').map(key), ['15dd5505109f6821ccdcb13fc3cdc1fd', '3616606e3ca6d1a85c8a57d7cc2f656f', 'c1379ace38f2fa19ef2a45de1bb5d4b1'])
-  assert.deepEqual(selectShowcase('adscale').map((v) => v.poster), [undefined, '/showcase/adscale-agentic-poster.webp', '/showcase/adscale-creator-poster.webp'])
+  // the owner supplied the exact poster frames (jail 0 s, coffee scene 47.5 s, "Meta / Google ... ACTUALLY" 4.5 s of the self-hosted clip)
+  assert.deepEqual(selectShowcase('adscale').map((v) => v.poster), ['/showcase/adscale-jail-poster.webp', '/showcase/adscale-coffee-poster.webp', '/showcase/adscale-women-poster.webp'])
   const home = rootOf(page('/'))
-  for (const id of ['8d4dbbeabac272bddb23068c91037af8']) assert.ok(home.includes(`videodelivery.net/${id}/thumbnails`), 'homepage poster for the first Adscale video')
-  assert.ok(home.includes('/showcase/adscale-agentic-poster.webp') && home.includes('/showcase/adscale-creator-poster.webp'))
+    assert.ok(home.includes('/showcase/adscale-jail-poster.webp') && home.includes('/showcase/adscale-coffee-poster.webp') && home.includes('/showcase/adscale-women-poster.webp'))
 })
 
 test('data: validation rejects bad entries; language is optional until confirmed', () => {
@@ -436,7 +436,7 @@ test('regression: the nine homepage client videos stay homepage-only: not in /cr
   // Batch 2 added two descriptive links to the published case studies (their hrefs contain the slugs); the anchors name no client and no client video is shown.
   assert.ok(!/adscale|elyon|graspo/i.test(our.replace(/<script[\s\S]*?<\/script>/g, '').replace(/href="\/case-studies\/(graspo|elyon)"/g, '')), 'no client name on /creator-showcase')
   const home = rootOf(page('/'))
-  assert.ok(home.includes('id="showcase"') && home.includes('/showcase/adscale-creator-poster.webp'), 'the homepage client showcase is intact')
+  assert.ok(home.includes('id="showcase"') && home.includes('/showcase/adscale-women-poster.webp'), 'the homepage client showcase is intact')
 })
 
 test('regression: the 11 original portfolio entries are intact (ids, media, permissions); only the five that sit in the E-commerce folder were classified', () => {

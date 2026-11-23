@@ -18,7 +18,7 @@ test('every chosen frame is a valid second for a 32-character Stream id; no dupl
   assert.ok(ids.length >= 60, `${ids.length} videos have a chosen frame`)
   for (const [id, t] of Object.entries(POSTER_FRAMES)) {
     assert.match(id, /^[0-9a-f]{32}$/, id)
-    assert.ok(Number.isFinite(t) && t > 0 && t < 600, `${id}: ${t}`)
+    assert.ok(Number.isFinite(t) && t >= 0 && t < 600, `${id}: ${t}`) // 0 = the first frame (a deliberate choice: the owner's jail frame)
   }
 })
 

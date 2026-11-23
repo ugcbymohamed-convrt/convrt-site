@@ -12,7 +12,8 @@ import StudioEnvironment from './StudioEnvironment.jsx'
            4 the studio scene: three true 9:16 videos on a lit podium (the featured one 320 px wide in a lime halo, the sides about 250 px, tucked slightly behind it)  5 the client selector, overlapping the front of the podium  6 the two main CTAs.
    SCENE   is drawn on a fixed 1280 x 740 design grid (StudioEnvironment + RotaryStage) and scales as a whole; the videos stay 185-310 px wide from a phone to a desktop (below 640 px the scene is shown larger than the
            screen and centred on the featured video, the side videos peeking in at the edges; swipe, tap or the arrow keys bring one forward).
-   THE VIDEOS are the active client's three `showcase` portfolio entries (a click, swipe or arrow key on a side video orbits it into the centre; nothing plays by itself).
+   THE VIDEOS are the active client's three `showcase` portfolio entries (a click, swipe or arrow key on a side video orbits it into the centre). The FRONT video of the first client (Adscale, the "ROAS jail" video) plays by itself, muted, as soon
+               as the visitor scrolls the stage into view (RotaryStage, `autoPlayOnView`); nothing else ever starts by itself.
    CRAWLABLE   the destinations of the three clients (Adscale -> the SaaS page, Elyon Dubai and Graspo -> their case studies) stay in the HTML as a visually hidden list that appears when a keyboard user focuses it;
                the descriptions in src/content/homeShowcase.js are kept for the other pages and tests, not drawn here.
    Switching client fades the stage out and in (190 ms, immediate for prefers-reduced-motion) and re-mounts it on the new client's first video, so nothing of the previous client keeps playing.
@@ -56,6 +57,7 @@ export default function IndustryShowcase() {
   const [shownId, setShownId] = useState(industries[0]?.id) // the client whose videos are on the stage
   const [pickedId, setPickedId] = useState(industries[0]?.id) // the client the visitor just chose (the stage fades to it)
   const [fading, setFading] = useState(false)
+  const [visitorChose, setVisitorChose] = useState(false) // the visitor picked a client themselves: nothing starts by itself any more
   const timer = useRef(0)
   const tabRefs = useRef({})
   useEffect(() => () => window.clearTimeout(timer.current), [])
@@ -64,6 +66,7 @@ export default function IndustryShowcase() {
 
   const select = (id, focus = false) => {
     setPickedId(id)
+    if (id !== shownId) setVisitorChose(true)
     if (focus) tabRefs.current[id]?.focus()
     window.clearTimeout(timer.current)
     if (id === shownId) { setFading(false); return }
@@ -100,7 +103,7 @@ export default function IndustryShowcase() {
           <div className={`relative left-1/2 aspect-[1280/740] w-[230vw] -translate-x-1/2 transition-opacity duration-[190ms] motion-reduce:transition-none sm:w-[max(100%,900px)] ${fading ? 'opacity-0' : 'opacity-100'}`}>
             <StudioEnvironment />
             <div id="showcase-panel" role="tabpanel" aria-labelledby={`showcase-tab-${pickedId}`} className="absolute inset-0">
-              <RotaryStage key={shown.id} items={shown.items} label={`${shown.client} videos. Choose a side video to bring it to the front.`} />
+              <RotaryStage key={shown.id} autoPlayOnView={!visitorChose} items={shown.items} label={`${shown.client} videos. Choose a side video to bring it to the front.`} />
             </div>
           </div>
         </div>

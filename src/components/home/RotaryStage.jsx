@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { attachHls } from '../../lib/hls.js'
 import { posterUrl, hlsUrl, captionOf } from '../../content/portfolio.js'
 import { HeroPlayerControls } from '../ugc/CreatorVideoStage.jsx'
+import { useAutoplayAllowed } from '../ugc/creatorVideo.jsx'
 import { pose, poseStyle, shortestDelta, easeInOutCubic, ROTATION_MS, round4 as f } from '../../lib/rotary.js'
 
 /* THE ROTARY VIDEO STAGE (English homepage, client work).
@@ -24,17 +25,20 @@ import { pose, poseStyle, shortestDelta, easeInOutCubic, ROTATION_MS, round4 as 
    opacity only, so it stays reachable by keyboard (focusing it shows it); on a touchscreen the big play button starts the video and the bar is then permanent. */
 const BAR_UNTIL_STARTED = 'pointer-events-none opacity-0 transition-opacity duration-200 motion-reduce:transition-none group-hover:pointer-events-auto group-hover:opacity-100 group-focus-within:pointer-events-auto group-focus-within:opacity-100'
 
-function Phone({ item, i, n, active, moving, onSelect, setEl, setShade }) {
+function Phone({ item, i, n, active, moving, inView, autoMode, onSelect, setEl, setShade }) {
   const ref = useRef(null)
   const [armed, setArmed] = useState(false) // the visitor pressed play once: the stream is attached from then on
   const [playing, setPlaying] = useState(false)
   const [muted, setMuted] = useState(false) // sound is on: the visitor asked for this video
   const [progress, setProgress] = useState(0)
+  const autoStarted = useRef(false) // the front video has already been started by reaching it
+  const userPaused = useRef(false) // the visitor paused it: never resume it for them
 
   useEffect(() => {
     if (!armed) return undefined
     const v = ref.current
     if (!v) return undefined
+    v.muted = muted // sound state first: an automatic start is always muted (browsers only allow muted autoplay)
     let hls = null
     if (item.source.cloudflareId) hls = attachHls(v, hlsUrl(item), { fastStart: true })
     else v.src = item.source.mp4
@@ -51,14 +55,31 @@ function Phone({ item, i, n, active, moving, onSelect, setEl, setShade }) {
   }, [armed, item])
 
   useEffect(() => { if (ref.current) ref.current.muted = muted }, [muted, armed])
-  useEffect(() => { if (!active) ref.current?.pause?.() }, [active])
+  useEffect(() => { if (!active) { ref.current?.pause?.(); userPaused.current = true } }, [active]) // rotating away pauses it and it never restarts by itself
+
+  /* PLAY WHEN REACHED. The first time the stage scrolls into view, the FRONT video starts by itself, muted (the hero's sound button is there to turn sound on). Only that one video, only once the
+     visitor reaches it (nothing loads before), never for prefers-reduced-motion / data-saver visitors, and never again after they pause it. It pauses when the stage leaves the screen and resumes when it comes
+     back (unless the visitor paused it). Rotating to another video never starts that one: a side video is only selected. */
+  useEffect(() => {
+    if (!active || moving) return
+    if (inView && autoMode && !armed && !autoStarted.current) {
+      autoStarted.current = true
+      setMuted(true)
+      setArmed(true)
+    } else if (armed) {
+      const v = ref.current
+      if (!v) return
+      if (!inView) v.pause()
+      else if (autoMode && autoStarted.current && !userPaused.current && v.paused) v.play().catch(() => {})
+    }
+  }, [inView, autoMode, active, moving, armed])
 
   const toggle = () => {
-    if (!armed) { setArmed(true); return }
+    if (!armed) { autoStarted.current = true; userPaused.current = false; setArmed(true); return }
     const v = ref.current
     if (!v) return
-    if (v.paused) v.play().catch(() => {})
-    else v.pause()
+    if (v.paused) { userPaused.current = false; v.play().catch(() => {}) }
+    else { userPaused.current = true; v.pause() }
   }
   const seek = (fraction) => {
     const v = ref.current
@@ -97,7 +118,7 @@ function Phone({ item, i, n, active, moving, onSelect, setEl, setShade }) {
   )
 }
 
-export default function RotaryStage({ items, label }) {
+export default function RotaryStage({ items, label, autoPlayOnView = false }) {
   const n = items.length
   const [active, setActive] = useState(0)
   const [moving, setMoving] = useState(false)
@@ -108,6 +129,8 @@ export default function RotaryStage({ items, label }) {
   const phoneEls = useRef([])
   const shadeEls = useRef([])
   const drag = useRef(null)
+  const [inView, setInView] = useState(false)
+  const autoAllowed = useAutoplayAllowed()
 
   const apply = useCallback((pos) => {
     for (let i = 0; i < n; i += 1) {
@@ -144,11 +167,11 @@ export default function RotaryStage({ items, label }) {
 
   useEffect(() => () => cancelAnimationFrame(raf.current), [])
 
-  /* pause every video when the stage scrolls out of view */
+  /* is the stage on screen? (drives play-when-reached and pauses every video when it leaves the screen) */
   useEffect(() => {
     const el = root.current
     if (!el || typeof IntersectionObserver === 'undefined') return undefined
-    const io = new IntersectionObserver(([e]) => { if (!e.isIntersecting) el.querySelectorAll('video').forEach((v) => v.pause()) }, { threshold: 0.05 })
+    const io = new IntersectionObserver(([e]) => { setInView(e.isIntersecting); if (!e.isIntersecting) el.querySelectorAll('video').forEach((v) => v.pause()) }, { threshold: 0.35 })
     io.observe(el)
     return () => io.disconnect()
   }, [])
@@ -198,6 +221,8 @@ export default function RotaryStage({ items, label }) {
             n={n}
             active={i === active}
             moving={moving}
+            inView={inView}
+            autoMode={autoPlayOnView && autoAllowed && i === 0}
             onSelect={() => select(i)}
             setEl={(el) => { phoneEls.current[i] = el }}
             setShade={(el) => { shadeEls.current[i] = el }}

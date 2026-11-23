@@ -67,8 +67,8 @@ export const POSTER_FRAMES = {
   'ff256a4643515d29b61c1f210c06476d': 9.9, // portfolio:ugc-gal-2
   '1fc1374cdfe428d10bfc40ad4eff9693': 1.7, // portfolio:ugc-hero-3
   '5fc046452d354eba0cff717239c4bee8': 1.5, // portfolio:creator-12
-  '8d4dbbeabac272bddb23068c91037af8': 69.4, // portfolio:showcase-adscale-1 (home panel adscale)
-  '08abef50c734085f25f345cdde4b1e33': 37.5, // portfolio:showcase-adscale-2 (home panel adscale)
+  '8d4dbbeabac272bddb23068c91037af8': 0, // portfolio:showcase-adscale-1 (home panel adscale); owner-supplied first frame ("How to get out of 2-3x ROAS Jail"), same-origin /showcase/adscale-jail-poster.webp
+  '08abef50c734085f25f345cdde4b1e33': 47.5, // portfolio:showcase-adscale-2 (home panel adscale); owner-supplied coffee-scene frame, same-origin /showcase/adscale-coffee-poster.webp
   'fa02007b36fae2b3bb68c97cdd00e9fc': 26.4, // portfolio:showcase-elyon-1 (home panel elyon); elyon: Creator-Led Ad
   '0905b814e2ba3950197b5bfe1cefae38': 10.6, // portfolio:showcase-elyon-2 (home panel elyon); elyon: Street Interview
   '9e6cb8438c9b0c1ab8b55953718eddde': 5.4, // portfolio:showcase-elyon-3 (home panel elyon); elyon: Performance Concept
