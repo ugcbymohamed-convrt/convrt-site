@@ -60,3 +60,14 @@ The three French pages have no three-phone hero stage, no showcase gallery, no p
 `scripts/i18n-check.mjs`: the French scope exclusions for these pages were removed, so their strings are required. Tests: `tests/french-services.test.mjs`.
 
 Copy a native reviewer should check: the three H1s and titles, « formules sur mesure » for custom packages, « cadrer » (scope), « présentateur » vs « porte-parole », « avec l’arabe comme langue principale » (Graspo, English: Arabic-first), « leads », the hero secondary buttons, and the editorial intros under the formats and content-system headings (French-only sentences, no new facts).
+
+
+## Revision 2 (Nov 2026): English design sync, hero, Mohamed, client story
+- **Merged**: Production `main` (English design review #1) into this branch. NOT merged: `footer-two-column-menu` (the English Services dropdown; unreleased). Its dropdown is shared Nav code that already localizes its links, so French gets it with the English release.
+- **Hero**: same structure as English; centre video = the French-dubbed CONVRT ad (Stream `06d0cf7f…`, `HOME_HERO_FR`), left = French female creator, right = French male creator (temporary). Offer line « 5 concepts publicitaires offerts », CTA « Recevoir 5 concepts gratuits », free video card live, hooks card « Bientôt disponible » (not a link). Comma is in the carousel and the Showcase only.
+- **Client stage** (`IndustryShowcase` / `RotaryStage` shared with English and Spanish): French = FIXD, two landscape frames (`pose2` in `src/lib/rotary.js`), single still plate, no selector. **To confirm with the owner**: FIXD is the intended client and « d'autres » is accurate (no order count or result is shown). Spanish = the three clients, Spanish text, English reviews kept verbatim (there were no Spanish review translations).
+- **Reviews**: `ClientReviews` for en/es/fr; French shows labelled translations (excerpt + full) with the verbatim English original under « Lire l'avis complet ».
+- **Creators**: Mohamed (fr-c03) 4 vertical videos in the Showcase, UGC gallery and the homepage carousel (`homeCreator: { fr }`); FIXD1/FIXD2 are client-stage only. Stream ids: `docs/video-thumbnails.md` + the private map.
+- **Roadmap**: shorter copy (H1 « 5 concepts publicitaires pour votre marque. Offerts. », CTA « Recevoir mes 5 concepts »); fields, validation and tracking untouched.
+- **Nav**: How It Works left out of the French menu (as in English); English-only pages never listed.
+- **Not done / for the owner**: native review of all new copy; FIXD confirmation; signed agreements for the founder's videos if required; Arabic is `prepared` (no routes) so it was not touched: the shared components are direction-agnostic but the rotary stage's swipe/orbit has not been mirrored for RTL.
