@@ -1,0 +1,260 @@
+// Run with: node --test tests/home-redesign.test.mjs
+// English website premium design review #1 (Nov 2026): the connected founder + industry-showcase block and its two closing CTAs, the homepage creator carousel (eight approved English videos),
+// the modernised client reviews (faithful excerpts, full originals kept, no invented ratings), the SaaS and Spokesperson hero video order, and that the Spanish homepage and the other pages are unchanged.
+// Builds the site once into a temp dir (like tests/prerender.test.mjs).
+import test, { before, after } from 'node:test'
+import assert from 'node:assert/strict'
+import fs from 'node:fs'
+import os from 'node:os'
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
+import { build } from 'vite'
+import { PATHS } from '../src/routes.js'
+import { CREATOR_SHOWCASE_PATH, OFFER_PATHS } from '../src/config.js'
+import { CONVRT_STATS, FOUNDER_EXPERIENCE } from '../src/lib/siteStats.js'
+import {
+  PORTFOLIO, selectHomeCreators, selectSaasHero, selectSaasGallery, selectSpokespersonHero, selectSpokespersonGallery, selectHero, selectGallery, selectShowcase,
+  portfolioProblems, isDisplayable, orderedBy, HOME_CREATORS_MAX, servesPage,
+} from '../src/content/portfolio.js'
+import { SAAS_VIDEO_ORDER } from '../src/content/saasPage.js'
+import { SPOKESPERSON_VIDEO_ORDER } from '../src/content/spokespersonPage.js'
+import { REVIEWS } from '../src/content/reviews.js'
+import { SHOWCASE_INDUSTRIES } from '../src/content/homeShowcase.js'
+
+const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), '..')
+const read = (p) => fs.readFileSync(path.join(ROOT, p), 'utf8')
+const decode = (s) => s.replace(/&#x27;|&#39;|&apos;/g, "'").replace(/&quot;/g, '"').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/<!-- -->/g, '')
+let tmp, dist
+const page = (route) => decode(fs.readFileSync(path.join(dist, route === '/' ? 'index.html' : path.join(route.replace(/^\//, ''), 'index.html')), 'utf8'))
+const bodyOf = (h) => h.slice(h.indexOf('<div id="root"'))
+const sectionOf = (h, id) => { const i = h.indexOf(`id="${id}"`); const from = h.lastIndexOf('<section', i); return h.slice(from, h.indexOf('</section>', i)) }
+const textOf = (h) => h.replace(/<(script|style)[\s\S]*?<\/\1>/g, ' ').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').replace(/\s+([,.;:!?])/g, '$1').trim()
+
+before(async () => {
+  tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'convrt-home-redesign-'))
+  dist = path.join(tmp, 'dist')
+  const pub = path.join(tmp, 'public')
+  fs.mkdirSync(pub)
+  fs.cpSync(path.join(ROOT, 'public', 'fonts'), path.join(pub, 'fonts'), { recursive: true })
+  await build({ root: ROOT, logLevel: 'silent', publicDir: pub, build: { outDir: dist, emptyOutDir: true } })
+})
+after(() => { if (tmp) fs.rmSync(tmp, { recursive: true, force: true }) })
+
+// ── 1. founder statement ─────────────────────────────────────────────────────────────────
+test('founder section: the approved two-line wording, the one-line founder disclosure, no buttons inside it, no divider before the showcase', () => {
+  const h = bodyOf(page('/'))
+  const clients = sectionOf(h, 'clients')
+  assert.ok(clients.includes(`Our founder has worked with <span class="text-lime">${CONVRT_STATS.clients} clients</span> across ecommerce, SaaS, apps and consumer markets.`))
+  assert.ok(textOf(clients).includes('Founder experience across CONVRT Studio and other creative production work.'))
+  assert.ok(!/Combined professional experience/.test(clients), 'the long caption is gone from the English homepage')
+  assert.ok(!/Become our next client|I'm a creator|<a /.test(clients), 'no CTA buttons or links inside the founder section')
+  // the 500+ figure stays attributed to the founder, never to CONVRT alone
+  assert.ok(/founder/i.test(clients) && !/500\+ clients (served|of CONVRT)/i.test(clients))
+  assert.ok(!/border-y/.test(clients.slice(0, clients.indexOf('>'))), 'no bottom rule under the founder section')
+  assert.ok(h.indexOf('id="showcase"') > h.indexOf('id="clients"'))
+  const between = h.slice(h.indexOf('</section>', h.indexOf('id="clients"')), h.indexOf('id="showcase"'))
+  assert.ok(!/height:\s*1px|linear-gradient\(to right, transparent 0%/.test(between), 'no SectionDivider between the founder statement and the showcase')
+  assert.ok(FOUNDER_EXPERIENCE.captionShort.length < FOUNDER_EXPERIENCE.caption.length)
+})
+
+// ── 2. industry showcase ─────────────────────────────────────────────────────────────────
+test('industry showcase: replaces the old intro and tabs; SaaS, E-commerce, Printing in order; every client text and the case-study links are in the HTML', () => {
+  const h = bodyOf(page('/'))
+  const s = sectionOf(h, 'showcase')
+  assert.ok(!/Work that speaks|for itself\.|Real brands, real budgets|CASE STUDIES|>Case Studies<\/span>/.test(h.replace(/<nav[\s\S]*?<\/nav>|<footer[\s\S]*?<\/footer>/g, '')), 'the old section introduction is gone')
+  assert.ok(!/href="#showcase"/.test(h))
+  const tabs = [...s.matchAll(/role="tab"[^>]*>([\s\S]*?)<\/button>/g)].map((m) => textOf(m[1]))
+  assert.deepEqual(tabs, ['01 SaaS', '02 E-commerce', '03 Printing'])
+  assert.match(s, /role="tablist"/)
+  assert.equal((s.match(/aria-selected="true"/g) || []).length, 1)
+  for (const c of SHOWCASE_INDUSTRIES) {
+    assert.ok(s.includes(c.headline.replace(/'/g, "'")) && s.includes(c.client), c.id)
+    assert.ok(s.includes(`href="${c.link.href}"`), `${c.id}: link ${c.link.href}`)
+  }
+  for (const href of ['/case-studies/graspo', '/case-studies/elyon']) assert.ok(s.includes(`href="${href}"`), href)
+  // only the first industry is rendered visible; the others are `hidden` (still in the HTML for crawlers)
+  assert.equal((s.match(/role="tabpanel"/g) || []).length, 3)
+  assert.equal((s.match(/role="tabpanel"[^>]*hidden/g) || []).length, 2)
+  // the three videos of the first industry are shown as posters, nothing plays by itself
+  assert.equal((s.match(/aria-label="Play video \d of 3 for Adscale"/g) || []).length, 3)
+  assert.ok(!/<video/.test(s) && !/autoplay/i.test(s))
+  assert.ok(/aria-label="Previous video"/.test(s) && /aria-label="Next video"/.test(s))
+})
+
+test('industry showcase data: Adscale is the verified SaaS client (no invented case study or result); every industry has exactly its three client videos', () => {
+  assert.deepEqual(SHOWCASE_INDUSTRIES.map((c) => [c.label, c.client, c.clientId]), [['SaaS', 'Adscale', 'adscale'], ['E-commerce', 'Elyon Dubai', 'elyon'], ['Printing', 'Graspo', 'graspo']])
+  const saas = SHOWCASE_INDUSTRIES[0]
+  assert.equal(saas.link.href, PATHS.saasVideoProduction, 'Adscale has no case-study page: the link goes to the SaaS service page')
+  assert.ok(!/\/case-studies\/adscale|adscale-case/.test(JSON.stringify(SHOWCASE_INDUSTRIES)))
+  assert.ok(!/\d/.test(saas.headline + saas.text), 'no figure is claimed for Adscale')
+  assert.equal(SHOWCASE_INDUSTRIES[1].link.href, '/case-studies/elyon'); assert.equal(SHOWCASE_INDUSTRIES[2].link.href, '/case-studies/graspo')
+  for (const c of SHOWCASE_INDUSTRIES) assert.ok(selectShowcase(c.clientId).length >= 3, c.id)
+  const src = read('src/components/home/IndustryShowcase.jsx')
+  assert.ok(!/cloudflareId|videodelivery/.test(src) && !/cloudflareId|videodelivery/.test(read('src/content/homeShowcase.js')), 'no video is copied into a component: they come from portfolio.js')
+})
+
+// ── 3. the two closing CTAs ──────────────────────────────────────────────────────────────
+test('CTAs: "Become our next client" and "I\'m a creator" close the showcase with the same destinations, larger than before', () => {
+  const h = bodyOf(page('/'))
+  const s = sectionOf(h, 'showcase')
+  assert.match(s, new RegExp(`<a href="${OFFER_PATHS.roadmap}"[^>]*cta-gradient[^>]*>[\\s\\S]*?Become our next client`))
+  assert.match(s, /<a href="https:\/\/forms\.gle\/Bg8ubU2tnmMj88m7A" target="_blank" rel="noopener noreferrer"[^>]*>[\s\S]*?I'm a creator/)
+  assert.ok(s.indexOf('Become our next client') > s.indexOf('aria-label="Next video"'), 'the buttons come after the whole showcase')
+  assert.equal((h.match(/Become our next client/g) || []).length, 1)
+  assert.equal((h.match(/I'm a creator/g) || []).length, 1)
+  assert.match(s, /min-h-\[58px\][^"]*px-9 py-4 text-base font-bold/, 'moderately larger than the old px-6 py-3 text-sm')
+})
+
+// ── 4. page order ────────────────────────────────────────────────────────────────────────
+test('homepage narrative: credibility → client work → services → process → creators → reviews → conversion', () => {
+  const h = bodyOf(page('/'))
+  const at = (id) => h.indexOf(`id="${id}"`)
+  const order = ['clients', 'showcase', 'services', 'how-it-works', 'home-creators', 'testimonials'].map(at)
+  assert.ok(order.every((i) => i > 0), JSON.stringify(order))
+  assert.deepEqual([...order].sort((a, b) => a - b), order)
+  assert.ok(h.indexOf('Ready to') > order.at(-1) || h.indexOf('id="faq"') > order.at(-1))
+})
+
+// ── 5. creator carousel ──────────────────────────────────────────────────────────────────
+test('creator carousel: eight approved, English-confirmed, distinct videos in the shared gallery; nothing is a placeholder; no stream starts on load', () => {
+  const v = selectHomeCreators()
+  assert.equal(v.length, HOME_CREATORS_MAX); assert.equal(HOME_CREATORS_MAX, 8)
+  assert.equal(new Set(v.map((x) => x.id)).size, 8)
+  assert.equal(new Set(v.map((x) => x.source.cloudflareId)).size, 8, 'no footage twice')
+  assert.equal(new Set(v.map((x) => x.creatorId)).size, 8, 'no creator twice (by recorded id)')
+  for (const x of v) {
+    assert.deepEqual(portfolioProblems(x), [], x.id)
+    assert.ok(isDisplayable(x) && x.approval.portfolioUse === true && x.approval.creatorConsent === true && x.approval.status === 'approved', x.id)
+    assert.ok((x.languages ?? []).includes('en'), `${x.id}: language confirmed English`)
+    assert.ok(!(x.onlyIn ?? []).includes('es') && x.source.cloudflareId, x.id)
+  }
+  assert.deepEqual(v.map((x) => x.homeCreator), [1, 2, 3, 4, 5, 6, 7, 8])
+  // the owner-flagged ones stay out: the on-hold health-slate video and the one with doubtful spoken language; a duplicate of the SaaS footage
+  for (const id of ['creator-05', 'ugc-gal-5', 'ugc-hero-1']) assert.ok(!v.some((x) => x.id === id), id)
+  const h = bodyOf(page('/'))
+  const s = sectionOf(h, 'home-creators')
+  assert.equal((s.match(/<li class="w-\[66%\]/g) || []).length, 8)
+  assert.match(textOf(s), /Real creators\. Real presence\. Ready for your brand\./)
+  assert.ok(textOf(s).includes('Explore the people and creative styles behind our videos.'))
+  assert.ok(textOf(s).includes('independent creators') && textOf(s).includes('not necessarily productions by CONVRT'), 'the standing note: independent creators, not CONVRT productions')
+  assert.ok(!/<video/.test(s), 'poster first: no video element or stream until a tap')
+  assert.match(s, new RegExp(`<a href="${CREATOR_SHOWCASE_PATH}"[^>]*>\\s*Explore All Creators`))
+  // all selected videos live in portfolio.js and stay valid for the Creator Showcase
+  for (const x of v) assert.ok(PORTFOLIO.includes(x))
+})
+
+test('creator carousel: the code is split off the homepage entry bundle and nothing new is autoplayed', () => {
+  assert.match(read('src/App.jsx'), /const HomeCreators = lazy\(\(\) => import\('\.\/components\/home\/HomeCreators\.jsx'\)\)/)
+  const src = read('src/components/home/IndustryShowcase.jsx') + read('src/components/home/HomeCreators.jsx') + read('src/components/home/ClientReviews.jsx')
+  assert.ok(!/\bautoPlay\b|autoplay|\.play\(\)/.test(src), 'no autoplay in the new homepage sections (the shared Player starts only after a tap)')
+})
+
+// ── 6. reviews ───────────────────────────────────────────────────────────────────────────
+test('reviews: three clients, faithful excerpts, complete originals preserved verbatim, no stars or invented credibility', () => {
+  const ORIGINAL = {
+    elyon: "Mohamed understood the concept really well and actually exceeded my expectations with the quality. The videos are high quality, delivered on time, and the communication throughout was excellent. I've already ordered again, looking forward to continuing this partnership.",
+    adscale: "Working with Mohamad was an absolute pleasure. He's professional, creative, and truly understands what makes content perform. The UGC videos he created were exactly what we needed to scale our ads. We've already come back for a second order and plan to continue working together long-term.",
+    talk360: "The videos are amazing again. Every time we work together the quality just keeps getting better. Fast delivery, great communication, and the content performs exactly the way we need it to. This is our third order and it won't be the last.",
+  }
+  assert.deepEqual(REVIEWS.map((r) => r.brand), ['Elyon Dubai', 'Adscale', 'Talk360'])
+  assert.deepEqual(REVIEWS.map((r) => r.category), ['Luxury Fragrance · E-commerce', 'SaaS · Paid Social', 'Mobile App · International'])
+  for (const r of REVIEWS) {
+    assert.equal(r.full, ORIGINAL[r.id], `${r.id}: the full original is unchanged`)
+    assert.ok(r.full.includes(r.excerpt), `${r.id}: the excerpt is a verbatim part of the original`)
+    assert.ok(r.excerpt.includes(r.highlight), `${r.id}: the highlight is a verbatim part of the excerpt`)
+    assert.ok(r.excerpt.length < r.full.length * 0.6)
+    assert.ok(/ordered again|second order|third order/.test(r.full), `${r.id}: the repeat relationship is documented in the review itself`)
+    assert.equal(r.repeat, true)
+    assert.ok(!('stars' in r) && !('rating' in r) && !('url' in r))
+  }
+  assert.deepEqual(REVIEWS.map((r) => r.excerpt), [
+    'The videos are high quality, delivered on time, and the communication throughout was excellent.',
+    'The UGC videos he created were exactly what we needed to scale our ads.',
+    'Every time we work together the quality just keeps getting better.',
+  ])
+  const h = bodyOf(page('/'))
+  const s = sectionOf(h, 'testimonials')
+  const t = textOf(s)
+  for (const r of REVIEWS) { assert.ok(t.includes(`“${r.excerpt}”`), r.id); assert.ok(t.includes(r.full), `${r.id}: the full review is in the page (behind "Read full review")`) }
+  assert.equal((s.match(/<details/g) || []).length, 3); assert.equal((t.match(/Read full review/g) || []).length, 3)
+  assert.equal((t.match(/Repeat Client/g) || []).length, 3)
+  assert.match(t, /Great work\. Strong relationships\. Repeat collaborations\./)
+  assert.ok(!/<path d="M8 1\.25l1\.74/.test(s) && !/★|stars?\b/i.test(t), 'no star graphics: no rating source is on record')
+  assert.ok(!/50%\+|returning|retention|verified|Trustpilot|Google reviews?|G2|Clutch|\d+ reviews/i.test(t), 'no new statistic, platform or verification claim')
+  assert.ok(!/aggregateRating|"@type":"Review"/.test(h), 'no review markup')
+})
+
+// ── 7. service-page hero order ───────────────────────────────────────────────────────────
+test('SaaS page: the founder presenter video is the featured centre hero video; the previous featured example is the THIRD gallery video; nothing duplicated or lost', () => {
+  const hero = orderedBy(selectSaasHero(), SAAS_VIDEO_ORDER.hero).map((x) => x.id)
+  const gallery = orderedBy(selectSaasGallery(), SAAS_VIDEO_ORDER.gallery).map((x) => x.id)
+  assert.deepEqual(hero, ['spokesperson-gal-1', 'saas-creator-2', 'creator-04'])
+  assert.deepEqual(gallery, ['spokesperson-gal-3', 'spokesperson-hero-1', 'saas-creator-1', 'creator-15', 'creator-10'])
+  assert.equal(gallery[2], 'saas-creator-1')
+  assert.equal(new Set([...hero, ...gallery]).size, hero.length + gallery.length, 'no video twice on the page')
+  // the same eight videos as before, only moved: the old hero [saas-creator-1, saas-creator-2, creator-04] and old gallery [spokesperson-gal-1, -gal-3, -hero-1, creator-15, creator-10]
+  assert.deepEqual([...hero, ...gallery].sort(), ['creator-04', 'creator-10', 'creator-15', 'saas-creator-1', 'saas-creator-2', 'spokesperson-gal-1', 'spokesperson-gal-3', 'spokesperson-hero-1'])
+  // no new Cloudflare asset: the founder video is the existing spokesperson-gal-1 entry, still a Spokesperson-page video as well
+  const f = PORTFOLIO.find((x) => x.id === 'spokesperson-gal-1')
+  assert.equal(f.source.cloudflareId, 'e767742bb12024437e9df368cedbfba2'); assert.equal(f.type, 'spokesperson'); assert.equal(f.alsoOn.saas, 'hero')
+  assert.equal(PORTFOLIO.filter((x) => x.source.cloudflareId === f.source.cloudflareId).length, 1)
+  const s = PORTFOLIO.find((x) => x.id === 'saas-creator-1'); assert.equal(s.placement, 'gallery'); assert.equal(s.source.cloudflareId, '80fc999238285c7f73757c78d9bcd8e7')
+  // built page: the featured (first) hero phone's poster is the founder video; the gallery lists the previous example third
+  const h = bodyOf(page(PATHS.saasVideoProduction))
+  const heroAlts = [...h.slice(0, h.indexOf('id="saas-videos"')).matchAll(/<img[^>]*alt="([^"]+)"[^>]*width="540"/g)].map((m) => m[1])
+  assert.equal(heroAlts[0], 'Presenter-Led Software Explainer With Screen Footage.', heroAlts.join(' | '))
+  const plays = [...h.slice(h.indexOf('id="saas-videos"')).matchAll(/aria-label="Play video: ([^"]+)"/g)].map((m) => m[1])
+  assert.equal(plays[2], 'Creator at Desk — File Management App Demo.', plays.join(' | '))
+  assert.equal(plays.length, 5)
+})
+
+test('Spokesperson page: the dark-haired presenter is the featured centre hero video; the other hero videos and the gallery keep their order and assets', () => {
+  const hero = orderedBy(selectSpokespersonHero(), SPOKESPERSON_VIDEO_ORDER.hero).map((x) => x.id)
+  assert.deepEqual(hero, ['spokesperson-hero-2', 'spokesperson-hero-1', 'spokesperson-hero-3'])
+  assert.deepEqual(selectSpokespersonGallery().map((x) => x.id), ['spokesperson-gal-1', 'spokesperson-gal-2', 'spokesperson-gal-3', 'spokesperson-gal-4'])
+  assert.deepEqual(['spokesperson-hero-1', 'spokesperson-hero-2', 'spokesperson-hero-3'].map((id) => PORTFOLIO.find((x) => x.id === id).source.cloudflareId), ['b3db228064bde5cd076d22d9c938c2b0', 'c0c30e58489e' + PORTFOLIO.find((x) => x.id === 'spokesperson-hero-2').source.cloudflareId.slice(12), '0d3a810ee068bd311f13ffd4d7a7f3d6'])
+  const h = bodyOf(page(PATHS.spokespersonVideoProduction))
+  const alts = [...h.slice(0, h.indexOf('id="spokesperson-videos"')).matchAll(/<img[^>]*alt="([^"]+)"[^>]*width="540"/g)].map((m) => m[1])
+  assert.equal(alts[0], 'Presenter — Book Recommendations With On-Screen Covers.', alts.join(' | '))
+  assert.equal(alts.length, 3)
+})
+
+test('the UGC page and the shared file order are untouched by the ordering helper (orderedBy only reorders what a page lists)', () => {
+  assert.deepEqual(orderedBy([{ id: 'a' }, { id: 'b' }, { id: 'c' }], ['c']).map((x) => x.id), ['c', 'a', 'b'])
+  assert.deepEqual(orderedBy([{ id: 'a' }, { id: 'b' }], ['zz', 'b']).map((x) => x.id), ['b', 'a'])
+  assert.deepEqual(orderedBy([{ id: 'a' }, { id: 'b' }]).map((x) => x.id), ['a', 'b'])
+  assert.deepEqual(selectHero().map((x) => x.id), ['ugc-hero-1', 'ugc-hero-2', 'ugc-hero-3'])
+  assert.ok(!selectGallery().some((x) => x.id === 'saas-creator-1' || x.id === 'spokesperson-gal-1'), 'the SaaS reorder never leaks into the UGC page')
+  assert.ok(servesPage(PORTFOLIO.find((x) => x.id === 'spokesperson-gal-1'), 'spokesperson'))
+  assert.ok(portfolioProblems({ ...PORTFOLIO[0], homeCreator: 0 }).length && portfolioProblems({ ...PORTFOLIO[0], homeCreator: 'a' }).length)
+  assert.deepEqual(portfolioProblems({ ...PORTFOLIO.find((x) => x.id === 'ugc-gal-1'), homeCreator: 2 }), [])
+})
+
+// ── 8. Spanish and the other pages ───────────────────────────────────────────────────────
+test('Spanish homepage keeps its own sections: old case-study panels, reviews and CTA; none of the new English sections', () => {
+  const h = bodyOf(page('/es'))
+  assert.ok(h.includes('Proyectos que hablan') && h.includes('id="showcase"') && h.includes('id="testimonials"'))
+  assert.ok(!/showcase-tab-|home-creators|Read full review|Real creators/.test(h))
+  assert.ok(h.includes('Quiero anuncios como estos') && /Nuestro fundador ha trabajado con/.test(textOf(h)))
+  assert.ok(textOf(sectionOf(h, 'clients')).includes('Experiencia profesional'), 'Spanish keeps the long founder caption')
+  // the Spanish review wording is the same source, unchanged
+  for (const r of REVIEWS) assert.ok(textOf(h).includes(r.full), r.id)
+})
+
+test('SEO and structure are untouched: homepage head and JSON-LD carry no review, rating or video markup; the case-study pages are still linked', () => {
+  const html = page('/')
+  const head = html.slice(0, html.indexOf('</head>'))
+  assert.ok(!/aggregateRating|"Review"|VideoObject/.test(head + [...html.matchAll(/<script type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/g)].map((m) => m[1]).join('')))
+  assert.equal((html.match(/<h1\b/g) || []).length, 1, 'one H1')
+  for (const p of ['/case-studies/graspo', '/case-studies/elyon']) assert.ok(fs.existsSync(path.join(dist, p.slice(1), 'index.html')), p)
+})
+
+test('motion and accessibility: the new animations are off for prefers-reduced-motion; tabs, carousel and disclosure are keyboard-operable', () => {
+  const css = read('src/index.css')
+  assert.match(css, /@media \(prefers-reduced-motion: reduce\) \{\s*\.sc-panel-in \{ animation: none; \}/)
+  assert.match(css, /@media \(prefers-reduced-motion: no-preference\) \{\s*\.rv-card:is\(:hover, :focus-within\) \{ transform: translateY\(-4px\); \}/)
+  const showcase = read('src/components/home/IndustryShowcase.jsx')
+  for (const k of ["role=\"tablist\"", 'role="tab"', 'aria-selected', 'ArrowDown:', "e.key === 'ArrowRight'", "aria-roledescription=\"carousel\"", 'motion-reduce:', "prefers-reduced-motion: reduce"]) assert.ok(showcase.includes(k), k)
+  const reviews = read('src/components/home/ClientReviews.jsx')
+  assert.ok(reviews.includes('<details') && reviews.includes('<summary') && reviews.includes('motion-reduce:'))
+})

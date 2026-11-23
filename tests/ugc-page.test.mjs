@@ -225,7 +225,8 @@ test('Elyon 5.28x: one creator-led UGC video, client-reported, early learning ph
 
 test('testimonials: verbatim, attributed as on the homepage, clearly separated from the portfolio; no stars, ratings or repeat-order statistic', () => {
   const t = textOf(page(PATH))
-  const src = read('src/components/Testimonials.jsx')
+  // The reviews' wording lives in src/content/reviews.js (read by both the English and the Spanish homepage sections).
+  const src = read('src/content/reviews.js')
   assert.equal(UGC_TESTIMONIALS.length, 2)
   for (const q of UGC_TESTIMONIALS) {
     assert.ok(src.includes(q.quote), `${q.brand}: quote is word-for-word the homepage quote`)

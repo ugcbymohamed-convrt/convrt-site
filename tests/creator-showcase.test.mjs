@@ -307,7 +307,8 @@ test('motion: every animation honours prefers-reduced-motion', () => {
 // ── internal links ──────────────────────────────────────────────────────────────────────
 test('links: nav, footer, homepage CTA and the UGC page all lead to /creator-showcase, once each, without duplicates', () => {
   const home = rootOf(page('/'))
-  assert.equal((home.match(/href="\/creator-showcase"/g) || []).length, 3, 'desktop nav (the mobile menu is closed), footer and the hero button')
+  assert.equal((home.match(/href="\/creator-showcase"/g) || []).length, 4, 'desktop nav (the mobile menu is closed), footer, the hero button and the "Explore All Creators" button under the homepage creator carousel')
+  assert.match(home, /<a href="\/creator-showcase"[^>]*>\s*Explore All Creators/, 'the homepage creator carousel button')
   assert.match(home, /<a href="\/creator-showcase"[^>]*>\s*Explore Videos/, 'the homepage "Explore Videos" button')
   assert.equal((home.match(/>Creator Showcase</g) || []).length, 2, 'one nav link and one footer link')
   assert.ok(!/>(See Our Work|Our Work)</.test(home), 'no "Our Work" label is left on the homepage')

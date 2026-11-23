@@ -80,6 +80,13 @@ export const SPOKESPERSON_GALLERY = {
   sampleNote: 'Layout preview only: your approved spokesperson videos replace these empty frames. This never shows on the live site.',
 }
 
+/* VIDEO ORDER (English design review, Nov 2026). The hero stage opens on its FIRST video (large centre phone). The presenter with dark hair and a dark shirt (`spokesperson-hero-2`)
+   is the featured centre video; the other two hero videos keep their usual relative order. Listed ids come first (see orderedBy in src/content/portfolio.js); nothing is added or removed,
+   so no video is duplicated, and the Spanish heroes (other ids) are unaffected. */
+export const SPOKESPERSON_VIDEO_ORDER = {
+  hero: ['spokesperson-hero-2', 'spokesperson-hero-1', 'spokesperson-hero-3'],
+}
+
 /* 5. PROOF. Verified spokesperson-specific material only. Both lists are empty today, so the page shows the compact "what to expect" strip
    below (published business terms, not results). Shape of an entry:
      results:      { id, brand, category, metric, metricLabel, context, disclaimer, href? }   a client-reported figure and its honest qualifiers
