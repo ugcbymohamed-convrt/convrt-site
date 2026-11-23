@@ -108,7 +108,7 @@ export default function Credibility() {
         className="pointer-events-none absolute inset-x-0 top-1/2 -translate-y-1/2 h-[80%] bg-[radial-gradient(ellipse_at_center,_rgba(213,255,64,0.10)_0%,_rgba(213,255,64,0.03)_45%,_transparent_70%)]"
       />
 
-      <div className={en ? 'relative mx-auto max-w-7xl px-5 pb-4 pt-14 md:px-8 md:pb-6 md:pt-20' : 'relative mx-auto max-w-7xl px-5 py-16 md:px-8 md:py-20'}>
+      <div className={en ? 'relative mx-auto max-w-7xl px-5 pb-2 pt-12 md:px-8 md:pb-4 md:pt-16' : 'relative mx-auto max-w-7xl px-5 py-16 md:px-8 md:py-20'}>
         {/* Top marquee, then the bottom marquee in the opposite direction */}
         {(() => {
           const rows = (
@@ -122,26 +122,19 @@ export default function Credibility() {
           return en ? <div role="group" aria-label="Brands from the founder's professional experience">{rows}</div> : rows
         })()}
 
-        {/* Headline + CTA below */}
-        <div className={en ? 'mt-12 md:mt-16 flex flex-col items-center text-center' : 'mt-14 md:mt-16 flex flex-col items-center text-center gap-10 md:gap-12'}>
+        {/* Headline + CTA below. English: the founder statement now lives with the client-work stage (components/home/IndustryShowcase.jsx). */}
+        {!en && (
+        <div className="mt-14 md:mt-16 flex flex-col items-center text-center gap-10 md:gap-12">
           <div className="flex flex-col items-center gap-4">
-            {en ? (
-              <>
-                <h2 className="max-w-[1120px] text-balance font-display text-[1.65rem] font-semibold min-[400px]:text-[1.9rem] leading-[1.18] tracking-display text-ink min-[480px]:text-4xl md:text-[2.5rem] lg:text-[2.75rem] xl:text-[3.1rem]">
-                  Our founder has worked with <span className="text-lime">{CONVRT_STATS.clients} clients</span> across ecommerce, SaaS, apps and consumer markets.
-                </h2>
-                <p className="mx-auto max-w-2xl text-[15px] leading-relaxed text-ink-muted md:text-base">{FOUNDER_EXPERIENCE.captionShort}</p>
-              </>
-            ) : (
-              <>
-                <h2 className="font-display font-semibold tracking-display text-ink leading-[1.1] text-3xl md:text-4xl lg:text-[44px] max-w-3xl">
-                  {tr('Our founder has worked with')} <span className="text-lime">{tr('more than')} {CONVRT_STATS.clients.replace('+', '')} {tr('clients')}</span> {tr('across ecommerce, apps, SaaS, and global consumer markets.')}
-                </h2>
-                <p className="max-w-xl text-sm leading-relaxed text-ink-muted">{tr(FOUNDER_EXPERIENCE.caption)}</p>
-              </>
-            )}
+            <h2 className="font-display font-semibold tracking-display text-ink leading-[1.1] text-3xl md:text-4xl lg:text-[44px] max-w-3xl">
+              {locale === 'en' ? (
+                <>Our founder has worked with <span className="text-lime">{CONVRT_STATS.clients} clients</span> across ecommerce, apps, SaaS, and global consumer markets.</>
+              ) : (
+                <>{tr('Our founder has worked with')} <span className="text-lime">{tr('more than')} {CONVRT_STATS.clients.replace('+', '')} {tr('clients')}</span> {tr('across ecommerce, apps, SaaS, and global consumer markets.')}</>
+              )}
+            </h2>
+            <p className="max-w-xl text-sm leading-relaxed text-ink-muted">{tr(FOUNDER_EXPERIENCE.caption)}</p>
           </div>
-          {!en && (
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
             <a
               href={action.href}
@@ -153,9 +146,21 @@ export default function Credibility() {
                 <path d="M3 9L9 3M9 3H4M9 3V8" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </a>
+            {/* Creator recruitment is an English-only Google Form (a creator-side flow, not part of this release): not offered from other languages. */}
+            {locale === 'en' && (
+            <a
+              href="https://forms.gle/Bg8ubU2tnmMj88m7A" target="_blank" rel="noopener noreferrer"
+              className="inline-flex items-center justify-center gap-2 rounded-full bg-ink px-6 py-3 text-sm font-semibold text-canvas transition-transform duration-150 active:scale-[0.98] hover:bg-white w-full sm:w-auto"
+            >
+              I'm a creator
+              <svg viewBox="0 0 12 12" className="h-3.5 w-3.5" fill="none">
+                <path d="M3 9L9 3M9 3H4M9 3V8" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </a>
+            )}
           </div>
-          )}
         </div>
+        )}
       </div>
     </section>
   )

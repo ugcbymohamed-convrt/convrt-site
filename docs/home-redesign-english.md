@@ -34,3 +34,15 @@ SaaS hero (front-centre first): spokesperson-gal-1 (founder presenter, Lusion sc
 
 ## Tests
 `tests/home-redesign.test.mjs` (14 tests) plus updated assertions in `founder-experience`, `creator-showcase` and `ugc-page` tests.
+
+---
+
+## Revision #2 (Nov 2026): cinematic founder/client stage and editorial reviews
+
+Supersedes the founder block, industry-showcase layout and reviews layout described above (the data, claims and rules in those sections still apply).
+
+- **Founder + client work** (`src/components/home/IndustryShowcase.jsx`, `RotaryStage.jsx`, `src/lib/rotary.js`): "Worked with 500+ clients" (figure from `siteStats.js`) with the owner-approved disclosure on the left; three of the active client's videos on a lit circular platform made of CSS only; client selector (Adscale · SaaS, Elyon Dubai · E-commerce, Graspo · Printing) under the stage; the two main CTAs under that. The logo marquee stays in `Credibility.jsx` (English: logos only; the Spanish homepage is unchanged).
+- **Rotary stage:** video `i` stands on an ellipse at angle `(i - position) x 120deg`; selecting a side video animates `position` (requestAnimationFrame, ease-in-out cubic, up to 720 ms), so frames travel along the orbit and the third video passes behind. The active video is upright; only side videos tilt. Only `transform`, `z-index` and a shade overlay's `opacity` change per frame. A selection made mid-rotation retargets from the current position (latest wins). Click, tap, swipe, arrow keys and the small arrows all work; `prefers-reduced-motion` changes the selection at once. Videos: poster first, the stream attaches only after pressing play on the centre video (native controls then), rotating away pauses, leaving the viewport pauses, switching client unmounts (destroys the stream).
+- **Client switch:** a short fade (190 ms), the stage re-mounts on the new client's first video; client text and links for all three clients stay in the HTML.
+- **Reviews** (`ClientReviews.jsx`): one featured quote in an editorial system serif (`font-editorial`, a system font stack: no font file was added), vector opening mark, lime rule, vertical client list (Adscale default), long lime rule. All three reviews are in the HTML (inactive ones invisible and `inert`, stacked in one grid cell so nothing shifts); excerpts verbatim; full originals behind "Read full review"; no stars.
+- Spanish and every other page: unchanged (only the English homepage differs from Production, plus the SaaS and Spokesperson hero orders from revision #1).

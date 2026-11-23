@@ -1,30 +1,17 @@
-import { useRef, useEffect, useState } from 'react'
+import { useRef, useState } from 'react'
 import { REVIEWS } from '../../content/reviews.js'
 
-/* THE ENGLISH HOMEPAGE'S CLIENT REVIEWS (design review, Nov 2026). Same three reviews, same clients, same wording as before (src/content/reviews.js), presented as short, prominent quotes.
+/* THE ENGLISH HOMEPAGE'S CLIENT REVIEWS: an editorial feature, deliberately the opposite of the cinematic stage above it (typography only: no cards, no glow, no stage).
 
-   • The line shown first is a verbatim excerpt (a contiguous part of the client's own text, enforced by a test); the COMPLETE original sits behind a native "Read full review" disclosure
-     (<details>, keyboard and screen-reader friendly, and the full text is in the page HTML).
-   • "Repeat Client" appears only where the review itself documents a repeat order. There are no star ratings (no rating source is on record) and no review counts, platforms, links or
-     verification badges; the page never implies an external review site.
-   • Lime guides the eye (the opening mark, the highlighted phrase, the hover edge); surfaces stay near-black. Motion is a one-time fade-up and a hover lift, both off for prefers-reduced-motion. */
+   ONE featured review at a time in large serif type, with an oversized opening mark at the left, a thin lime rule beside the quote and a vertical client list at the right (a slim lime bar marks
+   the active client). Selecting a client swaps the quote with a short fade and a small vertical movement (about 300 ms; none for prefers-reduced-motion). Nothing rotates by itself.
 
-function Reveal({ show, delay = 0, className = '', children }) {
-  return (
-    <div
-      className={`transition-[opacity,transform] duration-700 ease-out motion-reduce:transition-none motion-reduce:opacity-100 motion-reduce:translate-y-0 ${show ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'} ${className}`}
-      style={{ transitionDelay: show ? `${delay}ms` : '0ms' }}
-    >
-      {children}
-    </div>
-  )
-}
+   FAITHFUL: the line shown is a verbatim excerpt of the client's own words (src/content/reviews.js, enforced by a test) and the COMPLETE original stays behind "Read full review". There are no star ratings
+   (no rating source is on record), no counts, platforms, links or verification badges. "Repeat client" appears because each review itself documents a repeat order.
+   ALL THREE reviews are in the page HTML at all times (the inactive ones are invisible and inert, stacked in the same grid cell, so the section never changes height when you switch).
+   The heading is visually hidden (the reference design carries only the eyebrow); it keeps the section's place in the page outline. */
 
-const Quote = ({ className = '' }) => (
-  <svg viewBox="0 0 48 36" className={className} fill="currentColor" aria-hidden="true">
-    <path d="M0 36V21.6C0 9.2 6.4 2.3 18.2 0l2.5 5.4C14.2 7.2 11 11 10.6 16.2H20V36H0zm27.6 0V21.6C27.6 9.2 34 2.3 45.8 0l2.2 5.4c-6.5 1.8-9.7 5.6-10.1 10.8H48V36H27.6z" />
-  </svg>
-)
+const SERIF = 'font-editorial'
 
 function Excerpt({ review }) {
   const i = review.excerpt.indexOf(review.highlight)
@@ -32,93 +19,127 @@ function Excerpt({ review }) {
   return <>{review.excerpt.slice(0, i)}<span className="text-lime">{review.highlight}</span>{review.excerpt.slice(i + review.highlight.length)}</>
 }
 
-function ReviewCard({ review }) {
-  return (
-    <article className="rv-card relative flex h-full flex-col overflow-hidden rounded-[28px] border border-white/[0.08] bg-gradient-to-b from-white/[0.045] to-white/[0.015] p-7 md:p-8" aria-label={`Review from ${review.brand}`}>
-      <div aria-hidden="true" className="pointer-events-none absolute -right-24 -top-24 h-64 w-64 rounded-full bg-lime/[0.06] blur-[70px]" />
-      <div className="relative flex h-11 items-center justify-between gap-4">
-        <Quote className="h-9 w-12 text-lime/90 md:h-10 md:w-[54px]" />
-        <img
-          src={review.logo}
-          alt={`${review.brand} logo`}
-          loading="lazy"
-          decoding="async"
-          draggable="false"
-          className="object-contain object-right"
-          style={review.logoRounded ? { height: '44px', width: '44px', borderRadius: '12px' } : { height: '38px', width: 'auto', maxWidth: '132px', filter: review.logoFilter, opacity: 0.95 }}
-        />
-      </div>
+/* the quote size follows its length so every excerpt sets in a similar number of lines */
+const quoteSize = (text) => (text.length > 85
+  ? 'text-[1.7rem] min-[420px]:text-[1.95rem] md:text-[2.6rem] lg:text-[2.55rem] xl:text-[3.2rem] 2xl:text-[3.9rem]'
+  : 'text-[1.95rem] min-[420px]:text-[2.2rem] md:text-[3rem] lg:text-[3rem] xl:text-[3.6rem] 2xl:text-[4.5rem]')
 
-      <figure className="relative mt-5 flex flex-1 flex-col">
-        <blockquote className="font-display text-[1.4rem] font-semibold leading-[1.28] tracking-display text-ink md:text-[1.55rem]">
-          <p>“<Excerpt review={review} />”</p>
-        </blockquote>
+const ORDER = ['adscale', 'elyon', 'talk360']
+const LIST = ORDER.map((id) => REVIEWS.find((r) => r.id === id)).filter(Boolean)
 
-        <figcaption className="mt-8 flex items-center justify-between gap-3 border-t border-white/[0.08] pt-5">
-          <span className="min-w-0">
-            <span className="block text-[15px] font-semibold text-ink">{review.brand}</span>
-            <span className="block text-[12.5px] text-ink-muted">{review.category}</span>
-          </span>
-          {review.repeat && (
-            <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-lime/30 bg-lime/10 px-3 py-1 text-[11px] font-semibold tracking-wide text-lime">
-              <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-lime" />
-              Repeat Client
-            </span>
-          )}
-        </figcaption>
-      </figure>
-
-      <details className="relative mt-5">
-        <summary className="inline-flex min-h-[44px] cursor-pointer items-center gap-2 rounded-full text-[13.5px] font-semibold text-ink-muted transition-colors hover:text-lime focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-lime">
-          <span className="rv-plus inline-flex h-5 w-5 items-center justify-center rounded-full border border-current text-[13px] leading-none transition-transform duration-300 motion-reduce:transition-none" aria-hidden="true">+</span>
-          Read full review
-        </summary>
-        <p className="mt-2 text-[14.5px] leading-[1.7] text-ink-muted">{review.full}</p>
-      </details>
-    </article>
-  )
-}
+/* the oversized opening mark: two filled drops, drawn as a vector so it looks the same on every device (no font dependency) */
+const Mark = ({ className = '' }) => (
+  <svg viewBox="0 0 128 92" className={className} fill="currentColor" aria-hidden="true" focusable="false">
+    {[0, 67].map((dx) => (
+      <g key={dx} transform={`translate(${dx} 0)`}>
+        <circle cx="32" cy="62" r="29" />
+        <path d="M4 60C4 28 22 8 56 0l5 11C45 17 36 27 34 42Z" />
+      </g>
+    ))}
+  </svg>
+)
 
 export default function ClientReviews() {
-  const ref = useRef(null)
-  const [show, setShow] = useState(false)
-  useEffect(() => {
-    const el = ref.current
-    if (!el || typeof IntersectionObserver === 'undefined') { setShow(true); return undefined }
-    const io = new IntersectionObserver(([e]) => { if (e.isIntersecting) { setShow(true); io.disconnect() } }, { threshold: 0.08 })
-    io.observe(el)
-    return () => io.disconnect()
-  }, [])
+  const [activeId, setActiveId] = useState(LIST[0].id)
+  const tabRefs = useRef({})
+
+  const select = (id, focus = false) => {
+    setActiveId(id)
+    if (focus) tabRefs.current[id]?.focus()
+  }
+  const onKeyDown = (e, i) => {
+    const step = { ArrowDown: 1, ArrowRight: 1, ArrowUp: -1, ArrowLeft: -1 }[e.key]
+    if (step === undefined && e.key !== 'Home' && e.key !== 'End') return
+    e.preventDefault()
+    const next = e.key === 'Home' ? 0 : e.key === 'End' ? LIST.length - 1 : (i + step + LIST.length) % LIST.length
+    select(LIST[next].id, true)
+  }
 
   return (
-    <section id="testimonials" ref={ref} aria-labelledby="reviews-heading" className="relative overflow-hidden py-16 md:py-24">
-      <div aria-hidden="true" className="pointer-events-none absolute left-1/2 top-0 h-[500px] w-[760px] -translate-x-1/2 rounded-full bg-lime/[0.05] blur-[160px]" />
+    <section id="testimonials" aria-labelledby="reviews-heading" className="relative overflow-hidden py-16 md:py-24">
       <div className="relative mx-auto max-w-7xl px-5 md:px-8">
-        <div className="mb-10 flex flex-col items-center gap-5 text-center md:mb-14">
-          <Reveal show={show}>
-            <div className="inline-flex items-center gap-2.5">
-              <span className="h-px w-8 bg-lime" aria-hidden="true" />
-              <span className="text-xs font-semibold uppercase tracking-[0.2em] text-lime">Client Reviews</span>
-              <span className="h-px w-8 bg-lime" aria-hidden="true" />
-            </div>
-          </Reveal>
-          <Reveal show={show} delay={100}>
-            <h2 id="reviews-heading" className="max-w-4xl text-balance font-display text-[2rem] font-bold leading-[1.06] tracking-display text-ink md:text-5xl lg:text-[3.4rem]">
-              Great work. <span className="text-lime">Strong relationships.</span> Repeat collaborations.
-            </h2>
-          </Reveal>
-          <Reveal show={show} delay={200}>
-            <p className="max-w-xl text-base leading-relaxed text-ink-muted">What clients who ordered again say, in their own words.</p>
-          </Reveal>
+        <h2 id="reviews-heading" className="sr-only">Great work. Strong relationships. Repeat collaborations.</h2>
+        <div className="inline-flex items-center gap-3">
+          <span className="h-px w-12 bg-lime md:w-24" aria-hidden="true" />
+          <span className="text-sm font-semibold uppercase tracking-[0.22em] text-lime md:text-base">Client Reviews</span>
         </div>
 
-        <div className="grid grid-cols-1 items-stretch gap-5 lg:grid-cols-3 lg:gap-6">
-          {REVIEWS.map((review, i) => (
-            <Reveal key={review.id} show={show} delay={280 + i * 90} className="h-full">
-              <ReviewCard review={review} />
-            </Reveal>
-          ))}
+        <div className="mt-8 grid grid-cols-1 gap-x-10 gap-y-10 md:mt-12 lg:grid-cols-[minmax(0,0.3fr)_minmax(0,1fr)_minmax(290px,0.36fr)] lg:gap-x-12">
+          {/* oversized opening mark */}
+          <Mark className="-mb-4 h-[4.2rem] w-auto text-ink md:h-[6.5rem] lg:mb-0 lg:h-auto lg:w-full lg:max-w-[13rem]" />
+
+          {/* the featured review: all three stacked in one cell */}
+          <div className="grid lg:border-l lg:border-lime lg:pl-10 xl:pl-12">
+            {LIST.map((r) => {
+              const on = r.id === activeId
+              return (
+                <figure
+                  key={r.id}
+                  role="tabpanel"
+                  id={`review-panel-${r.id}`}
+                  aria-labelledby={`review-tab-${r.id}`}
+                  inert={on ? undefined : ''}
+                  className={`[grid-area:1/1] flex flex-col transition-[opacity,transform] duration-300 ease-out motion-reduce:transition-none ${on ? 'translate-y-0 opacity-100' : 'invisible translate-y-3 opacity-0'}`}
+                >
+                  <blockquote className={`${SERIF} ${quoteSize(r.excerpt)} font-normal leading-[1.1] tracking-[-0.01em] text-ink [text-wrap:balance]`}>
+                    <p>“<Excerpt review={r} />”</p>
+                  </blockquote>
+                  <figcaption className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3 md:mt-10">
+                    <img
+                      src={r.logo}
+                      alt={`${r.brand} logo`}
+                      loading="lazy"
+                      decoding="async"
+                      draggable="false"
+                      className="object-contain object-left"
+                      style={r.logoRounded ? { height: '44px', width: '44px', borderRadius: '12px' } : { height: '40px', width: 'auto', maxWidth: '180px', filter: r.logoFilter }}
+                    />
+                    <span aria-hidden="true" className="hidden h-10 w-px bg-white/25 sm:block" />
+                    <span className="text-[12px] font-medium uppercase leading-relaxed tracking-[0.2em] text-ink-muted md:text-[13px]">
+                      <span className="block sm:inline">{r.category}</span>
+                      {r.repeat && <span className="sm:before:mx-2 sm:before:content-['·'] block text-lime sm:inline">Repeat client</span>}
+                    </span>
+                  </figcaption>
+                  <details className="group mt-5">
+                    <summary className="inline-flex min-h-[44px] cursor-pointer list-none items-center gap-2 text-[13.5px] font-semibold text-ink-muted transition-colors hover:text-lime focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-lime [&::-webkit-details-marker]:hidden">
+                      <span aria-hidden="true" className="inline-flex h-5 w-5 items-center justify-center rounded-full border border-current text-[13px] leading-none transition-transform duration-300 group-open:rotate-45 motion-reduce:transition-none">+</span>
+                      Read full review
+                    </summary>
+                    <p className="mt-2 max-w-2xl text-[15px] leading-[1.7] text-ink-muted">{r.full}</p>
+                  </details>
+                </figure>
+              )
+            })}
+          </div>
+
+          {/* the client list */}
+          <div role="tablist" aria-label="Choose a client review" className="grid grid-cols-3 gap-2 lg:block lg:self-start lg:pt-3">
+            {LIST.map((r, i) => {
+              const on = r.id === activeId
+              return (
+                <button
+                  key={r.id}
+                  ref={(el) => { tabRefs.current[r.id] = el }}
+                  type="button"
+                  role="tab"
+                  id={`review-tab-${r.id}`}
+                  aria-selected={on}
+                  aria-controls={`review-panel-${r.id}`}
+                  tabIndex={on ? 0 : -1}
+                  onClick={() => select(r.id)}
+                  onKeyDown={(e) => onKeyDown(e, i)}
+                  className={`group relative block w-full py-3 pl-3 text-left transition-colors duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-lime motion-reduce:transition-none lg:py-7 lg:pl-8 ${i > 0 ? 'lg:border-t lg:border-white/25' : ''}`}
+                >
+                  <span aria-hidden="true" className={`absolute left-0 top-3 h-[calc(100%-1.5rem)] w-[3px] rounded-full bg-lime transition-opacity duration-300 motion-reduce:transition-none lg:top-1/2 lg:h-12 lg:-translate-y-1/2 ${on ? 'opacity-100' : 'opacity-0'}`} />
+                  <span className={`block text-[12px] font-bold uppercase tracking-[0.16em] transition-colors duration-300 motion-reduce:transition-none lg:text-[1.35rem] lg:tracking-[0.12em] ${on ? 'text-ink' : 'text-ink-muted group-hover:text-ink'}`}>{r.brand}</span>
+                  <span className={`mt-1.5 hidden text-[12px] font-medium uppercase tracking-[0.16em] transition-colors duration-300 sm:block lg:whitespace-nowrap lg:text-[11px] lg:tracking-[0.12em] motion-reduce:transition-none ${on ? 'text-ink-muted' : 'text-ink-subtle'}`}>{r.category}</span>
+                </button>
+              )
+            })}
+          </div>
         </div>
+
+        <div aria-hidden="true" className="mt-14 h-px w-full bg-lime md:mt-20" />
       </div>
     </section>
   )

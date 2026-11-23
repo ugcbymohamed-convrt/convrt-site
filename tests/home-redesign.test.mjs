@@ -20,6 +20,7 @@ import { SAAS_VIDEO_ORDER } from '../src/content/saasPage.js'
 import { SPOKESPERSON_VIDEO_ORDER } from '../src/content/spokespersonPage.js'
 import { REVIEWS } from '../src/content/reviews.js'
 import { SHOWCASE_INDUSTRIES } from '../src/content/homeShowcase.js'
+import { pose, poseStyle, shortestDelta, easeInOutCubic, ROTATION_MS } from '../src/lib/rotary.js'
 
 const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), '..')
 const read = (p) => fs.readFileSync(path.join(ROOT, p), 'utf8')
@@ -41,44 +42,93 @@ before(async () => {
 after(() => { if (tmp) fs.rmSync(tmp, { recursive: true, force: true }) })
 
 // ── 1. founder statement ─────────────────────────────────────────────────────────────────
-test('founder section: the approved two-line wording, the one-line founder disclosure, no buttons inside it, no divider before the showcase', () => {
+test('founder statement: "Worked with 500+ clients" with the owner-approved founder disclosure beside the stage; the marquee section keeps only the logos', () => {
   const h = bodyOf(page('/'))
   const clients = sectionOf(h, 'clients')
-  assert.ok(clients.includes(`Our founder has worked with <span class="text-lime">${CONVRT_STATS.clients} clients</span> across ecommerce, SaaS, apps and consumer markets.`))
-  assert.ok(textOf(clients).includes('Founder experience across CONVRT Studio and other creative production work.'))
-  assert.ok(!/Combined professional experience/.test(clients), 'the long caption is gone from the English homepage')
-  assert.ok(!/Become our next client|I'm a creator|<a /.test(clients), 'no CTA buttons or links inside the founder section')
-  // the 500+ figure stays attributed to the founder, never to CONVRT alone
-  assert.ok(/founder/i.test(clients) && !/500\+ clients (served|of CONVRT)/i.test(clients))
-  assert.ok(!/border-y/.test(clients.slice(0, clients.indexOf('>'))), 'no bottom rule under the founder section')
+  assert.ok(!/<h2|<a |founder has worked|Combined professional experience|Become our next client/.test(clients), 'the logo marquee section no longer carries the headline or buttons')
+  assert.ok(/aria-label="Brands from the founder&#x27;s professional experience"|aria-label="Brands from the founder's professional experience"/.test(clients) || clients.includes("Brands from the founder"), 'the marquee keeps its founder-experience label')
+  const s = sectionOf(h, 'showcase')
+  assert.ok(s.includes(`Worked with <span class="block text-lime">${CONVRT_STATS.clients} clients</span>`), 'two-line heading, figure from siteStats, lime')
+  assert.match(textOf(s), /Founder experience Worked with 500\+ clients/)
+  assert.ok(textOf(s).includes(FOUNDER_EXPERIENCE.captionShort) && /^Founder experience across CONVRT Studio and other creative production work\.$/.test(FOUNDER_EXPERIENCE.captionShort))
+  assert.ok(textOf(s).includes('Across ecommerce, SaaS, apps and consumer markets.'))
+  assert.ok(!/(500\+ clients (served|of CONVRT)|CONVRT.{0,20}500\+)/i.test(textOf(s)), 'never implies the 500+ clients were all CONVRT clients')
   assert.ok(h.indexOf('id="showcase"') > h.indexOf('id="clients"'))
   const between = h.slice(h.indexOf('</section>', h.indexOf('id="clients"')), h.indexOf('id="showcase"'))
-  assert.ok(!/height:\s*1px|linear-gradient\(to right, transparent 0%/.test(between), 'no SectionDivider between the founder statement and the showcase')
-  assert.ok(FOUNDER_EXPERIENCE.captionShort.length < FOUNDER_EXPERIENCE.caption.length)
+  assert.ok(!/linear-gradient\(to right, transparent 0%/.test(between), 'no SectionDivider between the logos and the founder statement')
 })
 
 // ── 2. industry showcase ─────────────────────────────────────────────────────────────────
-test('industry showcase: replaces the old intro and tabs; SaaS, E-commerce, Printing in order; every client text and the case-study links are in the HTML', () => {
+test('client work: cinematic stage with three posters, the client selector in order, every client text and the case-study links in the HTML', () => {
   const h = bodyOf(page('/'))
   const s = sectionOf(h, 'showcase')
   assert.ok(!/Work that speaks|for itself\.|Real brands, real budgets|CASE STUDIES|>Case Studies<\/span>/.test(h.replace(/<nav[\s\S]*?<\/nav>|<footer[\s\S]*?<\/footer>/g, '')), 'the old section introduction is gone')
   assert.ok(!/href="#showcase"/.test(h))
-  const tabs = [...s.matchAll(/role="tab"[^>]*>([\s\S]*?)<\/button>/g)].map((m) => textOf(m[1]))
-  assert.deepEqual(tabs, ['01 SaaS', '02 E-commerce', '03 Printing'])
-  assert.match(s, /role="tablist"/)
-  assert.equal((s.match(/aria-selected="true"/g) || []).length, 1)
+  const tabs = [...s.matchAll(/role="tab"[^>]*aria-label="([^"]+)"/g)].map((m) => m[1])
+  assert.deepEqual(tabs, ['Adscale, SaaS', 'Elyon Dubai, E-commerce', 'Graspo, Printing'])
+  assert.match(s, /role="tablist"/); assert.equal((s.match(/aria-selected="true"/g) || []).length, 1)
   for (const c of SHOWCASE_INDUSTRIES) {
-    assert.ok(s.includes(c.headline.replace(/'/g, "'")) && s.includes(c.client), c.id)
+    assert.ok(s.includes(c.headline) && s.includes(c.client), c.id)
     assert.ok(s.includes(`href="${c.link.href}"`), `${c.id}: link ${c.link.href}`)
+    assert.ok(s.includes(`src="${c.logo.src}"`), `${c.id}: the real client logo`)
   }
   for (const href of ['/case-studies/graspo', '/case-studies/elyon']) assert.ok(s.includes(`href="${href}"`), href)
-  // only the first industry is rendered visible; the others are `hidden` (still in the HTML for crawlers)
   assert.equal((s.match(/role="tabpanel"/g) || []).length, 3)
-  assert.equal((s.match(/role="tabpanel"[^>]*hidden/g) || []).length, 2)
-  // the three videos of the first industry are shown as posters, nothing plays by itself
-  assert.equal((s.match(/aria-label="Play video \d of 3 for Adscale"/g) || []).length, 3)
-  assert.ok(!/<video/.test(s) && !/autoplay/i.test(s))
+  assert.equal((s.match(/role="tabpanel"[^>]*hidden/g) || []).length, 2, 'the other two clients are in the HTML but hidden')
+  // the stage: three videos of the first client, centre one playable, sides only selectable, nothing playing
+  assert.match(s, /role="group" aria-roledescription="carousel" aria-label="Adscale videos\./)
+  assert.equal((s.match(/aria-label="Play video 1 of 3: /g) || []).length, 1)
+  assert.equal((s.match(/aria-label="Show video [23] of 3"/g) || []).length, 2)
+  assert.ok(!/<video/.test(s) && !/autoplay/i.test(s), 'posters only: no video element or stream on load')
   assert.ok(/aria-label="Previous video"/.test(s) && /aria-label="Next video"/.test(s))
+  assert.equal((s.match(/<img[^>]*width="405"/g) || []).length, 3)
+})
+
+test('rotary stage maths: the centre video is upright and largest, the sides sit left and right, a rotation follows a curved orbit and passes the third video behind', () => {
+  const at = (pos) => [0, 1, 2].map((i) => pose(i, pos))
+  const [a, b, c] = at(0)
+  assert.deepEqual([a.x, a.rot, a.scale, a.z], [0, 0, 1, 100], 'centre: upright, full size, in front')
+  assert.ok(b.x > 0.9 && c.x < -0.9 && Math.abs(b.x + c.x) < 1e-9, 'next video right, previous video left, symmetric')
+  assert.ok(b.scale < 1 && b.scale > 0.7 && b.z < a.z && b.rot < 0 && c.rot > 0 && Math.abs(b.rot) < 25, 'sides: smaller, farther back, tilted a little toward the centre')
+  assert.ok(b.shade <= 0.2 && a.shade === 0, 'sides are only gently dimmed')
+  // every integer position is a clean arrangement with three distinct slots (no duplicated or overlapping video)
+  for (const pos of [0, 1, 2]) {
+    const p = at(pos)
+    assert.equal(p.filter((x) => Math.abs(x.x) < 1e-9 && x.rot === 0 && x.scale === 1).length, 1, `pos ${pos}: exactly one active video`)
+    assert.equal(new Set(p.map((x) => x.z)).size, 2, `pos ${pos}: one front, two equal-depth sides`)
+    assert.ok(p[pos].z === 100 && p.filter((x) => x.x > 0.9).length === 1 && p.filter((x) => x.x < -0.9).length === 1)
+  }
+  // rotating toward the right-hand video (position 0 -> 1): it must move along a CURVE, not a straight line
+  const start = pose(1, 0), end = pose(1, 1), mid = pose(1, 0.5)
+  const lerp = (u, v) => (u + v) / 2
+  assert.ok(Math.abs(mid.x - lerp(start.x, end.x)) > 0.3, 'sideways travel is not linear')
+  assert.ok(mid.scale > lerp(start.scale, end.scale) + 0.02 && mid.z > start.z, 'it comes forward on the way in')
+  // the previous centre video swings out to the left in FRONT of the left slot, and the third video passes behind everything
+  const out = pose(0, 0.5)
+  assert.ok(out.x < -1 && out.z > pose(0, 1).z, 'the old centre video orbits out and settles back')
+  const behind = pose(2, 0.5)
+  assert.equal(behind.z, 0); assert.ok(behind.z < Math.min(pose(0, 0.5).z, pose(1, 0.5).z), 'the third video passes behind')
+  // the rotation is continuous and returns to the same arrangement every full turn
+  for (const i of [0, 1, 2]) assert.deepEqual(poseStyle(pose(i, 0)), poseStyle(pose(i, 3)), `video ${i}: a full turn returns to the same pose`)
+  assert.ok(poseStyle(pose(0, 0)).transform.endsWith('scale(1) rotateY(0deg)') && !/NaN|undefined/.test(poseStyle(pose(1, 0.37)).transform))
+})
+
+test('rotary stage logic: shortest direction, ease-in-out, 550-750 ms, and a click mid-rotation retargets from the current position', () => {
+  assert.equal(shortestDelta(0, 1, 3), 1); assert.equal(shortestDelta(0, 2, 3), -1); assert.equal(shortestDelta(1, 0, 3), -1); assert.equal(shortestDelta(2, 0, 3), 1); assert.equal(shortestDelta(1, 1, 3), 0)
+  assert.ok(Math.abs(shortestDelta(0.4, 2, 3)) <= 1.5, 'from a position part-way through a rotation the nearest way round is still taken')
+  assert.equal(easeInOutCubic(0), 0); assert.equal(easeInOutCubic(1), 1); assert.equal(easeInOutCubic(0.5), 0.5)
+  assert.ok(easeInOutCubic(0.1) < 0.1 && easeInOutCubic(0.9) > 0.9, 'slow start, slow finish')
+  assert.ok(ROTATION_MS >= 550 && ROTATION_MS <= 750)
+  const src = read('src/components/home/RotaryStage.jsx')
+  assert.ok(src.includes('cancelAnimationFrame(raf.current)') && src.includes('const from = posRef.current'), 'a new selection cancels the running tween and continues from the current position')
+  assert.ok(src.includes('activeRef.current = t') && src.includes("matchMedia?.('(prefers-reduced-motion: reduce)')"), 'latest selection wins; reduced motion changes at once')
+  const apply = src.slice(src.indexOf('const apply = useCallback'), src.indexOf('const select = useCallback'))
+  assert.ok(/style\.transform/.test(apply) && !/style\.(width|height|top|left|margin)/.test(apply), 'only transform, z-index and opacity change per frame (no layout)')
+  // playback: the stream is attached only after a press on the centre video, rotating away pauses, side videos cannot be played
+  assert.ok(/if \(!armed\) return undefined/.test(src) && /useEffect\(\(\) => \{ if \(!active\) ref\.current\?\.pause\?\.\(\) \}, \[active\]\)/.test(src))
+  assert.ok(/\{active && !armed && \(\s*<button/.test(src) && /\{!active && \(\s*<button[\s\S]{0,200}onClick=\{onSelect\}/.test(src), 'play button only on the active phone; side phones only select')
+  assert.ok(/IntersectionObserver/.test(src) && /v\.pause\(\)/.test(src), 'paused when out of view')
+  assert.ok(!/autoPlay|autoplay/.test(src))
 })
 
 test('industry showcase data: Adscale is the verified SaaS client (no invented case study or result); every industry has exactly its three client videos', () => {
@@ -94,14 +144,13 @@ test('industry showcase data: Adscale is the verified SaaS client (no invented c
 })
 
 // ── 3. the two closing CTAs ──────────────────────────────────────────────────────────────
-test('CTAs: "Become our next client" and "I\'m a creator" close the showcase with the same destinations, larger than before', () => {
+test('CTAs: "Become our next client" and "I\'m a creator" sit under the client selector with the same destinations, larger than before', () => {
   const h = bodyOf(page('/'))
   const s = sectionOf(h, 'showcase')
   assert.match(s, new RegExp(`<a href="${OFFER_PATHS.roadmap}"[^>]*cta-gradient[^>]*>[\\s\\S]*?Become our next client`))
   assert.match(s, /<a href="https:\/\/forms\.gle\/Bg8ubU2tnmMj88m7A" target="_blank" rel="noopener noreferrer"[^>]*>[\s\S]*?I'm a creator/)
-  assert.ok(s.indexOf('Become our next client') > s.indexOf('aria-label="Next video"'), 'the buttons come after the whole showcase')
-  assert.equal((h.match(/Become our next client/g) || []).length, 1)
-  assert.equal((h.match(/I'm a creator/g) || []).length, 1)
+  assert.ok(s.indexOf('Become our next client') > s.indexOf('role="tablist"'), 'the buttons come after the client selector')
+  assert.equal((h.match(/Become our next client/g) || []).length, 1); assert.equal((h.match(/I'm a creator/g) || []).length, 1)
   assert.match(s, /min-h-\[58px\][^"]*px-9 py-4 text-base font-bold/, 'moderately larger than the old px-6 py-3 text-sm')
 })
 
@@ -112,7 +161,7 @@ test('homepage narrative: credibility → client work → services → process �
   const order = ['clients', 'showcase', 'services', 'how-it-works', 'home-creators', 'testimonials'].map(at)
   assert.ok(order.every((i) => i > 0), JSON.stringify(order))
   assert.deepEqual([...order].sort((a, b) => a - b), order)
-  assert.ok(h.indexOf('Ready to') > order.at(-1) || h.indexOf('id="faq"') > order.at(-1))
+  assert.ok(h.indexOf('id="faq"') > order.at(-1))
 })
 
 // ── 5. creator carousel ──────────────────────────────────────────────────────────────────
@@ -150,38 +199,44 @@ test('creator carousel: the code is split off the homepage entry bundle and noth
 })
 
 // ── 6. reviews ───────────────────────────────────────────────────────────────────────────
-test('reviews: three clients, faithful excerpts, complete originals preserved verbatim, no stars or invented credibility', () => {
+test('reviews: editorial feature with one featured quote and a client list; faithful excerpts, complete originals preserved verbatim, no stars or invented credibility', () => {
   const ORIGINAL = {
     elyon: "Mohamed understood the concept really well and actually exceeded my expectations with the quality. The videos are high quality, delivered on time, and the communication throughout was excellent. I've already ordered again, looking forward to continuing this partnership.",
     adscale: "Working with Mohamad was an absolute pleasure. He's professional, creative, and truly understands what makes content perform. The UGC videos he created were exactly what we needed to scale our ads. We've already come back for a second order and plan to continue working together long-term.",
     talk360: "The videos are amazing again. Every time we work together the quality just keeps getting better. Fast delivery, great communication, and the content performs exactly the way we need it to. This is our third order and it won't be the last.",
   }
-  assert.deepEqual(REVIEWS.map((r) => r.brand), ['Elyon Dubai', 'Adscale', 'Talk360'])
-  assert.deepEqual(REVIEWS.map((r) => r.category), ['Luxury Fragrance · E-commerce', 'SaaS · Paid Social', 'Mobile App · International'])
+  assert.deepEqual(REVIEWS.map((r) => r.brand).sort(), ['Adscale', 'Elyon Dubai', 'Talk360'])
+  assert.deepEqual(REVIEWS.map((r) => r.category).sort(), ['Luxury Fragrance · E-commerce', 'Mobile App · International', 'SaaS · Paid Social'])
   for (const r of REVIEWS) {
     assert.equal(r.full, ORIGINAL[r.id], `${r.id}: the full original is unchanged`)
     assert.ok(r.full.includes(r.excerpt), `${r.id}: the excerpt is a verbatim part of the original`)
     assert.ok(r.excerpt.includes(r.highlight), `${r.id}: the highlight is a verbatim part of the excerpt`)
-    assert.ok(r.excerpt.length < r.full.length * 0.6)
-    assert.ok(/ordered again|second order|third order/.test(r.full), `${r.id}: the repeat relationship is documented in the review itself`)
-    assert.equal(r.repeat, true)
+    assert.ok(/ordered again|second order|third order/.test(r.full) && r.repeat === true, `${r.id}: the repeat relationship is documented in the review itself`)
     assert.ok(!('stars' in r) && !('rating' in r) && !('url' in r))
   }
-  assert.deepEqual(REVIEWS.map((r) => r.excerpt), [
-    'The videos are high quality, delivered on time, and the communication throughout was excellent.',
-    'The UGC videos he created were exactly what we needed to scale our ads.',
-    'Every time we work together the quality just keeps getting better.',
-  ])
+  assert.equal(REVIEWS.find((r) => r.id === 'adscale').excerpt, 'The UGC videos he created were exactly what we needed to scale our ads.')
+  assert.equal(REVIEWS.find((r) => r.id === 'adscale').highlight, 'scale our ads')
   const h = bodyOf(page('/'))
   const s = sectionOf(h, 'testimonials')
   const t = textOf(s)
+  // one featured quote (Adscale first, as in the reference); the other two are in the page but invisible and inert
+  assert.equal((s.match(/role="tabpanel"/g) || []).length, 3); assert.equal((s.match(/ inert=""/g) || []).length, 2)
+  assert.ok(s.includes('<span class="text-lime">scale our ads</span>'))
+  assert.deepEqual([...s.matchAll(/role="tab"[^>]*>[\s\S]*?<span[^>]*>([^<]+)<\/span>/g)].map((m) => m[1]), ['Adscale', 'Elyon Dubai', 'Talk360'])
+  assert.equal((s.match(/aria-selected="true"/g) || []).length, 1)
+  assert.ok(s.indexOf('id="review-panel-adscale"') < s.indexOf('id="review-panel-elyon"'))
   for (const r of REVIEWS) { assert.ok(t.includes(`“${r.excerpt}”`), r.id); assert.ok(t.includes(r.full), `${r.id}: the full review is in the page (behind "Read full review")`) }
   assert.equal((s.match(/<details/g) || []).length, 3); assert.equal((t.match(/Read full review/g) || []).length, 3)
-  assert.equal((t.match(/Repeat Client/g) || []).length, 3)
-  assert.match(t, /Great work\. Strong relationships\. Repeat collaborations\./)
+  assert.equal((t.match(/Repeat client/g) || []).length, 3)
+  assert.match(textOf(h.slice(h.indexOf('id="reviews-heading"'), h.indexOf('id="reviews-heading"') + 200)), /Great work\. Strong relationships\. Repeat collaborations\./)
+  assert.ok(/class="sr-only"/.test(s.slice(s.indexOf('<h2'), s.indexOf('<h2') + 120)), 'the heading is kept for the page outline but visually hidden, as in the reference')
+  assert.ok(/<svg[^>]*viewBox="0 0 128 92"/.test(s) && /font-editorial/.test(s), 'oversized vector opening mark and the editorial serif')
+  assert.ok(!/rv-card|rounded-\[28px\] border/.test(s), 'no cards')
   assert.ok(!/<path d="M8 1\.25l1\.74/.test(s) && !/★|stars?\b/i.test(t), 'no star graphics: no rating source is on record')
   assert.ok(!/50%\+|returning|retention|verified|Trustpilot|Google reviews?|G2|Clutch|\d+ reviews/i.test(t), 'no new statistic, platform or verification claim')
   assert.ok(!/aggregateRating|"@type":"Review"/.test(h), 'no review markup')
+  assert.match(read('tailwind.config.js'), /editorial: \[/)
+  assert.ok(!fs.existsSync(path.join(ROOT, 'public/fonts/editorial.woff2')), 'no font file was added: the serif is a system stack')
 })
 
 // ── 7. service-page hero order ───────────────────────────────────────────────────────────
@@ -249,12 +304,14 @@ test('SEO and structure are untouched: homepage head and JSON-LD carry no review
   for (const p of ['/case-studies/graspo', '/case-studies/elyon']) assert.ok(fs.existsSync(path.join(dist, p.slice(1), 'index.html')), p)
 })
 
-test('motion and accessibility: the new animations are off for prefers-reduced-motion; tabs, carousel and disclosure are keyboard-operable', () => {
+test('motion and accessibility: the new animations are off for prefers-reduced-motion; tabs, stage, carousel and disclosure are keyboard-operable', () => {
   const css = read('src/index.css')
   assert.match(css, /@media \(prefers-reduced-motion: reduce\) \{\s*\.sc-panel-in \{ animation: none; \}/)
-  assert.match(css, /@media \(prefers-reduced-motion: no-preference\) \{\s*\.rv-card:is\(:hover, :focus-within\) \{ transform: translateY\(-4px\); \}/)
+  assert.ok(!/\.rv-card/.test(css), 'the old review-card styles are gone')
   const showcase = read('src/components/home/IndustryShowcase.jsx')
-  for (const k of ["role=\"tablist\"", 'role="tab"', 'aria-selected', 'ArrowDown:', "e.key === 'ArrowRight'", "aria-roledescription=\"carousel\"", 'motion-reduce:', "prefers-reduced-motion: reduce"]) assert.ok(showcase.includes(k), k)
+  for (const k of ['role="tablist"', 'role="tab"', 'aria-selected', 'ArrowRight: 1', "matchMedia?.('(prefers-reduced-motion: reduce)')", 'motion-reduce:']) assert.ok(showcase.includes(k), k)
+  const stage = read('src/components/home/RotaryStage.jsx')
+  for (const k of ["e.key === 'ArrowRight'", "e.key === 'ArrowLeft'", 'tabIndex={0}', 'aria-roledescription="carousel"', 'onPointerUp', 'motion-reduce:']) assert.ok(stage.includes(k), k)
   const reviews = read('src/components/home/ClientReviews.jsx')
-  assert.ok(reviews.includes('<details') && reviews.includes('<summary') && reviews.includes('motion-reduce:'))
+  for (const k of ['role="tablist"', 'role="tab"', 'ArrowDown: 1', '<details', '<summary', 'motion-reduce:transition-none', 'duration-300']) assert.ok(reviews.includes(k), k)
 })

@@ -31,7 +31,7 @@ export const REVIEWS = [
     repeat: true,
     accent: '#3b82f6',
     excerpt: 'The UGC videos he created were exactly what we needed to scale our ads.',
-    highlight: 'exactly what we needed to scale our ads',
+    highlight: 'scale our ads',
     full: "Working with Mohamad was an absolute pleasure. He's professional, creative, and truly understands what makes content perform. The UGC videos he created were exactly what we needed to scale our ads. We've already come back for a second order and plan to continue working together long-term.",
   },
   {
@@ -44,7 +44,7 @@ export const REVIEWS = [
     repeat: true,
     accent: '#22d3ee',
     excerpt: 'Every time we work together the quality just keeps getting better.',
-    highlight: 'the quality just keeps getting better',
+    highlight: 'quality just keeps getting better',
     full: "The videos are amazing again. Every time we work together the quality just keeps getting better. Fast delivery, great communication, and the content performs exactly the way we need it to. This is our third order and it won't be the last.",
   },
 ]
