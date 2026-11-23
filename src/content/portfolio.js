@@ -461,7 +461,7 @@ export const PORTFOLIO = [
     source: { cloudflareId: 'adbf89cb6c07bb06e708c2a03e4cf2f6' },
     poster: '/portfolio/spokesperson-gal-2.webp',
     creatorId: 'cv-spokesperson-gal-2',
-    homeCreator: 8,
+    homeCreator: 7,
     category: 'Spokesperson · Presenter-led video',
     placement: 'gallery',
     approval: {
@@ -604,7 +604,7 @@ export const PORTFOLIO = [
     source: { cloudflareId: '749e2ad503f5db79d69086a47c59edd0' },
     poster: '/portfolio/ugc-gal-7.webp',
     creatorId: 'cv-gal-7',
-    homeCreator: 3,
+    homeCreator: 8,
     category: 'UGC · Paid social',
     placement: 'gallery',
     approval: {
@@ -992,7 +992,7 @@ export const PORTFOLIO = [
     source: { cloudflareId: '1188b4341860779830fa7365b1442959' },
     poster: '/portfolio/ugc-gal-3.webp',
     creatorId: 'cv-gal-3',
-    homeCreator: 5,
+    homeCreator: 3,
     category: 'UGC · Paid social',
     placement: 'gallery',
     approval: {
@@ -1110,7 +1110,7 @@ export const PORTFOLIO = [
     source: { cloudflareId: 'ff256a4643515d29b61c1f210c06476d' },
     poster: '/portfolio/ugc-gal-2.webp',
     creatorId: 'cv-gal-2',
-    homeCreator: 6,
+    homeCreator: 5,
     category: 'UGC · Paid social',
     placement: 'gallery',
     approval: {
@@ -1131,7 +1131,7 @@ export const PORTFOLIO = [
     source: { cloudflareId: '1fc1374cdfe428d10bfc40ad4eff9693' },
     poster: '/portfolio/ugc-hero-3.webp',
     creatorId: 'cv-hero-3',
-    homeCreator: 7,
+    homeCreator: 6,
     category: 'UGC · Paid social',
     placement: 'hero',
     approval: {
