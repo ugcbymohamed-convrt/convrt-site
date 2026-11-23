@@ -101,5 +101,6 @@ export default {
   "versions": "نسخة",
   "concepts": "أفكار",
   "ads": "إعلانات",
-  "Five concepts with three versions each make 15 finished ad versions. Creative Testing Sprint Plus goes to ten concepts and 30.": "خمس أفكار بثلاث نسخ لكل فكرة تعطي 15 نسخة إعلانية نهائية، وتصل Creative Testing Sprint Plus إلى عشر أفكار و30 نسخة."
+  "Five concepts with three versions each make 15 finished ad versions. Creative Testing Sprint Plus goes to ten concepts and 30.": "خمس أفكار بثلاث نسخ لكل فكرة تعطي 15 نسخة إعلانية نهائية، وتصل Creative Testing Sprint Plus إلى عشر أفكار و30 نسخة.",
+  "(in English)": "(بالإنجليزية)"
 }

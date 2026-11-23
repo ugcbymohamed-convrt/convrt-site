@@ -634,3 +634,9 @@ html[dir='rtl'] { direction: rtl; }
 :lang(ar) .group:hover .group-hover\:translate-x-0\.5 { --tw-translate-x: -0.125rem; }
 /* English-language content kept verbatim inside the Arabic site (client quotes, client-reported messages) reads left to right. */
 :lang(ar) [lang='en'][dir='ltr'] { text-align: left; }
+/* SVG illustrations (the Roadmap card, the testing diagram, the process scenes) place text with `x` and the default start anchor, designed left to right. Under direction: rtl the browser anchors "start"
+   at the RIGHT end, which shifts every label. These rules restore the designed positions: a left-anchored label stays at its x (anchor end = its left edge in RTL), a right-anchored label (text-anchor="end")
+   uses start, centred labels are unchanged. Scoped to Arabic pages. */
+:lang(ar) svg text { text-anchor: end; }
+:lang(ar) svg text[text-anchor='end'] { text-anchor: start; }
+:lang(ar) svg text[text-anchor='middle'] { text-anchor: middle; }

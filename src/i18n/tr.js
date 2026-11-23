@@ -44,6 +44,8 @@ export function hrefFor(href, locale = currentLocale()) {
   const [path, ...rest] = href.split('#')
   return `${localHref(path, locale)}${rest.length ? `#${rest.join('#')}` : ''}`
 }
+/* A page that exists only in English, seen from a translated page: its link is labelled "(in English)" and marked hrefLang="en" (a clearly labelled language fallback, never a silent switch of language). */
+export const englishOnly = (basePath, locale = currentLocale()) => locale !== DEFAULT_LOCALE && !hasTranslation(locale, basePath)
 export const useHref = () => {
   const locale = currentLocale()
   return (basePath) => localHref(basePath, locale)

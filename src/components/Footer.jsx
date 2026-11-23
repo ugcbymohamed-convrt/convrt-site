@@ -1,7 +1,7 @@
 import Logo from './Logo.jsx'
 import LanguageSelector from './LanguageSelector.jsx'
 import { parsePath, localizedPath } from '../i18n/paths.js'
-import { translate, localHref } from '../i18n/tr.js'
+import { translate, localHref, englishOnly } from '../i18n/tr.js'
 import CookieSettingsLink from './CookieSettingsLink.jsx'
 import { SERVICE_LABELS } from '../seo/businessKnowledge.js'
 import { CONTACT_EMAIL, REFERRALS_PATH, CREATOR_SHOWCASE_PATH, ABOUT_PATH, CONTACT_PATH, PRIVACY_PATH, TERMS_PATH, LEGAL_NOTICE_PATH, TRUST_PAGES_PUBLISHED, COMPANY_LINKEDIN_URL, INSTAGRAM_URL } from '../config.js'
@@ -39,9 +39,9 @@ export default function Footer() {
             <ul className="mt-4 space-y-2.5 text-sm text-ink-muted">
               <li><a className="hover:text-ink transition-colors" href={`${homePrefix}#services`}>{tr('Services')}</a></li>
               <li><a className="hover:text-ink transition-colors" href={h('/ugc-video-agency')}>{tr('UGC Video Agency')}</a></li>
-              <li><a className="hover:text-ink transition-colors" href={h('/spokesperson-video-production')}>{tr('Spokesperson Videos')}</a></li>
-              <li><a className="hover:text-ink transition-colors" href={h('/social-media-video-production')}>{tr(SERVICE_LABELS.organic)}</a></li>
-              <li><a className="hover:text-ink transition-colors" href={h('/saas-video-production')}>{tr('SaaS Video Production')}</a></li>
+              <li><a className="hover:text-ink transition-colors" href={h('/spokesperson-video-production')} {...(englishOnly('/spokesperson-video-production') ? { hrefLang: 'en' } : {})}>{tr('Spokesperson Videos')}{englishOnly('/spokesperson-video-production') && <>{' '}<span className="text-ink-subtle">{tr('(in English)')}</span></>}</a></li>
+              <li><a className="hover:text-ink transition-colors" href={h('/social-media-video-production')} {...(englishOnly('/social-media-video-production') ? { hrefLang: 'en' } : {})}>{tr(SERVICE_LABELS.organic)}{englishOnly('/social-media-video-production') && <>{' '}<span className="text-ink-subtle">{tr('(in English)')}</span></>}</a></li>
+              <li><a className="hover:text-ink transition-colors" href={h('/saas-video-production')} {...(englishOnly('/saas-video-production') ? { hrefLang: 'en' } : {})}>{tr('SaaS Video Production')}{englishOnly('/saas-video-production') && <>{' '}<span className="text-ink-subtle">{tr('(in English)')}</span></>}</a></li>
               <li><a className="hover:text-ink transition-colors" href={h(CREATOR_SHOWCASE_PATH)}>{tr('Creator Showcase')}</a></li>
               {en && <li><a className="hover:text-ink transition-colors" href="/case-studies">Case Studies</a></li>}
               <li><a className="hover:text-ink transition-colors" href={h('/pricing')}>{tr('Pricing')}</a></li>

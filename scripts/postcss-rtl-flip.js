@@ -49,7 +49,10 @@ const plugin = () => ({
         }
       })
       if (!flipped.length) continue
-      const copy = new Rule({ selectors: rule.selectors.map((s) => `[dir="rtl"] ${s}`) })
+      const mirror = rule.selectors.map((s) => `[dir="rtl"] ${s}`)
+      const next = rule.next()
+      if (next?.type === 'rule' && next.selectors.join(',') === mirror.join(',')) continue // already mirrored (running the plugin twice must not stack copies)
+      const copy = new Rule({ selectors: mirror })
       copy.__rtlDone = true
       for (const f of flipped) copy.append({ prop: f.prop, value: f.value, important: f.important })
       rule.after(copy)

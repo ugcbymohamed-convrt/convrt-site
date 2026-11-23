@@ -6,7 +6,7 @@
    That is the drift guard: a Spanish page can never silently show a stale or mismatched claim. */
 
 import { HOME_FAQ } from '../seo/homeFaq.js'
-import { translate, hrefFor } from './tr.js'
+import { translate, hrefFor, englishOnly } from './tr.js'
 import { localizeStat } from './format.js'
 import { OFFER_PATHS, REFERRALS_PATH } from '../config.js'
 import { flowAvailable } from './cta.js'
@@ -14,7 +14,12 @@ import { DEFAULT_LOCALE } from './locales.js'
 
 const localizeHref = (href, locale) => hrefFor(href, locale)
 
-const localizeLink = (l, locale) => (l ? { ...l, label: translate(locale, l.label), href: localizeHref(l.href, locale) } : l)
+/* Arabic: a link to a page that exists only in English says so in its label (a clearly labelled language fallback), unless the translation already does. */
+const arabicLabel = (l, locale) => {
+  const label = translate(locale, l.label)
+  return locale === 'ar' && l.href.startsWith('/') && englishOnly(l.href.split('#')[0], locale) && !label.includes('بالإنجليزية') ? `${label} ${translate(locale, '(in English)')}` : label
+}
+const localizeLink = (l, locale) => (l ? { ...l, label: arabicLabel(l, locale), href: localizeHref(l.href, locale) } : l)
 
 /* A link into a flow that is not translated for this language is dropped (never a link from a Spanish page into an English form). */
 const FLOW_OF = { [OFFER_PATHS.roadmap]: 'roadmap', [OFFER_PATHS.hooks]: 'hooks', [OFFER_PATHS.riskFree]: 'riskFree', [REFERRALS_PATH]: 'referrals' }
