@@ -6,6 +6,7 @@ import { tr } from '../../i18n/tr.js'
 import { currentLocale } from '../../i18n/locale.js'
 import { localizeConfig } from '../../i18n/content.js'
 import { money } from '../../i18n/money.js'
+import { editorial } from '../../i18n/editorial.js'
 
 /* "Consistent content. Flexible support." A deliberately LIGHT commercial section: the two published organic packages side by side, a line of what both include and a link to the
    full Pricing page. It is not a second Pricing page: no billing switch, no feature matrix, no FAQ, no usage-rights panel.
@@ -45,7 +46,10 @@ export default function OrganicPackages() {
       </ul>
       <Reveal className="mx-auto mt-5 max-w-3xl text-center">
         <p className="text-[15px] leading-relaxed text-ink">
-          {tr('Both include')} {ORGANIC.includedInBoth.map((x) => tr(x).toLowerCase()).join(`, ${tr('plus')} `)}, {tr('across')} {list(ORGANIC.platforms)}.
+          {editorial()?.wholeSentenceLists
+            // French (a language whose list items need articles and elision, so the pieces cannot be glued): the whole English sentence is the dictionary key, so the sentence still follows the business data.
+            ? tr(`Both include ${ORGANIC.includedInBoth.map((x) => x.toLowerCase()).join(', plus ')}, across ${ORGANIC.platforms.slice(0, -1).join(', ')} and ${ORGANIC.platforms.at(-1)}.`)
+            : <>{tr('Both include')} {ORGANIC.includedInBoth.map((x) => tr(x).toLowerCase()).join(`, ${tr('plus')} `)}, {tr('across')} {list(ORGANIC.platforms)}.</>}
         </p>
         <p className="mt-2 text-[13.5px] leading-relaxed text-ink-muted">
           {tr(CARD_NOTES.organic)} {tr(ORGANIC.customerSupportNote)}

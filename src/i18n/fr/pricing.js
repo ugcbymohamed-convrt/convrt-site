@@ -21,4 +21,4 @@ export const FR_PRICING = {
 }
 
 /* The French pages that show a price. If the config were ever set back to 'pending' these pages would be launch-blocked. */
-export const FR_PRICED_PAGES = ['/pricing', '/ugc-video-agency']
+export const FR_PRICED_PAGES = ['/pricing', '/ugc-video-agency', '/spokesperson-video-production', '/social-media-video-production']

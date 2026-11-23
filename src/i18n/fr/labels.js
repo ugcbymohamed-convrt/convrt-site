@@ -61,11 +61,17 @@ export const FR_FINAL_CTA = {
     text: 'Parlez-nous de votre marque : nous vous présentons cinq idées publicitaires adaptées à votre activité, lors d’une session stratégique offerte.',
     note: 'Offre réservée aux marques qui remplissent les conditions du programme. Sans engagement.',
   },
+  'spokesperson-cta-heading': { text: 'Dites-nous ce que vous voulez transmettre : nous vous aidons à trouver le présentateur, l’approche et le format qui conviennent à votre marque.' },
+  'saas-cta-heading': { text: 'Dites-nous ce que fait votre produit et ce que vous voulez communiquer. Nous vous aidons à trouver le format et l’approche créative adaptés.' },
+  'organic-cta-heading': { text: 'Dites-nous ce que vous attendez de vos réseaux sociaux. Nous vous aidons à définir une stratégie de contenu et un plan de production adaptés à votre marque.' },
 }
 
 /* One-sentence introductions under the heading of interactive sections and the UGC FAQ (French editorial copy). English has none, so they render in French only. */
 export const FR_SECTION_INTROS = {
   'ugc-testing': 'Inutile de refaire toute la publicité pour savoir ce qui fonctionne : nous créons plusieurs versions d’une même idée pour que vous puissiez comparer chaque élément créatif de façon plus structurée.',
+  'spokesperson-formats': 'Tous les messages ne se livrent pas de la même manière. Nous adaptons le script, le style de présentation et les éléments visuels à ce que votre marque veut dire.',
+  'saas-formats': 'Toutes les vidéos SaaS n’ont pas le même rôle. Nous choisissons le format selon votre produit, votre public et l’objectif visé.',
+  'organic-content-system': 'Une présence régulière sur les réseaux commence par savoir ce que vous voulez dire, à qui, et pourquoi.',
   'ugc-faq': 'Les réponses aux questions que l’on nous pose le plus souvent avant de lancer un projet.',
 }
 

@@ -24,11 +24,9 @@ export function literalKeys(uses = new Map()) {
   return keys
 }
 
-/* Pages a language does not have are not its business: French has no Spokesperson, SaaS or Organic Social page (docs/multilingual-french-release.md), so the strings that only those pages'
-   components use are not required in the French dictionary. A string a French page ALSO uses is still required (it is found through the French files, or by the build's render check). */
-const SCOPE_EXCLUDED = {
-  fr: [/(^|\/)(Spokesperson|Saas|OrganicSocial)VideoPage\.jsx$/, /components\/(spokesperson|saas|organic)\//, /content\/(spokespersonPage|saasPage|organicSocialPage)\.js$/],
-}
+/* Pages a language does not have are not its business: a string only a page the language lacks uses is not required in that dictionary. French has every service page now (UGC, Spokesperson,
+   SaaS, Organic Social: docs/multilingual-french-release.md), so nothing is excluded for it any more; the map stays so a future language can scope itself the same way. */
+const SCOPE_EXCLUDED = {}
 export function missingFor(locale) {
   const dict = DICTIONARIES[locale] ?? {}
   const excluded = SCOPE_EXCLUDED[locale] ?? []
