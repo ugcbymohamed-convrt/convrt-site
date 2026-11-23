@@ -55,7 +55,7 @@ export default {
   "Which brands is this best suited to, and how many ads should we test?": "ما العلامات التجارية الأنسب لهذه الخدمة، وكم إعلانًا ينبغي أن نختبر؟",
   "CONVRT works best with brands that run paid social and want to test several creative angles rather than rely on a single video. We work with brands across industries, including but not limited to SaaS, e-commerce, apps, technology and consumer products. When a project does not fit a standard package, we tailor one.": "تناسب CONVRT أكثر العلامات التجارية التي تعتمد على الإعلانات المدفوعة على السوشيال ميديا وتريد اختبار عدة زوايا إبداعية بدل الاعتماد على فيديو واحد. نعمل مع علامات تجارية في مختلف المجالات، منها على سبيل المثال لا الحصر SaaS والتجارة الإلكترونية والتطبيقات والتقنية والمنتجات الاستهلاكية. وإذا لم يناسب مشروعك باقة قياسية، نصمّم لك باقة مخصصة.",
   "There is no universal number of creatives to test: it depends on your budget, audience, niche and conversion volume. We size a batch for learning, with 5 or 10 concepts, include testing recommendations, and never guarantee specific results.": "لا يوجد عدد ثابت للإعلانات المطلوب اختبارها، فهو يختلف بحسب ميزانيتك وجمهورك ومجالك وحجم التحويلات. نحدد حجم الدفعة بما يخدم التعلّم، بـ5 أو 10 أفكار إبداعية، ونضمّنها توصيات للاختبار، ولا نضمن نتائج محددة أبدًا.",
-  "Get 5 free ad concepts": "احصل على 5 أفكار إعلانية مخصصة",
+  "Get 5 free ad concepts": "احصل على 5 أفكار إعلانية مجانًا",
   "Prefer a presenter-led format? See spokesperson video production": "تفضّل فيديو بمقدّم؟ تعرّف على إنتاج الفيديوهات بمقدّمين",
   "Selling software? See SaaS video production": "تبيع برمجيات؟ تعرّف على إنتاج فيديوهات SaaS",
   "Creator UGC videos": "فيديوهات UGC من صُنّاع المحتوى",

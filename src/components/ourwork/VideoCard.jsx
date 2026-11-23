@@ -1,3 +1,4 @@
+import ViewsBadge from '../ugc/ViewsBadge.jsx'
 import { posterUrl, titleOf, industryLabel, categoryOf, CATEGORIES, creatorLabel, brandLabel, languageLabel } from '../../content/portfolio.js'
 import { PlayGlyph } from '../ugc/creatorVideo.jsx'
 import { tr } from '../../i18n/tr.js'
@@ -57,6 +58,7 @@ export default function VideoCard({ item, priority = false, onOpen }) {
       <span className="absolute inset-x-0 bottom-0 block p-3 md:p-4">
         <span className="line-clamp-2 block text-[13px] font-semibold leading-snug text-ink md:text-[15px]">{title}</span>
         {who && <span className="mt-0.5 block truncate text-[11px] text-ink-muted md:text-xs">{who}</span>}
+        {item.views && <ViewsBadge item={item} className="mt-2" />}
       </span>
     </button>
   )

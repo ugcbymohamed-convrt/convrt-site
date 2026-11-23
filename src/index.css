@@ -670,3 +670,9 @@ html[dir='rtl'] { direction: rtl; }
 :lang(ar) h1 .inline-block.overflow-hidden { overflow: visible; clip-path: inset(0); }
 /* CLIENT REVIEWS: the English section sets its quotes in a serif; the Arabic quote uses the site's Arabic face, a little smaller and with the open line height Arabic needs. */
 html:lang(ar) blockquote.font-editorial { font-family: var(--font-ar); font-weight: 500; line-height: 1.5; font-size: clamp(1.5rem, 1.1rem + 2.1vw, 3rem); text-wrap: balance; }
+/* The rolling word of the service-page headlines (.ugc-reel) is a fixed-height box aligned with vertical-align: bottom and a line-height of 1.14, while the Arabic headline's lines use 1.3: the word then sat
+   higher or lower than its neighbours depending on the face's metrics. In Arabic the box takes the headline's own line height, keeps its baseline (overflow is clipped with clip-path, which leaves the
+   baseline alone) and aligns on it, so every word of the roll shares the baseline of the line. */
+:lang(ar) .ugc-reel { overflow: visible; clip-path: inset(0); vertical-align: baseline; line-height: 1.3; height: 1.3em; }
+:lang(ar) .ugc-reel::before { height: 1.3em; }
+:lang(ar) .ugc-reel-track > span { height: 1.3em; line-height: 1.3; }

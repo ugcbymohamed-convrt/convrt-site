@@ -1,4 +1,5 @@
 import { stepOfArrow, stepOfSwipe, isRtlPage } from '../../lib/rtl.js'
+import ViewsBadge from './ViewsBadge.jsx'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { attachHls } from '../../lib/hls.js'
 import { posterUrl, hlsUrl, languageLabel, industryLabel, captionOf } from '../../content/portfolio.js'
@@ -325,6 +326,7 @@ function StagePhone({ item, slot, n, index, active, load, wantPlay, muted, playi
           aria-hidden="true"
           className="absolute inset-0 h-full w-full object-cover"
         />
+        <ViewsBadge item={item} className="absolute inset-x-0 top-9 z-10 mx-auto w-fit md:top-11" />
         {/* the inactive phones are dimmed with an overlay (cheaper to animate than a filter) */}
         <div aria-hidden="true" className={`pointer-events-none absolute inset-0 bg-black transition-opacity motion-reduce:transition-none ${active ? 'opacity-0' : 'opacity-40'}`} style={{ transitionDuration: `${MS}ms` }} />
 

@@ -1,5 +1,6 @@
 /* Arabic revision strings (owner brief 2026-11-23): homepage showcase, creator carousel, client reviews, shell. */
 export default {
+  "views": "مشاهدة",
   "Presenter-led videos that deliver a scripted message to camera.": "فيديوهات بمقدّم يقدّم رسالة مكتوبة مسبقًا أمام الكاميرا.",
   "Organic social examples": "نماذج للسوشيال ميديا",
   "Short-form videos made for a brand’s own social accounts.": "فيديوهات قصيرة صُنعت للحسابات الاجتماعية الخاصة بالعلامة التجارية.",

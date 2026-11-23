@@ -6,6 +6,7 @@ import { useAutoplayAllowed } from '../ugc/creatorVideo.jsx'
 import { pose, poseStyle, shortestDelta, easeInOutCubic, ROTATION_MS, round4 as f } from '../../lib/rotary.js'
 import { isRtlPage, stepOfArrow, stepOfSwipe } from '../../lib/rtl.js'
 import { useTr } from '../../i18n/tr.js'
+import ViewsBadge from '../ugc/ViewsBadge.jsx'
 import { currentLocale } from '../../i18n/locale.js'
 
 /* THE ROTARY VIDEO STAGE (English homepage, client work).
@@ -105,6 +106,7 @@ function Phone({ item, i, n, active, moving, inView, autoMode, onSelect, setEl, 
           {armed && (
             <video ref={ref} playsInline preload="none" poster={stagePoster(item)} aria-label={captionOf(item)} className="absolute inset-0 h-full w-full bg-black object-cover" />
           )}
+          {item.views && <ViewsBadge item={item} className="absolute inset-x-0 top-[5%] z-10 mx-auto w-fit scale-[0.8]" />}
           <span ref={setShade} aria-hidden="true" className="pointer-events-none absolute inset-0 bg-black" style={{ opacity: f(pose(i, 0, n, mirror).shade) }} />
           {active && !moving && (
             <HeroPlayerControls item={item} playing={playing} muted={muted} progress={progress} barClass={armed ? '' : BAR_UNTIL_STARTED} onTogglePlay={toggle} onToggleMute={() => setMuted((m) => !m)} onSeek={seek} />

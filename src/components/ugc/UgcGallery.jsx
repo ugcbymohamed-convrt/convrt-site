@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
+import ViewsBadge from './ViewsBadge.jsx'
 import { trackEvent } from '../../lib/analytics.js'
 import { CREATOR_SHOWCASE_PATH } from '../../config.js'
 import { CREATOR_EXAMPLES_NOTE } from '../../content/attribution.js'
@@ -89,6 +90,7 @@ function Card({ item, index, playing, onPlay, config }) {
           <span aria-hidden="true" className="absolute left-3 top-3 inline-flex items-center gap-1.5 rounded-full border border-lime/40 bg-black/55 px-2.5 py-1 text-xs font-bold uppercase tracking-[0.1em] text-lime backdrop-blur">
             <span className="h-1.5 w-1.5 rounded-full bg-lime" />{langs ? `${config.badge} · ${langs}` : config.badge}
           </span>
+          <ViewsBadge item={item} className="absolute inset-x-0 bottom-3 mx-auto w-fit" />
           <span aria-hidden="true" className="absolute left-1/2 top-1/2 flex h-14 w-14 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-lime/60 bg-lime/20 text-ink backdrop-blur transition-transform duration-200 group-hover:scale-110 motion-reduce:transition-none">
             <PlayGlyph />
           </span>

@@ -51,7 +51,7 @@ export default function GraspoShowcase() {
   )
 }
 
-function ShowcasePhone({ video }) {
+export function ShowcasePhone({ video, labels = { alt: 'Graspo organic content still', unmute: 'Unmute', mute: 'Mute', views: 'views' }, viewsText }) {
   const wrapperRef = useRef(null)
   const videoRef = useRef(null)
   const [inView, setInView] = useState(false)
@@ -135,7 +135,7 @@ function ShowcasePhone({ video }) {
           ) : (
             <img
               src={streamPoster(video.id, { height: 600 })}
-              alt="Graspo organic content still"
+              alt={labels.alt}
               loading="lazy"
               className="absolute inset-0 w-full h-full object-cover"
             />
@@ -149,7 +149,7 @@ function ShowcasePhone({ video }) {
           <button
             type="button"
             onClick={() => setMuted((m) => !m)}
-            aria-label={muted ? 'Unmute' : 'Mute'}
+            aria-label={muted ? labels.unmute : labels.mute}
             className="absolute bottom-3 right-3 z-30 h-8 w-8 rounded-full flex items-center justify-center bg-black/55 backdrop-blur-md text-white transition-colors hover:bg-black/75 active:scale-95"
           >
             {muted
@@ -165,10 +165,10 @@ function ShowcasePhone({ video }) {
       </div>
       <p className="mt-4 text-center">
         <span className="block font-display font-bold leading-none text-2xl md:text-[28px] tabular-nums" style={{ color: ACCENT }}>
-          {video.views}
+          {viewsText ?? video.views}
         </span>
         <span className="mt-1.5 block text-[10.5px] font-semibold uppercase tracking-[0.16em] text-ink-subtle">
-          views
+          {labels.views}
         </span>
       </p>
     </div>
