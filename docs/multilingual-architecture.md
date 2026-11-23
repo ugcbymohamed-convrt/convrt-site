@@ -43,8 +43,7 @@ A page can be built but not released: blocked pages are noindex, out of the site
 
 ## Language selector
 `src/components/LanguageSelector.jsx` (header dropdown, mobile-menu list, crawlable footer list). Every option is a plain link to the equivalent page when it exists (`src/i18n/switch.js`), otherwise that
-language's home; no redirect, no detection, no cookie or storage (the Privacy Policy lists exactly which browser storage the site uses, so a stored preference would need a Privacy Policy change: see
-`docs/multilingual-spanish-release.md`, decision 6). French and Arabic appear automatically the day their status becomes `'live'`.
+language's home; no redirect and no detection. Since the language suggestion for visitors in Spain (`docs/language-suggestion.md`) a click on an option also stores the visitor's explicit choice (`convrt_language`, first-party localStorage, listed in the Privacy Policy), only so that suggestion is not shown again; the page language still comes from the URL alone. French and Arabic appear automatically the day their status becomes `'live'`.
 
 ## Conversion flows
 `src/i18n/cta.js` says, per language, which conversion flows exist (`LOCALIZED_FLOWS`). English has all of them. **Spanish has the Roadmap** (`/es/creative-growth-roadmap`): labels, descriptions, validation errors,

@@ -4,9 +4,10 @@ import { parsePath } from '../i18n/paths.js'
 import { languageOptions } from '../i18n/switch.js'
 import { LOCALES } from '../i18n/locales.js'
 import { translate } from '../i18n/tr.js'
+import { rememberLanguage } from '../lib/languagePreference.js'
 
 /* Language selector. Every option is a plain link to a page that exists in that language (src/i18n/switch.js), so it works with JavaScript off, in the
-   prerendered HTML and for crawlers. It never redirects by itself and never reads the browser language or the visitor's location.
+   prerendered HTML and for crawlers. It never redirects by itself and never reads the browser language or the visitor's location. Clicking an option also records that language as the visitor's explicit choice (src/lib/languagePreference.js), only so the language suggestion is not shown again.
 
    • variant "dropdown" (desktop header, and the compact button next to the mobile menu): a disclosure button with a popover list.
    • variant "list" (inside the mobile menu): the same links shown directly, as large touch targets.
@@ -51,7 +52,7 @@ export default function LanguageSelector({ variant = 'dropdown', className = '',
         hrefLang={o.htmlLang}
         dir={o.dir}
         aria-current={o.current ? 'true' : undefined}
-        onClick={() => { setOpen(false); onNavigate?.() }}
+        onClick={() => { rememberLanguage(o.code); setOpen(false); onNavigate?.() }}
         className={`${itemClass} ${o.current ? 'text-ink font-semibold' : 'text-ink-muted hover:text-ink'}`}
       >
         <span>{o.label}</span>
@@ -76,6 +77,7 @@ export default function LanguageSelector({ variant = 'dropdown', className = '',
                 hrefLang={o.htmlLang}
                 dir={o.dir}
                 aria-current={o.current ? 'true' : undefined}
+                onClick={() => rememberLanguage(o.code)}
                 className={`underline-offset-4 transition-colors hover:text-ink hover:underline ${o.current ? 'text-ink' : ''}`}
               >
                 {o.label}

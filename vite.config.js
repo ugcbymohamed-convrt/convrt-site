@@ -30,7 +30,7 @@ function devApi() {
           }
         })
       }
-      for (const route of ['free-hooks-subscribe', 'risk-free-apply', 'referral-apply']) {
+      for (const route of ['free-hooks-subscribe', 'risk-free-apply', 'referral-apply', 'visitor-country']) {
         server.middlewares.use(`/api/${route}`, async (req, res, next) => {
           try {
             const { default: handler } = await server.ssrLoadModule(`/api/${route}.js`)

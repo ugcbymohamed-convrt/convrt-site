@@ -4,6 +4,8 @@ import App from './App.jsx'
 import { canHydrate, normalizePathname } from './lib/routes/hydration.js'
 import { preloadForPath } from './lib/routes/preload.js'
 import { initConsent } from './lib/consent.js'
+import { readLanguageChoice } from './lib/languagePreference.js'
+import { currentLocale } from './i18n/locale.js'
 import './index.css'
 
 /* Every public page ships as static HTML (see vite-plugin-static-routes.js). When the HTML in #root was
@@ -50,4 +52,20 @@ if (consent.enabled) {
     document.body.appendChild(host)
     createRoot(host).render(<ConsentManager />)
   })
+}
+
+/* Language suggestion for visitors in Spain (src/lib/languageSuggestion.js). A progressive enhancement on prerendered ENGLISH pages only, after the page has loaded; a visitor who already chose a
+   language (or dismissed it) costs nothing here (no extra request, no chunk). It never redirects and never changes the page's HTML, URL or metadata. */
+if (hydrate && currentLocale() === 'en' && !readLanguageChoice()) {
+  const start = () => import('./lib/languageSuggestion.js').then(({ startLanguageSuggestion }) => startLanguageSuggestion()).catch(() => {})
+  let started = false
+  const idle = () => {
+    if (started) return
+    started = true
+    if ('requestIdleCallback' in window) window.requestIdleCallback(start, { timeout: 3000 })
+    else setTimeout(start, 1500)
+  }
+  // After the page has loaded; on a slow page, at most six seconds in. Either way only in idle time, so it never competes with rendering, hero video or other assets.
+  if (document.readyState === 'complete') idle()
+  else { window.addEventListener('load', idle, { once: true }); setTimeout(idle, 6000) }
 }

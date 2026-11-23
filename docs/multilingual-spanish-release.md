@@ -26,7 +26,7 @@ Deliberately English-only: case studies, blog, free hooks, risk-free trial, refe
 - [x] FAQ and JSON-LD generated from the same Spanish text; one stable Organization `@id`; the noindex Roadmap has no JSON-LD (as in English)
 - [x] EUR pricing mechanism (separate Spanish configuration, "2.750 €" notation, tokens in every sentence, Offers, metadata); **the 13 amounts are owner-approved (2026-11-21)** and the pricing gates are lifted (`docs/multilingual-spanish-eur-pricing.md`)
 - [x] Client quotes verbatim in English, marked `lang="en"`, with a visible note; English-only case studies labelled "(en inglés)"
-- [x] No language preference is stored (language comes from the URL only)
+- [x] The language of a page comes from the URL only. The only stored language data is the visitor's explicit choice (`convrt_language`, see `docs/language-suggestion.md`), used only to stop suggesting Spanish again
 - [x] English pages differ from `origin/main` only by the selector and hreflang tags (`scripts/i18n-english-parity.mjs`: 0 differences)
 - [x] Spanish Roadmap application: see below
 - [ ] Native-Spanish review of all copy (see the list in the report)

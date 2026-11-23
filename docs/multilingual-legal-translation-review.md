@@ -18,7 +18,7 @@ The review translations are kept **outside the repository** (the repo is public 
 2. **Which version prevails** if the two differ (suggest: Spanish documents say the Spanish text governs for Spanish-language visitors, or the English governs; a lawyer must choose). Not added, so no obligation changes.
 3. **Marketing-consent wording in Spanish** (needs its own versioned record: do not reuse "v2"); only relevant when the forms are translated.
 4. **Cookie/consent banner** is English-only and inactive in Production (no GTM). If analytics is ever switched on for Spanish visitors, the banner and its Privacy text must exist in Spanish first.
-5. **Privacy Policy storage list** is exhaustive: any new browser storage (for example a stored language preference) needs a line in both languages. Not added: the selector stores nothing.
+5. **Privacy Policy storage list** is exhaustive: any new browser storage (for example a stored language preference) needs a line in both languages. Added: `convrt_language` (the explicit language choice, used by the language suggestion; `docs/language-suggestion.md`): the Spanish privacy policy needs the same line.
 6. **Privacy text says nothing about the language selector or hreflang**, because neither collects data.
 7. **Questions flagged inside each draft** (terminology: autónomo, leads, "tal cual"; fuero; limitation of liability fit with Spanish law; controller/processor wording).
 
