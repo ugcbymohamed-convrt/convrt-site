@@ -186,7 +186,7 @@ export default {
   "Publishing": "النشر",
   "See what's": "اكتشف ما",
   "possible.": "يمكن تحقيقه.",
-  "Videos shown are examples from independent creators, included to illustrate styles and approaches. They are not necessarily productions by CONVRT.": "الفيديوهات المعروضة أمثلة لصُنّاع محتوى مستقلين، وتهدف إلى توضيح الأساليب والمقاربات. وليست بالضرورة من إنتاج CONVRT.",
+  "Videos shown are examples from independent creators, included to illustrate styles and approaches. They are not necessarily productions by CONVRT.": "تضم المكتبة أمثلة من صُنّاع محتوى مستقلين لتوضيح الأساليب والمقاربات، إضافة إلى أمثلة من أعمال المؤسس وعملاء CONVRT. وليست كل الفيديوهات بالضرورة من إنتاج CONVRT، ويُذكر مصدر كل فيديو في تفاصيله حيثما كان معروفًا.",
   "Video library": "مكتبة الفيديو",
   "Product Demonstration": "عرض المنتج"
 }

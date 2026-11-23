@@ -134,12 +134,13 @@ test('empty hero: with no approved organic videos the three phones stay empty (n
 
 // ── portfolio ────────────────────────────────────────────────────────────────────────────
 test('portfolio: the organic selectors take ONLY approved type "organic" videos (3 hero + 4 gallery supplied 2026-11-20); nothing crosses between the three service pages', () => {
-  assert.equal(PORTFOLIO.filter((i) => i.type === 'organic').length, 7)
+  const EN = PORTFOLIO.filter((i) => !i.onlyIn) // the Arabic site has its own organic videos (Graspo), covered in tests/arabic.test.mjs
+  assert.equal(EN.filter((i) => i.type === 'organic').length, 7)
   assert.deepEqual(selectOrganicHero().map((i) => i.id), ['organic-hero-1', 'organic-hero-2', 'organic-hero-3'], 'hero 1 is the centre phone')
   assert.deepEqual(selectOrganicGallery().map((i) => i.id), ['organic-gal-1', 'organic-gal-2', 'organic-gal-3', 'organic-gal-4'])
   assert.ok(selectOrganicHero().every((i) => fs.existsSync(path.join(ROOT, 'public', i.poster))) && selectOrganicGallery().every((i) => fs.existsSync(path.join(ROOT, 'public', i.poster))), 'every video has its own hand-picked thumbnail file')
-  assert.ok(PORTFOLIO.filter((i) => i.type === 'organic').every((i) => !i.brand && !i.creator && !i.style), 'no brand, creator or style was supplied, so none is invented')
-  assert.equal(new Set(PORTFOLIO.map((i) => i.source?.cloudflareId).filter(Boolean)).size, PORTFOLIO.filter((i) => i.source?.cloudflareId).length, 'no Cloudflare id is reused across entries')
+  assert.ok(EN.filter((i) => i.type === 'organic').every((i) => !i.brand && !i.creator && !i.style), 'no brand, creator or style was supplied, so none is invented')
+  assert.equal(new Set(PORTFOLIO.filter((i) => !i.id.startsWith('ar-graspo')).map((i) => i.source?.cloudflareId).filter(Boolean)).size, PORTFOLIO.filter((i) => !i.id.startsWith('ar-graspo') && i.source?.cloudflareId).length, 'no Cloudflare id is reused across entries')
   const list = [
     sample({ id: 'o-hero', placement: 'hero' }), sample({ id: 'o-gal' }), sample({ id: 'o-unapproved', approval: { ...APPROVED, creatorConsent: false } }),
     sample({ id: 'o-pending', approval: { ...APPROVED, status: 'pending' } }),

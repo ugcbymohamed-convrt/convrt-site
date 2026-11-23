@@ -144,10 +144,11 @@ test('data: the shipped list is valid with unique ids, every showcase video is r
   const ids = PORTFOLIO.map((i) => i.id)
   assert.equal(new Set(ids).size, ids.length)
   for (const i of PORTFOLIO) assert.deepEqual(portfolioProblems(i), [], i.id)
-  const media = PORTFOLIO.map((i) => i.source.cloudflareId ?? i.source.mp4)
+  // the three Arabic Graspo entries (ar-graspo-*) are deliberate Arabic-only copies of the English Graspo panel videos (owner brief 2026-11-23); everything else is listed once
+  const media = PORTFOLIO.filter((i) => !i.id.startsWith('ar-graspo')).map((i) => i.source.cloudflareId ?? i.source.mp4)
   assert.equal(new Set(media).size, media.length, 'no video is listed twice')
-  assert.ok(selectDisplayable(PORTFOLIO).every((i) => !/adscale|elyon|graspo/i.test(JSON.stringify(i))), 'the client case-study clips are not portfolio material, so they never reach /creator-showcase')
-  assert.ok(PORTFOLIO.filter((i) => i.showcase).every((i) => i.approval.portfolioUse === false && i.approval.creatorConsent === false))
+  assert.ok(selectDisplayable(PORTFOLIO).every((i) => !/adscale|elyon|graspo/i.test(JSON.stringify(i))), 'the client case-study clips are not portfolio material, so they never reach the English /creator-showcase')
+  assert.ok(PORTFOLIO.filter((i) => i.showcase && !i.onlyIn).every((i) => i.approval.portfolioUse === false && i.approval.creatorConsent === false))
 })
 
 test('data: each page is a view of the same list: our-work = all approved, UGC page = approved UGC, homepage panels = tagged videos', () => {
@@ -413,7 +414,7 @@ test('regression: structured data names CONVRT as producer only for a video expl
 })
 
 test('regression: production attribution is unknown unless confirmed, and a label appears only for a confirmed value', () => {
-  assert.ok(PORTFOLIO.every((v) => v.production === undefined), 'no entry claims who produced it yet')
+  assert.ok(PORTFOLIO.filter((v) => !v.id.startsWith('ar-graspo')).every((v) => v.production === undefined), 'no entry claims who produced it yet (only the Arabic Graspo entries, which the published case study documents as CONVRT work)')
   assert.ok(portfolioProblems(sample({ production: 'agency' })).length, 'only independent | convrt')
   assert.equal(productionLabel(sample()), '')
   assert.equal(productionLabel(sample({ production: 'independent' })), 'Independent creator')
@@ -423,7 +424,7 @@ test('regression: production attribution is unknown unless confirmed, and a labe
 })
 
 test('regression: the nine homepage client videos stay homepage-only: not in /creator-showcase, the UGC page or the sitemap data, permissions untouched', () => {
-  const clients = PORTFOLIO.filter((v) => v.showcase)
+  const clients = PORTFOLIO.filter((v) => v.showcase && !v.onlyIn) // the English homepage panels (the Arabic ones are Arabic-only entries, covered in tests/arabic.test.mjs)
   assert.equal(clients.length, 9)
   assert.deepEqual([...new Set(clients.map((v) => v.showcase))].sort(), ['adscale', 'elyon', 'graspo'])
   for (const v of clients) {
@@ -464,7 +465,7 @@ test('Creator Showcase folder: 12 creator videos (6 of the original 18 are now s
   assert.equal(added.length, 12)
   assert.deepEqual(added.map((v) => v.id).sort(), Array.from({ length: 18 }, (_, i) => `creator-${String(i + 1).padStart(2, '0')}`).filter((id) => !DUPLICATES_REMOVED.includes(id)))
   assert.deepEqual(added.reduce((m, v) => ({ ...m, [v.industry]: (m[v.industry] || 0) + 1 }), {}), { saas: 3, services: 6, ecommerce: 3 }, 'SaaS 3, Service 6, E-commerce 3 here; the six moved to the spokesperson entries keep their folder industry, so the tabs still hold SaaS 6, Services 8, E-commerce 9')
-  const media = PORTFOLIO.map((v) => v.source.cloudflareId ?? v.source.mp4)
+  const media = PORTFOLIO.filter((v) => !v.id.startsWith('ar-graspo')).map((v) => v.source.cloudflareId ?? v.source.mp4)
   assert.equal(new Set(media).size, media.length, 'no duplicate upload')
   for (const v of added) {
     // creator-05 is ON HOLD (third-party regulated-brand slate; display authorization not recorded): its data stays, but it is not displayable

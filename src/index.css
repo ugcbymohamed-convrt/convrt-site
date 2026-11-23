@@ -578,6 +578,21 @@ body {
   .ow-fade { animation: none; }
 }
 
+/* ── English homepage (design review, Nov 2026): industry-showcase panel swap and review cards ──
+   A short fade-and-rise when an industry's panel appears (a `hidden` panel replays it on reveal). Off for prefers-reduced-motion. */
+@keyframes sc-panel-in {
+  0%   { opacity: 0; transform: translateY(10px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+.sc-panel-in {
+  animation: sc-panel-in 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .sc-panel-in { animation: none; }
+}
+
+
+
 /* ── Right-to-left and Arabic (the Arabic site, /ar/; docs/multilingual-arabic.md) ──────────────────────────────────────────────────────────────────────────────
    Every rule below is scoped to :lang(ar) / dir="rtl", so English and Spanish pages are untouched (tests/arabic.test.mjs).
    • Layout: <html lang="ar" dir="rtl"> is written into the static HTML. The physical left/right utilities of the shared components are mirrored at build time by scripts/postcss-rtl-flip.js
@@ -641,20 +656,6 @@ html[dir='rtl'] { direction: rtl; }
 :lang(ar) svg text[text-anchor='end'] { text-anchor: start; }
 :lang(ar) svg text[text-anchor='middle'] { text-anchor: middle; }
 
-/* ── English homepage (design review, Nov 2026): industry-showcase panel swap and review cards ──
-   A short fade-and-rise when an industry's panel appears (a `hidden` panel replays it on reveal). Off for prefers-reduced-motion. */
-@keyframes sc-panel-in {
-  0%   { opacity: 0; transform: translateY(10px); }
-  100% { opacity: 1; transform: translateY(0); }
-}
-.sc-panel-in {
-  animation: sc-panel-in 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-@media (prefers-reduced-motion: reduce) {
-  .sc-panel-in { animation: none; }
-}
-
-
 /* ── Arabic revision (owner brief 2026-11-23) ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── */
 /* NAVIGATION CONTRAST. The Arabic labels set in the regular weight of the Arabic face read dimmer than the English ones at the same grey; the top bar and the mobile menu use the near-white of the English
    headings instead (same size, same weight scale, no bold), and the hover/focus colour is the brand lime. The dropdown, language selector and CTA are unchanged. */
@@ -676,3 +677,5 @@ html:lang(ar) blockquote.font-editorial { font-family: var(--font-ar); font-weig
 :lang(ar) .ugc-reel { overflow: visible; clip-path: inset(0); vertical-align: baseline; line-height: 1.3; height: 1.3em; }
 :lang(ar) .ugc-reel::before { height: 1.3em; }
 :lang(ar) .ugc-reel-track > span { height: 1.3em; line-height: 1.3; }
+/* The small eyebrow lines (letter-spaced capitals in English) have no case or tracking in Arabic, so at the same pixel size they read smaller than their English twins: a little larger. */
+:lang(ar) #showcase .uppercase { font-size: 13px; }

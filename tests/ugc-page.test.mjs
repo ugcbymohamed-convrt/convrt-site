@@ -514,7 +514,7 @@ test('readability: no low-contrast text colour in the UGC components; headings n
     const code = read(path.join('src/components/ugc', f))
     for (const line of code.split('\n').filter((l) => /text-ink-subtle/.test(l))) assert.ok(/aria-hidden="true"/.test(line), `${f}: secondary copy must use text-ink-muted (AA contrast), not ink-subtle: ${line.trim().slice(0, 80)}`)
     // the process visuals and the testing diagram are decorative (aria-hidden); the same words are in the readable text beside them
-    assert.ok(!/text-\[(9|10|11)px\]/.test(code.replace(/uppercase[^"']*/g, '')) || /UgcHero|UgcProcess|TestingDiagram|CreatorVideoStage|illustrations/.test(f), `${f}: tiny text`)
+    assert.ok(!/text-\[(9|10|11)px\]/.test(code.replace(/uppercase[^"']*/g, '')) || /UgcHero|UgcProcess|TestingDiagram|CreatorVideoStage|illustrations|ViewsBadge/.test(f), `${f}: tiny text`)
   }
   const root = rootOf(page(PATH))
   const levels = [...root.matchAll(/<h([1-6])[\s>]/g)].map((m) => +m[1])

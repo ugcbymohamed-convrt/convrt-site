@@ -43,6 +43,8 @@ const row2 = [
   { src: '/clients/graspo.png',   alt: 'Graspo',   height: 36 },
 ]
 
+const FOUNDER_BRANDS_LABEL = "Brands from the founder's professional experience" // English and Arabic only (the other languages do not render the logo group)
+
 export default function Credibility() {
   const tr = useTr()
   const locale = currentLocale()
@@ -119,7 +121,7 @@ export default function Credibility() {
               </div>
             </>
           )
-          return en ? <div role="group" aria-label={locale === 'en' ? "Brands from the founder's professional experience" : tr("Brands from the founder's professional experience")}>{rows}</div> : rows
+          return en ? <div role="group" aria-label={tr(FOUNDER_BRANDS_LABEL)}>{rows}</div> : rows
         })()}
 
         {/* Headline + CTA below. English: the founder statement now lives with the client-work stage (components/home/IndustryShowcase.jsx). */}

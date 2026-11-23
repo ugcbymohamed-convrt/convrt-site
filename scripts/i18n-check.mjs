@@ -16,6 +16,8 @@ const walk = (d, out = []) => { for (const e of fs.readdirSync(d, { withFileType
    list uses it. Arabic (this phase): the homepage, the UGC page, pricing, the Creator Showcase and the two application flows only; the SaaS, Spokesperson and Organic Social pages, About/Contact/legal,
    the case-study pages, the blog, the referral and free-hooks pages, /scale and the private creator pages stay English (links to them keep their English URL). */
 export const OUT_OF_SCOPE = {
+  // Spanish: the redesigned homepage sections (English + Arabic only; the Spanish homepage keeps CaseStudies / Testimonials until its own design review) and the verified-views badge (no Spanish video has one).
+  es: ['components/home/', 'components/ugc/ViewsBadge.jsx'],
   ar: [
     'components/referrals/', 'components/hooks/', 'components/blog/', 'components/scale/', 'components/creator/',
     'components/elyon/', 'components/ugc/UgcHeroRoadmap',

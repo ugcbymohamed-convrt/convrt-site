@@ -19,7 +19,7 @@ export default {
   "Answer the doubt before they voice it.": "أجب عن الشك قبل أن يُطرح.",
   "Illustrative concept ideas, not real ads.": "أفكار توضيحية فقط، وليست إعلانات حقيقية.",
   "Apply": "قدّم طلبك",
-  "Let’s Find Your Next 5 Ad Concepts.": "ابدأ بطلب أفكارك الإعلانية الخمس.",
+  "Let’s Find Your Next 5 Ad Concepts.": "ابدأ بطلب 5 أفكار إعلانية.",
   "Answer five quick questions. If your brand is a good fit, you can choose a time for your free strategy session straight away.": "أجب عن خمسة أسئلة سريعة، وإن كانت علامتك مناسبة فاختر موعد جلستك فورًا.",
   "What happens next": "ماذا يحدث بعد ذلك",
   "Creative Growth Roadmap qualification": "تأهيل خطة النمو الإبداعية",
