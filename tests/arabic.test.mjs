@@ -198,7 +198,7 @@ test('right-to-left helpers: the arrow that means "next" follows the reading dir
 })
 
 test('PostCSS RTL plugin: mirrors left/right under [dir="rtl"] only, keeps centring and keyframes, flips gradients, preserves cascade order', async () => {
-  const ISL = String.raw`:not\(\[dir="ltr"\] \*\):not\(\[dir="ltr"\]\)`
+  const ISL = String.raw`:not\(\[dir="ltr"\] \*\):not\(\[dir="ltr"\]\)(?::not\(\[dir="ltr"\]\))?` // the values sit one :not() above the resets of the original side
   const css = `.ml-4{margin-left:1rem}.md\\:ml-0{margin-left:0}.left-1\\/2{left:50%}.left-0{left:0}.text-left{text-align:left}.rounded-l-xl{border-top-left-radius:.75rem;border-bottom-left-radius:.75rem}.bg-gradient-to-r{background-image:linear-gradient(to right,var(--tw-gradient-stops))}.pb-2{padding-bottom:.5rem}@keyframes k{from{transform:translateX(0)}to{left:10px}}@media (min-width:768px){.md\\:pr-8{padding-right:2rem}}`
   const out = (await postcss([rtlFlip()]).process(css, { from: undefined })).css
   assert.match(out, new RegExp(String.raw`\[dir="rtl"\] \.ml-4${ISL}\s*\{\s*margin-right:\s*1rem`))
@@ -206,15 +206,23 @@ test('PostCSS RTL plugin: mirrors left/right under [dir="rtl"] only, keeps centr
   assert.match(out, new RegExp(String.raw`\[dir="rtl"\] \.text-left${ISL}\s*\{\s*text-align:\s*right`))
   assert.match(out, new RegExp(String.raw`\[dir="rtl"\] \.rounded-l-xl${ISL}\s*\{\s*border-top-right-radius:\s*\.75rem;\s*border-bottom-right-radius:\s*\.75rem`))
   assert.match(out, new RegExp(String.raw`\[dir="rtl"\] \.bg-gradient-to-r${ISL}\s*\{\s*background-image:\s*linear-gradient\(to left`))
-  assert.match(out, new RegExp(String.raw`@media \(min-width:768px\)\s*\{\s*\.md\\:pr-8\s*\{[^}]*\}\s*\[dir="rtl"\] \.md\\:pr-8${ISL}\s*\{\s*padding-left:\s*2rem`))
+  assert.match(out, new RegExp(String.raw`@media \(min-width:768px\)\s*\{\s*\.md\\:pr-8\s*\{[^}]*\}\s*(?:\[dir="rtl"\] \.md\\:pr-8${ISL}\s*\{\s*padding-right:\s*0\s*\}\s*)?\[dir="rtl"\] \.md\\:pr-8${ISL}\s*\{\s*padding-left:\s*2rem`))
   assert.ok(!/\[dir="rtl"\] \.left-1\\\/2/.test(out), 'the centring idiom left:50% is never mirrored')
   assert.ok(!/\[dir="rtl"\] \.pb-2/.test(out), 'rules without a side are untouched')
   assert.ok(!/\[dir="rtl"\][^{]*\{[^}]*left:\s*10px/.test(out.split('@keyframes')[1] ?? ''), 'keyframes are not mirrored')
   assert.ok(out.indexOf('.ml-4{') < out.indexOf('[dir="rtl"] .ml-4') && out.indexOf('[dir="rtl"] .ml-4') < out.indexOf('.md\\:ml-0{'), 'the mirror sits right after its rule, so md:ml-0 still overrides ml-4')
   const twice = (await postcss([rtlFlip()]).process(out, { from: undefined })).css
   assert.equal(twice, out, 'running it again changes nothing (never mirrors a mirror)')
+  // the ORIGINAL side stops applying (no doubled gaps or borders), in a rule BELOW the mirrored values so an element with both ml-* and mr-* keeps both mirrored values
+  assert.match(out, new RegExp(String.raw`\[dir="rtl"\] \.ml-4:not\(\[dir="ltr"\] \*\):not\(\[dir="ltr"\]\)\s*\{\s*margin-left:\s*0\s*\}`))
+  assert.match(out, new RegExp(String.raw`\[dir="rtl"\] \.left-0:not\(\[dir="ltr"\] \*\):not\(\[dir="ltr"\]\)\s*\{\s*left:\s*auto\s*\}`))
+  const spec = (sel) => (sel.match(/\[dir="ltr"\]/g) || []).length
+  const both = (await postcss([rtlFlip()]).process('.ml-4{margin-left:1rem}.mr-2{margin-right:.5rem}', { from: undefined })).css
+  const rules = [...both.matchAll(/([^{}]+)\{([^}]*)\}/g)].map((m) => ({ sel: m[1].trim(), decl: m[2].trim() }))
+  const setML = rules.find((r) => /\.mr-2/.test(r.sel) && /margin-left:\s*\.5rem/.test(r.decl)); const resetML = rules.find((r) => /\.ml-4/.test(r.sel) && /margin-left:\s*0/.test(r.decl))
+  assert.ok(setML && resetML && spec(setML.sel) > spec(resetML.sel), 'the mirrored value always outranks the reset of the same side')
   const pseudo = (await postcss([rtlFlip()]).process('.pl-2::before{padding-left:1px}', { from: undefined })).css
-  assert.match(pseudo, /\[dir="rtl"\] \.pl-2:not\(\[dir="ltr"\] \*\):not\(\[dir="ltr"\]\)::before\s*\{\s*padding-right:\s*1px/, 'the island exclusion goes before a pseudo-element')
+  assert.match(pseudo, /\[dir="rtl"\] \.pl-2:not\(\[dir="ltr"\] \*\):not\(\[dir="ltr"\]\)(?::not\(\[dir="ltr"\]\))?::before\s*\{\s*padding-right:\s*1px/, 'the island exclusion goes before a pseudo-element')
 })
 
 test('typography: self-hosted Arabic font (four weights, unicode-range, swap), scoped CSS, no letter-spacing on Arabic', () => {

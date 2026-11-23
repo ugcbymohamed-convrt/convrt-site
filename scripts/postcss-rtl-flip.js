@@ -27,10 +27,21 @@ function inKeyframes(node) {
 /* A left-to-right ISLAND (an element with dir="ltr" inside the page, e.g. an English client quote) keeps its original, un-mirrored layout: the mirrored copy must not match the island or anything inside it.
    The exclusion is added to the LAST compound selector, before any pseudo-element (::before, ::placeholder, ::-webkit-scrollbar ...), which cannot be followed by more selectors. */
 const ISLAND = ':not([dir="ltr"] *):not([dir="ltr"])'
-function outsideLtrIslands(selector) {
+function outsideLtrIslands(selector, extra = '') {
   const m = selector.match(/(?<!\\)(?:::|:(?:before|after|first-line|first-letter)\b)/) // not an ESCAPED colon (Tailwind's `sm\:before\:mx-2` is a class NAME)
-  return m ? `${selector.slice(0, m.index)}${ISLAND}${selector.slice(m.index)}` : `${selector}${ISLAND}`
+  return m ? `${selector.slice(0, m.index)}${ISLAND}${extra}${selector.slice(m.index)}` : `${selector}${ISLAND}${extra}`
 }
+
+/* The ORIGINAL side must stop applying in right-to-left (a mirrored margin-left would otherwise leave the left margin in place as well, doubling every gap and border). It is reset to its initial value
+   in a rule of LOWER specificity than the mirrored values, so that an element carrying both an `ml-*` and an `mr-*` utility ends with each mirrored value, whatever the order of the two rules. */
+const RESET = (prop) => {
+  if (/^(margin|padding)-(left|right)$/.test(prop)) return '0'
+  if (/^border-(left|right)-width$/.test(prop)) return '0'
+  if (/^border-(top|bottom)-(left|right)-radius$/.test(prop)) return '0'
+  if (prop === 'left' || prop === 'right') return 'auto'
+  return null
+}
+const TIER2 = ':not([dir="ltr"])'
 
 const plugin = () => ({
   postcssPlugin: 'convrt-rtl-flip',
@@ -44,12 +55,14 @@ const plugin = () => ({
     })
     for (const rule of targets) {
       const flipped = []
+      const resets = []
       rule.each((d) => {
         if (d.type !== 'decl') return
         const prop = d.prop.toLowerCase()
         if (NAME_HAS_SIDE.test(prop)) {
           if ((prop === 'left' || prop === 'right') && d.value.trim() === '50%') return // centring idiom
           flipped.push({ prop: swapName(prop), value: d.value, important: d.important })
+          if (RESET(prop) !== null) resets.push({ prop, value: RESET(prop), important: d.important })
         } else if (VALUE_FLIPPED.has(prop) && /\b(left|right)\b/.test(d.value)) {
           flipped.push({ prop, value: swapWords(d.value), important: d.important })
         } else if ((prop === 'background-image' || prop === 'background') && /linear-gradient\(\s*(to\s+)?(left|right)\b/.test(d.value)) {
@@ -58,13 +71,21 @@ const plugin = () => ({
         }
       })
       if (!flipped.length) continue
-      const mirror = rule.selectors.map((s) => `[dir="rtl"] ${outsideLtrIslands(s)}`)
+      const lower = rule.selectors.map((sel) => `[dir="rtl"] ${outsideLtrIslands(sel)}`) // resets: below the mirrored values
+      const mirror = rule.selectors.map((sel) => `[dir="rtl"] ${outsideLtrIslands(sel, TIER2)}`)
       const next = rule.next()
-      if (next?.type === 'rule' && next.selectors.join(',') === mirror.join(',')) continue // already mirrored (running the plugin twice must not stack copies)
-      const copy = new Rule({ selectors: mirror })
-      copy.__rtlDone = true
-      for (const f of flipped) copy.append({ prop: f.prop, value: f.value, important: f.important })
-      rule.after(copy)
+      if (next?.type === 'rule' && (next.selectors.join(',') === mirror.join(',') || next.selectors.join(',') === lower.join(','))) continue // already mirrored (running the plugin twice must not stack copies)
+      const setRule = new Rule({ selectors: mirror })
+      setRule.__rtlDone = true
+      for (const f of flipped) setRule.append({ prop: f.prop, value: f.value, important: f.important })
+      const keep = resets.filter((r) => !flipped.some((f) => f.prop === r.prop && f.important === r.important)) // a side that is also SET by this rule needs no reset
+      if (keep.length) {
+        const resetRule = new Rule({ selectors: lower })
+        resetRule.__rtlDone = true
+        for (const r of keep) resetRule.append({ prop: r.prop, value: r.value, important: r.important })
+        rule.after(resetRule)
+        resetRule.after(setRule)
+      } else rule.after(setRule)
     }
   },
 })
