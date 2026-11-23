@@ -14,26 +14,11 @@ export default function Footer() {
   const en = locale === 'en'
   const onHome = basePath === '/'
   const homePrefix = onHome ? '' : localizedPath(locale, '/')
-  /* The Studio menu mirrors the top menu (owner, Nov 2026): the same links in the same order, and nothing else. The individual service pages are linked from the Services menu in the top bar on every page; About
-     moved to the bottom row beside the legal links. English: Services, Creator Showcase, Case Studies, Pricing, Blog, Contact, Refer & Earn. Other languages list only what their own top menu lists. */
-  const STUDIO_LINKS = [
-    { key: 'services', href: `${homePrefix}#services`, label: tr('Services') },
-    { key: 'showcase', href: h(CREATOR_SHOWCASE_PATH), label: tr('Creator Showcase') },
-    en && { key: 'case-studies', href: '/case-studies', label: 'Case Studies' },
-    !en && { key: 'how', href: `${homePrefix}#how-it-works`, label: tr('How It Works') },
-    { key: 'pricing', href: h('/pricing'), label: tr('Pricing') },
-    en && { key: 'blog', href: '/blog', label: 'Blog' },
-    { key: 'contact', href: TRUST_PAGES_PUBLISHED ? h(CONTACT_PATH) : `${homePrefix}#contact`, label: tr('Contact') },
-    en && { key: 'referrals', href: REFERRALS_PATH, label: 'Refer & Earn' },
-  ].filter(Boolean)
-  const half = Math.ceil(STUDIO_LINKS.length / 2)
   return (
     <footer className="border-t border-hairline bg-canvas">
       <div className="mx-auto max-w-7xl px-5 py-14 md:px-8 md:py-16">
-        {/* THREE EQUAL COLUMNS from md up. Left: the brand (logo, description, languages) with "Get in touch" under it. Right (two thirds): the Studio menu, one heading and the list split into two
-            balanced columns, so the long list no longer runs down one tall column. Same links in the same order as before; on a phone everything stacks and the two list halves sit side by side. */}
-        <div className="grid grid-cols-1 gap-10 md:grid-cols-3 md:gap-8 lg:gap-12">
-          <div>
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-8">
+          <div className="md:col-span-6">
             <Logo />
             <p className="mt-5 max-w-sm text-sm text-ink-muted leading-relaxed">
               {en ? (
@@ -45,45 +30,49 @@ export default function Footer() {
               ) : tr('A performance creative studio building UGC ads, spokesperson videos, organic social content, and creative strategy for brands that want content with one purpose: conversion.')}
             </p>
             <LanguageSelector variant="inline" className="mt-5 text-sm text-ink-muted" />
-
-            <div className="mt-8">
-              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-ink-subtle">
-                {tr('Get in touch')}
-              </p>
-              <ul className="mt-4 space-y-2.5 text-sm text-ink-muted">
-                <li>
-                  <a className="hover:text-ink transition-colors" href={`mailto:${CONTACT_EMAIL}`}>
-                    {CONTACT_EMAIL}
-                  </a>
-                </li>
-                <li className="flex gap-3 pt-2">
-                  <Social href={COMPANY_LINKEDIN_URL} label={tr('CONVRT on LinkedIn')}>
-                    <rect x="3" y="3" width="14" height="14" rx="2" stroke="currentColor" strokeWidth="1.4" fill="none" />
-                    <path d="M6 8.5V14M6 6.5v.01M9 14v-3a2 2 0 014 0v3M9 14V8.5" stroke="currentColor" strokeWidth="1.4" fill="none" strokeLinecap="round" />
-                  </Social>
-                  <Social href={INSTAGRAM_URL} label={tr('CONVRT on Instagram')}>
-                    <rect x="3" y="3" width="14" height="14" rx="4.5" stroke="currentColor" strokeWidth="1.4" fill="none" />
-                    <circle cx="10" cy="10" r="3.2" stroke="currentColor" strokeWidth="1.4" fill="none" />
-                    <circle cx="14.2" cy="5.8" r="0.9" fill="currentColor" />
-                  </Social>
-                </li>
-              </ul>
-            </div>
           </div>
 
-          <nav aria-label={tr('Studio')} className="md:col-span-2">
+          <div className="md:col-span-3">
             <p className="text-xs font-semibold uppercase tracking-[0.16em] text-ink-subtle">
               {tr('Studio')}
             </p>
-            <div className="mt-4 grid grid-cols-2 gap-x-8 gap-y-2.5 text-sm text-ink-muted md:gap-x-12 [&>ul]:space-y-2.5">
-              <ul>
-                {STUDIO_LINKS.slice(0, half).map((l) => <li key={l.key}><a className="hover:text-ink transition-colors" href={l.href}>{l.label}</a></li>)}
-              </ul>
-              <ul>
-                {STUDIO_LINKS.slice(half).map((l) => <li key={l.key}><a className="hover:text-ink transition-colors" href={l.href}>{l.label}</a></li>)}
-              </ul>
-            </div>
-          </nav>
+            {/* The Studio menu mirrors the top menu (owner, Nov 2026): the same links in the same order, nothing else. The individual service pages are linked from the Services dropdown in the top bar on
+                every page. English: Services, Creator Showcase, Case Studies, Pricing, Blog, Contact, Refer & Earn. Other languages list what their own top menu lists. */}
+            <ul className="mt-4 space-y-2.5 text-sm text-ink-muted">
+              <li><a className="hover:text-ink transition-colors" href={`${homePrefix}#services`}>{tr('Services')}</a></li>
+              <li><a className="hover:text-ink transition-colors" href={h(CREATOR_SHOWCASE_PATH)}>{tr('Creator Showcase')}</a></li>
+              {en && <li><a className="hover:text-ink transition-colors" href="/case-studies">Case Studies</a></li>}
+              {!en && <li><a className="hover:text-ink transition-colors" href={`${homePrefix}#how-it-works`}>{tr('How It Works')}</a></li>}
+              <li><a className="hover:text-ink transition-colors" href={h('/pricing')}>{tr('Pricing')}</a></li>
+              {en && <li><a className="hover:text-ink transition-colors" href="/blog">Blog</a></li>}
+              <li><a className="hover:text-ink transition-colors" href={TRUST_PAGES_PUBLISHED ? h(CONTACT_PATH) : `${homePrefix}#contact`}>{tr('Contact')}</a></li>
+              {en && <li><a className="hover:text-ink transition-colors" href={REFERRALS_PATH}>Refer &amp; Earn</a></li>}
+            </ul>
+          </div>
+
+          <div className="md:col-span-3">
+            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-ink-subtle">
+              {tr('Get in touch')}
+            </p>
+            <ul className="mt-4 space-y-2.5 text-sm text-ink-muted">
+              <li>
+                <a className="hover:text-ink transition-colors" href={`mailto:${CONTACT_EMAIL}`}>
+                  {CONTACT_EMAIL}
+                </a>
+              </li>
+              <li className="flex gap-3 pt-2">
+                <Social href={COMPANY_LINKEDIN_URL} label={tr('CONVRT on LinkedIn')}>
+                  <rect x="3" y="3" width="14" height="14" rx="2" stroke="currentColor" strokeWidth="1.4" fill="none" />
+                  <path d="M6 8.5V14M6 6.5v.01M9 14v-3a2 2 0 014 0v3M9 14V8.5" stroke="currentColor" strokeWidth="1.4" fill="none" strokeLinecap="round" />
+                </Social>
+                <Social href={INSTAGRAM_URL} label={tr('CONVRT on Instagram')}>
+                  <rect x="3" y="3" width="14" height="14" rx="4.5" stroke="currentColor" strokeWidth="1.4" fill="none" />
+                  <circle cx="10" cy="10" r="3.2" stroke="currentColor" strokeWidth="1.4" fill="none" />
+                  <circle cx="14.2" cy="5.8" r="0.9" fill="currentColor" />
+                </Social>
+              </li>
+            </ul>
+          </div>
         </div>
 
         <div className="mt-12 pt-6 border-t border-hairline flex flex-col md:flex-row md:items-center md:justify-between gap-3 text-xs text-ink-subtle">

@@ -271,7 +271,7 @@ test('every form and the cookie preferences link the Privacy Policy, and the foo
     assert.match(read(f), /PRIVACY_POLICY_URL/, f)
   }
   const footer = read('src/components/Footer.jsx')
-  for (const p of ['ABOUT_PATH', 'PRIVACY_PATH', 'TERMS_PATH', 'LEGAL_NOTICE_PATH', 'CONTACT_PATH']) assert.ok(footer.includes(`href={${p}}`) || footer.includes(`href={h(${p})}`) || footer.includes(`? ${p} :`) || footer.includes(`? h(${p}) :`) || footer.includes(`href: h(${p})`), p)
+  for (const p of ['ABOUT_PATH', 'PRIVACY_PATH', 'TERMS_PATH', 'LEGAL_NOTICE_PATH', 'CONTACT_PATH']) assert.ok(footer.includes(`href={${p}}`) || footer.includes(`href={h(${p})}`) || footer.includes(`? ${p} :`) || footer.includes(`? h(${p}) :`), p)
 })
 
 async function importSim(flags, dirName) {
