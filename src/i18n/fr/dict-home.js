@@ -5,7 +5,7 @@ export default {
   "Performance creatives": "Des vidéos publicitaires",
   "engineered to": "pensées pour",
   "From creative strategy and scripting to creator casting, filming and editing. We produce human-led UGC ads, SaaS videos, spokesperson videos and organic social content, ready to perform.":
-    "De la stratégie créative au montage, nous produisons des publicités UGC avec de vraies personnes, des vidéos avec porte-parole, des vidéos SaaS et des contenus pour les réseaux sociaux, pensés pour performer.",
+    "De la stratégie au montage, nous produisons des publicités UGC, des vidéos avec porte-parole, des vidéos SaaS et du contenu pour les réseaux sociaux, conçus pour performer.",
   "Explore Videos": "Voir nos réalisations",
 
   // Founder credibility (the figures are the founder's combined experience: the attribution caption lives in dict-geo.js)

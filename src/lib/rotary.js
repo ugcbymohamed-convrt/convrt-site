@@ -50,7 +50,7 @@ export function pose2(i, pos) {
   const arc = Math.sin(Math.PI * b) // 0 at both rests, 1 half-way
   const side = i === 0 ? -1 : 1 // frame 0 swings out to the left when it moves, frame 1 to the right: a fixed identity, so the same exchange looks the same both ways
   return {
-    x: 0.64 * b + side * 0.2 * arc,
+    x: 0.54 * b + side * 0.2 * arc,
     y: -0.15 * b - 0.03 * arc,
     scale: 1 - 0.22 * b,
     scaleY: 1 - 0.22 * b,

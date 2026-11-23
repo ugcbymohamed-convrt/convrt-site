@@ -22,6 +22,6 @@ export const FR_HOME_HERO = {
   offersLabel: 'Pas encore prêt ? Deux autres façons de commencer, gratuitement.',
   offers: {
     video: { title: ['1 vidéo', 'GRATUITE'], description: 'Testez notre production sans risque.', cta: 'Voir si vous êtes éligible' },
-    hooks: { title: ['10 hooks publicitaires', 'GRATUITS'], description: 'Des accroches inédites pour vos prochaines pubs.', cta: 'Bientôt disponible' },
+    hooks: { title: ['10 hooks pub', 'GRATUITS'], description: 'Des accroches inédites pour vos prochaines pubs.', cta: 'Bientôt disponible' },
   },
 }
