@@ -67,6 +67,15 @@ export const SAAS_FORMAT_STEPS = {
   note: 'Illustration only. Which formats a project uses, and what is delivered, depends on your approved brief.',
 }
 
+/* VIDEO ORDER (English design review, Nov 2026). The hero stage opens on its FIRST video (large centre phone); the gallery follows the same rule. The founder's own presenter video
+   (`spokesperson-gal-1`, listed for this page with alsoOn.saas = 'hero') is the featured centre phone, and the creator example that used to open the hero (`saas-creator-1`, now placement
+   'gallery') is the THIRD gallery video. Listed ids come first, in this order; any other video follows in its usual order (see orderedBy in src/content/portfolio.js). No video appears twice:
+   a video is in the hero OR the gallery, decided by its placement on this page. */
+export const SAAS_VIDEO_ORDER = {
+  hero: ['spokesperson-gal-1', 'saas-creator-2', 'creator-04'],
+  gallery: ['spokesperson-gal-3', 'spokesperson-hero-1', 'saas-creator-1'],
+}
+
 /* 4. SHOWCASE (the horizontal gallery). The format filter appears only when at least two formats have an approved video. */
 export const SAAS_GALLERY = {
   id: 'saas-videos',

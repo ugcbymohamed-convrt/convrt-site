@@ -47,8 +47,10 @@ export default function Credibility() {
   const tr = useTr()
   const locale = currentLocale()
   const action = primaryAction(locale)
+  /* English (design review, Nov 2026): the statement flows straight into the industry showcase below it (no bottom rule, tighter bottom padding) and the two buttons now close the showcase. Other languages keep their layout. */
+  const en = locale === 'en'
   return (
-    <section id="clients" className="relative border-y border-hairline bg-canvas overflow-hidden">
+    <section id="clients" className={en ? 'relative border-t border-hairline bg-canvas overflow-hidden' : 'relative border-y border-hairline bg-canvas overflow-hidden'}>
       {/*
         Logo knockout filter — turns any logo (transparent-bg, white-bg, or mixed)
         into a clean white silhouette on the dark canvas:
@@ -106,16 +108,22 @@ export default function Credibility() {
         className="pointer-events-none absolute inset-x-0 top-1/2 -translate-y-1/2 h-[80%] bg-[radial-gradient(ellipse_at_center,_rgba(213,255,64,0.10)_0%,_rgba(213,255,64,0.03)_45%,_transparent_70%)]"
       />
 
-      <div className="relative mx-auto max-w-7xl px-5 py-16 md:px-8 md:py-20">
-        {/* Top marquee */}
-        <LogoMarquee logos={row1} direction="forward" />
+      <div className={en ? 'relative mx-auto max-w-7xl px-5 pb-2 pt-12 md:px-8 md:pb-4 md:pt-16' : 'relative mx-auto max-w-7xl px-5 py-16 md:px-8 md:py-20'}>
+        {/* Top marquee, then the bottom marquee in the opposite direction */}
+        {(() => {
+          const rows = (
+            <>
+              <LogoMarquee logos={row1} direction="forward" />
+              <div className={en ? 'mt-7 md:mt-9' : 'mt-8 md:mt-10'}>
+                <LogoMarquee logos={row2} direction="reverse" />
+              </div>
+            </>
+          )
+          return en ? <div role="group" aria-label="Brands from the founder's professional experience">{rows}</div> : rows
+        })()}
 
-        {/* Bottom marquee — opposite direction */}
-        <div className="mt-8 md:mt-10">
-          <LogoMarquee logos={row2} direction="reverse" />
-        </div>
-
-        {/* Headline + CTA below */}
+        {/* Headline + CTA below. English: the founder statement now lives with the client-work stage (components/home/IndustryShowcase.jsx). */}
+        {!en && (
         <div className="mt-14 md:mt-16 flex flex-col items-center text-center gap-10 md:gap-12">
           <div className="flex flex-col items-center gap-4">
             <h2 className="font-display font-semibold tracking-display text-ink leading-[1.1] text-3xl md:text-4xl lg:text-[44px] max-w-3xl">
@@ -152,6 +160,7 @@ export default function Credibility() {
             )}
           </div>
         </div>
+        )}
       </div>
     </section>
   )

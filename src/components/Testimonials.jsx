@@ -1,6 +1,9 @@
 import { useRef, useEffect, useState } from 'react'
 import { useTr } from '../i18n/tr.js'
 import { currentLocale } from '../i18n/locale.js'
+import { REVIEWS as REVIEW_SOURCE } from '../content/reviews.js'
+
+const FULL = Object.fromEntries(REVIEW_SOURCE.map((r) => [r.id, r.full]))
 
 /* ─────────────────────────────────────────────
    SECTION — SOCIAL PROOF / TESTIMONIALS
@@ -17,7 +20,7 @@ const REVIEWS = [
     flag: '🇦🇪',
     stars: 5,
     badge: 'Repeat Client',
-    text: "Mohamed understood the concept really well and actually exceeded my expectations with the quality. The videos are high quality, delivered on time, and the communication throughout was excellent. I've already ordered again, looking forward to continuing this partnership.",
+    text: FULL.elyon,
     accentColor: '#f59e0b',
     glowColor: 'rgba(245,158,11,0.12)',
     logoFilter: 'brightness(0) invert(1)',
@@ -33,7 +36,7 @@ const REVIEWS = [
     flag: '🇮🇱',
     stars: 5,
     badge: 'Repeat Client',
-    text: "Working with Mohamad was an absolute pleasure. He's professional, creative, and truly understands what makes content perform. The UGC videos he created were exactly what we needed to scale our ads. We've already come back for a second order and plan to continue working together long-term.",
+    text: FULL.adscale,
     accentColor: '#3b82f6',
     glowColor: 'rgba(59,130,246,0.12)',
     logoFilter: 'brightness(0) invert(1)',
@@ -49,7 +52,7 @@ const REVIEWS = [
     flag: '🇳🇱',
     stars: 5,
     badge: 'Repeat Client',
-    text: "The videos are amazing again. Every time we work together the quality just keeps getting better. Fast delivery, great communication, and the content performs exactly the way we need it to. This is our third order and it won't be the last.",
+    text: FULL.talk360,
     accentColor: '#22d3ee',
     glowColor: 'rgba(34,211,238,0.12)',
     logoFilter: 'none',

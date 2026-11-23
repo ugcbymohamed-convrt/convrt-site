@@ -640,3 +640,17 @@ html[dir='rtl'] { direction: rtl; }
 :lang(ar) svg text { text-anchor: end; }
 :lang(ar) svg text[text-anchor='end'] { text-anchor: start; }
 :lang(ar) svg text[text-anchor='middle'] { text-anchor: middle; }
+
+/* ── English homepage (design review, Nov 2026): industry-showcase panel swap and review cards ──
+   A short fade-and-rise when an industry's panel appears (a `hidden` panel replays it on reveal). Off for prefers-reduced-motion. */
+@keyframes sc-panel-in {
+  0%   { opacity: 0; transform: translateY(10px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+.sc-panel-in {
+  animation: sc-panel-in 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .sc-panel-in { animation: none; }
+}
+

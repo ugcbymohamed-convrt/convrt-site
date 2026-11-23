@@ -53,9 +53,11 @@ test('the literal figures live in siteStats.js only (components and pages read t
 
 test('homepage: "clients" not "brands", founder attribution in the headline and caption, footnote under the strip, every figure marked, labels unchanged', () => {
   const h = unesc(page('/')).replace(/<!-- -->/g, '')
-  assert.match(h, /Our founder has worked with <span class="text-lime">500\+ clients<\/span> across ecommerce, apps, SaaS, and global consumer markets\./)
+  // English design review (Nov 2026): the owner-approved two-line wording. The figure still comes from siteStats and is still attributed to the founder.
+  assert.match(h, /Founder experience[\s\S]{0,400}Worked with <span class="block text-lime sm:inline">500\+ clients<\/span>/)
   assert.ok(!/Trusted by(<[^>]+>|\s)*500\+/.test(h) && !/500\+ brands/.test(h))
-  assert.ok(h.includes(FOUNDER_EXPERIENCE.caption))
+  assert.ok(h.includes(FOUNDER_EXPERIENCE.captionShort) && /^Founder experience across CONVRT Studio and other creative production work\.$/.test(FOUNDER_EXPERIENCE.captionShort), 'the English homepage shows the owner-approved one-line disclosure')
+  assert.ok(FOUNDER_EXPERIENCE.caption.includes('CONVRT Studio and other professional creative production work'), 'the long caption (Spanish homepage, claims register) is unchanged')
   for (const label of ['Videos produced', 'Views generated', 'of clients return for more']) assert.ok(h.includes(`${label}<span aria-hidden="true">*</span>`), label)
   for (const v of ['1,200+', '40M+', '50%+']) assert.ok(h.includes(`>${v}</span>`), v)
   assert.ok(h.includes(`* ${FOUNDER_EXPERIENCE.footnote}`))
@@ -137,7 +139,10 @@ test('hero posters: real alt text from the owner-written caption, no duplicate n
   const imgs = page('/').match(/<img\b[^>]*>/g) || []
   assert.ok(imgs.length > 20)
   assert.deepEqual(imgs.filter((i) => !/\balt=/.test(i)), [], 'no image without alt')
-  assert.deepEqual(imgs.filter((i) => /\balt=""/.test(i)), [], 'no empty alt on the homepage')
+  // The only empty alts left are decorative thumbnails inside a button that already has its own aria-label: the creator-carousel card posters (405x720) and the showcase thumbnails (64x112).
+  const decorative = (i) => /width="(405|64)"/.test(i)
+  assert.deepEqual(imgs.filter((i) => /\balt=""/.test(i) && !decorative(i)), [], 'no empty alt on the homepage')
+  assert.ok(imgs.filter((i) => /\balt=""/.test(i)).every(decorative))
   for (const c of ['CONVRT UGC ad example.', 'Creator-led UGC ad example 1.', 'Creator-led UGC ad example 2.']) assert.ok(page('/').includes(`alt="${c}"`), c)
 })
 
