@@ -171,7 +171,7 @@ export default function GraspoDistribution() {
                 <svg viewBox="0 0 20 20" width="14" height="14" fill="none"><path d="M4 10.5l4 4 8-9" stroke={ACCENT} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
               </div>
               <p className="text-[13px] text-ink-muted leading-relaxed">
-                <span className="font-semibold text-ink">{tr('100% organic on Instagram.')}</span> {tr('All 6.27M Instagram views came from organic reach,')} <span className="tabular-nums">$0</span> {tr('spent on paid amplification for that distribution.')}
+                <span className="font-semibold text-ink">{tr('100% organic on Instagram.')}</span> {tr('All 6.27M Instagram views came from organic reach,')} <span className="tabular-nums" dir={ar ? 'ltr' : undefined}>$0</span> {tr('spent on paid amplification for that distribution.')}
               </p>
             </div>
           </div>

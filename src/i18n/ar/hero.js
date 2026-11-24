@@ -13,7 +13,7 @@ export const AR_HERO = {
     secondary: { label: 'مكتبة الفيديوهات', href: CREATOR_SHOWCASE_PATH },
   },
   'spokesperson-h1': {
-    lines: [['فيديوهات', 'Spokesperson.'], ['بوجوه', 'حقيقية']],
+    lines: [['فيديوهات', 'Spokesperson'], ['بوجوه', 'حقيقية']],
     lead: ['ورسائل'],
     words: ['واضحة', 'مقنعة', 'مباشرة'],
     sizer: 'مقنعة.',

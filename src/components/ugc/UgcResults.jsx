@@ -51,7 +51,7 @@ function RoasNumber({ value, locale }) {
     io.observe(el)
     return () => { io.disconnect(); cancelAnimationFrame(raf) }
   }, [autoplay, value])
-  return <span ref={ref} className="tabular-nums">{shown == null ? localizeStat(locale, value) : localizeStat(locale, `${shown.toFixed(2)}x`)}</span>
+  return <span ref={ref} className="tabular-nums" dir={locale === 'ar' ? 'ltr' : undefined}>{shown == null ? localizeStat(locale, value) : localizeStat(locale, `${shown.toFixed(2)}x`)}</span>
 }
 
 export default function UgcResults() {

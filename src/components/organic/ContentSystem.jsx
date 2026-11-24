@@ -5,6 +5,7 @@ import { Icon } from '../scenes/sceneKit.jsx'
 import { ORGANIC_SYSTEM as CONTENT } from '../../content/organicSocialPage.js'
 import { PILLARS } from './OrganicScenes.jsx'
 import { tr } from '../../i18n/tr.js'
+import { dayLabel } from '../../i18n/ar/weekdays.js'
 import { currentLocale } from '../../i18n/locale.js'
 import { localizeConfig } from '../../i18n/content.js'
 import { ES_SECTION_INTROS } from '../../i18n/es/labels.js'
@@ -98,7 +99,7 @@ function ScenePlan() {
         <div className="w-full max-w-[17rem] shrink-0 sm:max-w-[22rem] lg:w-[16.5rem]">
           <Cap>{tr('3 · Content calendar')}</Cap>
           <div className="mt-1.5 rounded-2xl border border-lime/40 bg-surface-2 p-2 sm:p-2.5" style={{ boxShadow: '0 0 40px -18px rgba(213,255,64,0.45)' }}>
-            <div className="mb-1 grid grid-cols-5 gap-1 text-center text-[9px] font-semibold uppercase tracking-[0.1em] text-ink-muted">{['M', 'T', 'W', 'T', 'F'].map((d, i) => <span key={`${d}${i}`}>{d}</span>)}</div>
+            <div className="mb-1 grid grid-cols-5 gap-1 text-center text-[9px] font-semibold uppercase tracking-[0.1em] text-ink-muted">{['M', 'T', 'W', 'T', 'F'].map((d, i) => <span key={`${d}${i}`}>{dayLabel(currentLocale(), d, i)}</span>)}</div>
             {slots.map((row, r) => (
               <div key={r} className="mb-1 grid grid-cols-5 gap-1 last:mb-0">
                 {row.map((idx, c) => {
@@ -184,7 +185,7 @@ function ScenePublishLearn() {
             const p = PILLARS.find((x) => x.id === id)
             return (
               <div key={`${d}${i}`} className="flex flex-col items-center gap-1">
-                <span className="text-[9px] font-semibold uppercase tracking-[0.1em] text-ink-muted">{d}</span>
+                <span className="text-[9px] font-semibold uppercase tracking-[0.1em] text-ink-muted">{dayLabel(currentLocale(), d, i)}</span>
                 {p
                   ? <Clip variant={PEOPLE[p.id]} color={p.color} className="org-drop h-[6.6rem] sm:h-[11rem] lg:h-[14rem]"><Caption color={p.color} /></Clip>
                   : <span className="block aspect-[9/16] h-[6.6rem] rounded-xl border border-dashed border-white/10 sm:h-[11rem] lg:h-[14rem]" />}

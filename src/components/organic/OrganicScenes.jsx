@@ -1,6 +1,8 @@
 import { Avatar, CheckBadge, delay } from '../ugc/illustrations.jsx'
 import { LIME, VIOLET, CORAL, PINK, Skel, Tag, Label, Icon } from '../scenes/sceneKit.jsx'
 import { tr } from '../../i18n/tr.js'
+import { currentLocale } from '../../i18n/locale.js'
+import { dayLabel } from '../../i18n/ar/weekdays.js'
 
 /* The four "How it works" scenes of /social-media-video-production. Same system as the UGC and Spokesperson scenes: small scenes built from CSS and SVG, aria-hidden
    (the title and sentence beside them carry the meaning), each playing once when its stage is selected, using the site's own animation classes (which already honour
@@ -40,7 +42,7 @@ export function SceneStrategy() {
       </div>
       <div className="min-h-0 flex-1 rounded-2xl border border-hairline bg-canvas/40 p-2.5">
         <div className="mb-1.5 grid grid-cols-5 gap-1.5 text-center text-[9px] font-semibold uppercase tracking-[0.1em] text-ink-muted">
-          {days.map((d, i) => <span key={`${d}${i}`}>{d}</span>)}
+          {days.map((d, i) => <span key={`${d}${i}`}>{dayLabel(currentLocale(), d, i)}</span>)}
         </div>
         <div className="grid h-[calc(100%-1.1rem)] grid-rows-4 gap-1.5">
           {weeks.map((row, wi) => (
@@ -172,7 +174,7 @@ export function ScenePublishing() {
         <div className="mt-2 grid grid-cols-5 gap-1.5 sm:gap-2">
           {week.map(([d, who, color, plat], i) => (
             <div key={`${d}${i}`} className="flex flex-col items-center gap-1">
-              <span className="text-[9px] font-semibold uppercase tracking-[0.1em] text-ink-muted">{d}</span>
+              <span className="text-[9px] font-semibold uppercase tracking-[0.1em] text-ink-muted">{dayLabel(currentLocale(), d, i)}</span>
               {who === null ? (
                 <span className="aspect-[9/16] w-full max-w-[3rem] rounded-lg border border-dashed border-white/10" />
               ) : (
