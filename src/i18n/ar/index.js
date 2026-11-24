@@ -11,6 +11,7 @@ import riskfree from './dict-riskfree.js'
 import extras from './dict-extras.js'
 import pages from './dict-pages.js'
 import revision from './dict-revision.js'
+import graspo from './dict-graspo.js'
 
-export default { ...shell, ...home, ...services, ...pricing, ...showcase, ...roadmap, ...geo, ...riskfree, ...extras, ...pages, ...revision }
-export const PARTS = { shell, home, services, pricing, showcase, roadmap, geo, riskfree, extras, pages, revision }
+export default { ...shell, ...home, ...services, ...pricing, ...showcase, ...roadmap, ...geo, ...riskfree, ...extras, ...pages, ...revision, ...graspo }
+export const PARTS = { shell, home, services, pricing, showcase, roadmap, geo, riskfree, extras, pages, revision, graspo }

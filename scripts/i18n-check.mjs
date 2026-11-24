@@ -17,7 +17,8 @@ const walk = (d, out = []) => { for (const e of fs.readdirSync(d, { withFileType
    the case-study pages, the blog, the referral and free-hooks pages, /scale and the private creator pages stay English (links to them keep their English URL). */
 export const OUT_OF_SCOPE = {
   // Spanish: the redesigned homepage sections (English + Arabic only; the Spanish homepage keeps CaseStudies / Testimonials until its own design review) and the verified-views badge (no Spanish video has one).
-  es: ['components/home/', 'components/ugc/ViewsBadge.jsx'],
+  // The Graspo case study components are drawn in English and Arabic only (the Spanish study does not exist yet).
+  es: ['components/home/', 'components/ugc/ViewsBadge.jsx', 'components/graspo/'],
   ar: [
     'components/referrals/', 'components/hooks/', 'components/blog/', 'components/scale/', 'components/creator/',
     'components/elyon/', 'components/ugc/UgcHeroRoadmap',

@@ -8,6 +8,7 @@ import CategoryTabs from './CategoryTabs.jsx'
 import VideoCard from './VideoCard.jsx'
 import VideoLightbox from './VideoLightbox.jsx'
 import { tr } from '../../i18n/tr.js'
+import { arVideos, arShowMore } from '../../i18n/ar/plural.js'
 
 /* SECTION 2: the video library. A category selector, a grid of portrait cards and one shared lightbox player.
 
@@ -107,7 +108,7 @@ export default function PortfolioLibrary({ items: itemsProp, pageSize = PAGE }) 
             ))}
           </div>
         )}
-        <p className="sr-only" aria-live="polite">{locale === 'en' ? `Showing ${filtered.length} ${label}${filtered.length === 1 ? 'video' : 'videos'}` : `${tr('Showing')} ${filtered.length} ${filtered.length === 1 ? tr('video') : tr('videos')}${label ? ` · ${label}` : ''}`}</p>
+        <p className="sr-only" aria-live="polite">{locale === 'en' ? `Showing ${filtered.length} ${label}${filtered.length === 1 ? 'video' : 'videos'}` : locale === 'ar' ? `${arVideos(filtered.length)}${label ? ` · ${label}` : ''}` : `${tr('Showing')} ${filtered.length} ${filtered.length === 1 ? tr('video') : tr('videos')}${label ? ` · ${label}` : ''}`}</p>
 
         {/* keyed by the category: the grid re-enters with a short fade whenever it changes */}
         <ul ref={grid} key={active.id} className="ow-fade mt-5 grid grid-cols-2 gap-3 sm:gap-4 md:mt-6 md:grid-cols-3 lg:grid-cols-4 lg:gap-5">
@@ -124,7 +125,7 @@ export default function PortfolioLibrary({ items: itemsProp, pageSize = PAGE }) 
               type="button"
               onClick={() => { focusFrom.current = limit; setLimit((n) => n + pageSize) }}
               className="min-h-[48px] rounded-full border border-[var(--cat)] bg-surface-2 px-7 text-[15px] font-semibold text-ink transition-colors hover:bg-[var(--cat)] hover:text-canvas focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--cat)] motion-reduce:transition-none"
-            >{tr('Show more')}{' '}<span className="opacity-70">({filtered.length - limit} {tr('more')})</span>
+            >{locale === 'ar' ? arShowMore(filtered.length - limit) : <>{tr('Show more')}{' '}<span className="opacity-70">({filtered.length - limit} {tr('more')})</span></>}
             </button>
           </div>
         )}

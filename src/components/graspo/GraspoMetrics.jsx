@@ -1,4 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
+import { useTr } from '../../i18n/tr.js'
+import { currentLocale } from '../../i18n/locale.js'
+import { localizeStat } from '../../i18n/format.js'
 
 /* ─────────────────────────────────────────────
    HERO METRICS — the numbers that carry the page.
@@ -7,6 +10,13 @@ import { useEffect, useRef, useState } from 'react'
 ───────────────────────────────────────────── */
 
 const ACCENT = '#d5ff40'
+
+/* Arabic figures read "10.7 مليون": the unit is set smaller than the number so a big figure stays on one line inside its card (English is untouched: it returns the plain string). */
+export function statNode(locale, v) {
+  const t = localizeStat(locale, v)
+  const m = locale === 'ar' ? String(t).match(/^(\S+) (\S+)$/) : null
+  return m ? <>{m[1]} <span className="text-[0.5em] font-semibold">{m[2]}</span></> : t
+}
 
 const METRICS = [
   { value: '10.7M', label: 'Total Views', sub: 'Facebook + Instagram' },
@@ -33,6 +43,8 @@ function useInView(threshold = 0.15) {
 }
 
 export default function GraspoMetrics() {
+  const tr = useTr()
+  const locale = currentLocale()
   const [wrapRef, visible] = useInView()
 
   return (
@@ -58,15 +70,15 @@ export default function GraspoMetrics() {
                 className="relative font-display font-bold tracking-display leading-none text-[clamp(1.9rem,4vw,2.6rem)] tabular-nums"
                 style={{ color: i === 3 || i === 4 ? ACCENT : '#ffffff' }}
               >
-                {m.value}
+                {statNode(locale, m.value)}
               </p>
-              <p className="relative mt-3 text-[13px] font-semibold text-ink">{m.label}</p>
-              <p className="relative mt-1 text-[11.5px] text-ink-subtle">{m.sub}</p>
+              <p className="relative mt-3 text-[13px] font-semibold text-ink">{tr(m.label)}</p>
+              <p className="relative mt-1 text-[11.5px] text-ink-subtle">{tr(m.sub)}</p>
             </div>
           ))}
         </div>
         <p className="mt-5 text-center text-xs text-ink-subtle">
-          Source: Meta Business Suite analytics, Jan 1 – Jun 19 2026 · Leads: internal inbound tracker across Meta, email and WhatsApp
+          {tr('Source: Meta Business Suite analytics, Jan 1 – Jun 19 2026 · Leads: internal inbound tracker across Meta, email and WhatsApp')}
         </p>
       </div>
     </section>

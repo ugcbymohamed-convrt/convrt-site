@@ -4,6 +4,7 @@ import { CATEGORIES, categoryOf, typeOf } from '../../content/portfolio.js'
 import { trackEvent } from '../../lib/analytics.js'
 import { Section, TextLink } from '../ugc/shared.jsx'
 import { tr, hrefFor } from '../../i18n/tr.js'
+import { currentLocale } from '../../i18n/locale.js'
 
 /* "What you'll find here": crawlable, factual context under the library (SEO/GEO Batch 2, audit C-11). It sits BELOW the gallery so the library experience is unchanged.
 
@@ -49,8 +50,10 @@ export default function ShowcaseFormats({ items }) {
         )}
         <p className="mt-6 max-w-3xl text-[14px] leading-relaxed text-ink-muted">
           {tr('These are creators’ examples, not necessarily CONVRT productions. For documented CONVRT projects, read our')}{' '}
-          <TextLink href={PATHS.caseStudyGraspo} onClick={() => trackEvent('showcase_service_link_click', { service: 'case-study-organic' })}>{tr('organic social media case study')}</TextLink> {tr('and our')}{' '}
-          <TextLink href={PATHS.caseStudyElyon} onClick={() => trackEvent('showcase_service_link_click', { service: 'case-study-ugc' })}>{tr('paid social UGC case study')}</TextLink>.
+          <TextLink href={hrefFor(PATHS.caseStudyGraspo)} onClick={() => trackEvent('showcase_service_link_click', { service: 'case-study-organic' })}>{tr('organic social media case study')}</TextLink>
+          {/* Arabic: the Elyon study has no Arabic page, so only the Arabic Graspo study is linked (owner, 2026-11-25). */}
+          {currentLocale() !== 'ar' && <> {tr('and our')}{' '}
+          <TextLink href={PATHS.caseStudyElyon} onClick={() => trackEvent('showcase_service_link_click', { service: 'case-study-ugc' })}>{tr('paid social UGC case study')}</TextLink></>}.
         </p>
       </div>
     </Section>

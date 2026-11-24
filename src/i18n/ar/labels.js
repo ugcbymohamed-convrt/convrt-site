@@ -40,9 +40,6 @@ export function captionAr(caption) {
 
 /* One-sentence introductions under the heading of two sections (Arabic editorial copy; English has none). */
 export const AR_SECTION_INTROS = {
-  'ugc-testing': 'لا تحتاج إلى تغيير الإعلان كله لتعرف ما الذي ينجح. ننتج نسخًا مختلفة من الفكرة نفسها لتقارن العناصر الإبداعية بطريقة أكثر تنظيمًا.',
-  'ugc-faq': 'نجيب هنا عن أكثر الأسئلة شيوعًا قبل بدء أي مشروع.',
+  'ugc-testing': 'مو لازم تغيّر الإعلان كامل عشان تعرف وش ينجح. نجهّز نسخًا مختلفة من الفكرة نفسها، حتى تقدر تقارن النتائج بشكل أوضح.',
+  'ugc-faq': 'من الأسعار وحقوق الاستخدام إلى اختيار الصُنّاع وطريقة الإنتاج.',
 }
-
-/* Visible note under the UGC page's client testimonials: their wording stays in the original English. */
-export const AR_TESTIMONIALS_NOTE = 'آراء العملاء منقولة بلغتها الأصلية (الإنجليزية).'

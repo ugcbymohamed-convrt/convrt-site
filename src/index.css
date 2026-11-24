@@ -682,3 +682,5 @@ html:lang(ar) blockquote.font-editorial { font-family: var(--font-ar); font-weig
 
 /* Services header (Arabic): the supporting sentence is one flowing line under the heading, so the English desktop line break between its two halves is dropped. */
 :lang(ar) #services > div > div > div > p br { display: none; }
+/* Graspo case study (Arabic): the long English hero figure line may wrap instead of overflowing (Arabic is wider). */
+:lang(ar) h1.md\:whitespace-nowrap { white-space: normal; }

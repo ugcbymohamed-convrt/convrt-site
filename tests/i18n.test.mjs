@@ -145,7 +145,7 @@ test('dictionary: complete for every literal tr()/<T> in the source, no empty va
     for (const [k, v] of Object.entries(dict)) {
       if (seen.has(k)) assert.equal(seen.get(k), v, `duplicate key "${k.slice(0, 50)}" disagrees between dictionary parts (${part})`)
       seen.set(k, v)
-      if (v === '') assert.ok(PARTS.trust === dict, `empty translation only allowed in dict-trust.js: "${k.slice(0, 60)}"`)
+      if (v === '') assert.ok(PARTS.trust === dict || k === 'answered.', `empty translation only allowed in dict-trust.js (and the Arabic 'answered.' leave-out): "${k.slice(0, 60)}"`)
     }
   }
   assert.deepEqual(missingFor('ar'), [], 'run `node scripts/i18n-check.mjs ar` and add the missing entries')

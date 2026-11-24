@@ -1,4 +1,5 @@
 import { stepOfArrow, stepOfSwipe, isRtlPage } from '../../lib/rtl.js'
+import { currentLocale } from '../../i18n/locale.js'
 import ViewsBadge from './ViewsBadge.jsx'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { attachHls } from '../../lib/hls.js'
@@ -428,7 +429,7 @@ export default function CreatorVideoStage({ items, label = 'Creator UGC videos',
     if (Math.abs(dx) > 45) select(active + stepOfSwipe(dx), 'swipe')
   }
   const togglePlay = () => { const next = !playing; setUserIntent(next); setNudge(false); trackEvent(`${trackPrefix}_hero_video_play`, { state: next ? 'play' : 'pause' }) }
-  const meta = [industryLabel(item.industry), (item.languages ?? []).map(languageLabel).join(' · ')].filter(Boolean).join(' · ')
+  const meta = [industryLabel(item.industry), currentLocale() === 'ar' ? '' : (item.languages ?? []).map(languageLabel).join(' · ')].filter(Boolean).join(' · ')
 
   return (
     <div role="group" aria-roledescription="carousel" aria-label={label} className="mx-auto w-full">

@@ -82,7 +82,9 @@ test('contract terms are the English data: Sprint 3 months, Organic 6 months; on
 })
 
 // Arabic writes "one X" with the number word (فيديو واحد), not a digit: the only figure the dictionary may spell out.
-const WORD_FOR_ONE = new Set(['1 video', 'Your next 5 ad concepts. Tailored to your brand.'])
+/* Strings where the figure is spelled as a word or an Arabic grammatical form (dual «هوكان», singular «فيديو»), or where the owner's concise rewrite (2026-11-25) deliberately leaves a figure/abbreviation to the neighbouring text. The figures themselves stay in the figure cards, prices and tables. */
+const WORD_FOR_ONE = new Set(['1 video', 'Your next 5 ad concepts. Tailored to your brand.', 'Let’s Find Your Next 5 Ad Concepts.', '1 video produced by CONVRT', '2 bonus hook variations',
+  'B2B cooperation', 'B2B cooperation / agency / samples', 'Printing is a complex, spec-driven B2B service. There is no obvious "content" in paper weight, binding methods or offset color matching, until someone makes it interesting.'])
 test('dictionary: complete for every literal tr() of the Arabic pages; figures and price tokens survive; no empty values; consistent duplicates', () => {
   assert.deepEqual(missingFor('ar'), [])
   const d = DICTIONARIES.ar
@@ -91,7 +93,8 @@ test('dictionary: complete for every literal tr() of the Arabic pages; figures a
   const seen = new Map()
   let checked = 0
   for (const [part, dict] of Object.entries(AR_PARTS)) for (const [k, v] of Object.entries(dict)) {
-    assert.ok(typeof v === 'string' && v.trim() !== '', `empty Arabic value: ${k.slice(0, 60)}`)
+    // 'answered.' is the lime tail of the five FAQ headings; the Arabic headings are complete sentences, so it is a declared leave-out line
+    assert.ok(typeof v === 'string' && (v.trim() !== '' || k === 'answered.'), `empty Arabic value: ${k.slice(0, 60)}`)
     if (seen.has(k)) assert.equal(seen.get(k), v, `duplicate key "${k.slice(0, 50)}" disagrees (${part})`)
     seen.set(k, v)
     assert.ok(!/[٠-٩]/.test(v), `Arabic-Indic digits are not used on the site: ${k.slice(0, 50)}`)
@@ -339,7 +342,7 @@ test('pricing page: USD amounts from the business data, Sprint / Sprint Plus / O
 test('UGC page: Arabic H1 with the search intent, Arabic gallery videos only, creators described as independent, no English or Spanish leftovers', () => {
   const h = page('/ar/ugc-video-agency')
   const h1 = rootOf(h).match(/<h1[^>]*>([\s\S]*?)<\/h1>/)[1].replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ')
-  assert.match(h1, /فيديوهات UGC/); assert.match(h1, /صُنّاع محتوى حقيقيين/)
+  assert.match(h1, /فيديوهات UGC حقيقية/); assert.match(h1, /مصمّمة كي/)
   const html = rootOf(h)
   const hero = selectHero(); const gallery = selectGallery()
   assert.ok(!/<video/.test(html) || true)
@@ -347,7 +350,7 @@ test('UGC page: Arabic H1 with the search intent, Arabic gallery videos only, cr
   assert.ok(!/\/portfolio\/es-/.test(html) && !/\/portfolio\/ugc-/.test(html.replace(/ar-ugc-/g, '')), 'no Spanish or English library video')
   const t = rootText(h).join(' ')
   assert.ok(!/días laborables|Producción de|Ver ejemplos/.test(t), 'no Spanish leftovers')
-  assert.match(t, /مستقلين|صُنّاع محتوى مستقلين/); assert.match(t, /ليست كل الفيديوهات بالضرورة من إنتاج CONVRT/)
+  assert.ok(!/ليست كل الفيديوهات بالضرورة من إنتاج CONVRT/.test(t), 'the long creator disclaimer is not shown on the Arabic gallery (owner, 2026-11-25)')
   assert.ok(hero.length === 0 && gallery.length === 0 || true) // selectors read the page language at render time; the static HTML above is the proof
 })
 
@@ -376,11 +379,14 @@ test('Arabic pages never route into an English-only form; links to pages that ex
   }
 })
 
-test('client quotes keep their original English wording, marked lang="en" and left-to-right inside the right-to-left page', () => {
+test('UGC page client reviews: the approved Arabic versions, shown as Arabic text', () => {
   const html = rootOf(page('/ar/ugc-video-agency'))
   const quotes = [...html.matchAll(/<blockquote[^>]*>/g)].map((m) => m[0])
   assert.ok(quotes.length >= 2)
-  for (const q of quotes) assert.ok(/lang="en"/.test(q) && /dir="ltr"/.test(q), q)
+  // Arabic (owner, 2026-11-25): the approved Arabic versions of the two reviews are shown as Arabic text (no lang="en", no "originally English" line)
+  for (const q of quotes) assert.ok(!/lang="en"/.test(q), q)
+  assert.ok(/محمد فهم الفكرة جيدًا/.test(html) && /توسيع نطاق إعلاناتنا/.test(html))
+  assert.ok(!/بلغتها الأصلية/.test(html), 'no explanatory line about the reviews being originally English')
 })
 
 test('English and Spanish pages are unchanged by the Arabic work except for the language selector and hreflang (checked against the English source of every shared string)', () => {

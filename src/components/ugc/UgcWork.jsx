@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { currentLocale } from '../../i18n/locale.js'
 import { trackEvent } from '../../lib/analytics.js'
 import {
   buildFacets, matchesFilters, posterUrl, creatorLabel, languageLabel, industryLabel, captionOf,
@@ -48,7 +49,7 @@ export function Player({ item }) {
 
 function Card({ item, tone, playing, onPlay }) {
   const name = creatorLabel(item)
-  const langs = (item.languages ?? []).map(languageLabel).join(' · ')
+  const langs = currentLocale() === 'ar' ? '' : (item.languages ?? []).map(languageLabel).join(' · ') // Arabic: the whole site is Arabic, so no repeated language word on every card
   const meta = [item.brand, item.category].filter(Boolean).join(' · ')
   return (
     <figure className="group flex h-full flex-col">

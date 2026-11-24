@@ -10,6 +10,7 @@ import { localizeStat } from '../../i18n/format.js'
 import { formatMoneyEs } from '../../i18n/es/money.js'
 import { editorial } from '../../i18n/editorial.js'
 import { formatMoneyAr } from '../../i18n/ar/money.js'
+import { AR_REVIEWS } from '../../i18n/ar/reviews.js'
 
 /* SECTION 4: results and client feedback, in one compact block.
    • Elyon 5.28x: ONE individual creator-led UGC video, client-reported, early learning phase, never typical or guaranteed (wording
@@ -125,7 +126,10 @@ export default function UgcResults() {
                     className="h-7 w-auto max-w-[140px] object-contain object-left"
                     style={{ filter: 'brightness(0) invert(1)' }}
                   />
-                  <blockquote lang={locale === 'en' ? undefined : 'en'} dir={locale === 'ar' ? 'ltr' : undefined} className="mt-4 flex-1 text-[15px] leading-relaxed text-ink">&ldquo;{t.quote}&rdquo;</blockquote>
+                  {/* Arabic (owner, 2026-11-25): the approved Arabic version of the same review, in Arabic text with no "translated" label; other languages keep the client's English words. */}
+                  {locale === 'ar'
+                    ? <blockquote className="mt-4 flex-1 text-[15px] leading-relaxed text-ink">&laquo;{AR_REVIEWS[t.id].ugc ?? AR_REVIEWS[t.id].full}&raquo;</blockquote>
+                    : <blockquote lang={locale === 'en' ? undefined : 'en'} className="mt-4 flex-1 text-[15px] leading-relaxed text-ink">&ldquo;{t.quote}&rdquo;</blockquote>}
                   <figcaption className="mt-4 text-sm text-ink-muted">
                     <span className="font-semibold text-ink">{t.brand}</span> · {tr(t.category)}
                   </figcaption>

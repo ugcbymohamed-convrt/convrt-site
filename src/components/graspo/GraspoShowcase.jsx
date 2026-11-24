@@ -1,6 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
 import Hls from 'hls.js'
 import { streamPoster } from '../../content/posterFrames.js'
+import { useTr } from '../../i18n/tr.js'
+import { currentLocale } from '../../i18n/locale.js'
+import { localizeStat } from '../../i18n/format.js'
 
 /* ─────────────────────────────────────────────
    CONTENT SHOWCASE
@@ -19,6 +22,9 @@ const VIDEOS = [
 ]
 
 export default function GraspoShowcase() {
+  const tr = useTr()
+  const locale = currentLocale()
+  const labels = { alt: tr('Graspo organic content still'), unmute: tr('Unmute'), mute: tr('Mute'), views: tr('views') }
   return (
     <section id="showcase" className="relative py-16 md:py-24 overflow-hidden">
       <div
@@ -30,20 +36,19 @@ export default function GraspoShowcase() {
         <div className="max-w-2xl mb-12 md:mb-14 text-center mx-auto">
           <div className="inline-flex items-center gap-2 rounded-full border border-hairline bg-surface-1/60 px-4 py-1.5 mb-6 backdrop-blur">
             <span className="h-1.5 w-1.5 rounded-full animate-pulse" style={{ background: ACCENT }} />
-            <span className="text-xs font-medium uppercase tracking-[0.18em] text-ink-muted">The Content</span>
+            <span className="text-xs font-medium uppercase tracking-[0.18em] text-ink-muted">{tr('The Content')}</span>
           </div>
           <h2 className="font-display font-bold text-ink tracking-display leading-[1.05] text-3xl md:text-[44px]">
-            What actually ran on the feed.
+            {tr('What actually ran on the feed.')}
           </h2>
           <p className="mt-6 text-[15px] md:text-base text-ink-muted leading-relaxed">
-            Native, platform-ready short-form video, built to stop the scroll of someone who
-            might genuinely need a print run, not just to look good in a portfolio.
+            {tr('Native, platform-ready short-form video, built to stop the scroll of someone who might genuinely need a print run, not just to look good in a portfolio.')}
           </p>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 md:gap-8 max-w-4xl mx-auto">
           {VIDEOS.map((v) => (
-            <ShowcasePhone key={v.id} video={v} />
+            <ShowcasePhone key={v.id} video={v} labels={labels} viewsText={localizeStat(locale, v.views)} />
           ))}
         </div>
       </div>

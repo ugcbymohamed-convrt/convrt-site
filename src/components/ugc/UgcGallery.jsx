@@ -58,7 +58,8 @@ export const UGC_GALLERY = {
 function Card({ item, index, playing, onPlay, config }) {
   const sample = item.sample
   // Spanish pages name the language in full ("UGC · Español"); English keeps the two-letter code.
-  const langs = sample ? 'EN' : (item.languages ?? []).map((l) => (currentLocale() === 'en' ? l.toUpperCase() : languageLabel(l))).join(' · ')
+  /* Arabic: every video on the Arabic site is Arabic, so the repeated language word is dropped from the card pill (owner, 2026-11-25); the language stays in the data and the lightbox details. */
+  const langs = sample ? 'EN' : currentLocale() === 'ar' ? '' : (item.languages ?? []).map((l) => (currentLocale() === 'en' ? l.toUpperCase() : languageLabel(l))).join(' · ')
   return (
     <figure className="group relative aspect-[9/16] overflow-hidden rounded-3xl border border-lime/25 bg-surface-1 shadow-[0_26px_60px_-30px_rgba(0,0,0,0.9),0_0_44px_-26px_rgba(213,255,64,0.5)] transition-[transform,border-color,box-shadow] duration-300 hover:-translate-y-1 hover:border-lime/60 hover:shadow-[0_30px_64px_-28px_rgba(0,0,0,0.9),0_0_56px_-18px_rgba(213,255,64,0.55)] motion-reduce:transition-none motion-reduce:hover:translate-y-0">
       {playing ? (
@@ -187,7 +188,7 @@ export default function UgcGallery({ items, config: configProp = UGC_GALLERY }) 
       <Reveal>
         <Head id={config.headingId} eyebrow={config.eyebrow} title={config.title} intro={config.intro} />
         {/* The homepage carousel leaves the long note out (owner, Nov 2026, all languages): its videos are labelled creators' examples by the heading, and each video's details carry its credit. The service pages keep it. */}
-        {!config.hideNote && <p className="mx-auto mt-3 max-w-xl text-center text-[13px] leading-relaxed text-ink-muted">{tr(CREATOR_EXAMPLES_NOTE)}</p>}
+        {!config.hideNote && currentLocale() !== 'ar' && <p className="mx-auto mt-3 max-w-xl text-center text-[13px] leading-relaxed text-ink-muted">{tr(CREATOR_EXAMPLES_NOTE)}</p>}
       </Reveal>
 
       <Reveal className="mt-8 md:mt-10">
