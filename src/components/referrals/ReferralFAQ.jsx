@@ -1,5 +1,6 @@
 import { useId, useState } from 'react'
 import { Reveal, SectionHeader } from '../roadmap/shared.jsx'
+import { useTr } from '../../i18n/tr.js'
 
 /* ─────────────────────────────────────────────
    FAQ — accessible accordion (button + aria-expanded + aria-controls, answer is a
@@ -48,6 +49,7 @@ export const FAQS = [
 ]
 
 function FAQItem({ item, open, onToggle }) {
+  const tr = useTr()
   const uid = useId()
   const buttonId = `${uid}-q`
   const panelId = `${uid}-a`
@@ -62,7 +64,7 @@ function FAQItem({ item, open, onToggle }) {
           onClick={onToggle}
           className="group flex w-full items-start justify-between gap-5 py-5 text-left transition-colors hover:text-ink focus-visible:rounded-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-lime sm:py-6"
         >
-          <span className={`text-base font-semibold leading-snug sm:text-lg ${open ? 'text-ink' : 'text-ink/80 group-hover:text-ink'}`}>{item.q}</span>
+          <span className={`text-base font-semibold leading-snug sm:text-lg ${open ? 'text-ink' : 'text-ink/80 group-hover:text-ink'}`}>{tr(item.q)}</span>
           <span
             aria-hidden="true"
             className={`mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full border transition-[transform,border-color,color] duration-300 motion-reduce:transition-none ${
@@ -83,7 +85,7 @@ function FAQItem({ item, open, onToggle }) {
         className={`ref-faq-panel grid ${open ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'}`}
       >
         <div className="overflow-hidden">
-          <p className="pb-6 pr-10 text-[15px] leading-[1.75] text-ink-muted">{item.a}</p>
+          <p className="pb-6 pr-10 text-[15px] leading-[1.75] text-ink-muted">{tr(item.a)}</p>
         </div>
       </div>
     </div>
@@ -91,12 +93,13 @@ function FAQItem({ item, open, onToggle }) {
 }
 
 export default function ReferralFAQ() {
+  const tr = useTr()
   const [openIndex, setOpenIndex] = useState(null)
   return (
     <section id="faq" aria-labelledby="faq-heading" className="relative scroll-mt-20 pb-20 md:scroll-mt-24 md:pb-28">
       <div className="mx-auto max-w-3xl px-5 md:px-8">
         <Reveal>
-          <SectionHeader id="faq-heading" eyebrow="FAQ" title="Quick answers." />
+          <SectionHeader id="faq-heading" eyebrow={tr('FAQ')} title={tr('Quick answers.')} />
         </Reveal>
         <Reveal delay={80}>
           <div className="mt-10 border-t border-hairline">

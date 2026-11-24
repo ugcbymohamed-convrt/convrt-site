@@ -12,6 +12,7 @@ export default function Footer() {
   const tr = (t) => translate(locale, t)
   const h = (p) => localHref(p, locale)
   const en = locale === 'en'
+  const enLike = en || locale === 'ar' // Arabic lists exactly the English menu (owner, 2026-11-25)
   const onHome = basePath === '/'
   const homePrefix = onHome ? '' : localizedPath(locale, '/')
   return (
@@ -41,12 +42,12 @@ export default function Footer() {
             <ul className="mt-4 space-y-2.5 text-sm text-ink-muted">
               <li><a className="hover:text-ink transition-colors" href={`${homePrefix}#services`}>{tr('Services')}</a></li>
               <li><a className="hover:text-ink transition-colors" href={h(CREATOR_SHOWCASE_PATH)}>{tr('Creator Showcase')}</a></li>
-              {en && <li><a className="hover:text-ink transition-colors" href="/case-studies">Case Studies</a></li>}
-              {!en && <li><a className="hover:text-ink transition-colors" href={`${homePrefix}#how-it-works`}>{tr('How It Works')}</a></li>}
+              {enLike && <li><a className="hover:text-ink transition-colors" href={en ? '/case-studies' : h('/case-studies/graspo')}>{tr('Case Studies')}</a></li>}
+              {!enLike && <li><a className="hover:text-ink transition-colors" href={`${homePrefix}#how-it-works`}>{tr('How It Works')}</a></li>}
               <li><a className="hover:text-ink transition-colors" href={h('/pricing')}>{tr('Pricing')}</a></li>
-              {en && <li><a className="hover:text-ink transition-colors" href="/blog">Blog</a></li>}
+              {enLike && <li><a className="hover:text-ink transition-colors" href="/blog" {...(en ? {} : { hrefLang: 'en' })}>{tr('Blog')}</a></li>}
               <li><a className="hover:text-ink transition-colors" href={TRUST_PAGES_PUBLISHED ? h(CONTACT_PATH) : `${homePrefix}#contact`}>{tr('Contact')}</a></li>
-              {en && <li><a className="hover:text-ink transition-colors" href={REFERRALS_PATH}>Refer &amp; Earn</a></li>}
+              {enLike && <li><a className="hover:text-ink transition-colors" href={h(REFERRALS_PATH)}>{en ? <>Refer &amp; Earn</> : 'أحِل واربح'}</a></li>}
             </ul>
           </div>
 

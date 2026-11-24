@@ -1,4 +1,5 @@
 import { Reveal, SectionHeader } from '../roadmap/shared.jsx'
+import { useTr } from '../../i18n/tr.js'
 
 /* ─────────────────────────────────────────────
    HOW IT WORKS — three steps joined by a connector: horizontal on md+, vertical on
@@ -12,6 +13,7 @@ const STEPS = [
 ]
 
 export default function ReferralHowItWorks() {
+  const tr = useTr()
   return (
     <section
       id="how-it-works"
@@ -21,7 +23,7 @@ export default function ReferralHowItWorks() {
     >
       <div className="mx-auto max-w-7xl px-5 md:px-8">
         <Reveal>
-          <SectionHeader id="how-heading" eyebrow="How it works" title="Three Steps. That’s It." />
+          <SectionHeader id="how-heading" eyebrow={tr('How it works')} title={tr('Three Steps. That’s It.')} />
         </Reveal>
 
         <ol className="mt-14 grid grid-cols-1 gap-0 md:grid-cols-3 md:gap-8">
@@ -41,10 +43,10 @@ export default function ReferralHowItWorks() {
                     </span>
                     <div className="min-w-0 md:mt-6">
                       <h3 className="font-display text-xl font-bold tracking-snug text-ink">
-                        <span className="sr-only">Step {i + 1}: </span>
-                        {step.title}
+                        <span className="sr-only">{tr('Step')} {i + 1}: </span>
+                        {tr(step.title)}
                       </h3>
-                      <p className="mt-2.5 text-[15px] leading-relaxed text-ink-muted">{step.text}</p>
+                      <p className="mt-2.5 text-[15px] leading-relaxed text-ink-muted">{tr(step.text)}</p>
                     </div>
                   </div>
                 </Reveal>

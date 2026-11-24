@@ -8,6 +8,7 @@ import { usePressFeedback } from '../lib/usePressFeedback.js'
 import LanguageSelector from './LanguageSelector.jsx'
 import { parsePath, localizedPath } from '../i18n/paths.js'
 import { translate, localHref } from '../i18n/tr.js'
+import { currentLocale } from '../i18n/locale.js'
 import { primaryAction } from '../i18n/cta.js'
 import { SERVICE_LABELS } from '../seo/businessKnowledge.js'
 
@@ -20,10 +21,11 @@ import { SERVICE_LABELS } from '../seo/businessKnowledge.js'
 const links = [
   { label: 'Services', href: '#services' },
   { label: 'Creator Showcase', href: CREATOR_SHOWCASE_PATH },
-  { label: 'Case Studies', href: '/case-studies', englishOnly: true },
+  // Arabic (owner, 2026-11-25): the menu is the English menu. Case Studies opens the Arabic Graspo study (`arHref`); Blog is English-only and keeps its English URL.
+  { label: 'Case Studies', href: '/case-studies', englishOnly: true, arHref: '/case-studies/graspo' },
   { label: 'How It Works', href: '#how-it-works', notInEnglish: true },
   { label: 'Pricing', href: '/pricing' },
-  { label: 'Blog', href: '/blog', englishOnly: true },
+  { label: 'Blog', href: '/blog', englishOnly: true, arBlog: true },
   { label: 'Contact', href: '#contact', compactHide: true },
 ]
 
@@ -36,6 +38,14 @@ const SERVICE_MENU = [
   { label: 'SaaS Video Production', href: '/saas-video-production' },
 ]
 
+/* The Arabic services menu (owner, 2026-11-25): exactly these four labels, in this order. They are written out here (not routed through the dictionary) because they are the owner's own wording. */
+const SERVICE_MENU_AR = [
+  { label: 'فيديوهات UGC', href: '/ugc-video-agency' },
+  { label: 'فيديوهات Spokesperson', href: '/spokesperson-video-production' },
+  { label: 'فيديوهات SaaS', href: '/saas-video-production' },
+  { label: 'فيديوهات عضوية للسوشل ميديا', href: '/social-media-video-production' },
+]
+
 /* "Refer & Earn": one link to the referral program. The label names no figure on purpose:
    Standard referrals earn $150 and Agency & Strategic partners 10% (capped at $500), and the
    destination page shows both rewards side by side straight away. The whole label is a
@@ -43,14 +53,14 @@ const SERVICE_MENU = [
 function ReferralNavLink({ onClick, className = '', underline = false }) {
   return (
     <a
-      href={REFERRALS_PATH}
+      href={localHref(REFERRALS_PATH)}
       onClick={() => {
         trackEvent('referral_cta_click', { location: 'nav' })
         onClick?.()
       }}
       className={`group relative whitespace-nowrap rounded text-ink-muted transition-colors hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-lime ${className}`}
     >
-      Refer &amp; <span className="font-semibold text-lime">Earn</span>
+      {currentLocale() === 'ar' ? <>أحِل و<span className="font-semibold text-lime">اربح</span></> : <>Refer &amp; <span className="font-semibold text-lime">Earn</span></>}
       {underline && (
         <span
           aria-hidden="true"
@@ -71,7 +81,11 @@ export default function Nav() {
   const onHome = basePath === '/'
   const homePrefix = onHome ? '' : localizedPath(locale, '/')
   const resolveHref = (href) => (href.startsWith('#') ? `${homePrefix}${href}` : localHref(href, locale))
-  const visibleLinks = links.filter((l) => (locale === 'en' ? !l.notInEnglish : !l.englishOnly))
+  // English and Arabic share one menu; Spanish keeps its own (it lists only pages that exist in Spanish).
+  const visibleLinks = links.filter((l) => (locale === 'en' || locale === 'ar' ? !l.notInEnglish : !l.englishOnly))
+  const menu = locale === 'ar' ? SERVICE_MENU_AR : SERVICE_MENU
+  const hrefOf = (l) => resolveHref(locale === 'ar' && l.arHref ? l.arHref : l.href)
+  const labelOf = (l) => tr(l.label)
   const action = primaryAction(locale)
 
   // /scale is a paid-acquisition page with its own in-page booking modal
@@ -121,7 +135,7 @@ export default function Nav() {
               onKeyDown={(e) => { if (e.key === 'Escape') e.currentTarget.querySelector('a')?.blur() || document.activeElement?.blur?.() }}
             >
               <a
-                href={resolveHref(l.href)}
+                href={hrefOf(l)} {...(locale === 'ar' && l.arBlog ? { hrefLang: 'en' } : {})}
                 aria-haspopup="true"
                 className="inline-flex items-center gap-1 whitespace-nowrap text-[13px] text-ink-muted transition-colors hover:text-ink group-focus-within:text-ink group-hover:text-ink xl:text-sm"
               >
@@ -131,9 +145,9 @@ export default function Nav() {
               {/* the panel starts right under the link (its top padding bridges the gap, so the pointer never leaves the menu); visibility only, so the links are always in the HTML */}
               <div className="invisible absolute left-1/2 top-full z-50 -translate-x-1/2 pt-4 opacity-0 transition-[opacity,visibility] duration-200 group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100 motion-reduce:transition-none">
                 <ul className="min-w-[250px] rounded-2xl border border-white/10 bg-[rgba(12,12,14,0.96)] p-2 shadow-[0_24px_60px_-20px_rgba(0,0,0,0.9)] backdrop-blur-xl">
-                  {SERVICE_MENU.map((m) => (
+                  {menu.map((m) => (
                     <li key={m.href}>
-                      <a href={localHref(m.href, locale)} className="block rounded-xl px-4 py-2.5 text-sm text-ink-muted transition-colors hover:bg-white/[0.06] hover:text-ink focus-visible:bg-white/[0.06] focus-visible:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-lime">{tr(m.label)}</a>
+                      <a href={localHref(m.href, locale)} className="block rounded-xl px-4 py-2.5 text-sm text-ink-muted transition-colors hover:bg-white/[0.06] hover:text-ink focus-visible:bg-white/[0.06] focus-visible:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-lime">{locale === 'ar' ? m.label : tr(m.label)}</a>
                     </li>
                   ))}
                 </ul>
@@ -142,7 +156,7 @@ export default function Nav() {
           ) : (
             <a
               key={l.href}
-              href={resolveHref(l.href)}
+              href={hrefOf(l)} {...(locale === 'ar' && l.arBlog ? { hrefLang: 'en' } : {})}
               className={`whitespace-nowrap text-[13px] text-ink-muted transition-colors hover:text-ink xl:text-sm ${
                 l.compactHide ? 'hidden xl:inline' : ''
               }`}
@@ -150,7 +164,7 @@ export default function Nav() {
               {tr(l.label)}
             </a>
           )))}
-          {locale === 'en' && <ReferralNavLink underline className="text-[13px] xl:text-sm" />}
+          {(locale === 'en' || locale === 'ar') && <ReferralNavLink underline className="text-[13px] xl:text-sm" />}
         </nav>
 
         <div className="flex items-center gap-2">
@@ -193,7 +207,7 @@ export default function Nav() {
             {visibleLinks.map((l) => (
               <div key={l.href} className="flex flex-col">
                 <a
-                  href={resolveHref(l.href)}
+                  href={hrefOf(l)} {...(locale === 'ar' && l.arBlog ? { hrefLang: 'en' } : {})}
                   onClick={() => setOpen(false)}
                   className="rounded-lg px-3 py-3 text-base text-ink-muted hover:text-ink hover:bg-surface-1"
                 >
@@ -201,16 +215,16 @@ export default function Nav() {
                 </a>
                 {l.href === '#services' && (
                   <ul className="mb-1 ml-5 border-l border-hairline pl-2">
-                    {SERVICE_MENU.map((m) => (
+                    {menu.map((m) => (
                       <li key={m.href}>
-                        <a href={localHref(m.href, locale)} onClick={() => setOpen(false)} className="block rounded-lg px-3 py-2.5 text-[15px] text-ink-muted hover:text-ink hover:bg-surface-1">{tr(m.label)}</a>
+                        <a href={localHref(m.href, locale)} onClick={() => setOpen(false)} className="block rounded-lg px-3 py-2.5 text-[15px] text-ink-muted hover:text-ink hover:bg-surface-1">{locale === 'ar' ? m.label : tr(m.label)}</a>
                       </li>
                     ))}
                   </ul>
                 )}
               </div>
             ))}
-            {locale === 'en' && <ReferralNavLink onClick={() => setOpen(false)} className="block px-3 py-3 text-base hover:bg-surface-1" />}
+            {(locale === 'en' || locale === 'ar') && <ReferralNavLink onClick={() => setOpen(false)} className="block px-3 py-3 text-base hover:bg-surface-1" />}
             <LanguageSelector variant="list" onNavigate={() => setOpen(false)} className="mt-1 border-t border-hairline pt-1" />
             <a
               href={ctaHref}

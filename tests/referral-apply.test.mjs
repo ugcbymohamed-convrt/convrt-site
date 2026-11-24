@@ -2,6 +2,7 @@
 // Exercises the shared validation, api/_lib/referral.js and the Vercel handler with a fake
 // MailerLite + Resend (injected fetch) — no network, no real credentials, no real subscribers.
 import test from 'node:test'
+import { readSource } from './helpers/i18nSource.mjs'
 import assert from 'node:assert/strict'
 import { readdirSync, readFileSync, statSync, existsSync } from 'node:fs'
 import { join, dirname } from 'node:path'
@@ -477,7 +478,7 @@ test('the endpoint is registered in the Vite dev middleware and the page route +
    and rules that matter. Real rendering, scrolling, focus and responsive layout are verified by
    hand in the Browser pane (docs/referral-program-setup.md §11). */
 
-const read = (rel) => readFileSync(join(ROOT, rel), 'utf8')
+const read = (rel) => readSource(join(ROOT, rel)) // tr('…') calls are unwrapped, so the English source of the Arabic-ready components is still matched literally
 const SRC = {
   faq: read('src/components/referrals/ReferralFAQ.jsx'),
   form: read('src/components/referrals/ReferralForm.jsx'),
@@ -629,7 +630,7 @@ test('the full program terms stay reachable: compact summary, accordion, and lin
 
 test('the navigation has one "Refer & Earn" link to /referrals (desktop and mobile), "Earn" in lime, naming no single reward, with focus + hover states', () => {
   const nav = read('src/components/Nav.jsx')
-  assert.match(nav, /href=\{REFERRALS_PATH\}/)
+  assert.match(nav, /href=\{localHref\(REFERRALS_PATH\)\}/)
   assert.match(nav, /Refer &amp; <span className="font-semibold text-lime">Earn<\/span>/)
   assert.ok(!/Refer Us, Earn/.test(nav), 'the 10%-only label (misleading for $150 standard referrals) is not used')
   assert.equal((nav.match(/<ReferralNavLink/g) || []).length, 2, 'desktop nav + mobile menu')

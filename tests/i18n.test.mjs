@@ -53,7 +53,7 @@ test('locales: English, Spanish, French and Arabic are registered; Arabic is rig
   assert.deepEqual(BUILT_LOCALES, ['en', 'es', 'ar'], 'French is prepared: no routes are built for it')
   assert.ok(isLive('es') && isLive('ar') && !isLive('fr'))
   assert.deepEqual(TRANSLATED_PATHS.fr, [])
-  assert.deepEqual(TRANSLATED_PATHS.ar, ['/', '/ugc-video-agency', '/spokesperson-video-production', '/social-media-video-production', '/saas-video-production', '/case-studies/graspo', '/pricing', '/creator-showcase', '/creative-growth-roadmap', '/risk-free-trial'], 'the Arabic pages: the four service pages, the Graspo case study, pricing, the Showcase and the two application flows')
+  assert.deepEqual(TRANSLATED_PATHS.ar, ['/', '/ugc-video-agency', '/spokesperson-video-production', '/social-media-video-production', '/saas-video-production', '/case-studies/graspo', '/pricing', '/creator-showcase', '/creative-growth-roadmap', '/risk-free-trial', '/referrals'], 'the Arabic pages: the four service pages, the Graspo case study, pricing, the Showcase, the two application flows and the Referral Partner Program')
   assert.deepEqual(allLocalizedPaths(['fr']), [])
 })
 

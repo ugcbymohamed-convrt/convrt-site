@@ -48,7 +48,7 @@ test('Arabic is one shared language variant: ar, right-to-left, live, no country
 })
 
 test('Arabic page map: homepage, the FOUR service pages, the Graspo case study, pricing, the Showcase and the two application flows', () => {
-  const ALL = ['/', '/ugc-video-agency', '/spokesperson-video-production', '/social-media-video-production', '/saas-video-production', '/case-studies/graspo', '/pricing', '/creator-showcase', '/creative-growth-roadmap', '/risk-free-trial']
+  const ALL = ['/', '/ugc-video-agency', '/spokesperson-video-production', '/social-media-video-production', '/saas-video-production', '/case-studies/graspo', '/pricing', '/creator-showcase', '/creative-growth-roadmap', '/risk-free-trial', '/referrals']
   assert.deepEqual(TRANSLATED_PATHS.ar, ALL)
   assert.deepEqual(AR_PAGES, ALL.map((p) => (p === '/' ? '/ar' : `/ar${p}`)))
   for (const p of ['/about', '/contact', '/case-studies/elyon', '/case-studies', '/blog']) assert.ok(!hasTranslation('ar', p), `${p} has no Arabic page`)
@@ -367,7 +367,9 @@ test('homepage: Arabic hero, the three Arabic creator videos on the stage, found
 test('Arabic pages never route into an English-only form; links to pages that exist only in English are labelled "(بالإنجليزية)" or are legal links marked lang="en"', () => {
   for (const p of AR_PAGES) {
     const html = rootOf(page(p))
-    assert.ok(!/href="\/(free-hooks|referrals|referral-program)/.test(html), `${p}: no hooks or referral link`)
+    // the Referral Partner Program page exists in Arabic now (/ar/referrals); the English-only free-hooks page is still never linked
+    // (on /ar/referrals itself the two /referrals links are the language selector's English option)
+    assert.ok(!(p === '/ar/referrals' ? /href="\/(free-hooks|referral-program)/ : /href="\/(free-hooks|referrals|referral-program)/).test(html), `${p}: no English hooks or referral link`)
   }
   const home = rootOf(page('/ar'))
   // every service has its own Arabic page now: the links stay inside /ar/ and need no English-fallback label

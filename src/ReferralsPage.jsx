@@ -12,6 +12,9 @@ import { captureAttribution, trackEvent } from './lib/analytics.js'
 import { scrollToApply } from './lib/roadmapForm.js'
 import { useDocumentHead } from './lib/useDocumentHead.js'
 import { REFERRALS_INDEXABLE, REFERRALS_PATH, SITE_URL } from './config.js'
+import { currentLocale } from './i18n/locale.js'
+import { translate } from './i18n/tr.js'
+import { pageHead } from './seo/siteSeo.js'
 
 /* ─────────────────────────────────────────────
    /referrals — Referral Partner Program.
@@ -40,6 +43,7 @@ const PAGE_DESCRIPTION =
 /* FAQPage structured data built from the FAQ shown on the page, so it can never drift from it. */
 function useFaqStructuredData() {
   useEffect(() => {
+    const locale = currentLocale()
     const script = document.createElement('script')
     script.type = 'application/ld+json'
     script.text = JSON.stringify({
@@ -47,8 +51,8 @@ function useFaqStructuredData() {
       '@type': 'FAQPage',
       mainEntity: FAQS.map((item) => ({
         '@type': 'Question',
-        name: item.q,
-        acceptedAnswer: { '@type': 'Answer', text: item.a },
+        name: translate(locale, item.q),
+        acceptedAnswer: { '@type': 'Answer', text: translate(locale, item.a) },
       })),
     })
     document.head.appendChild(script)
@@ -57,7 +61,8 @@ function useFaqStructuredData() {
 }
 
 export default function ReferralsPage() {
-  useDocumentHead({
+  // Arabic reads its head (title, description, canonical, hreflang) from the same entry as the prerendered HTML; English keeps its constants.
+  useDocumentHead(currentLocale() === 'ar' ? pageHead(REFERRALS_PATH) : {
     title: PAGE_TITLE,
     description: PAGE_DESCRIPTION,
     url: PAGE_URL,

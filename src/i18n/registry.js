@@ -39,6 +39,7 @@ export const TRANSLATED_PATHS = {
     '/creator-showcase',
     '/creative-growth-roadmap',
     '/risk-free-trial',
+    '/referrals',
   ],
 }
 

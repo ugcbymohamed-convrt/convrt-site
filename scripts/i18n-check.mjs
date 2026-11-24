@@ -18,11 +18,11 @@ const walk = (d, out = []) => { for (const e of fs.readdirSync(d, { withFileType
 export const OUT_OF_SCOPE = {
   // Spanish: the redesigned homepage sections (English + Arabic only; the Spanish homepage keeps CaseStudies / Testimonials until its own design review) and the verified-views badge (no Spanish video has one).
   // The Graspo case study components are drawn in English and Arabic only (the Spanish study does not exist yet).
-  es: ['components/home/', 'components/ugc/ViewsBadge.jsx', 'components/graspo/'],
+  es: ['components/home/', 'components/ugc/ViewsBadge.jsx', 'components/graspo/', 'components/referrals/', 'ReferralsPage.jsx'], // the Referral Partner Program page exists in English and Arabic only
   ar: [
-    'components/referrals/', 'components/hooks/', 'components/blog/', 'components/scale/', 'components/creator/',
+    'components/hooks/', 'components/blog/', 'components/scale/', 'components/creator/',
     'components/elyon/', 'components/ugc/UgcHeroRoadmap',
-    'TrustPage.jsx', 'ReferralsPage.jsx', 'FreeHooksPage.jsx', 'BlogPage.jsx', 'BlogArticlePage.jsx',
+    'TrustPage.jsx', 'FreeHooksPage.jsx', 'BlogPage.jsx', 'BlogArticlePage.jsx',
     'ElyonCaseStudyPage.jsx', 'ScalePage.jsx', 'CreatorAdminPage.jsx', 'CreatorOnboardingPage.jsx', 'CreatorLegalPage.jsx', 'OfferPlaceholderPage.jsx',
     'CreativeTestingSprintPage.jsx_UNUSED',
   ],

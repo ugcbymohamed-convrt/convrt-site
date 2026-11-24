@@ -1,6 +1,9 @@
 import { trackEvent } from '../../lib/analytics.js'
 import { Check, Reveal, SectionHeader } from '../roadmap/shared.jsx'
 import { TermsLink } from './shared.jsx'
+import { useTr } from '../../i18n/tr.js'
+import { currentLocale } from '../../i18n/locale.js'
+import { forward } from '../../lib/rtl.js'
 
 /* ─────────────────────────────────────────────
    EVERYONE WINS — two reward cards + the FREE Creative Upgrade strip.
@@ -56,12 +59,14 @@ const CARDS = [
 ]
 
 export default function ReferralRewards({ onSelect }) {
+  const tr = useTr()
+  const ar = currentLocale() === 'ar'
   return (
     <section id="rewards" aria-labelledby="rewards-heading" className="relative scroll-mt-20 py-16 md:scroll-mt-24 md:py-24">
       <div className="mx-auto max-w-7xl px-5 md:px-8">
         <Reveal>
-          <SectionHeader id="rewards-heading" eyebrow="Everyone wins" title="One Introduction. Two Winners.">
-            Choose how you want to earn.
+          <SectionHeader id="rewards-heading" eyebrow={tr('Everyone wins')} title={tr('One Introduction. Two Winners.')}>
+            {tr('Choose how you want to earn.')}
           </SectionHeader>
         </Reveal>
 
@@ -76,20 +81,20 @@ export default function ReferralRewards({ onSelect }) {
 
                 <div className="relative flex flex-1 flex-col">
                   <span className={`inline-flex w-fit items-center rounded-full border px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] ${card.accent.chip}`}>
-                    {card.eyebrow}
+                    {tr(card.eyebrow)}
                   </span>
 
                   <h3 id={`reward-${card.id}-title`} className="mt-5 font-display text-xl font-bold tracking-snug text-ink">
-                    {card.title}
+                    {tr(card.title)}
                   </h3>
 
                   <p className="mt-3 flex items-baseline gap-3">
-                    <span className="text-base font-semibold text-ink">{card.lead}</span>
-                    <span className={`font-display text-6xl font-bold leading-none tracking-display-xl sm:text-7xl ${card.accent.text}`}>{card.amount}</span>
+                    <span className="text-base font-semibold text-ink">{tr(card.lead)}</span>
+                    <span className={`font-display text-6xl font-bold leading-none tracking-display-xl sm:text-7xl ${card.accent.text}`} dir={ar ? 'ltr' : undefined}>{card.amount}</span>
                   </p>
-                  <p className="mt-2 text-sm leading-snug text-ink-muted">{card.note}</p>
+                  <p className="mt-2 text-sm leading-snug text-ink-muted">{tr(card.note)}</p>
 
-                  <p className="mt-5 text-[15px] leading-relaxed text-ink">{card.blurb}</p>
+                  <p className="mt-5 text-[15px] leading-relaxed text-ink">{tr(card.blurb)}</p>
 
                   <ul className="mt-5 space-y-3 border-t border-hairline pt-5">
                     {card.points.map((point) => (
@@ -97,7 +102,7 @@ export default function ReferralRewards({ onSelect }) {
                         <span className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border ${card.accent.check}`}>
                           <Check className="h-3 w-3" />
                         </span>
-                        <span>{point}</span>
+                        <span>{tr(point)}</span>
                       </li>
                     ))}
                   </ul>
@@ -114,8 +119,8 @@ export default function ReferralRewards({ onSelect }) {
                                 motion-reduce:transition-none motion-reduce:hover:translate-y-0 motion-reduce:active:scale-100
                                 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 ${card.accent.button}`}
                   >
-                    {card.cta}
-                    <span aria-hidden="true" className="transition-transform duration-200 group-hover:translate-x-0.5 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0">→</span>
+                    {tr(card.cta)}
+                    <span aria-hidden="true" className="transition-transform duration-200 group-hover:translate-x-0.5 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0">{forward()}</span>
                   </button>
                 </div>
               </article>
@@ -132,22 +137,21 @@ export default function ReferralRewards({ onSelect }) {
             <div className="grid grid-cols-1 gap-5 lg:grid-cols-12 lg:items-center lg:gap-10">
               <div className="lg:col-span-6">
                 <span className="inline-flex w-fit items-center rounded-full border border-magenta/40 bg-magenta/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-magenta">
-                  For the brand you refer
+                  {tr('For the brand you refer')}
                 </span>
                 <h3 id="upgrade-heading" className="mt-4 font-display text-2xl font-bold uppercase leading-tight tracking-display text-ink sm:text-[1.7rem]">
-                  Your referral gets a <span className="text-lime">FREE Creative Upgrade</span>
+                  {tr('Your referral gets a')} <span className="text-lime">{tr('FREE Creative Upgrade')}</span>
                 </h3>
                 <p className="mt-2 font-display text-xl font-semibold leading-snug tracking-snug text-ink">
-                  2 Extra Ad Variations. On Us.
+                  {tr('2 Extra Ad Variations. On Us.')}
                 </p>
               </div>
               <div className="lg:col-span-6">
                 <p className="text-base leading-relaxed text-ink-muted">
-                  When your referral starts their first qualifying paid project, we’ll create two additional ad
-                  variations at no extra cost.
+                  {tr('When your referral starts their first qualifying paid project, we’ll create two additional ad variations at no extra cost.')}
                 </p>
                 <p className="mt-3 text-sm leading-relaxed text-ink-muted">
-                  Made from existing project footage and assets. No additional filming required.
+                  {tr('Made from existing project footage and assets. No additional filming required.')}
                 </p>
               </div>
             </div>
@@ -156,8 +160,8 @@ export default function ReferralRewards({ onSelect }) {
 
         <Reveal delay={160}>
           <p className="mx-auto mt-6 flex max-w-3xl flex-wrap items-center justify-center gap-x-2 text-center text-sm leading-relaxed text-ink-muted">
-            Rewards apply to eligible new clients and are confirmed by CONVRT.
-            <TermsLink>Read the full terms</TermsLink>
+            {tr('Rewards apply to eligible new clients and are confirmed by CONVRT.')}
+            <TermsLink>{tr('Read the full terms')}</TermsLink>
           </p>
         </Reveal>
       </div>
