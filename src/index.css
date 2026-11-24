@@ -369,6 +369,8 @@ body {
 /* the invisible sizer: reserves the width of the longest word (from a data attribute, so it is not page text) and the height of one line */
 .ugc-reel::before { content: attr(data-sizer); display: block; visibility: hidden; height: 1.14em; white-space: nowrap; }
 .ugc-reel-track { position: absolute; left: 0; top: 0; display: block; will-change: transform; }
+/* centred (text-led) heroes: the rolling word sits in the middle of its fixed-width slot, so the line never shifts */
+.ugc-reel-center .ugc-reel-track { right: 0; text-align: center; }
 .ugc-reel-track > span { display: block; height: 1.14em; white-space: nowrap; }
 .ugc-reel-track.is-rolling { transform: translate3d(0, -50%, 0); transition: transform 640ms cubic-bezier(0.62, 0, 0.2, 1.1); }
 .ugc-draw { animation: ugc-fade-in 0.7s ease-out both; }

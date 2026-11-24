@@ -23,8 +23,9 @@ export const ES_HERO = {
   'organic-h1': {
     lines: [['Vídeos', 'para', 'redes', 'sociales']],
     lead: ['que', 'merecen', 'la', 'pena'],
-    words: ['ver', 'seguir', 'guardar'],
-    sizer: 'guardar.',
+    // every word completes "que merecen la pena …" naturally; the slot is sized for the longest
+    words: ['guardar', 'compartir', 'recordar'],
+    sizer: 'compartir.',
     secondary: { label: 'Cómo trabajamos', href: '#how-it-works' },
   },
   'saas-h1': {

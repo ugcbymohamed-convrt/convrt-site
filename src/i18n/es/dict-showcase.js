@@ -1,5 +1,7 @@
 /* Spanish: /creator-showcase and the video library/lightbox. Keys = exact English strings. */
 export default {
+  "Discover different styles of UGC and Spokesperson with real creators.": "Descubre distintos estilos de UGC y Spokesperson con creadores reales.",
+  "For documented CONVRT projects, read our": "Para conocer proyectos documentados de CONVRT, consulta el",
   "Showing": "Mostrando",
   "videos": "vídeos",
   "more": "más",

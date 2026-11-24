@@ -1,11 +1,10 @@
-import { CREATOR_EXAMPLES_NOTE } from '../../content/attribution.js'
 import { tr } from '../../i18n/tr.js'
+import { currentLocale } from '../../i18n/locale.js'
 
 /* SECTION 1: a short, text-only hero. The H1 and one sentence, then the library starts straight away: no statistics, no service copy,
    no phone mock-ups. Dark canvas, white type, lime only on the last word and a faint glow.
 
-   The attribution line under the intro (CREATOR_EXAMPLES_NOTE) says the videos are examples from independent creators and not necessarily CONVRT
-   productions; it was added in the SEO/GEO Batch 1 (owner decision, Nov 2026) so the visible copy matches the SEO description. */
+   The standing creators-attribution line that used to sit under the intro is removed (owner, Nov 2026); provenance stays in the data, the About page and the legal pages. */
 export default function OurWorkHero({ empty = false }) {
   return (
     <section aria-labelledby="our-work-heading" className="relative overflow-x-clip">
@@ -14,8 +13,7 @@ export default function OurWorkHero({ empty = false }) {
         <h1 id="our-work-heading" className="max-w-4xl font-display text-[2.4rem] font-bold leading-[1.03] tracking-display-xl text-ink sm:text-5xl md:text-6xl">
           {tr("See what's")} <span className="text-lime">{tr('possible.')}</span>
         </h1>
-        <p className="mt-4 max-w-2xl text-base leading-relaxed text-ink-muted md:mt-5 md:text-lg">{empty ? tr('Examples from independent creators in your language, coming soon.') : <>{tr('Explore real creator videos across')}{' '}<span className="whitespace-nowrap">{tr('e-commerce')}</span>{tr(', SaaS, services and more.')}</>}</p>
-        <p className="mt-3 max-w-2xl text-[13px] leading-relaxed text-ink-muted">{tr(CREATOR_EXAMPLES_NOTE)}</p>
+        <p className="mt-4 max-w-2xl text-base leading-relaxed text-ink-muted md:mt-5 md:text-lg">{empty ? tr('Examples from independent creators in your language, coming soon.') : currentLocale() === 'en' ? <>{tr('Explore real creator videos across')}{' '}<span className="whitespace-nowrap">{tr('e-commerce')}</span>{tr(', SaaS, services and more.')}</> : tr('Discover different styles of UGC and Spokesperson with real creators.')}</p>
       </div>
     </section>
   )

@@ -13,6 +13,23 @@ export const REFERRAL_LABELS = {
   ar: ['رشّحنا', 'واكسب'],
 }
 
+/* The Services dropdown, Spanish (owner, Nov 2026): short labels, keyed by the service page's English path. Used by the desktop dropdown AND the mobile menu, so they cannot drift. The page names
+   (breadcrumbs, headings) keep their own dictionary entries. Other languages use the dictionary label of each entry. */
+export const SERVICE_MENU_LABELS = {
+  es: {
+    '/ugc-video-agency': 'Vídeos UGC',
+    '/spokesperson-video-production': 'Vídeos Spokesperson',
+    '/saas-video-production': 'Vídeos SaaS',
+    '/social-media-video-production': 'Vídeos orgánicos para redes sociales',
+  },
+}
+
+/* Spanish order of the dropdown (owner): UGC, Spokesperson, SaaS, Organic. The other languages keep the English order. */
+export const serviceMenuFor = (locale, items) => {
+  const order = SERVICE_MENU_LABELS[locale] ? Object.keys(SERVICE_MENU_LABELS[locale]) : null
+  return order ? order.map((href) => items.find((m) => m.href === href)).filter(Boolean) : items
+}
+
 export const HOME_LABELS = { en: 'CONVRT — home', es: 'CONVRT — inicio', fr: 'CONVRT — accueil', ar: 'CONVRT — الرئيسية' }
 
 /* Is a menu entry that opens `path` (an English base path; undefined for an in-page anchor) listed in this language?

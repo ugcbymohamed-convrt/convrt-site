@@ -1,6 +1,8 @@
 import { trackEvent } from '../../lib/analytics.js'
 import { Check, Reveal, SectionHeader } from '../roadmap/shared.jsx'
 import { TermsLink } from './shared.jsx'
+import { standardRewardCard } from '../../i18n/referralReward.js'
+import { currentLocale } from '../../i18n/locale.js'
 import { tr } from '../../i18n/tr.js'
 
 /* ─────────────────────────────────────────────
@@ -21,7 +23,7 @@ const CARDS = [
     eyebrow: 'Standard Referrals',
     title: 'Standard Referral Partner',
     lead: 'Earn',
-    amount: '$150',
+    amount: '$150', // shown through standardRewardCard(locale) (per-language amounts: src/i18n/referralReward.js)
     note: 'Per client.',
     blurb: 'Earn $150 cash or production credit for every successful referral.',
     points: ['No selling required.', 'Multiple referrals welcome.', 'Paid when the referral becomes an eligible paying client.'],
@@ -86,7 +88,7 @@ export default function ReferralRewards({ onSelect }) {
 
                   <p className="mt-3 flex items-baseline gap-3">
                     <span className="text-base font-semibold text-ink">{tr(card.lead)}</span>
-                    <span className={`font-display text-6xl font-bold leading-none tracking-display-xl sm:text-7xl ${card.accent.text}`}>{card.amount}</span>
+                    <span className={`font-display text-6xl font-bold leading-none tracking-display-xl sm:text-7xl ${card.accent.text}`}>{card.id === 'standard' ? standardRewardCard(currentLocale()) : card.amount}</span>
                   </p>
                   <p className="mt-2 text-sm leading-snug text-ink-muted">{tr(card.note)}</p>
 

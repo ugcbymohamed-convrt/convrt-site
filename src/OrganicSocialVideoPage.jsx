@@ -57,7 +57,7 @@ function ProcessFooter() {
         <a href={hrefFor(ORGANIC_PRICING_HREF)} className="font-medium text-ink underline decoration-lime/60 underline-offset-4 transition-colors hover:text-lime">{tr('pricing and terms')}</a>.
       </p>
       <p className="mx-auto mt-2 max-w-3xl text-center text-[15px] leading-relaxed text-ink-muted">{tr(ORGANIC_SCOPE_NOTE)}</p>
-      <p className="mx-auto mt-2 max-w-3xl text-center text-xs text-ink-muted">{tr('Scenes are illustrative. The portraits are for illustration only.')}</p>
+      {currentLocale() !== 'es' && <p className="mx-auto mt-2 max-w-3xl text-center text-xs text-ink-muted">{tr('Scenes are illustrative. The portraits are for illustration only.')}</p>}
     </>
   )
 }

@@ -8,7 +8,7 @@ import { usePressFeedback } from '../lib/usePressFeedback.js'
 import LanguageSelector from './LanguageSelector.jsx'
 import { parsePath, localizedPath } from '../i18n/paths.js'
 import { translate, localHref } from '../i18n/tr.js'
-import { REFERRAL_LABELS, menuHas, showReferralLink } from '../i18n/menu.js'
+import { REFERRAL_LABELS, SERVICE_MENU_LABELS, menuHas, serviceMenuFor, showReferralLink } from '../i18n/menu.js'
 import { primaryAction } from '../i18n/cta.js'
 import { SERVICE_LABELS } from '../seo/businessKnowledge.js'
 
@@ -129,9 +129,9 @@ export default function Nav() {
               {/* the panel starts right under the link (its top padding bridges the gap, so the pointer never leaves the menu); visibility only, so the links are always in the HTML */}
               <div className="invisible absolute left-1/2 top-full z-50 -translate-x-1/2 pt-4 opacity-0 transition-[opacity,visibility] duration-200 group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100 motion-reduce:transition-none">
                 <ul className="min-w-[250px] rounded-2xl border border-white/10 bg-[rgba(12,12,14,0.96)] p-2 shadow-[0_24px_60px_-20px_rgba(0,0,0,0.9)] backdrop-blur-xl">
-                  {SERVICE_MENU.map((m) => (
+                  {serviceMenuFor(locale, SERVICE_MENU).map((m) => (
                     <li key={m.href}>
-                      <a href={localHref(m.href, locale)} className="block rounded-xl px-4 py-2.5 text-sm text-ink-muted transition-colors hover:bg-white/[0.06] hover:text-ink focus-visible:bg-white/[0.06] focus-visible:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-lime">{tr(m.label)}</a>
+                      <a href={localHref(m.href, locale)} className="block rounded-xl px-4 py-2.5 text-sm text-ink-muted transition-colors hover:bg-white/[0.06] hover:text-ink focus-visible:bg-white/[0.06] focus-visible:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-lime">{SERVICE_MENU_LABELS[locale]?.[m.href] ?? tr(m.label)}</a>
                     </li>
                   ))}
                 </ul>
@@ -199,9 +199,9 @@ export default function Nav() {
                 </a>
                 {l.href === '#services' && (
                   <ul className="mb-1 ml-5 border-l border-hairline pl-2">
-                    {SERVICE_MENU.map((m) => (
+                    {serviceMenuFor(locale, SERVICE_MENU).map((m) => (
                       <li key={m.href}>
-                        <a href={localHref(m.href, locale)} onClick={() => setOpen(false)} className="block rounded-lg px-3 py-2.5 text-[15px] text-ink-muted hover:text-ink hover:bg-surface-1">{tr(m.label)}</a>
+                        <a href={localHref(m.href, locale)} onClick={() => setOpen(false)} className="block rounded-lg px-3 py-2.5 text-[15px] text-ink-muted hover:text-ink hover:bg-surface-1">{SERVICE_MENU_LABELS[locale]?.[m.href] ?? tr(m.label)}</a>
                       </li>
                     ))}
                   </ul>

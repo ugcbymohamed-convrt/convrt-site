@@ -40,7 +40,7 @@ test('hero: the four Spanish H1s are the approved editorial headlines and every 
   const h1 = (p) => text(page(p).match(/<h1[\s\S]*?<\/h1>/)[0]).replace(/\s+\./g, '.')
   assert.match(h1('ugc-video-agency'), /Vídeos UGC con personas reales\. Hechos para destacar\./)
   assert.match(h1('spokesperson-video-production'), /Vídeos Spokesperson con personas reales\. Mensajes que conectan\./)
-  assert.match(h1('social-media-video-production'), /Vídeos para redes sociales que merecen la pena ver\./)
+  assert.match(h1('social-media-video-production'), /Vídeos para redes sociales que merecen la pena guardar\./)
   assert.match(h1('saas-video-production'), /Vídeos para SaaS que hacen tu producto fácil de entender\./)
   // SaaS scrolls to the formats section, Organic to the process section: both anchors must exist on the page that links to them.
   assert.equal(ES_HERO['saas-h1'].secondary.href, '#saas-formats')
@@ -81,7 +81,7 @@ test('FAQ: the approved question counts, Spanish headings, and visible questions
 test('Organic: the owner-confirmed six-month initial commitment is stated, community management is not customer support, no growth promise', () => {
   const html = page('social-media-video-production')
   const t = text(html)
-  assert.match(t, /Una colaboración inicial de 6 meses/)
+  assert.match(t, /Compromiso inicial de 6 meses/)
   assert.match(t, /compromiso de seis meses/)
   assert.match(html.match(/application\/ld\+json[\s\S]*?<\/script>/)[0], /seis meses/)
   assert.match(t, /La gestión de comunidad no incluye atención al cliente/)

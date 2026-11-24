@@ -310,7 +310,7 @@ test('homepage copy (Spanish review 3): hero subtitle and offer line, services, 
   for (const s of ['Creativos en vídeo para', 'Las buenas marcas merecen mejores creativos', 'Lo que las marcas quieren saber', 'Un estudio creativo de alto rendimiento', 'Ha trabajado con', 'Ver nuestros trabajos']) assert.ok(!t.includes(s), `old wording gone: ${s}`)
   // the creator carousel: no generic "UGC · Español" labels, a short independent-creators note instead of the long disclaimer
   assert.ok(!/· Español/i.test(t) && !/CREATOR · /i.test(t), 'no language suffix on the Spanish creator cards')
-  assert.ok(!t.includes('No son necesariamente producciones realizadas por CONVRT') && t.includes('Ejemplos de creadores independientes.'))
+  assert.ok(!t.includes('No son necesariamente producciones realizadas por CONVRT') && !t.includes('Ejemplos de creadores independientes'), 'the repeated independent-creators line is gone')
   // each service card links to its Spanish page
   for (const href of ['/es/ugc-video-agency', '/es/saas-video-production', '/es/spokesperson-video-production', '/es/social-media-video-production']) assert.ok(html.includes(`href="${href}"`), href)
 })

@@ -287,9 +287,10 @@ test('packages: a compact pointer to Pricing; both package figures come from the
   const sec = flatten(html.split('id="organic-packages"')[1].split('</section>')[0])
   assert.ok(sec.includes('Consistent content. Flexible support.'))
   for (const p of [ORGANIC.light, ORGANIC.growth]) assert.ok(sec.includes(p.name) && sec.includes(formatMoney(p.monthly)) && sec.includes(p.cadence), p.name)
-  assert.ok(sec.includes(CARD_NOTES.organic) && sec.includes(ORGANIC.customerSupportNote))
-  assert.ok(sec.includes('content scheduling and posting, plus organic community management'))
-  assert.ok(sec.includes('Facebook, Instagram and TikTok'))
+  // three compact lines (owner, Nov 2026): scheduling/posting/community management on three platforms, the commitment + VAT + exclusions, and the custom-plan line
+  assert.ok(sec.includes('Both packages include scheduling, posting and organic community management across Instagram, Facebook and TikTok.'))
+  assert.ok(sec.includes(`${ORGANIC_COMMITMENT.initialMonths}-month initial commitment. Prices exclude VAT. Customer support and paid ad management are not included.`))
+  assert.ok(sec.includes('Need a different approach? Let’s build a plan around your brand.'))
   assert.match(html.split('id="organic-packages"')[1].split('</section>')[0], new RegExp(`href="${ORGANIC_PRICING_HREF}"[^>]*>Compare packages and full scope`))
   assert.equal(ORGANIC_PRICING_HREF, '/pricing#organic')
   assert.ok(!/turnaround|response time|business days|videos per month|reporting schedule|unlimited|guarantee/i.test(sec), 'no unconfirmed commitments')

@@ -51,7 +51,7 @@ export default function ShowcaseFormats({ items }) {
         )}
         {currentLocale() !== 'es' && (
         <p className="mt-6 max-w-3xl text-[14px] leading-relaxed text-ink-muted">
-          {tr('These are creators’ examples, not necessarily CONVRT productions. For documented CONVRT projects, read our')}{' '}
+          {tr('For documented CONVRT projects, read our')}{' '}
           <TextLink href={PATHS.caseStudyGraspo} onClick={() => trackEvent('showcase_service_link_click', { service: 'case-study-organic' })}>{tr('organic social media case study')}</TextLink> {tr('and our')}{' '}
           <TextLink href={PATHS.caseStudyElyon} onClick={() => trackEvent('showcase_service_link_click', { service: 'case-study-ugc' })}>{tr('paid social UGC case study')}</TextLink>.
         </p>

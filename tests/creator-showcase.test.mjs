@@ -97,7 +97,7 @@ test('static HTML: breadcrumb, one H1, the approved intro, two sections, the fir
   assert.equal((html.match(/<h1[\s>]/g) || []).length, 1)
   assert.ok(t.includes("See what's possible."))
   assert.ok(t.includes('Explore real creator videos across e-commerce, SaaS, services and more.'))
-  assert.ok(t.includes(CREATOR_EXAMPLES_NOTE), 'the independent-creators attribution line is visible (SEO/GEO Batch 1)')
+  assert.ok(!t.includes(CREATOR_EXAMPLES_NOTE), 'the repeated independent-creators disclaimer is not shown in the hero (owner, Nov 2026; provenance stays in the data, the About page and the legal pages)')
   assert.ok(!/produced by CONVRT|CONVRT produced|our work|we produced/i.test(t.replace(CREATOR_EXAMPLES_NOTE, '')), 'no CONVRT-production claim beyond the disclaimer')
   assert.equal((html.match(/<section[\s>]/g) || []).length, 3, 'three sections: the hero, the library and the "what you will find" guide (Batch 2)')
   const shown = Math.min(selectOurWork().length, 12)
