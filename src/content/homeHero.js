@@ -117,3 +117,16 @@ export const HOME_HERO_AR = [
     approval: { ...approval, approvedOn: '2026-11-23' },
   },
 ]
+
+/* The French homepage hero. Same structure as the English hero; only the language and the three videos differ (they are data here, never hard-coded in the layout: to swap one, change its entry).
+   - FRONT (the large centre phone): the FRENCH-DUBBED version of the CONVRT advertisement, ~/Downloads/CONVRT_French_Premium_FR_V2.mp4 (1080x1920, 52.8 s), uploaded to Cloudflare Stream on 2026-11-23 at the owner's
+     request. It replaces the earlier French centre video. The Comma video is NOT the hero: it lives in the French creator carousel and showcase.
+   - LEFT: the approved French female creator (fr-ugc-hero-1) and RIGHT: the approved French male creator (fr-ugc-hero-2). TEMPORARY choices (owner, 2026-11-23): to be replaced once better videos are selected.
+     Left and right are the same Stream videos as the French UGC page's hero phones (uploaded once). They are creators' own examples, not CONVRT productions; the page says so under the stage (CREATOR_EXAMPLES_NOTE).
+   English and Spanish keep their own heroes. */
+const frApproval = { ...approval, approvedOn: '2026-11-23' }
+export const HOME_HERO_FR = [
+  { id: 'home-hero-fr-main', creatorId: 'cv-home-hero', industry: 'unclassified', languages: ['fr'], caption: 'Publicité CONVRT, version française.', poster: '/portfolio/fr-home-hero.webp', source: { cloudflareId: 'ce7f495642b90a531e44f17b8e7454c5' }, approval: frApproval },
+  { id: 'home-hero-fr-left', creatorId: 'fr-c01', industry: 'unclassified', languages: ['fr'], caption: 'Complément alimentaire : démonstration du produit face caméra.', poster: '/portfolio/fr-ugc-hero-1.webp', source: { cloudflareId: 'c1dd083d5550608a139f656670bd77a5' }, approval: frApproval },
+  { id: 'home-hero-fr-right', creatorId: 'fr-c02', industry: 'unclassified', languages: ['fr'], caption: 'Application pour voyager : un créateur raconte son expérience.', poster: '/portfolio/fr-ugc-hero-2.webp', source: { cloudflareId: '0346ed0881533220ba77bc4b3d4c26f9' }, approval: frApproval },
+]

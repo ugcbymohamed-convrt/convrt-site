@@ -3,10 +3,11 @@ import { usePressFeedback } from '../lib/usePressFeedback.js'
 import { OFFER_PATHS, CREATOR_SHOWCASE_PATH } from '../config.js'
 import { trackEvent } from '../lib/analytics.js'
 import CreatorVideoStage from './ugc/CreatorVideoStage.jsx'
-import { HOME_HERO, HOME_HERO_ES, HOME_HERO_AR } from '../content/homeHero.js'
+import { HOME_HERO, HOME_HERO_ES, HOME_HERO_FR, HOME_HERO_AR } from '../content/homeHero.js'
 import { useTr, useHref } from '../i18n/tr.js'
 import { currentLocale } from '../i18n/locale.js'
 import { primaryAction, flowAvailable } from '../i18n/cta.js'
+import { FR_HOME_HERO } from '../i18n/fr/hero.js'
 import { AR_HERO_OFFERS } from '../i18n/ar/heroOffers.js'
 
 const ROTATING_WORDS = ['convert', 'resonate', 'sell', 'connect']
@@ -14,8 +15,10 @@ const ROTATING_WORDS = ['convert', 'resonate', 'sell', 'connect']
 const ROTATING_WORDS_ES = ['conectar', 'convertir', 'vender', 'destacar']
 // Arabic rotating words complete «فيديوهات إعلانية مصمّمة كي ___» (a purpose, never a guaranteed result; see src/i18n/ar/dict-home.js).
 const ROTATING_WORDS_AR = ['تُقنع', 'تؤثّر', 'تبيع', 'تُلهم']
-const WORDS_BY_LOCALE = { en: ROTATING_WORDS, es: ROTATING_WORDS_ES, ar: ROTATING_WORDS_AR }
-const STAGE_BY_LOCALE = { en: HOME_HERO, es: HOME_HERO_ES, ar: HOME_HERO_AR }
+// French rotating words complete « Des vidéos publicitaires pensées pour ___ » (see src/i18n/fr/dict-home.js). All four are intransitive, so each reads as a full sentence.
+const ROTATING_WORDS_FR = ['convertir', 'convaincre', 'marquer', 'vendre']
+const ROTATING_BY_LOCALE = { es: ROTATING_WORDS_ES, fr: ROTATING_WORDS_FR, ar: ROTATING_WORDS_AR }
+const HOME_HERO_BY_LOCALE = { es: HOME_HERO_ES, fr: HOME_HERO_FR, ar: HOME_HERO_AR }
 
 /* Secondary offers — Level 2 in the hero's attention hierarchy. Each has its own
    accent (lime for the video offer, pink for the hooks library) so the
@@ -82,7 +85,7 @@ export default function Hero() {
             <h1 className="font-display font-semibold text-ink tracking-display-xl leading-[1.02] text-[48px] sm:text-[50px] md:text-[54px] lg:text-[60px] xl:text-[70px]">
               <span className="block">{tr('Performance creatives')}</span>{' '}
               <span className="block">
-                {tr('engineered to')} <RotatingWord words={WORDS_BY_LOCALE[locale] ?? ROTATING_WORDS} />
+                {tr('engineered to')} <RotatingWord words={en ? ROTATING_WORDS : ROTATING_BY_LOCALE[locale]} padX={locale === 'fr'} />
               </span>
             </h1>
 
@@ -98,7 +101,7 @@ export default function Hero() {
                 12 offer→button, 32 / 40 button→secondary, 12 label→cards. */}
             <div className="lg:mt-6">
               <p className="mb-3 text-balance text-[15px] md:text-base font-medium leading-snug text-ink">
-                {en ? <>Your next 5 ad concepts. Tailored to your brand. <span className="text-lime">On us.</span></> : flowAvailable(locale, 'roadmap') ? (locale === 'ar' ? <>{tr('Your next 5 ad concepts. Tailored to your brand.')} <span className="text-lime">{tr('On us.')}</span></> : <>{tr('5 ad concepts for your brand.')} <span className="text-lime">{tr('Free.')}</span></>) : <>{tr('Book a free strategy call.')} <span className="text-lime">{tr('We tell you exactly what you need.')}</span></>}
+                {en ? <>Your next 5 ad concepts. Tailored to your brand. <span className="text-lime">On us.</span></> : locale === 'fr' ? <>{FR_HOME_HERO.offerLine[0]} <span className="text-lime">{FR_HOME_HERO.offerLine[1]}</span></> : flowAvailable(locale, 'roadmap') ? (locale === 'ar' ? <>{tr('Your next 5 ad concepts. Tailored to your brand.')} <span className="text-lime">{tr('On us.')}</span></> : <>{tr('5 ad concepts for your brand.')} <span className="text-lime">{tr('Free.')}</span></>) : <>{tr('Book a free strategy call.')} <span className="text-lime">{tr('We tell you exactly what you need.')}</span></>}
               </p>
               <div className="flex flex-col items-stretch gap-3 sm:flex-row sm:items-center sm:justify-center lg:justify-start">
                 <a
@@ -106,7 +109,7 @@ export default function Hero() {
                   {...(action.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
                   onClick={() => trackEvent(action.event, en ? { location: 'hero' } : { page: locale, location: 'hero' })}
                   {...primaryPress}
-                  className={en ? `cta-gradient hero-cta group inline-flex w-full sm:w-auto min-h-[64px] md:min-h-[68px] items-center justify-center gap-2.5
+                  className={en || locale === 'fr' ? `cta-gradient hero-cta group inline-flex w-full sm:w-auto min-h-[64px] md:min-h-[68px] items-center justify-center gap-2.5
                              rounded-full px-6 md:px-7 lg:px-6 xl:px-7 py-4 text-base md:text-[17px] font-bold tracking-snug text-canvas
                              focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-lime`
                     : /* translated: a compact one-line label ("5 conceptos gratis"): no wrapping, less horizontal padding */
@@ -123,7 +126,7 @@ export default function Hero() {
                   href={href(CREATOR_SHOWCASE_PATH)}
                   onClick={() => trackEvent('hero_see_our_work_click', { location: 'hero' })}
                   {...ghostPress}
-                  className={en ? `hero-cta-ghost group inline-flex w-full sm:w-auto min-h-[48px] sm:min-h-[64px] md:min-h-[68px] items-center justify-center gap-2
+                  className={en || locale === 'fr' ? `hero-cta-ghost group inline-flex w-full sm:w-auto min-h-[48px] sm:min-h-[64px] md:min-h-[68px] items-center justify-center gap-2
                              rounded-full border border-hairline-strong bg-surface-2 px-6 md:px-7 lg:px-5 xl:px-7 py-3 sm:py-4 text-base md:text-[17px] font-semibold tracking-snug text-ink
                              hover:border-ink-muted
                              focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink`
@@ -158,7 +161,7 @@ export default function Hero() {
           {/* Right column — the same three-phone video stage as the /ugc-video-agency hero (second on small screens).
               The videos are listed in src/content/homeHero.js; the first is the large centre phone. */}
           <div className="order-2 min-w-0 lg:order-none lg:col-span-6">
-            <CreatorVideoStage items={STAGE_BY_LOCALE[locale] ?? HOME_HERO} label={tr('Creator UGC videos')} />
+            <CreatorVideoStage items={en ? HOME_HERO : HOME_HERO_BY_LOCALE[locale]} label={tr('Creator UGC videos')} />
           </div>
         </div>
       </div>
@@ -181,10 +184,11 @@ export function SecondaryOffer({ offer }) {
   const hrefFn = useHref()
   const locale = currentLocale()
   const en = locale === 'en'
-  // Arabic: the card text comes from src/i18n/ar/heroOffers.js (owner-reviewed wording); the styling, icons, destinations and events are the English definition.
+  // Arabic: the card text comes from src/i18n/ar/heroOffers.js (owner-reviewed wording); French: the owner's wording (src/i18n/fr/hero.js); Spanish: the dictionary. Styling, icons, destinations and events are the English definition.
   const ar = locale === 'ar' ? AR_HERO_OFFERS[offer.id] : null
-  const title = ar ? ar.title : en ? offer.title : offer.titleEs
-  const description = ar ? ar.description : en ? offer.description : tr(offer.description)
+  const fr = locale === 'fr' ? FR_HOME_HERO.offers[offer.id] : null
+  const title = ar ? ar.title : en ? offer.title : fr ? <>{fr.title[0]} <span className={offer.id === 'video' ? 'text-lime' : 'text-[#F472B6]'}>{fr.title[1]}</span></> : offer.titleEs
+  const description = ar ? ar.description : en ? offer.description : fr ? fr.description : tr(offer.description)
   const layout = `group grid grid-cols-[auto_1fr] items-center gap-x-3 rounded-2xl border p-3.5 sm:p-4`
   const iconTile = (
     <span className={`col-start-1 row-start-1 row-span-3 sm:row-span-1 flex h-10 w-10 items-center justify-center rounded-xl border sm:h-9 sm:w-9 ${offer.iconTile}`}>
@@ -206,7 +210,7 @@ export function SecondaryOffer({ offer }) {
       </div>
     )
   }
-  const cta = ar ? ar.cta : en ? offer.cta : tr(offer.cta)
+  const cta = ar ? ar.cta : en ? offer.cta : fr ? fr.cta : tr(offer.cta)
   return (
     <a
       href={en ? offer.href : hrefFn(offer.href)}
@@ -248,7 +252,7 @@ function IconBolt() {
 
 /* ---------- Rotating headline word ---------- */
 
-function RotatingWord({ words }) {
+function RotatingWord({ words, padX = false }) {
   const [index, setIndex] = useState(0)
 
   useEffect(() => {
@@ -264,7 +268,7 @@ function RotatingWord({ words }) {
   const widest = words.reduce((a, b) => (a.length >= b.length ? a : b), '')
 
   return (
-    <span className="relative inline-block align-baseline overflow-hidden pb-[0.12em]">
+    <span className={`relative inline-block align-baseline overflow-hidden pb-[0.12em]${padX ? ' px-[0.06em]' : ''}`}>
       {/* Invisible sizing element — reserves space for the widest word + underline padding */}
       {/* The widest word is drawn by CSS (::after reads data-word), not as text, so the heading's text is
           "Performance creatives engineered to <current word>" for search engines and screen readers, and nothing else changes. */}

@@ -284,7 +284,7 @@ test('hreflang: one reciprocal set (en, es, ar, x-default = English) on the Engl
     const set = (h) => tag(h, /<link rel="alternate" hreflang="([^"]+)" href="([^"]+)"/g).length ? [...headOf(h).matchAll(/<link rel="alternate" hreflang="([^"]+)" href="([^"]+)"/g)].map((m) => `${m[1]} ${m[2]}`).join('|') : ''
     const ar = page(localizedPath('ar', bp)), en = page(bp), es = page(localizedPath('es', bp))
     assert.equal(set(ar), set(en), bp); assert.equal(set(ar), set(es), bp)
-    assert.match(set(ar), /^en [^|]+\|es [^|]+\|ar [^|]+\|x-default /, bp)
+    assert.match(set(ar), /^en [^|]+\|es [^|]+\|(fr-FR [^|]+\|)?ar [^|]+\|x-default /, bp)
     assert.ok(!/ar-AE|ar-SA/.test(set(ar)))
     assert.equal(set(ar).split('|').at(-1), `x-default ${SITE_URL}${bp === '/' ? '/' : bp}`)
   }
@@ -293,9 +293,9 @@ test('hreflang: one reciprocal set (en, es, ar, x-default = English) on the Engl
   // the Graspo case study exists in English and Arabic only (no Spanish): a two-language set + x-default
   const gset = (h) => [...headOf(h).matchAll(/<link rel="alternate" hreflang="([^"]+)" href="([^"]+)"/g)].map((m) => `${m[1]} ${m[2]}`).join('|')
   assert.equal(gset(page('/ar/case-studies/graspo')), gset(page('/case-studies/graspo')))
-  assert.match(gset(page('/ar/case-studies/graspo')), /^en [^|]+\|(es [^|]+\|)?ar [^|]+\|x-default /)
+  assert.match(gset(page('/ar/case-studies/graspo')), /^en [^|]+\|(es [^|]+\|)?(fr-FR [^|]+\|)?ar [^|]+\|x-default /)
   for (const bp of ['/about', '/case-studies/elyon']) assert.ok(!/hreflang="ar"/.test(page(bp)), `${bp}: no hreflang to a page that does not exist`)
-  assert.deepEqual(alternatesFor('/ugc-video-agency', SITE_SEO['/ugc-video-agency']).map((a) => a.hreflang), ['en', 'es', 'ar', 'x-default'])
+  assert.deepEqual(alternatesFor('/ugc-video-agency', SITE_SEO['/ugc-video-agency']).map((a) => a.hreflang), ['en', 'es', 'fr-FR', 'ar', 'x-default'])
 })
 
 test('sitemap: the indexable Arabic URLs (home, four services, Graspo case study, pricing, Showcase), nothing else Arabic', () => {

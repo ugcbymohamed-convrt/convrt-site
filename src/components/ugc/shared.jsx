@@ -2,7 +2,7 @@ import { forward } from '../../lib/rtl.js'
 import { trackEvent, withUtm } from '../../lib/analytics.js'
 import { usePressFeedback } from '../../lib/usePressFeedback.js'
 import { OFFER_PATHS } from '../../config.js'
-import { tr, hrefFor } from '../../i18n/tr.js'
+import { tr, hrefFor, ctaText } from '../../i18n/tr.js'
 import { currentLocale } from '../../i18n/locale.js'
 import { resolveCta } from '../../i18n/cta.js'
 import { Reveal, Eyebrow } from '../roadmap/shared.jsx'
@@ -71,7 +71,7 @@ export function RoadmapCta({ location, className = '', hero = false, children = 
   const href = hrefFor(resolved.href, locale)
   const external = resolved.external
   // A redirected CTA gets the booking label; the default label is translated here; a label a caller already localized (page config) is shown as given.
-  const label = resolved.redirected || resolved.label === 'Get 5 Free Ad Concepts' ? tr(resolved.label) : resolved.label
+  const label = resolved.redirected ? tr(resolved.label) : resolved.label === 'Get 5 Free Ad Concepts' ? ctaText(resolved.label) : resolved.label
   return (
     <a
       href={href}

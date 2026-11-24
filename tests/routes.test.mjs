@@ -202,13 +202,13 @@ test('HTTP: every known route answers 200 with its prerendered page', async () =
 })
 
 test('HTTP: translated pages answer 200 (with and without the trailing slash); unbuilt languages and missing translations answer a genuine 404', async () => {
-  for (const p of allLocalizedPaths(['es'])) {
-    for (const url of [p, p === '/es' ? '/es/' : `${p}/`]) {
+  for (const p of allLocalizedPaths(['es', 'fr'])) {
+    for (const url of [p, p === '/es' || p === '/fr' ? `${p}/` : `${p}/`]) {
       const r = await get(url)
       assert.equal(r.status, 200, url)
       const body = await r.text()
       assert.ok(body.includes(`<div id="root" data-ssr-path="${p}">`), `${url} is not its prerendered page`)
-      assert.match(body, /<html lang="es">/, `${url} declares Spanish`)
+      assert.match(body, p.startsWith('/fr') ? /<html lang="fr-FR">/ : /<html lang="es">/, `${url} declares its language`)
     }
   }
   // Arabic pages answer 200 as right-to-left Arabic documents.
@@ -221,8 +221,8 @@ test('HTTP: translated pages answer 200 (with and without the trailing slash); u
       assert.match(body, /<html lang="ar" dir="rtl">/, `${url} declares Arabic, right-to-left`)
     }
   }
-  // French is prepared, not built; Arabic pages that do not exist (About, Contact, the Elyon case study, the blog index of an English-only article) answer 404, never a fake English page.
-  for (const p of ['/fr', '/fr/', '/fr/pricing', '/ar/about', '/ar/contact', '/ar/case-studies/elyon', '/ar/case-studies', '/ar/this-page-does-not-exist', '/de/', '/es/this-page-does-not-exist', '/es/blog', '/es/privacy', '/es/case-studies/other', '/es/pricing/extra']) {
+  // French has only its listed pages and Arabic only its own (About, Contact, the Elyon case study and the blog index of an English-only article do not exist in Arabic): no other page exists, so the host answers 404 (never a fake English page under /fr or /ar).
+  for (const p of ['/fr/about', '/fr/blog', '/fr/contact', '/fr/case-studies/unknown', '/fr/pricing/extra', '/ar/about', '/ar/contact', '/ar/case-studies/elyon', '/ar/case-studies', '/ar/this-page-does-not-exist', '/de/', '/es/this-page-does-not-exist', '/es/blog', '/es/privacy', '/es/case-studies/other', '/es/pricing/extra']) {
     const r = await get(p)
     assert.equal(r.status, 404, p)
     assert.match(await r.text(), /name="robots" content="noindex, follow"/, p)

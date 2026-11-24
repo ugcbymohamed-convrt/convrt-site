@@ -100,30 +100,31 @@ function resolvePage(path) {
 }
 
 function HomePage() {
-  /* English homepage narrative (design review, Nov 2026): credibility → client work (one connected block, no divider between them) → services → process → creators → reviews → conversion.
-     Other languages keep their own homepage sections until their separate design review. */
+  /* Homepage narrative (design review, Nov 2026): credibility → client work (one connected block, no divider between them) → services → process → creators → reviews → conversion.
+     ENGLISH, ARABIC and FRENCH carry all of it (Arabic: owner brief 2026-11-23, the same components with Arabic data; the French stage has one client on three landscape videos, hero offers like English);
+     SPANISH uses the same client-work stage and review section with its own two groups and its own creators section. */
   const locale = currentLocale()
-  /* English and Arabic share the full redesigned composition (Arabic: owner brief 2026-11-23, same components with Arabic data, creator carousel); Spanish shares the client-work stage and the reviews (own videos, own copy) and keeps its own creators section. */
-  const en = locale === 'en' || locale === 'ar'
-  const full = en || locale === 'es' // the English homepage composition (Spanish: own videos, own copy)
+  const en = locale === 'en' || locale === 'ar' // the English composition, with Arabic data for ar
+  const full = en || locale === 'es' || locale === 'fr' // the English homepage composition (Spanish and French: own videos, own copy)
+  const creators = en || locale === 'fr' // the English creator carousel
   return (
     <>
       <Hero />
       <Credibility />
-      {/* English and Spanish share the same client-work composition (founder experience + rotary stage); Spanish feeds it its own two groups (src/content/homeShowcase.js). */}
+      {/* English, Spanish and French share the same client-work composition (founder experience + rotary stage); Spanish and French feed it their own videos (src/content/homeShowcase.js, src/i18n/fr/showcase.js). */}
       {full ? <IndustryShowcase /> : (<><SectionDivider /><CaseStudies /></>)}
       <SectionDivider />
       <Services />
       <SectionDivider />
-      {/* Translated homepages only: the secondary free-video offer (the English hero already carries it). */}
-      {!en && (<><FreeVideoOffer /><SectionDivider /></>)}
+      {/* The secondary free-video offer: only where the hero does not carry it (Spanish and the languages without the redesign). */}
+      {!en && locale !== 'fr' && (<><FreeVideoOffer /><SectionDivider /></>)}
       <HowItWorks />
       {/* The creator carousel draws its own leading divider. */}
-      {en && <><Suspense fallback={<div aria-hidden="true" className="min-h-[760px]" />}><HomeCreators /></Suspense><SectionDivider /></>}
-      {!en && <><CreatorsShowcase /><SectionDivider /></>}
+      {creators && <><Suspense fallback={<div aria-hidden="true" className="min-h-[760px]" />}><HomeCreators /></Suspense><SectionDivider /></>}
+      {!creators && <><CreatorsShowcase /><SectionDivider /></>}
       {full ? <ClientReviews /> : <Testimonials />}
       <SectionDivider />
-      <FinalCTA attributed />
+      <FinalCTA attributed={locale === 'ar'} />
       <SectionDivider />
       <FAQ />
     </>

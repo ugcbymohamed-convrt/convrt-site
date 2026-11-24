@@ -2,10 +2,10 @@ import { createRoot } from 'react-dom/client'
 import LanguageSuggestion from './LanguageSuggestion.jsx'
 
 /* Mounts the suggestion in its OWN root (like the cookie banner), so the prerendered markup and hydration are never affected. */
-export function mountLanguageSuggestion(doc, href, lang = 'es') {
+export function mountLanguageSuggestion(doc, href, locale = 'es') {
   const host = doc.createElement('div')
   host.id = 'language-suggestion-root'
   doc.body.appendChild(host)
   const root = createRoot(host)
-  root.render(<LanguageSuggestion href={href} lang={lang} onClose={() => { root.unmount(); host.remove() }} />)
+  root.render(<LanguageSuggestion href={href} locale={locale} onClose={() => { root.unmount(); host.remove() }} />)
 }

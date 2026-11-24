@@ -12,26 +12,9 @@ import { DICTIONARIES } from '../src/i18n/dictionaries.js'
 const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', 'src')
 const walk = (d, out = []) => { for (const e of fs.readdirSync(d, { withFileTypes: true })) { const p = path.join(d, e.name); e.isDirectory() ? (e.name === 'i18n' ? 0 : walk(p, out)) : /\.(jsx?|mjs)$/.test(e.name) && out.push(p) } return out }
 
-/* Source files whose strings a language does NOT need because the pages that use them are not translated into it (src/i18n/registry.js). A string is required as soon as ONE file outside this
-   list uses it. Arabic (this phase): the homepage, the UGC page, pricing, the Creator Showcase and the two application flows only; the SaaS, Spokesperson and Organic Social pages, About/Contact/legal,
-   the case-study pages, the blog, the referral and free-hooks pages, /scale and the private creator pages stay English (links to them keep their English URL). */
-export const OUT_OF_SCOPE = {
-  // Spanish: the redesigned homepage sections (English + Arabic only; the Spanish homepage keeps CaseStudies / Testimonials until its own design review) and the verified-views badge (no Spanish video has one).
-  // The Graspo case study components are drawn in English and Arabic only (the Spanish study does not exist yet).
-  es: ['components/home/', 'components/ugc/ViewsBadge.jsx', 'components/graspo/', 'components/referrals/', 'ReferralsPage.jsx', 'components/blog/'], // the blog masthead is drawn in English and Arabic; the Referral Partner Program page exists in English and Arabic only
-  ar: [
-    'components/hooks/', 'components/blog/', 'components/scale/', 'components/creator/',
-    'components/elyon/', 'components/ugc/UgcHeroRoadmap',
-    'TrustPage.jsx', 'FreeHooksPage.jsx', 'BlogPage.jsx', 'BlogArticlePage.jsx',
-    'ElyonCaseStudyPage.jsx', 'ScalePage.jsx', 'CreatorAdminPage.jsx', 'CreatorOnboardingPage.jsx', 'CreatorLegalPage.jsx', 'OfferPlaceholderPage.jsx',
-    'CreativeTestingSprintPage.jsx_UNUSED',
-  ],
-}
-const inScope = (locale, rel) => !(OUT_OF_SCOPE[locale] ?? []).some((x) => rel.startsWith(x) || rel === x)
-
-export function literalKeys(locale) {
+export function literalKeys(uses = new Map()) {
   const keys = new Map()
-  const add = (k, f) => { if (!keys.has(k) && (!locale || inScope(locale, path.relative(ROOT, f)))) keys.set(k, f) }
+  const add = (k, f) => { if (!keys.has(k)) keys.set(k, f); (uses.get(k) ?? uses.set(k, []).get(k)).push(f) }
   for (const f of walk(ROOT)) {
     const s = fs.readFileSync(f, 'utf8')
     for (const m of s.matchAll(/\btr\(\s*'((?:[^'\\]|\\.)*)'\s*\)/g)) add(m[1].replace(/\\'/g, "'").replace(/\\\\/g, '\\'), f)
@@ -41,9 +24,22 @@ export function literalKeys(locale) {
   return keys
 }
 
+/* Pages a language does not have are not its business: a string only a page the language lacks uses is not required in that dictionary. French has every service page now (UGC, Spokesperson,
+   SaaS, Organic Social: docs/multilingual-french-release.md), so nothing is excluded for it any more; the map stays so a future language can scope itself the same way. */
+const SCOPE_EXCLUDED = {
+  // Spanish has no case-study pages yet (the French ones were built first, Nov 2026): their components are not Spanish's business until /es/case-studies exists.
+  es: [/^components[\\/]blog[\\/]/, /^components[\\/](graspo|elyon|caseStudies)[\\/]/, /^(CaseStudiesPage|GraspoCaseStudyPage|ElyonCaseStudyPage)\.jsx$/],  // The blog masthead is drawn in English and Arabic only.
+  fr: [/^components[\\/]blog[\\/]/],
+  // Arabic has no Hooks, Blog-article, /scale, creator or Elyon pages (links to them keep their English URL, labelled «بالإنجليزية»).
+  ar: [/^components[\\/](hooks|blog|scale|creator|elyon)[\\/]/, /^components[\\/]ugc[\\/]UgcHeroRoadmap/, /^(TrustPage|FreeHooksPage|BlogPage|BlogArticlePage|ElyonCaseStudyPage|ScalePage|CreatorAdminPage|CreatorOnboardingPage|CreatorLegalPage|OfferPlaceholderPage)\.jsx$/],
+}
 export function missingFor(locale) {
   const dict = DICTIONARIES[locale] ?? {}
-  return [...literalKeys(locale)].filter(([k]) => !(k in dict)).map(([k, f]) => ({ key: k, file: path.relative(ROOT, f) }))
+  const excluded = SCOPE_EXCLUDED[locale] ?? []
+  const uses = new Map()
+  const keys = literalKeys(uses)
+  // a string is required when ANY file that uses it belongs to a page the language has (the first file found is not enough: several pages share strings)
+  return [...keys].map(([k, f]) => [k, uses.get(k).find((u) => !excluded.some((re) => re.test(path.relative(ROOT, u)))) ?? f, uses.get(k).some((u) => !excluded.some((re) => re.test(path.relative(ROOT, u))))]).filter(([k, , needed]) => !(k in dict) && needed).map(([k, f]) => [k, f]).map(([k, f]) => ({ key: k, file: path.relative(ROOT, f) }))
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {

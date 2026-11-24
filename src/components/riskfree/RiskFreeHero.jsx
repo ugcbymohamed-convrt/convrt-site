@@ -38,7 +38,7 @@ export default function RiskFreeHero() {
 
             <h1
               id="risk-free-h1"
-              className={`mt-6 font-display font-bold text-ink tracking-display-xl leading-[1.03] ${currentLocale() !== 'es' ? 'text-[2.6rem] min-[400px]:text-[3.2rem] sm:text-[3.6rem] md:text-[4.2rem] lg:text-[3.4rem] xl:text-[4.2rem]' : 'text-[2.15rem] min-[400px]:text-[2.6rem] sm:text-[3.1rem] md:text-[3.5rem] lg:text-[2.75rem] xl:text-[3.4rem] [text-wrap:balance]'}`}
+              className={`mt-6 font-display font-bold text-ink tracking-display-xl leading-[1.03] ${['en', 'ar'].includes(currentLocale()) ? 'text-[2.6rem] min-[400px]:text-[3.2rem] sm:text-[3.6rem] md:text-[4.2rem] lg:text-[3.4rem] xl:text-[4.2rem]' : 'text-[2.15rem] min-[400px]:text-[2.6rem] sm:text-[3.1rem] md:text-[3.5rem] lg:text-[2.75rem] xl:text-[3.4rem] [text-wrap:balance]'}`}
             >
               {currentLocale() === 'en' ? (
                 <>

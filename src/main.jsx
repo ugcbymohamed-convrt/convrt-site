@@ -63,7 +63,7 @@ if (consent.enabled) {
   })
 }
 
-/* Language suggestion for visitors in Spain (src/lib/languageSuggestion.js). A progressive enhancement on prerendered ENGLISH pages only, after the page has loaded; a visitor who already chose a
+/* Language suggestion for visitors in Spain and France (src/lib/languageSuggestion.js). A progressive enhancement on prerendered ENGLISH pages only, after the page has loaded; a visitor who already chose a
    language (or dismissed it) costs nothing here (no extra request, no chunk). It never redirects and never changes the page's HTML, URL or metadata. */
 if (hydrate && currentLocale() === 'en' && !readLanguageChoice()) {
   const start = () => import('./lib/languageSuggestion.js').then(({ startLanguageSuggestion }) => startLanguageSuggestion()).catch(() => {})

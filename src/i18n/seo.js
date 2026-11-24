@@ -8,13 +8,13 @@ import { LOCALES, LIVE_LOCALES, DEFAULT_LOCALE, isLive } from './locales.js'
 import { isReleased } from './release.js'
 import { localizedPath } from './paths.js'
 import { ES_SEO, ES_OG_IMAGE_ALT, ES_OG_IMAGE_READY, ES_OG_IMAGE_PATH } from './es/seo.js'
-import { FR_SEO } from './fr/seo.js'
+import { FR_SEO, FR_OG_IMAGE_ALT, FR_OG_IMAGE_READY, FR_OG_IMAGE_PATH } from './fr/seo.js'
 import { AR_SEO, AR_OG_IMAGE_ALT, AR_OG_IMAGE_READY, AR_OG_IMAGE_PATH } from './ar/seo.js'
 
 export const SEO_BY_LOCALE = { es: ES_SEO, fr: FR_SEO, ar: AR_SEO }
-export const OG_IMAGE_ALT_BY_LOCALE = { es: ES_OG_IMAGE_ALT, ar: AR_OG_IMAGE_ALT }
-/* A language's own share image, once its file exists (the default image has English text burned in). */
-const OG_IMAGE_BY_LOCALE = { es: ES_OG_IMAGE_READY ? ES_OG_IMAGE_PATH : null, ar: AR_OG_IMAGE_READY ? AR_OG_IMAGE_PATH : null }
+export const OG_IMAGE_ALT_BY_LOCALE = { es: ES_OG_IMAGE_ALT, fr: FR_OG_IMAGE_ALT, ar: AR_OG_IMAGE_ALT }
+/* A language's own share image, once it exists (the default one has English text burned into it). */
+const OG_IMAGE_BY_LOCALE = { es: ES_OG_IMAGE_READY ? ES_OG_IMAGE_PATH : null, fr: FR_OG_IMAGE_READY ? FR_OG_IMAGE_PATH : null, ar: AR_OG_IMAGE_READY ? AR_OG_IMAGE_PATH : null }
 
 /* Absolute URL of a page in a locale. English '/' stays '/', Spanish home is '/es/'. */
 export const absoluteUrl = (locale, basePath) => `${SITE_URL}${localizedPath(locale, basePath)}`

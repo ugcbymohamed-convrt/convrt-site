@@ -1,5 +1,14 @@
 /* Spanish: homepage sections (hero, clients, case studies, services, how it works, reviews, final CTA, FAQ chrome). */
 export default {
+  // Keys of the shared homepage components (ClientReviews, HomeCreators, IndustryShowcase) that Spanish does not render through tr() (it has its own copy modules); kept so the completeness scan holds.
+  "Great work. Strong relationships. Repeat collaborations.": 'Colaboraciones que duran',
+  "logo": 'logotipo',
+  "Repeat client": 'Cliente recurrente',
+  "Read full review": 'Leer la opinión completa',
+  "Choose a client review": 'Elige la opinión de un cliente',
+  "Real creators. Real presence.": 'Creadores reales. Presencia real.',
+  "Ready for your brand.": 'Listos para tu marca.',
+  "Explore All Creators": 'Descubre a todos los creadores',
   // Hero
   'Performance creatives': "Creatividades",
   'engineered to': "diseñadas para",

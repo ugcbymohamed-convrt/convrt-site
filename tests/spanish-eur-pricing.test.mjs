@@ -70,7 +70,7 @@ test('EUR amounts format naturally and come from the Spanish config, never from 
   // the committed (approved) configuration
   assert.equal(money(SPRINT.monthly, 'es'), `2.750${NB}€`)
   assert.throws(() => priceOf('es', { amount: 3000, currency: 'USD' }), /no key/)
-  assert.throws(() => priceOf('fr', SPRINT.monthly), /No pricing configuration/)
+  assert.throws(() => priceOf('de', SPRINT.monthly), /No pricing configuration/)
   assert.equal(money(SPRINT.monthly, 'en'), '$3,000')
 })
 
@@ -110,7 +110,7 @@ test('dictionary sentences carry price tokens, never a typed amount; tokens reso
 })
 
 test('future languages register their own pricing; English is never in the registry', () => {
-  assert.deepEqual(Object.keys(PRICING), ['es', 'ar'])
+  assert.deepEqual(Object.keys(PRICING), ['es', 'fr', 'ar'])
   assert.equal(pricingConfig('en'), null)
   assert.equal(pricingConfig('es').currency, 'EUR')
 })

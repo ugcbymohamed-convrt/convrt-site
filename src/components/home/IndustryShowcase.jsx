@@ -4,6 +4,7 @@ import { CONVRT_STATS, FOUNDER_EXPERIENCE } from '../../lib/siteStats.js'
 import { selectShowcase } from '../../content/portfolio.js'
 import { showcaseIndustriesFor, SHOWCASE_COPY_ES } from '../../content/homeShowcase.js'
 import { currentLocale } from '../../i18n/locale.js'
+import { FR_SHOWCASE } from '../../i18n/fr/showcase.js'
 import { tr, hrefFor } from '../../i18n/tr.js'
 import { stepOfArrow } from '../../lib/rtl.js'
 import RotaryStage from './RotaryStage.jsx'
@@ -17,7 +18,7 @@ import StudioEnvironment from './StudioEnvironment.jsx'
            screen and centred on the featured video, the side videos peeking in at the edges; swipe, tap or the arrow keys bring one forward).
    THE VIDEOS are the active client's three `showcase` portfolio entries (a click, swipe or arrow key on a side video orbits it into the centre). The FRONT video of the first client (Adscale, the "ROAS jail" video) plays by itself, muted, as soon
                as the visitor scrolls the stage into view (RotaryStage, `autoPlayOnView`); nothing else ever starts by itself.
-   CRAWLABLE   the destinations of the three clients (Adscale -> the SaaS page, Elyon Dubai and Graspo -> their case studies) stay in the HTML as a visually hidden list that appears when a keyboard user focuses it;
+   CRAWLABLE   the destinations of the clients (Adscale -> the SaaS page, Elyon Dubai -> its case study) stay in the HTML as a visually hidden list that appears when a keyboard user focuses it;
                the descriptions in src/content/homeShowcase.js are kept for the other pages and tests, not drawn here.
    Switching client fades the stage out and in (190 ms, immediate for prefers-reduced-motion) and re-mounts it on the new client's first video, so nothing of the previous client keeps playing.
    The Spanish homepage keeps the older CaseStudies section (see App.jsx). */
@@ -31,6 +32,7 @@ const Arrow = () => (
 export function ShowcaseCtas() {
   const locale = currentLocale()
   const en = locale === 'en'
+  const fr = locale === 'fr'
   const action = primaryAction(locale)
   const base = 'group inline-flex items-center justify-center gap-[0.5em] rounded-full font-bold whitespace-nowrap min-h-[58px] px-9 text-base'
   return (
@@ -44,13 +46,13 @@ export function ShowcaseCtas() {
         <span className="transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 motion-reduce:transition-none"><Arrow /></span>
       </a>
       {/* Creator recruitment is an English-only Google Form (creator-side flow): not offered from the Spanish or Arabic sites. */}
-      {en && <a
-        href="https://forms.gle/Bg8ubU2tnmMj88m7A"
-        target="_blank"
-        rel="noopener noreferrer"
+      {/* French: the creator form is English-only, so the second button goes to the French Creator Showcase. */}
+      {(en || fr) && <a
+        href={fr ? hrefFor('/creator-showcase') : 'https://forms.gle/Bg8ubU2tnmMj88m7A'}
+        {...(fr ? {} : { target: '_blank', rel: 'noopener noreferrer' })}
         className={`${base} bg-ink text-canvas transition-[background-color,transform] duration-150 hover:bg-white active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink motion-reduce:transition-none`}
       >
-        I'm a creator
+        {fr ? tr('Explore All Creators') : "I'm a creator"}
         <span className="transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 motion-reduce:transition-none"><Arrow /></span>
       </a>}
     </div>
@@ -59,11 +61,15 @@ export function ShowcaseCtas() {
 
 export default function IndustryShowcase() {
   // A client is offered only with its three videos (never a half-empty stage).
+  const es = currentLocale() === 'es'
+  // French: ONE client on three landscape videos (src/i18n/fr/showcase.js), a still plate instead of the selector.
+  const fr = currentLocale() === 'fr' ? FR_SHOWCASE : null
+  const landscape = fr?.orientation === 'landscape'
   const locale = currentLocale()
-  const es = locale === 'es'
   const en = locale === 'en'
-  const SHOWCASE_INDUSTRIES = showcaseIndustriesFor(locale) // English: three industries; Spanish: its two groups; Arabic: Graspo + One Royal
-  const industries = SHOWCASE_INDUSTRIES.map((c) => ({ ...c, items: selectShowcase(c.clientId).slice(0, 3) })).filter((c) => c.items.length === 3)
+  const SHOWCASE_INDUSTRIES = showcaseIndustriesFor(locale) // English: its clients; Spanish: its two groups; Arabic: Graspo + One Royal
+  const list = fr ? [{ id: fr.clientId, clientId: fr.clientId, client: fr.client, label: fr.plateLabel, logo: fr.logo, selectorHeight: fr.selectorHeight, link: null }] : SHOWCASE_INDUSTRIES
+  const industries = list.map((c) => ({ ...c, items: selectShowcase(c.clientId).slice(0, 3) })).filter((c) => c.items.length === 3)
   const [shownId, setShownId] = useState(industries[0]?.id) // the client whose videos are on the stage
   const [pickedId, setPickedId] = useState(industries[0]?.id) // the client the visitor just chose (the stage fades to it)
   const [fading, setFading] = useState(false)
@@ -73,6 +79,7 @@ export default function IndustryShowcase() {
   useEffect(() => () => window.clearTimeout(timer.current), [])
   if (!industries.length) return null
   const shown = industries.find((c) => c.id === shownId) ?? industries[0]
+  const single = industries.length === 1 // one client: no selector, no tabs, nothing that suggests another case exists
 
   const select = (id, focus = false) => {
     setPickedId(id)
@@ -99,10 +106,14 @@ export default function IndustryShowcase() {
         <div className="relative z-10 px-5 text-center md:px-8">
           <div className="inline-flex items-center gap-3 text-[11px] md:text-xs">
             <span className="h-px w-8 bg-lime" aria-hidden="true" />
-            <span className="font-semibold uppercase tracking-[0.22em] text-lime">{es ? SHOWCASE_COPY_ES.eyebrow : en ? 'Founder experience' : tr('Founder experience')}</span>
+            <span className="font-semibold uppercase tracking-[0.22em] text-lime">{fr ? fr.eyebrow : es ? SHOWCASE_COPY_ES.eyebrow : en ? 'Founder experience' : tr('Founder experience')}</span>
             <span className="h-px w-8 bg-lime" aria-hidden="true" />
           </div>
-          {es ? (
+          {fr ? (
+            <h2 id="showcase-heading" className="mx-auto mt-4 font-display text-[2.4rem] font-bold leading-[1.04] tracking-display-xl text-ink min-[420px]:text-[2.9rem] md:text-[3.5rem] lg:text-[4rem]">
+              {fr.headline[0]}{' '}<span className="block text-lime sm:inline">{fr.headline[1]}</span>
+            </h2>
+          ) : es ? (
             /* Spanish: the owner's two-sentence headline ("Más de 500 clientes. Una experiencia que marca la diferencia."); the second sentence is the lime one. Sized down a little so it sets on two balanced lines. */
             <h2 id="showcase-heading" className="mx-auto mt-4 max-w-5xl font-display text-[2.1rem] font-bold leading-[1.06] tracking-display-xl text-ink [text-wrap:balance] min-[420px]:text-[2.45rem] md:text-[3rem] lg:text-[3.4rem]">
               {tr('more than')[0].toUpperCase() + tr('more than').slice(1)} {CONVRT_STATS.clients.replace('+', '')} {tr('clients')}.{' '}<span className="block text-lime">{tr('An experience that makes the difference.')}</span>
@@ -112,37 +123,40 @@ export default function IndustryShowcase() {
               {en ? <>Worked with{' '}<span className="block text-lime sm:inline">{CONVRT_STATS.clients} clients</span></> : <>{tr('Worked with')}{' '}<span className="block text-lime sm:inline">{tr('more than')} {CONVRT_STATS.clients.replace('+', '')} {tr('clients')}</span></>}
             </h2>
           )}
-          <p className="mx-auto mt-4 max-w-md text-balance text-[15px] leading-relaxed text-ink-muted md:max-w-xl md:text-base">{en ? FOUNDER_EXPERIENCE.captionShort : tr(FOUNDER_EXPERIENCE.captionShort)}</p>
+          <p className="mx-auto mt-4 max-w-md text-balance text-[15px] leading-relaxed text-ink-muted md:max-w-xl md:text-base">{fr ? fr.text : en ? FOUNDER_EXPERIENCE.captionShort : tr(FOUNDER_EXPERIENCE.captionShort)}</p>
         </div>
 
         {/* 4: the scene (environment + the rotary videos). Below 640 px it is wider than the screen and centred on the featured video. The wrapper's top padding is headroom so the featured card's halo is never cut off at the top. */}
         <div className="relative -mt-3 overflow-hidden pt-10">
-          <div className={`relative left-1/2 aspect-[1280/740] w-[230vw] -translate-x-1/2 transition-opacity duration-[190ms] motion-reduce:transition-none sm:w-[max(100%,900px)] ${fading ? 'opacity-0' : 'opacity-100'}`}>
+          <div className={`relative left-1/2 aspect-[1280/740] ${landscape ? 'w-[165vw]' : 'w-[230vw]'} -translate-x-1/2 transition-opacity duration-[190ms] motion-reduce:transition-none sm:w-[max(100%,900px)] ${fading ? 'opacity-0' : 'opacity-100'}`}>
             <StudioEnvironment />
             <div id="showcase-panel" role="tabpanel" aria-labelledby={`showcase-tab-${pickedId}`} className="absolute inset-0">
-              <RotaryStage key={shown.id} autoPlayOnView={!visitorChose} items={shown.items} label={es ? shown.stageLabel : en ? `${shown.client} videos. Choose a side video to bring it to the front.` : `${tr('Videos of')} ${shown.client}. ${tr('Choose a side video to bring it to the front.')}`} />
+              <RotaryStage key={shown.id} autoPlayOnView={!visitorChose} landscape={landscape} items={shown.items} label={fr ? fr.stageLabel : es ? shown.stageLabel : en ? `${shown.client} videos. Choose a side video to bring it to the front.` : `${tr('Videos of')} ${shown.client}. ${tr('Choose a side video to bring it to the front.')}`} />
             </div>
           </div>
         </div>
 
         {/* 5: the client selector, overlapping the front of the podium and centred on the same axis */}
-        <div className="relative z-20 mx-auto -mt-[27vw] w-full max-w-[42rem] px-5 sm:-mt-[min(max(11.7vw,105px),150px)] md:px-0">
-          <div role="tablist" aria-label={es ? SHOWCASE_COPY_ES.tablistLabel : en ? 'Client work by industry' : tr('Client work by industry')} className={`grid ${es ? 'grid-cols-2' : industries.length === 2 ? 'mx-auto max-w-md grid-cols-2' : 'grid-cols-3'} gap-[0.4rem] rounded-[26px] border border-white/[0.09] bg-[rgba(8,9,6,0.74)] p-[0.45rem] shadow-[0_24px_50px_-20px_rgba(0,0,0,0.95)] backdrop-blur-md`}>
+        <div className={`relative z-20 mx-auto -mt-[27vw] w-full ${single ? 'max-w-[15rem]' : 'max-w-[42rem]'} px-5 sm:-mt-[min(max(11.7vw,105px),150px)] md:px-0`}>
+          <div role={single ? undefined : 'tablist'} aria-label={single ? undefined : es ? SHOWCASE_COPY_ES.tablistLabel : en ? 'Client work by industry' : tr('Client work by industry')} className={`grid ${single ? 'grid-cols-1' : 'grid-cols-2'} gap-[0.4rem] ${es || single ? '' : 'mx-auto max-w-[29rem]'} rounded-[26px] border border-white/[0.09] bg-[rgba(8,9,6,0.74)] p-[0.45rem] shadow-[0_24px_50px_-20px_rgba(0,0,0,0.95)] backdrop-blur-md`}>
             {industries.map((c, i) => {
               const on = c.id === pickedId
+              const Wrap = single ? 'div' : 'button'
               return (
-                <button
+                <Wrap
                   key={c.id}
-                  ref={(el) => { tabRefs.current[c.id] = el }}
-                  type="button"
-                  role="tab"
-                  id={`showcase-tab-${c.id}`}
-                  aria-selected={on}
-                  aria-controls="showcase-panel"
-                  aria-label={c.client ? `${c.client}, ${c.label}` : c.label}
-                  tabIndex={on ? 0 : -1}
-                  onClick={() => select(c.id)}
-                  onKeyDown={(e) => onTabKeyDown(e, i)}
+                  {...(single ? {} : {
+                    ref: (el) => { tabRefs.current[c.id] = el },
+                    type: 'button',
+                    role: 'tab',
+                    id: `showcase-tab-${c.id}`,
+                    'aria-selected': on,
+                    'aria-controls': 'showcase-panel',
+                    'aria-label': c.client ? `${c.client}, ${c.label}` : c.label,
+                    tabIndex: on ? 0 : -1,
+                    onClick: () => select(c.id),
+                    onKeyDown: (e) => onTabKeyDown(e, i),
+                  })}
                   className={`flex min-h-[96px] flex-col items-center justify-center gap-[0.55rem] rounded-[20px] border px-2 py-3 sm:min-h-[122px] sm:gap-[0.7rem] sm:py-4 transition-[background-color,border-color,box-shadow] duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-lime motion-reduce:transition-none ${on ? 'border-lime/80 bg-black/30 shadow-[0_0_24px_-5px_rgba(213,255,64,0.6),inset_0_0_14px_rgba(213,255,64,0.12)]' : 'border-transparent hover:bg-white/[0.05]'}`}
                 >
                   {c.logo ? (
@@ -172,7 +186,7 @@ export default function IndustryShowcase() {
                     </span>
                   )}
                   <span className={`text-[13px] font-semibold leading-none transition-colors duration-300 motion-reduce:transition-none sm:text-[15px] ${on ? 'text-lime' : 'text-ink-muted'}`}>{c.label}</span>
-                </button>
+                </Wrap>
               )
             })}
           </div>
@@ -185,7 +199,7 @@ export default function IndustryShowcase() {
         </div>
 
         {/* destinations of the three clients: in the HTML for search engines and screen readers, drawn only when a keyboard user focuses them */}
-        <nav aria-label={es ? SHOWCASE_COPY_ES.navLabel : en ? 'Client case studies and service page' : tr('Client case studies and service page')} className="sr-only">
+        {!fr && <nav aria-label={es ? SHOWCASE_COPY_ES.navLabel : en ? 'Client case studies and service page' : tr('Client case studies and service page')} className="sr-only">
           <ul>
             {SHOWCASE_INDUSTRIES.map((c) => (
               <li key={c.id}>
@@ -193,7 +207,7 @@ export default function IndustryShowcase() {
               </li>
             ))}
           </ul>
-        </nav>
+        </nav>}
       </div>
     </section>
   )

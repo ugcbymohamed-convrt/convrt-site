@@ -15,12 +15,13 @@ import { useDocumentHead } from './lib/useDocumentHead.js'
 import { pageHead } from './seo/siteSeo.js'
 import { PATHS } from './routes.js'
 import { ORGANIC_SOCIAL_FAQ } from './seo/organicSocialFaq.js'
-import { selectOrganicHero, selectOrganicGallery, forPageLanguage } from './content/portfolio.js'
+import { selectOrganicHero, selectOrganicGallery } from './content/portfolio.js'
 import { ORGANIC_CTA } from './seo/businessKnowledge.js'
 import {
   ORGANIC_HERO, ORGANIC_PAGE_STAGES, ORGANIC_PROCESS, ORGANIC_GALLERY, ORGANIC_PAGE_CTA, ORGANIC_PATH_LABEL, ORGANIC_PROOF, ORGANIC_PROOF_COPY, ORGANIC_PRICING_HREF, ORGANIC_SCOPE_NOTE,
 } from './content/organicSocialPage.js'
 import { tr, T, hrefFor } from './i18n/tr.js'
+import { serviceVideos } from './i18n/serviceVideos.js'
 
 /* /social-media-video-production: the Organic Social Video Production & Management page. It reuses the UGC and Spokesperson pages' architecture and design system, and each
    section is the same configuration-driven component fed with organic-social content (src/content/organicSocialPage.js):
@@ -74,8 +75,8 @@ export default function OrganicSocialVideoPage() {
     trackEvent('organic_page_view')
   }, [])
 
-  const heroItems = forPageLanguage(selectOrganicHero())
-  const galleryItems = forPageLanguage(selectOrganicGallery())
+  const heroItems = serviceVideos(selectOrganicHero())
+  const galleryItems = serviceVideos(selectOrganicGallery())
 
   return (
     <>

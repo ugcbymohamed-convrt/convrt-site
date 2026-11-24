@@ -3,7 +3,7 @@ import { currentLocale } from '../../i18n/locale.js'
 import { resolveCta } from '../../i18n/cta.js'
 import { ORGANIC_CTA } from '../../seo/businessKnowledge.js'
 import { withUtm } from '../../lib/analytics.js'
-import { tr } from '../../i18n/tr.js'
+import { tr, ctaText } from '../../i18n/tr.js'
 
 function CtaLink({ href, external = false, children }) {
   return (
@@ -32,7 +32,7 @@ export default function PricingFinalCTA({ service = 'paid' }) {
         <p className="mx-auto mt-3 max-w-md text-base leading-relaxed text-ink-muted">{tr('Let’s find the right creative approach for your brand.')}</p>
         {/* Paid Social: the Roadmap offer. Organic Social: the organic conversation starter. Both are always in the HTML. */}
         <div hidden={service !== 'paid'}>
-          <CtaLink href={rcta.href} external={rcta.external}>{tr(rcta.label)}</CtaLink>
+          <CtaLink href={rcta.href} external={rcta.external}>{ctaText(rcta.label)}</CtaLink>
         </div>
         <div hidden={service !== 'organic'}>
           <CtaLink href={ORGANIC_CTA.href} external={ORGANIC_CTA.external}>{currentLocale() === 'en' ? tr(ORGANIC_CTA.label) : tr('Discuss your strategy')}</CtaLink>

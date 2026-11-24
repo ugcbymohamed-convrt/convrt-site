@@ -74,8 +74,8 @@ export default function GraspoMetrics() {
         <p className="mt-5 text-center text-xs text-ink-subtle">
           {tr('Source: Meta Business Suite analytics, Jan 1 – Jun 19 2026 · Leads: internal inbound tracker across Meta, email and WhatsApp')}
         </p>
-        {/* Spanish only: the limitation stated on the Organic page for the same figures (src/content/organicSocialPage.js), shown here too. The English page is unchanged. */}
-        {locale === 'es' && (
+        {/* Spanish and French (not English, not Arabic): the limitation stated on the Organic page for the same figures (src/content/organicSocialPage.js), shown here too. The English page is unchanged. */}
+        {locale !== 'en' && locale !== 'ar' && (
           <p className="mx-auto mt-2 max-w-2xl text-center text-xs text-ink-subtle">
             {tr('Results are specific to this client and period; they are not typical and not guaranteed.')}
           </p>

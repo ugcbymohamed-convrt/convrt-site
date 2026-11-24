@@ -60,6 +60,7 @@ export default {
   "Want to know more?": "تريد معرفة المزيد؟",
   "See how we handle your application data in our": "تعرّف على كيفية تعاملنا مع بيانات طلبك في",
   "with one video": "بفيديو واحد",
+  "logo": "الشعار",
   "For documented CONVRT projects, read our": "ولمشاريع CONVRT الموثّقة، اقرأ",
   "These are creators’ examples, not necessarily CONVRT productions. For documented CONVRT projects, read our": "بعض الفيديوهات من أعمال صُنّاع مستقلين. ولمشاريع CONVRT الموثّقة، اقرأ",
   "organic social media case study": "دراسة حالة Graspo",

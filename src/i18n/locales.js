@@ -15,7 +15,8 @@ export const DEFAULT_LOCALE = 'en'
 export const LOCALES = {
   en: { code: 'en', htmlLang: 'en', dir: 'ltr', prefix: '', nativeName: 'English', englishName: 'English', ogLocale: 'en_US', status: 'live' },
   es: { code: 'es', htmlLang: 'es', dir: 'ltr', prefix: '/es', nativeName: 'Español', englishName: 'Spanish', ogLocale: 'es_ES', status: 'live' },
-  fr: { code: 'fr', htmlLang: 'fr', dir: 'ltr', prefix: '/fr', nativeName: 'Français', englishName: 'French', ogLocale: 'fr_FR', status: 'review' },
+  // French (France-first, owner decision Nov 2026): fr-FR is the language tag of the pages (html lang, hreflang) and og:locale. Only the pages listed in src/i18n/registry.js exist in French.
+  fr: { code: 'fr', htmlLang: 'fr-FR', dir: 'ltr', prefix: '/fr', nativeName: 'Français', englishName: 'French', ogLocale: 'fr_FR', status: 'live' },
   // Arabic: right-to-left. Modern Standard Arabic is the main professional website language (GCC-first positioning); see docs/multilingual-architecture.md.
   ar: { code: 'ar', htmlLang: 'ar', dir: 'rtl', prefix: '/ar', nativeName: 'العربية', englishName: 'Arabic', ogLocale: 'ar_AR', status: 'live' },
 }

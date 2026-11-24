@@ -1,7 +1,8 @@
 import Logo from './Logo.jsx'
 import LanguageSelector from './LanguageSelector.jsx'
 import { parsePath, localizedPath } from '../i18n/paths.js'
-import { translate, localHref, englishOnly } from '../i18n/tr.js'
+import { translate, localHref, isFallbackPath } from '../i18n/tr.js'
+import { editorial } from '../i18n/editorial.js'
 import { hasTranslation } from '../i18n/registry.js'
 import { REFERRAL_LABELS, menuHas, showReferralLink } from '../i18n/menu.js'
 import CookieSettingsLink from './CookieSettingsLink.jsx'
@@ -13,6 +14,10 @@ export default function Footer() {
   const { locale, basePath } = parsePath(typeof window !== 'undefined' ? window.location.pathname : '/')
   const tr = (t) => translate(locale, t)
   const h = (p) => localHref(p, locale)
+  // A link to a page that exists only in English says so (French: « (en anglais) ») and declares the language of its target.
+  const note = editorial(locale)?.fallbackNote
+  const fb = (p) => Boolean(note) && isFallbackPath(p, locale)
+  const L = (p, label) => <a className="hover:text-ink transition-colors" href={h(p)} {...(fb(p) ? { hrefLang: 'en' } : {})}>{tr(label)}{fb(p) ? ` (${note})` : ''}</a>
   const en = locale === 'en'
   const enLike = en || locale === 'ar' // Arabic lists exactly the English menu (owner, 2026-11-25)
   const onHome = basePath === '/'
@@ -46,8 +51,8 @@ export default function Footer() {
               <li><a className="hover:text-ink transition-colors" href={h(CREATOR_SHOWCASE_PATH)}>{tr('Creator Showcase')}</a></li>
               {(locale === 'ar' || menuHas(locale, '/case-studies')) && <li><a className="hover:text-ink transition-colors" href={locale === 'ar' ? h('/case-studies/graspo') : h('/case-studies')}>{tr('Case Studies')}</a></li>}
               <li><a className="hover:text-ink transition-colors" href={h('/pricing')}>{tr('Pricing')}</a></li>
-              {enLike && <li><a className="hover:text-ink transition-colors" href={en ? '/blog' : h('/blog')}>{tr('Blog')}</a></li>}
-              <li><a className="hover:text-ink transition-colors" href={TRUST_PAGES_PUBLISHED ? h(CONTACT_PATH) : `${homePrefix}#contact`}>{tr('Contact')}</a></li>
+              {(enLike || menuHas(locale, '/blog')) && <li>{en ? <a className="hover:text-ink transition-colors" href="/blog">Blog</a> : L('/blog', 'Blog')}</li>}
+              <li>{TRUST_PAGES_PUBLISHED ? L(CONTACT_PATH, 'Contact') : <a className="hover:text-ink transition-colors" href={`${homePrefix}#contact`}>{tr('Contact')}</a>}</li>
               {en && <li><a className="hover:text-ink transition-colors" href={REFERRALS_PATH}>Refer &amp; Earn</a></li>}
               {locale === 'ar' && <li><a className="hover:text-ink transition-colors" href={h(REFERRALS_PATH)}>أحِل واربح</a></li>}
               {!en && locale !== 'ar' && showReferralLink(locale) && <li><a className="hover:text-ink transition-colors" href={h(REFERRALS_PATH)}>{REFERRAL_LABELS[locale][0]} <span className="font-semibold text-lime">{REFERRAL_LABELS[locale][1]}</span></a></li>}
@@ -84,7 +89,7 @@ export default function Footer() {
           <p className="flex flex-wrap items-center gap-x-4 gap-y-1">
             {/* The legal documents exist only in English (approved text). From other languages the links say so and are marked lang="en"; a reviewed translation is
                 prepared in docs/multilingual-legal-translation-review.md and is NOT published. */}
-            {TRUST_PAGES_PUBLISHED && <a className="underline-offset-4 transition-colors hover:text-ink hover:underline" href={h(ABOUT_PATH)}>{tr('About')}</a>}
+            {TRUST_PAGES_PUBLISHED && <a className="underline-offset-4 transition-colors hover:text-ink hover:underline" href={h(ABOUT_PATH)} {...(fb(ABOUT_PATH) ? { hrefLang: 'en' } : {})}>{tr('About')}{fb(ABOUT_PATH) ? ` (${note})` : ''}</a>}
             {TRUST_PAGES_PUBLISHED && <a className="underline-offset-4 transition-colors hover:text-ink hover:underline" href={PRIVACY_PATH} {...(en ? {} : { lang: 'en' })}>{en ? 'Privacy Policy' : tr('Privacy Policy (in English)')}</a>}
             {TRUST_PAGES_PUBLISHED && <a className="underline-offset-4 transition-colors hover:text-ink hover:underline" href={TERMS_PATH} {...(en ? {} : { lang: 'en' })}>{en ? 'Terms' : tr('Terms (in English)')}</a>}
             {TRUST_PAGES_PUBLISHED && <a className="underline-offset-4 transition-colors hover:text-ink hover:underline" href={LEGAL_NOTICE_PATH} {...(en ? {} : { lang: 'en' })}>{en ? 'Legal Notice' : tr('Legal Notice (in English)')}</a>}

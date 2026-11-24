@@ -42,7 +42,7 @@ function LearnMore({ links }) {
 }
 
 export const PaidTerms = ({ billing = 'monthly' }) => {
-  if (currentLocale() === 'es') { // Arabic keeps the English structure (translated), like English
+  if (currentLocale() !== 'en' && currentLocale() !== 'ar') { // Arabic keeps the English structure (translated), like English
     const oneOff = billing === 'oneOff'
     return (
       <>
@@ -73,7 +73,7 @@ export const PaidTerms = ({ billing = 'monthly' }) => {
 }
 
 export const OrganicTerms = () => {
-  if (currentLocale() === 'es') {
+  if (currentLocale() !== 'en' && currentLocale() !== 'ar') {
     return (
       <>
         <LocalizedNote primary={ORGANIC_INITIAL} secondary="Prices exclude VAT." />

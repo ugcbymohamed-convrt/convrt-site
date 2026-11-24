@@ -10,6 +10,7 @@ import { isPricingApproved } from './pricing.js'
 import { ES_PRICED_PAGES } from './es/pricing.js'
 import { AR_PRICED_PAGES } from './ar/pricing.js'
 import { AR_ARTICLES } from '../content/blogAr.js'
+import { FR_PRICED_PAGES } from './fr/pricing.js'
 
 /* Spanish pages that carry a price are blocked until the owner has approved every EUR amount (src/i18n/es/pricing.js); a gate lifts by itself when its condition is met. */
 const BLOCKS = {
@@ -26,17 +27,27 @@ const BLOCKS = {
     '/blog': () => AR_ARTICLES.length === 0, // the Arabic blog index is reachable (the menu links to it) but noindex / out of the sitemap and hreflang until it lists an Arabic article
     ...Object.fromEntries(AR_PRICED_PAGES.map((p) => [p, () => !isPricingApproved('ar')])),
   },
+  /* French: the showcase waits for approved French-spoken videos (never the English library), the free-video page waits for the owner's/lawyer's review of its consent wording (same as
+     Spanish), and the two pages that show a price wait for approved EUR pricing (which reuses the Spanish table, src/i18n/fr/pricing.js). */
+  fr: {
+    '/creator-showcase': () => displayableFor('fr').length === 0,
+    '/risk-free-trial': () => !FR_FREE_VIDEO_REVIEWED,
+    ...Object.fromEntries(FR_PRICED_PAGES.map((p) => [p, () => !isPricingApproved('fr')])),
+  },
 }
 /* The Spanish free-video application is built and reachable (the homepage links to it), but stays out of indexing, the sitemap and hreflang until the owner and the lawyer have reviewed it
    (its consent wording, the omitted marketing checkbox and the eligibility copy). Flip to true after that review. */
 export const ES_FREE_VIDEO_REVIEWED = false
 /* Same for the Arabic free-video application (src/i18n/ar/dict-riskfree.js): reachable and linked, but noindex / out of the sitemap and hreflang until the owner and the lawyer have reviewed it. */
 export const AR_FREE_VIDEO_REVIEWED = false
+/* French twin: the French free-video application is built and reachable, but stays out of indexing, the sitemap and hreflang until the owner and the lawyer have reviewed its consent wording. */
+export const FR_FREE_VIDEO_REVIEWED = false
 const REASONS = {
   es: { '/creator-showcase': 'no approved Spanish-language videos yet', '/risk-free-trial': 'Spanish free-video page awaiting owner/legal review' },
+  fr: { '/creator-showcase': 'no approved French-language videos yet', '/risk-free-trial': 'French free-video page awaiting owner/legal review' },
   ar: { '/creator-showcase': 'no approved Arabic-language videos yet', '/risk-free-trial': 'Arabic free-video page awaiting owner/legal review', '/blog': 'no published Arabic blog articles yet' },
 }
-const PRICING_REASON = { es: 'Spanish EUR prices not approved yet', ar: 'Arabic USD pricing configuration invalid' }
+const PRICING_REASON = { es: 'Spanish EUR prices not approved yet', fr: 'EUR prices not approved yet', ar: 'Arabic USD pricing configuration invalid' }
 
 export const releaseBlocker = (locale, basePath) => (BLOCKS[locale]?.[basePath]?.() ? { path: basePath, reason: REASONS[locale]?.[basePath] ?? PRICING_REASON[locale] } : null)
 export const isReleased = (locale, basePath) => hasTranslation(locale, basePath) && !releaseBlocker(locale, basePath)

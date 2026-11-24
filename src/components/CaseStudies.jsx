@@ -6,6 +6,7 @@ import { currentLocale } from '../i18n/locale.js'
 import { primaryAction } from '../i18n/cta.js'
 import { esCaseCopy } from '../i18n/es/cases.js'
 import { arCaseCopy } from '../i18n/ar/cases.js'
+import { frCaseCopy } from '../i18n/fr/cases.js'
 import { selectShowcase } from '../content/portfolio.js'
 import { streamPoster } from '../content/posterFrames.js'
 
@@ -57,6 +58,8 @@ function videoSource(v) {
   return { id: v.id ?? null, mp4: v.mp4 ?? null, poster: v.poster ?? cfPoster(v.id) }
 }
 
+const CASE_COPY = { es: esCaseCopy, fr: frCaseCopy, ar: arCaseCopy }
+
 /* ─────────────────────────────────────────────
    Main section
 ───────────────────────────────────────────── */
@@ -67,8 +70,8 @@ export default function CaseStudies() {
   const [activeId, setActiveId] = useState(CASES[0]?.id)
   const base = CASES.find((c) => c.id === activeId)
   if (!base) return null
-  // Spanish: the same cases (same videos, same figures), with Spanish tab/title/body from src/i18n/es/cases.js.
-  const localize = (c) => (locale === 'es' ? { ...c, ...esCaseCopy(c.id, GRASPO_FOLLOWING) } : locale === 'ar' ? { ...c, ...arCaseCopy(c.id, GRASPO_FOLLOWING) } : c)
+  // Translated pages: the same cases (same videos, same figures), with the language's own tab/title/body (src/i18n/es/cases.js, src/i18n/fr/cases.js).
+  const localize = (c) => (CASE_COPY[locale] ? { ...c, ...CASE_COPY[locale](c.id, GRASPO_FOLLOWING) } : c)
   const active = localize(base)
 
   return (

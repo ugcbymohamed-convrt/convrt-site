@@ -1,0 +1,21 @@
+/* French dictionary: the redesigned homepage sections shared with English (client stage, reviews, creator carousel; Nov 2026 revision). Keys are the exact English strings. */
+export default {
+  "Brands from the founder's professional experience": "Marques issues de l’expérience professionnelle du fondateur",
+  "Our creators": "Nos créateurs",
+  "Real creators. Real presence.": "De vrais créateurs. Une vraie présence.",
+  "Ready for your brand.": "Au service de votre marque.",
+  "Explore the people and creative styles behind our videos.": "Découvrez les talents et les styles qui peuvent donner vie à vos prochaines vidéos.",
+  "Creator videos. Scroll sideways to see more.": "Vidéos de créateurs. Faites défiler latéralement pour en voir plus.",
+  "Explore All Creators": "Explorer notre vidéothèque",
+  "Great work. Strong relationships. Repeat collaborations.": "Ce que nos clients disent de nous.",
+  "Videos from": "Vidéos de",
+  "Choose a side video to bring it to the front.": "Choisissez une vidéo sur le côté pour la placer au premier plan.",
+  "Founder experience": "Expérience du fondateur",
+  "Worked with": "A travaillé avec",
+  "Client work by industry": "Travaux clients par secteur",
+  "Client case studies and service page": "Études de cas clients et page de service",
+  "logo": "logo",
+  "Repeat client": "Client fidèle",
+  "Read full review": "Lire l’avis complet",
+  "Choose a client review": "Choisir un avis client",
+}

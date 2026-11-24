@@ -1,24 +1,24 @@
 import { useEffect, useRef, useState } from 'react'
 import { rememberLanguage, rememberDismissal } from '../lib/languagePreference.js'
 
-/* The language suggestion for visitors in Spain (see src/lib/languageSuggestion.js). A compact, non-modal card at the bottom of an English page: no focus trap, no focus steal, no overlay.
-   Spanish text on an English page, so the card is marked lang="es".
-   • "Ver en español" is an ordinary link to the Spanish page (it works even if scripts fail); the click remembers Spanish.
-   • "Continuar en inglés" remembers English and closes the card; the visitor stays where they are.
+/* The language suggestion for visitors in Spain, in French-speaking countries and in Arabic-speaking countries (Arabic is right-to-left: the card carries dir="rtl" and sits on the left on desktop) (see src/lib/languageSuggestion.js). A compact, non-modal card at the bottom of an English page: no focus trap, no focus steal, no overlay.
+   The card's text is in the suggested language, on an English page, so it carries that language's lang attribute.
+   • The primary button (« Passer en français » / "Ver en español") is an ordinary link to the translated page (it works even if scripts fail); the click remembers that language.
+   • The other button (« Rester en anglais » / "Continuar en inglés") remembers English and closes the card; the visitor stays where they are.
    • The × button (and Escape while the card has focus) closes it and remembers that it was dismissed.
    It waits until the cookie banner (when there is one) has been answered, so two prompts never compete for the screen, and it only fades in (not at all for reduced motion), so nothing in the page moves. */
 
-const btn = 'inline-flex min-h-[44px] flex-1 items-center justify-center whitespace-nowrap rounded-full px-3 py-2 text-[13.5px] font-semibold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-lime'
-
-/* The words on the card, in the language being offered. Arabic is right-to-left (dir="rtl" on the card), so its close button sits on the left and the primary call to action comes first. */
+/* The card's text per language (a new language adds its entry here and in src/lib/languageSuggestion.js SUGGESTIBLE). */
 const COPY = {
-  es: { dir: 'ltr', label: 'Sugerencia de idioma', close: 'Cerrar', title: '¿Prefieres navegar en español?', body: 'También puedes visitar nuestra web en español.', stay: 'Continuar en inglés', go: 'Ver en español' },
-  ar: { dir: 'rtl', label: 'اقتراح اللغة', close: 'إغلاق', title: 'هل تفضّل تصفّح الموقع بالعربية؟', body: 'يمكنك أيضًا زيارة موقعنا باللغة العربية.', stay: 'المتابعة بالإنجليزية', go: 'عرض بالعربية' },
+  es: { region: 'Sugerencia de idioma', close: 'Cerrar', title: '¿Prefieres navegar en español?', text: 'También puedes visitar nuestra web en español.', stay: 'Continuar en inglés', go: 'Ver en español', hrefLang: 'es' },
+  ar: { region: 'اقتراح اللغة', close: 'إغلاق', title: 'هل تفضّل تصفّح الموقع بالعربية؟', text: 'يمكنك أيضًا زيارة موقعنا باللغة العربية.', stay: 'المتابعة بالإنجليزية', go: 'عرض بالعربية', hrefLang: 'ar', dir: 'rtl' },
+  fr: { region: 'Suggestion de langue', close: 'Fermer', title: 'Vous préférez naviguer en français ?', text: 'Découvrez notre site en français.', stay: 'Rester en anglais', go: 'Passer en français', hrefLang: 'fr-FR' },
 }
 
-export default function LanguageSuggestion({ href, lang = 'es', onClose }) {
-  const c = COPY[lang] ?? COPY.es
-  const rtl = c.dir === 'rtl'
+const btn = 'inline-flex min-h-[44px] flex-1 items-center justify-center whitespace-nowrap rounded-full px-3 py-2 text-[13.5px] font-semibold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-lime'
+
+export default function LanguageSuggestion({ href, onClose, locale = 'es' }) {
+  const t = COPY[locale] ?? COPY.es
   const root = useRef(null)
   const cookieBannerUp = () => typeof document !== 'undefined' && !!document.querySelector('[aria-label="Cookie consent"]')
   const [waiting, setWaiting] = useState(cookieBannerUp) // true while the cookie banner is on screen
@@ -37,32 +37,32 @@ export default function LanguageSuggestion({ href, lang = 'es', onClose }) {
 
   const stay = () => { rememberLanguage('en'); onClose() }
   const dismiss = () => { rememberDismissal(); onClose() }
-  const go = () => { rememberLanguage(lang) } // then the link navigates normally
+  const go = () => { rememberLanguage(locale) } // then the link navigates normally
 
   if (waiting) return null
   return (
     <div
       ref={root}
       role="region"
-      aria-label={c.label}
-      lang={lang}
-      dir={c.dir}
+      aria-label={t.region}
+      lang={t.hrefLang}
+      dir={t.dir ?? 'ltr'}
       onKeyDown={(e) => { if (e.key === 'Escape') dismiss() }}
-      className={`fixed inset-x-3 bottom-3 z-[60] rounded-2xl border border-hairline-strong bg-surface-1/95 p-4 shadow-[0_24px_60px_-20px_rgba(0,0,0,0.9)] backdrop-blur-md transition-opacity duration-300 motion-reduce:transition-none sm:inset-x-auto sm:bottom-5 sm:w-[390px] ${rtl ? 'sm:left-5' : 'sm:right-5'} ${shown ? 'opacity-100' : 'opacity-0'}`}
+      className={`fixed inset-x-3 bottom-3 z-[60] rounded-2xl border border-hairline-strong bg-surface-1/95 p-4 shadow-[0_24px_60px_-20px_rgba(0,0,0,0.9)] backdrop-blur-md transition-opacity duration-300 motion-reduce:transition-none sm:inset-x-auto sm:bottom-5 sm:w-[390px] ${t.dir === 'rtl' ? 'sm:left-5' : 'sm:right-5'} ${shown ? 'opacity-100' : 'opacity-0'}`}
     >
       <button
         type="button"
         onClick={dismiss}
-        aria-label={c.close}
+        aria-label={t.close}
         className="absolute right-2 top-2 inline-flex h-10 w-10 items-center justify-center rounded-full text-ink-muted transition-colors hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-lime"
       >
         <svg viewBox="0 0 12 12" className="h-3.5 w-3.5" fill="none" aria-hidden="true"><path d="M2.5 2.5l7 7M9.5 2.5l-7 7" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" /></svg>
       </button>
-      <p className={`pr-9 font-display text-[16px] font-semibold leading-snug text-ink`}>{c.title}</p>
-      <p className="mt-1 text-[14px] leading-relaxed text-ink-muted">{c.body}</p>
+      <p className="pr-9 font-display text-[16px] font-semibold leading-snug text-ink">{t.title}</p>
+      <p className="mt-1 text-[14px] leading-relaxed text-ink-muted">{t.text}</p>
       <div className="mt-3.5 flex flex-col gap-2 min-[350px]:flex-row min-[350px]:items-center">
-        <button type="button" onClick={stay} className={`${btn} border border-hairline-strong bg-surface-2 text-ink hover:bg-surface-3`}>{c.stay}</button>
-        <a href={href} hrefLang={lang} onClick={go} className={`${btn} bg-lime text-canvas hover:brightness-95`}>{c.go}</a>
+        <button type="button" onClick={stay} className={`${btn} border border-hairline-strong bg-surface-2 text-ink hover:bg-surface-3`}>{t.stay}</button>
+        <a href={href} hrefLang={t.hrefLang} onClick={go} className={`${btn} bg-lime text-canvas hover:brightness-95`}>{t.go}</a>
       </div>
     </div>
   )
