@@ -23,6 +23,11 @@
                                                // Organic Social page. Set it ONLY once the owner has confirmed how the video should be classified.
        format: 'demo',                         // SaaS-page videos only, optional: explainer | demo | presenter | animated | ad (SAAS_FORMATS). Drives the optional filter on the
                                                // SaaS page. Set it ONLY once the owner has confirmed how the video should be classified.
+       secondary: ['saas'],                    // optional: extra CONTENT TYPES the video genuinely is (ugc | spokesperson | organic | saas), beside its primary `type`. Classification only: the Creator Showcase
+                                               // filters (Spanish, French) list the video under each of its types. It never puts the video on a service page (that is `type` and `alsoOn`), so a gallery that a language
+                                               // does not have stays absent (src/content/galleryPolicy.js). Set it only after inspecting the footage: e.g. a creator walking through a mobile app is UGC + saas.
+       review: 'why a person must look at it',  // optional: while present the video is HELD (never shown anywhere). The import workflow (scripts/video-registry.mjs, docs/video-library.md) sets it when the classification, language or
+                                               // creator could not be confirmed; remove it once the owner has confirmed.
        alsoOn: { saas: 'gallery' },            // optional: ALSO show this video on another service page ('ugc' | 'spokesperson' | 'organic' | 'saas'), with its placement there
                                                // ('hero' | 'gallery'). Only for a video the owner approved for that page, e.g. a presenter demonstrating software on both the
                                                // Spokesperson and SaaS pages. A video is never added to a service page because of what it shows.
@@ -255,6 +260,7 @@ const PORTFOLIO_ENTRIES = [
     title: 'Présentation d’une application de gestion de patrimoine',
     caption: 'Présentation d’une application de gestion de patrimoine',
     type: 'ugc',
+    secondary: ['saas'], // creator demonstrating a wealth-management app throughout (screens shown) (footage inspected 2026-11-24): UGC/Spokesperson by format, SaaS by content; classification only, no service-page placement
     industry: 'unclassified',
     languages: ['fr'],
     onlyIn: ['fr'],
@@ -383,6 +389,7 @@ const PORTFOLIO_ENTRIES = [
     title: 'Viaje por paisajes con una aplicación en el móvil',
     caption: 'Viaje por paisajes con una aplicación en el móvil.',
     type: 'ugc',
+    secondary: ['saas'], // phone app screens shown (footage inspected 2026-11-24): UGC/Spokesperson by format, SaaS by content; classification only, no service-page placement
     industry: 'unclassified',
     languages: ['es'],
     onlyIn: ['es'],
@@ -413,6 +420,7 @@ const PORTFOLIO_ENTRIES = [
     title: 'Creador explicando una solución digital con apoyo visual',
     caption: 'Creador explicando una solución digital con apoyo visual.',
     type: 'ugc',
+    secondary: ['saas'], // gym-management app interface shown (footage inspected 2026-11-24): UGC/Spokesperson by format, SaaS by content; classification only, no service-page placement
     industry: 'unclassified',
     languages: ['es'],
     onlyIn: ['es'],
@@ -458,6 +466,7 @@ const PORTFOLIO_ENTRIES = [
     title: 'Presentadora explicando una aplicación con su portátil',
     caption: 'Presentadora explicando una aplicación con su portátil.',
     type: 'spokesperson',
+    secondary: ['saas'], // presenter explaining a software company, app dashboard shown (footage inspected 2026-11-24): UGC/Spokesperson by format, SaaS by content; classification only, no service-page placement
     industry: 'unclassified',
     languages: ['es'],
     onlyIn: ['es'],
@@ -473,6 +482,7 @@ const PORTFOLIO_ENTRIES = [
     title: 'Presentadora respondiendo preguntas con textos en pantalla',
     caption: 'Presentadora respondiendo preguntas con textos en pantalla.',
     type: 'spokesperson',
+    secondary: ['saas'], // presenter walking through HR software (footage inspected 2026-11-24): UGC/Spokesperson by format, SaaS by content; classification only, no service-page placement
     industry: 'unclassified',
     languages: ['es'],
     onlyIn: ['es'],
@@ -1829,6 +1839,8 @@ export const isClassified = (item) => Boolean(item.industry) && item.industry !=
 /* '' for an unconfirmed industry, so nothing is displayed (callers drop empty labels). */
 export const industryLabel = (slug) => (!slug || slug === UNCLASSIFIED ? '' : (ed()?.industryLabels ?? INDUSTRY_LABELS)[slug] ?? titleCase(slug))
 export const typeOf = (item) => item.type
+/* Every content type the video is: its primary `type` first, then its `secondary` ones (classification only: see the field's note at the top of this file). */
+export const typesOf = (item) => (item.type ? [item.type, ...(item.secondary ?? [])] : [])
 export const typeLabel = (item) => (item.type ? (ed()?.typeLabels ?? TYPE_LABELS)[item.type] ?? titleCase(item.type) : '')
 /* A video's caption in the page's language: generic captions ("UGC ad example 5.") are translated; a hand-written one is shown as written. */
 /* LANGUAGE-SPECIFIC COPY. An entry may carry `i18n: { es: { title, caption } }`: copy WRITTEN for that language's page (the Spanish Showcase has its own creators and videos, not translations of the English
@@ -1869,6 +1881,11 @@ export function portfolioProblems(item) {
   }
   if (item.type !== undefined && !/^[a-z][a-z0-9-]*$/.test(item.type)) p.push('type must be a lowercase slug')
   if (item.industry !== undefined && !/^[a-z][a-z0-9-]*$/.test(item.industry)) p.push("industry must be a lowercase slug (or 'unclassified')")
+  if (item.secondary !== undefined) {
+    const ok = Array.isArray(item.secondary) && item.secondary.length > 0 && item.secondary.every((t, i, a) => SERVICE_PAGES.includes(t) && t !== item.type && a.indexOf(t) === i)
+    if (!ok) p.push(`secondary must be a list of other content types (${SERVICE_PAGES.join(', ')}), none repeated and none equal to the primary type`)
+  }
+  if (item.review !== undefined && (typeof item.review !== 'string' || !item.review.trim())) p.push('review must say, in a sentence, what a person has to confirm')
   if (item.production !== undefined && !(item.production in PRODUCTION_LABELS)) p.push("production must be 'independent' or 'convrt' (leave it out when unknown)")
   if (item.productionCredit !== undefined && (typeof item.productionCredit !== 'string' || !item.productionCredit.trim())) p.push('productionCredit must be a non-empty string')
   const langsOk = Array.isArray(item.languages) && item.languages.length > 0 && item.languages.every((l) => /^[a-z]{2}$/.test(l))
@@ -1913,11 +1930,11 @@ export function portfolioProblems(item) {
 export function isDisplayable(item) {
   if (portfolioProblems(item).length) return false
   const a = item.approval
-  return a.status === 'approved' && a.portfolioUse === true && a.creatorConsent === true
+  return !item.review && a.status === 'approved' && a.portfolioUse === true && a.creatorConsent === true // a video held for manual review (`review`) is never shown
 }
 
 /* The gate for a homepage client panel: a valid, approved video tagged with that client. It does NOT imply portfolio permission. */
-export const isShowcaseable = (item) => portfolioProblems(item).length === 0 && item.approval.status === 'approved' && Boolean(item.showcase)
+export const isShowcaseable = (item) => portfolioProblems(item).length === 0 && !item.review && item.approval.status === 'approved' && Boolean(item.showcase)
 
 /* ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
    SELECTORS: one per page. Order is the order of PORTFOLIO.
@@ -2012,6 +2029,11 @@ export const CATEGORIES = [
 /* The UGC TYPE filter exists only on translated pages (Spanish, French): its videos are all 'unclassified' by industry, so without it the Spanish library offered only All + Spokesperson. It is NOT in
    CATEGORIES, so the English tabs (and tests/creator-showcase.test.mjs) are unchanged; it sits between the industry tabs and Spokesperson. */
 const TRANSLATED_UGC_CATEGORY = { id: 'ugc', label: 'UGC', color: '#d5ff40', byType: 'ugc' }
+/* The other TYPE filters of a translated library (SaaS = software explainers and app demonstrations; Organic Social). Same rule as UGC: translated pages only, each shown only while at least one approved
+   video is of that type (primary or secondary), counts computed from the data. Their ids differ from the industry tabs' ('saas' is an INDUSTRY tab in English). */
+const TRANSLATED_SAAS_CATEGORY = { id: 'type-saas', label: 'SaaS', color: '#9a7aff', byType: 'saas' }
+const TRANSLATED_ORGANIC_CATEGORY = { id: 'type-organic', label: 'Organic Social', color: '#ffb547', byType: 'organic' }
+const TRANSLATED_TYPE_CATEGORIES = [TRANSLATED_UGC_CATEGORY, TRANSLATED_SAAS_CATEGORY, TRANSLATED_ORGANIC_CATEGORY]
 export const CATEGORY_LABELS = Object.fromEntries(CATEGORIES.map((c) => [c.id, c.label]))
 const CATEGORY_ORDER = CATEGORIES.map((c) => c.id)
 const CATEGORY_OF_INDUSTRY = { saas: 'saas', technology: 'saas', ecommerce: 'ecommerce', services: 'services' }
@@ -2019,13 +2041,14 @@ export const categoryOf = (item) => (isClassified(item) ? CATEGORY_OF_INDUSTRY[i
 
 /* Is the video in the filter `categoryId`? An industry filter by its industry group; the Spokesperson filter by the video's type. */
 export const inCategory = (item, categoryId) => {
-  const c = CATEGORIES.find((x) => x.id === categoryId) ?? (categoryId === TRANSLATED_UGC_CATEGORY.id ? TRANSLATED_UGC_CATEGORY : undefined)
-  return c?.byType ? typeOf(item) === c.byType : categoryOf(item) === categoryId
+  const c = CATEGORIES.find((x) => x.id === categoryId) ?? TRANSLATED_TYPE_CATEGORIES.find((x) => x.id === categoryId)
+  return c?.byType ? typesOf(item).includes(c.byType) : categoryOf(item) === categoryId
 }
 
 /* The tabs /creator-showcase offers: All Work, then each category that has at least one classified video (an empty category is hidden). */
 export const availableCategories = (items) => {
-  const list = ed() ? [...CATEGORIES.filter((c) => c.id !== 'spokesperson'), TRANSLATED_UGC_CATEGORY, ...CATEGORIES.filter((c) => c.id === 'spokesperson')] : CATEGORIES
+  // translated pages: the industry tabs, then the type tabs UGC, Spokesperson, SaaS, Organic Social (each only while a video of that type exists)
+  const list = ed() ? [...CATEGORIES.filter((c) => c.id !== 'spokesperson'), TRANSLATED_UGC_CATEGORY, ...CATEGORIES.filter((c) => c.id === 'spokesperson'), TRANSLATED_SAAS_CATEGORY, TRANSLATED_ORGANIC_CATEGORY] : CATEGORIES
   return [ALL_CATEGORY, ...list.filter((c) => items.some((i) => inCategory(i, c.id)))]
 }
 export const countIn = (items, categoryId) => (categoryId === 'all' ? items.length : items.filter((i) => inCategory(i, categoryId)).length)

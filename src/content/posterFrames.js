@@ -18,32 +18,32 @@ export const POSTER_FRAMES = {
   'b4daf32122e679f3af1c6ccc07eec8a7': 7.6, // portfolio:es-showcase-mixed-3 (owner-picked frame: bending stretch, 2026-11-24)
   'c1dd083d5550608a139f656670bd77a5': 17.6, // portfolio:fr-ugc-hero-1 [fr]
   '0346ed0881533220ba77bc4b3d4c26f9': 22.6, // portfolio:fr-ugc-hero-2 [fr]
-  '5b1058e9c68ab7b05bd24858ceaadb9c': 2.1, // portfolio:fr-ugc-hero-3 [fr]
-  '7c681c012def2539e7c32c99889d8662': 18.6, // portfolio:fr-ugc-1 [fr]
+  '5b1058e9c68ab7b05bd24858ceaadb9c': 20.0, // reviewed 2026-11-24 (contact sheet, was 2.1 s):/ portfolio:fr-ugc-hero-3 [fr]
+  '7c681c012def2539e7c32c99889d8662': 31.0, // reviewed 2026-11-24 (contact sheet, was 18.6 s):/ portfolio:fr-ugc-1 [fr]
   'a273a9e766e0baf7eed8a6ad72c8892b': 6.3, // portfolio:fr-ugc-2 [fr]
   'ce7f495642b90a531e44f17b8e7454c5': 0.4, // home-hero-fr:home-hero-fr-main (French-dubbed CONVRT ad with dubbed on-screen text, FRENCH-with-Dubbed-Text.mp4; clear face, open eyes, coffee cup, the comment bubble, no caption word mid-frame)
   '8797ae3fba20c95e9d9d10eefda840c9': 3.4, // portfolio:fr-mohamed-comma [fr]
-  'a4a52503d855717880ed6dcbaca724b5': 1.9, // portfolio:fr-mohamed-route-facile [fr]
+  'a4a52503d855717880ed6dcbaca724b5': 23.7, // reviewed 2026-11-24 (contact sheet, was 1.9 s):/ portfolio:fr-mohamed-route-facile [fr]
   '5639f5ff6b02b7501b946aef4466ad4c': 19.6, // portfolio:fr-mohamed-skycop [fr]
-  'e4e8c66b5d6fef3d15ddf31ebcd17550': 22.1, // portfolio:fr-mohamed-tripmap [fr]
+  'e4e8c66b5d6fef3d15ddf31ebcd17550': 21.3, // reviewed 2026-11-24 (contact sheet, was 22.1 s):/ portfolio:fr-mohamed-tripmap [fr]
   '9eedb31ea2296e96882de394b0a7e3a7': 3.0, // portfolio:fr-showcase-fixd-1 (French client stage, landscape)
   '490a0502253d32c4b22085077b396437': 3.0, // portfolio:fr-showcase-fixd-2 (French client stage, landscape)
   '39e4049b9e5993f5143037b2ebbc9bb5': 20.0, // portfolio:fr-showcase-fixd-3 (French client stage, landscape; the FIXD device in hand)
   '6c04c13dbb9ff7042f30e028b7394fe6': 4.5, // portfolio:es-ugc-hero-1 [es]
-  '816d316906f79fe216d6f62079a0047f': 23.8, // portfolio:es-ugc-hero-2 [es]
-  '75e7a204d0d4d2c75fe1ad19f0348461': 3.9, // portfolio:es-ugc-hero-3 [es]
+  '816d316906f79fe216d6f62079a0047f': 6.1, // reviewed 2026-11-24 (contact sheet, was 23.8 s):/ portfolio:es-ugc-hero-2 [es]
+  '75e7a204d0d4d2c75fe1ad19f0348461': 17.5, // reviewed 2026-11-24 (contact sheet, was 3.9 s):/ portfolio:es-ugc-hero-3 [es]
   '04b0b9817dea7ad5f29e67d98499e8a4': 24.5, // portfolio:es-ugc-1 [es]; home-hero-es:home-hero-es-right
-  '3e6b7af68da8f3258c2d6f4893b142bd': 15.8, // portfolio:es-ugc-2 [es]; home-hero-es:home-hero-es-left
+  '3e6b7af68da8f3258c2d6f4893b142bd': 30.8, // reviewed 2026-11-24 (contact sheet, was 15.8 s):/ portfolio:es-ugc-2 [es]; home-hero-es:home-hero-es-left
   'c118345b54c4a9a6fc3a319b2a66e5db': 3.2, // portfolio:es-ugc-3 [es]
-  'f4739a0bd536b672933a522bb5a6b779': 28.9, // portfolio:es-ugc-4 [es]
-  '3866056a8606c49abad3aa2e7dfee6f6': 7.1, // portfolio:es-ugc-5 [es]
+  'f4739a0bd536b672933a522bb5a6b779': 33.2, // reviewed 2026-11-24 (contact sheet, was 28.9 s):/ portfolio:es-ugc-4 [es]
+  '3866056a8606c49abad3aa2e7dfee6f6': 18.2, // reviewed 2026-11-24 (contact sheet, was 7.1 s):/ portfolio:es-ugc-5 [es]
   '8766cb0a94b775b2c9bc50005d03fb9c': 10.1, // portfolio:es-ugc-6 [es]
   '6426e524291b27be4e42a93f51155029': 10.1, // portfolio:es-spokesperson-hero-1 [es]
   '654557e3f08432a3b05cf115d05b0c0d': 4.8, // portfolio:es-spokesperson-hero-2 [es]
-  '1941b043cd48c685b59f4c3299003daa': 8.2, // portfolio:es-spokesperson-hero-3 [es]
+  '1941b043cd48c685b59f4c3299003daa': 5.3, // reviewed 2026-11-24 (contact sheet, was 8.2 s):/ portfolio:es-spokesperson-hero-3 [es]
   'fff13512cc21b7386a7b0a998e06047c': 7.6, // portfolio:es-spokesperson-1 [es]
   'b5c4b83376e5a02b0f0d87de7bd17f30': 11.7, // portfolio:es-spokesperson-2 [es]
-  'f7a739320888ea494053b02f6eb84989': 14.5, // portfolio:es-spokesperson-3 [es]
+  'f7a739320888ea494053b02f6eb84989': 41.8, // reviewed 2026-11-24 (contact sheet, was 14.5 s):/ portfolio:es-spokesperson-3 [es]
   'c3adc98013a1a85a8b5bf6f6c410818f': 4.1, // portfolio:es-spokesperson-4 [es]
   '9e721f7dfa716703db3c3aa731d34e48': 10.2, // portfolio:es-spokesperson-5 [es]
   '4af34968812800c11e7c6f4121f65d9e': 27.3, // portfolio:es-spokesperson-6 [es]

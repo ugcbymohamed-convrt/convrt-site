@@ -8,6 +8,7 @@ import CategoryTabs from './CategoryTabs.jsx'
 import VideoCard from './VideoCard.jsx'
 import VideoLightbox from './VideoLightbox.jsx'
 import { tr } from '../../i18n/tr.js'
+import { spreadCreators } from '../../content/creatorOrder.js'
 
 /* SECTION 2: the video library. A category selector, a grid of portrait cards and one shared lightbox player.
 
@@ -60,7 +61,11 @@ export default function PortfolioLibrary({ items: itemsProp, pageSize = PAGE }) 
   const focusFrom = useRef(null)
 
   const active = tabs.find((t) => t.id === catId) ?? tabs[0]
-  const filtered = useMemo(() => filterByCategory(items, active.id).filter((i) => matchesFilters(i, { language: lang })), [items, active.id, lang])
+  // Translated libraries are spread by creator AFTER the filters (so a filtered view alternates too) and BEFORE "Show more" slices the list. English keeps its hand-set order (DISPLAY_ORDER).
+  const filtered = useMemo(() => {
+    const list = filterByCategory(items, active.id).filter((i) => matchesFilters(i, { language: lang }))
+    return locale === 'en' ? list : spreadCreators(list)
+  }, [items, active.id, lang, locale])
   const shown = filtered.slice(0, limit)
   const openIndex = openId ? filtered.findIndex((i) => i.id === openId) : -1
   const open = openIndex >= 0 ? filtered[openIndex] : null

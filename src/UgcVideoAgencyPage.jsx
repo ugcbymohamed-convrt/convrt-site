@@ -12,6 +12,9 @@ import { useDocumentHead } from './lib/useDocumentHead.js'
 import { pageHead } from './seo/siteSeo.js'
 import { PATHS } from './routes.js'
 import { selectHero, selectGallery, forPageLanguage } from './content/portfolio.js'
+import { galleryEnabled } from './content/galleryPolicy.js'
+import { currentLocale } from './i18n/locale.js'
+import { spreadCreators } from './content/creatorOrder.js'
 import { tr, T, hrefFor } from './i18n/tr.js'
 
 /* /ugc-video-agency: the UGC service page.
@@ -30,8 +33,8 @@ export default function UgcVideoAgencyPage() {
     trackEvent('ugc_page_view')
   }, [])
 
-  const heroItems = forPageLanguage(selectHero())
-  const galleryItems = forPageLanguage(selectGallery())
+  const heroItems = galleryEnabled(currentLocale(), 'ugc', 'hero') ? forPageLanguage(selectHero()) : []
+  const galleryItems = galleryEnabled(currentLocale(), 'ugc', 'gallery') ? (currentLocale() === 'en' ? forPageLanguage(selectGallery()) : spreadCreators(forPageLanguage(selectGallery()))) : [] // translated galleries alternate creators (src/content/creatorOrder.js)
 
   return (
     <>
