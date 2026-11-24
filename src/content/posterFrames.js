@@ -82,7 +82,7 @@ export const POSTER_FRAMES = {
   '3616606e3ca6d1a85c8a57d7cc2f656f': 3.6, // portfolio:showcase-graspo-2 (home panel graspo); graspo 1.2M
   'c1379ace38f2fa19ef2a45de1bb5d4b1': 4.6, // portfolio:showcase-graspo-3 (home panel graspo); graspo 7.5M
   '20c642c760e1937953fc33e98f3d859f': 1.6, // home-hero:home-hero-main
-  '5904f4189ee4726cb4d7e4272a8b915b': 5.5, // home-hero-es:home-hero-es-main (Spanish CONVRT ad; clear face, open eyes, coffee cup, no caption on screen)
+  '2833c72764ffb5cc73f001565ca32954': 2.0, // home-hero-es:home-hero-es-main (Spanish CONVRT ad, dubbed version supplied 2026-11-24; clear face, open eyes, coffee cup)
   'a290d76bc0de09f3e404d16f3f40dda1': 3.3, // portfolio:en-josh-ugc-1 (smiling, holding the checklist, clean caption)
   '0d8c53adaf3db38b291077b3da441513': 6.4, // portfolio:en-josh-ugc-2 (face to camera, three fingers up, no caption in the way)
   'd0c08b8a1aaed35bfda22a201a2aebe4': 7.2, // portfolio:en-josh-saas-1 (the app scanning a plate: the product in use)

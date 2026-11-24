@@ -36,7 +36,7 @@ Not changed: the Roadmap explainer keeps its deliberately chosen 25.6 s frame; t
 | `3e6b7af6…` | 15.8s | portfolio:es-ugc-2 [es]; home-hero-es:home-hero-es-left |
 | `424622b3…` | 0.4s | portfolio:creator-09 |
 | `4af34968…` | 27.3s | portfolio:es-spokesperson-6 [es] |
-| `5904f418…` | 5.5s | home-hero-es:home-hero-es-main (Spanish CONVRT ad) |
+| `2833c727…` | 2s | home-hero-es:home-hero-es-main (Spanish CONVRT ad, dubbed version, 2026-11-24) |
 | `5f7b145c…` | 5.7s | portfolio:en-mohamed-spokesperson-2 |
 | `5fc04645…` | 1.5s | portfolio:creator-12 |
 | `63446474…` | 18.7s | portfolio:ugc-hero-2; home-hero:home-hero-ugc-2 |
