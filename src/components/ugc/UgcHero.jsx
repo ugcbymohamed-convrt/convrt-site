@@ -6,7 +6,7 @@ import { OFFER_PATHS, CREATOR_SHOWCASE_PATH } from '../../config.js'
 import { SECONDARY_OFFERS, SecondaryOffer } from '../Hero.jsx'
 import CreatorVideoStage, { PhoneShowcaseFallback } from './CreatorVideoStage.jsx'
 import { useAutoplayAllowed } from './creatorVideo.jsx'
-import { tr, hrefFor } from '../../i18n/tr.js'
+import { tr, hrefFor, ctaText } from '../../i18n/tr.js'
 import { currentLocale } from '../../i18n/locale.js'
 import { resolveCta, flowAvailable } from '../../i18n/cta.js'
 import { localizeHero } from '../../i18n/hero.js'
@@ -151,7 +151,7 @@ export default function UgcHero({ items, config: configProp = UGC_HERO }) {
   const config = localizeHero(configProp, locale)
   // Other languages: a primary CTA into the English-only Roadmap becomes the booking call; the free-offer cards are shown only where their flows are translated.
   const primary = resolveCta(locale, configProp.primary)
-  const primaryLabel = primary.redirected ? tr(primary.label) : config.primary.label
+  const primaryLabel = primary.redirected ? tr(primary.label) : configProp.primary.label === 'Get 5 Free Ad Concepts' ? ctaText(configProp.primary.label) : config.primary.label
   const offersAvailable = flowAvailable(locale, 'riskFree') && flowAvailable(locale, 'hooks')
   const hasWork = items.length > 0
   const textLed = !hasWork && locale !== 'en'

@@ -6,35 +6,35 @@ import { CREATOR_SHOWCASE_PATH } from '../../config.js'
    A non-breaking space keeps the colon attached to "UGC" (French typography puts a space before « : »). */
 export const FR_HERO = {
   'ugc-h1': {
-    lines: [['Agence', 'UGC :'], ['des', 'vidéos', 'authentiques']],
-    lead: ['pour', 'vos'],
-    words: ['publicités', 'campagnes', 'lancements'],
-    sizer: 'lancements.',
-    secondary: { label: 'Voir les exemples UGC', href: CREATOR_SHOWCASE_PATH },
+    lines: [['Agence', 'UGC :'], ['des', 'vidéos', 'qui']],
+    lead: [],
+    words: ['captent l’attention', 'marquent les esprits', 'donnent envie'],
+    sizer: 'marquent les esprits.',
+    secondary: { label: 'Explorer les vidéos UGC', href: CREATOR_SHOWCASE_PATH },
   },
   /* The three other French service pages (no video stage: the hero is text-led, see UgcHero). Native headlines, not word for word. Each H1 carries its page's primary keyword
      (FR_PRIMARY_KEYWORDS in seo.js) and none borrows « agence UGC ». The server HTML holds only the first rolling word. The secondary button goes to the in-page section, never to a
      video gallery. A   keeps the colon attached to the word before it. */
   'spokesperson-h1': {
-    lines: [['Vidéos', 'Spokesperson :'], ['de', 'vrais', 'présentateurs']],
-    lead: ['pour'],
-    words: ['convaincre', 'expliquer', 'présenter', 'démontrer'],
-    sizer: 'convaincre.',
-    secondary: { label: 'Voir comment nous travaillons', href: '#how-it-works' },
+    lines: [['Vidéos', 'Spokesperson :'], ['donnez', 'un', 'visage']],
+    lead: ['à'],
+    words: ['votre message', 'votre marque', 'votre produit'],
+    sizer: 'votre message.',
+    secondary: { label: 'Découvrir notre méthode', href: '#how-it-works' },
   },
   'saas-h1': {
-    lines: [['Vidéos', 'explicatives', 'SaaS :'], ['conçues', 'pour', 'expliquer']],
-    lead: ['et'],
-    words: ['convaincre', 'engager', 'captiver'],
-    sizer: 'convaincre.',
+    lines: [['Vidéos', 'SaaS :'], ['rendez', 'votre', 'produit']],
+    lead: ['facile', 'à'],
+    words: ['comprendre', 'expliquer', 'essayer'],
+    sizer: 'comprendre.',
     secondary: { label: 'Voir les formats', href: '#saas-formats' },
   },
   'organic-h1': {
-    lines: [['Vidéos', 'pour', 'les', 'réseaux', 'sociaux :'], ['du', 'contenu', 'organique', 'pensé']],
-    lead: ['pour'],
-    words: ['engager', 'inspirer', 'convaincre'],
-    sizer: 'convaincre.',
-    secondary: { label: 'Voir comment nous travaillons', href: '#how-it-works' },
+    lines: [['Des', 'vidéos', 'pour', 'les', 'réseaux', 'sociaux'], ['qui', 'donnent', 'envie', 'de', 'suivre']],
+    lead: [],
+    words: ['votre marque', 'vos idées', 'votre expertise'],
+    sizer: 'votre expertise.',
+    secondary: { label: 'Découvrir notre méthode', href: '#how-it-works' },
   },
 }
 

@@ -103,7 +103,7 @@ export const FR_SEO = {
     description: 'Deux études de cas CONVRT : le contenu organique de Graspo sur les marchés arabophones et les publicités avec créateurs d’Elyon Dubai.',
   },
   '/referrals': {
-    title: 'Programme de parrainage CONVRT : récompenses pour vos recommandations',
+    title: 'Programme de parrainage CONVRT : gagnez des récompenses',
     description:
       'Recommandez des marques SaaS et e-commerce à CONVRT, gagnez des récompenses pour chaque mise en relation aboutie et offrez à vos contacts une amélioration créative exclusive.',
   },

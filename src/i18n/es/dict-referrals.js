@@ -151,4 +151,6 @@ export default {
   "You’re One Step Closer to Becoming a CONVRT Partner.": "Estás a un paso de ser partner de CONVRT.",
   "Thanks for your interest! We’ve received your details and will review your application. If approved, we’ll send you everything you need to start referring.": "¡Gracias por tu interés! Hemos recibido tus datos y revisaremos tu solicitud. Si se aprueba, te enviaremos todo lo necesario para empezar a recomendar.",
   "Hide Full Program Terms": "Ocultar las condiciones completas del programa",
+  "$150": "{{usd:150}}",
+  "10%": "10 %",
 }

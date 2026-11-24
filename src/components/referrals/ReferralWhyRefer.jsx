@@ -1,5 +1,5 @@
 import { Reveal, SectionHeader } from '../roadmap/shared.jsx'
-import { tr } from '../../i18n/tr.js'
+import { tr, hrefFor } from '../../i18n/tr.js'
 
 /* ─────────────────────────────────────────────
    WHY REFER CONVRT — lowers the reputational risk of recommending us.
@@ -85,7 +85,7 @@ export default function ReferralWhyRefer() {
                 ))}
               </div>
               <a
-                href="/case-studies"
+                href={hrefFor('/case-studies')}
                 className="mt-4 inline-flex min-h-[44px] items-center gap-1.5 text-sm font-semibold text-ink transition-colors hover:text-lime focus-visible:rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-lime"
               >{tr('See more of CONVRT’s work')} <span aria-hidden="true">→</span>
               </a>

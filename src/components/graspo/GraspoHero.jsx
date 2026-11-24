@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { OFFER_PATHS } from '../../config.js'
 import GraspoHeroScene from './GraspoHeroScene.jsx'
 import { tr, hrefFor } from '../../i18n/tr.js'
+import { currentLocale } from '../../i18n/locale.js'
 
 /* ─────────────────────────────────────────────
    GRASPO CASE STUDY — HERO
@@ -68,7 +69,7 @@ export default function GraspoHero() {
             className="font-display font-bold tracking-display-xl leading-[1.05] text-[clamp(1.9rem,5vw,3.6rem)]"
             style={{ color: ACCENT }}
           >{tr('6 months')}</p>
-          <h1 className="mt-2 font-display font-bold text-ink tracking-display-xl leading-[1.05] text-[clamp(1.9rem,5vw,3.6rem)] md:whitespace-nowrap">{tr('10.7M views. 75 inbound leads.')}</h1>
+          <h1 className={`mt-2 font-display font-bold text-ink tracking-display-xl leading-[1.05] text-[clamp(1.9rem,5vw,3.6rem)] ${currentLocale() === 'en' ? 'md:whitespace-nowrap' : 'text-balance'}`}>{tr('10.7M views. 75 inbound leads.')}</h1>
         </FadeUp>
 
         <FadeUp inView={inView} delay={180}>

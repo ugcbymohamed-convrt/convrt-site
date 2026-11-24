@@ -61,7 +61,7 @@ export default {
   "Show more": "Afficher plus",
   "more": "de plus",
   "Use the tabs above to browse by industry:": "Utilisez les onglets ci-dessus pour parcourir par secteur :",
-  "Related case study": "Étude de cas associée (en anglais)",
+  "Related case study": "Étude de cas associée",
   "All": "Toutes",
 
   // Pricing, UGC page chrome

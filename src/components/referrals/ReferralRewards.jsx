@@ -84,7 +84,7 @@ export default function ReferralRewards({ onSelect }) {
 
                   <p className="mt-3 flex items-baseline gap-3">
                     <span className="text-base font-semibold text-ink">{tr(card.lead)}</span>
-                    <span className={`font-display text-6xl font-bold leading-none tracking-display-xl sm:text-7xl ${card.accent.text}`}>{card.amount}</span>
+                    <span className={`font-display text-6xl font-bold leading-none tracking-display-xl sm:text-7xl ${card.accent.text}`}>{tr(card.amount)}</span>
                   </p>
                   <p className="mt-2 text-sm leading-snug text-ink-muted">{tr(card.note)}</p>
 

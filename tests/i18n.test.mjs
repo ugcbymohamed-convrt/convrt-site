@@ -53,7 +53,7 @@ test('locales: English, Spanish, French and Arabic are registered; Arabic is rig
   assert.deepEqual(BUILT_LOCALES, ['en', 'es', 'fr'], 'Arabic is prepared: no routes are built for it')
   assert.ok(isLive('es') && isLive('fr') && !isLive('ar'))
   assert.equal(LOCALES.fr.htmlLang, 'fr-FR')
-  assert.deepEqual(TRANSLATED_PATHS.fr, ['/', '/ugc-video-agency', '/spokesperson-video-production', '/social-media-video-production', '/saas-video-production', '/pricing', '/creator-showcase', '/case-studies', '/case-studies/graspo', '/case-studies/elyon', '/creative-growth-roadmap', '/risk-free-trial']); assert.deepEqual(TRANSLATED_PATHS.ar, [])
+  assert.deepEqual(TRANSLATED_PATHS.fr, ['/', '/ugc-video-agency', '/spokesperson-video-production', '/social-media-video-production', '/saas-video-production', '/pricing', '/creator-showcase', '/case-studies', '/case-studies/graspo', '/case-studies/elyon', '/creative-growth-roadmap', '/risk-free-trial', '/referrals']); assert.deepEqual(TRANSLATED_PATHS.ar, [])
   assert.deepEqual(allLocalizedPaths(['ar']), [])
 })
 
@@ -70,7 +70,7 @@ test('paths: English URLs never change; other languages live under their prefix 
   assert.deepEqual(parsePath('/'), { locale: 'en', basePath: '/' })
   assert.deepEqual(parsePath('/blog/some-article'), { locale: 'en', basePath: '/blog/some-article' })
   assert.deepEqual(parsePath('/escape'), { locale: 'en', basePath: '/escape' }, 'only an exact language segment is a locale')
-  assert.deepEqual(allLocalizedPaths(['es']), ['/es', '/es/ugc-video-agency', '/es/spokesperson-video-production', '/es/social-media-video-production', '/es/saas-video-production', '/es/pricing', '/es/creator-showcase', '/es/about', '/es/contact', '/es/creative-growth-roadmap', '/es/risk-free-trial'])
+  assert.deepEqual(allLocalizedPaths(['es']), ['/es', '/es/ugc-video-agency', '/es/spokesperson-video-production', '/es/social-media-video-production', '/es/saas-video-production', '/es/pricing', '/es/creator-showcase', '/es/about', '/es/contact', '/es/creative-growth-roadmap', '/es/risk-free-trial', '/es/referrals'])
 })
 
 test('every translated path is a real English page with SEO data and a Spanish title/description/OG copy', () => {
@@ -151,7 +151,7 @@ test('dictionary: complete for every literal tr()/<T> in the source, no empty va
   assert.ok(DICTIONARIES.fr && Object.keys(DICTIONARIES.fr).length > 500, 'the French dictionary exists (tests/french.test.mjs checks it)')
 })
 
-const OMITTED_FIGURE = /free library of 10 ad hooks/
+const OMITTED_FIGURE = /free library of 10 ad hooks|10 Free Ad Hooks/
 test('dictionary: figures in an English sentence survive in its Spanish translation (prices, counts, months, days)', () => {
   const digits = (s) => (s.match(/\d[\d.,]*/g) || []).map((n) => n.replace(/[.,]/g, '')).sort().join('|')
   let checked = 0
@@ -323,10 +323,10 @@ test('Spanish prices are the owner-approved EUR amounts: shown everywhere a pric
   for (const p of ES_PAGES) {
     const h = page(p), t = textOf(h).join('\n')
     assert.ok(!t.includes(cfg.placeholder), `${p}: no price placeholder`)
-    assert.ok(!/\$\s?\d/.test(t), `${p}: no "$N" amount`)
+    assert.ok(p === '/es/referrals' || !/\$\s?\d/.test(t), `${p}: no "$N" amount`) // the referral rewards are USD facts of the English program, shown as « 150 USD » (never a CONVRT price)
     // the only dollars on a Spanish page are a client's real reported result (UGC page) and the Roadmap's ad-spend answer brackets (qualification thresholds, unchanged)
     const usd = t.match(/[\d.,]+ ?\s?USD|dólar/g) ?? []
-    assert.ok(usd.every((u) => (p === '/es/ugc-video-agency' && /3\.421,25/.test(u)) || (['/es/creative-growth-roadmap', '/es/risk-free-trial'].includes(p) && /^(5|20)\.000/.test(u))), `${p}: USD left on a Spanish page: ${usd}`)
+    assert.ok(usd.every((u) => (p === '/es/ugc-video-agency' && /3\.421,25/.test(u)) || (['/es/creative-growth-roadmap', '/es/risk-free-trial'].includes(p) && /^(5|20)\.000/.test(u)) || (p === '/es/referrals' && /^(150|500|5\.000)\s?USD/.test(u))), `${p}: USD left on a Spanish page: ${usd}`)
     assert.ok(!/"priceCurrency":"USD"/.test(h), `${p}: no USD price in JSON-LD`)
   }
   // /es/pricing: every approved amount and the derived per-variation figures
@@ -398,7 +398,7 @@ test('JSON-LD: one stable Organization @id across languages; Spanish WebPage/FAQ
 })
 
 test('Spanish pages never route into the English-only conversion flows (the Roadmap is the one translated flow); booking opens in a new tab with rel=noopener; the privacy link is kept', () => {
-  const FORM_PAGES = ['/es/creative-growth-roadmap', '/es/risk-free-trial']
+  const FORM_PAGES = ['/es/creative-growth-roadmap', '/es/risk-free-trial', '/es/referrals']
   for (const p of ES_PAGES) {
     // the language switcher's English alternate (hrefLang="en") is the only link allowed to point at an English page
     const h = bodyOf(page(p)).replace(/<a [^>]*hrefLang="en"[^>]*>/g, '')

@@ -36,7 +36,8 @@ const fr = (bp) => `/fr${bp}`
 // ── routes and registry ────────────────────────────────────────────────────────────────────────────────────────
 test('registry: the three services are French pages (same slugs as English), alongside UGC; genuinely untranslated pages are not', () => {
   for (const bp of ['/ugc-video-agency', ...SERVICES]) assert.ok(hasTranslation('fr', bp), bp)
-  for (const bp of ['/about', '/contact', '/case-studies', '/case-studies/graspo', '/blog', '/privacy', '/terms', '/legal-notice']) assert.ok(!hasTranslation('fr', bp), `${bp} stays English-only`)
+  for (const bp of ['/about', '/contact', '/blog', '/privacy', '/terms', '/legal-notice']) assert.ok(!hasTranslation('fr', bp), `${bp} stays English-only`)
+  for (const bp of ['/case-studies', '/case-studies/graspo', '/case-studies/elyon', '/referrals']) assert.ok(hasTranslation('fr', bp), `${bp} is French now`)
   const paths = allLocalizedPaths(['fr'])
   for (const bp of SERVICES) assert.ok(paths.includes(fr(bp)), fr(bp))
   assert.equal(localizedPath('fr', SPK), '/fr/spokesperson-video-production')
@@ -49,7 +50,8 @@ test('no English fallback: localHref / hrefFor send French visitors to the Frenc
     assert.equal(hrefFor(`${bp}#how-it-works`, 'fr'), `${fr(bp)}#how-it-works`)
     assert.equal(isFallbackPath(bp, 'fr'), false, `${bp}: the « (en anglais) » note must disappear`)
   }
-  for (const bp of ['/about', '/contact', '/case-studies', '/case-studies/graspo', '/blog', '/privacy', '/terms', '/legal-notice']) assert.equal(isFallbackPath(bp, 'fr'), true, bp)
+  for (const bp of ['/about', '/contact', '/blog', '/privacy', '/terms', '/legal-notice']) assert.equal(isFallbackPath(bp, 'fr'), true, bp)
+  for (const bp of ['/case-studies', '/case-studies/graspo', '/case-studies/elyon', '/referrals']) assert.equal(isFallbackPath(bp, 'fr'), false, bp)
   assert.equal(editorial('fr').fallbackNote, 'en anglais')
   assert.equal(isFallbackPath(SPK, 'en'), false)
 })
@@ -112,7 +114,7 @@ test('French dictionaries of the three pages: registered, no amount typed by han
   assert.deepEqual(missingFor('fr'), [], 'every literal tr() of every French page is translated: run `node scripts/i18n-check.mjs fr`')
   // the three pages' strings are required of the French dictionary now (the per-locale scope exclusion was removed)
   const src = fs.readFileSync(path.join(ROOT, 'scripts/i18n-check.mjs'), 'utf8')
-  assert.match(src, /const SCOPE_EXCLUDED = \{\}/)
+  assert.match(src, /const SCOPE_EXCLUDED = \{/) // Spanish excludes the case-study components (no Spanish case studies yet); French excludes nothing
 })
 
 test('scene illustrations: every capitalised word the spokesperson, SaaS and organic scenes can show (even in states a static render never reaches) is in the French dictionary', async () => {
@@ -166,9 +168,9 @@ after(() => { if (tmp) fs.rmSync(tmp, { recursive: true, force: true }) })
 
 test('built pages: real static HTML in French, French <title>, description and H1, one H1, indexable, self-referencing canonical', () => {
   const H1 = {
-    [SPK]: /^Vidéos Spokesperson : de vrais présentateurs pour convaincre\.?$/,
-    [SAAS]: /^Vidéos explicatives SaaS : conçues pour expliquer et convaincre\.?$/,
-    [ORG]: /^Vidéos pour les réseaux sociaux : du contenu organique pensé pour engager\.?$/,
+    [SPK]: /^Vidéos Spokesperson : donnez un visage à votre message\.?$/,
+    [SAAS]: /^Vidéos SaaS : rendez votre produit facile à comprendre\.?$/,
+    [ORG]: /^Des vidéos pour les réseaux sociaux qui donnent envie de suivre votre marque\.?$/,
   }
   for (const bp of SERVICES) {
     const h = page(fr(bp))
@@ -183,7 +185,7 @@ test('built pages: real static HTML in French, French <title>, description and H
     assert.ok(text(h).length > 4000, `${bp}: substantive crawlable French text`)
   }
   // each page's H1 carries its own primary keyword and none borrows another page's
-  assert.match(h1Of(page(fr(SPK))), /Spokesperson/i); assert.match(h1Of(page(fr(SAAS))), /explicatives SaaS/i); assert.match(h1Of(page(fr(ORG))), /réseaux sociaux/i)
+  assert.match(h1Of(page(fr(SPK))), /Spokesperson/i); assert.match(h1Of(page(fr(SAAS))), /Vidéos SaaS/i); assert.match(h1Of(page(fr(ORG))), /réseaux sociaux/i)
   for (const bp of SERVICES) assert.doesNotMatch(h1Of(page(fr(bp))) + FR_SEO[bp].title, /agence UGC/i, bp)
 })
 
@@ -203,12 +205,12 @@ test('sitemap: the three French URLs are listed once each, in the built sitemap 
   for (const bp of SERVICES) assert.equal(built.split(`<loc>${SITE_URL}${fr(bp)}</loc>`).length - 1, 1, bp)
   assert.equal(built, buildSitemap())
   for (const m of built.matchAll(/<loc>([^<]+)<\/loc>/g)) assert.ok(exists(m[1].replace(SITE_URL, '') || '/'), `sitemap entry without a page: ${m[1]}`)
-  assert.ok(!/\/fr\/(about|contact|blog|case-studies|privacy|terms|legal-notice)/.test(built))
+  assert.ok(!/\/fr\/(about|contact|blog|privacy|terms|legal-notice|referrals)/.test(built) && !built.includes('/fr/case-studies</loc>'), 'the duplicate /fr/case-studies and the noindex referral page are not in the sitemap')
 })
 
 test('404: only the registered French routes exist as files; look-alike French URLs have no page, so the host answers its genuine 404', () => {
   for (const bp of SERVICES) assert.ok(exists(fr(bp)), fr(bp))
-  for (const p of ['/fr/spokesperson-video-production/extra', '/fr/saas', '/fr/seo-video-production', '/fr/about', '/fr/case-studies/graspo', '/fr/blog']) assert.ok(!exists(p), `${p} must not be built`)
+  for (const p of ['/fr/spokesperson-video-production/extra', '/fr/saas', '/fr/seo-video-production', '/fr/about', '/fr/case-studies/unknown', '/fr/blog']) assert.ok(!exists(p), `${p} must not be built`)
   assert.ok(fs.existsSync(path.join(dist, '404.html')))
 })
 
@@ -300,7 +302,7 @@ test('conversion: the Roadmap is the French flow; no 10 free hooks, no referral 
   for (const bp of SERVICES) {
     const h = page(fr(bp))
     const hrefs = [...h.matchAll(/href="([^"]+)"/g)].map((m) => m[1].replace(/&amp;/g, '&'))
-    assert.ok(!hrefs.some((u) => /free-hooks|\/referrals|forms\.gle|docs\.google\.com\/forms/.test(u)), `${bp}: no English-only flow`)
+    assert.ok(!hrefs.some((u) => /free-hooks|forms\.gle|docs\.google\.com\/forms/.test(u) || u === '/referrals'), `${bp}: no English-only flow`)
     assert.ok(!/10 (hooks|accroches)|dix hooks/i.test(text(h)), `${bp}: the 10 free hooks are not promoted`)
     assert.ok(!hrefs.some((u) => u === '/creative-growth-roadmap' || u === '/risk-free-trial'), `${bp}: no link into the English flows`)
   }

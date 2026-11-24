@@ -20,7 +20,7 @@ const LOGOS = {
   adscale: { src: '/clients/adscale.png', alt: 'Adscale', w: 531, h: 149 },
   elyon: { src: '/clients/elyon.png', alt: 'Elyon Dubai', w: 600, h: 226 },
 }
-/* The client's own messages, word for word (as published in the Elyon case study). */
+/* The client's own messages, word for word (as published in the Elyon case study). English only: they are the client's raw wording (typos included), so a translated page states the same facts in its own words instead of showing them. */
 const CLIENT_MESSAGES = ['It has 9 sales with an revenue of 3421.25$', 'Roas 5.28']
 
 /* One-time number reveal: the page text is always the final figure ("5.28x"); when it scrolls into view it counts up once, over about
@@ -85,13 +85,14 @@ export default function UgcResults() {
               <figure className="mt-5 rounded-2xl border border-lime/25 bg-canvas/60 p-4">
                 <figcaption className="mb-3 flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.14em] text-lime">
                   <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-lime" />{tr('Client-reported results')}</figcaption>
-                <ul className="space-y-2">
+                {locale !== 'en' && <p className="text-[15px] font-medium leading-snug text-ink">{tr('Results reported by the client for one ad and one period. They are not a guarantee of performance.')}</p>}
+                {locale === 'en' && <ul className="space-y-2">
                   {CLIENT_MESSAGES.map((m) => (
                     <li key={m} lang={locale === 'en' ? undefined : 'en'} className="w-fit max-w-full rounded-2xl rounded-tl-md border border-white/10 bg-surface-2 px-4 py-2.5 text-[15px] font-medium leading-snug text-ink">
                       {m}
                     </li>
                   ))}
-                </ul>
+                </ul>}
               </figure>
 
               <p className="mt-4 max-w-xl text-[13px] leading-relaxed text-ink-muted">{tr('One individual creative, client-reported during an early learning phase. Not typical, not a guarantee. Results depend on brand, offer, audience and budget.')}</p>

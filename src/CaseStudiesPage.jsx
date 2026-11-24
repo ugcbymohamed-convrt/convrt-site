@@ -7,6 +7,7 @@ import { CASE_STUDIES, DEFAULT_CASE_STUDY_ID, isValidCaseStudyId, getCaseStudy }
 import GraspoCaseStudyPage from './GraspoCaseStudyPage.jsx'
 import ElyonCaseStudyPage from './ElyonCaseStudyPage.jsx'
 import { tr, hrefFor } from './i18n/tr.js'
+import { currentLocale } from './i18n/locale.js'
 
 const PAGES = {
   graspo: GraspoCaseStudyPage,
@@ -126,7 +127,7 @@ export default function CaseStudiesPage() {
         <ol className="flex items-center gap-2 text-[13px] text-ink-subtle">
           <li><a href={hrefFor('/')} className="transition-colors hover:text-ink">{tr('Home')}</a></li>
           <li aria-hidden="true">/</li>
-          <li aria-current="page" className="text-ink-muted">{shown.label} {tr('case study')}</li>
+          <li aria-current="page" className="text-ink-muted">{currentLocale() === 'fr' ? `${tr('case study')} ${shown.label}` : `${shown.label} ${tr('case study')}`}</li>
         </ol>
       </nav>
       <div className="relative pt-8 md:pt-12">

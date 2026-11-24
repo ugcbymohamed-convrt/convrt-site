@@ -45,10 +45,10 @@ export function captionFr(caption) {
 
 /* French FAQ headings: [plain words, lime-accent words] per FAQ prefix. Used by src/components/ugc/UgcFAQ.jsx and PricingFAQ.jsx in French only. */
 export const FR_FAQ_TITLES = {
-  ugc: ['Tout ce qu’il faut savoir', 'sur nos vidéos UGC.'],
-  spokesperson: ['Tout ce qu’il faut savoir', 'sur nos vidéos Spokesperson.'],
-  saas: ['Tout ce qu’il faut savoir', 'sur nos vidéos SaaS.'],
-  organic: ['Tout ce qu’il faut savoir', 'sur nos contenus organiques.'],
+  ugc: ['Vos questions sur', 'la production UGC.'],
+  spokesperson: ['Vos questions sur', 'les vidéos Spokesperson.'],
+  saas: ['Vos questions sur', 'les vidéos SaaS.'],
+  organic: ['Vos questions sur', 'le contenu organique.'],
   pricing: ['Vos questions sur les offres', 'et les tarifs.'],
 }
 
@@ -58,21 +58,21 @@ export const FR_STAGE_TITLES = {}
 /* The short paragraph under the UGC page's final-CTA headline (and its note line) in French editorial copy. English pages have none. Keyed by the final CTA's id. */
 export const FR_FINAL_CTA = {
   'ugc-cta-heading': {
-    text: 'Parlez-nous de votre marque : nous vous présentons cinq idées publicitaires adaptées à votre activité, lors d’une session stratégique offerte.',
+    text: 'Présentez-nous votre marque. Nous vous proposerons cinq idées publicitaires lors d’une session stratégique offerte.',
     note: 'Offre réservée aux marques qui remplissent les conditions du programme. Sans engagement.',
   },
-  'spokesperson-cta-heading': { text: 'Dites-nous ce que vous voulez transmettre : nous vous aidons à trouver le présentateur, l’approche et le format qui conviennent à votre marque.' },
-  'saas-cta-heading': { text: 'Dites-nous ce que fait votre produit et ce que vous voulez communiquer. Nous vous aidons à trouver le format et l’approche créative adaptés.' },
-  'organic-cta-heading': { text: 'Dites-nous ce que vous attendez de vos réseaux sociaux. Nous vous aidons à définir une stratégie de contenu et un plan de production adaptés à votre marque.' },
+  'spokesperson-cta-heading': { text: 'Parlons de votre projet et trouvons la présentation qui lui correspond.' },
+  'saas-cta-heading': { text: 'Présentez-nous votre produit. Nous trouverons le format adapté à votre message.' },
+  'organic-cta-heading': { text: 'Construisons ensemble une stratégie de contenu qui donne envie de vous suivre.' },
 }
 
 /* One-sentence introductions under the heading of interactive sections and the UGC FAQ (French editorial copy). English has none, so they render in French only. */
 export const FR_SECTION_INTROS = {
-  'ugc-testing': 'Inutile de refaire toute la publicité pour savoir ce qui fonctionne : nous créons plusieurs versions d’une même idée pour que vous puissiez comparer chaque élément créatif de façon plus structurée.',
-  'spokesperson-formats': 'Tous les messages ne se livrent pas de la même manière. Nous adaptons le script, le style de présentation et les éléments visuels à ce que votre marque veut dire.',
-  'saas-formats': 'Toutes les vidéos SaaS n’ont pas le même rôle. Nous choisissons le format selon votre produit, votre public et l’objectif visé.',
-  'organic-content-system': 'Une présence régulière sur les réseaux commence par savoir ce que vous voulez dire, à qui, et pourquoi.',
-  'ugc-faq': 'Les réponses aux questions que l’on nous pose le plus souvent avant de lancer un projet.',
+  'ugc-testing': 'Pas besoin de refaire toute une publicité pour tester un nouveau hook. Nous créons des variations pour comparer les éléments qui comptent.',
+  'spokesperson-formats': 'Nous adaptons le ton, la présentation et les visuels à votre objectif.',
+  'saas-formats': 'Le bon format dépend de votre produit et de votre audience.',
+  'organic-content-system': 'Chaque vidéo s’inscrit dans un plan de contenu pensé pour votre audience.',
+  'ugc-faq': 'Créateurs, tarifs, droits d’utilisation et déroulement des projets.',
 }
 
 /* Visible note under the UGC page's client testimonials (their wording is kept in the original English). */

@@ -490,4 +490,5 @@ export default {
   "Organic Social Video": "Contenido orgánico para redes sociales",
   "Turn your brand into content worth following. We handle short-form social media video production end to end: creative strategy, creator-led filming, editing, publishing and community management, so your brand shows up consistently.": "Tu marca tiene mucho más que contar. Nosotros te ayudamos a hacerlo con vídeos pensados para tus redes sociales. Nos encargamos de la estrategia de contenido, los guiones, la selección de creadores, la grabación y la edición. También podemos gestionar la programación, publicación e interacción con la comunidad según el paquete contratado.",
   "Customer support is not part of the service. Paid advertising management is outside the organic service scope.": "La gestión de comunidad no incluye atención al cliente. La gestión de campañas publicitarias de pago es un servicio independiente.",
+  "Results reported by the client for one ad and one period. They are not a guarantee of performance.": "Resultados comunicados por el cliente para un anuncio y un periodo concretos. No constituyen una garantía de rendimiento.",
 }

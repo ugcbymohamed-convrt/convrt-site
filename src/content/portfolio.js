@@ -112,8 +112,8 @@ export const PORTFOLIO = [
      (portfolioUse false), exactly like the English client-stage videos. Comma is NOT the French hero video: the hero's main video is the French-dubbed CONVRT advertisement (homeHero.js). */
   {
     id: 'fr-mohamed-comma',
-    title: 'Maillot de football : démonstration du produit face caméra.',
-    caption: 'Maillot de football : démonstration du produit face caméra.',
+    title: 'Présentation d’un maillot de football',
+    caption: 'Présentation d’un maillot de football',
     type: 'ugc',
     industry: 'unclassified',
     languages: ['fr'],
@@ -129,8 +129,8 @@ export const PORTFOLIO = [
   },
   {
     id: 'fr-mohamed-route-facile',
-    title: 'Location de voiture : présentation du service face caméra et à l’écran.',
-    caption: 'Location de voiture : présentation du service face caméra et à l’écran.',
+    title: 'Présentation d’un service de location de voiture',
+    caption: 'Présentation d’un service de location de voiture',
     type: 'ugc',
     industry: 'unclassified',
     languages: ['fr'],
@@ -146,8 +146,8 @@ export const PORTFOLIO = [
   },
   {
     id: 'fr-mohamed-skycop',
-    title: 'Retard de vol : un service d’indemnisation présenté face caméra.',
-    caption: 'Retard de vol : un service d’indemnisation présenté face caméra.',
+    title: 'Indemnisation après un vol retardé',
+    caption: 'Indemnisation après un vol retardé',
     type: 'ugc',
     industry: 'unclassified',
     languages: ['fr'],
@@ -163,8 +163,8 @@ export const PORTFOLIO = [
   },
   {
     id: 'fr-mohamed-tripmap',
-    title: 'Carte de voyage à épingler : démonstration du produit.',
-    caption: 'Carte de voyage à épingler : démonstration du produit.',
+    title: 'Présentation d’une carte de voyage à épingler',
+    caption: 'Présentation d’une carte de voyage à épingler',
     type: 'ugc',
     industry: 'unclassified',
     languages: ['fr'],
@@ -222,8 +222,8 @@ export const PORTFOLIO = [
   },
   {
     id: 'fr-ugc-hero-1',
-    title: 'Complément alimentaire : démonstration du produit face caméra.',
-    caption: 'Complément alimentaire : démonstration du produit face caméra.',
+    title: 'Présentation d’un complément alimentaire',
+    caption: 'Présentation d’un complément alimentaire',
     type: 'ugc',
     industry: 'unclassified',
     languages: ['fr'],
@@ -237,8 +237,8 @@ export const PORTFOLIO = [
   },
   {
     id: 'fr-ugc-hero-2',
-    title: 'Application pour voyager : un créateur raconte son expérience.',
-    caption: 'Application pour voyager : un créateur raconte son expérience.',
+    title: 'Une application de voyage, racontée par un créateur',
+    caption: 'Une application de voyage, racontée par un créateur',
     type: 'ugc',
     industry: 'unclassified',
     languages: ['fr'],
@@ -252,8 +252,8 @@ export const PORTFOLIO = [
   },
   {
     id: 'fr-ugc-hero-3',
-    title: 'Application de gestion de patrimoine : démonstration à l’écran, face caméra.',
-    caption: 'Application de gestion de patrimoine : démonstration à l’écran, face caméra.',
+    title: 'Présentation d’une application de gestion de patrimoine',
+    caption: 'Présentation d’une application de gestion de patrimoine',
     type: 'ugc',
     industry: 'unclassified',
     languages: ['fr'],
@@ -268,8 +268,8 @@ export const PORTFOLIO = [
   },
   {
     id: 'fr-ugc-1',
-    title: 'Entreprise de toiture : un créateur présente le service.',
-    caption: 'Entreprise de toiture : un créateur présente le service.',
+    title: 'Présentation d’une entreprise de toiture',
+    caption: 'Présentation d’une entreprise de toiture',
     type: 'ugc',
     industry: 'unclassified',
     languages: ['fr'],
@@ -284,8 +284,8 @@ export const PORTFOLIO = [
   },
   {
     id: 'fr-ugc-2',
-    title: 'Application de jeu mobile : démonstration à l’écran et réactions.',
-    caption: 'Application de jeu mobile : démonstration à l’écran et réactions.',
+    title: 'Démonstration d’une application de jeu mobile',
+    caption: 'Démonstration d’une application de jeu mobile',
     type: 'ugc',
     industry: 'unclassified',
     languages: ['fr'],

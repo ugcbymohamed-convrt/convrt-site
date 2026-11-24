@@ -727,7 +727,7 @@ test('service-aware CTAs: Paid keeps the Roadmap offer; Organic uses the organic
   assert.ok(!/Free Ad Concepts|ad concepts|OFFER_PATHS/.test(organicCard), 'the five free ad concepts are not presented as an organic deliverable')
   assert.match(organicCard, /ORGANIC_CTA\.href/)
   const fin = strip(read('src/components/pricing/PricingFinalCTA.jsx'))
-  assert.match(fin, /<div hidden=\{service !== 'paid'\}>\s*<CtaLink href=\{rcta\.href\} external=\{rcta\.external\}>\{tr\(rcta\.label\)\}<\/CtaLink>/)
+  assert.match(fin, /<div hidden=\{service !== 'paid'\}>\s*<CtaLink href=\{rcta\.href\} external=\{rcta\.external\}>\{ctaText\(rcta\.label\)\}<\/CtaLink>/)
   assert.match(fin, /<div hidden=\{service !== 'organic'\}>\s*<CtaLink href=\{ORGANIC_CTA\.href\} external=\{ORGANIC_CTA\.external\}>\{tr\(ORGANIC_CTA\.label\)\}<\/CtaLink>/)
   assert.match(read('src/CreativeTestingSprintPage.jsx'), /<PricingFinalCTA service=\{service\} \/>/)
   // The global navigation CTA is untouched.

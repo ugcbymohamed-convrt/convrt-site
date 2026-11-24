@@ -219,14 +219,14 @@ export default function ReferralForm({ preselect }) {
                       <CheckboxField name="consent" checked={values.consent} error={errors.consent} disabled={submitting} onChange={set('consent')}>{tr('I agree that CONVRT may store the details I’ve entered and use them to review this application and contact me about it.')}{PRIVACY_POLICY_URL && (
                           <>
                             {' '}{tr('See the')}{' '}
-                            <a href={PRIVACY_POLICY_URL} target="_blank" rel="noreferrer noopener" className="text-ink underline underline-offset-2 hover:text-lime">{tr('privacy policy')}</a>
+                            <a href={PRIVACY_POLICY_URL} target="_blank" rel="noreferrer noopener" {...(currentLocale() === 'en' ? {} : { lang: 'en' })} className="text-ink underline underline-offset-2 hover:text-lime">{tr('privacy policy')}</a>{currentLocale() === 'en' ? null : ` ${tr('(in English)')}`}
                             .
                           </>
                         )}
                         <span className="text-lime" aria-hidden="true"> *</span>
                       </CheckboxField>
 
-                      {currentLocale() === 'en' && <MarketingConsent checked={marketingConsent} disabled={submitting} onChange={setMarketingConsent} className="" />} {/* the optional marketing-email checkbox is English-only, like the other translated forms (its wording is a versioned consent text, src/content/marketingConsent.js) */}
+                      {currentLocale() === 'en' && <MarketingConsent checked={marketingConsent} disabled={submitting} onChange={setMarketingConsent} className="" />}{/* the optional marketing-email checkbox is English-only, like the other translated forms (its wording is a versioned consent text, src/content/marketingConsent.js) */}
 
                       {submitError && (
                         <div role="alert"><ErrorText>{tr(SUBMIT_ERROR_COPY[submitError])}</ErrorText></div>

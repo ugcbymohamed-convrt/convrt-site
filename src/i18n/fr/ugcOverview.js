@@ -13,29 +13,29 @@ const price = (m) => formatPrice('fr', priceOf('fr', m))
 export function frUgcOverview() {
   return {
     eyebrow: 'L’essentiel',
-    title: 'Une agence UGC pour des publicités qui se démarquent.',
-    intro: 'Ce que nous produisons, pour qui, ce que vous recevez et à quelles conditions.',
+    title: 'Des publicités UGC pensées pour votre marque.',
+    intro: 'De la stratégie créative à la livraison, découvrez ce que nous produisons et comment nous travaillons.',
     cards: [
       {
         id: 'produce',
-        title: 'Ce que nous produisons',
-        text: 'Des publicités vidéo UGC créées par de vrais créateurs : recherche créative, concepts et hooks, scripts, sélection des créateurs, tournage, montage, sous-titres et versions créatives. Nos vidéos UGC sont 100 % créées par des humains. Nous fabriquons les publicités : nous n’achetons pas de média et ne gérons pas vos comptes publicitaires.',
+        title: 'Ce que nous créons',
+        text: 'Des publicités UGC avec de vrais créateurs, déclinées en plusieurs concepts et versions pour vos campagnes.',
       },
       {
         id: 'for',
-        title: 'Pour qui',
-        text: 'Les marques qui font de la publicité sur les réseaux sociaux et veulent tester plusieurs angles créatifs : e-commerce, SaaS, applications, technologie, produits grand public et d’autres secteurs. Quand un projet ne rentre pas dans une formule standard, nous en construisons une sur mesure.',
+        title: 'Pour quelles marques ?',
+        text: 'E-commerce, SaaS, applications et autres marques qui souhaitent renouveler leurs créations publicitaires.',
       },
       {
         id: 'receive',
         title: 'Ce que vous recevez',
-        text: `Selon la formule : ${SPRINT.concepts} ou ${SPRINT_PLUS.concepts} concepts, chacun décliné en ${SPRINT.variationsPerConcept} versions (${SPRINT.variations} ou ${SPRINT_PLUS.variations} versions publicitaires finalisées), ${REVISIONS.roundsPerConcept} cycles de modifications par concept et des recommandations de test. Vous validez les concepts et les scripts avant tout tournage. Nous ne garantissons pas les performances publicitaires.`,
+        text: 'Des concepts, scripts et vidéos finalisées, avec des variations créatives selon la formule choisie.',
       },
       {
         id: 'terms',
         title: 'Tarifs et droits d’utilisation',
-        text: `À partir de ${price(SPRINT.monthly)} par mois, ou ${price(SPRINT.oneOff)} en projet ponctuel (prix hors TVA). ${USAGE_RIGHTS.includedMonths} mois de droits d’utilisation mondiaux sont inclus à compter de la livraison : publicité payante, réseaux sociaux organiques et site web. Les formules mensuelles débutent par ${COMMITMENT.initialMonths} mois d’engagement, puis se poursuivent mois par mois avec ${COMMITMENT.cancellationNoticeDays} jours de préavis.`,
-        link: { label: 'Voir les formules, les prolongations de droits et les conditions', href: '/pricing#packages' },
+        text: 'Des formules mensuelles ou ponctuelles, avec des droits d’utilisation clairement définis.',
+        link: { label: 'Voir les formules et conditions', href: '/pricing#packages' },
       },
     ],
   }

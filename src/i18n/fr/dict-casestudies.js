@@ -1,7 +1,7 @@
 /* French dictionary: the two case studies (Graspo, Elyon Dubai), their index and the shared case-study chrome. Keys are the exact English strings. Numbers use the French conventions
    (decimal comma, « M » for million, non-breaking space before units). All figures, periods and sources are those of the English pages: nothing is added or recomputed. */
 export default {
-  "case study": "étude de cas",
+  "case study": "Étude de cas",
   "Our Work": "Nos réalisations",
   "Featured Work": "Réalisations",
   "Case studies": "Études de cas",
@@ -36,7 +36,7 @@ export default {
   "\"Post more on Instagram\" was never going to be the strategy.": "Publier davantage ne suffisait pas.",
   "Real relevance in new markets, translated into serious commercial interest, not just likes.": "Il fallait toucher les bons décideurs et transformer la visibilité en intérêt commercial.",
   "A technical business, not a lifestyle brand": "Un secteur technique",
-  "Printing is a complex, spec-driven B2B service. There is no obvious \"content\" in paper weight, binding methods or offset color matching, until someone makes it interesting.": "Rendre les procédés d’impression intéressants et accessibles.",
+  "Printing is a complex, spec-driven B2B service. There is no obvious \"content\" in paper weight, binding methods or offset color matching, until someone makes it interesting.": "Rendre les procédés d’impression, un service B2B complexe, intéressants et accessibles.",
   "Limited local presence in Arabic markets": "De nouveaux marchés",
   "Graspo had production capability but little brand relevance in the Arabic-speaking markets it wanted to reach. Awareness had to be built from close to zero.": "Développer la notoriété de Graspo auprès des publics arabophones.",
   "The audience wasn’t casual scrollers": "Une audience professionnelle",

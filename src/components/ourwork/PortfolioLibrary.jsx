@@ -8,6 +8,7 @@ import CategoryTabs from './CategoryTabs.jsx'
 import VideoCard from './VideoCard.jsx'
 import VideoLightbox from './VideoLightbox.jsx'
 import { tr } from '../../i18n/tr.js'
+import { editorial } from '../../i18n/editorial.js'
 
 /* SECTION 2: the video library. A category selector, a grid of portrait cards and one shared lightbox player.
 
@@ -62,6 +63,7 @@ export default function PortfolioLibrary({ items: itemsProp, pageSize = PAGE }) 
   const active = tabs.find((t) => t.id === catId) ?? tabs[0]
   const filtered = useMemo(() => filterByCategory(items, active.id).filter((i) => matchesFilters(i, { language: lang })), [items, active.id, lang])
   const shown = filtered.slice(0, limit)
+  const founderCount = filtered.filter((i) => i.creator?.showName).length
   const openIndex = openId ? filtered.findIndex((i) => i.id === openId) : -1
   const open = openIndex >= 0 ? filtered[openIndex] : null
 
@@ -108,6 +110,8 @@ export default function PortfolioLibrary({ items: itemsProp, pageSize = PAGE }) 
           </div>
         )}
         <p className="sr-only" aria-live="polite">{locale === 'en' ? `Showing ${filtered.length} ${label}${filtered.length === 1 ? 'video' : 'videos'}` : `${tr('Showing')} ${filtered.length} ${filtered.length === 1 ? tr('video') : tr('videos')}${label ? ` · ${label}` : ''}`}</p>
+
+        {editorial()?.founderNote && founderCount > 0 && <p className="mt-3 text-sm text-ink-muted">{editorial().founderNote(founderCount)}</p>}
 
         {/* keyed by the category: the grid re-enters with a short fade whenever it changes */}
         <ul ref={grid} key={active.id} className="ow-fade mt-5 grid grid-cols-2 gap-3 sm:gap-4 md:mt-6 md:grid-cols-3 lg:grid-cols-4 lg:gap-5">

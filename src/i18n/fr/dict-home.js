@@ -18,7 +18,7 @@ export default {
   "for itself.": "parlent d’elles-mêmes.",
   "Real brands, real budgets — three case studies from clients who trusted us with their creative.": "De vraies marques, de vrais budgets : trois exemples de clients qui nous ont confié leurs créations publicitaires.",
   "Get creatives like these": "Obtenir des vidéos comme celles-ci",
-  "Read the full case studies:": "Lire les études de cas complètes (en anglais) :",
+  "Read the full case studies:": "Lire les études de cas complètes :",
   "View": "Voir",
   "Unmute": "Activer le son",
   "Play": "Lire",
@@ -87,7 +87,7 @@ export default {
   "Reviews are shown in the clients’ original language (English).": "Les avis clients sont rédigés en anglais. Chaque traduction française est signalée comme telle, avec l’avis d’origine en dessous.",
   "Repeat Client": "Client fidèle",
   "Luxury Fragrance · E-commerce": "Parfumerie de luxe · E-commerce",
-  "SaaS · Paid Social": "SaaS · Social payant",
+  "SaaS · Paid Social": "SaaS · Publicité sur les réseaux sociaux",
   "Mobile App · International": "Application mobile · International",
 
   // Final CTA (three deliberate lines: « Les bonnes marques / méritent de meilleures / publicités. »)

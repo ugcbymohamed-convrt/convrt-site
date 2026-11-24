@@ -77,7 +77,7 @@ export const ES_SEO = {
       'Estudio creativo liderado por su fundador que produce anuncios UGC, vídeos para SaaS, vídeos Spokesperson y contenido orgánico para redes sociales en español, inglés, francés y árabe.',
   },
   '/referrals': {
-    title: 'Programa de referidos de CONVRT | Recompensas por tus recomendaciones',
+    title: 'Programa de referidos de CONVRT: gana recompensas',
     description:
       'Recomienda marcas SaaS y de ecommerce a CONVRT, gana recompensas por cada presentación exitosa y ofrece a tus contactos una mejora creativa exclusiva.',
   },

@@ -129,7 +129,8 @@ test('suggestion target: English public pages get their Spanish equivalent or /e
   assert.equal(suggestionTarget('/creator-showcase').href, '/es/creator-showcase')
   assert.equal(suggestionTarget('/about').href, '/es/about')
   assert.equal(suggestionTarget('/creative-growth-roadmap').href, '/es/creative-growth-roadmap')
-  for (const englishOnly of ['/blog', '/blog/some-article', '/case-studies', '/case-studies/graspo', '/free-hooks', '/referrals']) assert.equal(suggestionTarget(englishOnly).href, '/es/', englishOnly)
+  for (const englishOnly of ['/blog', '/blog/some-article', '/case-studies', '/case-studies/graspo', '/free-hooks']) assert.equal(suggestionTarget(englishOnly).href, '/es/', englishOnly)
+  assert.equal(suggestionTarget('/referrals').href, '/es/referrals', 'the referral program now exists in Spanish')
   for (const none of ['/es', '/es/', '/es/pricing', '/es/ugc-video-agency', '/privacy', '/terms', '/legal-notice', '/creator-onboarding', '/creator-onboarding/privacy', '/creator-admin', '/not-a-page', '/fr/pricing']) {
     assert.equal(suggestionTarget(none), null, none)
   }

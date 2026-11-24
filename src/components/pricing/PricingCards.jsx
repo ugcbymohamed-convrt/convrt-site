@@ -7,7 +7,7 @@ import {
   SPRINT, SPRINT_PLUS, ORGANIC, ORGANIC_COMMITMENT, CUSTOM_PACKAGES, BILLING_OPTIONS, formatMoney, pricePerVariation, creatorsLine,
   END_TO_END,
 } from '../../seo/businessKnowledge.js'
-import { tr } from '../../i18n/tr.js'
+import { tr, ctaText } from '../../i18n/tr.js'
 
 /* The three-column pricing cards (Paid Social: Sprint / Sprint Plus / Custom; Organic: Light / Growth / Custom).
    Every number comes from src/seo/businessKnowledge.js. Both billing options are always in the DOM (the inactive
@@ -130,7 +130,7 @@ function PricingCard({ tone, id, label, badge, description, price, sub, features
         {...(cta.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
         className={`mt-6 inline-flex items-center justify-center gap-2 rounded-full px-6 py-3.5 text-sm font-semibold transition-transform duration-150 active:scale-[0.98] ${t.cta}`}
       >
-        {tr(cta.redirected && ctaLabel === 'Get 5 Free Ad Concepts' ? cta.label : ctaLabel)}
+        {cta.redirected && ctaLabel === 'Get 5 Free Ad Concepts' ? tr(cta.label) : ctaText(ctaLabel)}
         <svg viewBox="0 0 12 12" className="h-3.5 w-3.5" fill="none" aria-hidden="true">
           <path d="M3 9L9 3M9 3H4M9 3V8" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
         </svg>

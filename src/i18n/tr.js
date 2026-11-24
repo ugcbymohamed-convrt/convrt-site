@@ -65,5 +65,9 @@ export function T({ children }) {
   return tr(typeof children === 'string' ? children : String(children))
 }
 
+/* The label of a five-concept CTA on a PAGE (hero, final CTA, pricing): French says « Recevoir mes 5 concepts gratuits » there; the shorter « Recevoir 5 concepts gratuits » stays on the nav button and the homepage
+   (src/i18n/fr/dict-shell.js). Every other label goes through the dictionary unchanged. */
+export const ctaText = (label, locale = currentLocale()) => (locale === 'fr' && label === 'Get 5 Free Ad Concepts' ? 'Recevoir mes 5 concepts gratuits' : translate(locale, label))
+
 /* A percentage shown in a chart: English '14.2%'; French '14,2 %' (decimal comma, non-breaking space before the sign); Spanish '14,2 %'. */
 export const pctText = (n, locale = currentLocale()) => (locale === DEFAULT_LOCALE ? `${n}%` : `${String(n).replace('.', ',')}\u00a0%`)

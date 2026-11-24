@@ -63,7 +63,7 @@ function SceneOne() {
       </div>
       <ul className="cs-fade-up flex flex-wrap items-center justify-center gap-1.5" style={delay(1000)}>
         {['Creator', 'Offer', 'CTA'].map((c) => (
-          <li key={c} className="inline-flex items-center gap-1 rounded-full border border-hairline bg-surface-2 px-2 py-1 text-[10px] font-medium text-ink-muted"><Lock />{tr(c)} {tr('same')}</li>
+          <li key={c} className="inline-flex items-center gap-1 rounded-full border border-hairline bg-surface-2 px-2 py-1 text-[10px] font-medium text-ink-muted"><Lock />{editorial()?.sameLabels?.[c] ?? `${tr(c)} ${tr('same')}`}</li>
         ))}
         <li className="inline-flex items-center gap-1 rounded-full bg-lime px-2.5 py-1 text-[10px] font-bold text-canvas"><Swap />{tr('Only the hook changes')}</li>
       </ul>

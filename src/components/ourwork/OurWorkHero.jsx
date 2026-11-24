@@ -1,4 +1,5 @@
 import { tr } from '../../i18n/tr.js'
+import { editorial } from '../../i18n/editorial.js'
 
 /* SECTION 1: a short, text-only hero. The H1 and one sentence, then the library starts straight away: no statistics, no service copy,
    no phone mock-ups. Dark canvas, white type, lime only on the last word and a faint glow.
@@ -13,7 +14,7 @@ export default function OurWorkHero({ empty = false }) {
         <h1 id="our-work-heading" className="max-w-4xl font-display text-[2.4rem] font-bold leading-[1.03] tracking-display-xl text-ink sm:text-5xl md:text-6xl">
           {tr("See what's")} <span className="text-lime">{tr('possible.')}</span>
         </h1>
-        <p className="mt-4 max-w-2xl text-base leading-relaxed text-ink-muted md:mt-5 md:text-lg">{empty ? tr('Examples from independent creators in your language, coming soon.') : <>{tr('Explore real creator videos across')}{' '}<span className="whitespace-nowrap">{tr('e-commerce')}</span>{tr(', SaaS, services and more.')}</>}</p>
+        <p className="mt-4 max-w-2xl text-base leading-relaxed text-ink-muted md:mt-5 md:text-lg">{empty ? tr('Examples from independent creators in your language, coming soon.') : editorial()?.showcaseIntro ?? <>{tr('Explore real creator videos across')}{' '}<span className="whitespace-nowrap">{tr('e-commerce')}</span>{tr(', SaaS, services and more.')}</>}</p>
       </div>
     </section>
   )

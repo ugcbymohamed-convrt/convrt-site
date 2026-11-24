@@ -33,7 +33,7 @@ import { money } from '../src/i18n/money.js'
 
 const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), '..')
 const read = (p) => fs.readFileSync(path.join(ROOT, p), 'utf8')
-const FR_PAGES = ['/', '/ugc-video-agency', '/spokesperson-video-production', '/social-media-video-production', '/saas-video-production', '/pricing', '/creator-showcase', '/case-studies', '/case-studies/graspo', '/case-studies/elyon', '/creative-growth-roadmap', '/risk-free-trial']
+const FR_PAGES = ['/', '/ugc-video-agency', '/spokesperson-video-production', '/social-media-video-production', '/saas-video-production', '/pricing', '/creator-showcase', '/case-studies', '/case-studies/graspo', '/case-studies/elyon', '/creative-growth-roadmap', '/risk-free-trial', '/referrals']
 const FR_INDEXABLE = FR_PAGES.filter((bp) => isReleased('fr', bp) && SITE_SEO[bp].indexable !== false)
 
 // ── pure checks ────────────────────────────────────────────────────────────────────────────────────────────────
@@ -42,7 +42,7 @@ test('French is live as fr-FR with exactly the approved pages; the four service 
   assert.equal(LOCALES.fr.htmlLang, 'fr-FR'); assert.equal(LOCALES.fr.ogLocale, 'fr_FR'); assert.equal(LOCALES.fr.dir, 'ltr'); assert.equal(LOCALES.fr.prefix, '/fr')
   assert.deepEqual(TRANSLATED_PATHS.fr, FR_PAGES)
   for (const bp of ['/about', '/contact', '/privacy', '/terms', '/blog']) assert.ok(!hasTranslation('fr', bp), `${bp} must not exist in French`)
-  assert.deepEqual(allLocalizedPaths(['fr']), ['/fr', '/fr/ugc-video-agency', '/fr/spokesperson-video-production', '/fr/social-media-video-production', '/fr/saas-video-production', '/fr/pricing', '/fr/creator-showcase', '/fr/creative-growth-roadmap', '/fr/risk-free-trial'])
+  assert.deepEqual(allLocalizedPaths(['fr']), ['/fr', '/fr/ugc-video-agency', '/fr/spokesperson-video-production', '/fr/social-media-video-production', '/fr/saas-video-production', '/fr/pricing', '/fr/creator-showcase', '/fr/case-studies', '/fr/case-studies/graspo', '/fr/case-studies/elyon', '/fr/creative-growth-roadmap', '/fr/risk-free-trial', '/fr/referrals'])
   assert.equal(localizedPath('fr', '/'), '/fr/')
 })
 
@@ -62,13 +62,13 @@ test('French copy rules: no banned filler, no straight apostrophes, no hand-type
   const DOLLAR = /\$\d[\d,]*(?:\.\d+)?/g
   const nums = (s) => (s.replace(/\{\{[^}]*\}\}/g, ' ').match(/\d+/g) ?? [])
   // owner-reviewed departures: the 10-free-hooks library is never promoted in French (its flow is English-only), the bracket options are client-supplied dollar bands
-  const OMIT = /free library of 10 ad hooks|10 Free Ad Hooks|^Under \$5,000$|^\$5,000–\$20,000$|^\$20,000\+$|^10\+ videos$/
+  const OMIT = /free library of 10 ad hooks|^1 video( produced by CONVRT)?$|^2 bonus hook variations$|10 Free Ad Hooks|^5 winning ad concepts\.$|^Under \$5,000$|^\$5,000–\$20,000$|^\$20,000\+$|^10\+ videos$/
   for (const [k, v] of Object.entries(DICTIONARIES.fr)) {
     for (const re of BANNED) assert.ok(!re.test(v), `banned phrase in: ${v.slice(0, 80)}`)
     assert.ok(!/'/.test(v), `straight apostrophe (use ’): ${v.slice(0, 80)}`)
     if (OMIT.test(k)) continue
     const dollars = k.match(DOLLAR) ?? []
-    const tokens = v.match(/\{\{(?:price|perVariation):[A-Za-z0-9.]+\}\}/g) ?? []
+    const tokens = v.match(/\{\{(?:price|perVariation|usd):[A-Za-z0-9.]+\}\}/g) ?? []
     if (dollars.length) assert.ok(tokens.length >= 1, `price token missing: ${k.slice(0, 70)}`)
     assert.ok(!/[$€]|\bUSD\b/.test(v.replace(/\{\{[^}]*\}\}/g, '')), `hand-typed currency: ${v.slice(0, 80)}`)
     const fr = nums(v)
@@ -134,7 +134,7 @@ test('language selector: French offered, equivalent page when it exists, otherwi
 
 test('sitemap: the released, indexable French pages are listed with their own canonical URLs; the noindex Roadmap and held free-video page are not', () => {
   const fr = localizedSitemapPaths().filter((p) => p.startsWith('/fr'))
-  assert.deepEqual(fr, ['/fr/', '/fr/ugc-video-agency', '/fr/spokesperson-video-production', '/fr/social-media-video-production', '/fr/saas-video-production', '/fr/pricing', '/fr/creator-showcase'])
+  assert.deepEqual(fr, ['/fr/', '/fr/ugc-video-agency', '/fr/spokesperson-video-production', '/fr/social-media-video-production', '/fr/saas-video-production', '/fr/pricing', '/fr/creator-showcase', '/fr/case-studies/graspo', '/fr/case-studies/elyon'])
   const xml = buildSitemap()
   for (const p of fr) assert.ok(xml.includes(`<loc>${SITE_URL}${p}</loc>`), p)
   assert.ok(!xml.includes('/fr/creative-growth-roadmap') && !xml.includes('/fr/risk-free-trial'))
@@ -152,7 +152,7 @@ test('French SEO copy: one distinct primary intent per page; homepage is not an 
   assert.match(FR_SEO['/'].title, /vidéo publicitaire/)
   for (const e of Object.values(FR_SEO)) {
     assert.ok(e.title.length <= 70, e.title); assert.ok(e.description.length <= 215, e.description)
-    assert.doesNotMatch(e.title + e.description, /meilleure|n° ?1|garanti|Paris|Lyon|Bordeaux|bureau|France entière/i)
+    assert.doesNotMatch(e.title + e.description, /meilleure|n° ?1|garanti|Paris|\bLyon\b|Bordeaux|bureau|France entière/i)
   }
   assert.match(FR_SEO['/ugc-video-agency'].description, /2\u202f750\u00a0€ HT\/mois/)
 })
@@ -245,16 +245,16 @@ test('French pages: real static HTML, html lang="fr-FR", no dir, one self-refere
     const bp = p === '/fr' ? '/' : p.replace(/^\/fr/, '')
     assert.match(h, /^<!doctype html>\s*<html lang="fr-FR">/i, p)
     assert.ok(!/<html[^>]*\sdir=/.test(h), p)
-    assert.deepEqual(tag(h, /<link rel="canonical" href="([^"]+)"/g), [absoluteUrl('fr', bp)], `${p} canonical`)
+    assert.deepEqual(tag(h, /<link rel="canonical" href="([^"]+)"/g), [absoluteUrl('fr', bp === '/case-studies' ? '/case-studies/graspo' : bp)], `${p} canonical`) // /fr/case-studies shows the default study and canonicalises to it, exactly like the English page
     assert.deepEqual(tag(h, /<meta property="og:locale" content="([^"]+)"/g), ['fr_FR'], p)
-    assert.match(h, new RegExp(`<title>${FR_SEO[bp].title.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}</title>`), p)
+    assert.match(h, new RegExp(`<title>${FR_SEO[bp === '/case-studies' ? '/case-studies/graspo' : bp].title.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}</title>`), p)
     assert.equal([...h.matchAll(/<h1[\s>]/g)].length, 1, `${p}: one H1`)
     assert.ok(textOf(h).join(' ').length > 1500, `${p}: crawlable text`)
     assert.ok(h.includes(`data-ssr-path="${p}"`), p)
   }
   const h1 = (p) => page(p).match(/<h1[\s\S]*?<\/h1>/)[0].replace(/<[^>]+>/g, ' ').replace(/[\s\u00a0]+/g, ' ').trim()
   assert.match(h1('/fr'), /^Des vidéos publicitaires pensées pour convertir$/)
-  assert.match(h1('/fr/ugc-video-agency'), /^Agence UGC : des vidéos authentiques pour vos publicités\.?$/)
+  assert.match(h1('/fr/ugc-video-agency'), /^Agence UGC : des vidéos qui captent l’attention\.?$/)
 })
 
 test('French pages use the French share image with a French alt text', () => {
@@ -273,9 +273,11 @@ test('robots: indexable French pages have none; the Roadmap and the held free-vi
 test('hreflang in the built HTML: each French page and its English and Spanish twins carry the identical set', () => {
   for (const bp of FR_INDEXABLE) {
     const set = (h) => tag(h, /<link rel="alternate" hreflang="([^"]+)" href="[^"]+"/g).join(',') + '|' + tag(h, /<link rel="alternate" hreflang="[^"]+" href="([^"]+)"/g).join(',')
-    const en = set(page(bp)), es = set(page(localizedPath('es', bp))), fr = set(page(localizedPath('fr', bp)))
-    assert.equal(en, fr, bp); assert.equal(es, fr, bp)
-    assert.match(en.split('|')[0], /^en,es,fr-FR,x-default$/, bp)
+    const en = set(page(bp)), fr = set(page(localizedPath('fr', bp)))
+    const hasEs = TRANSLATED_PATHS.es.includes(bp) // the case studies exist in French only (so far): their set is en, fr-FR, x-default
+    assert.equal(en, fr, bp)
+    if (hasEs) assert.equal(set(page(localizedPath('es', bp))), fr, bp)
+    assert.match(en.split('|')[0], hasEs ? /^en,es,fr-FR,x-default$/ : /^en,fr-FR,x-default$/, bp)
   }
   for (const p of ['/fr/creative-growth-roadmap', '/fr/risk-free-trial', '/about', '/contact']) assert.ok(!/hreflang="fr/.test(page(p)), `${p} has no French hreflang`)
 })
@@ -295,7 +297,7 @@ test('structured data: one stable Organization @id, French WebPage/FAQPage/Servi
     assert.equal(org['@id'], en['@id'], `${p}: one Organization identity`)
     assert.deepEqual(org.address, en.address, 'country-only address, identical to English (no French office)')
     const wp = g.find((n) => /Page$/.test(n['@type']))
-    assert.equal(wp.inLanguage, 'fr-FR'); assert.equal(wp.url, `${SITE_URL}${p === '/fr' ? '/fr/' : p}`)
+    assert.equal(wp.inLanguage, 'fr-FR'); assert.equal(wp.url, `${SITE_URL}${p === '/fr' ? '/fr/' : p === '/fr/case-studies' ? '/fr/case-studies/graspo' : p}`)
     assert.ok(!/Review|AggregateRating|VideoObject/.test(JSON.stringify(g)), `${p}: no fabricated reviews, ratings or video markup`)
     assert.ok(!/"streetAddress"|"addressLocality"|"areaServed"|"telephone"/.test(JSON.stringify(g)), `${p}: no French address, area or phone`)
     const faq = g.find((n) => n['@type'] === 'FAQPage')
@@ -348,7 +350,7 @@ test('client reviews: French text only (no translation label, no English origina
 })
 
 test('internal links: translated targets stay in French, every other target is an existing English page and says so (« en anglais »)', () => {
-  const known = new Set(['/', '/pricing', '/ugc-video-agency', '/spokesperson-video-production', '/social-media-video-production', '/saas-video-production', '/creator-showcase', '/about', '/contact', '/privacy', '/terms', '/legal-notice', '/case-studies/graspo', '/case-studies/elyon', '/creative-growth-roadmap', '/risk-free-trial', '/es', '/free-hooks', '/referrals', '/blog'])
+  const known = new Set(['/', '/pricing', '/ugc-video-agency', '/spokesperson-video-production', '/social-media-video-production', '/saas-video-production', '/creator-showcase', '/about', '/contact', '/privacy', '/terms', '/legal-notice', '/case-studies', '/case-studies/graspo', '/case-studies/elyon', '/creative-growth-roadmap', '/risk-free-trial', '/es', '/free-hooks', '/referrals', '/blog'])
   for (const p of FR_URLS) {
     const html = bodyOf(page(p))
     for (const m of html.matchAll(/<a ([^>]*)href="(\/[^"#?]*)(?:[#?][^"]*)?"([^>]*)>([\s\S]*?)<\/a>/g)) {
@@ -358,9 +360,9 @@ test('internal links: translated targets stay in French, every other target is a
       const label = m[4].replace(/<[^>]+>/g, '')
       const sameAsCurrent = /hreflang="en"/i.test(m[1] + m[3]) // the language selector's own English link
       if (/^(\/spokesperson|\/social-media|\/saas|\/about|\/contact|\/case-studies|\/privacy|\/terms|\/legal-notice)/.test(href)) assert.ok(/en anglais|English/.test(label) || sameAsCurrent || /lang="en"/.test(m[1] + m[3]), `${p}: link to the English-only page ${href} must say so: "${label.slice(0, 60)}"`)
-      assert.ok(!['/free-hooks', '/referrals', '/blog'].includes(href), `${p}: French pages never link to ${href}`)
+      assert.ok(!['/free-hooks'].includes(href), `${p}: French pages never link to ${href}`) // /referrals is a French page now; /blog is the English blog (labelled)
     }
-    assert.ok(!/href="\/(free-hooks|referrals)/.test(html), p)
+    assert.ok(!/href="\/free-hooks/.test(html) && !/href="\/referrals/.test(html.replace(/<a [^>]*hreflang="en"[^>]*>[\s\S]*?<\/a>/gi, '')), p) // the language selector's English alternate is the only allowed link to an English referral page
   }
 })
 
@@ -400,10 +402,13 @@ test('conversion journey: French pages route into the French Roadmap, never into
 
 test('UGC page: French-only overview with figures read from the data; English and Spanish pages unchanged by it', () => {
   const fr = textOf(page('/fr/ugc-video-agency')).join(' ').replace(/[\u00a0\u202f]/g, ' ')
-  assert.match(fr, /Une agence UGC pour des publicités qui se démarquent/)
-  assert.match(fr, /À partir de 2 750 € par mois, ou 3 250 € en projet ponctuel \(prix hors TVA\)/)
+  assert.match(fr, /Des publicités UGC pensées pour votre marque/)
+  // Revision 4 (owner brief): the four blocks are short; the figures (read from the business data) live in the FAQ answers and the pricing page.
+  assert.match(fr, /Des formules mensuelles ou ponctuelles, avec des droits d’utilisation clairement définis/)
+  assert.match(fr, /commencent à 2 750 € par mois/)
+  assert.match(fr, /formules ponctuelles sont à 3 250 € pour le Creative Testing Sprint et à 5 500 €/)
   assert.match(fr, /6 mois de droits d’utilisation mondiaux/)
-  assert.match(fr, /3 mois d’engagement, puis se poursuivent mois par mois avec 30 jours de préavis/)
+  assert.match(fr, /engagement de 3 mois, puis se poursuivent mois par mois avec un préavis de résiliation de 30 jours/)
   for (const p of ['/ugc-video-agency', '/es/ugc-video-agency']) assert.ok(!/ugc-overview-heading/.test(page(p)), p)
 })
 

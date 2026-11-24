@@ -477,7 +477,9 @@ test('the endpoint is registered in the Vite dev middleware and the page route +
    and rules that matter. Real rendering, scrolling, focus and responsive layout are verified by
    hand in the Browser pane (docs/referral-program-setup.md §11). */
 
-const read = (rel) => readFileSync(join(ROOT, rel), 'utf8')
+// The referral components wrap their English copy in tr('…') so the page can be translated (Nov 2026); these pins look at the English copy itself, so the wrappers are removed first.
+const untr = (t) => t.replace(/\{tr\('((?:[^'\\]|\\.)*)'\)\}/g, (_, x) => x.replace(/\\'/g, "'")).replace(/\btr\('((?:[^'\\]|\\.)*)'\)/g, (_, x) => `'${x}'`)
+const read = (rel) => untr(readFileSync(join(ROOT, rel), 'utf8'))
 const SRC = {
   faq: read('src/components/referrals/ReferralFAQ.jsx'),
   form: read('src/components/referrals/ReferralForm.jsx'),
@@ -598,9 +600,9 @@ test('copy: headline, offer figures and the Creative Upgrade match the brief', (
   assert.match(SRC.terms, /Simple, Transparent Rewards\./)
   assert.match(SRC.terms, /Read Full Program Terms/)
   assert.match(SRC.kit, /We Make Referring Easy\./)
-  assert.match(SRC.page, /CONVRT Referral Partner Program \| Earn Rewards for Introductions/)
-  assert.match(SRC.page, /Refer SaaS and e-commerce brands to CONVRT, earn rewards for successful introductions, and give your connections an exclusive creative upgrade\./)
-  assert.match(SRC.page, /\$\{SITE_URL\}\$\{REFERRALS_PATH\}/)
+  assert.match(read('src/seo/siteSeo.js'), /CONVRT Referral Partner Program \| Earn Rewards for Introductions/) // the head now lives in siteSeo.js (English) and src/i18n/<locale>/seo.js
+  assert.match(read('src/seo/siteSeo.js'), /Refer SaaS and e-commerce brands to CONVRT, earn rewards for successful introductions, and give your connections an exclusive creative upgrade\./)
+  assert.match(SRC.page, /pageHead\(REFERRALS_PATH\)/) // the canonical URL comes from the shared head (SITE_URL + REFERRALS_PATH in siteSeo.js, the locale prefix in the translated SEO)
 })
 
 test('the agency card shows "Earn 10%" with the $500 cap explained on the line below, and no "maximum" wording', () => {
@@ -629,8 +631,8 @@ test('the full program terms stay reachable: compact summary, accordion, and lin
 
 test('the navigation has one "Refer & Earn" link to /referrals (desktop and mobile), "Earn" in lime, naming no single reward, with focus + hover states', () => {
   const nav = read('src/components/Nav.jsx')
-  assert.match(nav, /href=\{REFERRALS_PATH\}/)
-  assert.match(nav, /Refer &amp; <span className="font-semibold text-lime">Earn<\/span>/)
+  assert.match(nav, /href=\{hrefFor\(REFERRALS_PATH, locale\)\}/)
+  assert.match(nav, /Refer &amp; <span className="font-semibold text-lime">Earn<\/span>/) // English label; French « Parrainez et gagnez » and Spanish « Recomienda y gana » are the other branches
   assert.ok(!/Refer Us, Earn/.test(nav), 'the 10%-only label (misleading for $150 standard referrals) is not used')
   assert.equal((nav.match(/<ReferralNavLink/g) || []).length, 2, 'desktop nav + mobile menu')
   assert.match(nav, /focus-visible:outline/)
@@ -687,8 +689,8 @@ test('structured data is generated from the visible FAQ only', () => {
 
 test('the page is noindex until the launch gate is flipped, with the canonical URL set', () => {
   assert.match(read('src/config.js'), /export const REFERRALS_INDEXABLE = false/)
-  assert.match(SRC.page, /noindex: !REFERRALS_INDEXABLE/)
-  assert.match(SRC.page, /url: PAGE_URL/)
+  assert.match(SRC.page, /pageHead\(REFERRALS_PATH\)/) // the head (title, description, canonical, noindex) is the one siteSeo.js and the translated SEO files define
+  assert.match(read('src/seo/siteSeo.js'), /indexable: REFERRALS_INDEXABLE/)
   assert.match(read('src/config.js'), /SITE_URL = 'https:\/\/www\.convrt\.studio'/)
 })
 
