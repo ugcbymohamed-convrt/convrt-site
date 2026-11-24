@@ -149,7 +149,7 @@ export default {
   "CTA": "CTA",
   "Only the hook changes": "الهوك هو العنصر الوحيد الذي يتغيّر",
   "How your videos could look": "أمثلة فيديوهات",
-  "Creator-led ads, made for paid social.": "شوف أمثلة فيديوهات UGC",
+  "Creator-led ads, made for paid social.": "شوف أمثلة |فيديوهات UGC",
   "Real creators, made to stop the scroll. Watch the work.": "أفكار مختلفة، وصُنّاع محتوى حقيقيون، وفيديوهات مصممة لتناسب الإعلانات على السوشيال ميديا.",
   "UGC video examples. Scroll sideways to see more.": "أمثلة على فيديوهات UGC. مرّر جانبًا لمشاهدة المزيد.",
   "UGC": "UGC",

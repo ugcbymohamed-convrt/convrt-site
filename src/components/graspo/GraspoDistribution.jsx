@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { useTr } from '../../i18n/tr.js'
+import { mix } from '../../i18n/ar/mix.jsx'
 import { currentLocale } from '../../i18n/locale.js'
 import { localizeStat } from '../../i18n/format.js'
 
@@ -62,7 +63,7 @@ export default function GraspoDistribution() {
           <h2 className="font-display font-bold text-ink tracking-display leading-[1.05] text-3xl md:text-[44px]">
             {tr("The content didn't need")}
             <br />
-            {tr('media spend to travel.')}
+            {mix(tr('media spend to travel.'))}
           </h2>
         </div>
 

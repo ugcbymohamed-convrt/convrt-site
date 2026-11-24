@@ -4,6 +4,7 @@ import { trackEvent } from '../../lib/analytics.js'
 import { CREATOR_SHOWCASE_PATH } from '../../config.js'
 import { CREATOR_EXAMPLES_NOTE } from '../../content/attribution.js'
 import { posterUrl, languageLabel, captionOf } from '../../content/portfolio.js'
+import { mix } from '../../i18n/ar/mix.jsx'
 import { usePreviewHost } from '../../lib/previewHost.js'
 import SectionDivider from '../SectionDivider.jsx'
 import { Section, Head, Reveal, GhostCta } from './shared.jsx'
@@ -186,7 +187,7 @@ export default function UgcGallery({ items, config: configProp = UGC_GALLERY }) 
     <SectionDivider />
     <Section id={config.id} label={config.headingId} glow>
       <Reveal>
-        <Head id={config.headingId} eyebrow={config.eyebrow} title={config.title} intro={config.intro} />
+        <Head id={config.headingId} eyebrow={config.eyebrow} title={typeof config.title === 'string' ? mix(config.title) : config.title} intro={config.intro} />
         {/* The homepage carousel leaves the long note out (owner, Nov 2026, all languages): its videos are labelled creators' examples by the heading, and each video's details carry its credit. The service pages keep it. */}
         {!config.hideNote && currentLocale() !== 'ar' && <p className="mx-auto mt-3 max-w-xl text-center text-[13px] leading-relaxed text-ink-muted">{tr(CREATOR_EXAMPLES_NOTE)}</p>}
       </Reveal>

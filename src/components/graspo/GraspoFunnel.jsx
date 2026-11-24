@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useTr } from '../../i18n/tr.js'
 import { currentLocale } from '../../i18n/locale.js'
 import { statNode } from './GraspoMetrics.jsx'
+import { mix } from '../../i18n/ar/mix.jsx'
 
 /* ─────────────────────────────────────────────
    ATTENTION → DEMAND
@@ -52,7 +53,7 @@ export default function GraspoFunnel() {
             <span className="text-xs font-medium uppercase tracking-[0.18em] text-ink-muted">{tr('Attention → Demand')}</span>
           </div>
           <h2 className="font-display font-bold text-ink tracking-display leading-[1.05] text-3xl md:text-[44px]">
-            {tr('The social funnel, start to finish.')}
+            {mix(tr('The social funnel, start to finish.'))}
           </h2>
           <p className="mt-6 text-[15px] text-ink-muted leading-relaxed">
             {tr("This is the funnel observed during the management period, not a claim that every view produced an inquiry. It's what happened between a content strategy and a sales team's inbox.")}

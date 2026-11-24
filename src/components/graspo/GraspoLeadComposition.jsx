@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { useTr } from '../../i18n/tr.js'
+import { mix } from '../../i18n/ar/mix.jsx'
 
 const ACCENT = '#d5ff40'
 
@@ -52,7 +53,7 @@ export default function GraspoLeadComposition() {
           <h2 className="font-display font-bold text-ink tracking-display leading-[1.05] text-3xl md:text-[44px]">
             {tr('Consistent demand, not')}
             <br />
-            {tr('one viral accident.')}
+            {mix(tr('one viral accident.'))}
           </h2>
         </div>
 

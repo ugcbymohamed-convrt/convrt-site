@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { GRASPO_FOLLOWING } from '../../lib/siteStats.js'
 import { useTr } from '../../i18n/tr.js'
+import { mix } from '../../i18n/ar/mix.jsx'
 import { currentLocale } from '../../i18n/locale.js'
 import { localizeStat } from '../../i18n/format.js'
 
@@ -64,7 +65,7 @@ export default function GraspoAudience() {
           <h2 className="font-display font-bold text-ink tracking-display leading-[1.05] text-3xl md:text-[44px]">
             {tr('Millions of views are useless')}
             <br />
-            {tr("if they're the wrong audience.")}
+            {mix(tr("if they're the wrong audience."))}
           </h2>
           <p className="mt-6 text-[15px] md:text-base text-ink-muted leading-relaxed">
             {tr("Graspo's content wasn't just watched at scale, it was watched in the exact markets where its print buyers, publishers and agencies actually operate. The same countries show up on both sides: in the analytics, and in the inbound leads.")}

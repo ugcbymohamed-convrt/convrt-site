@@ -14,7 +14,7 @@ export default {
   // hero
   "CONVRT Referral Partner Program": "برنامج شركاء الإحالة في CONVRT",
   "Know a Brand That Needs": "تعرف علامة تجارية",
-  "Better Video Ads?": "تحتاج إعلانات فيديو أفضل؟",
+  "Better Video Ads?": "تحتاج محتوى أو إعلانات أفضل؟",
   "Introduce SaaS and e-commerce brands to CONVRT. Get rewarded when they become clients.": "عرّف CONVRT على علامات SaaS والتجارة الإلكترونية، وتنال مكافأة عندما تصبح عملاء لنا.",
   "Become a Referral Partner": "انضم كشريك إحالة",
   "See How It Works": "شاهد كيف يعمل",
@@ -22,7 +22,7 @@ export default {
   "The referral journey": "رحلة الإحالة",
   "The referral journey: you refer, we create, you earn": "رحلة الإحالة: أنت تحيل، ونحن ننتج، وأنت تربح",
   "You refer": "أنت تحيل",
-  "Introduce a brand that needs better video ads.": "عرّفنا على علامة تحتاج إعلانات فيديو أفضل.",
+  "Introduce a brand that needs better video ads.": "عرّفنا على علامة تحتاج محتوى أو إعلانات أفضل.",
   "We create": "نحن ننتج",
   "We handle the creative and production.": "نتولى الفكرة والإنتاج.",
   "You earn": "أنت تربح",
@@ -62,7 +62,7 @@ export default {
   // how it works
   "Three Steps. That’s It.": "ثلاث خطوات. وبس.",
   "Make the Introduction": "اعمل التعريف",
-  "Know a brand that needs better video ads? Connect them with CONVRT.": "تعرف علامة تحتاج إعلانات فيديو أفضل؟ عرّفها على CONVRT.",
+  "Know a brand that needs better video ads? Connect them with CONVRT.": "تعرف علامة تحتاج محتوى أو إعلانات أفضل؟ عرّفها على CONVRT.",
   "We Take It From There": "نكمل نحن من هنا",
   "We handle the conversation, creative strategy, and production.": "نتولى الحوار والاستراتيجية الإبداعية والإنتاج.",
   "Everyone Wins": "الكل يربح",
