@@ -8,7 +8,8 @@ import CreatorVideoStage, { PhoneShowcaseFallback } from './CreatorVideoStage.js
 import { useAutoplayAllowed } from './creatorVideo.jsx'
 import { tr, hrefFor, ctaText } from '../../i18n/tr.js'
 import { currentLocale } from '../../i18n/locale.js'
-import { resolveCta, flowAvailable } from '../../i18n/cta.js'
+import { resolveCta, flowAvailable, hooksComingSoon } from '../../i18n/cta.js'
+import { FR_HOME_HERO } from '../../i18n/fr/hero.js'
 import { localizeHero } from '../../i18n/hero.js'
 
 /* SECTION 1: hero. The homepage hero's system: the left column has the same structure, type scale, CTA styles and the two free-offer
@@ -152,8 +153,9 @@ export default function UgcHero({ items, config: configProp = UGC_HERO }) {
   // Other languages: a primary CTA into the English-only Roadmap becomes the booking call; the free-offer cards are shown only where their flows are translated.
   const primary = resolveCta(locale, configProp.primary)
   const primaryLabel = primary.redirected ? tr(primary.label) : configProp.primary.label === 'Get 5 Free Ad Concepts' ? ctaText(configProp.primary.label) : config.primary.label
-  const offersAvailable = flowAvailable(locale, 'riskFree') && flowAvailable(locale, 'hooks')
+  // The free-offer cards follow the homepage hero: shown where the free-video flow is translated; the 10 free hooks card is a still « Bientôt disponible » (never a link) where that resource has no version in the language yet (French: on the UGC page only, the one French service page with a video stage; the three text-led French pages show no offer cards).
   const hasWork = items.length > 0
+  const offersAvailable = flowAvailable(locale, 'riskFree') && (flowAvailable(locale, 'hooks') || (hooksComingSoon(locale) && hasWork))
   const textLed = !hasWork && locale !== 'en'
   const primaryPress = usePressFeedback()
   const ghostPress = usePressFeedback()
@@ -210,9 +212,13 @@ export default function UgcHero({ items, config: configProp = UGC_HERO }) {
 
               {offersAvailable && (
               <div className="cs-fade-up mx-auto mt-8 max-w-xl md:mt-10 lg:mx-0" style={{ animationDelay: '680ms' }}>
-                <p className="text-left text-[13px] text-ink-muted">{tr("Not ready yet? We've got two more FREE ways to start.")}</p>
+                <p className="text-left text-[13px] text-ink-muted">{locale === 'fr' ? FR_HOME_HERO.offersLabel : tr("Not ready yet? We've got two more FREE ways to start.")}</p>
                 <div className="mt-3 grid grid-cols-1 gap-2.5 text-left sm:grid-cols-2">
-                  {SECONDARY_OFFERS.map((offer) => <SecondaryOffer key={offer.id} offer={offer} />)}
+                  {SECONDARY_OFFERS.map((offer) => (
+                    locale === 'fr'
+                      ? <SecondaryOffer key={offer.id} offer={offer} copy={FR_HOME_HERO.offers[offer.id]} to={hrefFor(offer.href)} soon={offer.id === 'hooks' && !flowAvailable(locale, 'hooks')} />
+                      : <SecondaryOffer key={offer.id} offer={offer} />
+                  ))}
                 </div>
               </div>
               )}

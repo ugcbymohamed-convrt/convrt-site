@@ -9,6 +9,7 @@ import LanguageSelector from './LanguageSelector.jsx'
 import { parsePath, localizedPath } from '../i18n/paths.js'
 import { translate, localHref, hrefFor } from '../i18n/tr.js'
 import { primaryAction } from '../i18n/cta.js'
+import { SERVICE_LABELS } from '../seo/businessKnowledge.js'
 
 // `compactHide`: shown in the desktop bar only from xl (1280px) up, so the bar doesn't crowd
 // at 1024–1279px now that Blog (and the referral link) have joined it. It is still in the
@@ -24,6 +25,16 @@ const links = [
   { label: 'Pricing', href: '/pricing' },
   { label: 'Blog', href: '/blog', englishOnly: true },
   { label: 'Contact', href: '#contact', compactHide: true },
+]
+
+/* The "Services" menu: hovering (or keyboard-focusing) Services in the top bar opens a panel with the individual service pages. The panel is ALWAYS in the page HTML (only hidden visually until hover or focus),
+   so the service pages stay linked from every page for search engines and keyboard users. In the mobile menu the same links are listed under Services. One component for every language (same as the unmerged
+   `footer-two-column-menu` branch; labels are translated through tr()). */
+const SERVICE_MENU = [
+  { label: 'UGC Video Agency', href: '/ugc-video-agency' },
+  { label: 'Spokesperson Videos', href: '/spokesperson-video-production' },
+  { label: SERVICE_LABELS.organic, href: '/social-media-video-production' },
+  { label: 'SaaS Video Production', href: '/saas-video-production' },
 ]
 
 /* "Refer & Earn": one link to the referral program. The label names no figure on purpose:
@@ -105,7 +116,32 @@ export default function Nav() {
         <Logo />
 
         <nav className="hidden lg:flex items-center gap-3 min-[1100px]:gap-5 xl:gap-8" aria-label={tr('Primary')}>
-          {visibleLinks.map((l) => (
+          {visibleLinks.map((l) => (l.href === '#services' ? (
+            <div
+              key={l.href}
+              className="group relative"
+              onKeyDown={(e) => { if (e.key === 'Escape') document.activeElement?.blur?.() }}
+            >
+              <a
+                href={resolveHref(l.href)}
+                aria-haspopup="true"
+                className="inline-flex items-center gap-1 whitespace-nowrap text-[13px] text-ink-muted transition-colors hover:text-ink group-focus-within:text-ink group-hover:text-ink xl:text-sm"
+              >
+                {tr(l.label)}
+                <svg viewBox="0 0 10 10" className="h-2.5 w-2.5 transition-transform duration-200 group-focus-within:rotate-180 group-hover:rotate-180 motion-reduce:transition-none" fill="none" aria-hidden="true"><path d="M2 3.5L5 6.5L8 3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg>
+              </a>
+              {/* the panel starts right under the link (its top padding bridges the gap, so the pointer never leaves the menu); visibility only, so the links are always in the HTML */}
+              <div className="invisible absolute left-1/2 top-full z-50 -translate-x-1/2 pt-4 opacity-0 transition-[opacity,visibility] duration-200 group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100 motion-reduce:transition-none">
+                <ul className="min-w-[250px] rounded-2xl border border-white/10 bg-[rgba(12,12,14,0.96)] p-2 shadow-[0_24px_60px_-20px_rgba(0,0,0,0.9)] backdrop-blur-xl">
+                  {SERVICE_MENU.map((m) => (
+                    <li key={m.href}>
+                      <a href={localHref(m.href, locale)} className="block whitespace-nowrap rounded-xl px-4 py-2.5 text-sm text-ink-muted transition-colors hover:bg-white/[0.06] hover:text-ink focus-visible:bg-white/[0.06] focus-visible:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-lime">{tr(m.label)}</a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          ) : (
             <a
               key={l.href}
               href={resolveHref(l.href)}
@@ -115,7 +151,7 @@ export default function Nav() {
             >
               {tr(l.label)}
             </a>
-          ))}
+          )))}
           {locale !== 'ar' && <ReferralNavLink underline locale={locale} className="text-[13px] xl:text-sm" />}
         </nav>
 
@@ -157,14 +193,24 @@ export default function Nav() {
         <div className="lg:hidden border-t border-hairline bg-canvas">
           <div className="mx-auto max-w-7xl px-5 py-4 flex flex-col gap-1">
             {visibleLinks.map((l) => (
-              <a
-                key={l.href}
-                href={resolveHref(l.href)}
-                onClick={() => setOpen(false)}
-                className="rounded-lg px-3 py-3 text-base text-ink-muted hover:text-ink hover:bg-surface-1"
-              >
-                {tr(l.label)}
-              </a>
+              <div key={l.href} className="flex flex-col">
+                <a
+                  href={resolveHref(l.href)}
+                  onClick={() => setOpen(false)}
+                  className="rounded-lg px-3 py-3 text-base text-ink-muted hover:text-ink hover:bg-surface-1"
+                >
+                  {tr(l.label)}
+                </a>
+                {l.href === '#services' && (
+                  <ul className="mb-1 ml-5 border-l border-hairline pl-2">
+                    {SERVICE_MENU.map((m) => (
+                      <li key={m.href}>
+                        <a href={localHref(m.href, locale)} onClick={() => setOpen(false)} className="block rounded-lg px-3 py-2.5 text-[15px] text-ink-muted hover:text-ink hover:bg-surface-1">{tr(m.label)}</a>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
             ))}
             {locale !== 'ar' && <ReferralNavLink locale={locale} onClick={() => setOpen(false)} className="block px-3 py-3 text-base hover:bg-surface-1" />}
             <LanguageSelector variant="list" onNavigate={() => setOpen(false)} className="mt-1 border-t border-hairline pt-1" />

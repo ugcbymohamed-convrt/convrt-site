@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect, useRef } from 'react'
 import { PRICING_FAQ, FAQ_CATEGORIES } from '../../seo/pricingFaq.js'
 import { SectionHeader } from './shared.jsx'
 import { tr } from '../../i18n/tr.js'
@@ -73,6 +73,14 @@ export default function PricingFAQ() {
   const FAQ = localizeFaq(PRICING_FAQ, currentLocale())
   const [category, setCategory] = useState(FAQ_CATEGORIES[0].id)
   const [openId, setOpenId] = useState(null)
+  const tabs = useRef(null)
+  // one row at every width: when the labels are wider than the screen the row scrolls sideways, and the selected tab is kept in view (the row only, never the page)
+  useEffect(() => {
+    const el = tabs.current
+    const btn = el?.querySelector('[aria-selected="true"]')
+    if (!el || !btn || el.scrollWidth <= el.clientWidth) return
+    el.scrollTo({ left: Math.max(0, btn.offsetLeft - (el.clientWidth - btn.offsetWidth) / 2), behavior: window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' })
+  }, [category])
   const toggle = useCallback((id) => setOpenId((prev) => (prev === id ? null : id)), [])
 
   const idx = FAQ_CATEGORIES.findIndex((c) => c.id === category)
@@ -97,10 +105,11 @@ export default function PricingFAQ() {
 
         <div className="mb-6 flex justify-center">
           <div
+            ref={tabs}
             role="tablist"
             aria-label={tr('FAQ categories')}
             onKeyDown={onKeyDown}
-            className="flex max-w-full flex-wrap justify-center gap-1.5 rounded-3xl border border-hairline bg-surface-1/60 p-1.5 backdrop-blur-md"
+            className="flex w-max max-w-[calc(100vw-2.5rem)] shrink-0 flex-nowrap gap-1.5 overflow-x-auto overscroll-x-contain [scrollbar-width:none] [&::-webkit-scrollbar]:hidden rounded-3xl border border-hairline bg-surface-1/60 p-1.5 backdrop-blur-md"
           >
             {FAQ_CATEGORIES.map((c) => {
               const active = c.id === category

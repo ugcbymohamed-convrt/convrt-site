@@ -213,7 +213,7 @@ export default function RotaryStage({ items, label, autoPlayOnView = false, land
       className="absolute inset-0 touch-pan-y select-none focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-lime/60"
     >
       {/* the three videos: the holder is the CENTRE video's box as a share of the scene (24.22 % = 320 of the 1280 px grid); everything else is measured in its own width. Every frame is exactly 9:16 */}
-      <div className={`absolute ${landscape ? 'aspect-video' : 'aspect-[9/16]'} ${landscape && n !== 2 ? 'top-[48.4%] sm:top-[51.6%]' : ''} -translate-x-1/2 -translate-y-1/2 [perspective:1500px]`} style={landscape ? (n === 2 ? { left: '50%', top: '56.5%', width: '47%' } : { left: '50%', width: '49%' }) : { left: '50%', top: '41.2%', width: '25%' }}>
+      <div className={`absolute ${landscape ? 'aspect-video' : 'aspect-[9/16]'} ${landscape && n !== 2 ? 'top-[45%] w-[53%] sm:top-[47.5%] sm:w-[60%]' : ''} -translate-x-1/2 -translate-y-1/2 [perspective:1500px]`} style={landscape ? (n === 2 ? { left: '50%', top: '56.5%', width: '47%' } : { left: '50%' }) : { left: '50%', top: '41.2%', width: '25%' }}>
         {/* THE ACTIVE-VIDEO HALO. Two layers behind the featured card, both in the holder (which is NOT clipped: no overflow-hidden ancestor between here and the scene's own edges):
             1 a wide, soft lime aura (z 55); 2 a lime LED ring hugging the card's edges (z 60), blurred, so a bright halo is visible around the top, sides and corners and falls off outward.
             Both sit BETWEEN the supporting cards (z <= 25... they are lit from behind) and the featured card (z 100): the halo never covers the featured video. They stay put; the videos rotate through them. */}

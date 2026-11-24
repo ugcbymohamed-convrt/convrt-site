@@ -7,6 +7,7 @@ export default {
   'How It Works': 'Cómo funciona',
   'Pricing': 'Tarifas',
   'Referral Program': 'Programa de referidos',
+  'Refer & Earn': 'Recomienda y gana',
   'Blog': 'Blog',
   'Contact': 'Contacto',
   'Book a Creative Call': "Reservar una llamada",

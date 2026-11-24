@@ -45,7 +45,7 @@ export const FR_HOME_HERO = {
   offerLine: ['5 concepts publicitaires', 'offerts'], // the second part is set in lime
   offersLabel: 'Pas encore prêt ? Deux autres façons de commencer, gratuitement.',
   offers: {
-    video: { title: ['1 vidéo', 'GRATUITE'], description: 'Testez notre production sans risque.', cta: 'Voir si vous êtes éligible' },
-    hooks: { title: ['10 hooks', 'GRATUITS'], description: 'Des accroches inédites pour vos prochaines pubs.', cta: 'Bientôt disponible' },
+    video: { title: ['1 vidéo', 'OFFERTE'], description: 'Testez notre production sans engagement.', cta: 'Vérifier mon éligibilité' },
+    hooks: { title: ['10 hooks', 'GRATUITS'], description: 'Des idées d’accroches pour vos prochaines publicités.', cta: 'Bientôt disponible' },
   },
 }

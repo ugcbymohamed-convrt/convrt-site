@@ -4,7 +4,7 @@ import { tr } from '../../i18n/tr.js'
 import { currentLocale } from '../../i18n/locale.js'
 import { editorial } from '../../i18n/editorial.js'
 
-const sharedFounderNote = () => Boolean(editorial()?.founderNote)
+const sharedFounderNote = () => Boolean(editorial()?.hideFounderOnCards)
 
 /* One portrait (9:16) card. Poster first: there is NO <video> element, stream or download until a visitor opens the card, so a library of
    hundreds of videos costs only its thumbnails. The whole card is one button (the accessible name is "Play video: <title>").

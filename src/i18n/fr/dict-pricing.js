@@ -106,7 +106,7 @@ export default {
   "Custom": "Sur mesure",
   "Scope, pricing and terms are tailored to your project.": "Périmètre, tarifs et conditions adaptés à votre projet.",
   "Discuss your project": "Parlons de votre projet",
-  "Let’s talk.": "Parlons-en.",
+  "Let’s talk.": "Parlons de votre projet",
   "Tailored to your needs": "Devis personnalisé",
   "Monthly plans start with a 3-month commitment, then become month-to-month with 30 days’ notice. One-off projects are also available. All prices exclude VAT.": "Les formules mensuelles débutent par un engagement de 3 mois, puis se poursuivent mois par mois avec un préavis de 30 jours. Des projets ponctuels sont aussi proposés. Tous les prix sont hors TVA.",
   "New to UGC?": "Nouveau dans l’UGC ?",

@@ -4,7 +4,6 @@ import { parsePath, localizedPath } from '../i18n/paths.js'
 import { translate, localHref, isFallbackPath } from '../i18n/tr.js'
 import { editorial } from '../i18n/editorial.js'
 import CookieSettingsLink from './CookieSettingsLink.jsx'
-import { SERVICE_LABELS } from '../seo/businessKnowledge.js'
 import { CONTACT_EMAIL, REFERRALS_PATH, CREATOR_SHOWCASE_PATH, ABOUT_PATH, CONTACT_PATH, PRIVACY_PATH, TERMS_PATH, LEGAL_NOTICE_PATH, TRUST_PAGES_PUBLISHED, COMPANY_LINKEDIN_URL, INSTAGRAM_URL } from '../config.js'
 
 export default function Footer() {
@@ -41,21 +40,17 @@ export default function Footer() {
             <p className="text-xs font-semibold uppercase tracking-[0.16em] text-ink-subtle">
               {tr('Studio')}
             </p>
+            {/* The Studio menu mirrors the top menu in EVERY language (owner, Nov 2026): the same links in the same order, nothing else; the individual service pages are linked from the Services dropdown in the
+                top bar on every page. English and French: Services, Creator Showcase, Case Studies, Pricing, Blog, Contact, Refer & Earn. Spanish lists what its own top menu lists. */}
             <ul className="mt-4 space-y-2.5 text-sm text-ink-muted">
               <li><a className="hover:text-ink transition-colors" href={`${homePrefix}#services`}>{tr('Services')}</a></li>
-              <li>{L('/ugc-video-agency', 'UGC Video Agency')}</li>
-              <li>{L('/spokesperson-video-production', 'Spokesperson Videos')}</li>
-              <li>{L('/social-media-video-production', SERVICE_LABELS.organic)}</li>
-              <li>{L('/saas-video-production', 'SaaS Video Production')}</li>
               <li><a className="hover:text-ink transition-colors" href={h(CREATOR_SHOWCASE_PATH)}>{tr('Creator Showcase')}</a></li>
               {(en || locale === 'fr') && <li>{en ? <a className="hover:text-ink transition-colors" href="/case-studies">Case Studies</a> : L('/case-studies', 'Case Studies')}</li>}
+              {!(en || locale === 'fr') && <li><a className="hover:text-ink transition-colors" href={`${homePrefix}#how-it-works`}>{tr('How It Works')}</a></li>}
               <li><a className="hover:text-ink transition-colors" href={h('/pricing')}>{tr('Pricing')}</a></li>
-              {TRUST_PAGES_PUBLISHED && <li>{L(ABOUT_PATH, 'About')}</li>}
               {(en || locale === 'fr') && <li>{en ? <a className="hover:text-ink transition-colors" href="/blog">Blog</a> : L('/blog', 'Blog')}</li>}
-              <li><a className="hover:text-ink transition-colors" href={`${homePrefix}#how-it-works`}>{tr('How It Works')}</a></li>
-              <li><a className="hover:text-ink transition-colors" href={`${homePrefix}#clients`}>{tr('Clients')}</a></li>
-              {locale !== 'ar' && <li>{en ? <a className="hover:text-ink transition-colors" href={REFERRALS_PATH}>Referral Program</a> : L(REFERRALS_PATH, 'Referral Program')}</li>}
               <li>{TRUST_PAGES_PUBLISHED ? L(CONTACT_PATH, 'Contact') : <a className="hover:text-ink transition-colors" href={`${homePrefix}#contact`}>{tr('Contact')}</a>}</li>
+              {locale !== 'ar' && <li>{en ? <a className="hover:text-ink transition-colors" href={REFERRALS_PATH}>Refer &amp; Earn</a> : <a className="hover:text-ink transition-colors" href={h(REFERRALS_PATH)}>{tr('Refer & Earn')}</a>}</li>}
             </ul>
           </div>
 
@@ -89,6 +84,7 @@ export default function Footer() {
           <p className="flex flex-wrap items-center gap-x-4 gap-y-1">
             {/* The legal documents exist only in English (approved text). From other languages the links say so and are marked lang="en"; a reviewed translation is
                 prepared in docs/multilingual-legal-translation-review.md and is NOT published. */}
+            {TRUST_PAGES_PUBLISHED && <a className="underline-offset-4 transition-colors hover:text-ink hover:underline" href={h(ABOUT_PATH)} {...(fb(ABOUT_PATH) ? { hrefLang: 'en' } : {})}>{tr('About')}{fb(ABOUT_PATH) ? ` (${note})` : ''}</a>}
             {TRUST_PAGES_PUBLISHED && <a className="underline-offset-4 transition-colors hover:text-ink hover:underline" href={PRIVACY_PATH} {...(en ? {} : { lang: 'en' })}>{en ? 'Privacy Policy' : tr('Privacy Policy (in English)')}</a>}
             {TRUST_PAGES_PUBLISHED && <a className="underline-offset-4 transition-colors hover:text-ink hover:underline" href={TERMS_PATH} {...(en ? {} : { lang: 'en' })}>{en ? 'Terms' : tr('Terms (in English)')}</a>}
             {TRUST_PAGES_PUBLISHED && <a className="underline-offset-4 transition-colors hover:text-ink hover:underline" href={LEGAL_NOTICE_PATH} {...(en ? {} : { lang: 'en' })}>{en ? 'Legal Notice' : tr('Legal Notice (in English)')}</a>}

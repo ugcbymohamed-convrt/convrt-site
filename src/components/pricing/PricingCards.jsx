@@ -154,7 +154,8 @@ function BillingPrice({ pkg, billing }) {
   )
 }
 
-const LetsTalk = () => <span className="text-[40px] md:text-[46px]">{tr('Let’s talk.')}</span>
+// a translation longer than the English two words (« Parlons de votre projet ») is set smaller so it stays on the card
+const LetsTalk = () => { const t = tr('Let’s talk.'); return <span className={t.length > 14 ? 'text-[26px] leading-tight md:text-[30px]' : 'text-[40px] md:text-[46px]'}>{t}</span> }
 
 /* The original two-pill row under the price, texts swapped (owner, Nov 2026): the lime pill (black chip with lime text on the lime card)
    carries the package size, the grey pill carries the price per variation. The per-variation figure is derived from the package price

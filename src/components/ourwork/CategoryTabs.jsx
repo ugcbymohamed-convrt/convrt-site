@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { CATEGORY_ICONS, Chevron } from './icons.jsx'
 import { tr } from '../../i18n/tr.js'
+import { currentLocale } from '../../i18n/locale.js'
 
 /* The horizontal category selector: All Work + one pill per category that has videos (the caller passes only those).
 
@@ -80,6 +81,8 @@ export default function CategoryTabs({ tabs, activeId, counts, onSelect }) {
               <Icon className={`h-[18px] w-[18px] shrink-0 transition-colors duration-300 motion-reduce:transition-none ${active ? 'text-canvas' : 'text-[var(--c)]'}`} />
               {tr(t.label)}
               <span className={`text-[12px] font-bold tabular-nums ${active ? 'text-canvas/70' : 'text-ink-subtle'}`}>{counts[t.id]}</span>
+              {/* translated pages: a plain space after the count, so « Toutes les vidéos 9 » and the next label never read as one run of text (“Toutes les vidéos9UGC”) in extracted text */}
+              {currentLocale() !== 'en' && ' '}
             </button>
           )
         })}

@@ -21,7 +21,14 @@ export const EDITORIAL = {
     caption: FR.captionFr, faqTitles: FR.FR_FAQ_TITLES, stageTitles: FR.FR_STAGE_TITLES, finalCta: FR.FR_FINAL_CTA, sectionIntros: FR.FR_SECTION_INTROS,
     testimonialsNote: null, formatMoney: formatMoneyFr, homeLabel: 'CONVRT — accueil', quoteLang: 'en',
     fallbackNote: 'en anglais',
-    founderNote: (n) => (n === 1 ? 'Une de ces vidéos est de Mohamed, fondateur de CONVRT.' : `${n} de ces vidéos sont de Mohamed, fondateur de CONVRT.`),
+    hideFounderOnCards: true, // the founder's videos carry no name line on the cards (the « N of these videos are by the founder » note under the filters was removed, owner 2026-11-24; the attribution stays in the data)
+    organicAccents: true, // Organic Social packages: Organic Light in lime, Organic Growth in magenta (same treatment as the Arabic page), with three short lines under the cards
+    organicSmallPrint: (months) => [
+      'Les deux formules incluent la planification, la publication et l’animation de communauté sur Instagram, Facebook et TikTok.',
+      `Engagement initial de ${months} mois. Prix hors TVA. Support client et gestion publicitaire non inclus.`,
+      'Un besoin différent ? Créons une formule adaptée à votre marque.',
+    ],
+    headingBreak: true, // the Creator Showcase H1 breaks after « Explorez notre » (second segment on its own line from sm up)
     showcaseIntro: 'Découvrez différents styles de vidéos UGC réalisés par de vrais créateurs.',
     sameLabels: { Creator: 'Même créateur', Offer: 'Même offre', CTA: 'Même CTA' }, // the testing diagram's « same … » pills read « Même créateur » in French
     wholeSentenceLists: true, // lists inside a sentence are translated as one sentence (French articles and elision), see OrganicPackages.jsx

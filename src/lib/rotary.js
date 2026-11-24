@@ -59,9 +59,10 @@ export function pose2(i, pos) {
     shade: b * 0.36,
   }
 }
-/** THREE LANDSCAPE VIDEOS (the French client stage). The featured frame dominates (49 % of the scene width). A side frame is about 72 % of its width (depth 0.373: 1 - 0.373 × 0.75) and tucks
- *  about 0.2 of a frame width behind it: its centre is 0.66 widths away, its half-width 0.36, so its outer edge lands at about 1.02 widths and the whole group just fits the scene. */
-export const LANDSCAPE_SPREAD = 0.66
-export const LANDSCAPE_DEPTH = 0.373
+/** THREE LANDSCAPE VIDEOS (the French client stage). The featured frame dominates (60 % of the scene width from sm up, 53 % on phones). A side frame is 75 % of its width (depth 0.333: 1 - 0.333 × 0.75)
+ *  and sits well behind it: its centre is 0.381 widths away (0.866 × the 0.44 spread), its half-width 0.375, so it tucks deep behind the featured frame and its outer edge lands at 0.756 widths, plus a little perspective growth: the whole group
+ *  is about 92 % of the scene wide (never clipped by the scene edges, measured at 1440 px: 20 px to spare) and about 0.3 of each side frame stays visible beside the featured one. */
+export const LANDSCAPE_SPREAD = 0.44
+export const LANDSCAPE_DEPTH = 0.333
 /** The pose of video `i` for a stage of `n` videos: the two-frame layout when there are two, the three-frame orbit otherwise (a tighter, more tucked orbit when the frames are landscape). */
 export const poseFor = (i, pos, n = 3, landscape = false) => (n === 2 ? pose2(i, pos) : landscape ? pose(i, pos, n, LANDSCAPE_SPREAD, LANDSCAPE_DEPTH) : pose(i, pos, n))

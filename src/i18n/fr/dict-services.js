@@ -65,7 +65,7 @@ export default {
   "Play video:": "Lire la vidéo :",
   "Seek video": "Naviguer dans la vidéo",
   "Show video": "Afficher la vidéo",
-  "Organic Social Video": "Vidéos pour les réseaux sociaux",
+  "Organic Social Video": "Vidéos organiques pour les réseaux",
   "What is a video marketing agency, and what does CONVRT do?": "Que fait CONVRT exactement ?",
   "A video marketing agency plans and produces video content that supports business goals. CONVRT is a creative production and strategy partner: we develop the concepts, scripts and creator casting, and produce the finished videos, from human-led UGC ads and spokesperson ads to organic social video.": "Une agence de marketing vidéo conçoit et produit des contenus vidéo au service d’objectifs business. CONVRT est un partenaire de production et de stratégie créatives : nous développons les concepts, les scripts et la sélection des créateurs, puis produisons les vidéos finalisées, des publicités UGC portées par des humains aux vidéos Spokesperson, en passant par la vidéo sociale organique.",
   "We don't buy media or manage your advertising accounts, so you keep control of distribution and spend.": "Nous ne faisons pas d’achat média et ne gérons pas vos comptes publicitaires : vous gardez la main sur la diffusion et le budget.",

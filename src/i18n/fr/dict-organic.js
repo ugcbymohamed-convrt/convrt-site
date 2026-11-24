@@ -44,7 +44,7 @@ export default {
   "We never guarantee virality, follower growth or sales. Organic results build over time, which is why our organic partnerships start with an initial commitment. How often we report is set out in your agreement.": "Nous ne garantissons jamais ni viralité, ni croissance du nombre d’abonnés, ni ventes. Les résultats organiques se construisent dans le temps, c’est pourquoi nos partenariats organiques démarrent par un engagement initial. La fréquence de nos rapports est précisée dans votre contrat.",
 
   // ── Page content ──
-  "Organic Social Video Production": "Vidéos pour les réseaux sociaux",
+  "Organic Social Video Production": "Vidéos organiques pour les réseaux",
   "Turn your brand into content worth following. We handle short-form social media video production end to end: creative strategy, creator-led filming, editing, publishing and community management, so your brand shows up consistently.": "Stratégie, création et production de vidéos courtes. Selon votre formule, nous prenons aussi en charge la publication et l’animation de communauté.",
   "Organic social videos": "Vidéos organiques pour les réseaux sociaux",
   "How we run your organic content.": "De la stratégie à la publication.",
@@ -73,7 +73,7 @@ export default {
   "Packages": "Formules",
   "Consistent content. Flexible support.": "Du contenu régulier. Un accompagnement adapté.",
   "Two organic packages, both with scheduling, posting and community management.": "Deux formules pour produire, publier et entretenir votre présence sur les réseaux sociaux.",
-  "Compare packages and full scope": "Comparer les formules et le périmètre complet",
+  "Compare packages and full scope": "Comparer les formules et conditions",
   // The sentence under the two packages is translated whole (a list of items inside a sentence needs French articles and elision); "Both include", "plus" and "across" are its English pieces.
   "Both include content scheduling and posting, plus organic community management, across Facebook, Instagram and TikTok.": "Les deux formules incluent la planification et la publication des contenus, ainsi que l’animation de communauté organique, sur Facebook, Instagram et TikTok.",
   "Both include": "Les deux incluent",

@@ -269,7 +269,7 @@ test('structured data: one stable Organization @id, a Service with a stable @id 
     const wp = g.find((n) => n['@type'] === 'WebPage')
     assert.equal(wp['@id'], `${SITE_URL}${fr(bp)}#webpage`); assert.equal(wp.inLanguage, 'fr-FR'); assert.equal(wp.about['@id'], services[0]['@id'])
     const bc = g.find((n) => n['@type'] === 'BreadcrumbList')
-    const crumb = { [SPK]: 'Vidéos Spokesperson', [ORG]: 'Vidéos pour les réseaux sociaux', [SAAS]: 'Vidéos pour le SaaS' }[bp]
+    const crumb = { [SPK]: 'Vidéos Spokesperson', [ORG]: 'Vidéos organiques pour les réseaux', [SAAS]: 'Vidéos SaaS' }[bp]
     assert.deepEqual(bc.itemListElement.map((i) => [i.position, i.name, i.item]), [[1, 'Accueil', `${SITE_URL}/fr/`], [2, crumb, `${SITE_URL}${fr(bp)}`]], `${bp}: BreadcrumbList`)
     assert.ok(text(h).includes(`Accueil / ${crumb}`), `${bp}: the visible breadcrumb says the same as the markup`)
     const json = JSON.stringify(g)
@@ -294,7 +294,7 @@ test('prices: only on the pages whose English twin shows one, always the approve
   assert.ok(!/\d\s?€/.test(t(SAAS)), 'SaaS demos and explainers are custom-scoped: no price')
   assert.match(t(ORG), /Organic Light.*Organic Growth/, 'the Light vs Growth distinction is kept')
   assert.match(t(ORG), /2 publications par semaine, environ 9 publications originales par mois/); assert.match(t(ORG), /3 publications par semaine, 13 publications originales par mois/)
-  assert.match(t(ORG), /engagement de six mois/); assert.match(t(ORG), /n’inclut pas le support client/)
+  assert.match(t(ORG), /engagement de six mois/); assert.match(t(ORG), /Support client et gestion publicitaire non inclus/)
   assert.match(t(ORG), /Nous ne garantissons jamais/, 'the English hedge is kept: no guaranteed virality, growth or sales')
 })
 
