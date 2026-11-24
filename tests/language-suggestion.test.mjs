@@ -12,7 +12,7 @@ import react from '@vitejs/plugin-react'
 import { createElement } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { readLanguageChoice, rememberLanguage, rememberDismissal, LANGUAGE_STORAGE_KEY } from '../src/lib/languagePreference.js'
-import { suggestionTarget, visitorIsInSpain, startLanguageSuggestion, GEO_ENDPOINT } from '../src/lib/languageSuggestion.js'
+import { suggestionTarget, visitorIsInSpain, visitorSuggestedLanguage, startLanguageSuggestion, GEO_ENDPOINT } from '../src/lib/languageSuggestion.js'
 import handler from '../api/visitor-country.js'
 import { isSpain } from '../api/_lib/geo.js'
 
@@ -56,18 +56,26 @@ test('GET /api/visitor-country answers only { spain }, is never cacheable by a s
   }
   const es = call('GET', { 'x-vercel-ip-country': 'ES', 'x-forwarded-for': '203.0.113.9' })
   assert.equal(es.status, 200)
-  assert.deepEqual(JSON.parse(es.body), { spain: true }, 'no IP, no country code, nothing else is returned')
+  assert.deepEqual(JSON.parse(es.body), { spain: true, arabic: false }, 'no IP, no country code, nothing else is returned')
   assert.match(es.headers['cache-control'], /private/)
   assert.match(es.headers['cache-control'], /no-store/)
   assert.match(es.headers.vary, /x-vercel-ip-country/i)
-  assert.deepEqual(JSON.parse(call('GET', { 'x-vercel-ip-country': 'GB' }).body), { spain: false })
-  assert.deepEqual(JSON.parse(call('GET', {}).body), { spain: false }, 'geolocation unavailable → not Spain')
+  assert.deepEqual(JSON.parse(call('GET', { 'x-vercel-ip-country': 'GB' }).body), { spain: false, arabic: false })
+  assert.deepEqual(JSON.parse(call('GET', {}).body), { spain: false, arabic: false }, 'geolocation unavailable → neither')
+  for (const c of ['SA', 'AE', 'QA', 'KW', 'BH', 'OM', 'EG', 'JO', 'IQ', 'LB', 'MA', 'sa']) assert.deepEqual(JSON.parse(call('GET', { 'x-vercel-ip-country': c, 'x-forwarded-for': '203.0.113.9' }).body), { spain: false, arabic: true }, c)
+  for (const c of ['GB', 'US', 'IR', 'TR', 'IL', 'PK', 'ES', 'SAU', 'A', '']) assert.equal(JSON.parse(call('GET', { 'x-vercel-ip-country': c }).body).arabic, false, `${c} is not offered the Arabic site`)
   assert.equal(call('POST', {}).status, 405)
   const src = stripComments(read('api/visitor-country.js') + read('api/_lib/geo.js'))
   assert.ok(!/console\.|x-forwarded-for|x-real-ip|ipAddress|fetch\(|https?:\/\//.test(src), 'no IP handling, logging or external service')
 })
 
-test('the client asks once and treats every failure as "not Spain"', async () => {
+test('the client maps the answer to a suggested language and treats every failure as "nothing"', async () => {
+  assert.equal(await visitorSuggestedLanguage(json({ spain: true, arabic: false })), 'es')
+  assert.equal(await visitorSuggestedLanguage(json({ spain: false, arabic: true })), 'ar')
+  assert.equal(await visitorSuggestedLanguage(json({ spain: false, arabic: false })), null)
+  assert.equal(await visitorSuggestedLanguage(json({ arabic: 'true' })), null)
+  assert.equal(await visitorSuggestedLanguage(json({ arabic: true }, false)), null)
+  assert.equal(await visitorSuggestedLanguage(async () => { throw new Error('offline') }), null)
   assert.equal(await visitorIsInSpain(json({ spain: true })), true)
   assert.equal(await visitorIsInSpain(json({ spain: false })), false)
   assert.equal(await visitorIsInSpain(json({ spain: 'true' })), false)
@@ -109,6 +117,46 @@ test('preference: the chosen language and a dismissal are remembered, nothing el
   const throwingGetter = { get localStorage() { throw new Error('denied') }, get sessionStorage() { throw new Error('denied') } }
   assert.equal(readLanguageChoice(throwingGetter), null)
   assert.equal(rememberLanguage('en', throwingGetter), false)
+})
+
+test('Arabic suggestion target: English public pages get their Arabic equivalent or /ar/; Arabic, legal, private and unknown pages get nothing', () => {
+  assert.equal(suggestionTarget('/', 'ar').href, '/ar/')
+  assert.equal(suggestionTarget('/pricing', 'ar').href, '/ar/pricing')
+  assert.equal(suggestionTarget('/ugc-video-agency', 'ar').href, '/ar/ugc-video-agency')
+  assert.equal(suggestionTarget('/case-studies/graspo', 'ar').href, '/ar/case-studies/graspo')
+  for (const none of ['/ar', '/ar/', '/ar/pricing', '/es/pricing', '/privacy', '/terms', '/creator-onboarding', '/not-a-page']) assert.equal(suggestionTarget(none, 'ar'), null, none)
+})
+
+test('start: a first-time visitor from an Arabic-speaking country gets the Arabic suggestion (Spain still gets Spanish; a stored choice wins)', async () => {
+  const run = async ({ pathname = '/pricing', stored, body } = {}) => {
+    const win = fakeWin(pathname)
+    if (stored) win.localStorage.setItem(LANGUAGE_STORAGE_KEY, stored)
+    let calls = 0; let mounted
+    const f = async () => { calls += 1; return { ok: true, json: async () => body } }
+    const result = await startLanguageSuggestion({ win, doc: {}, fetchImpl: f, mount: (_d, href, lang) => { mounted = `${lang}:${href}` } })
+    return { result, calls, mounted }
+  }
+  assert.deepEqual(await run({ body: { spain: false, arabic: true } }), { result: true, calls: 1, mounted: 'ar:/ar/pricing' })
+  assert.deepEqual(await run({ pathname: '/', body: { spain: false, arabic: true } }), { result: true, calls: 1, mounted: 'ar:/ar/' })
+  assert.deepEqual(await run({ body: { spain: true, arabic: false } }), { result: true, calls: 1, mounted: 'es:/es/pricing' })
+  assert.deepEqual(await run({ body: { spain: false, arabic: false } }), { result: false, calls: 1, mounted: undefined })
+  for (const stored of ['en', 'ar', 'dismissed']) assert.deepEqual(await run({ stored, body: { arabic: true } }), { result: false, calls: 0, mounted: undefined }, `${stored}: remembered → no request`)
+  assert.deepEqual(await run({ pathname: '/ar/pricing', body: { arabic: true } }), { result: false, calls: 0, mounted: undefined }, 'Arabic URL: never')
+})
+
+test('Arabic banner: Arabic text in a right-to-left card on the English page, the same two buttons, an ordinary link to the Arabic page, remembers ar', () => {
+  const html = renderToStaticMarkup(createElement(Banner, { href: '/ar/pricing', lang: 'ar', onClose() {} }))
+  assert.match(html, /role="region"/)
+  assert.match(html, /lang="ar"/)
+  assert.match(html, /dir="rtl"/)
+  assert.ok(html.includes('هل تفضّل تصفّح الموقع بالعربية؟'))
+  assert.ok(html.includes('يمكنك أيضًا زيارة موقعنا باللغة العربية.'))
+  assert.ok(html.includes('المتابعة بالإنجليزية'))
+  assert.match(html, /<a href="\/ar\/pricing"[^>]*>عرض بالعربية<\/a>/)
+  assert.match(html, /aria-label="إغلاق"/)
+  assert.match(html, /sm:left-5/, 'the card sits on the left on desktop in the right-to-left version')
+  assert.ok(!/aria-modal|role="dialog"|tabindex|autofocus/i.test(html))
+  assert.match(stripComments(read('src/components/LanguageSuggestion.jsx')), /rememberLanguage\(lang\)/)
 })
 
 /* ── eligibility and the Spanish destination ── */
@@ -170,7 +218,7 @@ test('banner: compact, accessible, Spanish text on an English page, the two butt
   const src = stripComments(read('src/components/LanguageSuggestion.jsx'))
   assert.ok(!/location\.(replace|assign|href)|window\.open|navigate\(/.test(src), 'the card never navigates by itself')
   assert.match(src, /rememberLanguage\('en'\)/)
-  assert.match(src, /rememberLanguage\('es'\)/)
+  assert.match(src, /rememberLanguage\(lang\)/)
   assert.match(src, /rememberDismissal\(\)/)
   assert.match(src, /key === 'Escape'/)
   assert.match(src, /Cookie consent/, 'waits for the cookie banner to be answered')

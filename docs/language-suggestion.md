@@ -30,3 +30,10 @@ No fingerprints, IP lists or hard-coded addresses: each browser simply stores it
 ## Files
 `api/visitor-country.js`, `api/_lib/geo.js`, `src/lib/languagePreference.js`, `src/lib/languageSuggestion.js`, `src/components/LanguageSuggestion.jsx`, `src/components/mountLanguageSuggestion.jsx` (own React root, like the cookie banner),
 wiring in `src/main.jsx` and `src/components/LanguageSelector.jsx`, dev route in `vite.config.js`, Privacy Policy line in `src/content/trustPages.js`.
+
+## Arabic suggestion (added 2026-11-24)
+The same card is offered in **Arabic** to first-time visitors on an English page whose request comes from an Arabic-speaking country: the 22 Arab League states (Saudi Arabia, the UAE, Qatar, Kuwait, Bahrain, Oman, Yemen, Iraq, Jordan, Lebanon, Syria, Palestine, Egypt, Sudan, Libya, Tunisia, Algeria, Morocco, Mauritania, Somalia, Djibouti, the Comoros; `ARAB_COUNTRIES` in `api/_lib/geo.js`).
+- `/api/visitor-country` now answers `{ "spain": bool, "arabic": bool }` (still only booleans, same no-store headers). Spain wins if both were ever true; no other country sees a card.
+- Text (`COPY.ar` in `LanguageSuggestion.jsx`, `dir="rtl"`, `lang="ar"`): «هل تفضّل تصفّح الموقع بالعربية؟» / «يمكنك أيضًا زيارة موقعنا باللغة العربية.» / «المتابعة بالإنجليزية» / «عرض بالعربية» / «إغلاق». Native Gulf copy review still pending like the rest of the Arabic copy.
+- «عرض بالعربية» links to the equivalent released Arabic page, otherwise `/ar/` (`suggestionTarget(path, 'ar')`); it stores `ar` in `convrt_language`. English-only pages (blog, free hooks…) fall back to `/ar/`.
+- Never a redirect, never on `/ar/` pages, never in the prerendered HTML. The Privacy Policy line mentions Arabic. Tests: `tests/language-suggestion.test.mjs`.

@@ -83,7 +83,7 @@ Not changed: the Roadmap explainer keeps its deliberately chosen 25.6 s frame; t
 | `b3db2280…` | 3.1s | portfolio:spokesperson-hero-1 |
 | `b5c4b833…` | 11.7s | portfolio:es-spokesperson-2 [es] |
 | `b73842a4…` | 14s | portfolio:ugc-gal-8 |
-| `b9e0e422…` | 8s | home-hero-ar:home-hero-ar-main [ar] |
+| `afdb58eb…` | 8s | home-hero-ar:home-hero-ar-main [ar] |
 | `c0c30e58…` | 39.9s | portfolio:spokesperson-hero-2 |
 | `c118345b…` | 3.2s | portfolio:es-ugc-3 [es] |
 | `c1379ace…` | 4.6s | portfolio:ar-graspo-1 (home panel graspo) [ar]; portfolio:showcase-graspo-3 (home panel graspo); graspo case study 7.5M |

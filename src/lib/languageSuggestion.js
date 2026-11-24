@@ -1,4 +1,4 @@
-/* LANGUAGE SUGGESTION for visitors in Spain: a small, dismissible hint on ENGLISH pages. A progressive enhancement only.
+/* LANGUAGE SUGGESTION for visitors in Spain (Spanish) and in Arabic-speaking countries (Arabic): a small, dismissible hint on ENGLISH pages. A progressive enhancement only.
 
    What it is NOT: a redirect. No page, URL, canonical, hreflang, sitemap entry, metadata or JSON-LD changes, and the prerendered HTML never contains the hint (it is mounted in its own React root
    after the page has loaded and hydrated), so crawlers and visitors outside Spain receive exactly the same page as before. Both languages stay independently reachable and indexable.
@@ -20,37 +20,43 @@ export const GEO_ENDPOINT = '/api/visitor-country'
 const LEGAL = new Set([PATHS.privacy, PATHS.terms, PATHS.legalNotice])
 const isPublicPage = (basePath) => KNOWN_PATHS.includes(basePath) || basePath.startsWith(`${BLOG_PATH}/`)
 
-/* Where "Ver en español" goes for this English page: the equivalent Spanish page when it exists and is released, otherwise the Spanish homepage. Null = do not offer. */
-export function suggestionTarget(pathname) {
+/* Where "Ver en español" / «عرض بالعربية» goes for this English page: the equivalent page in that language when it exists and is released, otherwise that language's homepage. Null = do not offer. */
+export function suggestionTarget(pathname, lang = 'es') {
   const { locale, basePath } = parsePath(pathname)
-  if (locale !== DEFAULT_LOCALE || !isLive('es')) return null
+  if (locale !== DEFAULT_LOCALE || !isLive(lang)) return null
   if (!isPublicPage(basePath) || LEGAL.has(basePath)) return null
-  return { href: switchTarget('es', basePath) }
+  return { href: switchTarget(lang, basePath) }
 }
 
-/* Asks the server whether this request came from Spain. Any failure (network, status, bad JSON, timeout) is "no". */
-export async function visitorIsInSpain(fetchImpl = (typeof fetch === 'undefined' ? undefined : fetch), timeoutMs = 4000) {
-  if (!fetchImpl) return false
+/* Asks the server which suggestion (if any) this request is eligible for: 'es' (Spain), 'ar' (an Arabic-speaking country) or null. Any failure (network, status, bad JSON, timeout) is null. */
+export async function visitorSuggestedLanguage(fetchImpl = (typeof fetch === 'undefined' ? undefined : fetch), timeoutMs = 4000) {
+  if (!fetchImpl) return null
   const ctrl = typeof AbortController === 'undefined' ? null : new AbortController()
   const timer = ctrl ? setTimeout(() => ctrl.abort(), timeoutMs) : null
   try {
     const res = await fetchImpl(GEO_ENDPOINT, { method: 'GET', cache: 'no-store', credentials: 'same-origin', signal: ctrl?.signal })
-    if (!res.ok) return false
-    return (await res.json())?.spain === true
+    if (!res.ok) return null
+    const body = await res.json()
+    return body?.spain === true ? 'es' : body?.arabic === true ? 'ar' : null
   } catch {
-    return false
+    return null
   } finally {
     if (timer) clearTimeout(timer)
   }
 }
 
+/* Kept for callers that only care about Spain. */
+export const visitorIsInSpain = async (fetchImpl, timeoutMs) => (await visitorSuggestedLanguage(fetchImpl, timeoutMs)) === 'es'
+
 /* Called once from src/main.jsx after the page has loaded. Resolves true when the suggestion was mounted. */
 export async function startLanguageSuggestion({ win = window, doc = document, fetchImpl, mount } = {}) {
-  const target = suggestionTarget(win.location.pathname)
-  if (!target || readLanguageChoice(win)) return false
-  if (!(await visitorIsInSpain(fetchImpl))) return false
+  if (!suggestionTarget(win.location.pathname, 'es') && !suggestionTarget(win.location.pathname, 'ar')) return false
+  if (readLanguageChoice(win)) return false
+  const lang = await visitorSuggestedLanguage(fetchImpl)
+  const target = lang && suggestionTarget(win.location.pathname, lang)
+  if (!target) return false
   if (readLanguageChoice(win)) return false // chosen in another tab while we asked
   const { mountLanguageSuggestion } = mount ? { mountLanguageSuggestion: mount } : await import('../components/mountLanguageSuggestion.jsx')
-  mountLanguageSuggestion(doc, target.href)
+  mountLanguageSuggestion(doc, target.href, lang)
   return true
 }

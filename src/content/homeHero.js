@@ -91,10 +91,10 @@ export const HOME_HERO_AR = [
     creatorId: 'ar-hero-gulf-c',
     industry: 'unclassified',
     languages: ['ar'],
-    caption: 'مقدّم يتحدث بالعربية أمام الكاميرا في أماكن مختلفة، مع عناوين مكتوبة على الشاشة.',
+    caption: 'مقدّم يتحدث أمام الكاميرا في أماكن مختلفة، مع عناوين عربية مكتوبة على الشاشة.',
     poster: '/portfolio/ar-hero-gulf.webp',
-    source: { cloudflareId: 'b9e0e42256dc09c9f554c6d4f21b4785' },
-    approval: { ...approval, approvedBy: 'CONVRT owner (Arabic final revisions, 2026-11-24: supplied this video as the Arabic hero video)', approvedOn: '2026-11-24' },
+    source: { cloudflareId: 'afdb58ebb92354534b513dabca0d64f5' },
+    approval: { ...approval, approvedBy: 'CONVRT owner (2026-11-24: supplied ARABIC-with-Dubbed-Text.mp4 as the Arabic hero video)', approvedOn: '2026-11-24' },
   },
   {
     id: 'home-hero-ar-left',
