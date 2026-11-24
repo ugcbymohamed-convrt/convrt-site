@@ -124,7 +124,7 @@ export default function IndustryShowcase() {
 
         {/* 4: the scene (environment + the rotary videos). Below 640 px it is wider than the screen and centred on the featured video. The wrapper's top padding is headroom so the featured card's halo is never cut off at the top. */}
         <div className="relative -mt-3 overflow-hidden pt-10">
-          <div className={`relative left-1/2 aspect-[1280/740] ${landscape ? 'w-[185vw]' : 'w-[230vw]'} -translate-x-1/2 transition-opacity duration-[190ms] motion-reduce:transition-none sm:w-[max(100%,900px)] ${fading ? 'opacity-0' : 'opacity-100'}`}>
+          <div className={`relative left-1/2 aspect-[1280/740] ${landscape ? 'w-[165vw]' : 'w-[230vw]'} -translate-x-1/2 transition-opacity duration-[190ms] motion-reduce:transition-none sm:w-[max(100%,900px)] ${fading ? 'opacity-0' : 'opacity-100'}`}>
             <StudioEnvironment />
             <div id="showcase-panel" role="tabpanel" aria-labelledby={`showcase-tab-${pickedId}`} className="absolute inset-0">
               <RotaryStage key={shown.id} autoPlayOnView={!visitorChose} landscape={landscape} items={shown.items} label={stageLabel} />
