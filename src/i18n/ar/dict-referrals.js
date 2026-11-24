@@ -15,7 +15,7 @@ export default {
   "CONVRT Referral Partner Program": "برنامج شركاء الإحالة في CONVRT",
   "Know a Brand That Needs": "تعرف علامة تجارية",
   "Better Video Ads?": "تحتاج محتوى أو إعلانات أفضل؟",
-  "Introduce SaaS and e-commerce brands to CONVRT. Get rewarded when they become clients.": "عرّف CONVRT على علامات SaaS والتجارة الإلكترونية، وتنال مكافأة عندما تصبح عملاء لنا.",
+  "Introduce SaaS and e-commerce brands to CONVRT. Get rewarded when they become clients.": "رشّح لنا براند يحتاج خدماتنا، واكسب مكافأة إذا صار عميلًا عندنا.",
   "Become a Referral Partner": "انضم كشريك إحالة",
   "See How It Works": "شاهد كيف يعمل",
   "Simple introductions. No selling required.": "تعريف بسيط. بدون أي مبيعات من جانبك.",
