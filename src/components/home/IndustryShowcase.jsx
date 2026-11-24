@@ -115,7 +115,7 @@ export default function IndustryShowcase() {
           <div className={`relative left-1/2 aspect-[1280/740] w-[230vw] -translate-x-1/2 transition-opacity duration-[190ms] motion-reduce:transition-none sm:w-[max(100%,900px)] ${fading ? 'opacity-0' : 'opacity-100'}`}>
             <StudioEnvironment />
             <div id="showcase-panel" role="tabpanel" aria-labelledby={`showcase-tab-${pickedId}`} className="absolute inset-0">
-              <RotaryStage key={shown.id} autoPlayOnView={!visitorChose} items={shown.items} label={es ? shown.stageLabel : `${shown.client} videos. Choose a side video to bring it to the front.`} />
+              <RotaryStage key={shown.id} autoPlayOnView={es || !visitorChose} autoAll={es} items={shown.items} label={es ? shown.stageLabel : `${shown.client} videos. Choose a side video to bring it to the front.`} />
             </div>
           </div>
         </div>

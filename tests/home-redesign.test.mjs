@@ -158,7 +158,7 @@ test('rotary stage logic: shortest direction, ease-in-out, 550-750 ms, and a cli
   const apply = src.slice(src.indexOf('const apply = useCallback'), src.indexOf('const select = useCallback'))
   assert.ok(/style\.transform/.test(apply) && !/style\.(width|height|top|left|margin)/.test(apply), 'only transform, z-index and opacity change per frame (no layout)')
   // playback: the stream is attached only after a press on the centre video, rotating away pauses, side videos cannot be played
-  assert.ok(/if \(!armed\) return undefined/.test(src) && /useEffect\(\(\) => \{ if \(!active\) \{ ref\.current\?\.pause\?\.\(\); userPaused\.current = true \} \}, \[active\]\)/.test(src))
+  assert.ok(/if \(!armed\) return undefined/.test(src) && /useEffect\(\(\) => \{ if \(!active\) \{ ref\.current\?\.pause\?\.\(\); if \(!autoAll\) userPaused\.current = true \} \}, \[active, autoAll\]\)/.test(src))
   assert.ok(src.includes("import { HeroPlayerControls } from '../ugc/CreatorVideoStage.jsx'") && /\{active && !moving && \(\s*<HeroPlayerControls/.test(src), 'the active video carries the hero player UI')
   assert.ok(/\{!active && \(\s*<button[\s\S]{0,200}onClick=\{onSelect\}/.test(src) && !/\bcontrols=/.test(src), 'side videos only select; no native controls, no second control design')
   assert.ok(/IntersectionObserver/.test(src) && /v\.pause\(\)/.test(src), 'paused when out of view')
@@ -237,12 +237,13 @@ test('interaction: the control bar shows on hover, focus or once started (never 
 
 test('play when reached: the front Adscale video starts muted when the stage is scrolled into view, only that one, only once, never against the visitor; the three posters are the owner-supplied frames', () => {
   const stage = read('src/components/home/RotaryStage.jsx')
-  assert.ok(/autoMode=\{autoPlayOnView && autoAllowed && i === 0\}/.test(stage), 'only the first (front) video, only when asked, never for reduced-motion / data-saver visitors')
+  assert.ok(/autoMode=\{autoPlayOnView && autoAllowed && \(autoAll \|\| i === 0\)\}/.test(stage), 'English: only the first (front) video; Spanish (autoAll): every video brought to the front; only when asked, never for reduced-motion / data-saver visitors')
+  assert.ok(/autoAll=\{es\}/.test(read('src/components/home/IndustryShowcase.jsx')), 'autoplay-all is the Spanish homepage only')
   assert.ok(/threshold: 0\.35/.test(stage) && /setInView\(e\.isIntersecting\)/.test(stage), 'triggered by the stage reaching the screen')
-  assert.ok(/inView && autoMode && !armed && !autoStarted\.current/.test(stage) && /autoStarted\.current = true\s+setMuted\(true\)\s+setArmed\(true\)/.test(stage), 'started once, muted')
+  assert.ok(/inView && autoMode && !armed && \(autoAll \|\| !autoStarted\.current\)/.test(stage) && /autoStarted\.current = true\s+setMuted\(!soundOn\.current\)[^\n]*\n\s+setArmed\(true\)/.test(stage), 'started once, muted (sound only after the visitor turned it on)')
   assert.ok(/v\.muted = muted/.test(stage.slice(stage.indexOf('useEffect(() => {\n    if (!armed) return undefined'))), 'the muted state is applied before play()')
   assert.ok(/userPaused\.current = true/.test(stage) && /!userPaused\.current && v\.paused/.test(stage), 'a visitor pause (or rotating away) is never overridden')
-  assert.ok(read('src/components/home/IndustryShowcase.jsx').includes('autoPlayOnView={!visitorChose}'), 'once the visitor picks another client nothing starts by itself')
+  assert.ok(read('src/components/home/IndustryShowcase.jsx').includes('autoPlayOnView={es || !visitorChose}'), 'once the visitor picks another client nothing starts by itself')
   // server HTML: still posters only (nothing downloads or plays before the visitor gets there)
   const s = sectionOf(bodyOf(page('/')), 'showcase')
   assert.ok(!/<video/.test(s))
