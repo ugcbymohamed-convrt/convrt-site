@@ -25,7 +25,7 @@ export default {
   "Book a free strategy call.": "Réservez un appel stratégique offert.",
   "We tell you exactly what you need.": "Nous vous disons précisément ce qu’il vous faut.",
   "Not ready yet? We've got two more FREE ways to start.": "Pas encore prêt ? Il existe deux autres façons de démarrer, offertes elles aussi.",
-  "The online Roadmap application is not available in this language yet. Book a free 20-minute strategy call (subject to a short fit check, no obligation) and we explain how to get your five ad concepts.": "La demande en ligne de la feuille de route n’est pas encore disponible dans cette langue. Réservez un appel stratégique offert de 20 minutes (après un court échange pour vérifier que l’offre vous convient, sans engagement) et nous vous expliquons comment recevoir vos cinq concepts publicitaires.",
+  "The online Roadmap application is not available in this language yet. Book a free 20-minute strategy call (subject to a short fit check, no obligation) and we explain how to get your five ad concepts.": "La demande en ligne de la stratégie créative n’est pas encore disponible dans cette langue. Réservez un appel stratégique offert de 20 minutes (après un court échange pour vérifier que l’offre vous convient, sans engagement) et nous vous expliquons comment recevoir vos cinq concepts publicitaires.",
   "for more.": "pour en savoir plus.",
 
   // Calendar gate and Roadmap booking
@@ -36,10 +36,10 @@ export default {
   "You’re a good fit": "Votre profil nous correspond",
   "You’re booked. See you on the call!": "C’est réservé. À très vite lors de l’appel !",
   "Choose a time for your strategy session.": "Choisissez un créneau pour votre session stratégique.",
-  "Calendly will email your confirmation and meeting details. We’ll prepare your roadmap concepts ahead of the session.": "Calendly vous enverra la confirmation et les détails du rendez-vous par e-mail. Nous préparerons les concepts de votre feuille de route avant la session.",
-  "Pick a time below to book your free Creative Growth Roadmap session. You’ll enter your details on the next screen and Calendly will confirm your booking. Your concepts are prepared for confirmed bookings, so please choose a time that works.": "Choisissez ci-dessous un créneau pour votre session de feuille de route créative offerte. Vous saisirez vos coordonnées à l’écran suivant et Calendly confirmera votre réservation. Les concepts sont préparés pour les réservations confirmées : choisissez donc un horaire qui vous convient.",
+  "Calendly will email your confirmation and meeting details. We’ll prepare your roadmap concepts ahead of the session.": "Calendly vous enverra la confirmation et les détails du rendez-vous par e-mail. Nous préparerons les concepts de votre stratégie créative avant la session.",
+  "Pick a time below to book your free Creative Growth Roadmap session. You’ll enter your details on the next screen and Calendly will confirm your booking. Your concepts are prepared for confirmed bookings, so please choose a time that works.": "Choisissez ci-dessous un créneau pour votre session de stratégie créative offerte. Vous saisirez vos coordonnées à l’écran suivant et Calendly confirmera votre réservation. Les concepts sont préparés pour les réservations confirmées : choisissez donc un horaire qui vous convient.",
   "Loading calendar…": "Chargement du calendrier…",
-  "Book your Free Creative Growth Roadmap session with CONVRT": "Réservez votre session de feuille de route créative offerte avec CONVRT",
+  "Book your Free Creative Growth Roadmap session with CONVRT": "Réservez votre session de stratégie créative offerte avec CONVRT",
   "The calendar is taking a while to load.": "Le calendrier met du temps à se charger.",
   "Calendar not loading?": "Le calendrier ne s’affiche pas ?",
   "Open it in a new tab": "Ouvrez-le dans un nouvel onglet",

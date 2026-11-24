@@ -180,7 +180,7 @@ test('portfolio present: with approved spokesperson videos the hero becomes the 
   assert.ok(Stage.default, 'the same CreatorVideoStage as the UGC page')
   assert.equal(SPOKESPERSON_HERO.previewPortraits, false, 'the empty phones stay empty on preview hosts too')
   const dflt = renderToStaticMarkup(createElement(Gallery.default, { items }))
-  assert.ok(dflt.includes('id="ugc-videos"') && /UGC ·/.test(dflt.replace(/<[^>]+>/g, '')), 'with no config the gallery is still the UGC one (default)')
+  assert.ok(dflt.includes('id="ugc-videos"') && !/UGC ·/.test(dflt.replace(/<[^>]+>/g, '')), 'with no config the gallery is still the UGC one (default)')
 })
 
 test('gallery: spokesperson heading, copy, badge, button and four-up horizontal scroller; absent without videos; preview stand-ins are neutral frames, never portraits', async () => {
@@ -191,7 +191,7 @@ test('gallery: spokesperson heading, copy, badge, button and four-up horizontal 
   assert.ok(g.includes('id="spokesperson-videos"'))
   assert.ok(t.includes('See spokespersons in action.'))
   assert.ok(t.includes('Explore different presentation styles, languages and approaches for explaining products, promoting offers and communicating with customers.'))
-  assert.ok(/Spokesperson ·/.test(t) && !/UGC/.test(t), 'cards are labelled Spokesperson, never UGC')
+  assert.ok(!/Spokesperson ·/.test(t) && !/UGC/.test(t), 'cards carry no generic type/language pill, and are never labelled UGC')
   assert.match(g, new RegExp(`href="${CREATOR_SHOWCASE_PATH}"[^>]*>[^<]*Explore Spokesperson Videos`))
   assert.ok(/aria-label="Spokesperson video examples\. Scroll sideways to see more\."/.test(g))
   assert.ok(/lg:w-\[calc\(\(100%-3rem\)\/4\)\]/.test(g), 'four cards across on a laptop')

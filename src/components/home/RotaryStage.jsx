@@ -94,7 +94,7 @@ function Phone({ item, i, n, active, moving, inView, autoMode, landscape, onSele
   }
 
   return (
-    <div ref={setEl} className="absolute left-1/2 top-1/2 w-full will-change-transform" style={poseStyle(poseFor(i, 0, n))}>
+    <div ref={setEl} className="absolute left-1/2 top-1/2 w-full will-change-transform" style={poseStyle(poseFor(i, 0, n, landscape))}>
       <div
         className={`group relative ${landscape ? 'aspect-video rounded-[2.6%/4.6%] p-[0.9%]' : 'aspect-[9/16] rounded-[12%/6.7%] p-[2.5%]'} ring-1 transition-[box-shadow] duration-500 motion-reduce:transition-none ${active ? 'ring-lime/70' : 'ring-white/25 group-hover:ring-lime/40'}`}
         style={{ background: 'linear-gradient(150deg, #a9ac9a 0%, #3a3c33 28%, #17181a 55%, #4a4d40 100%)', boxShadow: active ? '0 0 0 1.5px rgba(213,255,64,0.85), 0 0 20px 3px rgba(213,255,64,0.6), 0 0 54px 5px rgba(213,255,64,0.3), 0 40px 60px -20px rgba(0,0,0,1), inset 0 1px 0 rgba(255,255,255,0.5), inset 0 0 0 1px rgba(255,255,255,0.1)' : '0 18px 30px -18px rgba(0,0,0,0.9), inset 0 1px 0 rgba(255,255,255,0.3), inset 0 0 0 1px rgba(255,255,255,0.06)' }}
@@ -104,7 +104,7 @@ function Phone({ item, i, n, active, moving, inView, autoMode, landscape, onSele
           {armed && (
             <video ref={ref} playsInline preload="none" poster={stagePoster(item)} aria-label={captionOf(item)} className="absolute inset-0 h-full w-full bg-black object-cover" />
           )}
-          <span ref={setShade} aria-hidden="true" className="pointer-events-none absolute inset-0 bg-black" style={{ opacity: f(poseFor(i, 0, n).shade) }} />
+          <span ref={setShade} aria-hidden="true" className="pointer-events-none absolute inset-0 bg-black" style={{ opacity: f(poseFor(i, 0, n, landscape).shade) }} />
           {active && !moving && (
             <HeroPlayerControls item={item} playing={playing} muted={muted} progress={progress} barClass={armed ? '' : BAR_UNTIL_STARTED} onTogglePlay={toggle} onToggleMute={() => setMuted((m) => !m)} onSeek={seek} />
           )}
@@ -140,13 +140,13 @@ export default function RotaryStage({ items, label, autoPlayOnView = false, land
 
   const apply = useCallback((pos) => {
     for (let i = 0; i < n; i += 1) {
-      const p = poseFor(i, pos, n)
+      const p = poseFor(i, pos, n, landscape)
       const el = phoneEls.current[i]
       if (el) { const st = poseStyle(p); el.style.transform = st.transform; el.style.zIndex = String(st.zIndex) }
       const sh = shadeEls.current[i]
       if (sh) sh.style.opacity = String(f(p.shade))
     }
-  }, [n])
+  }, [n, landscape])
 
   const select = useCallback((target) => {
     const t = ((target % n) + n) % n
@@ -213,7 +213,7 @@ export default function RotaryStage({ items, label, autoPlayOnView = false, land
       className="absolute inset-0 touch-pan-y select-none focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-lime/60"
     >
       {/* the three videos: the holder is the CENTRE video's box as a share of the scene (24.22 % = 320 of the 1280 px grid); everything else is measured in its own width. Every frame is exactly 9:16 */}
-      <div className={`absolute ${landscape ? 'aspect-video' : 'aspect-[9/16]'} -translate-x-1/2 -translate-y-1/2 [perspective:1500px]`} style={landscape ? { left: '50%', top: '56.5%', width: '47%' } : { left: '50%', top: '41.2%', width: '25%' }}>
+      <div className={`absolute ${landscape ? 'aspect-video' : 'aspect-[9/16]'} -translate-x-1/2 -translate-y-1/2 [perspective:1500px]`} style={landscape ? { left: '50%', top: '56.5%', width: n === 2 ? '47%' : '39%' } : { left: '50%', top: '41.2%', width: '25%' }}>
         {/* THE ACTIVE-VIDEO HALO. Two layers behind the featured card, both in the holder (which is NOT clipped: no overflow-hidden ancestor between here and the scene's own edges):
             1 a wide, soft lime aura (z 55); 2 a lime LED ring hugging the card's edges (z 60), blurred, so a bright halo is visible around the top, sides and corners and falls off outward.
             Both sit BETWEEN the supporting cards (z <= 25... they are lit from behind) and the featured card (z 100): the halo never covers the featured video. They stay put; the videos rotate through them. */}

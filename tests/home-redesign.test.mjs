@@ -288,7 +288,8 @@ test('creator carousel: eight approved, English-confirmed, distinct videos in th
   assert.equal((s.match(/<li class="w-\[66%\]/g) || []).length, 8)
   assert.match(textOf(s), /Real creators\. Real presence\. Ready for your brand\./)
   assert.ok(textOf(s).includes('Explore the people and creative styles behind our videos.'))
-  assert.ok(textOf(s).includes('independent creators') && textOf(s).includes('not necessarily productions by CONVRT'), 'the standing note: independent creators, not CONVRT productions')
+  assert.ok(!textOf(s).includes('not necessarily productions by CONVRT'), 'the standing disclaimer is removed (owner, 2026-11-24)')
+  assert.ok(!/Creator · EN/.test(textOf(s)), 'no generic creator/language pill on the cards')
   assert.ok(!/<video/.test(s), 'poster first: no video element or stream until a tap')
   assert.match(s, new RegExp(`<a href="${CREATOR_SHOWCASE_PATH}"[^>]*>\\s*Explore All Creators`))
   // all selected videos live in portfolio.js and stay valid for the Creator Showcase

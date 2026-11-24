@@ -49,7 +49,7 @@ export default {
   "10+ videos": "10 vidéos et plus",
   "What type of video would you like to test?": "Quel type de vidéo souhaitez-vous tester ?",
   "UGC / Creator-led ad": "Publicité UGC portée par un créateur",
-  "Spokesperson video": "Vidéo avec porte-parole",
+  "Spokesperson video": "Vidéo Spokesperson",
   "SaaS product demo / Explainer": "Démo produit SaaS / Vidéo explicative",
   "When are you looking to produce new video ads?": "Quand souhaitez-vous produire de nouvelles vidéos publicitaires ?",
   "If the trial performs well, would you consider ongoing video production with CONVRT?": "Si l’essai est concluant, envisageriez-vous une production vidéo récurrente avec CONVRT ?",

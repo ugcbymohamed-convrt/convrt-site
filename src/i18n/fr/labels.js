@@ -23,13 +23,13 @@ export const FR_PRODUCTION_LABELS = { independent: 'Créateur indépendant', con
 export const FR_CATEGORY_LABELS = { all: 'Toutes les réalisations', ecommerce: 'E-commerce', saas: 'SaaS', services: 'Services', other: 'Autres', spokesperson: 'Porte-parole' }
 
 export const FR_ORGANIC_STYLE_LABELS = { educational: 'Pédagogique', entertaining: 'Divertissant', product: 'Centré produit', founder: 'Avec le fondateur' }
-export const FR_SAAS_FORMAT_LABELS = { explainer: 'Vidéos explicatives', demo: 'Démos produit', presenter: 'Avec porte-parole', animated: 'Animées', ad: 'Publicités' }
+export const FR_SAAS_FORMAT_LABELS = { explainer: 'Vidéos explicatives', demo: 'Démos produit', presenter: 'Spokesperson', animated: 'Animées', ad: 'Publicités' }
 
 const CAPTION_PATTERNS = [
   [/^CONVRT UGC ad example\.?$/, () => 'Exemple de publicité UGC CONVRT.'],
   [/^Creator-led UGC ad example (\d+)\.?$/, (n) => `Exemple de publicité UGC portée par un créateur n° ${n}.`],
   [/^UGC ad example (\d+)\.?$/, (n) => `Exemple de publicité UGC n° ${n}.`],
-  [/^Spokesperson video example (\d+)\.?$/, (n) => `Exemple de vidéo avec porte-parole n° ${n}.`],
+  [/^Spokesperson video example (\d+)\.?$/, (n) => `Exemple de vidéo Spokesperson n° ${n}.`],
   [/^Organic social video example (\d+)\.?$/, (n) => `Exemple de vidéo organique pour les réseaux sociaux n° ${n}.`],
   [/^SaaS creator example (\d+)\.?$/, (n) => `Exemple de créateur pour une offre SaaS n° ${n}.`],
 ]
@@ -46,7 +46,7 @@ export function captionFr(caption) {
 /* French FAQ headings: [plain words, lime-accent words] per FAQ prefix. Used by src/components/ugc/UgcFAQ.jsx and PricingFAQ.jsx in French only. */
 export const FR_FAQ_TITLES = {
   ugc: ['Tout ce qu’il faut savoir', 'sur nos vidéos UGC.'],
-  spokesperson: ['Tout ce qu’il faut savoir', 'sur nos vidéos avec porte-parole.'],
+  spokesperson: ['Tout ce qu’il faut savoir', 'sur nos vidéos Spokesperson.'],
   saas: ['Tout ce qu’il faut savoir', 'sur nos vidéos SaaS.'],
   organic: ['Tout ce qu’il faut savoir', 'sur nos contenus organiques.'],
   pricing: ['Vos questions sur les offres', 'et les tarifs.'],
@@ -76,4 +76,3 @@ export const FR_SECTION_INTROS = {
 }
 
 /* Visible note under the UGC page's client testimonials (their wording is kept in the original English). */
-export const FR_TESTIMONIALS_NOTE = 'Les avis clients sont rédigés en anglais. Chaque traduction française est signalée comme telle, avec l’avis d’origine en dessous.'

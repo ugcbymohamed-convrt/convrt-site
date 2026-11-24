@@ -14,7 +14,6 @@ import { createElement } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { PATHS, KNOWN_PATHS } from '../src/routes.js'
 import { SITE_URL, OFFER_PATHS, CREATOR_SHOWCASE_PATH } from '../src/config.js'
-import { CREATOR_EXAMPLES_NOTE } from '../src/content/attribution.js'
 import { SITE_SEO, pageHead, sitemapRoutes } from '../src/seo/siteSeo.js'
 import { saasGraph, jsonLdFor, ORG_ID, serviceId, BREADCRUMB_TRAILS } from '../src/seo/structuredData.js'
 import { SAAS_FAQ, saasFaqText } from '../src/seo/saasFaq.js'
@@ -198,8 +197,8 @@ test('gallery: SaaS heading, copy, badge, button and four-up horizontal scroller
   assert.ok(g.includes('id="saas-videos"'))
   assert.ok(t.includes('Creator-led videos for software brands.'))
   assert.ok(t.includes('Examples of how software and app products can be presented on camera. Explainers, demos and animation are scoped to your brief.'))
-  assert.ok(t.includes(CREATOR_EXAMPLES_NOTE), 'the independent-creators attribution line is visible in the gallery')
-  assert.ok(/SaaS ·/.test(t) && !/UGC|Spokesperson/.test(t), 'cards are labelled SaaS')
+  assert.ok(!t.includes('Videos shown are examples from independent creators'), 'the standing disclaimer paragraph is removed')
+  assert.ok(!/SaaS ·/.test(t) && !/UGC|Spokesperson/.test(t), 'cards carry no generic type/language pill, and are never labelled UGC or Spokesperson')
   assert.match(g, new RegExp(`href="${CREATOR_SHOWCASE_PATH}"[^>]*>[^<]*Explore SaaS Videos`))
   assert.ok(/aria-label="SaaS video examples\. Scroll sideways to see more\."/.test(g))
   assert.ok(/lg:w-\[calc\(\(100%-3rem\)\/4\)\]/.test(g), 'four cards across on a laptop')

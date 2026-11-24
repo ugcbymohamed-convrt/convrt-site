@@ -15,10 +15,10 @@ export default {
   "Case Studies": "Études de cas",
   "Book a Creative Call": "Réserver un appel créatif",
   "SaaS Video Production": "Vidéos pour le SaaS",
-  "Spokesperson Videos": "Vidéos avec porte-parole",
+  "Spokesperson Videos": "Vidéos Spokesperson",
   "Get in touch": "Nous contacter",
   "A performance creative studio building UGC ads, spokesperson videos, organic social content, and creative strategy for brands that want content with one purpose: conversion.":
-    "Un studio créatif orienté performance : publicités UGC, vidéos avec porte-parole, contenus organiques et stratégie créative pour les marques qui veulent des contenus au service d’un seul objectif, la conversion.",
+    "Un studio créatif orienté performance : publicités UGC, vidéos Spokesperson, contenus organiques et stratégie créative pour les marques qui veulent des contenus au service d’un seul objectif, la conversion.",
   "Studio": "Studio",
   "UGC Video Agency": "Agence UGC",
   "About": "À propos",

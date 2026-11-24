@@ -21,7 +21,7 @@ export default {
   "The library brings together examples from independent creators in different formats, so you can compare styles and creative approaches before you brief a project.": "La bibliothèque réunit des exemples de créateurs indépendants dans différents formats, pour comparer les styles et les approches créatives avant de briefer un projet.",
   "UGC-style videos": "Vidéos de style UGC",
   "Creator-led, natural-style videos of the kind brands run as paid social ads.": "Des vidéos portées par des créateurs, au style naturel, comme celles que les marques diffusent en publicité sur les réseaux sociaux.",
-  "These are creators’ examples, not necessarily CONVRT productions. For documented CONVRT projects, read our": "Ce sont des exemples de créateurs, pas forcément des productions CONVRT. Pour des projets CONVRT documentés, lisez notre",
+  "For documented CONVRT projects, read our": "Pour des projets CONVRT documentés, lisez notre",
   "organic social media case study": "étude de cas sur le social organique (en anglais)",
   "and our": "et notre",
   "paid social UGC case study": "étude de cas sur l’UGC en social payant (en anglais)",

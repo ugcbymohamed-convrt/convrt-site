@@ -6,7 +6,7 @@
      /fr/ugc-video-agency       agence UGC (P1: "agence ugc" 500, "agence ugc france" 50): the agency-buying intent, one page, no city pages (no French office is claimed)
      /fr/pricing                tarifs UGC / prix de production vidéo (decision-stage terms with no measured volume, still buyer-relevant)
      /fr/creator-showcase       exemples de vidéos UGC de créateurs francophones
-   /fr/spokesperson-video-production   vidéo avec porte-parole (seed "vidéo porte parole", "vidéo avec présentateur": no measured volume; adjacent "vidéo présentation entreprise" 500). Own page: the
+   /fr/spokesperson-video-production   vidéo Spokesperson (seed "vidéo porte parole", "vidéo avec présentateur": no measured volume; adjacent "vidéo présentation entreprise" 500). Own page: the
                                        presenter-led, scripted video for site, demos, apps and ads, never "agence UGC"
    /fr/saas-video-production           vidéo explicative SaaS (seeds "vidéo explicative saas", "vidéo démonstration logiciel", "agence vidéo saas": no measured volume): explainers, product demos, animated videos
    /fr/social-media-video-production   vidéos pour les réseaux sociaux, contenu organique ("agence vidéo réseaux sociaux" 50, "agence production vidéo réseaux sociaux" seed): short-form organic video, never paid UGC
@@ -22,13 +22,13 @@ import { priceOf, formatPrice, isPricingApproved } from '../pricing.js'
 export const FR_OG_IMAGE_READY = true // public/og/convrt-og-fr.png: same layout as the English image, French text (rendered from HTML with the site's Inter font)
 export const FR_OG_IMAGE_PATH = '/og/convrt-og-fr.png'
 
-export const FR_OG_IMAGE_ALT = 'CONVRT : des vidéos publicitaires pensées pour capter l’attention. Publicités UGC, vidéos avec porte-parole et contenus pour les réseaux sociaux.'
+export const FR_OG_IMAGE_ALT = 'CONVRT : des vidéos publicitaires pensées pour capter l’attention. Publicités UGC, vidéos Spokesperson et contenus pour les réseaux sociaux.'
 
 /* The primary keyword of each French service page (one each, so the pages never compete: « agence UGC » belongs to /fr/ugc-video-agency only). The rounded Keyword Planner volumes, when
    any, are in the header above; most of these seeds have none, so no volume is quoted anywhere. */
 export const FR_PRIMARY_KEYWORDS = {
   '/ugc-video-agency': 'agence UGC',
-  '/spokesperson-video-production': 'porte-parole',
+  '/spokesperson-video-production': 'Spokesperson', // the owner's service term (2026-11-24); « porte-parole » stays in the description for the search term
   '/saas-video-production': 'vidéo explicative SaaS',
   '/social-media-video-production': 'réseaux sociaux',
 }
@@ -37,9 +37,9 @@ export const FR_SEO = {
   '/': {
     title: 'Agence vidéo publicitaire et création de contenus | CONVRT',
     description:
-      'Production vidéo publicitaire pour les marques : publicités UGC, vidéos avec porte-parole et contenus pour les réseaux sociaux, de la stratégie créative au montage.',
+      'Production vidéo publicitaire pour les marques : publicités UGC, vidéos Spokesperson et contenus pour les réseaux sociaux, de la stratégie créative au montage.',
     ogTitle: 'CONVRT : des vidéos publicitaires pensées pour capter l’attention',
-    ogDescription: 'Publicités UGC, vidéos avec porte-parole, contenus pour les réseaux sociaux et stratégie créative, pour des campagnes qui se démarquent.',
+    ogDescription: 'Publicités UGC, vidéos Spokesperson, contenus pour les réseaux sociaux et stratégie créative, pour des campagnes qui se démarquent.',
   },
   '/ugc-video-agency': {
     title: 'Agence UGC : vidéos UGC pour vos publicités | CONVRT',
@@ -51,11 +51,11 @@ export const FR_SEO = {
     ogDescription: 'Des publicités UGC portées par de vrais créateurs, produites de A à Z, avec des tarifs et des droits d’utilisation transparents.',
   },
   '/spokesperson-video-production': {
-    title: 'Vidéo avec porte-parole : de vrais présentateurs | CONVRT',
+    title: 'Vidéo Spokesperson : de vrais présentateurs | CONVRT',
     description:
-      'Production de vidéos avec porte-parole : de vrais présentateurs face caméra, en plusieurs langues, pour votre site, vos démos produit, vos applications et vos publicités. Du script au montage.',
-    ogTitle: 'CONVRT : production de vidéos avec porte-parole',
-    ogDescription: 'Des vidéos avec porte-parole portées par de vrais présentateurs, en plusieurs langues, pour votre site, vos démos produit, vos applications et vos publicités.',
+      'Production de vidéos Spokesperson : de vrais porte-parole face caméra, en plusieurs langues, pour votre site, vos démos produit, vos applications et vos publicités. Du script au montage.',
+    ogTitle: 'CONVRT : production de vidéos Spokesperson',
+    ogDescription: 'Des vidéos Spokesperson portées par de vrais présentateurs, en plusieurs langues, pour votre site, vos démos produit, vos applications et vos publicités.',
   },
   '/saas-video-production': {
     title: 'Vidéo explicative SaaS : démos produit et publicités | CONVRT',
@@ -84,7 +84,7 @@ export const FR_SEO = {
     ogDescription: 'De vraies vidéos de créateurs francophones indépendants, pour comparer les styles et les approches créatives.',
   },
   '/creative-growth-roadmap': {
-    title: 'Feuille de route créative offerte : 5 concepts publicitaires | CONVRT',
+    title: 'Stratégie créative offerte : 5 concepts publicitaires | CONVRT',
     description:
       'Recevez cinq concepts publicitaires pensés pour votre marque : angles créatifs, hooks et recommandations de test, présentés lors d’une session stratégique offerte.',
   },

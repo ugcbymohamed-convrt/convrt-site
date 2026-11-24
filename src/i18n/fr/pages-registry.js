@@ -47,9 +47,9 @@ export const FR_PAGE_GRAPH_EXTRAS = {
   '/spokesperson-video-production': (url) => ({
     about: { '@id': `${url}#service` },
     nodes: [pageServiceFr(url, {
-      name: 'Production de vidéos avec porte-parole',
-      serviceType: 'Production de vidéos avec porte-parole',
-      description: `${FR_CORE_SERVICES.spokesperson.description} Les vidéos avec porte-parole mettent en scène de vrais présentateurs et peuvent être produites en plusieurs langues.`,
+      name: 'Production de vidéos Spokesperson',
+      serviceType: 'Production de vidéos Spokesperson',
+      description: `${FR_CORE_SERVICES.spokesperson.description} Les vidéos Spokesperson mettent en scène de vrais présentateurs et peuvent être produites en plusieurs langues.`,
     })],
   }),
   '/saas-video-production': (url) => ({

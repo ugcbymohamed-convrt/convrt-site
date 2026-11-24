@@ -5,13 +5,13 @@ export const round4 = (v) => Number((v + 0).toFixed(4))
 const f = round4
 
 /** Where video `i` stands when video `pos` (fractional while rotating) is at the front. All lengths are in phone widths / heights, so the CSS only decides the phone's width. */
-export function pose(i, pos, n = 3) {
+export function pose(i, pos, n = 3, spread = 0.958) {
   const theta = ((i - pos) * 2 * Math.PI) / n
   const s = Math.sin(theta)
   const c = Math.cos(theta)
   const t = (c + 1) / 2 // 1 at the front, 0 at the very back
   return {
-    x: s * 0.958, // sideways, in phone widths: a side video's centre sits 0.83 widths from the centre, so it tucks slightly (about 6 % of a width) behind the featured card
+    x: s * spread, // sideways, in phone widths: a side video's centre sits 0.83 widths from the centre, so it tucks slightly (about 6 % of a width) behind the featured card
     y: 0, // all three cards share one top line and one baseline
     scale: 0.74 + 0.26 * t, // a side video is about 80 % of the featured one (258 px beside a 320 px featured video), the proportion the hero stage uses
     scaleY: 0.74 + 0.26 * t, // the same: frames are never squashed, they stay true 9:16
@@ -59,5 +59,8 @@ export function pose2(i, pos) {
     shade: b * 0.36,
   }
 }
-/** The pose of video `i` for a stage of `n` videos: the two-frame layout when there are two, the three-frame orbit otherwise. */
-export const poseFor = (i, pos, n = 3) => (n === 2 ? pose2(i, pos) : pose(i, pos, n))
+/** THREE LANDSCAPE VIDEOS (the French client stage): the same orbit as the portrait stage, but a 16:9 frame is wider than a 9:16 one, so the side frames sit closer (0.78 of a frame width instead of
+ *  0.958) and tuck about 12 % of a width behind the front frame; the whole group then fits the stage without clipping. */
+export const LANDSCAPE_SPREAD = 0.78
+/** The pose of video `i` for a stage of `n` videos: the two-frame layout when there are two, the three-frame orbit otherwise (tighter when the frames are landscape). */
+export const poseFor = (i, pos, n = 3, landscape = false) => (n === 2 ? pose2(i, pos) : pose(i, pos, n, landscape ? LANDSCAPE_SPREAD : 0.958))

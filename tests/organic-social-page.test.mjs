@@ -191,7 +191,7 @@ test('gallery: heading, copy, badge, button and four-up horizontal scroller; sty
   assert.ok(g.includes('id="organic-videos"'))
   assert.ok(t.includes('Content people actually want to watch.'))
   assert.ok(t.includes('From educational Reels and creator-led stories to entertaining short-form videos, explore different ways brands can connect with their audiences.'))
-  assert.ok(/Organic ·/.test(t) && !/UGC|Spokesperson/.test(t), 'cards are labelled Organic')
+  assert.ok(!/Organic ·/.test(t) && !/UGC|Spokesperson/.test(t), 'cards carry no generic type/language pill, and are never labelled UGC or Spokesperson')
   assert.match(g, new RegExp(`href="${CREATOR_SHOWCASE_PATH}"[^>]*>[^<]*Explore Videos`))
   assert.ok(/lg:w-\[calc\(\(100%-3rem\)\/4\)\]/.test(g), 'four cards across on a laptop')
   // filter: All + only the two styles that exist; real toggle buttons in a labelled group

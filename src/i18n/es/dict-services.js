@@ -74,7 +74,6 @@ export default {
   "UGC": "UGC",
   "Explore UGC Videos": "Explorar vídeos UGC",
   "Layout preview only: your ten approved videos replace these cards. This never shows on the live site.": "Solo vista previa del diseño: tus diez vídeos aprobados sustituirán estas tarjetas. Esto nunca se muestra en el sitio real.",
-  "Videos shown are examples from independent creators, included to illustrate styles and approaches. They are not necessarily productions by CONVRT.": "Estos vídeos son muestras de creadores independientes que ilustran distintos estilos y enfoques. No son necesariamente producciones realizadas por CONVRT.",
   "Scroll videos left": "Desplazar los vídeos a la izquierda",
   "Scroll videos right": "Desplazar los vídeos a la derecha",
   "Results & client feedback": "Resultados y opiniones de clientes",

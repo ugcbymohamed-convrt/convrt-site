@@ -16,7 +16,6 @@ import { createElement } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { PATHS, KNOWN_PATHS } from '../src/routes.js'
 import { SITE_URL, CREATOR_SHOWCASE_PATH } from '../src/config.js'
-import { CREATOR_EXAMPLES_NOTE } from '../src/content/attribution.js'
 import { SITE_SEO, pageHead, sitemapRoutes } from '../src/seo/siteSeo.js'
 import { ourWorkGraph, videoObjectNode, jsonLdFor, BREADCRUMB_TRAILS } from '../src/seo/structuredData.js'
 import {
@@ -97,8 +96,8 @@ test('static HTML: breadcrumb, one H1, the approved intro, two sections, the fir
   assert.equal((html.match(/<h1[\s>]/g) || []).length, 1)
   assert.ok(t.includes("See what's possible."))
   assert.ok(t.includes('Explore real creator videos across e-commerce, SaaS, services and more.'))
-  assert.ok(t.includes(CREATOR_EXAMPLES_NOTE), 'the independent-creators attribution line is visible (SEO/GEO Batch 1)')
-  assert.ok(!/produced by CONVRT|CONVRT produced|our work|we produced/i.test(t.replace(CREATOR_EXAMPLES_NOTE, '')), 'no CONVRT-production claim beyond the disclaimer')
+  assert.ok(!t.includes('Videos shown are examples from independent creators'), 'the standing disclaimer paragraph is removed (owner, 2026-11-24)')
+  assert.ok(!/produced by CONVRT|CONVRT produced|our work|we produced/i.test(t), 'no CONVRT-production claim')
   assert.equal((html.match(/<section[\s>]/g) || []).length, 3, 'three sections: the hero, the library and the "what you will find" guide (Batch 2)')
   const shown = Math.min(selectOurWork().length, 12)
   assert.equal((html.match(/Play video:/g) || []).length, shown, 'the first page of approved videos is in the HTML (crawlable without the filter script)')
@@ -424,7 +423,7 @@ test('regression: production attribution is unknown unless confirmed, and a labe
 
 test('regression: the nine homepage client videos (and the two French client-stage videos) stay homepage-only: not in /creator-showcase, the UGC page or the sitemap data, permissions untouched', () => {
   const clients = PORTFOLIO.filter((v) => v.showcase)
-  assert.equal(clients.length, 11, 'nine English/Spanish client-panel videos + the two French FIXD landscape videos')
+  assert.equal(clients.length, 12, 'nine English/Spanish client-panel videos + the three French FIXD landscape videos')
   assert.deepEqual([...new Set(clients.map((v) => v.showcase))].sort(), ['adscale', 'elyon', 'fixd', 'graspo'])
   for (const v of clients) {
     assert.equal(v.approval.portfolioUse, false, `${v.id}: portfolioUse stays false`)

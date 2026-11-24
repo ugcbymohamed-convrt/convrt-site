@@ -65,10 +65,10 @@ export default function IndustryShowcase() {
   const tr = useTr()
   const href = useHref()
   const locale = currentLocale()
-  // French: ONE client on two landscape videos (src/i18n/fr/showcase.js). English and Spanish: the three clients on three portrait videos (Spanish text comes from the dictionary).
+  // French: ONE client on three landscape videos (src/i18n/fr/showcase.js). English and Spanish: the three clients on three portrait videos (Spanish text comes from the dictionary).
   const fr = locale === 'fr' ? FR_SHOWCASE : null
   const landscape = fr?.orientation === 'landscape'
-  const need = landscape ? 2 : 3
+  const need = 3
   const list = fr ? [{ id: fr.clientId, clientId: fr.clientId, client: fr.client, label: fr.plateLabel, logo: fr.logo, selectorHeight: fr.selectorHeight, link: null }] : SHOWCASE_INDUSTRIES
   // A client is offered only with its videos (never a half-empty stage).
   const industries = list.map((c) => ({ ...c, items: selectShowcase(c.clientId).slice(0, need) })).filter((c) => c.items.length === need)

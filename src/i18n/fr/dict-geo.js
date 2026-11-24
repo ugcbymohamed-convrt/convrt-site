@@ -4,9 +4,9 @@ export default {
   "Our founder has worked with": "Notre fondateur a travaillé avec",
   "clients": "clients",
   "Combined professional experience, including CONVRT Studio and other professional creative production work.":
-    "Expérience professionnelle cumulée du fondateur, chez CONVRT Studio et dans le cadre d’autres projets de production créative.",
+    "Expérience cumulée du fondateur, chez CONVRT et au fil de ses précédentes collaborations.",
   "Our founder's combined professional experience, including CONVRT Studio and other professional creative production work.":
-    "Expérience professionnelle cumulée de notre fondateur, chez CONVRT Studio et dans le cadre d’autres projets de production créative.",
+    "Expérience cumulée du fondateur, chez CONVRT et au fil de ses précédentes collaborations.",
   "CONVRT offers remote video production through its creator network, as well as on-location filming in Spain. On-location shoots in other countries may be arranged subject to project requirements, availability and approval. On-location filming is subject to project scope, availability and quotation where applicable.":
     "CONVRT produit des vidéos à distance grâce à son réseau de créateurs, et propose également des tournages sur place en Espagne. Des tournages sur place dans d’autres pays peuvent être organisés selon les besoins du projet, les disponibilités et après accord. Le tournage sur place dépend du périmètre du projet, des disponibilités et, le cas échéant, d’un devis.",
 }

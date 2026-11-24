@@ -5,8 +5,8 @@ export default {
   "Performance creatives": "Des vidéos publicitaires",
   "engineered to": "pensées pour",
   "From creative strategy and scripting to creator casting, filming and editing. We produce human-led UGC ads, SaaS videos, spokesperson videos and organic social content, ready to perform.":
-    "De la stratégie au montage, nous produisons des publicités UGC, des vidéos avec porte-parole, des vidéos SaaS et du contenu pour les réseaux sociaux, conçus pour performer.",
-  "Explore Videos": "Voir nos réalisations",
+    "De la stratégie au montage, nous produisons des publicités UGC, des vidéos Spokesperson, des vidéos SaaS et du contenu pour les réseaux sociaux, conçus pour performer.",
+  "Explore Videos": "Explorer les vidéos",
 
   // Founder credibility (the figures are the founder's combined experience: the attribution caption lives in dict-geo.js)
   "more than": "plus de",
@@ -57,13 +57,13 @@ export default {
   "Start with five creative ideas tailored to your brand. See the direction, decide if we’re a fit, and let us handle production from start to finish.":
     "Commencez par cinq idées créatives pensées pour votre marque. Découvrez la direction proposée, voyez si nous sommes faits pour travailler ensemble, puis laissez-nous gérer la production de A à Z.",
   "Discovery": "Découverte",
-  "Free Creative Growth Roadmap": "Feuille de route créative offerte",
+  "Free Creative Growth Roadmap": "Stratégie créative offerte",
   "We learn about your brand, audience and goals, then develop five personalized ad concepts for you.": "Nous apprenons à connaître votre marque, votre audience et vos objectifs, puis nous imaginons cinq concepts publicitaires personnalisés pour vous.",
   "We walk through the ideas together, exploring creative angles and opportunities tailored to your business.": "Nous passons les idées en revue avec vous et explorons des angles créatifs et des opportunités adaptés à votre activité.",
   "5 free ad concepts": "5 concepts publicitaires offerts",
   "Your Decision": "Votre décision",
-  "Like the Direction? Let’s Work Together.": "La direction vous plaît ? Travaillons ensemble.",
-  "Review your creative roadmap and decide whether you’d like CONVRT to bring those ideas to life.": "Étudiez votre feuille de route créative et décidez si vous souhaitez que CONVRT donne vie à ces idées.",
+  "Like the Direction? Let’s Work Together.": "Ça vous parle ? Travaillons ensemble.",
+  "Review your creative roadmap and decide whether you’d like CONVRT to bring those ideas to life.": "Étudiez votre stratégie créative offerte et décidez si vous souhaitez que CONVRT donne vie à ces idées.",
   "If we’re a good fit, we agree on the project scope, deliverables and next steps before production begins.": "Si nous sommes faits pour travailler ensemble, nous convenons du périmètre du projet, des livrables et des prochaines étapes avant le début de la production.",
   "No obligation": "Sans engagement",
   "Production": "Production",
@@ -72,7 +72,7 @@ export default {
   "Strategy, scripting, creator casting, production and post-production — all managed by CONVRT.": "Stratégie, scripts, sélection des créateurs, production et post-production : tout est piloté par CONVRT.",
   "End-to-end production": "Production de A à Z",
   "Delivery": "Livraison",
-  "Review, Refine & Launch": "Relire, ajuster, lancer",
+  "Review, Refine & Launch": "Valider, peaufiner et lancer",
   "Review your videos, request revisions within the agreed scope, and receive approved creatives ready for your channels.": "Visionnez vos vidéos, demandez des modifications dans le cadre convenu et recevez des vidéos validées, prêtes pour vos canaux.",
   "Your finished videos are delivered in the agreed formats, ready for your team to publish or use in campaigns.": "Vos vidéos finales vous sont livrées dans les formats convenus, prêtes à être publiées ou utilisées dans vos campagnes.",
   "Ready-to-use videos": "Vidéos prêtes à l’emploi",
@@ -90,12 +90,12 @@ export default {
   "SaaS · Paid Social": "SaaS · Social payant",
   "Mobile App · International": "Application mobile · International",
 
-  // Final CTA (three deliberate lines: « Les bonnes marques / méritent de meilleures / vidéos publicitaires. »)
+  // Final CTA (three deliberate lines: « Les bonnes marques / méritent de meilleures / publicités. »)
   "Let's create together": "Créons ensemble",
   "Good brands deserve": "Les bonnes marques",
   "deserve better": "méritent de meilleures",
-  "better creatives.": "vidéos publicitaires.",
-  "Whether you need paid social creatives, UGC, spokesperson ads, or a long-term creative partner, we build content designed for modern attention.": "Publicités pour les réseaux sociaux, UGC, vidéos avec porte-parole ou partenaire créatif sur le long terme : nous concevons des contenus pensés pour capter l’attention d’aujourd’hui.",
+  "better creatives.": "publicités.",
+  "Whether you need paid social creatives, UGC, spokesperson ads, or a long-term creative partner, we build content designed for modern attention.": "Publicités pour les réseaux sociaux, vidéos UGC, vidéos Spokesperson ou accompagnement créatif sur le long terme : nous produisons des contenus qui captent l’attention de votre audience.",
   "Send us an email": "Nous écrire",
   "Videos produced": "Vidéos produites",
   "Views generated": "Vues générées",
@@ -103,9 +103,9 @@ export default {
 
   // FAQ chrome
   "FAQ": "FAQ",
-  "Things brands": "Les questions que se posent",
-  "usually ask.": "souvent les marques.",
-  "We believe good creative partnerships start with clarity.": "Pour nous, un bon partenariat créatif commence par la clarté.",
+  "Things brands": "Vos questions,",
+  "usually ask.": "nos réponses.",
+  "We believe good creative partnerships start with clarity.": "Production, délais, tarifs, droits d’utilisation : voici l’essentiel à savoir avant de travailler ensemble.",
   "Still have questions?": "Encore des questions ?",
-  "Reach us directly, we're happy to answer anything before you commit to anything.": "Écrivez-nous directement : nous répondons volontiers à toutes vos questions avant tout engagement.",
+  "Reach us directly, we're happy to answer anything before you commit to anything.": "Une question sur votre projet ? Parlons-en.",
 }

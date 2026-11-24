@@ -164,11 +164,11 @@ test('French share image: a real 1200x630 PNG exists and every French page uses 
 })
 
 // ── creators ───────────────────────────────────────────────────────────────────────────────────────────────────
-test('French creator videos: nine valid French-only gallery videos (five of two opaque creators, four of the founder) and two landscape client-stage videos; real Cloudflare ids and posters; no brand/credit shown, no invented upload date', () => {
+test('French creator videos: nine valid French-only gallery videos (five of two opaque creators, four of the founder) and three landscape client-stage videos (FIXD1-3); real Cloudflare ids and posters; no brand/credit shown, no invented upload date', () => {
   const all = PORTFOLIO.filter((i) => (i.onlyIn ?? []).includes('fr'))
-  assert.equal(all.length, 11)
+  assert.equal(all.length, 12)
   const stage = all.filter((v) => v.showcase === 'fixd')
-  assert.equal(stage.length, 2)
+  assert.equal(stage.length, 3)
   for (const v of stage) {
     assert.deepEqual(portfolioProblems(v), [], v.id); assert.equal(v.orientation, 'landscape'); assert.deepEqual(v.languages, ['fr']); assert.deepEqual(v.onlyIn, ['fr'])
     assert.match(v.source.cloudflareId, /^[0-9a-f]{32}$/); assert.ok(fs.existsSync(path.join(ROOT, 'public', v.poster)), v.poster)
@@ -193,7 +193,7 @@ test('French creator videos: nine valid French-only gallery videos (five of two 
     assert.equal(v.uploadDate, undefined); assert.equal(v.creator, undefined); assert.equal(v.brand, undefined); assert.equal(v.productionCredit, undefined)
     assert.ok(isDisplayable(v)); assert.equal(v.industry, 'unclassified'); assert.equal(v.production, undefined)
   }
-  assert.equal(new Set(all.map((v) => v.source.cloudflareId)).size, 11)
+  assert.equal(new Set(all.map((v) => v.source.cloudflareId)).size, 12)
   assert.equal(displayableFor('fr').length, 9)
   // never on English pages or in the English library; never the English library on French pages
   assert.ok(!ENGLISH_LIBRARY.some((i) => (i.onlyIn ?? []).includes('fr')))
@@ -337,12 +337,14 @@ test('French pages contain no leftover English or Spanish: every visible sentenc
   }
 })
 
-test('client reviews: shown as labelled French translations with the verbatim English original kept (lang="en"), names and logos unchanged', () => {
+test('client reviews: French text only (no translation label, no English original, no explanatory note), the owner’s approved French wording, names and logos unchanged', () => {
   const home = page('/fr')
-  assert.ok((home.match(/Traduction française/g) ?? []).length >= 3)
-  for (const q of ['Mohamed understood the concept really well', 'Working with Mohamad was an absolute pleasure', 'The videos are amazing again']) assert.ok(home.includes(q), `original kept: ${q}`)
-  assert.match(home, /<q lang="en">/)
+  const t = textOf(home).join(' ')
+  assert.ok(!/Traduction française|Avis d’origine|rédigés en anglais/.test(t), 'no translation label, no original label, no note')
+  assert.ok(!/<q lang="en">/.test(home) && !/Mohamed understood the concept|Working with Mohamad|The videos are amazing again/.test(home), 'no English original on the French page')
+  for (const frag of ['Des vidéos de grande qualité, livrées dans les délais, avec une excellente communication du début à la fin.', 'Les vidéos UGC correspondaient exactement à ce qu’il nous fallait pour développer nos campagnes publicitaires.', 'À chaque collaboration, la qualité s’améliore.', 'Travailler avec Mohamad a été un vrai plaisir.', 'C’est notre troisième commande, et certainement pas la dernière.', 'Ce que nos clients disent de nous.', 'Des collaborations qui durent']) assert.ok(t.replace(/\s+/g, '').includes(frag.replace(/\s+/g, '')), frag)
   for (const b of ['Elyon Dubai', 'Adscale', 'Talk360']) assert.ok(home.includes(b), b)
+  assert.ok(/Client fidèle/.test(t) && /Lire l’avis complet/.test(t))
 })
 
 test('internal links: translated targets stay in French, every other target is an existing English page and says so (« en anglais »)', () => {
@@ -368,18 +370,19 @@ test('French pages: no VideoObject, no invented claims; CONVRT presents no Frenc
     assert.ok(!/bureau à (Paris|Lyon)|notre bureau|notre équipe (parisienne|française)|basés? (à|en) (Paris|France)|garantie? (de )?(ROAS|conversions|ventes)/i.test(t), p)
   }
   const home = textOf(page('/fr')).join(' ')
-  // The French homepage's client stage is a single repeat-business story (no founder statistics in it); the statistics strip further down keeps its asterisk and its attribution.
-  assert.match(home, /Un premier projet\. Puis d’autres\./)
-  assert.match(home, /Une collaboration qui s’est poursuivie au-delà de la première vidéo\./)
-  assert.match(home, /Expérience professionnelle cumulée de notre fondateur/, 'the figures that remain are attributed to the founder’s combined experience')
-  assert.ok(!/Notre fondateur a travaillé avec plus de 500 clients/.test(home), 'the old founder headline is replaced by the client story')
+  // Revision 3: the stage is the founder-experience section (500+ clients), not a case study; the figures stay attributed to the founder's combined experience, once, concisely.
+  assert.match(home, /Expérience du fondateur/i)
+  assert.match(home, /Plus de 500 clients accompagnés/)
+  assert.match(home, /Une expérience acquise chez CONVRT et au fil de collaborations dans la production créative\./)
+  assert.match(home, /Expérience cumulée du fondateur, chez CONVRT et au fil de ses précédentes collaborations\./, 'the figures that remain are attributed to the founder’s combined experience')
+  assert.ok(!/Un premier projet|Cas client/i.test(home), 'no longer an individual case study')
 })
 
-test('independent creators: the French showcase and UGC page say the videos are creators’ examples, not necessarily CONVRT productions', () => {
+test('the standing « independent creators » paragraph is gone from the French showcase and UGC page (owner, 2026-11-24); provenance lives in the data', () => {
   for (const p of ['/fr/creator-showcase', '/fr/ugc-video-agency']) {
     const t = textOf(page(p)).join(' ')
-    assert.match(t, /créateurs indépendants/, p)
-    assert.match(t, /pas (forcément|nécessairement) des productions (de )?CONVRT/, p)
+    assert.ok(!/pas (forcément|nécessairement) des productions (de )?CONVRT/.test(t), p)
+    assert.ok(!/Créateur · Français|UGC · Français/.test(t), `${p}: no generic creator/language pill`)
   }
 })
 

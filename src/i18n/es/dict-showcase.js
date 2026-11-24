@@ -87,7 +87,7 @@ export default {
   "Organic social examples": "Ejemplos de contenido orgánico",
   "Short-form videos made for a brand’s own social accounts.": "Vídeos cortos pensados para las cuentas de redes sociales de una marca.",
   "Organic social video production": "Producción de vídeo orgánico para redes sociales",
-  "These are creators’ examples, not necessarily CONVRT productions. For documented CONVRT projects, read our": "Los vídeos de esta biblioteca son muestras de creadores independientes. Para conocer proyectos documentados de CONVRT, puedes consultar el",
+  "For documented CONVRT projects, read our": "Para conocer proyectos documentados de CONVRT, puedes consultar el",
   "organic social media case study": "caso de Graspo (en inglés)",
   "and our": "y el",
   "paid social UGC case study": "caso de Elyon (en inglés)",

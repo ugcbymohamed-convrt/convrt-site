@@ -16,7 +16,7 @@ export const FR_HERO = {
      (FR_PRIMARY_KEYWORDS in seo.js) and none borrows « agence UGC ». The server HTML holds only the first rolling word. The secondary button goes to the in-page section, never to a
      video gallery. A   keeps the colon attached to the word before it. */
   'spokesperson-h1': {
-    lines: [['Vidéos', 'avec', 'porte-parole :'], ['de', 'vrais', 'présentateurs']],
+    lines: [['Vidéos', 'Spokesperson :'], ['de', 'vrais', 'présentateurs']],
     lead: ['pour'],
     words: ['convaincre', 'expliquer', 'présenter', 'démontrer'],
     sizer: 'convaincre.',
@@ -46,6 +46,6 @@ export const FR_HOME_HERO = {
   offersLabel: 'Pas encore prêt ? Deux autres façons de commencer, gratuitement.',
   offers: {
     video: { title: ['1 vidéo', 'GRATUITE'], description: 'Testez notre production sans risque.', cta: 'Voir si vous êtes éligible' },
-    hooks: { title: ['10 hooks pub', 'GRATUITS'], description: 'Des accroches inédites pour vos prochaines pubs.', cta: 'Bientôt disponible' },
+    hooks: { title: ['10 hooks', 'GRATUITS'], description: 'Des accroches inédites pour vos prochaines pubs.', cta: 'Bientôt disponible' },
   },
 }

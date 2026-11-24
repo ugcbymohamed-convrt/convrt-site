@@ -1,8 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { trackEvent } from '../../lib/analytics.js'
 import { CREATOR_SHOWCASE_PATH } from '../../config.js'
-import { CREATOR_EXAMPLES_NOTE } from '../../content/attribution.js'
-import { posterUrl, languageLabel, captionOf } from '../../content/portfolio.js'
+import { posterUrl, captionOf } from '../../content/portfolio.js'
 import { usePreviewHost } from '../../lib/previewHost.js'
 import SectionDivider from '../SectionDivider.jsx'
 import { Section, Head, Reveal, GhostCta } from './shared.jsx'
@@ -55,8 +54,6 @@ export const UGC_GALLERY = {
 
 function Card({ item, index, playing, onPlay, config }) {
   const sample = item.sample
-  // Spanish pages name the language in full ("UGC · Español"); English keeps the two-letter code.
-  const langs = sample ? 'EN' : (item.languages ?? []).map((l) => (currentLocale() === 'en' ? l.toUpperCase() : languageLabel(l))).join(' · ')
   return (
     <figure className="group relative aspect-[9/16] overflow-hidden rounded-3xl border border-lime/25 bg-surface-1 shadow-[0_26px_60px_-30px_rgba(0,0,0,0.9),0_0_44px_-26px_rgba(213,255,64,0.5)] transition-[transform,border-color,box-shadow] duration-300 hover:-translate-y-1 hover:border-lime/60 hover:shadow-[0_30px_64px_-28px_rgba(0,0,0,0.9),0_0_56px_-18px_rgba(213,255,64,0.55)] motion-reduce:transition-none motion-reduce:hover:translate-y-0">
       {playing ? (
@@ -85,9 +82,6 @@ function Card({ item, index, playing, onPlay, config }) {
             />
           )}
           <span aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/35" />
-          <span aria-hidden="true" className="absolute left-3 top-3 inline-flex items-center gap-1.5 rounded-full border border-lime/40 bg-black/55 px-2.5 py-1 text-xs font-bold uppercase tracking-[0.1em] text-lime backdrop-blur">
-            <span className="h-1.5 w-1.5 rounded-full bg-lime" />{langs ? `${config.badge} · ${langs}` : config.badge}
-          </span>
           <span aria-hidden="true" className="absolute left-1/2 top-1/2 flex h-14 w-14 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-lime/60 bg-lime/20 text-ink backdrop-blur transition-transform duration-200 group-hover:scale-110 motion-reduce:transition-none">
             <PlayGlyph />
           </span>
@@ -180,7 +174,6 @@ export default function UgcGallery({ items, config: configProp = UGC_GALLERY }) 
     <Section id={config.id} label={config.headingId} glow>
       <Reveal>
         <Head id={config.headingId} eyebrow={config.eyebrow} title={config.title} intro={config.intro} />
-        <p className="mx-auto mt-3 max-w-xl text-center text-[13px] leading-relaxed text-ink-muted">{tr(CREATOR_EXAMPLES_NOTE)}</p>
       </Reveal>
 
       <Reveal className="mt-8 md:mt-10">

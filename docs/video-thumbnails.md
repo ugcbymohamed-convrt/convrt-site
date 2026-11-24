@@ -6,7 +6,7 @@ and the /scale video read the time through `streamPoster()`. Frames are real fra
 generated, uploaded or changed on Cloudflare. Selection: ten candidates per video across its length, reviewed for a clear natural face with open eyes where there is one, a recognisable product, good light and composition,
 no half-cut or motion blur, and as little stray caption as the footage allows (many videos have burned-in subtitles on every frame, so a small caption is sometimes unavoidable).
 
-**80 videos have a chosen frame.** Contact sheet of the chosen frames: `docs/video-thumbnail-contact-sheet.jpg`.
+**81 videos have a chosen frame.** Contact sheet of the chosen frames: `docs/video-thumbnail-contact-sheet.jpg`.
 
 Not changed: the Roadmap explainer keeps its deliberately chosen 25.6 s frame; the self-hosted Adscale clip (`/showcase/adscale-creator.mp4`) is not on Stream and keeps its poster.
 
@@ -32,6 +32,7 @@ Not changed: the Roadmap explainer keeps its deliberately chosen 25.6 s frame; t
 | `33a4063e…` | 5.6s | portfolio:ugc-hero-1; home-hero:home-hero-ugc-1 |
 | `3616606e…` | 3.6s | portfolio:showcase-graspo-2 (home panel graspo); graspo case study 1.2M |
 | `3866056a…` | 7.1s | portfolio:es-ugc-5 [es] |
+| `39e4049b…` | 20s | portfolio:fr-showcase-fixd-3 (home panel fixd) [fr] |
 | `3a41e0f7…` | 9.1s | portfolio:ugc-gal-5 |
 | `3e6b7af6…` | 15.8s | portfolio:es-ugc-2 [es]; home-hero-es:home-hero-es-left |
 | `424622b3…` | 6.1s | portfolio:creator-09 |

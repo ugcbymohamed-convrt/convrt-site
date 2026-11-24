@@ -165,11 +165,11 @@ test('private pages never carry the share image (noindex, no url)', () => {
 })
 
 // ── attribution ─────────────────────────────────────────────────────────────────────────
-test('creator-examples attribution is rendered by the shared gallery (all four service pages) and by the Creator Showcase hero, from one constant', () => {
-  assert.match(read('src/components/ugc/UgcGallery.jsx'), /CREATOR_EXAMPLES_NOTE/)
-  assert.match(read('src/components/ourwork/OurWorkHero.jsx'), /CREATOR_EXAMPLES_NOTE/)
+test('the standing creator-examples paragraph is gone (owner, 2026-11-24); the four service pages still share one gallery component', () => {
+  assert.doesNotMatch(read('src/components/ugc/UgcGallery.jsx'), /CREATOR_EXAMPLES_NOTE/)
+  assert.doesNotMatch(read('src/components/ourwork/OurWorkHero.jsx'), /CREATOR_EXAMPLES_NOTE/)
   for (const f of ['UgcVideoAgencyPage', 'SpokespersonVideoPage', 'OrganicSocialVideoPage', 'SaasVideoPage']) assert.match(read(`src/${f}.jsx`), /<UgcGallery /, `${f} uses the shared gallery`)
-  assert.match(read('src/content/attribution.js'), /independent creators[\s\S]*not necessarily productions by CONVRT/)
+  assert.ok(!fs.existsSync(path.join(ROOT, 'src/content/attribution.js')), 'the disclaimer constant is deleted')
 })
 
 // ── hosting config ──────────────────────────────────────────────────────────────────────

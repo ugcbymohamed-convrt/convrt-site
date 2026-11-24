@@ -22,6 +22,7 @@ export const POSTER_FRAMES = {
   'e4e8c66b5d6fef3d15ddf31ebcd17550': 22.1, // portfolio:fr-mohamed-tripmap [fr]
   '9eedb31ea2296e96882de394b0a7e3a7': 3.0, // portfolio:fr-showcase-fixd-1 (French client stage, landscape)
   '490a0502253d32c4b22085077b396437': 3.0, // portfolio:fr-showcase-fixd-2 (French client stage, landscape)
+  '39e4049b9e5993f5143037b2ebbc9bb5': 20.0, // portfolio:fr-showcase-fixd-3 (French client stage, landscape; the FIXD device in hand)
   '6c04c13dbb9ff7042f30e028b7394fe6': 4.5, // portfolio:es-ugc-hero-1 [es]
   '816d316906f79fe216d6f62079a0047f': 23.8, // portfolio:es-ugc-hero-2 [es]
   '75e7a204d0d4d2c75fe1ad19f0348461': 3.9, // portfolio:es-ugc-hero-3 [es]

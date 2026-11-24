@@ -86,7 +86,7 @@ test('pure SEO data: French title, description and social copy for each page; on
     assert.doesNotMatch(s.title + s.description + s.ogTitle + s.ogDescription, /agence UGC/i, `${bp}: « agence UGC » belongs to the UGC page`)
     assert.doesNotMatch(s.title + s.description, /\$|USD|€|\d\s?%|garanti|meilleure|n°\s?1|leader/i, `${bp}: no amount, guarantee or superlative in the snippet`)
   }
-  assert.match(FR_SEO[SPK].title, /porte-parole/i)
+  assert.match(FR_SEO[SPK].title, /Spokesperson/i)
   assert.match(FR_SEO[SAAS].title, /vidéo explicative SaaS/i)
   assert.match(FR_SEO[ORG].title, /réseaux sociaux/i)
 })
@@ -166,7 +166,7 @@ after(() => { if (tmp) fs.rmSync(tmp, { recursive: true, force: true }) })
 
 test('built pages: real static HTML in French, French <title>, description and H1, one H1, indexable, self-referencing canonical', () => {
   const H1 = {
-    [SPK]: /^Vidéos avec porte-parole : de vrais présentateurs pour convaincre\.?$/,
+    [SPK]: /^Vidéos Spokesperson : de vrais présentateurs pour convaincre\.?$/,
     [SAAS]: /^Vidéos explicatives SaaS : conçues pour expliquer et convaincre\.?$/,
     [ORG]: /^Vidéos pour les réseaux sociaux : du contenu organique pensé pour engager\.?$/,
   }
@@ -183,7 +183,7 @@ test('built pages: real static HTML in French, French <title>, description and H
     assert.ok(text(h).length > 4000, `${bp}: substantive crawlable French text`)
   }
   // each page's H1 carries its own primary keyword and none borrows another page's
-  assert.match(h1Of(page(fr(SPK))), /porte-parole/i); assert.match(h1Of(page(fr(SAAS))), /explicatives SaaS/i); assert.match(h1Of(page(fr(ORG))), /réseaux sociaux/i)
+  assert.match(h1Of(page(fr(SPK))), /Spokesperson/i); assert.match(h1Of(page(fr(SAAS))), /explicatives SaaS/i); assert.match(h1Of(page(fr(ORG))), /réseaux sociaux/i)
   for (const bp of SERVICES) assert.doesNotMatch(h1Of(page(fr(bp))) + FR_SEO[bp].title, /agence UGC/i, bp)
 })
 
@@ -231,7 +231,7 @@ test('no « (en anglais) » on links to the three pages (home cards, footer, pri
   assert.match(text(footer), /À propos \(en anglais\)/); assert.match(text(footer), /Mentions légales \(en anglais\)/)
   // the pricing page's two cross-links no longer say « en anglais »
   const pricing = text(page('/fr/pricing'))
-  assert.match(pricing, /Découvrir la vidéo avec porte-parole(?! \(en anglais\))/); assert.match(pricing, /Découvrir la production de vidéos pour les réseaux sociaux(?! \(en anglais\))/)
+  assert.match(pricing, /Découvrir la vidéo Spokesperson(?! \(en anglais\))/); assert.match(pricing, /Découvrir la production de vidéos pour les réseaux sociaux(?! \(en anglais\))/)
 })
 
 test('NO videos on the three French pages: no <video>, no iframe, no stream URL, no gallery or showcase section, no placeholder, no “coming soon”, no empty three-phone stage', () => {
@@ -267,7 +267,7 @@ test('structured data: one stable Organization @id, a Service with a stable @id 
     const wp = g.find((n) => n['@type'] === 'WebPage')
     assert.equal(wp['@id'], `${SITE_URL}${fr(bp)}#webpage`); assert.equal(wp.inLanguage, 'fr-FR'); assert.equal(wp.about['@id'], services[0]['@id'])
     const bc = g.find((n) => n['@type'] === 'BreadcrumbList')
-    const crumb = { [SPK]: 'Vidéos avec porte-parole', [ORG]: 'Vidéos pour les réseaux sociaux', [SAAS]: 'Vidéos pour le SaaS' }[bp]
+    const crumb = { [SPK]: 'Vidéos Spokesperson', [ORG]: 'Vidéos pour les réseaux sociaux', [SAAS]: 'Vidéos pour le SaaS' }[bp]
     assert.deepEqual(bc.itemListElement.map((i) => [i.position, i.name, i.item]), [[1, 'Accueil', `${SITE_URL}/fr/`], [2, crumb, `${SITE_URL}${fr(bp)}`]], `${bp}: BreadcrumbList`)
     assert.ok(text(h).includes(`Accueil / ${crumb}`), `${bp}: the visible breadcrumb says the same as the markup`)
     const json = JSON.stringify(g)

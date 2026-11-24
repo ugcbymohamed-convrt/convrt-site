@@ -8,7 +8,7 @@ import { tr, hrefFor } from '../../i18n/tr.js'
 
    It describes formats and industries only as far as the approved videos really cover them: a format appears only while at least one approved video of that `type` exists, and an
    industry only while at least one approved video is filed under it, so the text can never promise something the library does not show. No creator names, brands, languages, places,
-   dates or outcomes are stated. The videos are independent creators' examples (CREATOR_EXAMPLES_NOTE stays in the hero); nothing here calls them CONVRT productions. The links go to
+   dates or outcomes are stated. The videos are independent creators' examples (no standing disclaimer paragraph any more: owner decision 2026-11-24); nothing here calls them CONVRT productions. The links go to
    the service pages, which explain how CONVRT produces each format, and to the two published case studies, which ARE documented CONVRT projects. The anchors do not name the clients: the homepage client videos stay off this page (tests/creator-showcase.test.mjs). */
 
 const FORMATS = [
@@ -47,7 +47,7 @@ export default function ShowcaseFormats({ items }) {
           </ul>
         )}
         <p className="mt-6 max-w-3xl text-[14px] leading-relaxed text-ink-muted">
-          {tr('These are creators’ examples, not necessarily CONVRT productions. For documented CONVRT projects, read our')}{' '}
+          {tr('For documented CONVRT projects, read our')}{' '}
           <TextLink href={PATHS.caseStudyGraspo} onClick={() => trackEvent('showcase_service_link_click', { service: 'case-study-organic' })}>{tr('organic social media case study')}</TextLink> {tr('and our')}{' '}
           <TextLink href={PATHS.caseStudyElyon} onClick={() => trackEvent('showcase_service_link_click', { service: 'case-study-ugc' })}>{tr('paid social UGC case study')}</TextLink>.
         </p>

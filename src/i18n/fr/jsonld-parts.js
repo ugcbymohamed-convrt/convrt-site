@@ -47,7 +47,7 @@ export const coreServiceNodesFr = (pageUrl) =>
 
 const orgProvider = { '@id': ORG_ID }
 const list = (items) => `${items.slice(0, -1).join(', ')} et ${items.at(-1)}`
-const SERVICE_TYPE_PAID = 'Production de publicités vidéo UGC et avec porte-parole'
+const SERVICE_TYPE_PAID = 'Production de publicités vidéo UGC et Spokesperson'
 const SERVICE_TYPE_ORGANIC = 'Production et gestion de contenus organiques pour les réseaux sociaux'
 
 /* The package Services of /fr/pricing (Sprint, Sprint Plus, Organic Light/Growth, raw footage, custom packages), with page-scoped @ids. */

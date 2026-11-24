@@ -5,8 +5,8 @@ export const FR_CORE_SERVICES = {
     description: 'Publicités UGC portées par des créateurs pour les réseaux sociaux payants, produites de A à Z : stratégie créative, scripts, sélection des créateurs, tournage et montage.',
   },
   spokesperson: {
-    name: 'Publicité vidéo avec porte-parole',
-    description: 'Publicités avec porte-parole qui présentent une offre clairement et inspirent confiance, produites de A à Z par CONVRT.',
+    name: 'Publicité vidéo Spokesperson',
+    description: 'Des vidéos Spokesperson qui présentent une offre clairement et inspirent confiance, produites de A à Z par CONVRT.',
   },
   organic: {
     name: 'Production et gestion de contenus organiques pour les réseaux sociaux',

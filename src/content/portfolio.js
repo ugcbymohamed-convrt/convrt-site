@@ -108,7 +108,7 @@ export const PORTFOLIO = [
      captions confirm the spoken language of each file (no audio transcript was run). Brands that appear in the footage are never named in the copy (no brandDisplay / creditDisplay); titles describe only what the
      footage shows. No uploadDate is recorded, so no VideoObject markup is emitted. `production` is left out on purpose (the owner has not said whether CONVRT produced each one).
      USED WHERE: the four vertical videos (placement 'gallery'): Creator Showcase, UGC page gallery; Comma, SKYCOP, ROUTE-FACILE and TRIPMAP are also in the French homepage creator carousel (`homeCreator: { fr }`).
-     FIXD1 and FIXD2 (4K, 16:9; uploaded as 1080p derivatives, the originals untouched) are the two landscape frames of the French client stage (`showcase: 'fixd'`): they are NOT portfolio-gallery videos
+     FIXD1, FIXD2 and FIXD3 (4K, 16:9; uploaded as 1080p derivatives, the originals untouched; FIXD3 = ~/Desktop/FR-2/FIXD3.mp4, a third hook variation, 2026-11-24) are the three landscape frames of the French client stage (`showcase: 'fixd'`): they are NOT portfolio-gallery videos
      (portfolioUse false), exactly like the English client-stage videos. Comma is NOT the French hero video: the hero's main video is the French-dubbed CONVRT advertisement (homeHero.js). */
   {
     id: 'fr-mohamed-comma',
@@ -201,6 +201,20 @@ export const PORTFOLIO = [
     orientation: 'landscape',
     source: { cloudflareId: '490a0502253d32c4b22085077b396437' },
     poster: '/portfolio/fr-showcase-fixd-2.webp',
+    creatorId: 'fr-c03',
+    brand: 'FIXD',
+    showcase: 'fixd',
+    approval: FR_CLIENT_STAGE_APPROVAL,
+  },
+  {
+    id: 'fr-showcase-fixd-3',
+    caption: 'FIXD : variation d’accroche, du boîtier à l’application, dans la rue puis en voiture.',
+    industry: 'unclassified',
+    languages: ['fr'],
+    onlyIn: ['fr'],
+    orientation: 'landscape',
+    source: { cloudflareId: '39e4049b9e5993f5143037b2ebbc9bb5' },
+    poster: '/portfolio/fr-showcase-fixd-3.webp',
     creatorId: 'fr-c03',
     brand: 'FIXD',
     showcase: 'fixd',
