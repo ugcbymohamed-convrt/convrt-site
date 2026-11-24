@@ -11,6 +11,8 @@ import { blogIndexHead } from './lib/blog/seo.js'
 import { BLOG_CATEGORIES } from './lib/blog/schema.js'
 import { useDocumentHead } from './lib/useDocumentHead.js'
 import { captureAttribution, trackEvent } from './lib/analytics.js'
+import { currentLocale } from './i18n/locale.js'
+import BlogPageAr from './BlogPageAr.jsx'
 
 /* ─────────────────────────────────────────────
    /blog — CONVRT Insights.
@@ -26,7 +28,7 @@ import { captureAttribution, trackEvent } from './lib/analytics.js'
 
 const categoryLabel = (slug) => BLOG_CATEGORIES.find((c) => c.slug === slug)?.label ?? ALL.label
 
-export default function BlogPage() {
+function BlogPageEn() {
   const published = useMemo(() => getPublishedArticles(), [])
   const [active, setActive] = useState(ALL.slug)
   const model = useMemo(() => buildIndexModel(published, PLANNED_TOPICS, active), [published, active])
@@ -94,6 +96,11 @@ export default function BlogPage() {
       <RoadmapPromo className="mx-auto mt-10 max-w-7xl px-5 pb-16 md:mt-14 md:px-8 md:pb-24" />
     </>
   )
+}
+
+/* /ar/blog is its own page (an Arabic index: no English article is shown as Arabic); English keeps this one. */
+export default function BlogPage() {
+  return currentLocale() === 'ar' ? <BlogPageAr /> : <BlogPageEn />
 }
 
 function Group({ title, items }) {

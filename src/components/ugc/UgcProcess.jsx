@@ -230,7 +230,8 @@ function UgcProcessFooter() {
             ? <><bdi>{SPRINT.turnaroundBusinessDays}</bdi> أيام عمل لباقة <bdi>{SPRINT.name}</bdi> و<bdi>{SPRINT_PLUS.turnaroundBusinessDays}</bdi> يومًا لباقة <bdi>{SPRINT_PLUS.name}</bdi>، تُحسب من لحظة اعتمادك للأفكار والنصوص، وليس من تاريخ الدفع.</>
             : <>{SPRINT.turnaroundBusinessDays} días laborables para {SPRINT.name} y {SPRINT_PLUS.turnaroundBusinessDays} para {SPRINT_PLUS.name}, a partir de la aprobación de los conceptos y guiones, no desde el pago.</>}
       </p>
-      <p className="mx-auto mt-2 max-w-3xl text-center text-xs text-ink-muted">{tr('Scenes are illustrative. The portraits are for illustration only.')}</p>
+      {/* Arabic (owner, 2026-11-25): the repeated "scenes are illustrative" line is not shown. */}
+      {currentLocale() !== 'ar' && <p className="mx-auto mt-2 max-w-3xl text-center text-xs text-ink-muted">{tr('Scenes are illustrative. The portraits are for illustration only.')}</p>}
     </>
   )
 }

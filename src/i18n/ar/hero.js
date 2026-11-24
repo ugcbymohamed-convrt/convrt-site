@@ -9,7 +9,7 @@ export const AR_HERO = {
     lines: [['فيديوهات', 'UGC', 'حقيقية.']],
     lead: ['مصمّمة', 'كي'],
     words: ['تلفت الانتباه', 'تُقنع جمهورك', 'تُلهم متابعيك'],
-    sizer: 'تُلهم متابعيك.',
+    sizer: 'تلفت الانتباه.',
     secondary: { label: 'مكتبة الفيديوهات', href: CREATOR_SHOWCASE_PATH },
   },
   'spokesperson-h1': {
@@ -20,10 +20,10 @@ export const AR_HERO = {
     secondary: { label: 'مكتبة الفيديوهات', href: CREATOR_SHOWCASE_PATH },
   },
   'organic-h1': {
-    lines: [['فيديوهات', 'للسوشيال', 'ميديا']],
+    lines: [['فيديوهات', 'عضوية']],
     lead: ['تستحق'],
-    words: ['المتابعة', 'المشاهدة', 'الاهتمام'],
-    sizer: 'الاهتمام.',
+    words: ['المشاهدة', 'المتابعة', 'الاهتمام'],
+    sizer: 'المشاهدة.',
     secondary: { label: 'كيف نعمل', href: '#how-it-works' },
   },
   'saas-h1': {

@@ -87,6 +87,8 @@ export default function UgcResults() {
               </dl>
 
               {/* the client's own messages: ONE evidence container, messages stacked and aligned together */}
+              {/* Arabic (owner, 2026-11-25): the client's two raw English messages are not shown on the Arabic page; the figures above and the qualification line below carry the result. */}
+              {locale !== 'ar' && (
               <figure className="mt-5 rounded-2xl border border-lime/25 bg-canvas/60 p-4">
                 <figcaption className="mb-3 flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.14em] text-lime">
                   <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-lime" />{tr('Client-reported results')}</figcaption>
@@ -98,6 +100,7 @@ export default function UgcResults() {
                   ))}
                 </ul>
               </figure>
+              )}
 
               <p className="mt-4 max-w-xl text-[13px] leading-relaxed text-ink-muted">{tr('One individual creative, client-reported during an early learning phase. Not typical, not a guarantee. Results depend on brand, offer, audience and budget.')}</p>
               <p className="mt-2.5 text-[15px]">

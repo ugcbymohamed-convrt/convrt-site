@@ -54,7 +54,7 @@ export default {
   "Immediately / This month": "فورًا / خلال هذا الشهر",
   "Within 1–3 months": "خلال 1–3 أشهر",
   "Just exploring options": "أستكشف الخيارات فقط",
-  "Are you currently looking to invest in professional video production?": "هل تخطط حاليًا للاستثمار في إنتاج فيديو احترافي؟",
+  "Are you currently looking to invest in professional video production?": "هل تبحث حاليًا عن شريك إنتاج؟",
   "Yes, we’re actively looking for a production partner": "نعم، نبحث حاليًا عن شريك إنتاج",
   "Possibly, depending on the creative strategy": "ربما، بحسب الاستراتيجية الإبداعية",
   "Not yet, we’re only researching": "ليس بعد، نكتفي بالبحث حاليًا",

@@ -25,7 +25,7 @@ const links = [
   { label: 'Case Studies', href: '/case-studies', englishOnly: true, arHref: '/case-studies/graspo' },
   { label: 'How It Works', href: '#how-it-works', notInEnglish: true },
   { label: 'Pricing', href: '/pricing' },
-  { label: 'Blog', href: '/blog', englishOnly: true, arBlog: true },
+  { label: 'Blog', href: '/blog', englishOnly: true }, // Arabic: /ar/blog, its own page
   { label: 'Contact', href: '#contact', compactHide: true },
 ]
 
@@ -135,7 +135,7 @@ export default function Nav() {
               onKeyDown={(e) => { if (e.key === 'Escape') e.currentTarget.querySelector('a')?.blur() || document.activeElement?.blur?.() }}
             >
               <a
-                href={hrefOf(l)} {...(locale === 'ar' && l.arBlog ? { hrefLang: 'en' } : {})}
+                href={hrefOf(l)}
                 aria-haspopup="true"
                 className="inline-flex items-center gap-1 whitespace-nowrap text-[13px] text-ink-muted transition-colors hover:text-ink group-focus-within:text-ink group-hover:text-ink xl:text-sm"
               >
@@ -156,7 +156,7 @@ export default function Nav() {
           ) : (
             <a
               key={l.href}
-              href={hrefOf(l)} {...(locale === 'ar' && l.arBlog ? { hrefLang: 'en' } : {})}
+              href={hrefOf(l)}
               className={`whitespace-nowrap text-[13px] text-ink-muted transition-colors hover:text-ink xl:text-sm ${
                 l.compactHide ? 'hidden xl:inline' : ''
               }`}
@@ -207,7 +207,7 @@ export default function Nav() {
             {visibleLinks.map((l) => (
               <div key={l.href} className="flex flex-col">
                 <a
-                  href={hrefOf(l)} {...(locale === 'ar' && l.arBlog ? { hrefLang: 'en' } : {})}
+                  href={hrefOf(l)}
                   onClick={() => setOpen(false)}
                   className="rounded-lg px-3 py-3 text-base text-ink-muted hover:text-ink hover:bg-surface-1"
                 >

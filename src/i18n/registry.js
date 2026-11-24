@@ -40,6 +40,7 @@ export const TRANSLATED_PATHS = {
     '/creative-growth-roadmap',
     '/risk-free-trial',
     '/referrals',
+    '/blog', // the Arabic blog index (src/BlogPageAr.jsx); Arabic articles are listed in src/content/blogAr.js
   ],
 }
 

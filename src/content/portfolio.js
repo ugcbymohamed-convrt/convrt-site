@@ -1949,3 +1949,18 @@ export function buildFacets(items) {
 
 export const matchesFilters = (item, { language = null, category = null } = {}) =>
   (!language || (item.languages ?? []).includes(language)) && (!category || categoryOf(item) === category)
+
+/* CREATOR DIVERSITY (Arabic library, owner 2026-11-25): the same creator is never shown again within a desktop row (4 cards) while another creator is available. Deterministic and applied to the list
+   that is actually on screen (after any filter): it takes the items in their normal order and, for each position, the first remaining item whose creator is not among the last three chosen
+   (otherwise simply the first remaining one). Nothing is dropped or invented; items without a creatorId count as different from each other. English keeps its own file-order convention. */
+export function diversifyByCreator(list, window = 3) {
+  const left = [...list]
+  const out = []
+  while (left.length) {
+    const recent = out.slice(-window).map((i) => i.creatorId).filter(Boolean)
+    let k = left.findIndex((i) => !i.creatorId || !recent.includes(i.creatorId))
+    if (k < 0) k = 0
+    out.push(left.splice(k, 1)[0])
+  }
+  return out
+}

@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react'
+import { currentLocale } from './i18n/locale.js'
 import SectionDivider from './components/SectionDivider.jsx'
 import UgcHero from './components/ugc/UgcHero.jsx'
 import UgcGallery from './components/ugc/UgcGallery.jsx'
@@ -56,7 +57,8 @@ function ProcessFooter() {
         <a href={hrefFor(ORGANIC_PRICING_HREF)} className="font-medium text-ink underline decoration-lime/60 underline-offset-4 transition-colors hover:text-lime">{tr('pricing and terms')}</a>.
       </p>
       <p className="mx-auto mt-2 max-w-3xl text-center text-[15px] leading-relaxed text-ink-muted">{tr(ORGANIC_SCOPE_NOTE)}</p>
-      <p className="mx-auto mt-2 max-w-3xl text-center text-xs text-ink-muted">{tr('Scenes are illustrative. The portraits are for illustration only.')}</p>
+      {/* Arabic (owner, 2026-11-25): the repeated "scenes are illustrative" line is not shown. */}
+      {currentLocale() !== 'ar' && <p className="mx-auto mt-2 max-w-3xl text-center text-xs text-ink-muted">{tr('Scenes are illustrative. The portraits are for illustration only.')}</p>}
     </>
   )
 }

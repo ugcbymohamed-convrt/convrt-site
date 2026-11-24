@@ -6,7 +6,9 @@ import { currentLocale } from '../../i18n/locale.js'
 
 /* The paper scene is drawn and animated left to right (its JS offsets are in screen pixels). In Arabic it runs as a dir="ltr" island, exactly as in English: sheets are objects, not text, and must never mirror
    or cross into the heading. `contents` keeps the wrapper out of the layout. */
-const Scene = (props) => (currentLocale() === 'ar' ? <div dir="ltr" className="contents"><GraspoHeroScene {...props} /></div> : <GraspoHeroScene {...props} />)
+/* ENGLISH_HERO_LEAD: how much further down the English page the hero starts (the Case Studies header above it, measured at 1440 px: 471 px vs 97 px). */
+const ENGLISH_HERO_LEAD = 374
+const Scene = (props) => (currentLocale() === 'ar' ? <div dir="ltr" className="contents"><GraspoHeroScene offsetPx={320 - ENGLISH_HERO_LEAD} {...props} /></div> : <GraspoHeroScene {...props} />)
 
 /* ─────────────────────────────────────────────
    GRASPO CASE STUDY — HERO

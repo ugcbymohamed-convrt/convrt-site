@@ -674,9 +674,11 @@ html:lang(ar) blockquote.font-editorial { font-family: var(--font-ar); font-weig
 /* The rolling word of the service-page headlines (.ugc-reel) is a fixed-height box aligned with vertical-align: bottom and a line-height of 1.14, while the Arabic headline's lines use 1.3: the word then sat
    higher or lower than its neighbours depending on the face's metrics. In Arabic the box takes the headline's own line height, keeps its baseline (overflow is clipped with clip-path, which leaves the
    baseline alone) and aligns on it, so every word of the roll shares the baseline of the line. */
-:lang(ar) .ugc-reel { overflow: visible; clip-path: inset(0); vertical-align: baseline; line-height: 1.3; height: 1.3em; }
-:lang(ar) .ugc-reel::before { height: 1.3em; }
-:lang(ar) .ugc-reel-track > span { height: 1.3em; line-height: 1.3; }
+/* Arabic words carry dots and marks above and below the line (المشاهدة, تؤثّر): a 1.3em cell clipped them. The cell is now 1.7em tall with the text centred in it, and the box's extra height is taken back with
+   negative vertical margins, so the headline's own line box (and the word's baseline) are exactly as before. The clip window is still one cell, so a neighbouring word never shows. Horizontally the clip window is open (-2em): words sit on one line, so only the slot WIDTH (set by the longest word) used to cut a wider word at the end. */
+:lang(ar) .ugc-reel { overflow: visible; clip-path: inset(0 -2em); vertical-align: baseline; line-height: 1.7; height: 1.7em; margin-block: -0.2em; }
+:lang(ar) .ugc-reel::before { height: 1.7em; line-height: 1.7; }
+:lang(ar) .ugc-reel-track > span { height: 1.7em; line-height: 1.7; }
 /* The small eyebrow lines (letter-spaced capitals in English) have no case or tracking in Arabic, so at the same pixel size they read smaller than their English twins: a little larger. */
 :lang(ar) #showcase .uppercase { font-size: 13px; }
 

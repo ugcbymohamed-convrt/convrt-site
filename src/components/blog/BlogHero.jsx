@@ -2,7 +2,10 @@
    there are no published articles) the Coming Soon badge + line. The right-hand artwork is
    pure SVG and hidden below lg. */
 
+import { useTr } from '../../i18n/tr.js'
+
 export default function BlogHero({ comingSoon }) {
+  const tr = useTr()
   return (
     <section aria-labelledby="blog-h1" className="relative overflow-hidden">
       <div
@@ -21,19 +24,19 @@ export default function BlogHero({ comingSoon }) {
           <div className="lg:col-span-8">
             <div className="inline-flex items-center gap-2.5">
               <span className="h-px w-8 bg-lime" aria-hidden="true" />
-              <span className="text-xs font-semibold uppercase tracking-[0.22em] text-lime">The CONVRT Blog</span>
+              <span className="text-xs font-semibold uppercase tracking-[0.22em] text-lime">{tr('The CONVRT Blog')}</span>
             </div>
 
             <h1
               id="blog-h1"
               className="mt-5 font-display font-bold leading-[1.02] tracking-display-xl text-ink text-[2.6rem] min-[400px]:text-[3.1rem] sm:text-6xl lg:text-[4.4rem]"
             >
-              <span className="block">Better Creative.</span>
-              <span className="block text-lime">Smarter Growth.</span>
+              <span className="block">{tr('Better Creative.')}</span>
+              <span className="block text-lime">{tr('Smarter Growth.')}</span>
             </h1>
 
             <p className="mt-5 max-w-xl text-base leading-relaxed text-ink-muted md:text-lg">
-              Insights on video ads, creative strategy, SaaS marketing, and the ideas behind content that converts.
+              {tr('Insights on video ads, creative strategy, SaaS marketing, and the ideas behind content that converts.')}
             </p>
 
             {comingSoon && (
@@ -43,10 +46,10 @@ export default function BlogHero({ comingSoon }) {
                     <span className="absolute inline-flex h-full w-full rounded-full bg-lime opacity-60 motion-safe:animate-ping" />
                     <span className="relative inline-flex h-2 w-2 rounded-full bg-lime" />
                   </span>
-                  <span className="text-xs font-semibold uppercase tracking-[0.2em] text-lime">Coming soon</span>
+                  <span className="text-xs font-semibold uppercase tracking-[0.2em] text-lime">{tr('Coming soon')}</span>
                 </span>
                 <p className="max-w-lg text-sm leading-relaxed text-ink-muted md:text-[15px]">
-                  We’re putting together practical guides, creative breakdowns, and strategies worth sharing.
+                  {tr('We’re putting together practical guides, creative breakdowns, and strategies worth sharing.')}
                 </p>
               </div>
             )}

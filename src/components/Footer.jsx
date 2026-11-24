@@ -45,7 +45,7 @@ export default function Footer() {
               {enLike && <li><a className="hover:text-ink transition-colors" href={en ? '/case-studies' : h('/case-studies/graspo')}>{tr('Case Studies')}</a></li>}
               {!enLike && <li><a className="hover:text-ink transition-colors" href={`${homePrefix}#how-it-works`}>{tr('How It Works')}</a></li>}
               <li><a className="hover:text-ink transition-colors" href={h('/pricing')}>{tr('Pricing')}</a></li>
-              {enLike && <li><a className="hover:text-ink transition-colors" href="/blog" {...(en ? {} : { hrefLang: 'en' })}>{tr('Blog')}</a></li>}
+              {enLike && <li><a className="hover:text-ink transition-colors" href={en ? '/blog' : h('/blog')}>{tr('Blog')}</a></li>}
               <li><a className="hover:text-ink transition-colors" href={TRUST_PAGES_PUBLISHED ? h(CONTACT_PATH) : `${homePrefix}#contact`}>{tr('Contact')}</a></li>
               {enLike && <li><a className="hover:text-ink transition-colors" href={h(REFERRALS_PATH)}>{en ? <>Refer &amp; Earn</> : 'أحِل واربح'}</a></li>}
             </ul>

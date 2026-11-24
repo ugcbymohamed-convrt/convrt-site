@@ -48,10 +48,10 @@ test('Arabic is one shared language variant: ar, right-to-left, live, no country
 })
 
 test('Arabic page map: homepage, the FOUR service pages, the Graspo case study, pricing, the Showcase and the two application flows', () => {
-  const ALL = ['/', '/ugc-video-agency', '/spokesperson-video-production', '/social-media-video-production', '/saas-video-production', '/case-studies/graspo', '/pricing', '/creator-showcase', '/creative-growth-roadmap', '/risk-free-trial', '/referrals']
+  const ALL = ['/', '/ugc-video-agency', '/spokesperson-video-production', '/social-media-video-production', '/saas-video-production', '/case-studies/graspo', '/pricing', '/creator-showcase', '/creative-growth-roadmap', '/risk-free-trial', '/referrals', '/blog']
   assert.deepEqual(TRANSLATED_PATHS.ar, ALL)
   assert.deepEqual(AR_PAGES, ALL.map((p) => (p === '/' ? '/ar' : `/ar${p}`)))
-  for (const p of ['/about', '/contact', '/case-studies/elyon', '/case-studies', '/blog']) assert.ok(!hasTranslation('ar', p), `${p} has no Arabic page`)
+  for (const p of ['/about', '/contact', '/case-studies/elyon', '/case-studies']) assert.ok(!hasTranslation('ar', p), `${p} has no Arabic page`)
   // one Arabic route per service, mirroring the English route (no invented structure) and no country pages
   for (const p of ['/ugc-video-agency', '/spokesperson-video-production', '/social-media-video-production', '/saas-video-production']) assert.ok(AR_PAGES.includes(`/ar${p}`), p)
 })
@@ -84,7 +84,7 @@ test('contract terms are the English data: Sprint 3 months, Organic 6 months; on
 // Arabic writes "one X" with the number word (فيديو واحد), not a digit: the only figure the dictionary may spell out.
 /* Strings where the figure is spelled as a word or an Arabic grammatical form (dual «هوكان», singular «فيديو»), or where the owner's concise rewrite (2026-11-25) deliberately leaves a figure/abbreviation to the neighbouring text. The figures themselves stay in the figure cards, prices and tables. */
 const WORD_FOR_ONE = new Set(['1 video', 'Your next 5 ad concepts. Tailored to your brand.', 'Let’s Find Your Next 5 Ad Concepts.', '1 video produced by CONVRT', '2 bonus hook variations',
-  'B2B cooperation', 'B2B cooperation / agency / samples', 'Printing is a complex, spec-driven B2B service. There is no obvious "content" in paper weight, binding methods or offset color matching, until someone makes it interesting.'])
+  '10.7M views. 75 inbound leads.', 'B2B cooperation', 'B2B cooperation / agency / samples', 'Printing is a complex, spec-driven B2B service. There is no obvious "content" in paper weight, binding methods or offset color matching, until someone makes it interesting.'])
 test('dictionary: complete for every literal tr() of the Arabic pages; figures and price tokens survive; no empty values; consistent duplicates', () => {
   assert.deepEqual(missingFor('ar'), [])
   const d = DICTIONARIES.ar

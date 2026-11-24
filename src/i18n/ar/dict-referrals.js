@@ -4,6 +4,13 @@
 export default {
   // nav
   "Blog": "المدونة",
+  // the Arabic blog index (BlogHero, in Arabic). "Better Creative." / "Smarter Growth." are the two lines of the English H1; the Arabic H1 is «مدونة CONVRT».
+  "The CONVRT Blog": "أفكار ونصائح",
+  "Better Creative.": "مدونة",
+  "Smarter Growth.": "CONVRT",
+  "Insights on video ads, creative strategy, SaaS marketing, and the ideas behind content that converts.": "أفكار ونصائح عن إعلانات UGC، وإنتاج الفيديو، واستراتيجية المحتوى للعلامات التجارية.",
+  "Coming soon": "قريبًا",
+  "We’re putting together practical guides, creative breakdowns, and strategies worth sharing.": "نجهّز محتوى عن إعلانات الفيديو واستراتيجية المحتوى. ترقّب أول مقالاتنا.",
   // hero
   "CONVRT Referral Partner Program": "برنامج شركاء الإحالة في CONVRT",
   "Know a Brand That Needs": "تعرف علامة تجارية",

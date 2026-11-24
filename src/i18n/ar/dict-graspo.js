@@ -3,9 +3,9 @@
 export default {
   // hero
 "Graspo × CONVRT, Case Study": "Graspo × CONVRT · دراسة حالة",
-"6 months": "6 أشهر",
-"10.7M views. 75 inbound leads.": "10.7 مليون مشاهدة. 75 عميلًا محتملًا.",
-"Graspo is an established European printing company. CONVRT built its Arabic-first social presence, turning printing expertise into millions of views and real MENA inquiries.": "Graspo شركة طباعة أوروبية عريقة. بنينا حضورها العربي على السوشيال ميديا، وحوّلنا خبرة الطباعة إلى ملايين المشاهدات واستفسارات حقيقية من المنطقة.",
+"6 months": "خلال 6 أشهر",
+"10.7M views. 75 inbound leads.": "10.7 مليون مشاهدة عضوية لـ Graspo.",
+"Graspo is an established European printing company. CONVRT built its Arabic-first social presence, turning printing expertise into millions of views and real MENA inquiries.": "حوّلنا خبرة Graspo في الطباعة إلى محتوى عربي جذب ملايين المشاهدات وساعد العلامة توسّع حضورها في أسواق جديدة.",
 "See the page": "شاهد الصفحة",
 "Client": "العميل",
 "Graspo": "Graspo",

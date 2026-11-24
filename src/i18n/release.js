@@ -9,6 +9,7 @@ import { displayableFor } from '../content/portfolio.js'
 import { isPricingApproved } from './pricing.js'
 import { ES_PRICED_PAGES } from './es/pricing.js'
 import { AR_PRICED_PAGES } from './ar/pricing.js'
+import { AR_ARTICLES } from '../content/blogAr.js'
 
 /* Spanish pages that carry a price are blocked until the owner has approved every EUR amount (src/i18n/es/pricing.js); a gate lifts by itself when its condition is met. */
 const BLOCKS = {
@@ -22,6 +23,7 @@ const BLOCKS = {
   ar: {
     '/creator-showcase': () => displayableFor('ar').length === 0,
     '/risk-free-trial': () => !AR_FREE_VIDEO_REVIEWED,
+    '/blog': () => AR_ARTICLES.length === 0, // the Arabic blog index is reachable (the menu links to it) but noindex / out of the sitemap and hreflang until it lists an Arabic article
     ...Object.fromEntries(AR_PRICED_PAGES.map((p) => [p, () => !isPricingApproved('ar')])),
   },
 }
@@ -32,7 +34,7 @@ export const ES_FREE_VIDEO_REVIEWED = false
 export const AR_FREE_VIDEO_REVIEWED = false
 const REASONS = {
   es: { '/creator-showcase': 'no approved Spanish-language videos yet', '/risk-free-trial': 'Spanish free-video page awaiting owner/legal review' },
-  ar: { '/creator-showcase': 'no approved Arabic-language videos yet', '/risk-free-trial': 'Arabic free-video page awaiting owner/legal review' },
+  ar: { '/creator-showcase': 'no approved Arabic-language videos yet', '/risk-free-trial': 'Arabic free-video page awaiting owner/legal review', '/blog': 'no published Arabic blog articles yet' },
 }
 const PRICING_REASON = { es: 'Spanish EUR prices not approved yet', ar: 'Arabic USD pricing configuration invalid' }
 

@@ -12,7 +12,7 @@ export default {
   "of production": "من إنتاج CONVRT",
   "Try CONVRT risk free. See if you qualify.": "جرّب إنتاج فيديو إعلاني مجانًا.",
   "Apply for a complimentary video ad produced by our team, with two bonus hook variations to test. We review every application and invite the right-fit brands to a short call before anything goes into production.": "قدّم طلبك، وإذا كانت علامتك مناسبة للبرنامج، ننتج لك فيديو إعلاني لتجربة طريقة عملنا.",
-  "See If You Qualify": "اعرف إذا كنت مؤهّلًا",
+  "See If You Qualify": "قدّم طلبك",
   "Takes about two minutes. No obligation.": "يستغرق نحو دقيقتين. دون أي التزام.",
   "Limited availability, reviewed by our team. Subject to fit and production conditions.": "التوافر محدود، ويخضع لمراجعة فريقنا. ويتوقف على مدى التوافق وعلى شروط الإنتاج.",
   "What you get": "ما ستحصل عليه",
