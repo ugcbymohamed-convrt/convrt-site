@@ -85,5 +85,5 @@ Not changed: the Roadmap explainer keeps its deliberately chosen 25.6 s frame; t
 | `8cc42ca3…` | 9.5s | portfolio:es-showcase-elyon-2 (Spanish homepage stage, Elyon Dubai) [es] |
 | `dc0a3401…` | 11.9s | portfolio:es-showcase-elyon-3 (Spanish homepage stage, Elyon Dubai) [es] |
 | `3bf71599…` | 15.9s | portfolio:es-showcase-mixed-1 (Spanish homepage stage, E-commerce / UGC) [es] |
-| `22012213…` | 10s | portfolio:es-showcase-mixed-2 (Spanish homepage stage, E-commerce / UGC) [es] |
-| `b4daf321…` | 5.9s | portfolio:es-showcase-mixed-3 (Spanish homepage stage, E-commerce / UGC) [es] |
+| `22012213…` | 12.6s | portfolio:es-showcase-mixed-2 (Spanish homepage stage, E-commerce / UGC) [es] |
+| `b4daf321…` | 7.6s | portfolio:es-showcase-mixed-3 (Spanish homepage stage, E-commerce / UGC) [es] |

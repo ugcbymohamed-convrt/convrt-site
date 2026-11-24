@@ -14,8 +14,8 @@ export const POSTER_FRAMES = {
   '8cc42ca3f0a33667eb14cf5e2449b4ad': 9.5, // portfolio:es-showcase-elyon-2
   'dc0a340190fc4cd310e24448dda4f170': 11.9, // portfolio:es-showcase-elyon-3
   '3bf715996728cd9e862d848878665f92': 15.9, // portfolio:es-showcase-mixed-1 (group E-commerce / UGC)
-  '220122131040d62f1ce2d96ea9f98615': 10.0, // portfolio:es-showcase-mixed-2
-  'b4daf32122e679f3af1c6ccc07eec8a7': 5.9, // portfolio:es-showcase-mixed-3
+  '220122131040d62f1ce2d96ea9f98615': 12.6, // portfolio:es-showcase-mixed-2 (owner-picked frame: single white watch, 2026-11-24)
+  'b4daf32122e679f3af1c6ccc07eec8a7': 7.6, // portfolio:es-showcase-mixed-3 (owner-picked frame: bending stretch, 2026-11-24)
   '6c04c13dbb9ff7042f30e028b7394fe6': 4.5, // portfolio:es-ugc-hero-1 [es]
   '816d316906f79fe216d6f62079a0047f': 23.8, // portfolio:es-ugc-hero-2 [es]
   '75e7a204d0d4d2c75fe1ad19f0348461': 3.9, // portfolio:es-ugc-hero-3 [es]
