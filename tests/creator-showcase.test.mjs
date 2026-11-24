@@ -19,7 +19,7 @@ import { SITE_URL, CREATOR_SHOWCASE_PATH } from '../src/config.js'
 import { SITE_SEO, pageHead, sitemapRoutes } from '../src/seo/siteSeo.js'
 import { ourWorkGraph, videoObjectNode, jsonLdFor, BREADCRUMB_TRAILS } from '../src/seo/structuredData.js'
 import {
-  PORTFOLIO, portfolioProblems, isDisplayable, isShowcaseable, selectOurWork, selectHero, selectGallery, selectShowcase, selectDisplayable,
+  PORTFOLIO, portfolioProblems, isDisplayable, isShowcaseable, selectOurWork, selectHero, selectGallery, selectSpokespersonGallery, selectSaasGallery, selectShowcase, selectDisplayable,
   availableCategories, categoryOf, inCategory, countIn, filterByCategory, CATEGORIES, ALL_CATEGORY, titleOf, typeLabel, posterUrl,
   isClassified, industryLabel, productionLabel, brandLabel, creditLabel, buildFacets, matchesFilters,
 } from '../src/content/portfolio.js'
@@ -197,7 +197,7 @@ test('data: validation rejects bad entries; language is optional until confirmed
 
 // ── categories ──────────────────────────────────────────────────────────────────────────
 test('categories: All Work + the four approved industry filters (E-commerce, SaaS, Services, Other) + the Spokesperson type filter; a category with no videos has no tab', () => {
-  assert.deepEqual([ALL_CATEGORY, ...CATEGORIES].map((c) => c.label), ['All Work', 'E-commerce', 'SaaS', 'Services', 'Other', 'Spokesperson'])
+  assert.deepEqual([ALL_CATEGORY, ...CATEGORIES].map((c) => c.label), ['All Work', 'E-commerce', 'SaaS', 'Services', 'Organic Social', 'Spokesperson'])
   assert.deepEqual([ALL_CATEGORY, ...CATEGORIES].map((c) => c.color), ['#d5ff40', '#ec4899', '#9a7aff', '#34c9c0', '#ffb547', '#ff6a4d'])
   assert.ok(CATEGORIES.every((c) => /^#[0-9a-f]{6}$/.test(c.color)))
   const tailwind = read('tailwind.config.js')
@@ -262,7 +262,7 @@ test('card: title, industry, language and brand shown; creator name only with pe
 test('library: only categories with videos get a tab, the default view is All Work, and the active accent is a CSS variable (the page never recolours)', () => {
   const html = renderToStaticMarkup(createElement(Library.default, { items: [...many(2, 'saas'), ...many(1, 'ecommerce')] }))
   assert.ok(/All Work/.test(html) && /SaaS/.test(html) && /E-commerce/.test(html))
-  assert.ok(!/Services/.test(html) && !/>Other</.test(html), 'empty categories are hidden')
+  assert.ok(!/Services/.test(html) && !/>Organic Social</.test(html), 'empty categories are hidden')
   assert.match(html, /aria-pressed="true"[^>]*>[\s\S]*?All Work/)
   assert.match(html, /style="--cat:#d5ff40"/, 'All Work accent')
   assert.match(html, /Showing 3 videos/, 'screen-reader count')
@@ -360,7 +360,7 @@ test('rename: canonical, og:url, sitemap and structured data all use /creator-sh
   const ld = JSON.stringify(jsonLdFor(PATH, SITE_SEO[PATH]))
   assert.ok(ld.includes(`${SITE_URL}/creator-showcase`) && !ld.includes('our-work'))
   assert.equal(SITE_SEO[PATH].title, 'Creator Showcase | UGC Video Examples | CONVRT', 'the approved title is unchanged')
-  assert.deepEqual(CATEGORIES.map((c) => c.label).slice(0, 4), ['E-commerce', 'SaaS', 'Services', 'Other'], 'the four approved filters, unchanged and in order (the Spokesperson filter follows them)')
+  assert.deepEqual(CATEGORIES.map((c) => c.label).slice(0, 4), ['E-commerce', 'SaaS', 'Services', 'Organic Social'], 'the four approved filters, unchanged and in order (the Spokesperson filter follows them)')
   assert.ok(textOf(html).includes("See what's possible."))
 })
 
@@ -478,10 +478,10 @@ test('Creator Showcase folder: 12 creator videos (6 of the original 18 are now s
     assert.ok(v.title && v.title.length <= 60 && !/example \d+/i.test(v.title), `${v.id}: a descriptive title (SEO showcase-titles pass), not a numbered placeholder`)
   }
   const ours = selectOurWork()
-  assert.equal(ours.length, 38, '39 approved videos minus creator-05, which is on hold pending display authorization: 23 UGC videos + the 7 spokesperson videos (six of which were also uploaded as creator-NN and are now listed once) + the 2 SaaS-folder clips added for the SaaS page + the 7 organic social videos')
+  assert.equal(ours.length, 45, '38 videos + the 7 creator videos added 2026-11-24 (CREATORS > English > Mohamed: 2 UGC + 2 Spokesperson; Josh: 2 UGC + 1 SaaS); creator-05 is on hold pending display authorization')
   assert.deepEqual(availableCategories(ours).map((c) => c.id), ['all', 'ecommerce', 'saas', 'services', 'other', 'spokesperson'], 'Other has the seven organic videos (industry "other", confirmed by the owner); Spokesperson has seven')
-  assert.deepEqual(['ecommerce', 'saas', 'services', 'other', 'spokesperson'].map((c) => countIn(ours, c)), [9, 8, 7, 7, 7])
-  assert.equal(ours.filter((v) => categoryOf(v) === null).length, 7, 'the six still-unclassified UGC videos and the one unclassified spokesperson video are in no industry tab')
+  assert.deepEqual(['ecommerce', 'saas', 'services', 'other', 'spokesperson'].map((c) => countIn(ours, c)), [9, 9, 7, 7, 9])
+  assert.equal(ours.filter((v) => categoryOf(v) === null).length, 13, 'the unclassified videos (six UGC, one spokesperson, and the six unclassified videos added 2026-11-24 from the Mohamed and Josh folders) are in no industry tab')
   assert.ok(selectGallery().length > 10 && selectGallery().slice(0, 10).length === 10, 'the UGC gallery still caps at 10')
 })
 
@@ -501,10 +501,10 @@ test('regression: an unclassified video is in All Work only, never under Other o
   assert.ok(isDisplayable(unknown[0]) && isDisplayable(unknown[1]), 'permissions alone make it public; the industry is optional')
   assert.equal(industryLabel('unclassified'), '')
   assert.equal(industryLabel(undefined), '')
-  assert.equal(industryLabel('other'), 'Other')
+  assert.equal(industryLabel('other'), 'Organic Social')
   // rendering: All Work only, a card without an industry badge, no word "Unclassified" anywhere
   const html = renderToStaticMarkup(createElement(Library.default, { items: unknown }))
-  assert.ok(!/Unclassified|>Other</i.test(html), 'never exposed')
+  assert.ok(!/Unclassified|>Other<|>Organic Social</i.test(html), 'never exposed')
   assert.equal((html.match(/aria-pressed=/g) || []).length, 1, 'only the All Work pill')
   assert.equal((html.match(/aria-label="Play video: /g) || []).length, 3)
   assert.ok(!/uppercase tracking-\[0\.08em\] text-ink backdrop-blur/.test(html), 'no industry badge on an unclassified card')
@@ -533,17 +533,22 @@ const SAME_CREATOR = [
   ['ugc-gal-5', 'spokesperson-gal-2'], // former creator-18
   ['ugc-gal-1', 'ugc-hero-3', 'creator-04'],
   ['ugc-gal-3', 'creator-05'],
-  ['ugc-hero-1', 'ugc-gal-7', 'spokesperson-hero-2', 'creator-11'], // hero-2 = former creator-03
-  ['ugc-gal-4', 'ugc-gal-6', 'creator-02', 'spokesperson-gal-1', 'creator-08', 'creator-09', 'creator-10', 'creator-12', 'spokesperson-hero-1', 'creator-17'], // gal-1 = former creator-07, hero-1 = former creator-13
+  ['ugc-hero-1', 'ugc-gal-7', 'spokesperson-hero-2', 'creator-11', 'saas-creator-2'], // hero-2 = former creator-03
+  // The owner's own videos (CREATORS > English > Mohamed, plus the earlier UGC, spokesperson and organic videos he appears in): more than twenty, so the order spreads them out (DISPLAY_ORDER)
+  ['en-mohamed-ugc-1', 'en-mohamed-ugc-2', 'en-mohamed-spokesperson-1', 'en-mohamed-spokesperson-2', 'ugc-gal-4', 'ugc-gal-6', 'creator-02', 'spokesperson-gal-1', 'creator-08', 'creator-09', 'creator-10', 'creator-12', 'spokesperson-hero-1', 'creator-17', 'organic-hero-1', 'organic-hero-2', 'organic-hero-3', 'organic-gal-1', 'organic-gal-2', 'organic-gal-3', 'organic-gal-4'], // gal-1 = former creator-07, hero-1 = former creator-13
+  ['en-josh-ugc-1', 'en-josh-ugc-2', 'en-josh-saas-1'], // CREATORS > English > Josh (one creator, three videos)
 ]
 const creatorOf = (id) => SAME_CREATOR.findIndex((g) => g.includes(id))
 
-test('order: no creator appears in two videos next to each other, in All Work or in any industry tab, or in the UGC gallery', () => {
-  const ours = selectOurWork().filter((v) => v.type === 'ugc') // UGC-type showcase videos; service-page videos carry no creator grouping
-  assert.ok(ours.every((v) => creatorOf(v.id) >= 0), 'every showcase video is assigned to a creator')
-  const views = [['All Work', ours], ...['ecommerce', 'saas', 'services'].map((c) => [c, filterByCategory(ours, c)]), ['UGC gallery', selectGallery()]]
+test('order: no creator appears in two videos next to each other, in All Work (every video type) or in any industry tab, or in the UGC, Spokesperson and SaaS galleries', () => {
+  const ours = selectOurWork()
+  assert.ok(ours.filter((v) => v.type === 'ugc').every((v) => creatorOf(v.id) >= 0), 'every UGC showcase video is assigned to a creator')
+  const views = [['All Work', ours], ...['ecommerce', 'saas', 'services'].map((c) => [c, filterByCategory(ours, c)]), ['UGC gallery', selectGallery()], ['Spokesperson gallery', selectSpokespersonGallery()], ['SaaS gallery', selectSaasGallery()]]
   for (const [name, list] of views) {
-    for (let i = 1; i < list.length; i++) assert.notEqual(creatorOf(list[i].id), creatorOf(list[i - 1].id), `${name}: ${list[i - 1].id} and ${list[i].id} are the same creator and adjacent`)
+    for (let i = 1; i < list.length; i++) {
+      const [a, b] = [creatorOf(list[i - 1].id), creatorOf(list[i].id)]
+      if (a >= 0 && b >= 0) assert.notEqual(a, b, `${name}: ${list[i - 1].id} and ${list[i].id} are the same creator and adjacent`) // videos with no recorded creator group are never treated as the same person
+    }
   }
   assert.deepEqual(selectHero().map((v) => v.id), ['ugc-hero-1', 'ugc-hero-2', 'ugc-hero-3'], 'the UGC hero keeps its order')
 })
@@ -565,7 +570,7 @@ test('no duplicates: every video in the Showcase is listed once (id, Cloudflare 
   const html = rootOf(page(PATH))
   const shown = html.match(/aria-label="Play video: [^"]*"/g) || []
   assert.equal(new Set(shown).size, shown.length, 'no two cards in the HTML share a label')
-  assert.equal(PORTFOLIO.filter((v) => v.type === 'spokesperson' && !v.onlyIn).length, 7, 'English spokesperson videos (Spanish-only entries have onlyIn)')
+  assert.equal(PORTFOLIO.filter((v) => v.type === 'spokesperson' && !v.onlyIn).length, 9, 'English spokesperson videos (Spanish-only entries have onlyIn): 7 + the two Mohamed presenter videos')
 })
 
 test('Spokesperson filter: a type filter after the four industry filters; it holds every spokesperson video (whatever its industry) and nothing else, and has no tab without one', () => {
@@ -584,17 +589,17 @@ test('Spokesperson filter: a type filter after the four industry filters; it hol
   // the shipped page: a Spokesperson pill with seven videos, after the industry pills
   const html = rootOf(page(PATH))
   const pills = [...html.matchAll(/aria-pressed="(?:true|false)"[^>]*>[\s\S]*?<\/svg>([A-Za-z -]+)<span[^>]*>(\d+)<\/span>/g)].map((m) => [m[1].trim(), Number(m[2])])
-  assert.deepEqual(pills, [['All Work', 38], ['E-commerce', 9], ['SaaS', 8], ['Services', 7], ['Other', 7], ['Spokesperson', 7]])
+  assert.deepEqual(pills, [['All Work', 45], ['E-commerce', 9], ['SaaS', 9], ['Services', 7], ['Organic Social', 7], ['Spokesperson', 9]])
   assert.match(html, /aria-label="Filter videos by industry or type"/)
   const lib = renderToStaticMarkup(createElement(Library.default, { items: selectOurWork() }))
   assert.ok(lib.includes('Spokesperson'))
-  assert.ok(/Other<span/.test(lib), 'Other has a tab now that the seven organic videos (industry "other") exist; it would vanish again with none')
+  assert.ok(/Organic Social<span/.test(lib), 'Other has a tab now that the seven organic videos (industry "other") exist; it would vanish again with none')
 })
 
 // ── descriptive titles (SEO/GEO showcase-titles pass, 2026-11-21): evidence-based, short, unique, no invented names ───────────────────────────
 test('showcase titles: every video has a short, unique, descriptive title and a matching caption; no placeholder, brand, creator name or testimonial wording', () => {
   const list = selectOurWork()
-  assert.equal(list.length, 38, '39 titled videos; creator-05 is on hold and not displayed')
+  assert.equal(list.length, 45, '46 titled videos; creator-05 is on hold and not displayed')
   const held = PORTFOLIO.find((v) => v.id === 'creator-05')
   assert.ok(held && held.title && !isDisplayable(held) && held.approval.status === 'on-hold', 'the held video keeps its data and title but is not shown')
   assert.ok(/TO VERIFY/.test(fs.readFileSync(path.join(ROOT, 'src/content/portfolio.js'), 'utf8')) && PORTFOLIO.find((v) => v.id === 'ugc-gal-5').languages[0] === 'en', 'ugc-gal-5 spoken language is flagged for verification, data unchanged')
@@ -612,7 +617,7 @@ test('showcase titles: every video has a short, unique, descriptive title and a 
   // no creator first name taken from a file name (Aoife, Luis) and no unverified language in a title: the language badge is data-driven
   for (const v of list) assert.ok(!/\b(aoife|luis)\b/i.test(v.title) && !/\b(spanish|french|arabic|english)\b/i.test(v.title), `${v.id}: no creator name or language asserted in the title`)
   // the data fields that drive filters and badges are untouched by the titles pass
-  assert.deepEqual(['ecommerce', 'saas', 'services', 'other', 'spokesperson'].map((c) => countIn(list, c)), [9, 8, 7, 7, 7])
+  assert.deepEqual(['ecommerce', 'saas', 'services', 'other', 'spokesperson'].map((c) => countIn(list, c)), [9, 9, 7, 7, 9])
   assert.ok(list.every((v) => v.approval.status === 'approved' && v.approval.portfolioUse === true && v.approval.creatorConsent === true))
   assert.ok(list.every((v) => v.production === undefined && v.brand === undefined), 'no production credit or brand was added')
 })

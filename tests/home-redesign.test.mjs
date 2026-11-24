@@ -348,11 +348,11 @@ test('SaaS page: the founder presenter video is the featured centre hero video; 
   const hero = orderedBy(selectSaasHero(), SAAS_VIDEO_ORDER.hero).map((x) => x.id)
   const gallery = orderedBy(selectSaasGallery(), SAAS_VIDEO_ORDER.gallery).map((x) => x.id)
   assert.deepEqual(hero, ['spokesperson-gal-1', 'saas-creator-2', 'creator-04'])
-  assert.deepEqual(gallery, ['spokesperson-gal-3', 'spokesperson-hero-1', 'saas-creator-1', 'creator-15', 'creator-10'])
+  assert.deepEqual(gallery, ['spokesperson-gal-3', 'spokesperson-hero-1', 'saas-creator-1', 'en-josh-saas-1', 'creator-10', 'creator-15'])
   assert.equal(gallery[2], 'saas-creator-1')
   assert.equal(new Set([...hero, ...gallery]).size, hero.length + gallery.length, 'no video twice on the page')
   // the same eight videos as before, only moved: the old hero [saas-creator-1, saas-creator-2, creator-04] and old gallery [spokesperson-gal-1, -gal-3, -hero-1, creator-15, creator-10]
-  assert.deepEqual([...hero, ...gallery].sort(), ['creator-04', 'creator-10', 'creator-15', 'saas-creator-1', 'saas-creator-2', 'spokesperson-gal-1', 'spokesperson-gal-3', 'spokesperson-hero-1'])
+  assert.deepEqual([...hero, ...gallery].sort(), ['creator-04', 'creator-10', 'creator-15', 'en-josh-saas-1', 'saas-creator-1', 'saas-creator-2', 'spokesperson-gal-1', 'spokesperson-gal-3', 'spokesperson-hero-1'])
   // no new Cloudflare asset: the founder video is the existing spokesperson-gal-1 entry, still a Spokesperson-page video as well
   const f = PORTFOLIO.find((x) => x.id === 'spokesperson-gal-1')
   assert.equal(f.source.cloudflareId, 'e767742bb12024437e9df368cedbfba2'); assert.equal(f.type, 'spokesperson'); assert.equal(f.alsoOn.saas, 'hero')
@@ -364,13 +364,13 @@ test('SaaS page: the founder presenter video is the featured centre hero video; 
   assert.equal(heroAlts[0], 'Presenter-Led Software Explainer With Screen Footage.', heroAlts.join(' | '))
   const plays = [...h.slice(h.indexOf('id="saas-videos"')).matchAll(/aria-label="Play video: ([^"]+)"/g)].map((m) => m[1])
   assert.equal(plays[2], 'Creator at Desk — File Management App Demo.', plays.join(' | '))
-  assert.equal(plays.length, 5)
+  assert.equal(plays.length, 6, 'the five earlier gallery videos + the Josh SaaS video added 2026-11-24')
 })
 
 test('Spokesperson page: the dark-haired presenter is the featured centre hero video; the other hero videos and the gallery keep their order and assets', () => {
   const hero = orderedBy(selectSpokespersonHero(), SPOKESPERSON_VIDEO_ORDER.hero).map((x) => x.id)
   assert.deepEqual(hero, ['spokesperson-hero-2', 'spokesperson-hero-1', 'spokesperson-hero-3'])
-  assert.deepEqual(selectSpokespersonGallery().map((x) => x.id), ['spokesperson-gal-1', 'spokesperson-gal-2', 'spokesperson-gal-3', 'spokesperson-gal-4'])
+  assert.deepEqual(orderedBy(selectSpokespersonGallery(), SPOKESPERSON_VIDEO_ORDER.gallery).map((x) => x.id), ['spokesperson-gal-1', 'spokesperson-gal-2', 'en-mohamed-spokesperson-1', 'spokesperson-gal-3', 'en-mohamed-spokesperson-2', 'spokesperson-gal-4'])
   assert.deepEqual(['spokesperson-hero-1', 'spokesperson-hero-2', 'spokesperson-hero-3'].map((id) => PORTFOLIO.find((x) => x.id === id).source.cloudflareId), ['b3db228064bde5cd076d22d9c938c2b0', 'c0c30e58489e' + PORTFOLIO.find((x) => x.id === 'spokesperson-hero-2').source.cloudflareId.slice(12), '0d3a810ee068bd311f13ffd4d7a7f3d6'])
   const h = bodyOf(page(PATHS.spokespersonVideoProduction))
   const alts = [...h.slice(0, h.indexOf('id="spokesperson-videos"')).matchAll(/<img[^>]*alt="([^"]+)"[^>]*width="540"/g)].map((m) => m[1])

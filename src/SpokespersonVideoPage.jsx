@@ -59,7 +59,7 @@ export default function SpokespersonVideoPage() {
   }, [])
 
   const heroItems = orderedBy(serviceVideos(selectSpokespersonHero()), SPOKESPERSON_VIDEO_ORDER.hero)
-  const galleryItems = serviceVideos(selectSpokespersonGallery())
+  const galleryItems = orderedBy(serviceVideos(selectSpokespersonGallery()), SPOKESPERSON_VIDEO_ORDER.gallery)
 
   return (
     <>
