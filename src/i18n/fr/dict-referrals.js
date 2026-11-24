@@ -1,8 +1,8 @@
 /* French dictionary: the Referral Partner Program page (/fr/referrals). Keys are the exact English strings. The REWARD RULES are the English page's, unchanged: Standard partners earn $150 (cash or production credit), Agency & Strategic partners 10% of the first qualifying project up to $500. Dollar amounts are facts of that program, kept in USD through {{usd:N}} tokens (never converted). */
 export default {
   "CONVRT Referral Partner Program": "Programme de parrainage CONVRT",
-  "Know a Brand That Needs": "Vous connaissez une marque qui a besoin",
-  "Better Video Ads?": "de meilleures vidéos publicitaires ?",
+  "Know a Brand That Needs": "Vous connaissez une marque",
+  "Better Video Ads?": "qui veut de meilleures vidéos ?",
   "Introduce SaaS and e-commerce brands to CONVRT. Get rewarded when they become clients.": "Présentez des marques SaaS et e-commerce à CONVRT et soyez récompensé lorsqu’elles deviennent clientes.",
   "Become a Referral Partner": "Devenir partenaire de parrainage",
   "See How It Works": "Comment ça marche",
