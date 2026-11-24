@@ -18,10 +18,10 @@ video is added **once**, in `src/content/portfolio.js` (the file header document
 
 ## Adding a video
 1. Upload it to Cloudflare Stream and copy its video id (UID). Optionally add a 540x960 `.webp` thumbnail under `public/portfolio/`.
-2. Add an object at the **top** of `PORTFOLIO` (newest first). The minimum: `id`, `caption`, `industry`, `languages`, `source: { cloudflareId }`,
+2. Add an object at the **top** of `PORTFOLIO_ENTRIES`, then put its id in `DISPLAY_ORDER` (right after the array) where it keeps creators alternating: the Showcase, its industry tabs and the galleries follow that list, and `tests/creator-showcase.test.mjs` (`SAME_CREATOR`) fails if one creator's videos end up side by side. The minimum: `id`, `caption`, `industry`, `languages`, `source: { cloudflareId }`,
    `creatorId` and a full `approval` (status `approved`, `portfolioUse: true`, `creatorConsent: true`, who approved it and when).
 3. `industry: 'saas'`, `'ecommerce'` or `'services'` files it under that tab. `'other'` means *confirmed* "none of these"; any other
-   industry slug (beauty, finance ...) groups under **Other** and keeps its own name on the card. **Unknown industry is `'unclassified'`
+   industry slug (beauty, finance ...) groups under the **Organic Social** tab (id `other`; the owner renamed the tab from "Other", 2026-11-24) and keeps its own name on the card. **Unknown industry is `'unclassified'`
    (or omitted): the video is in All Work but under no tab, never under Other, and no label is shown.** Set `type: 'ugc'` for videos that
    belong on the UGC page (an unset type is unknown, not UGC).
 4. Run the tests and the build, push the branch, check the Vercel Preview.

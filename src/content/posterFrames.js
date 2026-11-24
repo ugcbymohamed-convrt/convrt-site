@@ -65,24 +65,24 @@ export const POSTER_FRAMES = {
   'f1e725634fe6bd8b059048a33612658d': 6.1, // portfolio:creator-08
   '0d98f3a55ebd26c9b400e348d02972d9': 6.8, // portfolio:creator-15
   '93584825751798b27840b85a2ad43a6a': 3.9, // portfolio:creator-10
-  '2bb321f0b45175d4b4a0b6e3f79206c9': 27.5, // portfolio:organic-gal-1
+  '2bb321f0b45175d4b4a0b6e3f79206c9': 2.25, // portfolio:organic-gal-1; owner-chosen frame 2026-11-24 (pointing at camera, banknotes falling)
   '33a4063ee0e8dafe3379f0a97817036e': 5.6, // portfolio:ugc-hero-1; home-hero:home-hero-ugc-1
   '3058e60f87200babb0b6c60606923e1b': 4.8, // portfolio:creator-05
   'c8914f7a0db3ac9f5ffd0721115dbe20': 14.9, // portfolio:ugc-gal-1
   'c7c85203ea049a339796bffbef6f1b06': 0.8, // portfolio:organic-gal-2
   'c0c30e58489efad67789cdba1b58df23': 39.9, // portfolio:spokesperson-hero-2
   '8d8051df7b4e99d1fed68fc3dea44f4d': 24.8, // portfolio:creator-06
-  '424622b3fffd8a0a2a20ad6bf274a0db': 6.1, // portfolio:creator-09
+  '424622b3fffd8a0a2a20ad6bf274a0db': 0.4, // portfolio:creator-09; owner-chosen frame 2026-11-24 (sitting on the case, looking at camera)
   '0d3a810ee068bd311f13ffd4d7a7f3d6': 14.8, // portfolio:spokesperson-hero-3
   '6e56f6abcb371853fe557c52a7eb494a': 0.6, // portfolio:creator-16
   'e67c49d0d1cff6e3f160b4dbe6b1cea1': 2.1, // portfolio:organic-gal-3
-  '79b1cd5d22e9f13587ab547e438e29ef': 10.4, // portfolio:ugc-gal-4
+  '79b1cd5d22e9f13587ab547e438e29ef': 1.8, // portfolio:ugc-gal-4; owner-chosen frame 2026-11-24 ("looking good" on the beach with the bag)
   '1188b4341860779830fa7365b1442959': 12.9, // portfolio:ugc-gal-3
   '63446474698139b4ac17c1f053212242': 18.7, // portfolio:ugc-hero-2; home-hero:home-hero-ugc-2
   'c8ed4698b9b20ccb49b84c2a5977d008': 1.4, // portfolio:organic-gal-4
   '9bbc90204d84630436a29bdd9ef3be17': 1.0, // portfolio:creator-02
   'b73842a409de5f4f6ae9d72733ea1152': 14.0, // portfolio:ugc-gal-8
-  '8b15247d9a422614898b8bbb54591025': 10.2, // portfolio:ugc-gal-6
+  '8b15247d9a422614898b8bbb54591025': 0.4, // portfolio:ugc-gal-6; owner-chosen frame 2026-11-24 ("Here's how", razor in hand)
   'ff256a4643515d29b61c1f210c06476d': 9.9, // portfolio:ugc-gal-2
   '1fc1374cdfe428d10bfc40ad4eff9693': 1.7, // portfolio:ugc-hero-3
   '5fc046452d354eba0cff717239c4bee8': 1.5, // portfolio:creator-12
@@ -96,6 +96,13 @@ export const POSTER_FRAMES = {
   'c1379ace38f2fa19ef2a45de1bb5d4b1': 4.6, // portfolio:showcase-graspo-3 (home panel graspo); graspo 7.5M
   '20c642c760e1937953fc33e98f3d859f': 1.6, // home-hero:home-hero-main
   '5904f4189ee4726cb4d7e4272a8b915b': 5.5, // home-hero-es:home-hero-es-main (Spanish CONVRT ad; clear face, open eyes, coffee cup, no caption on screen)
+  'a290d76bc0de09f3e404d16f3f40dda1': 3.3, // portfolio:en-josh-ugc-1 (smiling, holding the checklist, clean caption)
+  '0d8c53adaf3db38b291077b3da441513': 6.4, // portfolio:en-josh-ugc-2 (face to camera, three fingers up, no caption in the way)
+  'd0c08b8a1aaed35bfda22a201a2aebe4': 7.2, // portfolio:en-josh-saas-1 (the app scanning a plate: the product in use)
+  '889f8b610a6d7cebde39bfa5844e92b1': 1.2, // portfolio:en-mohamed-spokesperson-1 (the hook line complete, clear face, landmark behind)
+  '5f7b145ce6aff7388691c301d628699f': 5.7, // portfolio:en-mohamed-spokesperson-2 (the headline figure with a clear face)
+  'd2edf70e059c4db4d4ab1368048bd6f4': 2.8, // portfolio:en-mohamed-ugc-1 (clear face, open eyes, the story starts)
+  '2a37b139606ef2d9640281ed09c9d99f': 7.8, // portfolio:en-mohamed-ugc-2 (confident look to camera, lime caption); owner-chosen frame 2026-11-24 (holding the device out to camera)
   'a5e60be52e693016bb47bed4c801eb5f': 9.2, // scale VSL (poster, no time)
 }
 

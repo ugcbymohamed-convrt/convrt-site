@@ -60,7 +60,7 @@ export default function SpokespersonVideoPage() {
   }, [])
 
   const heroItems = orderedBy(forPageLanguage(selectSpokespersonHero()), SPOKESPERSON_VIDEO_ORDER.hero)
-  const galleryItems = forPageLanguage(selectSpokespersonGallery())
+  const galleryItems = orderedBy(forPageLanguage(selectSpokespersonGallery()), SPOKESPERSON_VIDEO_ORDER.gallery)
 
   return (
     <>
