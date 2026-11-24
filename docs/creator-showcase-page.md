@@ -18,7 +18,7 @@ video is added **once**, in `src/content/portfolio.js` (the file header document
 
 ## Adding a video
 1. Upload it to Cloudflare Stream and copy its video id (UID). Optionally add a 540x960 `.webp` thumbnail under `public/portfolio/`.
-2. Add an object at the **top** of `PORTFOLIO` (newest first). The minimum: `id`, `caption`, `industry`, `languages`, `source: { cloudflareId }`,
+2. Add an object at the **top** of `PORTFOLIO_ENTRIES`, then put its id in `DISPLAY_ORDER` (right after the array) where it keeps creators alternating: the Showcase, its industry tabs and the galleries follow that list, and `tests/creator-showcase.test.mjs` (`SAME_CREATOR`) fails if one creator's videos end up side by side. The minimum: `id`, `caption`, `industry`, `languages`, `source: { cloudflareId }`,
    `creatorId` and a full `approval` (status `approved`, `portfolioUse: true`, `creatorConsent: true`, who approved it and when).
 3. `industry: 'saas'`, `'ecommerce'` or `'services'` files it under that tab. `'other'` means *confirmed* "none of these"; any other
    industry slug (beauty, finance ...) groups under **Other** and keeps its own name on the card. **Unknown industry is `'unclassified'`

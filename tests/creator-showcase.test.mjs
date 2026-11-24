@@ -534,10 +534,10 @@ const SAME_CREATOR = [
   ['ugc-gal-5', 'spokesperson-gal-2'], // former creator-18
   ['ugc-gal-1', 'ugc-hero-3', 'creator-04'],
   ['ugc-gal-3', 'creator-05'],
-  ['ugc-hero-1', 'ugc-gal-7', 'spokesperson-hero-2', 'creator-11'], // hero-2 = former creator-03
-  ['en-mohamed-ugc-1', 'en-mohamed-ugc-2', 'en-mohamed-spokesperson-1', 'en-mohamed-spokesperson-2'], // CREATORS > English > Mohamed (one creator, four videos)
+  ['ugc-hero-1', 'ugc-gal-7', 'spokesperson-hero-2', 'creator-11', 'saas-creator-2'], // hero-2 = former creator-03
+  // The owner's own videos (CREATORS > English > Mohamed, plus the earlier UGC, spokesperson and organic videos he appears in): more than twenty, so the order spreads them out (DISPLAY_ORDER)
+  ['en-mohamed-ugc-1', 'en-mohamed-ugc-2', 'en-mohamed-spokesperson-1', 'en-mohamed-spokesperson-2', 'ugc-gal-4', 'ugc-gal-6', 'creator-02', 'spokesperson-gal-1', 'creator-08', 'creator-09', 'creator-10', 'creator-12', 'spokesperson-hero-1', 'creator-17', 'organic-hero-1', 'organic-hero-2', 'organic-hero-3', 'organic-gal-1', 'organic-gal-2', 'organic-gal-3', 'organic-gal-4'], // gal-1 = former creator-07, hero-1 = former creator-13
   ['en-josh-ugc-1', 'en-josh-ugc-2', 'en-josh-saas-1'], // CREATORS > English > Josh (one creator, three videos)
-  ['ugc-gal-4', 'ugc-gal-6', 'creator-02', 'spokesperson-gal-1', 'creator-08', 'creator-09', 'creator-10', 'creator-12', 'spokesperson-hero-1', 'creator-17'], // gal-1 = former creator-07, hero-1 = former creator-13
 ]
 const creatorOf = (id) => SAME_CREATOR.findIndex((g) => g.includes(id))
 

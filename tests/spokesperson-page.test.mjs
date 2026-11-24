@@ -20,9 +20,9 @@ import { SPOKESPERSON_FAQ, spokespersonFaqText } from '../src/seo/spokespersonFa
 import { UGC_FAQ } from '../src/seo/ugcFaq.js'
 import { SPRINT, SPRINT_PLUS, USAGE_RIGHTS, FORMATS, TURNAROUND, REVISIONS, PRODUCTION_LANGUAGES, formatMoney } from '../src/seo/businessKnowledge.js'
 import {
-  PORTFOLIO, selectHero, selectGallery, selectSpokespersonHero, selectSpokespersonGallery, selectOurWork, selectShowcase, portfolioProblems,
+  PORTFOLIO, selectHero, selectGallery, selectSpokespersonHero, selectSpokespersonGallery, selectOurWork, selectShowcase, portfolioProblems, orderedBy,
 } from '../src/content/portfolio.js'
-import { SPOKESPERSON_PROOF, SPOKESPERSON_HERO } from '../src/content/spokespersonPage.js'
+import { SPOKESPERSON_PROOF, SPOKESPERSON_HERO, SPOKESPERSON_VIDEO_ORDER } from '../src/content/spokespersonPage.js'
 
 const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), '..')
 const read = (p) => fs.readFileSync(path.join(ROOT, p), 'utf8')
@@ -386,7 +386,7 @@ test('accessibility: one H1, headings never skip a level, buttons are real butto
   assert.ok(/useAutoplayAllowed/.test(read('src/components/ugc/UgcProcess.jsx')) && /Pause animation/.test(read('src/components/ugc/UgcProcess.jsx')))
 })
 
-test('spokesperson page order is independent of the Showcase order: hero 1, 2, 3 (first = centre) and gallery 1 to 4', () => {
-  assert.deepEqual(selectSpokespersonHero().map((v) => v.id), ['spokesperson-hero-1', 'spokesperson-hero-2', 'spokesperson-hero-3'])
-  assert.deepEqual(selectSpokespersonGallery().map((v) => v.id), ['spokesperson-gal-1', 'spokesperson-gal-2', 'en-mohamed-spokesperson-1', 'spokesperson-gal-3', 'spokesperson-gal-4', 'en-mohamed-spokesperson-2'])
+test('spokesperson page order is independent of the Showcase order: hero 1, 2, 3 (first = centre) and the gallery alternates creators', () => {
+  assert.deepEqual(orderedBy(selectSpokespersonHero(), SPOKESPERSON_VIDEO_ORDER.hero).map((v) => v.id), ['spokesperson-hero-2', 'spokesperson-hero-1', 'spokesperson-hero-3'])
+  assert.deepEqual(orderedBy(selectSpokespersonGallery(), SPOKESPERSON_VIDEO_ORDER.gallery).map((v) => v.id), ['spokesperson-gal-1', 'spokesperson-gal-2', 'en-mohamed-spokesperson-1', 'spokesperson-gal-3', 'en-mohamed-spokesperson-2', 'spokesperson-gal-4'])
 })
