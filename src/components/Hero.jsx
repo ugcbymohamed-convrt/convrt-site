@@ -251,7 +251,15 @@ function RotatingWord({ words }) {
       {/* Invisible sizing element — reserves space for the widest word + underline padding */}
       {/* The widest word is drawn by CSS (::after reads data-word), not as text, so the heading's text is
           "Performance creatives engineered to <current word>" for search engines and screen readers, and nothing else changes. */}
-      <span aria-hidden="true" data-word={widest} className="invisible whitespace-pre after:content-[attr(data-word)]" />
+      {currentLocale() === 'ar' ? (
+        /* Arabic: the slot is as wide as the widest word AS DRAWN. "Longest string" is the wrong measure for Arabic (marks and joins change the width), and a word wider than the slot was clipped. Every word is
+           drawn (invisibly, by CSS, so the heading text is unchanged) in the same grid cell, so the cell takes the width of the widest one. */
+        <span aria-hidden="true" className="inline-grid">
+          {words.map((w) => <span key={w} data-word={w} className="invisible col-start-1 row-start-1 whitespace-pre after:content-[attr(data-word)]" />)}
+        </span>
+      ) : (
+        <span aria-hidden="true" data-word={widest} className="invisible whitespace-pre after:content-[attr(data-word)]" />
+      )}
 
       {/* Animated word + underline, both bound to the current word so the
           underline tracks the word's width and sits flush under it */}

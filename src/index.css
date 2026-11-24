@@ -644,7 +644,7 @@ html[dir='rtl'] { direction: rtl; }
 /* ROTATING HEADLINE WORD. The word sits in an inline-block that clips its animation with overflow:hidden; for such a box the browser takes the BOTTOM EDGE as its baseline, which lifts the word above the
    rest of the line (more visibly in the Arabic face, whose line box is taller). clip-path clips the same area without touching the baseline, so the box keeps the baseline of its own text and the word
    shares the baseline of the words around it, at every width and for every word. */
-:lang(ar) h1 .inline-block.overflow-hidden { overflow: visible; clip-path: inset(0); }
+:lang(ar) h1 .inline-block.overflow-hidden { overflow: visible; clip-path: inset(-0.55em -0.4em 0 -0.4em); }
 /* CLIENT REVIEWS: the English section sets its quotes in a serif; the Arabic quote uses the site's Arabic face, a little smaller and with the open line height Arabic needs. */
 html:lang(ar) blockquote.font-editorial { font-family: var(--font-ar); font-weight: 500; line-height: 1.5; font-size: clamp(1.5rem, 1.1rem + 2.1vw, 3rem); text-wrap: balance; }
 /* The rolling word of the service-page headlines (.ugc-reel) is a fixed-height box aligned with vertical-align: bottom and a line-height of 1.14, while the Arabic headline's lines use 1.3: the word then sat
@@ -667,3 +667,9 @@ html:lang(ar) blockquote.font-editorial { font-family: var(--font-ar); font-weig
 :lang(ar) .text-xs, :lang(ar) .text-\[11px\], :lang(ar) .text-\[13px\] { font-weight: 500; }
 /* Services header (Arabic): the supporting sentence is one flowing line under the heading, so the English desktop line break between its two halves is dropped. */
 :lang(ar) #services > div > div > div > p br { display: none; }
+
+/* ── Arabic hero headline (owner, 2026-11-25): smaller, lighter, and the rotating word never clipped ───────────────────────────────────────────────────────────────────────
+   Noto Kufi is a much wider face than Inter, so the English sizes (48-70 px) made the Arabic headline oversized. The size is fluid (about 17% below the English 70 px at 1440 px, 2.25rem on phones) and the weight is 600, as in English.
+   The rolling word's slot used to be sized by the longest STRING; it is now sized by the widest word as drawn (see RotatingWord) and its clip box leaves room above and to the sides for marks and dots, so only the
+   slide-in from below is clipped. */
+:lang(ar) #top h1 { font-size: clamp(2.25rem, 1.6rem + 2.2vw, 3.65rem); font-weight: 600; line-height: 1.32; }
