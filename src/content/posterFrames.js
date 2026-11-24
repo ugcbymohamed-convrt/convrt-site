@@ -16,6 +16,7 @@ export const POSTER_FRAMES = {
   'a256f8f429c8e2d26256e894af970dbf': 18.8, // portfolio:ar-oneroyal-1 [ar]
   '871ea801a38e653cd48c036374966382': 5.8, // portfolio:ar-oneroyal-2 [ar]
   '8bc61e80a5240cde3f16a90f63dbc4fa': 11.6, // portfolio:ar-oneroyal-3 [ar]
+  'b9e0e42256dc09c9f554c6d4f21b4785': 8.0, // home-hero-ar:home-hero-ar-main [ar]: presenter facing the camera, clean Arabic caption (the first seconds carry an English comment overlay)
   '442dfb5fe6a49dffd032ecd920414512': 13.0, // portfolio:ar-ugc-hero-1 [ar]
   'e76683d744c46ecfe8e1fb53b273b926': 15.6, // portfolio:ar-ugc-hero-2 [ar]
   '7f68e3f6c92e70395cad4876fcb389a8': 24.9, // portfolio:ar-ugc-hero-3 [ar]

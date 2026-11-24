@@ -225,12 +225,15 @@ test('PostCSS RTL plugin: mirrors left/right under [dir="rtl"] only, keeps centr
   assert.match(pseudo, /\[dir="rtl"\] \.pl-2:not\(\[dir="ltr"\] \*\):not\(\[dir="ltr"\]\)(?::not\(\[dir="ltr"\]\))?::before\s*\{\s*padding-right:\s*1px/, 'the island exclusion goes before a pseudo-element')
 })
 
-test('typography: self-hosted Arabic font (four weights, unicode-range, swap), scoped CSS, no letter-spacing on Arabic', () => {
+test('typography: self-hosted Noto Kufi Arabic (one variable file, 400-700, unicode-range, swap), scoped CSS, no letter-spacing on Arabic', () => {
   const css = read('src/index.css')
-  for (const w of [400, 500, 600, 700]) { assert.ok(fs.existsSync(path.join(ROOT, `public/fonts/ibm-plex-sans-arabic-${w}.woff2`))); assert.match(css, new RegExp(`ibm-plex-sans-arabic-${w}\\.woff2`)) }
-  assert.match(css, /font-family: 'IBM Plex Sans Arabic'[\s\S]*?font-display: swap[\s\S]*?unicode-range: U\+0600-06FF/)
+  assert.ok(fs.existsSync(path.join(ROOT, 'public/fonts/noto-kufi-arabic-arabic-var.woff2')))
+  assert.match(css, /font-family: 'Noto Kufi Arabic'[\s\S]*?font-weight: 400 700[\s\S]*?font-display: swap[\s\S]*?noto-kufi-arabic-arabic-var\.woff2[\s\S]*?unicode-range: U\+0600-06FF/)
+  assert.match(css, /--font-ar: 'Inter', 'Noto Kufi Arabic'/)
+  assert.ok(!/IBM Plex/.test(css), 'the previous Arabic face is gone')
   assert.match(css, /:lang\(ar\) \* \{ letter-spacing: normal !important; \}/)
-  assert.ok(fs.existsSync(path.join(ROOT, 'public/fonts/IBM-Plex-Sans-Arabic-LICENSE.txt')))
+  assert.ok(fs.existsSync(path.join(ROOT, 'public/fonts/Noto-Kufi-Arabic-LICENSE.txt')))
+  assert.ok(!fs.readdirSync(path.join(ROOT, 'public/fonts')).some((f) => /ibm-plex/i.test(f)), 'the old font files are removed')
 })
 
 // ── 2. a real production build ─────────────────────────────────────────────────────────────
@@ -355,8 +358,8 @@ test('homepage: Arabic hero, the three Arabic creator videos on the stage, found
   const h = page('/ar')
   const t = rootText(h).join(' ')
   assert.match(t, /فيديوهات إعلانية/); assert.match(t, /احصل على 5 أفكار إعلانية مجانًا/); assert.match(t, /مكتبة الفيديوهات/); assert.match(t, /أفكارك الإعلانية الخمس التالية، مخصصة لعلامتك التجارية\./)
-  assert.match(t, /خبرة المؤسس عبر CONVRT Studio وأعمال إنتاج إبداعي أخرى/, 'founder-wide attribution is stated under the clients headline'); assert.match(t, /الخبرة المهنية الإجمالية لمؤسسنا/, 'and in the statistics footnote')
-  for (const f of ['ar-ugc-hero-1', 'ar-ugc-hero-2', 'ar-ugc-hero-3']) assert.match(rootOf(h), new RegExp(f))
+  assert.match(t, /خبرة المؤسس عبر CONVRT Studio وأعمال إنتاج إبداعي أخرى/, 'founder-wide attribution is stated under the clients headline'); assert.doesNotMatch(t, /الخبرة المهنية الإجمالية لمؤسسنا/, 'the statistics strip does not repeat the long footnote: the page states the attribution once, under the clients headline (owner, Nov 2026)')
+  for (const f of ['ar-hero-gulf', 'ar-ugc-hero-2', 'ar-ugc-hero-3']) assert.match(rootOf(h), new RegExp(f)) // the centre is the owner's 2026-11-24 video; the two side videos are unchanged
   for (const bad of ['مكتبنا', 'فرعنا', 'مقرنا', 'فريقنا في']) assert.ok(!t.includes(bad), bad)
   assert.ok(!/Adscale.{0,40}(نتائج|ROAS)/.test(t), 'no results claim attached to the Adscale service example')
 })
@@ -399,5 +402,5 @@ test('the Arabic CSS is shipped: mirrored rules exist and every one is scoped to
   const css = fs.readFileSync(path.join(dist, 'assets', cssFile), 'utf8')
   assert.ok((css.match(/\[dir=rtl\]/g) || []).length > 100, 'mirrored rules are in the bundle')
   assert.ok(/\[dir=rtl\][^{]*:not\(\[dir=ltr\] \*\)/.test(css), 'mirrored rules leave dir=ltr islands alone')
-  assert.ok(/IBM Plex Sans Arabic/.test(css))
+  assert.ok(/Noto Kufi Arabic/.test(css))
 })

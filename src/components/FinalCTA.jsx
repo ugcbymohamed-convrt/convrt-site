@@ -33,7 +33,9 @@ function FadeUp({ children, inView, delay = 0, className = '' }) {
   )
 }
 
-export default function FinalCTA() {
+/* attributed: the page has ALREADY stated, close to the founder figures, that they are the founder's combined experience (the homepage does, under its founder headline), so the strip does not repeat the
+   asterisk and footnote (owner decision, Nov 2026: one clear attribution per page, not one per section). Pages that show the strip first (the case studies) keep it. */
+export default function FinalCTA({ attributed = false }) {
   const tr = useTr()
   const locale = currentLocale()
   const action = primaryAction(locale)
@@ -102,6 +104,15 @@ export default function FinalCTA() {
               <span className="text-ink">{tr('Good brands deserve')} </span>
               <br className="hidden sm:block" />
               <span className="text-lime">{tr('better creatives.')}</span>
+            </h2>
+          ) : locale === 'ar' ? (
+            /* Arabic: two lines, «البراندات الجيدة تستحق» / «إعلانات أفضل» (lime). Block lines, so the words keep their normal spacing and never depend on literal spaces. */
+            <h2
+              className="font-display font-bold tracking-display leading-[1.3] mb-7"
+              style={{ fontSize: 'clamp(2.1rem, 5.2vw, 4.4rem)' }}
+            >
+              <span className="block text-ink">{tr('Good brands deserve')}</span>
+              <span className="block text-lime">{tr('better creatives.')}</span>
             </h2>
           ) : (
             /* Three deliberate lines ("Las buenas marcas / merecen mejores / creativos."): the middle line never breaks on tablet and desktop; on a phone it may wrap rather than overflow. */
@@ -188,11 +199,11 @@ export default function FinalCTA() {
                 }}
               >
                 <span className="text-sm font-bold text-lime tabular-nums">{localizeStat(locale, pill.value)}</span>
-                <span className="text-xs text-ink-muted">{tr(pill.label)}<span aria-hidden="true">*</span></span>
+                <span className="text-xs text-ink-muted">{tr(pill.label)}{!attributed && <span aria-hidden="true">*</span>}</span>
               </div>
             ))}
           </div>
-          <p className="mx-auto mt-4 max-w-xl text-center text-[11.5px] leading-snug text-ink-muted">* {tr(FOUNDER_EXPERIENCE.footnote)}</p>
+          {!attributed && <p className="mx-auto mt-4 max-w-xl text-center text-[11.5px] leading-snug text-ink-muted">* {tr(FOUNDER_EXPERIENCE.footnote)}</p>}
         </FadeUp>
 
       </div>

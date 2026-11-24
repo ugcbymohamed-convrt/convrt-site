@@ -207,6 +207,7 @@ export const PORTFOLIO = [
     languages: ['ar'],
     onlyIn: ['ar'],
     source: { cloudflareId: 'c1379ace38f2fa19ef2a45de1bb5d4b1' },
+    poster: '/portfolio/ar-graspo-1.webp', /* same-origin frame (scripts/poster-frames.py): the three stage frames never depend on a live Stream thumbnail request */
     creatorId: 'ar-graspo-c1',
     brand: 'Graspo',
     production: 'convrt',
@@ -225,6 +226,7 @@ export const PORTFOLIO = [
     languages: ['ar'],
     onlyIn: ['ar'],
     source: { cloudflareId: '3616606e3ca6d1a85c8a57d7cc2f656f' },
+    poster: '/portfolio/ar-graspo-2.webp', /* same-origin frame (scripts/poster-frames.py): the three stage frames never depend on a live Stream thumbnail request */
     creatorId: 'ar-graspo-c2',
     brand: 'Graspo',
     production: 'convrt',
@@ -243,6 +245,7 @@ export const PORTFOLIO = [
     languages: ['ar'],
     onlyIn: ['ar'],
     source: { cloudflareId: '15dd5505109f6821ccdcb13fc3cdc1fd' },
+    poster: '/portfolio/ar-graspo-3.webp', /* same-origin frame (scripts/poster-frames.py): the three stage frames never depend on a live Stream thumbnail request */
     creatorId: 'ar-graspo-c3',
     brand: 'Graspo',
     production: 'convrt',

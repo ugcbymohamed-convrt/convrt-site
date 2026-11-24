@@ -25,6 +25,7 @@ const SERVICES = [
     description: 'Human-led UGC ads built to capture attention and test creative angles.',
     href: PATHS.ugcVideoAgency,
     pills: ['UGC Ads', 'Creator-Led', 'Creative Testing'],
+    pillsAr: ['إعلانات UGC', 'صنّاع محتوى حقيقيون', 'اختبار أفكار إبداعية مختلفة'],
     icon: IconUGC,
     rgb: '139 92 246', rgb2: '139 92 246', text: '#a78bfa', textHi: '#c4b5fd',
     glowA: { pos: '8% 12%', r: '480px', rest: 0.22, hover: 0.42 },
@@ -38,6 +39,7 @@ const SERVICES = [
     description: 'Product demos, explainers and video ads that make software easier to understand.',
     href: PATHS.saasVideoProduction,
     pills: ['Product Demos', 'Explainers', 'Video Ads'],
+    pillsAr: ['فيديوهات توضيحية', 'فيديوهات تقديمية', 'شروحات'],
     icon: IconSaas,
     rgb: '56 189 248', rgb2: '34 211 238', text: '#7dd3fc', textHi: '#bae6fd',
     glowA: { pos: '88% 8%', r: '460px', rest: 0.20, hover: 0.38 },
@@ -51,6 +53,7 @@ const SERVICES = [
     description: 'Professional, multilingual presenters for ads, demonstrations and brand messages.',
     href: PATHS.spokespersonVideoProduction,
     pills: ['Human-Led', 'Multilingual', 'Product Demos'],
+    pillsAr: ['صنّاع محتوى حقيقيون', 'متعددو اللغات', 'فيديوهات تقديمية'],
     icon: IconSpokesperson,
     rgb: '255 106 77', rgb2: '255 106 77', text: '#ff8c70', textHi: '#ffb59c',
     glowA: { pos: '8% 12%', r: '460px', rest: 0.20, hover: 0.38 },
@@ -64,6 +67,8 @@ const SERVICES = [
     description: 'Organic social videos, content planning, publishing and community management.',
     href: PATHS.socialMediaVideoProduction,
     pills: ['Organic Video', 'Posting', 'Community'],
+    /* The approved Arabic tags (owner brief, Nov 2026) are their own wording, not a translation of the English pills, so they are listed here and not routed through the dictionary. */
+    pillsAr: ['فيديوهات عضوية', 'نمو عضوي', 'إنستغرام', 'تيك توك'],
     icon: IconSocial,
     rgb: '213 255 64', rgb2: '213 255 64', text: '#d5ff40', textHi: '#e8ff7a',
     glowA: { pos: '88% 8%', r: '440px', rest: 0.16, hover: 0.32 },
@@ -106,6 +111,8 @@ export default function Services() {
   const tr = useTr()
   const href = useHref()
   const action = primaryAction(currentLocale())
+  /* Arabic (owner brief, Nov 2026): the supporting sentence sits directly under the heading, not alone on the opposite side of the row. */
+  const stacked = currentLocale() === 'ar'
 
   return (
     <section id="services" className="relative overflow-hidden py-16 md:py-20">
@@ -133,12 +140,12 @@ export default function Services() {
             <span className="h-1.5 w-1.5 rounded-full bg-lime animate-pulse" />
             <span className="text-xs font-medium uppercase tracking-[0.18em] text-ink-muted">{tr('What We Offer')}</span>
           </div>
-          <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-5">
+          <div className={stacked ? 'flex flex-col gap-5' : 'flex flex-col lg:flex-row lg:items-end lg:justify-between gap-5'}>
             <h2 className="font-display font-bold text-ink tracking-display leading-[1.02] text-4xl md:text-5xl lg:text-[62px]">
               {tr('Video creative for')}<br />
               <span className="text-lime">{tr('paid and organic social.')}</span>
             </h2>
-            <p className="text-[15px] text-ink-muted leading-relaxed max-w-sm mx-auto lg:mx-0 text-center lg:text-right pb-1">
+            <p className={stacked ? 'text-[15px] text-ink-muted leading-relaxed max-w-xl mx-auto lg:mx-0 text-center lg:text-left' : 'text-[15px] text-ink-muted leading-relaxed max-w-sm mx-auto lg:mx-0 text-center lg:text-right pb-1'}>
               {tr('Creative strategy and full video production,')}{' '}<br className="hidden lg:block" />
               {tr('from concept and creator casting to finished, platform-ready videos.')}
             </p>
@@ -238,7 +245,7 @@ function ServiceCard({ service: s, index }) {
           <p id={descId} className="svc-desc mt-3 max-w-[38ch] text-[14.5px] leading-relaxed">{tr(s.description)}</p>
 
           <ul className="mt-5 flex flex-wrap gap-2">
-            {s.pills.map((pill) => (<li key={pill} className="svc-pill">{tr(pill)}</li>))}
+            {(currentLocale() === 'ar' ? s.pillsAr : s.pills).map((pill) => (<li key={pill} className="svc-pill">{currentLocale() === 'ar' ? pill : tr(pill)}</li>))}
           </ul>
 
           <div className="min-h-[24px] flex-1" />

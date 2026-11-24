@@ -1,11 +1,11 @@
-import { CREATOR_EXAMPLES_NOTE } from '../../content/attribution.js'
 import { tr } from '../../i18n/tr.js'
 
 /* SECTION 1: a short, text-only hero. The H1 and one sentence, then the library starts straight away: no statistics, no service copy,
    no phone mock-ups. Dark canvas, white type, lime only on the last word and a faint glow.
 
-   The attribution line under the intro (CREATOR_EXAMPLES_NOTE) says the videos are examples from independent creators and not necessarily CONVRT
-   productions; it was added in the SEO/GEO Batch 1 (owner decision, Nov 2026) so the visible copy matches the SEO description. */
+   The long attribution paragraph that used to sit under the intro (CREATOR_EXAMPLES_NOTE) was removed from the hero on the owner's instruction (Nov 2026, all languages): it was bulky and repeated. The origin of the
+   videos is still stated where it matters: the "creators' examples, not necessarily CONVRT productions" lines of ShowcaseFormats, the creator / brand / production credit in every video's details (VideoLightbox)
+   and the documented CONVRT projects (case studies). The service-page galleries (UgcGallery) keep their one-line note. */
 export default function OurWorkHero({ empty = false }) {
   return (
     <section aria-labelledby="our-work-heading" className="relative overflow-x-clip">
@@ -15,7 +15,6 @@ export default function OurWorkHero({ empty = false }) {
           {tr("See what's")} <span className="text-lime">{tr('possible.')}</span>
         </h1>
         <p className="mt-4 max-w-2xl text-base leading-relaxed text-ink-muted md:mt-5 md:text-lg">{empty ? tr('Examples from independent creators in your language, coming soon.') : <>{tr('Explore real creator videos across')}{' '}<span className="whitespace-nowrap">{tr('e-commerce')}</span>{tr(', SaaS, services and more.')}</>}</p>
-        <p className="mt-3 max-w-2xl text-[13px] leading-relaxed text-ink-muted">{tr(CREATOR_EXAMPLES_NOTE)}</p>
       </div>
     </section>
   )

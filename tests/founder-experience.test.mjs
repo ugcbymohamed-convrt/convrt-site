@@ -58,9 +58,10 @@ test('homepage: "clients" not "brands", founder attribution in the headline and 
   assert.ok(!/Trusted by(<[^>]+>|\s)*500\+/.test(h) && !/500\+ brands/.test(h))
   assert.ok(h.includes(FOUNDER_EXPERIENCE.captionShort) && /^Founder experience across CONVRT Studio and other creative production work\.$/.test(FOUNDER_EXPERIENCE.captionShort), 'the English homepage shows the owner-approved one-line disclosure')
   assert.ok(FOUNDER_EXPERIENCE.caption.includes('CONVRT Studio and other professional creative production work'), 'the long caption (Spanish homepage, claims register) is unchanged')
-  for (const label of ['Videos produced', 'Views generated', 'of clients return for more']) assert.ok(h.includes(`${label}<span aria-hidden="true">*</span>`), label)
+  /* Owner decision (Nov 2026): the attribution is stated ONCE per page. The homepage states it under the founder headline, so the stat strip near the end repeats neither the asterisks nor the long footnote. */
+  for (const label of ['Videos produced', 'Views generated', 'of clients return for more']) assert.ok(h.includes(`${label}</span>`) && !h.includes(`${label}<span aria-hidden="true">*</span>`), label)
   for (const v of ['1,200+', '40M+', '50%+']) assert.ok(h.includes(`>${v}</span>`), v)
-  assert.ok(h.includes(`* ${FOUNDER_EXPERIENCE.footnote}`))
+  assert.ok(!h.includes(`* ${FOUNDER_EXPERIENCE.footnote}`), 'the homepage strip no longer repeats the long footnote')
   assert.match(h, /500\+ clients/)
 })
 

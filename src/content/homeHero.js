@@ -80,18 +80,21 @@ export const HOME_HERO_ES = [
   },
 ]
 
-/* The Arabic homepage hero: three of the approved Arabic-speaking creator videos (the same Stream videos and posters as the first three entries of the Arabic UGC hero in src/content/portfolio.js, uploaded once).
-   There is no Arabic version of the CONVRT ad, so the centre phone is a creator video too, never the English ad. Captions describe only what the footage shows. English keeps HOME_HERO unchanged. */
+/* The Arabic homepage hero: three videos. THE CENTRE (FEATURED) PHONE is CONVRT_AD_GULF_ARABIC_FINAL.mp4, which the owner supplied on 2026-11-24 to replace the previous centre video (1080x1920, 61 s, H.264 + AAC;
+   uploaded to Cloudflare Stream the same day as AR-HERO-GULF-FINAL; the original file is untouched on the owner's Desktop). The two side phones are the approved Arabic-speaking creator videos that were already there
+   (the same Stream videos and posters as the Arabic UGC hero in src/content/portfolio.js). The replaced centre video (ar-c01) is still on the Arabic UGC page. Who presents the new video, who made it and whether the
+   presenter has consented are NOT recorded, so no name, brand, production credit or date is stated; the caption describes only the footage. Spoken language is set from the Arabic on-screen captions (the opening
+   frames also carry an English comment overlay). English keeps HOME_HERO unchanged. */
 export const HOME_HERO_AR = [
   {
     id: 'home-hero-ar-main',
-    creatorId: 'ar-c01',
+    creatorId: 'ar-hero-gulf-c',
     industry: 'unclassified',
     languages: ['ar'],
-    caption: 'صانع محتوى يشرح خدمة رقمية أمام الكاميرا.',
-    poster: '/portfolio/ar-ugc-hero-1.webp',
-    source: { cloudflareId: '442dfb5fe6a49dffd032ecd920414512' },
-    approval: { ...approval, approvedOn: '2026-11-23' },
+    caption: 'مقدّم يتحدث بالعربية أمام الكاميرا في أماكن مختلفة، مع عناوين مكتوبة على الشاشة.',
+    poster: '/portfolio/ar-hero-gulf.webp',
+    source: { cloudflareId: 'b9e0e42256dc09c9f554c6d4f21b4785' },
+    approval: { ...approval, approvedBy: 'CONVRT owner (Arabic final revisions, 2026-11-24: supplied this video as the Arabic hero video)', approvedOn: '2026-11-24' },
   },
   {
     id: 'home-hero-ar-left',

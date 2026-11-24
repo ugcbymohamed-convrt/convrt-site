@@ -120,7 +120,7 @@ function HomePage() {
       {!en && <SectionDivider />}
       {en ? <ClientReviews /> : <Testimonials />}
       <SectionDivider />
-      <FinalCTA />
+      <FinalCTA attributed />
       <SectionDivider />
       <FAQ />
     </>

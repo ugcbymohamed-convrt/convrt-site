@@ -1,0 +1,1 @@
+Noto Kufi Arabic © 2022 The Noto Project Authors (https://github.com/notofonts/arabic). SIL Open Font License 1.1: https://openfontlicense.org/ — self-hosted Arabic subset (variable, weights 400–700) of the Google Fonts release (https://fonts.google.com/noto/specimen/Noto+Kufi+Arabic).

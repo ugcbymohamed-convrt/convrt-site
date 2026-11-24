@@ -197,7 +197,9 @@ function LogoMarquee({ logos, direction = 'forward' }) {
   }, [logos.length])
 
   return (
-    <div className="relative overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)]">
+    /* dir="ltr": the strip is a row of logos, not text. Under direction: rtl a w-max flex track is anchored at the RIGHT edge of its clip box while the animation moves it left, which leaves the strip half empty
+       and makes the loop jump (Arabic revision, Nov 2026). The marquee therefore always runs left to right, exactly as the English one. */
+    <div {...(currentLocale() === 'ar' ? { dir: 'ltr' } : {})} className="relative overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)]">
       <div
         ref={trackRef}
         className={`flex w-max items-center gap-8 md:gap-16 lg:gap-20 ${trackClass}`}

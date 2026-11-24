@@ -7,13 +7,13 @@ const accent = (cls, text) => h('span', { className: cls }, text)
 
 export const AR_HERO_OFFERS = {
   video: {
-    title: h(Fragment, null, 'إنتاج فيديو ', accent('text-lime', 'مجاني')),
+    title: h(Fragment, null, 'إنتاج فيديو إعلاني ', accent('text-lime', 'مجاني')),
     description: 'جرّب إنتاجنا دون مخاطرة.',
     cta: 'اعرف إن كنت مؤهلًا',
   },
   hooks: {
-    title: h(Fragment, null, '10 افتتاحيات إعلانية ', accent('text-[#F472B6]', 'مجانية')),
-    description: 'مكتبة افتتاحيات لإعلاناتك القادمة.',
+    title: h(Fragment, null, '10 هوكات ', accent('text-[#F472B6]', 'مجانية')),
+    description: 'مكتبة هوكات لإعلاناتك القادمة',
     cta: 'قريبًا',
   },
 }
