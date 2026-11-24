@@ -70,7 +70,7 @@ The English site is the visual source of truth; `origin/main` (English design re
 
 **What changed**
 - **Homepage = the English composition** (`App.jsx`, `Credibility.jsx`: `en || ar`): hero, logo strip + founder headline, the cinematic client stage, services, process, creator carousel, reviews, final CTA. Components are shared and locale-aware, never copied:
-  `IndustryShowcase` (client data from `SHOWCASE_INDUSTRIES_AR` in `src/content/homeShowcase.js`: Graspo = الطباعة, One Royal = التجارة, nothing else), `RotaryStage` (the stage scene is a `dir="ltr"` island; the ring is mirrored with `pose(..., mirror)` so the NEXT video stands on the left;
+  `IndustryShowcase` (client data from `SHOWCASE_INDUSTRIES_AR` in `src/content/homeShowcase.js`: Graspo = الطباعة, One Royal = التداول, nothing else), `RotaryStage` (the stage scene is a `dir="ltr"` island; the ring is mirrored with `pose(..., mirror)` so the NEXT video stands on the left;
   arrows and swipe use `stepOfArrow` / `stepOfSwipe`; videos are never flipped), `ClientReviews` (Arabic wording in `src/i18n/ar/reviews.js`), `HomeCreators` (Arabic videos tagged `homeCreator`).
 - **Navigation**: brighter Arabic labels (CSS, `:lang(ar) header nav a`), lime hover/focus; CTA = «احصل على 5 أفكار إعلانية مجانًا» everywhere (nav, hero, Roadmap, pricing, services).
 - **Hero**: rolling-word baseline fixed at the cause (an `overflow:hidden` inline-block takes its bottom edge as baseline; Arabic now clips with `clip-path`, and `.ugc-reel` aligns on the baseline with the headline's own line height; verified by a probe at 390/1440 for every word). Subtitle: فيديوهات Spokesperson, محتوى عضوي.

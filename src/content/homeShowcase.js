@@ -61,7 +61,7 @@ export const SHOWCASE_CASE_STUDY_LINKS = [
   { href: '/case-studies/graspo', label: 'Graspo' },
 ]
 
-/* THE ARABIC HOMEPAGE'S CLIENT SHOWCASE (owner brief 2026-11-23): the SAME component and design as the English one, with exactly TWO clients: Graspo (printing) and One Royal (trade).
+/* THE ARABIC HOMEPAGE'S CLIENT SHOWCASE (owner brief 2026-11-23): the SAME component and design as the English one, with exactly TWO clients: Graspo (printing) and One Royal (trading).
    The videos are the Arabic portfolio entries tagged `showcase: 'graspo'` / `showcase: 'oneroyal'` (src/content/portfolio.js; the Graspo ones are the same Stream videos as the English Graspo panel).
    Nothing is invented: no figure, headline or project outcome is attached to One Royal (none is on record). Graspo has a published case study (translated: /ar/case-studies/graspo); One Royal has no
    case study, so its crawlable destination is the Spokesperson page, the service its videos belong to.
@@ -82,7 +82,7 @@ export const SHOWCASE_INDUSTRIES_AR = [
   {
     id: 'trade',
     number: '02',
-    label: 'التجارة',
+    label: 'التداول',
     clientId: 'oneroyal',
     client: 'One Royal',
     logo: null, // see MISSING ASSET above
