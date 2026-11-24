@@ -3,9 +3,9 @@
    The English referral page defines the program in US dollars: Standard Referral Partner $150 (cash or production credit); Agency & Strategic Partner 10 % of the first qualifying
    project payment, capped at $500 per referred client (docs/referral-program-setup.md, src/components/referrals/*).
 
-   EUR markets (Spanish, French): the owner asked in chat (2026-11-24) for the Standard reward to read 150 € instead of $150. The 10 % commission, its cap and the eligibility terms are NOT
+   EUR markets (Spanish, French): the owner asked in chat (2026-11-24) for the Standard reward to read 150 € instead of $150 and CONFIRMED it as approved for these markets. The 10 % commission, its cap and the eligibility terms are NOT
    changed (the cap stays 500 USD, the example stays 5,000 USD). This is a locale-specific commercial offer: the central policy documents (docs/referral-program-setup.md, docs/partner-kit.md,
-   the tracker template) still say $150 only, so the payout setup for 150 € is an OPEN CONFIRMATION recorded in docs/multilingual-referrals-fr-ar.md.
+   the tracker template) still say $150 only, so the euro payout setup (kit, tracker) is an operations to-do recorded in docs/multilingual-referrals-fr-ar.md.
    English and Arabic keep the US-dollar amounts exactly as approved.
 
    Tokens used in dictionary values:  {{reward:standard}}  {{reward:cap}}  {{reward:example}} */
