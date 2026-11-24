@@ -69,15 +69,13 @@ export default function ClientReviews() {
   return (
     <section id="testimonials" aria-labelledby="reviews-heading" className="relative overflow-hidden py-16 md:py-24">
       <div className="relative mx-auto max-w-7xl px-5 md:px-8">
+        {/* the heading is visually hidden (the design carries only the eyebrow); French shows its own visible heading below the eyebrow */}
+        {!ed?.reviewsHeading && <h2 id="reviews-heading" className="sr-only">{es ? ES_REVIEWS_COPY.heading : tr('Great work. Strong relationships. Repeat collaborations.')}</h2>}
         <div className="inline-flex items-center gap-3">
           <span className="h-px w-12 bg-lime md:w-24" aria-hidden="true" />
           <span className="text-sm font-semibold uppercase tracking-[0.22em] text-lime md:text-base">{es ? ES_REVIEWS_COPY.eyebrow : ed?.reviewsEyebrow ?? tr('Client Reviews')}</span>
         </div>
-        {ed?.reviewsHeading ? (
-          <h2 id="reviews-heading" className="mt-5 font-display text-[2rem] font-bold leading-[1.08] tracking-display-xl text-ink md:mt-6 md:text-[2.75rem]">{ed.reviewsHeading}</h2>
-        ) : (
-          <h2 id="reviews-heading" className="sr-only">{es ? ES_REVIEWS_COPY.heading : tr('Great work. Strong relationships. Repeat collaborations.')}</h2>
-        )}
+        {ed?.reviewsHeading && <h2 id="reviews-heading" className="mt-5 font-display text-[2rem] font-bold leading-[1.08] tracking-display-xl text-ink md:mt-6 md:text-[2.75rem]">{ed.reviewsHeading}</h2>}
 
         <div className="mt-8 grid grid-cols-1 gap-x-10 gap-y-10 md:mt-12 lg:grid-cols-[minmax(0,0.3fr)_minmax(0,1fr)_minmax(290px,0.36fr)] lg:gap-x-12">
           {/* oversized opening mark */}
