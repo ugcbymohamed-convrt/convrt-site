@@ -17,7 +17,7 @@ import StudioEnvironment from './StudioEnvironment.jsx'
            screen and centred on the featured video, the side videos peeking in at the edges; swipe, tap or the arrow keys bring one forward).
    THE VIDEOS are the active client's three `showcase` portfolio entries (a click, swipe or arrow key on a side video orbits it into the centre). The FRONT video of the first client (Adscale, the "ROAS jail" video) plays by itself, muted, as soon
                as the visitor scrolls the stage into view (RotaryStage, `autoPlayOnView`); nothing else ever starts by itself.
-   CRAWLABLE   the destinations of the three clients (Adscale -> the SaaS page, Elyon Dubai and Graspo -> their case studies) stay in the HTML as a visually hidden list that appears when a keyboard user focuses it;
+   CRAWLABLE   the destinations of the clients (Adscale -> the SaaS page, Elyon Dubai -> its case study) stay in the HTML as a visually hidden list that appears when a keyboard user focuses it;
                the descriptions in src/content/homeShowcase.js are kept for the other pages and tests, not drawn here.
    Switching client fades the stage out and in (190 ms, immediate for prefers-reduced-motion) and re-mounts it on the new client's first video, so nothing of the previous client keeps playing.
    The Spanish homepage keeps the older CaseStudies section (see App.jsx). */
@@ -134,7 +134,7 @@ export default function IndustryShowcase() {
 
         {/* 5: the client selector, overlapping the front of the podium and centred on the same axis */}
         <div className={`relative z-20 mx-auto -mt-[27vw] w-full ${single ? 'max-w-[15rem]' : 'max-w-[42rem]'} px-5 sm:-mt-[min(max(11.7vw,105px),150px)] md:px-0`}>
-          <div role={single ? undefined : 'tablist'} aria-label={single ? undefined : es ? SHOWCASE_COPY_ES.tablistLabel : 'Client work by industry'} className={`grid ${single ? 'grid-cols-1' : es ? 'grid-cols-2' : 'grid-cols-3'} gap-[0.4rem] rounded-[26px] border border-white/[0.09] bg-[rgba(8,9,6,0.74)] p-[0.45rem] shadow-[0_24px_50px_-20px_rgba(0,0,0,0.95)] backdrop-blur-md`}>
+          <div role={single ? undefined : 'tablist'} aria-label={single ? undefined : es ? SHOWCASE_COPY_ES.tablistLabel : 'Client work by industry'} className={`grid ${single ? 'grid-cols-1' : 'grid-cols-2'} gap-[0.4rem] ${es || single ? '' : 'mx-auto max-w-[29rem]'} rounded-[26px] border border-white/[0.09] bg-[rgba(8,9,6,0.74)] p-[0.45rem] shadow-[0_24px_50px_-20px_rgba(0,0,0,0.95)] backdrop-blur-md`}>
             {industries.map((c, i) => {
               const on = c.id === pickedId
               const Wrap = single ? 'div' : 'button'
