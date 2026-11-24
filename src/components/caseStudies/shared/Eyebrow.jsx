@@ -1,5 +1,7 @@
 /* Small pulsing-dot pill label used above section headings across
    the case-study system (e.g. "The Challenge", "Performance Snapshot"). */
+import { tr } from '../../../i18n/tr.js'
+
 export default function Eyebrow({ label, accent = '#d5ff40', className = '' }) {
   return (
     <div
@@ -7,7 +9,7 @@ export default function Eyebrow({ label, accent = '#d5ff40', className = '' }) {
     >
       <span className="h-1.5 w-1.5 rounded-full animate-pulse" style={{ background: accent }} />
       <span className="text-xs font-medium uppercase tracking-[0.18em] text-ink-muted">
-        {label}
+        {tr(label)}
       </span>
     </div>
   )

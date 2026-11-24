@@ -20,7 +20,7 @@ export function headParamsFor(path, publishedMetas = []) {
   }
   // Translated pages: /es/pricing → the Spanish head of the English base path /pricing.
   const { locale, basePath } = parsePath(path)
-  if (locale !== 'en') return pageHead(basePath, locale)
+  if (locale !== 'en') return pageHead(canonicalPathFor(basePath), locale) // a duplicate such as /fr/case-studies carries its default study's head
   // /case-studies renders the default study, so it carries that study's head.
   return pageHead(canonicalPathFor(path))
 }

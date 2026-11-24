@@ -25,6 +25,7 @@ export function translate(locale, text) {
     const out = hasPriceTokens(hit) ? resolvePriceTokens(locale, hit) : hit
     return locale === 'fr' ? frTypography(out) : out
   }
+  if (!/[A-Za-z]/.test(text)) return text // pure numerals and punctuation ('75', '4', '12–34') need no translation
   // Record the miss: the build (vite-plugin-static-routes.js) refuses to write a translated page that rendered any untranslated string.
   ;(globalThis.__i18nMisses ||= new Set()).add(`${locale}: ${text}`)
   if (typeof window !== 'undefined' && window.location?.hostname === 'localhost') console.warn(`[i18n] missing ${locale} translation: ${text}`)
@@ -63,3 +64,6 @@ export const tr = (text) => translate(currentLocale(), text)
 export function T({ children }) {
   return tr(typeof children === 'string' ? children : String(children))
 }
+
+/* A percentage shown in a chart: English '14.2%'; French '14,2 %' (decimal comma, non-breaking space before the sign); Spanish '14,2 %'. */
+export const pctText = (n, locale = currentLocale()) => (locale === DEFAULT_LOCALE ? `${n}%` : `${String(n).replace('.', ',')}\u00a0%`)

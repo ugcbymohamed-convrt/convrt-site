@@ -3,6 +3,7 @@ import Hls from 'hls.js'
 import Eyebrow from '../caseStudies/shared/Eyebrow.jsx'
 import { ACCENT } from './theme.js'
 import { streamPoster } from '../../content/posterFrames.js'
+import { tr } from '../../i18n/tr.js'
 
 /* Real Elyon creative — the same three Cloudflare Stream assets featured
    in the homepage Case Studies carousel, reused here so the case study
@@ -24,13 +25,8 @@ export default function ElyonShowcase() {
       <div className="relative mx-auto max-w-7xl px-5 md:px-8">
         <div className="max-w-2xl mb-12 md:mb-14 text-center mx-auto">
           <Eyebrow label="The Creative" accent={ACCENT} className="mb-6" />
-          <h2 className="font-display font-bold text-ink tracking-display leading-[1.05] text-3xl md:text-[44px]">
-            What actually ran on paid social.
-          </h2>
-          <p className="mt-6 text-[15px] md:text-base text-ink-muted leading-relaxed">
-            Real campaign creative from the Elyon library, built to earn attention and still look
-            like it belongs to a luxury fragrance brand.
-          </p>
+          <h2 className="font-display font-bold text-ink tracking-display leading-[1.05] text-3xl md:text-[44px]">{tr('What actually ran on paid social.')}</h2>
+          <p className="mt-6 text-[15px] md:text-base text-ink-muted leading-relaxed">{tr('Real campaign creative from the Elyon library, built to earn attention and still look like it belongs to a luxury fragrance brand.')}</p>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 md:gap-8 max-w-4xl mx-auto">
@@ -127,7 +123,7 @@ function VideoPhone({ video }) {
           ) : (
             <img
               src={streamPoster(video.id, { height: 600 })}
-              alt={`Elyon ${video.label} still`}
+              alt={`Elyon ${tr(video.label)} ${tr('still')}`}
               loading="lazy"
               className="absolute inset-0 w-full h-full object-cover"
             />
@@ -157,7 +153,7 @@ function VideoPhone({ video }) {
       </div>
       <p className="mt-4 text-center">
         <span className="block text-[10.5px] font-semibold uppercase tracking-[0.16em]" style={{ color: ACCENT }}>
-          {video.label}
+          {tr(video.label)}
         </span>
       </p>
     </div>

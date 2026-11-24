@@ -1,5 +1,6 @@
 import { getAdjacentCaseStudy } from '../../caseStudies/registry.js'
 import { useCaseStudySwitcher } from './CaseStudyContext.jsx'
+import { tr } from '../../i18n/tr.js'
 
 /* Closing cross-link — surfaces the other project by name and result,
    so the reader doesn't have to scroll back up to the switcher to
@@ -12,9 +13,7 @@ export default function NextCaseStudy({ currentId }) {
   return (
     <section className="relative py-14 md:py-20">
       <div className="mx-auto max-w-2xl px-5 text-center md:px-8">
-        <span className="text-[10.5px] font-semibold uppercase tracking-[0.22em] text-ink-subtle">
-          Next Case Study
-        </span>
+        <span className="text-[10.5px] font-semibold uppercase tracking-[0.22em] text-ink-subtle">{tr('Next Case Study')}</span>
 
         <button
           type="button"
@@ -27,14 +26,12 @@ export default function NextCaseStudy({ currentId }) {
             {next.label}
           </span>
           <span className="mt-3 block text-[14px] text-ink-muted md:text-[15px]">
-            {next.blurb}
+            {tr(next.blurb)}
           </span>
           <span
             className="mt-6 inline-flex items-center gap-2 text-sm font-semibold transition-colors duration-300"
             style={{ color: next.accent }}
-          >
-            View case study
-            <svg
+          >{tr('View case study')}<svg
               viewBox="0 0 12 12"
               className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-1"
               fill="none"

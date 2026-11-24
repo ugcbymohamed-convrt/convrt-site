@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { tr } from '../../i18n/tr.js'
 
 /* ─────────────────────────────────────────────
    ATTENTION → DEMAND
@@ -44,15 +45,10 @@ export default function GraspoFunnel() {
         <div className="text-center max-w-2xl mx-auto mb-14 md:mb-16">
           <div className="inline-flex items-center gap-2 rounded-full border border-hairline bg-surface-1/60 px-4 py-1.5 mb-6 backdrop-blur">
             <span className="h-1.5 w-1.5 rounded-full animate-pulse" style={{ background: ACCENT }} />
-            <span className="text-xs font-medium uppercase tracking-[0.18em] text-ink-muted">Attention → Demand</span>
+            <span className="text-xs font-medium uppercase tracking-[0.18em] text-ink-muted">{tr('Attention → Demand')}</span>
           </div>
-          <h2 className="font-display font-bold text-ink tracking-display leading-[1.05] text-3xl md:text-[44px]">
-            The social funnel, start to finish.
-          </h2>
-          <p className="mt-6 text-[15px] text-ink-muted leading-relaxed">
-            This is the funnel observed during the management period, not a claim that every
-            view produced an inquiry. It's what happened between a content strategy and a sales team's inbox.
-          </p>
+          <h2 className="font-display font-bold text-ink tracking-display leading-[1.05] text-3xl md:text-[44px]">{tr('The social funnel, start to finish.')}</h2>
+          <p className="mt-6 text-[15px] text-ink-muted leading-relaxed">{tr('This is the funnel observed during the management period, not a claim that every view produced an inquiry. It\'s what happened between a content strategy and a sales team\'s inbox.')}</p>
         </div>
 
         <div className="space-y-3">
@@ -82,11 +78,11 @@ export default function GraspoFunnel() {
                       className="shrink-0 font-display font-bold tabular-nums"
                       style={{ fontSize: 'clamp(1.5rem, 3vw, 2.1rem)', color: i === 0 ? ACCENT : '#ffffff' }}
                     >
-                      {s.value}
+                      {tr(s.value)}
                     </span>
                     <div className="min-w-0">
-                      <p className="text-[14px] font-semibold text-ink truncate">{s.label}</p>
-                      <p className="text-[11.5px] text-ink-subtle truncate">{s.desc}</p>
+                      <p className="text-[14px] font-semibold text-ink truncate">{tr(s.label)}</p>
+                      <p className="text-[11.5px] text-ink-subtle truncate">{tr(s.desc)}</p>
                     </div>
                   </div>
                 </div>

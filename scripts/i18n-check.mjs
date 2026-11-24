@@ -26,7 +26,10 @@ export function literalKeys(uses = new Map()) {
 
 /* Pages a language does not have are not its business: a string only a page the language lacks uses is not required in that dictionary. French has every service page now (UGC, Spokesperson,
    SaaS, Organic Social: docs/multilingual-french-release.md), so nothing is excluded for it any more; the map stays so a future language can scope itself the same way. */
-const SCOPE_EXCLUDED = {}
+const SCOPE_EXCLUDED = {
+  // Spanish has no case-study pages yet (the French ones were built first, Nov 2026): their components are not Spanish's business until /es/case-studies exists.
+  es: [/^components[\\/](graspo|elyon|caseStudies)[\\/]/, /^(CaseStudiesPage|GraspoCaseStudyPage|ElyonCaseStudyPage)\.jsx$/],
+}
 export function missingFor(locale) {
   const dict = DICTIONARIES[locale] ?? {}
   const excluded = SCOPE_EXCLUDED[locale] ?? []

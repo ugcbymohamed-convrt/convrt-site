@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { tr } from '../../i18n/tr.js'
 
 /* ─────────────────────────────────────────────
    HERO METRICS — the numbers that carry the page.
@@ -58,16 +59,14 @@ export default function GraspoMetrics() {
                 className="relative font-display font-bold tracking-display leading-none text-[clamp(1.9rem,4vw,2.6rem)] tabular-nums"
                 style={{ color: i === 3 || i === 4 ? ACCENT : '#ffffff' }}
               >
-                {m.value}
+                {tr(m.value)}
               </p>
-              <p className="relative mt-3 text-[13px] font-semibold text-ink">{m.label}</p>
-              <p className="relative mt-1 text-[11.5px] text-ink-subtle">{m.sub}</p>
+              <p className="relative mt-3 text-[13px] font-semibold text-ink">{tr(m.label)}</p>
+              <p className="relative mt-1 text-[11.5px] text-ink-subtle">{tr(m.sub)}</p>
             </div>
           ))}
         </div>
-        <p className="mt-5 text-center text-xs text-ink-subtle">
-          Source: Meta Business Suite analytics, Jan 1 – Jun 19 2026 · Leads: internal inbound tracker across Meta, email and WhatsApp
-        </p>
+        <p className="mt-5 text-center text-xs text-ink-subtle">{tr('Source: Meta Business Suite analytics, Jan 1 – Jun 19 2026 · Leads: internal inbound tracker across Meta, email and WhatsApp')}</p>
       </div>
     </section>
   )

@@ -1,6 +1,7 @@
 import { useInView } from '../caseStudies/shared/useInView.js'
 import Eyebrow from '../caseStudies/shared/Eyebrow.jsx'
 import { ACCENT, ACCENT_LIGHT } from './theme.js'
+import { tr } from '../../i18n/tr.js'
 
 /* ─────────────────────────────────────────────
    PERFORMANCE
@@ -19,15 +20,8 @@ export default function ElyonPerformance() {
       <div ref={ref} className="mx-auto max-w-5xl px-5 md:px-8">
         <div className="max-w-2xl mx-auto mb-12 md:mb-14 text-center">
           <Eyebrow label="Performance" accent={ACCENT} className="mb-6" />
-          <h2 className="font-display font-bold text-ink tracking-display leading-[1.05] text-3xl md:text-[44px]">
-            Creative that didn't just get watched.
-            <br />
-            It sold perfume.
-          </h2>
-          <p className="mt-6 text-[15px] md:text-base text-ink-muted leading-relaxed">
-            Two verified snapshots from two different moments in the campaign. They are kept separate
-            below on purpose, not added together.
-          </p>
+          <h2 className="font-display font-bold text-ink tracking-display leading-[1.05] text-3xl md:text-[44px]">{tr('Creative that didn\'t just get watched.')}<br />{tr('It sold perfume.')}</h2>
+          <p className="mt-6 text-[15px] md:text-base text-ink-muted leading-relaxed">{tr('Two verified snapshots from two different moments in the campaign. They are kept separate below on purpose, not added together.')}</p>
         </div>
 
         {/* ── Snapshot 1: early test ── */}
@@ -41,9 +35,7 @@ export default function ElyonPerformance() {
             transition: 'opacity 0.7s cubic-bezier(0.22,1,0.36,1), transform 0.7s cubic-bezier(0.22,1,0.36,1)',
           }}
         >
-          <p className="text-center text-[11px] font-bold uppercase tracking-[0.2em]" style={{ color: ACCENT }}>
-            Performance Snapshot 1 &middot; Early Test
-          </p>
+          <p className="text-center text-[11px] font-bold uppercase tracking-[0.2em]" style={{ color: ACCENT }}>{tr('Performance Snapshot 1 · Early Test')}</p>
 
           <div className="mt-7 flex flex-col md:flex-row items-center justify-center gap-6 md:gap-4">
             <Stat value="$229.89" label="Ad Spend" visible={visible} delay={80} />
@@ -58,18 +50,15 @@ export default function ElyonPerformance() {
             <MiniStat label="Second strong creative" value="3.17x ROAS" visible={visible} delay={440} />
           </div>
 
-          <p className="mt-6 text-center text-[12.5px] text-ink-subtle leading-relaxed max-w-lg mx-auto">
-            Four creatives, over two days, on a cold ad account still in the learning phase with an
-            unoptimised setup.
-          </p>
+          <p className="mt-6 text-center text-[12.5px] text-ink-subtle leading-relaxed max-w-lg mx-auto">{tr('Four creatives, over two days, on a cold ad account still in the learning phase with an unoptimised setup.')}</p>
 
-          <ProofBadge src={`${PROOF_BASE}/proof-early-test.webp`} label="Client-verified via WhatsApp" />
+          <ProofBadge src={`${PROOF_BASE}/proof-early-test.webp`} label={tr('Client-verified via WhatsApp')} />
         </div>
 
         {/* ── Divider callout ── */}
         <div className="my-8 flex items-center justify-center gap-3 text-ink-subtle">
           <span className="h-px w-10" style={{ background: 'rgba(201,166,104,0.25)' }} />
-          <span className="text-[11px] uppercase tracking-[0.18em]">A separate result, weeks later</span>
+          <span className="text-[11px] uppercase tracking-[0.18em]">{tr('A separate result, weeks later')}</span>
           <span className="h-px w-10" style={{ background: 'rgba(201,166,104,0.25)' }} />
         </div>
 
@@ -84,15 +73,11 @@ export default function ElyonPerformance() {
             transition: 'opacity 0.8s 0.15s cubic-bezier(0.22,1,0.36,1), transform 0.8s 0.15s cubic-bezier(0.22,1,0.36,1)',
           }}
         >
-          <p className="text-[11px] font-bold uppercase tracking-[0.2em]" style={{ color: ACCENT }}>
-            Performance Snapshot 2 &middot; Standout Result
-          </p>
+          <p className="text-[11px] font-bold uppercase tracking-[0.2em]" style={{ color: ACCENT }}>{tr('Performance Snapshot 2 · Standout Result')}</p>
           <h3
             className="mt-4 font-display font-bold leading-[1.05] text-[clamp(1.7rem,5vw,3.2rem)]"
             style={{ color: ACCENT_LIGHT }}
-          >
-            One creative. Nine sales.
-          </h3>
+          >{tr('One creative. Nine sales.')}</h3>
 
           <div className="mt-7 flex flex-col sm:flex-row items-center justify-center gap-10 sm:gap-14">
             <BigStat value="$3,421.25" label="Revenue" visible={visible} delay={260} />
@@ -100,12 +85,9 @@ export default function ElyonPerformance() {
             <BigStat value="5.28x" label="ROAS" accent visible={visible} delay={420} />
           </div>
 
-          <p className="mt-7 text-[13px] text-ink-muted leading-relaxed max-w-md mx-auto">
-            The client sent these Meta results directly, unprompted, because the creative was
-            performing strongly.
-          </p>
+          <p className="mt-7 text-[13px] text-ink-muted leading-relaxed max-w-md mx-auto">{tr('The client sent these Meta results directly, unprompted, because the creative was performing strongly.')}</p>
 
-          <ProofBadge src={`${PROOF_BASE}/proof-nine-sales.webp`} label="Client-verified via WhatsApp" center />
+          <ProofBadge src={`${PROOF_BASE}/proof-nine-sales.webp`} label={tr('Client-verified via WhatsApp')} center />
         </div>
       </div>
     </section>
@@ -146,10 +128,10 @@ function Stat({ value, label, visible, delay = 0, accent = false, big = false })
         className={`font-display font-bold tabular-nums leading-none ${big ? 'text-[clamp(2rem,5vw,3rem)]' : 'text-[clamp(1.6rem,4vw,2.3rem)]'}`}
         style={{ color: accent ? ACCENT : '#ffffff' }}
       >
-        {value}
+        {tr(value)}
       </span>
       <span className="mt-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-ink-subtle">
-        {label}
+        {tr(label)}
       </span>
     </div>
   )
@@ -169,10 +151,10 @@ function BigStat({ value, label, visible, delay = 0, accent = false }) {
         className="font-display font-black tabular-nums leading-none text-[clamp(2.4rem,7vw,4.2rem)]"
         style={{ color: accent ? ACCENT : '#ffffff' }}
       >
-        {value}
+        {tr(value)}
       </span>
       <span className="mt-3 text-[11.5px] font-semibold uppercase tracking-[0.16em] text-ink-subtle">
-        {label}
+        {tr(label)}
       </span>
     </div>
   )
@@ -190,8 +172,8 @@ function MiniStat({ label, value, visible, delay = 0 }) {
         transition: `opacity 0.55s ${delay}ms cubic-bezier(0.22,1,0.36,1), transform 0.55s ${delay}ms cubic-bezier(0.22,1,0.36,1)`,
       }}
     >
-      <p className="text-[11px] text-ink-subtle">{label}</p>
-      <p className="mt-1 font-display font-bold text-lg" style={{ color: ACCENT }}>{value}</p>
+      <p className="text-[11px] text-ink-subtle">{tr(label)}</p>
+      <p className="mt-1 font-display font-bold text-lg" style={{ color: ACCENT }}>{tr(value)}</p>
     </div>
   )
 }

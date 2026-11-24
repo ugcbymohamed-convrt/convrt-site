@@ -1,6 +1,7 @@
 import { useInView } from '../caseStudies/shared/useInView.js'
 import Eyebrow from '../caseStudies/shared/Eyebrow.jsx'
 import { ACCENT } from './theme.js'
+import { tr } from '../../i18n/tr.js'
 
 const STAGES = [
   { step: '01', tag: 'Initial Batch', value: '30', label: 'Interview-style deliverables' },
@@ -18,11 +19,7 @@ export default function ElyonScale() {
     >
       <div ref={ref} className="mx-auto max-w-5xl px-5 md:px-8 text-center">
         <Eyebrow label="Scale" accent={ACCENT} className="mb-6" />
-        <h2 className="font-display font-bold text-ink tracking-display leading-[1.05] text-3xl md:text-[44px]">
-          When a creative wins,
-          <br />
-          you don't stop. You build around it.
-        </h2>
+        <h2 className="font-display font-bold text-ink tracking-display leading-[1.05] text-3xl md:text-[44px]">{tr('When a creative wins,')}<br />{tr('you don\'t stop. You build around it.')}</h2>
 
         <div className="mt-12 flex flex-col sm:flex-row items-stretch justify-center gap-3 sm:gap-0">
           {STAGES.map((s, i) => (
@@ -38,12 +35,12 @@ export default function ElyonScale() {
                 }}
               >
                 <p className="text-[10px] font-bold uppercase tracking-[0.16em]" style={{ color: ACCENT }}>
-                  {s.step} &middot; {s.tag}
+                  {s.step} &middot; {tr(s.tag)}
                 </p>
                 <p className="mt-3 font-display font-bold tabular-nums leading-none text-[clamp(1.9rem,4vw,2.6rem)] text-ink">
-                  {s.value}
+                  {tr(s.value)}
                 </p>
-                <p className="mt-2 text-[13px] text-ink-muted">{s.label}</p>
+                <p className="mt-2 text-[13px] text-ink-muted">{tr(s.label)}</p>
               </div>
 
               {i < STAGES.length - 1 && (
@@ -64,10 +61,8 @@ export default function ElyonScale() {
           ))}
         </div>
 
-        <p className="mt-10 text-[15px] text-ink-muted leading-relaxed max-w-2xl mx-auto">
-          As results landed, production scope kept growing across new locations and formats.
-          Performance opened the conversation for a{' '}
-          <span className="font-semibold text-ink">7-video weekly creative cadence.</span>
+        <p className="mt-10 text-[15px] text-ink-muted leading-relaxed max-w-2xl mx-auto">{tr('As results landed, production scope kept growing across new locations and formats. Performance opened the conversation for a')}{' '}
+          <span className="font-semibold text-ink">{tr('7-video weekly creative cadence.')}</span>
         </p>
       </div>
     </section>

@@ -1,6 +1,7 @@
 import { trackEvent } from '../../lib/analytics.js'
 import { scrollToApply } from '../../lib/roadmapForm.js'
 import { Arrow, ScrollCta, goToSection } from './shared.jsx'
+import { tr } from '../../i18n/tr.js'
 
 /* ─────────────────────────────────────────────
    HERO — one headline, one sentence, two CTAs, one trust line and a lightweight CSS + SVG
@@ -67,21 +68,16 @@ export default function ReferralHero() {
           <div className="min-w-0 lg:col-span-7">
             <div className="inline-flex max-w-full items-center gap-2 rounded-2xl border border-hairline bg-surface-1/60 px-3.5 py-1.5 backdrop-blur sm:rounded-full">
               <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-lime" aria-hidden="true" />
-              <span className="text-[10px] font-medium uppercase tracking-[0.14em] text-ink-muted min-[400px]:text-[11px] min-[400px]:tracking-[0.16em] sm:text-xs sm:tracking-[0.18em]">
-                CONVRT Referral Partner Program
-              </span>
+              <span className="text-[10px] font-medium uppercase tracking-[0.14em] text-ink-muted min-[400px]:text-[11px] min-[400px]:tracking-[0.16em] sm:text-xs sm:tracking-[0.18em]">{tr('CONVRT Referral Partner Program')}</span>
             </div>
 
             <h1
               id="referrals-h1"
               className="mt-6 font-display font-bold text-ink tracking-display-xl leading-[1.08] text-[2.4rem] min-[400px]:text-[2.9rem] sm:text-[3.5rem] md:text-[4rem] lg:text-[3.4rem] xl:text-[4rem]"
-            >
-              Know a Brand That Needs <span className="text-lime">Better Video Ads?</span>
+            >{tr('Know a Brand That Needs')} <span className="text-lime">{tr('Better Video Ads?')}</span>
             </h1>
 
-            <p className="mt-6 max-w-xl text-base leading-relaxed text-ink-muted md:text-lg">
-              Introduce SaaS and e-commerce brands to CONVRT. Get rewarded when they become clients.
-            </p>
+            <p className="mt-6 max-w-xl text-base leading-relaxed text-ink-muted md:text-lg">{tr('Introduce SaaS and e-commerce brands to CONVRT. Get rewarded when they become clients.')}</p>
 
             <div className="mt-8 flex flex-col items-stretch gap-3 sm:flex-row sm:items-center">
               <ScrollCta
@@ -92,8 +88,7 @@ export default function ReferralHero() {
                   trackEvent('referral_cta_click', { location: 'hero' })
                   scrollToApply()
                 }}
-              >
-                Become a Referral Partner <Arrow />
+              >{tr('Become a Referral Partner')} <Arrow />
               </ScrollCta>
               <ScrollCta
                 href="#how-it-works"
@@ -103,22 +98,20 @@ export default function ReferralHero() {
                   trackEvent('referral_cta_click', { location: 'hero_how_it_works' })
                   goToSection('how-it-works')
                 }}
-              >
-                See How It Works
-              </ScrollCta>
+              >{tr('See How It Works')}</ScrollCta>
             </div>
 
             <p className="mt-6 flex max-w-xl items-start gap-2.5 text-sm leading-relaxed text-ink-muted">
               <span className="mt-[7px] h-1.5 w-1.5 shrink-0 rounded-full bg-magenta" aria-hidden="true" />
-              <span>Simple introductions. No selling required.</span>
+              <span>{tr('Simple introductions. No selling required.')}</span>
             </p>
           </div>
 
           {/* Journey graphic */}
           <div className="min-w-0 lg:col-span-5">
             <div className="rounded-3xl border border-hairline-strong bg-surface-1 p-6 shadow-[0_40px_90px_-40px_rgba(0,0,0,0.8)] sm:p-8">
-              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-lime">The referral journey</p>
-              <ol className="mt-6" aria-label="The referral journey: you refer, we create, you earn">
+              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-lime">{tr('The referral journey')}</p>
+              <ol className="mt-6" aria-label={tr('The referral journey: you refer, we create, you earn')}>
                 {JOURNEY.map((step, i) => {
                   const last = i === JOURNEY.length - 1
                   return (
@@ -140,9 +133,9 @@ export default function ReferralHero() {
                       <div className="min-w-0 pt-0.5">
                         <p className="font-display text-lg font-bold uppercase leading-tight tracking-snug text-ink sm:text-xl">
                           <span className="mr-2 text-sm font-semibold tabular-nums text-ink-muted" aria-hidden="true">0{i + 1}</span>
-                          {step.title}
+                          {tr(step.title)}
                         </p>
-                        <p className="mt-1.5 text-sm leading-snug text-ink-muted">{step.note}</p>
+                        <p className="mt-1.5 text-sm leading-snug text-ink-muted">{tr(step.note)}</p>
                       </div>
                     </li>
                   )
@@ -157,8 +150,8 @@ export default function ReferralHero() {
                   </svg>
                 </span>
                 <p className="text-sm leading-snug text-ink-muted">
-                  <span className="font-semibold text-lime">PLUS:</span>{' '}
-                  <span className="font-semibold text-ink">Your referral gets 2 FREE ad variations.</span>
+                  <span className="font-semibold text-lime">{tr('PLUS:')}</span>{' '}
+                  <span className="font-semibold text-ink">{tr('Your referral gets 2 FREE ad variations.')}</span>
                 </p>
               </div>
             </div>

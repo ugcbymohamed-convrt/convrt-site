@@ -14,6 +14,8 @@ import runtime from './dict-runtime.js'
 import spokesperson from './dict-spokesperson.js'
 import saas from './dict-saas.js'
 import organic from './dict-organic.js'
+import casestudies from './dict-casestudies.js'
+import referrals from './dict-referrals.js'
 
-export default { ...shell, ...home, ...services, ...pricing, ...showcase, ...roadmap, ...riskfree, ...scenes, ...geo, ...trust, ...v2, ...runtime, ...spokesperson, ...saas, ...organic }
-export const PARTS = { shell, home, services, pricing, showcase, roadmap, riskfree, scenes, geo, trust, runtime, v2, spokesperson, saas, organic }
+export default { ...shell, ...home, ...services, ...pricing, ...showcase, ...roadmap, ...riskfree, ...scenes, ...geo, ...trust, ...v2, ...runtime, ...spokesperson, ...saas, ...organic, ...casestudies, ...referrals }
+export const PARTS = { shell, home, services, pricing, showcase, roadmap, riskfree, scenes, geo, trust, runtime, v2, spokesperson, saas, organic, casestudies, referrals }

@@ -23,6 +23,7 @@ export const TRANSLATED_PATHS = {
     '/creative-growth-roadmap',
     // The 1 FREE video application (noindex like the English page and, on top of that, held by a release gate until the owner and the lawyer have reviewed it: src/i18n/release.js).
     '/risk-free-trial',
+    '/referrals',
   ],
   // French (France-first, Nov 2026): the homepage, the four service pages (UGC, spokesperson, organic social, SaaS: native French, no video galleries, see
   // docs/multilingual-french-release.md), pricing, the creator showcase and the two conversion flows. Everything else (About, Contact, blog, case studies, legal)
@@ -35,8 +36,12 @@ export const TRANSLATED_PATHS = {
     '/saas-video-production',
     '/pricing',
     '/creator-showcase',
+    '/case-studies',
+    '/case-studies/graspo',
+    '/case-studies/elyon',
     '/creative-growth-roadmap',
     '/risk-free-trial',
+    '/referrals',
   ],
   // Arabic: nothing is translated yet, so nothing is routed. See docs/multilingual-french-arabic-backlog.md.
   ar: [],

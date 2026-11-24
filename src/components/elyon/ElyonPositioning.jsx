@@ -1,5 +1,6 @@
 import Eyebrow from '../caseStudies/shared/Eyebrow.jsx'
 import { ACCENT } from './theme.js'
+import { tr } from '../../i18n/tr.js'
 
 const PRINCIPLES = [
   {
@@ -27,13 +28,8 @@ export default function ElyonPositioning() {
           {/* LEFT — headline + framing */}
           <div className="lg:col-span-5">
             <Eyebrow label="The Approach" accent={ACCENT} className="mb-6" />
-            <h2 className="font-display font-bold text-ink tracking-display leading-[1.08] text-3xl md:text-[40px]">
-              Built as a performance system, not a one-off production.
-            </h2>
-            <p className="mt-5 text-[15px] md:text-base text-ink-muted leading-relaxed">
-              CONVRT ran Elyon's creative as a repeatable engine, strategy, production and iteration
-              working together, so every result fed the next batch instead of ending with delivery.
-            </p>
+            <h2 className="font-display font-bold text-ink tracking-display leading-[1.08] text-3xl md:text-[40px]">{tr('Built as a performance system, not a one-off production.')}</h2>
+            <p className="mt-5 text-[15px] md:text-base text-ink-muted leading-relaxed">{tr('CONVRT ran Elyon\'s creative as a repeatable engine, strategy, production and iteration working together, so every result fed the next batch instead of ending with delivery.')}</p>
           </div>
 
           {/* RIGHT — stacked principles */}
@@ -52,10 +48,10 @@ export default function ElyonPositioning() {
                 </span>
                 <div>
                   <h3 className="font-display font-semibold text-ink text-lg md:text-xl leading-snug">
-                    {p.title}
+                    {tr(p.title)}
                   </h3>
                   <p className="mt-2 text-[13.5px] md:text-[14px] text-ink-muted leading-relaxed">
-                    {p.body}
+                    {tr(p.body)}
                   </p>
                 </div>
               </div>

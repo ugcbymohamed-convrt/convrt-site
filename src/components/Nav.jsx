@@ -7,7 +7,7 @@ import { scrollToApply } from '../lib/roadmapForm.js'
 import { usePressFeedback } from '../lib/usePressFeedback.js'
 import LanguageSelector from './LanguageSelector.jsx'
 import { parsePath, localizedPath } from '../i18n/paths.js'
-import { translate, localHref } from '../i18n/tr.js'
+import { translate, localHref, hrefFor } from '../i18n/tr.js'
 import { primaryAction } from '../i18n/cta.js'
 
 // `compactHide`: shown in the desktop bar only from xl (1280px) up, so the bar doesn't crowd
@@ -30,17 +30,17 @@ const links = [
    Standard referrals earn $150 and Agency & Strategic partners 10% (capped at $500), and the
    destination page shows both rewards side by side straight away. The whole label is a
    single link. */
-function ReferralNavLink({ onClick, className = '', underline = false }) {
+function ReferralNavLink({ onClick, className = '', underline = false, locale = 'en' }) {
   return (
     <a
-      href={REFERRALS_PATH}
+      href={hrefFor(REFERRALS_PATH, locale)}
       onClick={() => {
         trackEvent('referral_cta_click', { location: 'nav' })
         onClick?.()
       }}
       className={`group relative whitespace-nowrap rounded text-ink-muted transition-colors hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-lime ${className}`}
     >
-      Refer &amp; <span className="font-semibold text-lime">Earn</span>
+      {locale === 'fr' ? <>Parrainez et <span className="font-semibold text-lime">gagnez</span></> : locale === 'es' ? <>Recomienda y <span className="font-semibold text-lime">gana</span></> : <>Refer &amp; <span className="font-semibold text-lime">Earn</span></>}
       {underline && (
         <span
           aria-hidden="true"
@@ -62,7 +62,7 @@ export default function Nav() {
   const homePrefix = onHome ? '' : localizedPath(locale, '/')
   const resolveHref = (href) => (href.startsWith('#') ? `${homePrefix}${href}` : localHref(href, locale))
   // English and French (the languages on the redesigned homepage) leave How It Works out of the menu (more room for the language selector); French also leaves out the English-only pages.
-  const visibleLinks = links.filter((l) => (locale === 'en' ? !l.notInEnglish : locale === 'fr' ? !l.englishOnly && !l.notInEnglish : !l.englishOnly))
+  const visibleLinks = links.filter((l) => (locale === 'en' || locale === 'fr' ? !l.notInEnglish : !l.englishOnly)) // French now mirrors the English menu (Case Studies are translated; the Blog link goes to the English blog)
   const action = primaryAction(locale)
 
   // /scale is a paid-acquisition page with its own in-page booking modal
@@ -116,7 +116,7 @@ export default function Nav() {
               {tr(l.label)}
             </a>
           ))}
-          {locale === 'en' && <ReferralNavLink underline className="text-[13px] xl:text-sm" />}
+          {locale !== 'ar' && <ReferralNavLink underline locale={locale} className="text-[13px] xl:text-sm" />}
         </nav>
 
         <div className="flex items-center gap-2">
@@ -166,7 +166,7 @@ export default function Nav() {
                 {tr(l.label)}
               </a>
             ))}
-            {locale === 'en' && <ReferralNavLink onClick={() => setOpen(false)} className="block px-3 py-3 text-base hover:bg-surface-1" />}
+            {locale !== 'ar' && <ReferralNavLink locale={locale} onClick={() => setOpen(false)} className="block px-3 py-3 text-base hover:bg-surface-1" />}
             <LanguageSelector variant="list" onNavigate={() => setOpen(false)} className="mt-1 border-t border-hairline pt-1" />
             <a
               href={ctaHref}

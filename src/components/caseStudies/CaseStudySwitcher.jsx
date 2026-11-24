@@ -1,5 +1,6 @@
 import { Fragment, useLayoutEffect, useRef, useState } from 'react'
 import { CASE_STUDIES } from '../../caseStudies/registry.js'
+import { tr } from '../../i18n/tr.js'
 
 /* ─────────────────────────────────────────────
    CASE STUDY NAVIGATOR
@@ -63,9 +64,7 @@ export default function CaseStudySwitcher({ activeId, onSwitch, sticky = false }
         {/* Eyebrow — frames this as portfolio navigation, not a control */}
         <div className="mb-4 flex items-center justify-center gap-3 md:mb-5">
           <span className="h-px w-6 bg-hairline-strong" aria-hidden="true" />
-          <span className="text-[10.5px] font-semibold uppercase tracking-[0.2em] text-ink-muted">
-            Featured Work
-          </span>
+          <span className="text-[10.5px] font-semibold uppercase tracking-[0.2em] text-ink-muted">{tr('Featured Work')}</span>
           <span className="h-px w-6 bg-hairline-strong" aria-hidden="true" />
         </div>
 
@@ -74,7 +73,7 @@ export default function CaseStudySwitcher({ activeId, onSwitch, sticky = false }
           <div
             ref={containerRef}
             role="tablist"
-            aria-label="Case studies"
+            aria-label={tr('Case studies')}
             onKeyDown={onKeyDown}
             className="flex items-stretch justify-center"
           >
@@ -120,7 +119,7 @@ export default function CaseStudySwitcher({ activeId, onSwitch, sticky = false }
         {/* ── Mobile: stacked rows, left accent bar marks the active project ── */}
         <div
           role="tablist"
-          aria-label="Case studies"
+          aria-label={tr('Case studies')}
           onKeyDown={onKeyDown}
           className="flex flex-col divide-y divide-hairline sm:hidden"
         >
@@ -198,7 +197,7 @@ function NavItem({ study, index, isActive, onSwitch, btnRef, variant, mobile = f
             mobile ? 'mt-0.5 block text-[12px]' : 'mt-1 text-center text-[11.5px] whitespace-nowrap',
           ].join(' ')}
         >
-          {study.category} &middot; {study.descriptor}
+          {tr(study.category)} &middot; {tr(study.descriptor)}
         </span>
       </div>
     </button>

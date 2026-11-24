@@ -11,7 +11,9 @@ import ReferralFAQ, { FAQS } from './components/referrals/ReferralFAQ.jsx'
 import { captureAttribution, trackEvent } from './lib/analytics.js'
 import { scrollToApply } from './lib/roadmapForm.js'
 import { useDocumentHead } from './lib/useDocumentHead.js'
-import { REFERRALS_INDEXABLE, REFERRALS_PATH, SITE_URL } from './config.js'
+import { REFERRALS_PATH } from './config.js'
+import { pageHead } from './seo/siteSeo.js'
+import { tr } from './i18n/tr.js'
 
 /* ─────────────────────────────────────────────
    /referrals — Referral Partner Program.
@@ -32,11 +34,6 @@ import { REFERRALS_INDEXABLE, REFERRALS_PATH, SITE_URL } from './config.js'
    counted in the manual referral tracker.
 ───────────────────────────────────────────── */
 
-const PAGE_URL = `${SITE_URL}${REFERRALS_PATH}`
-const PAGE_TITLE = 'CONVRT Referral Partner Program | Earn Rewards for Introductions'
-const PAGE_DESCRIPTION =
-  'Refer SaaS and e-commerce brands to CONVRT, earn rewards for successful introductions, and give your connections an exclusive creative upgrade.'
-
 /* FAQPage structured data built from the FAQ shown on the page, so it can never drift from it. */
 function useFaqStructuredData() {
   useEffect(() => {
@@ -47,8 +44,8 @@ function useFaqStructuredData() {
       '@type': 'FAQPage',
       mainEntity: FAQS.map((item) => ({
         '@type': 'Question',
-        name: item.q,
-        acceptedAnswer: { '@type': 'Answer', text: item.a },
+        name: tr(item.q),
+        acceptedAnswer: { '@type': 'Answer', text: tr(item.a) },
       })),
     })
     document.head.appendChild(script)
@@ -57,12 +54,7 @@ function useFaqStructuredData() {
 }
 
 export default function ReferralsPage() {
-  useDocumentHead({
-    title: PAGE_TITLE,
-    description: PAGE_DESCRIPTION,
-    url: PAGE_URL,
-    noindex: !REFERRALS_INDEXABLE,
-  })
+  useDocumentHead(pageHead(REFERRALS_PATH)) // the same head the static build writes (English entry in siteSeo.js; translations in src/i18n/<locale>/seo.js)
   useFaqStructuredData()
 
   // Reward-card CTAs: remember which card was chosen, then scroll. `id` changes on every

@@ -33,7 +33,7 @@ import { money } from '../src/i18n/money.js'
 
 const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), '..')
 const read = (p) => fs.readFileSync(path.join(ROOT, p), 'utf8')
-const FR_PAGES = ['/', '/ugc-video-agency', '/spokesperson-video-production', '/social-media-video-production', '/saas-video-production', '/pricing', '/creator-showcase', '/creative-growth-roadmap', '/risk-free-trial']
+const FR_PAGES = ['/', '/ugc-video-agency', '/spokesperson-video-production', '/social-media-video-production', '/saas-video-production', '/pricing', '/creator-showcase', '/case-studies', '/case-studies/graspo', '/case-studies/elyon', '/creative-growth-roadmap', '/risk-free-trial']
 const FR_INDEXABLE = FR_PAGES.filter((bp) => isReleased('fr', bp) && SITE_SEO[bp].indexable !== false)
 
 // ── pure checks ────────────────────────────────────────────────────────────────────────────────────────────────
@@ -62,7 +62,7 @@ test('French copy rules: no banned filler, no straight apostrophes, no hand-type
   const DOLLAR = /\$\d[\d,]*(?:\.\d+)?/g
   const nums = (s) => (s.replace(/\{\{[^}]*\}\}/g, ' ').match(/\d+/g) ?? [])
   // owner-reviewed departures: the 10-free-hooks library is never promoted in French (its flow is English-only), the bracket options are client-supplied dollar bands
-  const OMIT = /free library of 10 ad hooks|^Under \$5,000$|^\$5,000–\$20,000$|^\$20,000\+$|^10\+ videos$/
+  const OMIT = /free library of 10 ad hooks|10 Free Ad Hooks|^Under \$5,000$|^\$5,000–\$20,000$|^\$20,000\+$|^10\+ videos$/
   for (const [k, v] of Object.entries(DICTIONARIES.fr)) {
     for (const re of BANNED) assert.ok(!re.test(v), `banned phrase in: ${v.slice(0, 80)}`)
     assert.ok(!/'/.test(v), `straight apostrophe (use ’): ${v.slice(0, 80)}`)

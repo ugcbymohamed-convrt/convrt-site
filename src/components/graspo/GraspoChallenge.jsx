@@ -1,3 +1,4 @@
+import { tr } from '../../i18n/tr.js'
 const POINTS = [
   {
     title: 'A technical business, not a lifestyle brand',
@@ -24,14 +25,10 @@ export default function GraspoChallenge() {
         <div className="max-w-3xl mx-auto">
           <div className="inline-flex items-center gap-2 rounded-full border border-hairline bg-surface-1/60 px-4 py-1.5 mb-6 backdrop-blur">
             <span className="h-1.5 w-1.5 rounded-full bg-lime animate-pulse" />
-            <span className="text-xs font-medium uppercase tracking-[0.18em] text-ink-muted">The Challenge</span>
+            <span className="text-xs font-medium uppercase tracking-[0.18em] text-ink-muted">{tr('The Challenge')}</span>
           </div>
-          <h2 className="font-display font-bold text-ink tracking-display leading-[1.05] text-3xl md:text-[44px]">
-            "Post more on Instagram" was never going to be the strategy.
-          </h2>
-          <p className="mt-6 text-[15px] md:text-base text-ink-muted leading-relaxed">
-            Real relevance in new markets, translated into serious commercial interest, not just likes.
-          </p>
+          <h2 className="font-display font-bold text-ink tracking-display leading-[1.05] text-3xl md:text-[44px]">{tr('"Post more on Instagram" was never going to be the strategy.')}</h2>
+          <p className="mt-6 text-[15px] md:text-base text-ink-muted leading-relaxed">{tr('Real relevance in new markets, translated into serious commercial interest, not just likes.')}</p>
         </div>
 
         <div className="mt-12 grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-5 max-w-4xl mx-auto">
@@ -40,8 +37,8 @@ export default function GraspoChallenge() {
               key={p.title}
               className="rounded-3xl border border-hairline bg-surface-1/40 px-7 py-6 text-center hover:border-hairline-strong transition-colors"
             >
-              <h3 className="font-display font-semibold text-ink text-lg leading-snug">{p.title}</h3>
-              <p className="mt-2.5 text-[13.5px] text-ink-muted leading-relaxed">{p.body}</p>
+              <h3 className="font-display font-semibold text-ink text-lg leading-snug">{tr(p.title)}</h3>
+              <p className="mt-2.5 text-[13.5px] text-ink-muted leading-relaxed">{tr(p.body)}</p>
             </div>
           ))}
         </div>

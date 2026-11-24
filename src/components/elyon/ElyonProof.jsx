@@ -1,6 +1,7 @@
 import { useInView } from '../caseStudies/shared/useInView.js'
 import Eyebrow from '../caseStudies/shared/Eyebrow.jsx'
 import { ACCENT } from './theme.js'
+import { tr } from '../../i18n/tr.js'
 
 const BASE = '/case-studies/elyon/proof'
 
@@ -20,14 +21,8 @@ export default function ElyonProof() {
       <div ref={ref} className="mx-auto max-w-6xl px-5 md:px-8">
         <div className="max-w-2xl mx-auto mb-11 md:mb-12 text-center">
           <Eyebrow label="Client Proof" accent={ACCENT} className="mb-6" />
-          <h2 className="font-display font-bold text-ink tracking-display leading-[1.05] text-3xl md:text-[44px]">
-            The results showed up in the ad account.
-            <br />
-            Then in our WhatsApp.
-          </h2>
-          <p className="mt-6 text-[15px] md:text-base text-ink-muted leading-relaxed">
-            Real messages from Elyon, cropped for privacy, unedited in substance.
-          </p>
+          <h2 className="font-display font-bold text-ink tracking-display leading-[1.05] text-3xl md:text-[44px]">{tr('The results showed up in the ad account.')}<br />{tr('Then in our WhatsApp.')}</h2>
+          <p className="mt-6 text-[15px] md:text-base text-ink-muted leading-relaxed">{tr('Real messages from Elyon, cropped for privacy, unedited in substance.')}</p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8">
@@ -95,11 +90,11 @@ function ProofCard({ src, w, h, caption, featured = false }) {
         style={{ borderColor: 'rgba(201,166,104,0.12)' }}
       >
         <span className="h-2 w-2 rounded-full" style={{ background: '#25D366' }} />
-        <span className="text-[11px] font-semibold text-ink-muted">Elyon Dubai &middot; WhatsApp</span>
+        <span className="text-[11px] font-semibold text-ink-muted">{tr('Elyon Dubai · WhatsApp')}</span>
       </div>
       <img
         src={src}
-        alt={caption}
+        alt={tr(caption)}
         width={w}
         height={h}
         loading="lazy"
@@ -107,7 +102,7 @@ function ProofCard({ src, w, h, caption, featured = false }) {
         className="w-full h-auto"
         style={{ aspectRatio: `${w} / ${h}`, objectFit: 'cover' }}
       />
-      <p className="px-4 py-2.5 text-[12px] text-ink-subtle">{caption}</p>
+      <p className="px-4 py-2.5 text-[12px] text-ink-subtle">{tr(caption)}</p>
     </div>
   )
 }

@@ -48,13 +48,13 @@ export default function Footer() {
               <li>{L('/social-media-video-production', SERVICE_LABELS.organic)}</li>
               <li>{L('/saas-video-production', 'SaaS Video Production')}</li>
               <li><a className="hover:text-ink transition-colors" href={h(CREATOR_SHOWCASE_PATH)}>{tr('Creator Showcase')}</a></li>
-              {en && <li><a className="hover:text-ink transition-colors" href="/case-studies">Case Studies</a></li>}
+              {(en || locale === 'fr') && <li>{en ? <a className="hover:text-ink transition-colors" href="/case-studies">Case Studies</a> : L('/case-studies', 'Case Studies')}</li>}
               <li><a className="hover:text-ink transition-colors" href={h('/pricing')}>{tr('Pricing')}</a></li>
               {TRUST_PAGES_PUBLISHED && <li>{L(ABOUT_PATH, 'About')}</li>}
-              {en && <li><a className="hover:text-ink transition-colors" href="/blog">Blog</a></li>}
+              {(en || locale === 'fr') && <li>{en ? <a className="hover:text-ink transition-colors" href="/blog">Blog</a> : L('/blog', 'Blog')}</li>}
               <li><a className="hover:text-ink transition-colors" href={`${homePrefix}#how-it-works`}>{tr('How It Works')}</a></li>
               <li><a className="hover:text-ink transition-colors" href={`${homePrefix}#clients`}>{tr('Clients')}</a></li>
-              {en && <li><a className="hover:text-ink transition-colors" href={REFERRALS_PATH}>Referral Program</a></li>}
+              {locale !== 'ar' && <li>{en ? <a className="hover:text-ink transition-colors" href={REFERRALS_PATH}>Referral Program</a> : L(REFERRALS_PATH, 'Referral Program')}</li>}
               <li>{TRUST_PAGES_PUBLISHED ? L(CONTACT_PATH, 'Contact') : <a className="hover:text-ink transition-colors" href={`${homePrefix}#contact`}>{tr('Contact')}</a>}</li>
             </ul>
           </div>

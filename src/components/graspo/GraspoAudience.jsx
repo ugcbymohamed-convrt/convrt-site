@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { GRASPO_FOLLOWING } from '../../lib/siteStats.js'
+import { tr, pctText } from '../../i18n/tr.js'
 
 /* ─────────────────────────────────────────────
    AUDIENCE / MENA REACH
@@ -53,50 +54,37 @@ export default function GraspoAudience() {
         <div className="max-w-2xl mx-auto mb-12 md:mb-16 text-center">
           <div className="inline-flex items-center gap-2 rounded-full border border-hairline bg-surface-1/60 px-4 py-1.5 mb-6 backdrop-blur">
             <span className="h-1.5 w-1.5 rounded-full animate-pulse" style={{ background: ACCENT }} />
-            <span className="text-xs font-medium uppercase tracking-[0.18em] text-ink-muted">Audience / MENA Reach</span>
+            <span className="text-xs font-medium uppercase tracking-[0.18em] text-ink-muted">{tr('Audience / MENA Reach')}</span>
           </div>
-          <h2 className="font-display font-bold text-ink tracking-display leading-[1.05] text-3xl md:text-[44px]">
-            Millions of views are useless
-            <br />
-            if they're the wrong audience.
-          </h2>
-          <p className="mt-6 text-[15px] md:text-base text-ink-muted leading-relaxed">
-            Graspo's content wasn't just watched at scale, it was watched in the exact markets
-            where its print buyers, publishers and agencies actually operate. The same countries
-            show up on both sides: in the analytics, and in the inbound leads.
-          </p>
+          <h2 className="font-display font-bold text-ink tracking-display leading-[1.05] text-3xl md:text-[44px]">{tr('Millions of views are useless')}<br />{tr('if they\'re the wrong audience.')}</h2>
+          <p className="mt-6 text-[15px] md:text-base text-ink-muted leading-relaxed">{tr('Graspo\'s content wasn\'t just watched at scale, it was watched in the exact markets where its print buyers, publishers and agencies actually operate. The same countries show up on both sides: in the analytics, and in the inbound leads.')}</p>
         </div>
 
         {/* Country rankings */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10">
-          <CountryPanel title="Instagram, top countries" countries={IG_COUNTRIES} visible={visible} maxPct={maxPct} delayBase={0} />
-          <CountryPanel title="Facebook, top countries" countries={FB_COUNTRIES} visible={visible} maxPct={maxPct} delayBase={0.4} color="#3b82f6" />
+          <CountryPanel title={tr('Instagram, top countries')} countries={IG_COUNTRIES} visible={visible} maxPct={maxPct} delayBase={0} />
+          <CountryPanel title={tr('Facebook, top countries')} countries={FB_COUNTRIES} visible={visible} maxPct={maxPct} delayBase={0.4} color="#3b82f6" />
         </div>
 
         {/* Age & gender */}
         <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-5">
           <DemoCard
             platform="Instagram"
-            followers={GRASPO_FOLLOWING.instagram}
+            followers={tr(GRASPO_FOLLOWING.instagram)}
             genderSplit="83% men · 17% women"
             peakAge="25–34"
             color={ACCENT}
           />
           <DemoCard
             platform="Facebook"
-            followers={GRASPO_FOLLOWING.facebook}
+            followers={tr(GRASPO_FOLLOWING.facebook)}
             genderSplit="96% men · 4% women"
             peakAge="35–44"
             color="#3b82f6"
           />
         </div>
 
-        <p className="mt-6 text-[13px] text-ink-subtle leading-relaxed max-w-2xl mx-auto text-center">
-          Working-age adults, overwhelmingly male, concentrated in the 25–44 range, the
-          demographic most likely to hold purchasing or procurement decisions for a printing
-          project, not a passive consumer audience. Both followings have kept growing since the
-          report window, now {GRASPO_FOLLOWING.facebook} on Facebook, {GRASPO_FOLLOWING.instagram} on Instagram and {GRASPO_FOLLOWING.tiktok} on TikTok ({GRASPO_FOLLOWING.combined} combined).
-        </p>
+        <p className="mt-6 text-[13px] text-ink-subtle leading-relaxed max-w-2xl mx-auto text-center">{tr('Working-age adults, overwhelmingly male, concentrated in the 25–44 range, the demographic most likely to hold purchasing or procurement decisions for a printing project, not a passive consumer audience. Both followings have kept growing since the report window, now')} {tr(GRASPO_FOLLOWING.facebook)} {tr('on Facebook,')} {tr(GRASPO_FOLLOWING.instagram)} {tr('on Instagram and')} {tr(GRASPO_FOLLOWING.tiktok)} {tr('on TikTok (')}{tr(GRASPO_FOLLOWING.combined)} {tr('combined).')}</p>
       </div>
     </section>
   )
@@ -110,8 +98,8 @@ function CountryPanel({ title, countries, visible, maxPct, delayBase = 0, color 
         {countries.map((c, i) => (
           <div key={c.name}>
             <div className="flex items-baseline justify-between mb-1.5">
-              <span className="text-[13px] text-ink-muted">{c.name}</span>
-              <span className="text-[12px] font-semibold text-ink tabular-nums">{c.pct}%</span>
+              <span className="text-[13px] text-ink-muted">{tr(c.name)}</span>
+              <span className="text-[12px] font-semibold text-ink tabular-nums">{pctText(c.pct)}</span>
             </div>
             <div className="h-2 w-full rounded-full bg-surface-3 overflow-hidden">
               <div
@@ -134,13 +122,13 @@ function DemoCard({ platform, followers, genderSplit, peakAge, color }) {
   return (
     <div className="rounded-3xl border border-hairline bg-surface-1/40 px-7 py-6 flex items-center justify-between gap-4">
       <div>
-        <p className="text-xs font-semibold uppercase tracking-[0.14em]" style={{ color }}>{platform}</p>
-        <p className="mt-1.5 text-[13px] text-ink-muted">{genderSplit}</p>
-        <p className="text-[13px] text-ink-muted">Peak age group: <span className="text-ink font-medium">{peakAge}</span></p>
+        <p className="text-xs font-semibold uppercase tracking-[0.14em]" style={{ color }}>{tr(platform)}</p>
+        <p className="mt-1.5 text-[13px] text-ink-muted">{tr(genderSplit)}</p>
+        <p className="text-[13px] text-ink-muted">{tr('Peak age group:')} <span className="text-ink font-medium">{tr(peakAge)}</span></p>
       </div>
       <div className="text-right shrink-0">
         <p className="font-display font-bold text-2xl text-ink tabular-nums">{followers}</p>
-        <p className="text-[11px] text-ink-subtle">followers today</p>
+        <p className="text-[11px] text-ink-subtle">{tr('followers today')}</p>
       </div>
     </div>
   )

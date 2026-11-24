@@ -1,5 +1,6 @@
 import { useInView } from '../caseStudies/shared/useInView.js'
 import { ACCENT } from './theme.js'
+import { tr } from '../../i18n/tr.js'
 
 const METRICS = [
   { value: '160+', label: 'Creatives Produced', sub: 'Full library, and counting' },
@@ -36,17 +37,14 @@ export default function ElyonMetrics() {
                 className="relative font-display font-bold tracking-display leading-none text-[clamp(1.9rem,4vw,2.6rem)] tabular-nums"
                 style={{ color: ACCENT }}
               >
-                {m.value}
+                {tr(m.value)}
               </p>
-              <p className="relative mt-3 text-[13px] font-semibold text-ink">{m.label}</p>
-              <p className="relative mt-1 text-[11.5px] text-ink-subtle">{m.sub}</p>
+              <p className="relative mt-3 text-[13px] font-semibold text-ink">{tr(m.label)}</p>
+              <p className="relative mt-1 text-[11.5px] text-ink-subtle">{tr(m.sub)}</p>
             </div>
           ))}
         </div>
-        <p className="mt-5 text-center text-xs text-ink-subtle">
-          160+ spans every batch, format and follow-up variation produced since launch, not a single
-          delivery. Source: client-shared Meta Ads Manager results and internal production tracker.
-        </p>
+        <p className="mt-5 text-center text-xs text-ink-subtle">{tr('160+ spans every batch, format and follow-up variation produced since launch, not a single delivery. Source: client-shared Meta Ads Manager results and internal production tracker.')}</p>
       </div>
     </section>
   )

@@ -1,5 +1,6 @@
 import Eyebrow from '../caseStudies/shared/Eyebrow.jsx'
 import { ACCENT } from './theme.js'
+import { tr } from '../../i18n/tr.js'
 
 const LOCATIONS = ['Prague', 'Almería', 'Granada', 'Marbella']
 
@@ -32,7 +33,7 @@ const PILLARS = [
             className="rounded-full px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.08em]"
             style={{ background: 'rgba(201,166,104,0.10)', border: '1px solid rgba(201,166,104,0.24)', color: ACCENT }}
           >
-            {loc}
+            {tr(loc)}
           </span>
         ))}
       </div>
@@ -53,15 +54,8 @@ export default function ElyonCreativeSystem() {
       <div className="mx-auto max-w-7xl px-5 md:px-8 text-center">
         <div className="mb-12 md:mb-16 max-w-2xl mx-auto">
           <Eyebrow label="The Creative System" accent={ACCENT} className="mb-6" />
-          <h2 className="font-display font-bold text-ink tracking-display leading-[1.05] text-3xl md:text-[44px]">
-            From content production
-            <br />
-            to a creative engine.
-          </h2>
-          <p className="mt-6 text-[15px] md:text-base text-ink-muted leading-relaxed">
-            What started as creator content evolved into a repeatable pipeline of concepts, interviews
-            and paid-social creative.
-          </p>
+          <h2 className="font-display font-bold text-ink tracking-display leading-[1.05] text-3xl md:text-[44px]">{tr('From content production')}<br />{tr('to a creative engine.')}</h2>
+          <p className="mt-6 text-[15px] md:text-base text-ink-muted leading-relaxed">{tr('What started as creator content evolved into a repeatable pipeline of concepts, interviews and paid-social creative.')}</p>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5">
@@ -97,13 +91,13 @@ function PillarCard({ pillar }) {
       </div>
 
       <span className="relative text-[10px] font-bold uppercase tracking-[0.2em]" style={{ color: ACCENT }}>
-        {pillar.tag}
+        {tr(pillar.tag)}
       </span>
       <h3 className="relative mt-3 font-display font-bold text-ink text-lg leading-snug">
-        {pillar.title}
+        {tr(pillar.title)}
       </h3>
       <p className="relative mt-2.5 text-[13px] text-ink-muted leading-relaxed">
-        {pillar.description}
+        {tr(pillar.description)}
       </p>
       {pillar.footer}
     </div>

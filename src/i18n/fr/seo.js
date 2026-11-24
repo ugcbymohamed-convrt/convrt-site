@@ -83,6 +83,30 @@ export const FR_SEO = {
     ogTitle: 'Creator Showcase CONVRT : exemples de vidéos UGC francophones',
     ogDescription: 'De vraies vidéos de créateurs francophones indépendants, pour comparer les styles et les approches créatives.',
   },
+  '/case-studies/graspo': {
+    title: 'Étude de cas Graspo : 10,7 M de vues organiques | CONVRT',
+    description:
+      'Comment CONVRT a développé la présence organique de Graspo sur les marchés arabophones : 10,7 M de vues organiques, 3,4 M de comptes touchés et 75 prospects entrants, de janvier à juin 2026.',
+    ogTitle: 'Graspo × CONVRT : de l’expertise en impression à 10,7 M de vues organiques',
+    ogDescription: 'Une étude de cas de gestion de contenu pour les réseaux sociaux : stratégie, production et suivi des demandes entrantes sur les marchés arabophones.',
+  },
+  '/case-studies/elyon': {
+    title: 'Étude de cas Elyon Dubai : publicités avec créateurs | CONVRT',
+    description:
+      'Comment CONVRT a bâti un système de publicités avec créateurs pour Elyon Dubai : plus de 160 créations, des interviews de rue et une vidéo avec un ROAS de 5,28× déclaré par le client.',
+    ogTitle: 'Elyon Dubai × CONVRT : des créations publicitaires pour une marque de parfums de luxe',
+    ogDescription: 'Des publicités avec créateurs, des interviews de rue et des tests créatifs continus, transformés en achats mesurables pour Elyon Dubai.',
+  },
+  // Same content as /fr/case-studies/graspo (the default study, exactly as in English): a duplicate that points at the original.
+  '/case-studies': {
+    title: 'Études de cas : Graspo et Elyon Dubai | CONVRT',
+    description: 'Deux études de cas CONVRT : le contenu organique de Graspo sur les marchés arabophones et les publicités avec créateurs d’Elyon Dubai.',
+  },
+  '/referrals': {
+    title: 'Programme de parrainage CONVRT : récompenses pour vos recommandations',
+    description:
+      'Recommandez des marques SaaS et e-commerce à CONVRT, gagnez des récompenses pour chaque mise en relation aboutie et offrez à vos contacts une amélioration créative exclusive.',
+  },
   '/creative-growth-roadmap': {
     title: 'Stratégie créative offerte : 5 concepts publicitaires | CONVRT',
     description:

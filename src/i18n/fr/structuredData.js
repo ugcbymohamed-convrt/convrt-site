@@ -37,6 +37,12 @@ const BREADCRUMB_NAMES = {
   '/creator-showcase': 'Créateurs',
 }
 
+// Case studies: like the English graph (src/seo/structuredData.js caseStudyGraph): a WebPage about the client, its breadcrumb and the service it is an example of. No Article, Review,
+// Rating, date or result figure beyond the visible page text. /fr/case-studies is a duplicate of the Graspo study and uses its markup.
+const CASE_STUDY_FR = {
+  '/case-studies/graspo': { client: 'Graspo', service: '/social-media-video-production', trail: 'Étude de cas Graspo' },
+  '/case-studies/elyon': { client: 'Elyon Dubai', service: '/ugc-video-agency', trail: 'Étude de cas Elyon Dubai' },
+}
 const PAGE_TYPE = { '/creator-showcase': 'CollectionPage' }
 
 const seoFor = (basePath, seo) => ({ title: FR_SEO[basePath]?.title, description: FR_SEO[basePath]?.description, ...seo, ...FR_SEO[basePath] })
@@ -46,6 +52,14 @@ export function localizedJsonLd(locale, basePath, seo = {}) {
   if (basePath === '/creative-growth-roadmap' || basePath === '/risk-free-trial') return undefined // like the English pages: noindex, no structured data
   const url = absoluteUrl(LOCALE, basePath)
   const { title, description } = seoFor(basePath, seo)
+  if (CASE_STUDY_FR[basePath]) {
+    const cs = CASE_STUDY_FR[basePath]
+    return graph([
+      organizationNode(),
+      { '@type': 'WebPage', '@id': `${url}#webpage`, url, name: title, description, isPartOf: { '@id': WEBSITE_ID }, about: { '@type': 'Organization', name: cs.client }, mentions: { '@id': `${absoluteUrl(LOCALE, cs.service)}#service` }, breadcrumb: { '@id': `${url}#breadcrumb` }, inLanguage: IN_LANGUAGE },
+      breadcrumbNode([{ name: 'Accueil', path: '/fr/' }, { name: cs.trail, path: `/fr${basePath}` }], `${url}#breadcrumb`),
+    ])
+  }
   const isHome = basePath === '/'
   const trail = isHome ? null : [{ name: 'Accueil', path: '/fr/' }, { name: BREADCRUMB_NAMES[basePath], path: `/fr${basePath}` }]
   const extras = FR_PAGE_GRAPH_EXTRAS[basePath]?.(url) ?? { nodes: [] }

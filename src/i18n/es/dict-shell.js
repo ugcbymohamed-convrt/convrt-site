@@ -6,6 +6,7 @@ export default {
   'Case Studies': 'Casos de éxito',
   'How It Works': 'Cómo funciona',
   'Pricing': 'Tarifas',
+  'Referral Program': 'Programa de referidos',
   'Blog': 'Blog',
   'Contact': 'Contacto',
   'Book a Creative Call': "Reservar una llamada",

@@ -1,3 +1,4 @@
+import { tr } from '../../i18n/tr.js'
 const ACCENT = '#d5ff40'
 
 const PILLARS = [
@@ -38,17 +39,10 @@ export default function GraspoStrategy() {
         <div className="mb-12 md:mb-16 max-w-2xl mx-auto">
           <div className="inline-flex items-center gap-2 rounded-full border border-hairline bg-surface-1/60 px-4 py-1.5 mb-6 backdrop-blur">
             <span className="h-1.5 w-1.5 rounded-full animate-pulse" style={{ background: ACCENT }} />
-            <span className="text-xs font-medium uppercase tracking-[0.18em] text-ink-muted">The Strategy</span>
+            <span className="text-xs font-medium uppercase tracking-[0.18em] text-ink-muted">{tr('The Strategy')}</span>
           </div>
-          <h2 className="font-display font-bold text-ink tracking-display leading-[1.05] text-3xl md:text-[44px]">
-            From industrial expertise
-            <br />
-            to social content.
-          </h2>
-          <p className="mt-6 text-[15px] md:text-base text-ink-muted leading-relaxed">
-            CONVRT ran Graspo's content as a system, not a posting schedule, strategy, production,
-            localization and inbound handling working together so that attention had somewhere to go.
-          </p>
+          <h2 className="font-display font-bold text-ink tracking-display leading-[1.05] text-3xl md:text-[44px]">{tr('From industrial expertise')}<br />{tr('to social content.')}</h2>
+          <p className="mt-6 text-[15px] md:text-base text-ink-muted leading-relaxed">{tr('CONVRT ran Graspo\'s content as a system, not a posting schedule, strategy, production, localization and inbound handling working together so that attention had somewhere to go.')}</p>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5">
@@ -81,13 +75,13 @@ function PillarCard({ pillar }) {
       </div>
 
       <span className="relative text-[10px] font-bold uppercase tracking-[0.2em]" style={{ color: ACCENT }}>
-        {pillar.tag}
+        {tr(pillar.tag)}
       </span>
       <h3 className="relative mt-3 font-display font-bold text-ink text-lg leading-snug">
-        {pillar.title}
+        {tr(pillar.title)}
       </h3>
       <p className="relative mt-2.5 text-[13px] text-ink-muted leading-relaxed">
-        {pillar.description}
+        {tr(pillar.description)}
       </p>
     </div>
   )

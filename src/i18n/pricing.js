@@ -15,6 +15,8 @@ import { SPRINT, SPRINT_PLUS, ORGANIC, RAW_FOOTAGE } from '../seo/businessKnowle
 import { DEFAULT_LOCALE } from './locales.js'
 import { ES_PRICING } from './es/pricing.js'
 import { FR_PRICING } from './fr/pricing.js'
+import { formatMoneyFr } from './fr/money.js'
+import { formatMoneyEs } from './es/money.js'
 
 /* THE LIST OF PRICES: every amount in the business data that is shown to a visitor. `usd` is the business-data object itself (its identity is the lookup key). */
 const ext = (id, pkg, name) => pkg.usageExtensions.map((e) => ({ key: `${id}.ext${e.months}`, label: `${name}: usage-rights extension, ${e.months} months (whole creative batch)`, usd: e.price }))
@@ -79,9 +81,13 @@ export const perVariationText = (locale, usdMoney, config = pricingConfig(locale
 export const formatPrice = (locale, money, config = pricingConfig(locale)) => (money.amount === null ? config.placeholder : config.format(money))
 
 /* {{price:key}} and {{perVariation:key}} inside a translated sentence. */
-const TOKEN = /\{\{(price|perVariation):([A-Za-z0-9.]+)\}\}/g
+const TOKEN = /\{\{(price|perVariation|usd):([A-Za-z0-9.]+)\}\}/g
 export const hasPriceTokens = (text) => text.includes('{{')
+/* {{usd:150}}: a dollar amount that is a FACT of the English page and is not a CONVRT price (a referral reward, a client-reported campaign result). It stays in US dollars, formatted the way the
+   locale writes money (« 3 421,25 USD »): never converted, never turned into euros. */
+const formatUsdFact = (locale, amount) => (locale === 'fr' ? formatMoneyFr({ amount, currency: 'USD' }) : formatMoneyEs({ amount, currency: 'USD' }))
 export function resolvePriceTokens(locale, text, config = pricingConfig(locale)) {
+  text = text.replace(/\{\{usd:([0-9.]+)\}\}/g, (_, n) => formatUsdFact(locale, Number(n)))
   if (!config) return text
   return text.replace(TOKEN, (_, kind, key) => {
     const item = ITEM[key]

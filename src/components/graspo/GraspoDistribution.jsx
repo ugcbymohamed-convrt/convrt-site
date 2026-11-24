@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { tr } from '../../i18n/tr.js'
 
 /* ─────────────────────────────────────────────
    ORGANIC DISTRIBUTION
@@ -51,13 +52,9 @@ export default function GraspoDistribution() {
         <div className="max-w-2xl mx-auto mb-12 md:mb-16 text-center">
           <div className="inline-flex items-center gap-2 rounded-full border border-hairline bg-surface-1/60 px-4 py-1.5 mb-6 backdrop-blur">
             <span className="h-1.5 w-1.5 rounded-full animate-pulse" style={{ background: ACCENT }} />
-            <span className="text-xs font-medium uppercase tracking-[0.18em] text-ink-muted">Organic Distribution</span>
+            <span className="text-xs font-medium uppercase tracking-[0.18em] text-ink-muted">{tr('Organic Distribution')}</span>
           </div>
-          <h2 className="font-display font-bold text-ink tracking-display leading-[1.05] text-3xl md:text-[44px]">
-            The content didn't need
-            <br />
-            media spend to travel.
-          </h2>
+          <h2 className="font-display font-bold text-ink tracking-display leading-[1.05] text-3xl md:text-[44px]">{tr('The content didn\'t need')}<br />{tr('media spend to travel.')}</h2>
         </div>
 
         {/* Views over time — recreates the real growth curve shape from the
@@ -65,8 +62,8 @@ export default function GraspoDistribution() {
             one sharp breakout spike in April, a smaller bump in late May. */}
         <div className="rounded-3xl border border-hairline bg-surface-1/40 px-7 py-8 md:px-9 md:py-9 mb-8 lg:mb-10">
           <div className="flex items-baseline justify-between mb-6">
-            <p className="text-sm font-semibold text-ink">Views over time</p>
-            <p className="text-xs text-ink-subtle">Jan 1 – Jun 19 2026</p>
+            <p className="text-sm font-semibold text-ink">{tr('Views over time')}</p>
+            <p className="text-xs text-ink-subtle">{tr('Jan 1 – Jun 19 2026')}</p>
           </div>
 
           <div className="relative w-full" style={{ height: 'clamp(140px, 22vw, 200px)' }}>
@@ -98,17 +95,15 @@ export default function GraspoDistribution() {
               className="absolute flex flex-col items-center"
               style={{ left: '37%', top: '2%', opacity: visible ? 1 : 0, transition: 'opacity 0.6s ease 1.2s' }}
             >
-              <span className="rounded-full px-2.5 py-1 text-[10px] font-semibold whitespace-nowrap" style={{ background: 'rgba(213,255,64,0.15)', border: '1px solid rgba(213,255,64,0.35)', color: ACCENT }}>
-                One breakout video
-              </span>
+              <span className="rounded-full px-2.5 py-1 text-[10px] font-semibold whitespace-nowrap" style={{ background: 'rgba(213,255,64,0.15)', border: '1px solid rgba(213,255,64,0.35)', color: ACCENT }}>{tr('One breakout video')}</span>
             </div>
           </div>
 
           <div className="mt-3 flex items-center justify-between text-[11px] text-ink-subtle">
-            <span>Jan 1</span>
-            <span>Feb 20</span>
-            <span>Apr 11</span>
-            <span>May 31</span>
+            <span>{tr('Jan 1')}</span>
+            <span>{tr('Feb 20')}</span>
+            <span>{tr('Apr 11')}</span>
+            <span>{tr('May 31')}</span>
           </div>
         </div>
 
@@ -116,8 +111,8 @@ export default function GraspoDistribution() {
           {/* Platform split */}
           <div className="lg:col-span-7 rounded-3xl border border-hairline bg-surface-1/40 px-7 py-8 md:px-9 md:py-9">
             <div className="flex items-baseline justify-between mb-2">
-              <p className="text-sm font-semibold text-ink">Views by platform</p>
-              <p className="text-xs text-ink-subtle">10.7M total</p>
+              <p className="text-sm font-semibold text-ink">{tr('Views by platform')}</p>
+              <p className="text-xs text-ink-subtle">{tr('10.7M total')}</p>
             </div>
 
             <div className="mt-5 h-4 w-full rounded-full overflow-hidden flex bg-surface-3">
@@ -141,18 +136,18 @@ export default function GraspoDistribution() {
               <div>
                 <div className="flex items-center gap-2">
                   <span className="h-2.5 w-2.5 rounded-full" style={{ background: IG_COLOR }} />
-                  <span className="text-xs font-semibold text-ink-muted">Instagram</span>
+                  <span className="text-xs font-semibold text-ink-muted">{tr('Instagram')}</span>
                 </div>
-                <p className="mt-1.5 font-display font-bold text-2xl text-ink tabular-nums">6.27M</p>
-                <p className="text-[11px] text-ink-subtle">{IG_PCT.toFixed(0)}% of total views</p>
+                <p className="mt-1.5 font-display font-bold text-2xl text-ink tabular-nums">{tr('6.27M')}</p>
+                <p className="text-[11px] text-ink-subtle">{IG_PCT.toFixed(0)}{tr('% of total views')}</p>
               </div>
               <div>
                 <div className="flex items-center gap-2">
                   <span className="h-2.5 w-2.5 rounded-full" style={{ background: FB_COLOR }} />
-                  <span className="text-xs font-semibold text-ink-muted">Facebook</span>
+                  <span className="text-xs font-semibold text-ink-muted">{tr('Facebook')}</span>
                 </div>
-                <p className="mt-1.5 font-display font-bold text-2xl text-ink tabular-nums">4.39M</p>
-                <p className="text-[11px] text-ink-subtle">{FB_PCT.toFixed(0)}% of total views</p>
+                <p className="mt-1.5 font-display font-bold text-2xl text-ink tabular-nums">{tr('4.39M')}</p>
+                <p className="text-[11px] text-ink-subtle">{FB_PCT.toFixed(0)}{tr('% of total views')}</p>
               </div>
             </div>
 
@@ -165,22 +160,19 @@ export default function GraspoDistribution() {
                 <svg viewBox="0 0 20 20" width="14" height="14" fill="none"><path d="M4 10.5l4 4 8-9" stroke={ACCENT} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
               </div>
               <p className="text-[13px] text-ink-muted leading-relaxed">
-                <span className="font-semibold text-ink">100% organic on Instagram.</span> All 6.27M
-                Instagram views came from organic reach, <span className="tabular-nums">$0</span> spent
-                on paid amplification for that distribution.
-              </p>
+                <span className="font-semibold text-ink">{tr('100% organic on Instagram.')}</span> {tr('All 6.27M Instagram views came from organic reach,')} <span className="tabular-nums">$0</span> {tr('spent on paid amplification for that distribution.')}</p>
             </div>
           </div>
 
           {/* Top content */}
           <div className="lg:col-span-5 rounded-3xl border border-hairline bg-surface-1/40 px-7 py-8 md:px-9 md:py-9">
-            <p className="text-sm font-semibold text-ink mb-6">Top-performing content by views</p>
+            <p className="text-sm font-semibold text-ink mb-6">{tr('Top-performing content by views')}</p>
             <div className="space-y-4">
               {TOP_CONTENT.map((c, i) => (
                 <div key={c.label}>
                   <div className="flex items-baseline justify-between mb-1.5">
-                    <span className="text-[12px] text-ink-muted">{c.note}</span>
-                    <span className="text-[12px] font-semibold text-ink tabular-nums">{c.label}</span>
+                    <span className="text-[12px] text-ink-muted">{tr(c.note)}</span>
+                    <span className="text-[12px] font-semibold text-ink tabular-nums">{tr(c.label)}</span>
                   </div>
                   <div className="h-2 w-full rounded-full bg-surface-3 overflow-hidden">
                     <div

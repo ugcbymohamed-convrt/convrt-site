@@ -53,7 +53,7 @@ test('locales: English, Spanish, French and Arabic are registered; Arabic is rig
   assert.deepEqual(BUILT_LOCALES, ['en', 'es', 'fr'], 'Arabic is prepared: no routes are built for it')
   assert.ok(isLive('es') && isLive('fr') && !isLive('ar'))
   assert.equal(LOCALES.fr.htmlLang, 'fr-FR')
-  assert.deepEqual(TRANSLATED_PATHS.fr, ['/', '/ugc-video-agency', '/spokesperson-video-production', '/social-media-video-production', '/saas-video-production', '/pricing', '/creator-showcase', '/creative-growth-roadmap', '/risk-free-trial']); assert.deepEqual(TRANSLATED_PATHS.ar, [])
+  assert.deepEqual(TRANSLATED_PATHS.fr, ['/', '/ugc-video-agency', '/spokesperson-video-production', '/social-media-video-production', '/saas-video-production', '/pricing', '/creator-showcase', '/case-studies', '/case-studies/graspo', '/case-studies/elyon', '/creative-growth-roadmap', '/risk-free-trial']); assert.deepEqual(TRANSLATED_PATHS.ar, [])
   assert.deepEqual(allLocalizedPaths(['ar']), [])
 })
 
@@ -265,7 +265,7 @@ test('hreflang in the built HTML is reciprocal: each Spanish page and its Englis
     assert.equal(set(en).split('|')[0], isReleased('fr', bp) ? 'en,es,fr-FR,x-default' : 'en,es,x-default', bp)
   }
   // English pages with NO translation carry no hreflang at all
-  for (const p of ['/blog', '/case-studies/graspo', '/privacy', '/terms', '/legal-notice', '/free-hooks', '/creative-growth-roadmap', ...TRANSLATED_PATHS.es.filter((bp) => !INDEXABLE_ES.includes(bp)), ...TRANSLATED_PATHS.es.filter((bp) => !INDEXABLE_ES.includes(bp)).map((bp) => localizedPath('es', bp))]) assert.ok(!/hreflang/.test(page(p)), `${p} has no hreflang`)
+  for (const p of ['/blog', '/privacy', '/terms', '/legal-notice', '/free-hooks', '/creative-growth-roadmap', ...TRANSLATED_PATHS.es.filter((bp) => !INDEXABLE_ES.includes(bp)), ...TRANSLATED_PATHS.es.filter((bp) => !INDEXABLE_ES.includes(bp)).map((bp) => localizedPath('es', bp))]) assert.ok(!/hreflang/.test(page(p)), `${p} has no hreflang`)
   assert.ok(!/hreflang="ar/.test(ES_PAGES.map(page).join('') + TRANSLATED_PATHS.es.map(page).join('')))
 })
 

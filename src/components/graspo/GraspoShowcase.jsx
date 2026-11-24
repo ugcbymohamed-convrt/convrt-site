@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import Hls from 'hls.js'
 import { streamPoster } from '../../content/posterFrames.js'
+import { tr } from '../../i18n/tr.js'
 
 /* ─────────────────────────────────────────────
    CONTENT SHOWCASE
@@ -30,15 +31,10 @@ export default function GraspoShowcase() {
         <div className="max-w-2xl mb-12 md:mb-14 text-center mx-auto">
           <div className="inline-flex items-center gap-2 rounded-full border border-hairline bg-surface-1/60 px-4 py-1.5 mb-6 backdrop-blur">
             <span className="h-1.5 w-1.5 rounded-full animate-pulse" style={{ background: ACCENT }} />
-            <span className="text-xs font-medium uppercase tracking-[0.18em] text-ink-muted">The Content</span>
+            <span className="text-xs font-medium uppercase tracking-[0.18em] text-ink-muted">{tr('The Content')}</span>
           </div>
-          <h2 className="font-display font-bold text-ink tracking-display leading-[1.05] text-3xl md:text-[44px]">
-            What actually ran on the feed.
-          </h2>
-          <p className="mt-6 text-[15px] md:text-base text-ink-muted leading-relaxed">
-            Native, platform-ready short-form video, built to stop the scroll of someone who
-            might genuinely need a print run, not just to look good in a portfolio.
-          </p>
+          <h2 className="font-display font-bold text-ink tracking-display leading-[1.05] text-3xl md:text-[44px]">{tr('What actually ran on the feed.')}</h2>
+          <p className="mt-6 text-[15px] md:text-base text-ink-muted leading-relaxed">{tr('Native, platform-ready short-form video, built to stop the scroll of someone who might genuinely need a print run, not just to look good in a portfolio.')}</p>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 md:gap-8 max-w-4xl mx-auto">
@@ -135,7 +131,7 @@ function ShowcasePhone({ video }) {
           ) : (
             <img
               src={streamPoster(video.id, { height: 600 })}
-              alt="Graspo organic content still"
+              alt={tr('Graspo organic content still')}
               loading="lazy"
               className="absolute inset-0 w-full h-full object-cover"
             />
@@ -165,11 +161,9 @@ function ShowcasePhone({ video }) {
       </div>
       <p className="mt-4 text-center">
         <span className="block font-display font-bold leading-none text-2xl md:text-[28px] tabular-nums" style={{ color: ACCENT }}>
-          {video.views}
+          {tr(video.views)}
         </span>
-        <span className="mt-1.5 block text-[10.5px] font-semibold uppercase tracking-[0.16em] text-ink-subtle">
-          views
-        </span>
+        <span className="mt-1.5 block text-[10.5px] font-semibold uppercase tracking-[0.16em] text-ink-subtle">{tr('views')}</span>
       </p>
     </div>
   )

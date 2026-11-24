@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { OFFER_PATHS } from '../../config.js'
 import GraspoHeroScene from './GraspoHeroScene.jsx'
+import { tr, hrefFor } from '../../i18n/tr.js'
 
 /* ─────────────────────────────────────────────
    GRASPO CASE STUDY — HERO
@@ -58,9 +59,7 @@ export default function GraspoHero() {
             style={{ borderColor: 'rgba(213,255,64,0.35)', background: 'rgba(213,255,64,0.08)' }}
           >
             <span className="h-1.5 w-1.5 rounded-full animate-pulse" style={{ background: ACCENT }} />
-            <span className="text-xs font-semibold uppercase tracking-[0.2em]" style={{ color: ACCENT }}>
-              Graspo × CONVRT, Case Study
-            </span>
+            <span className="text-xs font-semibold uppercase tracking-[0.2em]" style={{ color: ACCENT }}>{tr('Graspo × CONVRT, Case Study')}</span>
           </div>
         </FadeUp>
 
@@ -68,38 +67,27 @@ export default function GraspoHero() {
           <p
             className="font-display font-bold tracking-display-xl leading-[1.05] text-[clamp(1.9rem,5vw,3.6rem)]"
             style={{ color: ACCENT }}
-          >
-            6 months
-          </p>
-          <h1 className="mt-2 font-display font-bold text-ink tracking-display-xl leading-[1.05] text-[clamp(1.9rem,5vw,3.6rem)] md:whitespace-nowrap">
-            10.7M views. 75 inbound leads.
-          </h1>
+          >{tr('6 months')}</p>
+          <h1 className="mt-2 font-display font-bold text-ink tracking-display-xl leading-[1.05] text-[clamp(1.9rem,5vw,3.6rem)] md:whitespace-nowrap">{tr('10.7M views. 75 inbound leads.')}</h1>
         </FadeUp>
 
         <FadeUp inView={inView} delay={180}>
-          <p className="mt-7 text-base md:text-lg text-ink-muted leading-relaxed max-w-3xl mx-auto">
-            Graspo is an established European printing company. CONVRT built its Arabic-first
-            social presence, turning printing expertise into millions of views and real MENA inquiries.
-          </p>
+          <p className="mt-7 text-base md:text-lg text-ink-muted leading-relaxed max-w-3xl mx-auto">{tr('Graspo is an established European printing company. CONVRT built its Arabic-first social presence, turning printing expertise into millions of views and real MENA inquiries.')}</p>
         </FadeUp>
 
         <FadeUp inView={inView} delay={260}>
           <div className="mt-9 flex flex-col sm:flex-row items-center justify-center gap-4">
             <a
-              href={OFFER_PATHS.roadmap}
+              href={hrefFor(OFFER_PATHS.roadmap)}
               className="cta-gradient inline-flex items-center gap-2 rounded-full px-7 py-3.5 text-sm font-semibold text-canvas"
-            >
-              Book a Creative Call
-              <svg viewBox="0 0 12 12" className="h-3.5 w-3.5" fill="none">
+            >{tr('Book a Creative Call')}<svg viewBox="0 0 12 12" className="h-3.5 w-3.5" fill="none">
                 <path d="M3 9L9 3M9 3H4M9 3V8" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </a>
             <a
               href="https://www.instagram.com/graspo_khaleej/" target="_blank" rel="noopener noreferrer"
               className="inline-flex items-center gap-2 rounded-full border border-hairline px-7 py-3.5 text-sm font-medium text-ink-muted hover:text-ink hover:border-hairline-strong transition-colors"
-            >
-              See the page
-            </a>
+            >{tr('See the page')}</a>
           </div>
         </FadeUp>
 
@@ -111,10 +99,10 @@ export default function GraspoHero() {
               {PROJECT_INFO.map((item) => (
                 <div key={item.label}>
                   <dt className="text-[10px] font-bold uppercase tracking-[0.18em] text-ink-subtle">
-                    {item.label}
+                    {tr(item.label)}
                   </dt>
                   <dd className="mt-2 text-[14px] leading-snug text-ink font-medium">
-                    {item.value}
+                    {tr(item.value)}
                   </dd>
                 </div>
               ))}

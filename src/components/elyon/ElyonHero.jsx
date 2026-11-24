@@ -3,6 +3,7 @@ import { OFFER_PATHS } from '../../config.js'
 import FadeUp from '../caseStudies/shared/FadeUp.jsx'
 import ElyonHeroScene from './ElyonHeroScene.jsx'
 import { ACCENT, ACCENT_LIGHT } from './theme.js'
+import { tr, hrefFor } from '../../i18n/tr.js'
 
 const PROJECT_INFO = [
   { label: 'Client', value: 'Elyon Dubai' },
@@ -52,24 +53,16 @@ export default function ElyonHero() {
             style={{ borderColor: 'rgba(201,166,104,0.35)', background: 'rgba(201,166,104,0.08)' }}
           >
             <span className="h-1.5 w-1.5 rounded-full animate-pulse" style={{ background: ACCENT }} />
-            <span className="text-xs font-semibold uppercase tracking-[0.2em]" style={{ color: ACCENT_LIGHT }}>
-              Elyon Dubai × CONVRT · Case Study
-            </span>
+            <span className="text-xs font-semibold uppercase tracking-[0.2em]" style={{ color: ACCENT_LIGHT }}>{tr('Elyon Dubai × CONVRT · Case Study')}</span>
           </div>
         </FadeUp>
 
         <FadeUp inView={inView} delay={90}>
-          <h1 className="font-display font-bold text-ink tracking-display-xl leading-[1.08] text-[clamp(1.9rem,4.4vw,3.3rem)] max-w-4xl mx-auto">
-            Taking a luxury perfume brand from launch into profitable paid-social creative.
-          </h1>
+          <h1 className="font-display font-bold text-ink tracking-display-xl leading-[1.08] text-[clamp(1.9rem,4.4vw,3.3rem)] max-w-4xl mx-auto">{tr('Taking a luxury perfume brand from launch into profitable paid-social creative.')}</h1>
         </FadeUp>
 
         <FadeUp inView={inView} delay={170}>
-          <p className="mt-6 text-base md:text-lg text-ink-muted leading-relaxed max-w-3xl mx-auto">
-            Elyon needed creative that could do more than make luxury fragrance look good. It needed
-            content capable of turning attention into purchases, so CONVRT built a repeatable mix of
-            creator-led ads, street interviews and performance-focused concepts across multiple locations.
-          </p>
+          <p className="mt-6 text-base md:text-lg text-ink-muted leading-relaxed max-w-3xl mx-auto">{tr('Elyon needed creative that could do more than make luxury fragrance look good. It needed content capable of turning attention into purchases, so CONVRT built a repeatable mix of creator-led ads, street interviews and performance-focused concepts across multiple locations.')}</p>
         </FadeUp>
 
         <FadeUp inView={inView} delay={220}>
@@ -80,7 +73,7 @@ export default function ElyonHero() {
                 className="rounded-full border px-3.5 py-1.5 text-[11.5px] font-medium text-ink-muted"
                 style={{ borderColor: 'rgba(255,255,255,0.10)', background: 'rgba(255,255,255,0.03)' }}
               >
-                {tag}
+                {tr(tag)}
               </span>
             ))}
           </div>
@@ -89,21 +82,17 @@ export default function ElyonHero() {
         <FadeUp inView={inView} delay={280}>
           <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
             <a
-              href={OFFER_PATHS.roadmap}
+              href={hrefFor(OFFER_PATHS.roadmap)}
               className="inline-flex items-center gap-2 rounded-full px-7 py-3.5 text-sm font-semibold text-canvas transition-transform duration-150 active:scale-[0.98]"
               style={{ background: `linear-gradient(110deg, ${ACCENT_LIGHT} 0%, ${ACCENT} 60%, ${ACCENT_LIGHT} 100%)` }}
-            >
-              Book a Creative Call
-              <svg viewBox="0 0 12 12" className="h-3.5 w-3.5" fill="none">
+            >{tr('Book a Creative Call')}<svg viewBox="0 0 12 12" className="h-3.5 w-3.5" fill="none">
                 <path d="M3 9L9 3M9 3H4M9 3V8" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </a>
             <a
               href="https://ugcbymohamed.com" target="_blank" rel="noopener noreferrer"
               className="inline-flex items-center gap-2 rounded-full border border-hairline px-7 py-3.5 text-sm font-medium text-ink-muted hover:text-ink hover:border-hairline-strong transition-colors"
-            >
-              See the creative library
-            </a>
+            >{tr('See the creative library')}</a>
           </div>
         </FadeUp>
 
@@ -118,10 +107,10 @@ export default function ElyonHero() {
               {PROJECT_INFO.map((item) => (
                 <div key={item.label}>
                   <dt className="text-[10px] font-bold uppercase tracking-[0.18em] text-ink-subtle">
-                    {item.label}
+                    {tr(item.label)}
                   </dt>
                   <dd className="mt-2 text-[14px] leading-snug text-ink font-medium">
-                    {item.value}
+                    {tr(item.value)}
                   </dd>
                 </div>
               ))}
