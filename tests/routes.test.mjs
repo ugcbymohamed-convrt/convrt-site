@@ -221,8 +221,8 @@ test('HTTP: translated pages answer 200 (with and without the trailing slash); u
       assert.match(body, /<html lang="ar" dir="rtl">/, `${url} declares Arabic, right-to-left`)
     }
   }
-  // French is prepared, not built; Arabic pages that do not exist (About, Contact, the Elyon case study, the blog) answer 404, never a fake English page.
-  for (const p of ['/fr', '/fr/', '/fr/pricing', '/ar/about', '/ar/contact', '/ar/case-studies/elyon', '/ar/case-studies', '/ar/this-page-does-not-exist', '/de/', '/es/this-page-does-not-exist', '/es/blog', '/es/privacy', '/es/case-studies/graspo', '/es/pricing/extra']) {
+  // French is prepared, not built; Arabic pages that do not exist (About, Contact, the Elyon case study, the blog index of an English-only article) answer 404, never a fake English page.
+  for (const p of ['/fr', '/fr/', '/fr/pricing', '/ar/about', '/ar/contact', '/ar/case-studies/elyon', '/ar/case-studies', '/ar/this-page-does-not-exist', '/de/', '/es/this-page-does-not-exist', '/es/blog', '/es/privacy', '/es/case-studies/other', '/es/pricing/extra']) {
     const r = await get(p)
     assert.equal(r.status, 404, p)
     assert.match(await r.text(), /name="robots" content="noindex, follow"/, p)

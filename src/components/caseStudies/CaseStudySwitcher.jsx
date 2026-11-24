@@ -1,5 +1,7 @@
 import { Fragment, useLayoutEffect, useRef, useState } from 'react'
 import { CASE_STUDIES } from '../../caseStudies/registry.js'
+import { useTr } from '../../i18n/tr.js'
+import { isEnglish, cx } from './format.js'
 
 /* ─────────────────────────────────────────────
    CASE STUDY NAVIGATOR
@@ -11,6 +13,7 @@ import { CASE_STUDIES } from '../../caseStudies/registry.js'
    indicator carry the whole interaction.
 ───────────────────────────────────────────── */
 export default function CaseStudySwitcher({ activeId, onSwitch, sticky = false }) {
+  const tr = useTr()
   const containerRef = useRef(null)
   const btnRefs = useRef({})
   const [indicator, setIndicator] = useState(null)
@@ -64,7 +67,7 @@ export default function CaseStudySwitcher({ activeId, onSwitch, sticky = false }
         <div className="mb-4 flex items-center justify-center gap-3 md:mb-5">
           <span className="h-px w-6 bg-hairline-strong" aria-hidden="true" />
           <span className="text-[10.5px] font-semibold uppercase tracking-[0.2em] text-ink-muted">
-            Featured Work
+            {tr('Featured Work')}
           </span>
           <span className="h-px w-6 bg-hairline-strong" aria-hidden="true" />
         </div>
@@ -74,7 +77,7 @@ export default function CaseStudySwitcher({ activeId, onSwitch, sticky = false }
           <div
             ref={containerRef}
             role="tablist"
-            aria-label="Case studies"
+            aria-label={tr('Case studies')}
             onKeyDown={onKeyDown}
             className="flex items-stretch justify-center"
           >
@@ -120,7 +123,7 @@ export default function CaseStudySwitcher({ activeId, onSwitch, sticky = false }
         {/* ── Mobile: stacked rows, left accent bar marks the active project ── */}
         <div
           role="tablist"
-          aria-label="Case studies"
+          aria-label={tr('Case studies')}
           onKeyDown={onKeyDown}
           className="flex flex-col divide-y divide-hairline sm:hidden"
         >
@@ -143,6 +146,8 @@ export default function CaseStudySwitcher({ activeId, onSwitch, sticky = false }
 }
 
 function NavItem({ study, index, isActive, onSwitch, btnRef, variant, mobile = false }) {
+  const tr = useTr()
+  const en = isEnglish()
   const num = String(index + 1).padStart(2, '0')
 
   return (
@@ -195,10 +200,10 @@ function NavItem({ study, index, isActive, onSwitch, btnRef, variant, mobile = f
         <span
           className={[
             'text-ink-subtle transition-colors duration-300',
-            mobile ? 'mt-0.5 block text-[12px]' : 'mt-1 text-center text-[11.5px] whitespace-nowrap',
+            mobile ? 'mt-0.5 block text-[12px]' : cx('mt-1 text-center text-[11.5px]', en ? 'whitespace-nowrap' : 'max-w-[15rem]'),
           ].join(' ')}
         >
-          {study.category} &middot; {study.descriptor}
+          {tr(study.category)} &middot; {tr(study.descriptor)}
         </span>
       </div>
     </button>

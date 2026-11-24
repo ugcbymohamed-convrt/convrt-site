@@ -168,7 +168,11 @@ test('suggestion target: English public pages get their Spanish equivalent or /e
   assert.equal(suggestionTarget('/creator-showcase').href, '/es/creator-showcase')
   assert.equal(suggestionTarget('/about').href, '/es/about')
   assert.equal(suggestionTarget('/creative-growth-roadmap').href, '/es/creative-growth-roadmap')
-  for (const englishOnly of ['/blog', '/blog/some-article', '/case-studies', '/case-studies/graspo', '/free-hooks', '/referrals']) assert.equal(suggestionTarget(englishOnly).href, '/es/', englishOnly)
+  assert.equal(suggestionTarget('/case-studies').href, '/es/case-studies')
+  assert.equal(suggestionTarget('/case-studies/graspo').href, '/es/case-studies/graspo')
+  assert.equal(suggestionTarget('/case-studies/elyon').href, '/es/case-studies/elyon')
+  assert.equal(suggestionTarget('/referrals').href, '/es/referrals')
+  for (const englishOnly of ['/blog', '/blog/some-article', '/free-hooks']) assert.equal(suggestionTarget(englishOnly).href, '/es/', englishOnly)
   for (const none of ['/es', '/es/', '/es/pricing', '/es/ugc-video-agency', '/privacy', '/terms', '/legal-notice', '/creator-onboarding', '/creator-onboarding/privacy', '/creator-admin', '/not-a-page', '/fr/pricing']) {
     assert.equal(suggestionTarget(none), null, none)
   }

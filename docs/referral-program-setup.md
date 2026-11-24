@@ -205,3 +205,5 @@ Resend and MailerLite failures, missing environment variables, handler guards, F
 with `docs/partner-kit.md`, and that no secret appears in `src/` or the built bundle (run `npm run build` first).
 Browser behaviour (responsive layout, scroll CTAs, focus, loading state) is checked by hand in the Browser pane, not by an
 automated browser suite: the project has none.
+
+**Euro markets (2026-11-24):** for Spanish and French partners the Standard reward is **150 €** (owner-approved, `src/i18n/referralReward.js`); track those rows as `150 € cash` / `150 € production credit` in the referral tracker. The agency 10 % commission and its cap are unchanged.

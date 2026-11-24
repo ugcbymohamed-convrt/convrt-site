@@ -1,13 +1,15 @@
-import { parsePath, localizedPath } from '../i18n/paths.js'
+import { parsePath } from '../i18n/paths.js'
+import { localHref } from '../i18n/tr.js'
+import { HOME_LABELS } from '../i18n/menu.js'
 
 export default function Logo({ className = '', size = 'h-12 md:h-16' }) {
   const { locale, basePath } = parsePath(typeof window !== 'undefined' ? window.location.pathname : '/')
   const onHome = basePath === '/'
   return (
     <a
-      href={onHome ? '#top' : localizedPath(locale, '/')}
+      href={onHome ? '#top' : localHref('/', locale)}
       className={`inline-flex items-center text-ink hover:text-white transition-colors ${className}`}
-      aria-label={locale === 'en' ? 'CONVRT — home' : 'CONVRT — inicio'}
+      aria-label={HOME_LABELS[locale] ?? HOME_LABELS.en}
     >
       <svg
         viewBox="0 0 1171.5 459.27"

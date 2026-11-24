@@ -5,6 +5,7 @@ import { PaidCards, OrganicCards, BillingSwitch } from './PricingCards.jsx'
 import { PaidTerms, OrganicTerms } from './PartnershipTerms.jsx'
 import { useState } from 'react'
 import { tr } from '../../i18n/tr.js'
+import { currentLocale } from '../../i18n/locale.js'
 
 /* SECTION 1: one unified opening. A single headline + subtitle, a goal-based selector, and the three pricing cards for
    the chosen goal. Both card groups are always in the DOM (prerendered HTML has every package and price); the selector
@@ -27,7 +28,7 @@ function GoalSelector({ value, onChange }) {
     document.getElementById(`service-tab-${next.id}`)?.focus()
   }
   return (
-    <div className="mx-auto mt-6 md:mt-7 max-w-2xl">
+    <div className={`mx-auto mt-6 md:mt-7 ${currentLocale() !== 'es' ? 'max-w-2xl' : 'max-w-3xl'}`}>
       <p className="mb-3 text-center text-[13px] font-bold uppercase tracking-[0.18em] text-lime sm:text-[15px]">{tr('What are you looking to achieve?')}</p>
       <div role="tablist" aria-label={tr('What are you looking to achieve?')} onKeyDown={onKeyDown} className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
         {GOALS.map((g) => {
@@ -139,7 +140,7 @@ export default function PricingStage({ service, onServiceChange }) {
               <BillingSwitch value={billing} onChange={setBilling} />
             </div>
             <PaidCards billing={billing} />
-            <PaidTerms />
+            <PaidTerms billing={billing} />
           </SlidePanel>
 
           <SlidePanel id="organic" pos="right" active={service === 'organic'}>

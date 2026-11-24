@@ -28,5 +28,5 @@ export default {
   "Privacy Policy (in English)": "سياسة الخصوصية (بالإنجليزية)",
   "Terms (in English)": "الشروط والأحكام (بالإنجليزية)",
   "Legal Notice (in English)": "الإشعار القانوني (بالإنجليزية)",
-  "Built to convert.": "صُمّم للتحويل."
+  "Built to convert.": "صُمّم للتحويل.",
 }

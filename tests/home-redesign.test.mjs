@@ -288,7 +288,7 @@ test('creator carousel: eight approved, English-confirmed, distinct videos in th
   assert.equal((s.match(/<li class="w-\[66%\]/g) || []).length, 8)
   assert.match(textOf(s), /Real creators\. Real presence\. Ready for your brand\./)
   assert.ok(textOf(s).includes('Explore the people and creative styles behind our videos.'))
-  assert.ok(!textOf(s).includes('not necessarily productions by CONVRT'), 'the long standing note was removed from the homepage carousel (owner, Nov 2026); the service pages keep it')
+  assert.ok(!textOf(s).includes('not necessarily productions by CONVRT'), 'the repeated disclaimer under the carousel is gone (owner, Nov 2026)')
   assert.ok(!/<video/.test(s), 'poster first: no video element or stream until a tap')
   assert.match(s, new RegExp(`<a href="${CREATOR_SHOWCASE_PATH}"[^>]*>\\s*Explore All Creators`))
   // all selected videos live in portfolio.js and stay valid for the Creator Showcase
@@ -389,14 +389,18 @@ test('the UGC page and the shared file order are untouched by the ordering helpe
 })
 
 // ── 8. Spanish and the other pages ───────────────────────────────────────────────────────
-test('Spanish homepage keeps its own sections: old case-study panels, reviews and CTA; none of the new English sections', () => {
+test('Spanish homepage (Spanish review 3, Nov 2026): the same composition as English (founder stage, reviews) with its own two video groups and Spanish copy; no English text, no old case-study panels', () => {
   const h = bodyOf(page('/es'))
-  assert.ok(h.includes('Proyectos que hablan') && h.includes('id="showcase"') && h.includes('id="testimonials"'))
-  assert.ok(!/showcase-tab-|home-creators|Read full review|Real creators/.test(h))
-  assert.ok(h.includes('Quiero anuncios como estos') && /Nuestro fundador ha trabajado con/.test(textOf(h)))
-  assert.ok(textOf(sectionOf(h, 'clients')).includes('Experiencia profesional'), 'Spanish keeps the long founder caption')
-  // the Spanish review wording is the same source, unchanged
-  for (const r of REVIEWS) assert.ok(textOf(h).includes(r.full), r.id)
+  assert.ok(h.includes('id="showcase"') && h.includes('showcase-tab-elyon-es') && h.includes('showcase-tab-mixed-es') && h.includes('id="testimonials"'))
+  assert.ok(!/Proyectos que hablan|Quiero anuncios como estos|Read full review|Worked with|Real creators|showcase-tab-ecommerce|showcase-tab-saas/.test(h))
+  const t = textOf(h)
+  assert.match(t, /Más de\s+500\s+clientes\s*\.\s*\n?\s*Una experiencia que marca la diferencia\./)
+  assert.ok(t.includes('Experiencia acumulada del fundador en CONVRT y otros proyectos creativos.'))
+  // exactly two groups, three videos each, one front video; the mixed group is labelled as a portfolio selection, not a client
+  assert.equal((h.match(/role="tab"[^>]*id="showcase-tab-/g) ?? []).length, 2)
+  assert.ok(t.includes('E-commerce / UGC') && t.includes('Elyon Dubai · Perfumería de lujo · E-commerce'))
+  assert.equal((h.match(/Mostrar vídeo \d de 3/g) ?? []).length + (h.match(/aria-label="Mostrar vídeo/g) ?? []).length >= 2, true)
+  for (const r of REVIEWS) assert.ok(!t.includes(r.full), `${r.id}: the English original is not shown`)
 })
 
 test('SEO and structure are untouched: homepage head and JSON-LD carry no review, rating or video markup; the case-study pages are still linked', () => {

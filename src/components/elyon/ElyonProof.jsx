@@ -1,6 +1,8 @@
 import { useInView } from '../caseStudies/shared/useInView.js'
 import Eyebrow from '../caseStudies/shared/Eyebrow.jsx'
 import { ACCENT } from './theme.js'
+import { useTr } from '../../i18n/tr.js'
+import { isEnglish } from '../caseStudies/format.js'
 
 const BASE = '/case-studies/elyon/proof'
 
@@ -13,20 +15,21 @@ const QUOTES = [
 ]
 
 export default function ElyonProof() {
+  const tr = useTr()
   const [ref, visible] = useInView(0.05)
 
   return (
     <section className="relative py-14 md:py-20">
       <div ref={ref} className="mx-auto max-w-6xl px-5 md:px-8">
         <div className="max-w-2xl mx-auto mb-11 md:mb-12 text-center">
-          <Eyebrow label="Client Proof" accent={ACCENT} className="mb-6" />
+          <Eyebrow label={tr('Client Proof')} accent={ACCENT} className="mb-6" />
           <h2 className="font-display font-bold text-ink tracking-display leading-[1.05] text-3xl md:text-[44px]">
-            The results showed up in the ad account.
+            {tr('The results showed up in the ad account.')}
             <br />
-            Then in our WhatsApp.
+            {tr('Then in our WhatsApp.')}
           </h2>
           <p className="mt-6 text-[15px] md:text-base text-ink-muted leading-relaxed">
-            Real messages from Elyon, cropped for privacy, unedited in substance.
+            {tr('Real messages from Elyon, cropped for privacy, unedited in substance.')}
           </p>
         </div>
 
@@ -45,7 +48,7 @@ export default function ElyonProof() {
                 src={`${BASE}/proof-early-test.webp`}
                 w={700}
                 h={553}
-                caption="The early test, sent unprompted"
+                caption={tr('The early test, sent unprompted')}
                 featured
               />
             </div>
@@ -60,7 +63,7 @@ export default function ElyonProof() {
                 transition: 'opacity 0.6s 90ms cubic-bezier(0.22,1,0.36,1), transform 0.6s 90ms cubic-bezier(0.22,1,0.36,1)',
               }}
             >
-              <ProofCard src={WIDE_QUOTE.src} w={WIDE_QUOTE.w} h={WIDE_QUOTE.h} caption={WIDE_QUOTE.caption} />
+              <ProofCard src={WIDE_QUOTE.src} w={WIDE_QUOTE.w} h={WIDE_QUOTE.h} caption={tr(WIDE_QUOTE.caption)} />
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-5">
@@ -73,7 +76,7 @@ export default function ElyonProof() {
                     transition: `opacity 0.6s ${160 + i * 70}ms cubic-bezier(0.22,1,0.36,1), transform 0.6s ${160 + i * 70}ms cubic-bezier(0.22,1,0.36,1)`,
                   }}
                 >
-                  <ProofCard src={q.src} w={q.w} h={q.h} caption={q.caption} />
+                  <ProofCard src={q.src} w={q.w} h={q.h} caption={tr(q.caption)} />
                 </div>
               ))}
             </div>
@@ -85,6 +88,7 @@ export default function ElyonProof() {
 }
 
 function ProofCard({ src, w, h, caption, featured = false }) {
+  const tr = useTr()
   return (
     <div
       className={`rounded-3xl border overflow-hidden ${featured ? '' : 'h-full flex flex-col'}`}
@@ -95,7 +99,7 @@ function ProofCard({ src, w, h, caption, featured = false }) {
         style={{ borderColor: 'rgba(201,166,104,0.12)' }}
       >
         <span className="h-2 w-2 rounded-full" style={{ background: '#25D366' }} />
-        <span className="text-[11px] font-semibold text-ink-muted">Elyon Dubai &middot; WhatsApp</span>
+        <span className="text-[11px] font-semibold text-ink-muted">{isEnglish() ? <>Elyon Dubai &middot; WhatsApp</> : tr('Elyon Dubai · WhatsApp (screenshot in English)')}</span>
       </div>
       <img
         src={src}

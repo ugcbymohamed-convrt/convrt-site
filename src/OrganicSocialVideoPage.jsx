@@ -43,7 +43,7 @@ const PROOF_CONFIG = {
   proof: ORGANIC_PROOF,
   expectations: null, // no filler strip: when there is no verified organic proof the section is simply absent
   headingId: ORGANIC_PROOF_COPY.headingId,
-  heading: { eyebrow: ORGANIC_PROOF_COPY.eyebrow, title: ORGANIC_PROOF_COPY.title },
+  heading: { eyebrow: ORGANIC_PROOF_COPY.eyebrow, title: ORGANIC_PROOF_COPY.title, esIntro: 'Here is how we helped Graspo reach new audiences and generate commercial opportunities.' },
   track: ORGANIC_PROOF_COPY.track,
   // The Roadmap is a paid-ads offer, so the button under the Graspo result is the organic strategy call (same route as the hero and the final CTA).
   cta: { label: ORGANIC_CTA.label, href: ORGANIC_CTA.href, external: ORGANIC_CTA.external },
@@ -57,8 +57,8 @@ function ProcessFooter() {
         <a href={hrefFor(ORGANIC_PRICING_HREF)} className="font-medium text-ink underline decoration-lime/60 underline-offset-4 transition-colors hover:text-lime">{tr('pricing and terms')}</a>.
       </p>
       <p className="mx-auto mt-2 max-w-3xl text-center text-[15px] leading-relaxed text-ink-muted">{tr(ORGANIC_SCOPE_NOTE)}</p>
-      {/* Arabic (owner, 2026-11-25): the repeated "scenes are illustrative" line is not shown. */}
-      {currentLocale() !== 'ar' && <p className="mx-auto mt-2 max-w-3xl text-center text-xs text-ink-muted">{tr('Scenes are illustrative. The portraits are for illustration only.')}</p>}
+      {/* Arabic (owner, 2026-11-25) and Spanish: the repeated "scenes are illustrative" line is not shown. */}
+      {currentLocale() !== 'es' && currentLocale() !== 'ar' && <p className="mx-auto mt-2 max-w-3xl text-center text-xs text-ink-muted">{tr('Scenes are illustrative. The portraits are for illustration only.')}</p>}
     </>
   )
 }
@@ -91,7 +91,7 @@ export default function OrganicSocialVideoPage() {
       <ProcessSection config={PROCESS_CONFIG} footer={<ProcessFooter />}>
         <ContentSystem />
       </ProcessSection>
-      <UgcGallery items={galleryItems} config={ORGANIC_GALLERY} />
+      {currentLocale() !== 'es' && <UgcGallery items={galleryItems} config={ORGANIC_GALLERY} />}
       <SectionDivider />
       <SpokespersonProof config={PROOF_CONFIG} />
       <SectionDivider />

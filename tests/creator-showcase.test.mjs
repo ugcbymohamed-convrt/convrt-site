@@ -97,9 +97,8 @@ test('static HTML: breadcrumb, one H1, the approved intro, two sections, the fir
   assert.equal((html.match(/<h1[\s>]/g) || []).length, 1)
   assert.ok(t.includes("See what's possible."))
   assert.ok(t.includes('Explore real creator videos across e-commerce, SaaS, services and more.'))
-  assert.ok(!t.includes(CREATOR_EXAMPLES_NOTE), 'the long creator-library disclaimer was removed from the Showcase hero (owner, Nov 2026)')
-  assert.ok(/not necessarily CONVRT productions/.test(t), 'the shorter "creators\u2019 examples, not necessarily CONVRT productions" line of the guide still says where the videos come from')
-  assert.ok(!/produced by CONVRT|CONVRT produced|our work|we produced/i.test(t), 'no CONVRT-production claim')
+  assert.ok(!t.includes(CREATOR_EXAMPLES_NOTE), 'the repeated independent-creators disclaimer is not shown in the hero (owner, Nov 2026; provenance stays in the data, the About page and the legal pages)')
+  assert.ok(!/produced by CONVRT|CONVRT produced|our work|we produced/i.test(t.replace(CREATOR_EXAMPLES_NOTE, '')), 'no CONVRT-production claim beyond the disclaimer')
   assert.equal((html.match(/<section[\s>]/g) || []).length, 3, 'three sections: the hero, the library and the "what you will find" guide (Batch 2)')
   const shown = Math.min(selectOurWork().length, 12)
   assert.equal((html.match(/Play video:/g) || []).length, shown, 'the first page of approved videos is in the HTML (crawlable without the filter script)')
@@ -424,10 +423,16 @@ test('regression: production attribution is unknown unless confirmed, and a labe
   assert.ok(/productionLabel\(item\)/.test(lb) && /\.filter\(Boolean\)/.test(lb), 'the player mentions production only when known')
 })
 
-test('regression: the nine homepage client videos stay homepage-only: not in /creator-showcase, the UGC page or the sitemap data, permissions untouched', () => {
-  const clients = PORTFOLIO.filter((v) => v.showcase && !v.onlyIn) // the English homepage panels (the Arabic ones are Arabic-only entries, covered in tests/arabic.test.mjs)
-  assert.equal(clients.length, 9)
-  assert.deepEqual([...new Set(clients.map((v) => v.showcase))].sort(), ['adscale', 'elyon', 'graspo'])
+test('regression: the nine homepage client videos (and the six Spanish homepage-stage ones) stay homepage-only: not in /creator-showcase, the UGC page or the sitemap data, permissions untouched', () => {
+  const english = PORTFOLIO.filter((v) => v.showcase && !v.onlyIn)
+  assert.equal(english.length, 9)
+  assert.deepEqual([...new Set(english.map((v) => v.showcase))].sort(), ['adscale', 'elyon', 'graspo'])
+  const spanish = PORTFOLIO.filter((v) => v.showcase && v.onlyIn?.includes('es'))
+  assert.equal(spanish.length, 6, 'the Spanish homepage stage: three Elyon Dubai videos and three mixed UGC videos')
+  assert.deepEqual([...new Set(spanish.map((v) => v.showcase))].sort(), ['elyon-es', 'mixed-es'])
+  assert.ok(spanish.every((v) => v.onlyIn.length === 1 && v.onlyIn[0] === 'es'), 'Spanish site only')
+  assert.ok(spanish.filter((v) => v.showcase === 'mixed-es').every((v) => !v.brand), 'the mixed group is a portfolio selection: no brand or client is attached to its videos')
+  const clients = [...english, ...spanish]
   for (const v of clients) {
     assert.equal(v.approval.portfolioUse, false, `${v.id}: portfolioUse stays false`)
     assert.equal(v.approval.creatorConsent, false, `${v.id}: creatorConsent stays false`)

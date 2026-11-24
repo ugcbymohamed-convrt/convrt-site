@@ -17,6 +17,7 @@ import { selectSaasHero, selectSaasGallery, forPageLanguage, orderedBy } from '.
 import {
   SAAS_HERO, SAAS_STAGES, SAAS_PROCESS, SAAS_GALLERY, SAAS_CTA, SAAS_PATH_LABEL, SAAS_PROOF, SAAS_EXPECTATIONS, SAAS_PROOF_CONFIG_TRACK, SAAS_VIDEO_ORDER,
 } from './content/saasPage.js'
+import { currentLocale } from './i18n/locale.js'
 import { tr, T, hrefFor } from './i18n/tr.js'
 
 /* /saas-video-production: the SaaS Video Production service page. It reuses the UGC and Spokesperson pages' architecture and design system, and each section is the same
@@ -83,7 +84,7 @@ export default function SaasVideoPage() {
       <ProcessSection config={PROCESS_CONFIG} footer={<ProcessFooter />}>
         <SaasFormats />
       </ProcessSection>
-      <UgcGallery items={galleryItems} config={SAAS_GALLERY} />
+      {currentLocale() !== 'es' && <UgcGallery items={galleryItems} config={SAAS_GALLERY} />}
       <SectionDivider />
       <SpokespersonProof config={PROOF_CONFIG} />
       <SectionDivider />

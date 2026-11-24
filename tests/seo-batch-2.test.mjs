@@ -175,7 +175,7 @@ test('Creator Showcase: a factual guide below the library, links to the four ser
   assert.ok(t.includes('What you’ll find in the Creator Showcase'))
   assert.ok(h.indexOf('id="showcase-guide"') > h.indexOf('id="library"') || h.indexOf('id="showcase-guide"') > h.indexOf('Play video:'), 'the guide sits after the library')
   for (const href of [PATHS.ugcVideoAgency, PATHS.spokespersonVideoProduction, PATHS.saasVideoProduction, PATHS.socialMediaVideoProduction, PATHS.caseStudyGraspo, PATHS.caseStudyElyon]) assert.ok(rootOf(h).includes(`href="${href}"`), href)
-  assert.ok(t.includes('independent creators') && t.includes('not necessarily CONVRT productions'), 'attribution kept')
+  assert.ok(t.includes('independent creators') && t.includes('For documented CONVRT projects, read our'), 'the guide keeps the factual intro and the case-study links; the repeated disclaimer is gone')
   assert.ok(!/we produced|produced by CONVRT|our productions/i.test(t.replace(/not necessarily (productions by )?CONVRT productions/g, '')))
   assert.ok(!/VideoObject/.test(h))
   assert.equal((rootOf(h).match(/<h1[\s>]/g) || []).length, 1)
@@ -283,7 +283,7 @@ test('public claims register: every claim has a source and a status; the figures
 
 // ── links ────────────────────────────────────────────────────────────────────────────────
 test('every internal link on every prerendered page resolves to a real page, section or file', () => {
-  const known = new Set([...KNOWN_PATHS, '/blog', '/es', '/ar', ...allLocalizedPaths(['es', 'ar'])])
+  const known = new Set([...KNOWN_PATHS, '/blog', '/es', '/ar', ...allLocalizedPaths(['es', 'fr', 'ar'])])
   const bad = []
   const walk = (d) => fs.readdirSync(d, { withFileTypes: true }).flatMap((e) => (e.isDirectory() ? walk(path.join(d, e.name)) : [path.join(d, e.name)]))
   const files = walk(dist).filter((f) => f.endsWith('index.html'))

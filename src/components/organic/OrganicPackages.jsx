@@ -1,5 +1,6 @@
 import { trackEvent } from '../../lib/analytics.js'
-import { formatMoney, ORGANIC, ORGANIC_COMMITMENT, CARD_NOTES, CUSTOM_PACKAGES } from '../../seo/businessKnowledge.js'
+import { ORGANIC, ORGANIC_COMMITMENT } from '../../seo/businessKnowledge.js'
+import { ORGANIC_PACKAGES_LINES } from '../../i18n/organicPackagesCopy.js'
 import { ORGANIC_PACKAGES_COPY as COPY_EN } from '../../content/organicSocialPage.js'
 import { Section, Head, Reveal, TextLink, Tick } from '../ugc/shared.jsx'
 import { tr } from '../../i18n/tr.js'
@@ -14,72 +15,42 @@ import { money } from '../../i18n/money.js'
    /pricing. It states only what the pricing page already states: the monthly price, the published post cadence, what both packages include, the platforms, the six-month initial commitment
    and that community management excludes customer support. No video counts, turnaround times or response times exist for organic, so none are shown. */
 
-const list = (items) => `${items.slice(0, -1).join(', ')} ${tr('and')} ${items.at(-1)}`
+/* One card design for every language: dark, with a thin accent border, a soft accent glow, accent ticks and an accent price. Organic Light = CONVRT lime, Organic Growth = the secondary magenta
+   (the brand tokens `lime` and `magenta`). Same height and structure as before; no solid fills. */
+const ACCENTS = {
+  light: { border: 'border-lime/35 hover:border-lime/60', glow: 'bg-lime/[0.08]', price: 'text-lime', tick: 'text-lime', chip: 'border-lime/40 bg-lime/10 text-lime' },
+  growth: { border: 'border-magenta/35 hover:border-magenta/60', glow: 'bg-magenta/[0.08]', price: 'text-magenta', tick: 'text-magenta', chip: 'border-magenta/40 bg-magenta/10 text-magenta' },
+}
 
 function PackageCard({ pkg }) {
+  const growth = pkg.id === ORGANIC.growth.id
+  const a = ACCENTS[growth ? 'growth' : 'light']
+  const ar = currentLocale() === 'ar' // Arabic: "شهريًا" for the period, the figure as a left-to-right island, the "Recommended" chip on Organic Growth (owner, 2026-11-25)
   return (
-    <div className="flex h-full flex-col rounded-3xl border border-hairline bg-surface-1/60 p-6 backdrop-blur-md md:p-7">
-      <h3 className="font-display text-xl font-semibold tracking-snug text-ink">{pkg.name}</h3>
-      <p className="mt-3 flex items-baseline gap-1.5">
-        <span className="font-display text-[2.6rem] font-bold leading-none tracking-display text-ink">{money(pkg.monthly)}</span>
-        <span className="text-[15px] text-ink-muted">{tr('/month')}</span>
-      </p>
-      <p className="mt-3 flex items-start gap-2.5 text-[15px] leading-relaxed text-ink-muted"><Tick />{tr(pkg.cadence)}</p>
-    </div>
-  )
-}
-
-/* ARABIC PRICING TREATMENT (owner, 2026-11-25): the two cards get their own brand accents (Organic Light lime, Organic Growth magenta) on the same dark surface, and the small print under the cards is
-   three compact lines. Every figure still comes from the business data (price, post cadence, commitment months, platforms); the three lines are the owner's Arabic wording. The full conditions
-   (VAT, community-management scope, customer-support exclusion) stay on /pricing, behind the link, and in the FAQ. */
-const AR_ACCENT = {
-  [ORGANIC.light.id]: { ring: 'border-lime/40 hover:border-lime/70', glow: 'rgba(213,255,64,0.20)', text: 'text-lime', tick: 'text-lime' },
-  [ORGANIC.growth.id]: { ring: 'border-magenta/45 hover:border-magenta/75', glow: 'rgba(236,72,153,0.24)', text: 'text-magenta', tick: 'text-magenta' },
-}
-function PackageCardAr({ pkg }) {
-  const a = AR_ACCENT[pkg.id]
-  return (
-    <div className={`relative flex h-full flex-col overflow-hidden rounded-3xl border bg-surface-1/70 p-6 backdrop-blur-md transition-colors md:p-7 ${a.ring}`}>
-      <div aria-hidden="true" className="pointer-events-none absolute -top-16 -left-10 h-48 w-48 rounded-full blur-[70px]" style={{ background: a.glow }} />
-      <div className="relative flex items-center justify-between gap-3">
-        <h3 className={`font-display text-xl font-semibold tracking-snug ${a.text}`}>{pkg.name}</h3>
-        {pkg.id === ORGANIC.growth.id && <span className="rounded-full border border-magenta/45 bg-magenta/10 px-2.5 py-0.5 text-[11px] font-semibold text-magenta">{tr('Recommended')}</span>}
+    <div className={`relative flex h-full flex-col overflow-hidden rounded-3xl border bg-surface-1/60 p-6 backdrop-blur-md transition-colors duration-300 md:p-7 ${a.border}`}>
+      <div aria-hidden="true" className={`pointer-events-none absolute -right-16 -top-20 h-48 w-48 rounded-full blur-[70px] ${a.glow}`} />
+      <div className="relative flex h-full flex-col">
+        {ar && growth ? (
+          <div className="flex items-center justify-between gap-3">
+            <h3 className="font-display text-xl font-semibold tracking-snug text-ink">{pkg.name}</h3>
+            <span className={`rounded-full border px-2.5 py-0.5 text-[11px] font-semibold ${a.chip}`}>{tr('Recommended')}</span>
+          </div>
+        ) : <h3 className="font-display text-xl font-semibold tracking-snug text-ink">{pkg.name}</h3>}
+        <p className="mt-3 flex items-baseline gap-1.5">
+          <span {...(ar ? { dir: 'ltr' } : {})} className={`font-display text-[2.6rem] font-bold leading-none tracking-display ${a.price}`}>{money(pkg.monthly)}</span>
+          <span className="text-[15px] text-ink-muted">{ar ? 'شهريًا' : tr('/month')}</span>
+        </p>
+        <p className="mt-3 flex items-start gap-2.5 text-[15px] leading-relaxed text-ink-muted"><Tick className={a.tick} />{tr(pkg.cadence)}</p>
       </div>
-      <p className="relative mt-3 flex items-baseline gap-2">
-        <span dir="ltr" className="font-display text-[2.6rem] font-bold leading-none tracking-display text-ink">{money(pkg.monthly)}</span>
-        <span className="text-[15px] text-ink-muted">شهريًا</span>
-      </p>
-      <p className="relative mt-3 flex items-start gap-2.5 text-[15px] leading-relaxed text-ink-muted"><span className={a.tick}><Tick /></span>{tr(pkg.cadence)}</p>
     </div>
   )
 }
 
 export default function OrganicPackages() {
-  const COPY = localizeConfig(COPY_EN, currentLocale())
-  if (currentLocale() === 'ar') {
-    return (
-      <Section id={COPY.id} label={COPY.headingId} className="!py-8 md:!py-10">
-        <Reveal>
-          <Head id={COPY.headingId} eyebrow={COPY.eyebrow} title={COPY.title} intro={COPY.intro} />
-        </Reveal>
-        <ul className="mx-auto mt-8 grid max-w-3xl grid-cols-1 gap-4 sm:grid-cols-2 md:mt-10">
-          {[ORGANIC.light, ORGANIC.growth].map((pkg, i) => (
-            <li key={pkg.id} className="list-none">
-              <Reveal delay={i * 90} className="h-full"><PackageCardAr pkg={pkg} /></Reveal>
-            </li>
-          ))}
-        </ul>
-        <Reveal className="mx-auto mt-5 max-w-3xl text-center">
-          <p className="text-[15px] leading-relaxed text-ink">تشمل الباقتان جدولة المحتوى والنشر وإدارة التفاعل على {ORGANIC.platforms.join(' و')}.</p>
-          <p className="mt-2 text-[13.5px] leading-relaxed text-ink-muted">الالتزام الأولي {ORGANIC_COMMITMENT.initialMonths} أشهر. الأسعار قبل الضريبة، ولا تشمل الخدمة دعم العملاء.</p>
-          <p className="mt-2 text-[13.5px] leading-relaxed text-ink-muted">تحتاج خطة مختلفة؟ خلنا نجهّز لك باقة تناسب علامتك.</p>
-          <p className="mt-4 text-[15px]">
-            <TextLink href={COPY.link.href} onClick={() => trackEvent(COPY.track, { location: 'packages' })}>{COPY.link.label} <span aria-hidden="true">←</span></TextLink>
-          </p>
-        </Reveal>
-      </Section>
-    )
-  }
+  const locale = currentLocale()
+  const COPY = localizeConfig(COPY_EN, locale)
+  const text = ORGANIC_PACKAGES_LINES[locale] ?? ORGANIC_PACKAGES_LINES.en
+  const lines = text.lines.map((l) => l.replace('{months}', String(ORGANIC_COMMITMENT.initialMonths)))
   return (
     <Section id={COPY.id} label={COPY.headingId} className="!py-8 md:!py-10">
       <Reveal>
@@ -92,16 +63,13 @@ export default function OrganicPackages() {
           </li>
         ))}
       </ul>
-      <Reveal className="mx-auto mt-5 max-w-3xl text-center">
-        <p className="text-[15px] leading-relaxed text-ink">
-          {tr('Both include')} {ORGANIC.includedInBoth.map((x) => tr(x).toLowerCase()).join(`, ${tr('plus')} `)}, {tr('across')} {list(ORGANIC.platforms)}.
-        </p>
-        <p className="mt-2 text-[13.5px] leading-relaxed text-ink-muted">
-          {tr(CARD_NOTES.organic)} {tr(ORGANIC.customerSupportNote)}
-        </p>
-        <p className="mt-2 text-[13.5px] leading-relaxed text-ink-muted">{tr(CUSTOM_PACKAGES.organic.description)}</p>
-        <p className="mt-4 text-[15px]">
-          <TextLink href={COPY.link.href} onClick={() => trackEvent(COPY.track, { location: 'packages' })}>{COPY.link.label} <span aria-hidden="true">→</span></TextLink>
+      {/* three compact lines (no stacked small paragraphs), then the link to the full pricing page */}
+      <Reveal className="mx-auto mt-5 max-w-4xl text-center">
+        <p className="text-[15px] leading-relaxed text-ink">{lines[0]}</p>
+        <p className="mt-1.5 text-[14px] leading-relaxed text-ink-muted">{lines[1]}</p>
+        <p className="mt-1.5 text-[14px] leading-relaxed text-ink-muted">{lines[2]}</p>
+        <p className="mt-3 text-[15px]">
+          <TextLink href={COPY.link.href} onClick={() => trackEvent(COPY.track, { location: 'packages' })}>{text.link} <span aria-hidden="true">→</span></TextLink>
         </p>
       </Reveal>
     </Section>

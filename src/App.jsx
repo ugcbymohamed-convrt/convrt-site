@@ -3,14 +3,15 @@ import Nav from './components/Nav.jsx'
 import Hero from './components/Hero.jsx'
 import Credibility from './components/Credibility.jsx'
 import CaseStudies from './components/CaseStudies.jsx'
+import CreatorsShowcase from './components/CreatorsShowcase.jsx'
 import Services from './components/Services.jsx'
 import HowItWorks from './components/HowItWorks.jsx'
 import Testimonials from './components/Testimonials.jsx'
+import FreeVideoOffer from './components/FreeVideoOffer.jsx'
 import IndustryShowcase from './components/home/IndustryShowcase.jsx'
 import ClientReviews from './components/home/ClientReviews.jsx'
 import FAQ from './components/FAQ.jsx'
 import FinalCTA from './components/FinalCTA.jsx'
-import FreeVideoOffer from './components/FreeVideoOffer.jsx'
 import Footer from './components/Footer.jsx'
 import SectionDivider from './components/SectionDivider.jsx'
 import { BLOG_PATH, REFERRALS_PATH } from './config.js'
@@ -102,13 +103,15 @@ function HomePage() {
   /* English homepage narrative (design review, Nov 2026): credibility → client work (one connected block, no divider between them) → services → process → creators → reviews → conversion.
      Other languages keep their own homepage sections until their separate design review. */
   const locale = currentLocale()
-  /* English and Arabic share the redesigned composition (Arabic: owner brief 2026-11-23, same components with Arabic data); Spanish keeps its own sections until its design review. */
+  /* English and Arabic share the full redesigned composition (Arabic: owner brief 2026-11-23, same components with Arabic data, creator carousel); Spanish shares the client-work stage and the reviews (own videos, own copy) and keeps its own creators section. */
   const en = locale === 'en' || locale === 'ar'
+  const full = en || locale === 'es' // the English homepage composition (Spanish: own videos, own copy)
   return (
     <>
       <Hero />
       <Credibility />
-      {en ? <IndustryShowcase /> : (<><SectionDivider /><CaseStudies /></>)}
+      {/* English and Spanish share the same client-work composition (founder experience + rotary stage); Spanish feeds it its own two groups (src/content/homeShowcase.js). */}
+      {full ? <IndustryShowcase /> : (<><SectionDivider /><CaseStudies /></>)}
       <SectionDivider />
       <Services />
       <SectionDivider />
@@ -117,8 +120,8 @@ function HomePage() {
       <HowItWorks />
       {/* The creator carousel draws its own leading divider. */}
       {en && <><Suspense fallback={<div aria-hidden="true" className="min-h-[760px]" />}><HomeCreators /></Suspense><SectionDivider /></>}
-      {!en && <SectionDivider />}
-      {en ? <ClientReviews /> : <Testimonials />}
+      {!en && <><CreatorsShowcase /><SectionDivider /></>}
+      {full ? <ClientReviews /> : <Testimonials />}
       <SectionDivider />
       <FinalCTA attributed />
       <SectionDivider />

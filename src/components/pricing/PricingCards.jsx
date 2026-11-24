@@ -86,6 +86,7 @@ function EndToEnd({ tone }) {
 
 function PricingCard({ tone, id, label, badge, description, price, sub, features, note, ctaLabel, tallSub = false, descMin = 'lg:min-h-[69px]', subMin, className = '', endToEnd = false, endToEndSpace = false }) {
   const t = TONES[tone]
+  const en = currentLocale() === 'en'
   // Other languages: a CTA into the English-only Roadmap becomes the booking call (src/i18n/cta.js).
   const cta = resolveCta(currentLocale(), { href: OFFER_PATHS.roadmap, label: 'Book a Creative Call' })
   return (
@@ -94,12 +95,13 @@ function PricingCard({ tone, id, label, badge, description, price, sub, features
       className={`relative flex h-full flex-col rounded-[26px] md:rounded-[30px] p-5 md:p-6 lg:p-7 transition-transform duration-300 hover:-translate-y-1 ${t.root} ${className}`}
       style={tone === 'dark' ? DARK_STYLE : undefined}
     >
-      <div className="flex min-h-[32px] items-center justify-between gap-3">
-        <h2 id={`${id}-label`} className={`inline-flex items-center rounded-full px-4 py-1.5 font-display text-[15px] font-bold tracking-snug ${t.pill}`}>
+      {/* Other languages: the package name never wraps; if a longer translated badge cannot share the row it drops below instead of squeezing the name. */}
+      <div className={`flex min-h-[32px] items-center justify-between gap-3${en ? '' : ' flex-wrap gap-y-2 lg:gap-x-2 xl:gap-x-3'}`}>
+        <h2 id={`${id}-label`} className={`inline-flex items-center rounded-full px-4 py-1.5 font-display text-[15px] font-bold tracking-snug ${t.pill}${en ? '' : ' whitespace-nowrap lg:px-3.5 xl:px-4'}`}>
           {tr(label)}
         </h2>
         {badge && (
-          <span className={`rounded-full border px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.14em] ${t.badge}`}>{tr(badge)}</span>
+          <span className={`rounded-full border px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.14em] ${t.badge}${en ? '' : ' whitespace-nowrap lg:px-2 lg:text-[9px] lg:tracking-[0.08em] xl:px-2.5 xl:text-[10px] xl:tracking-[0.14em]'}`}>{tr(badge)}</span>
         )}
       </div>
 

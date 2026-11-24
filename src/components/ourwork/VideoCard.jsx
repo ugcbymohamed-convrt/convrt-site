@@ -19,7 +19,7 @@ export default function VideoCard({ item, priority = false, onOpen }) {
   const industry = industryLabel(item.industry)
   const title = titleOf(item)
   // Spanish names the language in full ("Español"); English keeps the two-letter code.
-  const langs = (item.languages ?? []).map((l) => (currentLocale() === 'en' ? l.toUpperCase() : languageLabel(l))).join(' · ')
+  const langs = currentLocale() === 'es' ? '' : (item.languages ?? []).map((l) => (currentLocale() === 'en' ? l.toUpperCase() : languageLabel(l))).join(' · ')
   const who = [brandLabel(item), creatorLabel(item)].filter(Boolean).join(' · ')
   return (
     <button

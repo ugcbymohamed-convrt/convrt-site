@@ -3,6 +3,9 @@ import { useTr } from '../../i18n/tr.js'
 import { mix } from '../../i18n/ar/mix.jsx'
 import { currentLocale } from '../../i18n/locale.js'
 import { localizeStat } from '../../i18n/format.js'
+import { GRASPO_IG_VIEWS as IG_VIEWS, GRASPO_FB_VIEWS as FB_VIEWS, GRASPO_IG_SHORT, GRASPO_FB_SHORT, GRASPO_TOP_CONTENT as TOP_CONTENT } from '../../caseStudies/data.js'
+import { esGraspoOrganicProof } from '../../i18n/es/casestudies.js'
+import { stat, pct, isEnglish, cx } from '../caseStudies/format.js'
 
 /* ─────────────────────────────────────────────
    ORGANIC DISTRIBUTION
@@ -15,19 +18,10 @@ const ACCENT = '#d5ff40'
 const IG_COLOR = '#d5ff40'
 const FB_COLOR = '#3b82f6'
 
-const IG_VIEWS = 6_275_727
-const FB_VIEWS = 4_385_948
 const TOTAL_VIEWS = IG_VIEWS + FB_VIEWS
 const IG_PCT = (IG_VIEWS / TOTAL_VIEWS) * 100
 const FB_PCT = 100 - IG_PCT
 
-const TOP_CONTENT = [
-  { views: 7_500_000, v: '7.5M', label: '7.5M views', note: 'A common printing mistake, called out' },
-  { views: 1_900_000, v: '1.9M', label: '1.9M views', note: 'Meet the machine, in one take' },
-  { views: 1_200_000, v: '1.2M', label: '1.2M views', note: 'The part that matters most' },
-  { views: 84_200, v: '84.2K', label: '84.2K views', note: 'Setting the standard, on the floor' },
-  { views: 31_300, v: '31.3K', label: '31.3K views', note: 'The mistake that can\'t be undone' },
-]
 const MAX_TOP = TOP_CONTENT[0].views
 
 function useInView(threshold = 0.15) {
@@ -50,6 +44,9 @@ export default function GraspoDistribution() {
   const tr = useTr()
   const locale = currentLocale()
   const ar = locale === 'ar'
+  const en = isEnglish()
+  // Arabic writes a percentage plainly ("56%"); Spanish uses its own notation (pct).
+  const pctL = (n) => (ar ? `${n}%` : pct(n))
   const [ref, visible] = useInView()
 
   return (
@@ -124,7 +121,7 @@ export default function GraspoDistribution() {
           <div className="lg:col-span-7 rounded-3xl border border-hairline bg-surface-1/40 px-7 py-8 md:px-9 md:py-9">
             <div className="flex items-baseline justify-between mb-2">
               <p className="text-sm font-semibold text-ink">{tr('Views by platform')}</p>
-              <p className="text-xs text-ink-subtle">{localizeStat(locale, '10.7M')} {tr('total')}</p>
+              {ar ? <p className="text-xs text-ink-subtle">{localizeStat(locale, '10.7M')} {tr('total')}</p> : <p className="text-xs text-ink-subtle">{tr('10.7M total')}</p>}
             </div>
 
             <div className="mt-5 h-4 w-full rounded-full overflow-hidden flex bg-surface-3">
@@ -150,16 +147,16 @@ export default function GraspoDistribution() {
                   <span className="h-2.5 w-2.5 rounded-full" style={{ background: IG_COLOR }} />
                   <span className="text-xs font-semibold text-ink-muted">Instagram</span>
                 </div>
-                <p className="mt-1.5 font-display font-bold text-2xl text-ink tabular-nums">{localizeStat(locale, '6.27M')}</p>
-                <p className="text-[11px] text-ink-subtle">{IG_PCT.toFixed(0)}% {tr('of total views')}</p>
+                <p className="mt-1.5 font-display font-bold text-2xl text-ink tabular-nums">{stat(GRASPO_IG_SHORT)}</p>
+                <p className="text-[11px] text-ink-subtle">{pctL(IG_PCT.toFixed(0))} {tr('of total views')}</p>
               </div>
               <div>
                 <div className="flex items-center gap-2">
                   <span className="h-2.5 w-2.5 rounded-full" style={{ background: FB_COLOR }} />
                   <span className="text-xs font-semibold text-ink-muted">Facebook</span>
                 </div>
-                <p className="mt-1.5 font-display font-bold text-2xl text-ink tabular-nums">{localizeStat(locale, '4.39M')}</p>
-                <p className="text-[11px] text-ink-subtle">{FB_PCT.toFixed(0)}% {tr('of total views')}</p>
+                <p className="mt-1.5 font-display font-bold text-2xl text-ink tabular-nums">{stat(GRASPO_FB_SHORT)}</p>
+                <p className="text-[11px] text-ink-subtle">{pctL(FB_PCT.toFixed(0))} {tr('of total views')}</p>
               </div>
             </div>
 
@@ -171,9 +168,21 @@ export default function GraspoDistribution() {
               <div className="mt-0.5 h-8 w-8 shrink-0 rounded-full flex items-center justify-center" style={{ background: 'rgba(213,255,64,0.18)' }}>
                 <svg viewBox="0 0 20 20" width="14" height="14" fill="none"><path d="M4 10.5l4 4 8-9" stroke={ACCENT} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
               </div>
-              <p className="text-[13px] text-ink-muted leading-relaxed">
-                <span className="font-semibold text-ink">{tr('100% organic on Instagram.')}</span> {tr('All 6.27M Instagram views came from organic reach,')} <span className="tabular-nums" dir={ar ? 'ltr' : undefined}>$0</span> {tr('spent on paid amplification for that distribution.')}
-              </p>
+              {en ? (
+                <p className="text-[13px] text-ink-muted leading-relaxed">
+                  <span className="font-semibold text-ink">100% organic on Instagram.</span> All 6.27M
+                  Instagram views came from organic reach, <span className="tabular-nums">$0</span> spent
+                  on paid amplification for that distribution.
+                </p>
+              ) : ar ? (
+                <p className="text-[13px] text-ink-muted leading-relaxed">
+                  <span className="font-semibold text-ink">{tr('100% organic on Instagram.')}</span> {tr('All 6.27M Instagram views came from organic reach,')} <span className="tabular-nums" dir="ltr">$0</span> {tr('spent on paid amplification for that distribution.')}
+                </p>
+              ) : (
+                <p className="text-[13px] text-ink-muted leading-relaxed">
+                  <span className="font-semibold text-ink">{tr('100% organic on Instagram.')}</span> {esGraspoOrganicProof(GRASPO_IG_SHORT)}
+                </p>
+              )}
             </div>
           </div>
 
@@ -182,10 +191,10 @@ export default function GraspoDistribution() {
             <p className="text-sm font-semibold text-ink mb-6">{tr('Top-performing content by views')}</p>
             <div className="space-y-4">
               {TOP_CONTENT.map((c, i) => (
-                <div key={c.label}>
+                <div key={c.short}>
                   <div className="flex items-baseline justify-between mb-1.5">
                     <span className="text-[12px] text-ink-muted">{tr(c.note)}</span>
-                    <span className="text-[12px] font-semibold text-ink tabular-nums">{ar ? `${localizeStat(locale, c.v)} ${tr('views')}` : c.label}</span>
+                    <span className={cx('text-[12px] font-semibold text-ink tabular-nums', !en && !ar && 'ml-3 shrink-0 whitespace-nowrap')}>{stat(c.short)} {tr('views')}</span>
                   </div>
                   <div className="h-2 w-full rounded-full bg-surface-3 overflow-hidden">
                     <div

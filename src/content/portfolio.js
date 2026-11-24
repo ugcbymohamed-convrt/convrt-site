@@ -1667,6 +1667,82 @@ const PORTFOLIO_ENTRIES = [
       approvedOn: '2026-11-19',
     },
   },
+  /* SPANISH HOMEPAGE STAGE (owner folder ~/Desktop/ES-2, uploaded to Cloudflare Stream 2026-11-24). Two groups, three videos each, Spanish site only (`onlyIn: ['es']`).
+     • showcase 'elyon-es': the three street-interview videos of Elyon Dubai (verified in the footage: the "Spanish girls trying Elyon Dubai" title and the Elyon end card). NOTE: the burned-in captions
+       of these three videos are in English; the owner described them as Spanish street interviews and `languages: ['es']` records that, but the spoken language was not machine-verified.
+     • showcase 'mixed-es': a PORTFOLIO / CATEGORY selection (labelled "E-commerce / UGC"), NOT one client: three UGC videos for three different brands. No brand, creator name or client relationship is
+       shown or implied for it (no brand / brandDisplay / showName), and its entries carry no `brand`.
+     Like every homepage-stage video they are not creator-portfolio material (portfolioUse / creatorConsent false), so they never reach /creator-showcase or the UGC page. The private map of source files
+     to Stream ids is CONVRT/Claude/es-visual-parity-review-1/es2-private-map.csv (outside the repository). */
+  {
+    id: 'es-showcase-elyon-1',
+    caption: 'Entrevistas en la calle: probando Elyon Dubai (recopilación).',
+    industry: 'ecommerce',
+    languages: ['es'],
+    onlyIn: ['es'],
+    source: { cloudflareId: '37d2799756ba9cc827b3381b034474ce' },
+    creatorId: 'cs-elyon-es-1',
+    brand: 'Elyon Dubai',
+    showcase: 'elyon-es',
+    approval: { status: 'approved', portfolioUse: false, creatorConsent: false, approvedBy: 'CONVRT owner: supplied in the ES-2 folder for the Spanish homepage stage (chat, 2026-11-24)', approvedOn: '2026-11-24' },
+  },
+  {
+    id: 'es-showcase-elyon-2',
+    caption: 'Entrevista en la calle: Elyon Dubai en una palabra (1).',
+    industry: 'ecommerce',
+    languages: ['es'],
+    onlyIn: ['es'],
+    source: { cloudflareId: '8cc42ca3f0a33667eb14cf5e2449b4ad' },
+    creatorId: 'cs-elyon-es-2',
+    brand: 'Elyon Dubai',
+    showcase: 'elyon-es',
+    approval: { status: 'approved', portfolioUse: false, creatorConsent: false, approvedBy: 'CONVRT owner: supplied in the ES-2 folder for the Spanish homepage stage (chat, 2026-11-24)', approvedOn: '2026-11-24' },
+  },
+  {
+    id: 'es-showcase-elyon-3',
+    caption: 'Entrevista en la calle: Elyon Dubai en una palabra (2).',
+    industry: 'ecommerce',
+    languages: ['es'],
+    onlyIn: ['es'],
+    source: { cloudflareId: 'dc0a340190fc4cd310e24448dda4f170' },
+    creatorId: 'cs-elyon-es-3',
+    brand: 'Elyon Dubai',
+    showcase: 'elyon-es',
+    approval: { status: 'approved', portfolioUse: false, creatorConsent: false, approvedBy: 'CONVRT owner: supplied in the ES-2 folder for the Spanish homepage stage (chat, 2026-11-24)', approvedOn: '2026-11-24' },
+  },
+  {
+    id: 'es-showcase-mixed-1',
+    caption: 'Vídeo UGC de producto: accesorios para el gimnasio.',
+    industry: 'unclassified',
+    languages: ['es'],
+    onlyIn: ['es'],
+    source: { cloudflareId: '3bf715996728cd9e862d848878665f92' },
+    creatorId: 'cs-mixed-es-1',
+    showcase: 'mixed-es',
+    approval: { status: 'approved', portfolioUse: false, creatorConsent: false, approvedBy: 'CONVRT owner: supplied in the ES-2 folder for the Spanish homepage stage (chat, 2026-11-24)', approvedOn: '2026-11-24' },
+  },
+  {
+    id: 'es-showcase-mixed-2',
+    caption: 'Vídeo UGC de producto: relojes.',
+    industry: 'unclassified',
+    languages: ['es'],
+    onlyIn: ['es'],
+    source: { cloudflareId: '220122131040d62f1ce2d96ea9f98615' },
+    creatorId: 'cs-mixed-es-2',
+    showcase: 'mixed-es',
+    approval: { status: 'approved', portfolioUse: false, creatorConsent: false, approvedBy: 'CONVRT owner: supplied in the ES-2 folder for the Spanish homepage stage (chat, 2026-11-24)', approvedOn: '2026-11-24' },
+  },
+  {
+    id: 'es-showcase-mixed-3',
+    caption: 'Vídeo UGC de una aplicación de entrenamiento.',
+    industry: 'unclassified',
+    languages: ['es'],
+    onlyIn: ['es'],
+    source: { cloudflareId: 'b4daf32122e679f3af1c6ccc07eec8a7' },
+    creatorId: 'cs-mixed-es-3',
+    showcase: 'mixed-es',
+    approval: { status: 'approved', portfolioUse: false, creatorConsent: false, approvedBy: 'CONVRT owner: supplied in the ES-2 folder for the Spanish homepage stage (chat, 2026-11-24)', approvedOn: '2026-11-24' },
+  },
   /* Homepage client panels. These videos were live in the homepage case-study showcase before this file existed, so they are recorded here
      with the same media. The owner decided they are NOT creator-portfolio material, so portfolioUse / creatorConsent are false: they stay
      off /creator-showcase and the UGC page. To list one on /creator-showcase, confirm the brand's and the creator's permission and set both flags to true

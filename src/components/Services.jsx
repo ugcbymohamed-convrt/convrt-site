@@ -22,6 +22,7 @@ const SERVICES = [
     id: 'ugc',
     number: '01',
     title: 'UGC Video Ads',
+    esTitle: 'Vídeos UGC', // Spanish card title (owner copy, Nov 2026); the dictionary key stays the menu label
     description: 'Human-led UGC ads built to capture attention and test creative angles.',
     href: PATHS.ugcVideoAgency,
     pills: ['UGC Ads', 'Creator-Led', 'Creative Testing'],
@@ -36,6 +37,7 @@ const SERVICES = [
     id: 'saas',
     number: '02',
     title: 'SaaS Video Production',
+    esTitle: 'Vídeos para SaaS',
     description: 'Product demos, explainers and video ads that make software easier to understand.',
     href: PATHS.saasVideoProduction,
     pills: ['Product Demos', 'Explainers', 'Video Ads'],
@@ -64,6 +66,7 @@ const SERVICES = [
     id: 'social',
     number: '04',
     title: SERVICE_LABELS.organic,
+    esTitle: 'Vídeos para redes sociales',
     description: 'Organic social videos, content planning, publishing and community management.',
     href: PATHS.socialMediaVideoProduction,
     pills: ['Organic Video', 'Posting', 'Community'],
@@ -240,7 +243,7 @@ function ServiceCard({ service: s, index }) {
           </div>
 
           <h3 id={titleId} className="svc-title mt-6 font-display font-bold tracking-display leading-[1.06]" style={{ fontSize: 'clamp(1.45rem, 2.4vw, 1.85rem)' }}>
-            {tr(s.title)}
+            {currentLocale() === 'es' && s.esTitle ? s.esTitle : tr(s.title)}
           </h3>
           <p id={descId} className="svc-desc mt-3 max-w-[38ch] text-[14.5px] leading-relaxed">{tr(s.description)}</p>
 

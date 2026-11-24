@@ -38,16 +38,16 @@ const text = (html) => html.replace(/<script[\s\S]*?<\/script>/g, ' ').replace(/
 test('hero: the four Spanish H1s are the approved editorial headlines and every secondary CTA goes to a real place', () => {
   assert.deepEqual(Object.keys(ES_HERO).sort(), ['organic-h1', 'saas-h1', 'spokesperson-h1', 'ugc-h1'])
   const h1 = (p) => text(page(p).match(/<h1[\s\S]*?<\/h1>/)[0]).replace(/\s+\./g, '.')
-  assert.match(h1('ugc-video-agency'), /Anuncios UGC con personas reales\. Pensados para destacar\. Creados para convertir\./)
-  assert.match(h1('spokesperson-video-production'), /Vídeos Spokesperson\. Personas reales\. Mensajes que conectan\./)
-  assert.match(h1('social-media-video-production'), /Vídeos orgánicos para redes\. Contenido que engancha\. Una marca que conecta\./)
-  assert.match(h1('saas-video-production'), /Vídeos para SaaS\. Fáciles de entender\. Diseñados para convertir\./)
+  assert.match(h1('ugc-video-agency'), /Vídeos UGC con personas reales\. Hechos para destacar\./)
+  assert.match(h1('spokesperson-video-production'), /Vídeos Spokesperson con personas reales\. Mensajes que conectan\./)
+  assert.match(h1('social-media-video-production'), /Vídeos para redes sociales que merecen la pena guardar\./)
+  assert.match(h1('saas-video-production'), /Vídeos para SaaS que hacen tu producto fácil de entender\./)
   // SaaS scrolls to the formats section, Organic to the process section: both anchors must exist on the page that links to them.
   assert.equal(ES_HERO['saas-h1'].secondary.href, '#saas-formats')
   assert.ok(page('saas-video-production').includes('id="saas-formats"'))
   assert.equal(ES_HERO['organic-h1'].secondary.href, '#how-it-works')
   assert.ok(page('social-media-video-production').includes('id="how-it-works"'))
-  assert.match(page('saas-video-production'), /href="#saas-formats"[^>]*>[^<]*Ver formatos/)
+  assert.match(page('saas-video-production'), /href="#saas-formats"[^>]*>[^<]*Explorar formatos/)
   assert.match(page('social-media-video-production'), /href="#how-it-works"[^>]*>[^<]*Cómo trabajamos/)
 })
 
@@ -60,7 +60,7 @@ test('CTAs: Organic uses "Hablemos de tus redes" into the booking flow; the othe
     assert.match(text(html), /5 conceptos gratis/, p)
     assert.ok(html.includes('href="/es/creative-growth-roadmap"'), `${p} links to the Spanish Roadmap`)
   }
-  assert.match(text(page('creative-growth-roadmap')), /Solicitar mis 5 conceptos gratis/)
+  assert.match(text(page('creative-growth-roadmap')), /Solicitar mis 5 conceptos/)
 })
 
 test('FAQ: the approved question counts, Spanish headings, and visible questions = JSON-LD questions', () => {
@@ -81,7 +81,7 @@ test('FAQ: the approved question counts, Spanish headings, and visible questions
 test('Organic: the owner-confirmed six-month initial commitment is stated, community management is not customer support, no growth promise', () => {
   const html = page('social-media-video-production')
   const t = text(html)
-  assert.match(t, /Una colaboración inicial de 6 meses/)
+  assert.match(t, /Compromiso inicial de 6 meses/)
   assert.match(t, /compromiso de seis meses/)
   assert.match(html.match(/application\/ld\+json[\s\S]*?<\/script>/)[0], /seis meses/)
   assert.match(t, /La gestión de comunidad no incluye atención al cliente/)
@@ -96,7 +96,8 @@ test('Graspo and Elyon figures survive (Spanish notation, same values)', () => {
   const ugc = text(page('ugc-video-agency'))
   for (const s of ['5,28x', '3.421,25 USD', '9 Compras', 'Resultados comunicados por el cliente']) assert.ok(ugc.includes(s), s)
   assert.ok(!/3\.421,25 €|€ ?3\.421/.test(ugc), 'the historical USD revenue is never converted to EUR')
-  assert.ok(ugc.includes("The UGC videos he created were exactly what we needed to scale our ads"), 'English testimonial wording is verbatim')
+  assert.ok(ugc.includes('Los vídeos UGC que creó eran justo lo que necesitábamos') && !ugc.includes('The UGC videos he created'), 'the UGC page shows the approved Spanish reviews, no English original')
+  assert.ok(!/It has 9 sales|Roas 5\.28/.test(ugc), 'the raw English client note is not on the Spanish page')
 })
 
 test('About: every figure comes from the data; the four statistics are the founder\'s combined experience; no invented claims', () => {
@@ -132,11 +133,11 @@ test('Pricing: the thirteen approved EUR amounts are all on the Spanish page and
   for (const a of ['2.750 €', '3.250 €', '850 €', '1.375 €', '2.400 €', '4.600 €', '5.500 €', '1.550 €', '2.500 €', '4.350 €', '225 €', '1.400 €', '2.300 €']) assert.ok(t.includes(a), a)
   assert.ok(t.includes('183 € por versión') && t.includes('217 € por versión') && t.includes('153 € por versión'))
   assert.ok(!/creativos de testeo/.test(t) && t.includes('versiones finales de anuncio'))
-  assert.match(t, /Los paquetes mensuales tienen un compromiso inicial de 3 meses/)
+  assert.match(t, /Compromiso inicial de 3 meses\. Después, mes a mes con 30 días de preaviso\./)
 })
 
 test('Creator Showcase: 18 samples, UGC and Spokesperson filters on the Spanish page only, language named in full, English tabs unchanged', () => {
-  const es = PORTFOLIO.filter((i) => i.onlyIn?.includes('es'))
+  const es = PORTFOLIO.filter((i) => i.onlyIn?.includes('es') && !i.showcase) // `showcase` entries are the homepage stage, not the creator library
   assert.equal(es.length, 18)
   assert.equal(new Set(es.map((i) => i.title)).size, 18, 'titles are distinct')
   assert.ok(es.every((i) => i.approval?.creatorConsent === true && i.approval?.portfolioUse === true), 'approvals untouched')

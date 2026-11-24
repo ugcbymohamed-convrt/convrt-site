@@ -123,8 +123,8 @@ test('number notation: Western digits, units in Arabic (22K → 22 ألف, 10.7M
   assert.equal(localizeStat('en', '40M+'), '40M+')
 })
 
-test('conversion flows: the Roadmap and the free-video application work in Arabic; hooks and referrals stay out; the free-video page is held for review', () => {
-  assert.deepEqual(LOCALIZED_FLOWS.ar, { roadmap: true, riskFree: true, hooks: false, referrals: false })
+test('conversion flows: the Roadmap and the free-video application work in Arabic; the hooks stay out and the referral program is translated; the free-video page is held for review', () => {
+  assert.deepEqual(LOCALIZED_FLOWS.ar, { roadmap: true, riskFree: true, hooks: false, referrals: true })
   assert.ok(isReleased('ar', '/creative-growth-roadmap') || SITE_SEO['/creative-growth-roadmap'].indexable === false)
   assert.ok(releaseBlocker('ar', '/risk-free-trial'), 'noindex until the owner and the lawyer have reviewed the Arabic consent wording')
   assert.ok(!releaseBlocker('ar', '/pricing') && !releaseBlocker('ar', '/ugc-video-agency') && !releaseBlocker('ar', '/creator-showcase'))
@@ -180,7 +180,7 @@ test('Arabic revision videos (owner brief 2026-11-23): Mohamed, One Royal and Gr
   assert.equal(by('ar-graspo').length, 3); assert.equal(by('ar-oneroyal').length, 3); assert.equal(by('ar-mohamed').length, 3)
   // views: ONLY the Graspo videos, exactly the figures the English case study publishes for the same Stream ids; never summed, never on others
   const published = { c1379ace38f2fa19ef2a45de1bb5d4b1: '7.5M', '3616606e3ca6d1a85c8a57d7cc2f656f': '1.2M', '15dd5505109f6821ccdcb13fc3cdc1fd': '295K' }
-  const showcaseSrc = read('src/components/graspo/GraspoShowcase.jsx')
+  const showcaseSrc = read('src/caseStudies/data.js') // the published figures live in the case-study data
   for (const v of by('ar-graspo')) { assert.equal(v.views, published[v.source.cloudflareId], v.id); assert.ok(showcaseSrc.includes(`id: '${v.source.cloudflareId}', views: '${v.views}'`), `${v.id}: the figure is the one the English case study publishes`); assert.equal(v.type, 'organic'); assert.equal(v.production, 'convrt'); assert.equal(brandLabel(v), 'Graspo') }
   assert.ok(rev.filter((v) => !v.id.startsWith('ar-graspo')).every((v) => v.views === undefined), 'no view count on a video without a published figure')
   for (const v of by('ar-oneroyal')) { assert.equal(brandLabel(v), 'One Royal'); assert.equal(v.type, 'spokesperson'); assert.equal(v.showcase, 'oneroyal') }
@@ -293,7 +293,7 @@ test('hreflang: one reciprocal set (en, es, ar, x-default = English) on the Engl
   // the Graspo case study exists in English and Arabic only (no Spanish): a two-language set + x-default
   const gset = (h) => [...headOf(h).matchAll(/<link rel="alternate" hreflang="([^"]+)" href="([^"]+)"/g)].map((m) => `${m[1]} ${m[2]}`).join('|')
   assert.equal(gset(page('/ar/case-studies/graspo')), gset(page('/case-studies/graspo')))
-  assert.match(gset(page('/ar/case-studies/graspo')), /^en [^|]+\|ar [^|]+\|x-default /)
+  assert.match(gset(page('/ar/case-studies/graspo')), /^en [^|]+\|(es [^|]+\|)?ar [^|]+\|x-default /)
   for (const bp of ['/about', '/case-studies/elyon']) assert.ok(!/hreflang="ar"/.test(page(bp)), `${bp}: no hreflang to a page that does not exist`)
   assert.deepEqual(alternatesFor('/ugc-video-agency', SITE_SEO['/ugc-video-agency']).map((a) => a.hreflang), ['en', 'es', 'ar', 'x-default'])
 })

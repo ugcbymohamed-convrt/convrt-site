@@ -130,9 +130,9 @@ export default function RotaryStage({ items, label, autoPlayOnView = false }) {
   const n = items.length
   const mirror = isRtlPage()
   const tr = useTr()
-  const en = currentLocale() === 'en'
+  const ar = currentLocale() === 'ar'
   /* The few spoken strings (assistive technology only). English keeps its exact wording; other languages read them from their dictionary. */
-  const showLabel = (a, b) => (en ? `Show video ${a} of ${b}` : `${tr('Show video')} ${a} / ${b}`)
+  const showLabel = (a, b) => (ar ? `${tr('Show video')} ${a} / ${b}` : `${tr('Show video')} ${a} ${tr('of')} ${b}`)
   const [active, setActive] = useState(0)
   const [moving, setMoving] = useState(false)
   const posRef = useRef(0)
@@ -245,7 +245,7 @@ export default function RotaryStage({ items, label, autoPlayOnView = false }) {
         ))}
       </div>
       {/* status and the two keyboard controls: not drawn (the reference shows none); arrow keys, swipe and a click on a side video are the visible ways, these are for assistive technology */}
-      <span className="sr-only" aria-live="polite">{en ? `Video ${active + 1} of ${n}` : `${tr('Video')} ${active + 1} / ${n}`}</span>
+      <span className="sr-only" aria-live="polite">{ar ? `${tr('Video')} ${active + 1} / ${n}` : `${tr('Video')} ${active + 1} ${tr('of')} ${n}`}</span>
       {n > 1 && (
         <>
           <button type="button" onClick={() => select(activeRef.current - 1)} className="sr-only focus-visible:not-sr-only focus-visible:absolute focus-visible:bottom-2 focus-visible:left-2 focus-visible:z-30 focus-visible:rounded-full focus-visible:bg-black focus-visible:px-3 focus-visible:py-2 focus-visible:text-sm focus-visible:text-lime">{tr('Previous video')}</button>

@@ -46,39 +46,38 @@ export function captionEs(caption) {
 
 /* Spanish FAQ headings (owner-approved editorial copy): [plain words, lime-accent words] per FAQ prefix. Used by src/components/ugc/UgcFAQ.jsx in Spanish only. */
 export const ES_FAQ_TITLES = {
-  ugc: ['Todo lo que necesitas saber', 'sobre nuestros vídeos UGC.'],
-  spokesperson: ['Todo lo que necesitas saber', 'sobre nuestros vídeos Spokesperson.'],
-  saas: ['Todo lo que necesitas saber', 'sobre nuestros vídeos para SaaS.'],
-  organic: ['Todo lo que necesitas saber', 'sobre nuestro contenido orgánico.'],
-  pricing: ['Resolvemos tus dudas', 'sobre paquetes y tarifas.'],
+  ugc: ['Todo sobre', 'nuestros vídeos UGC.'],
+  spokesperson: ['Tus preguntas sobre', 'vídeos Spokesperson.'],
+  saas: ['Todo sobre', 'nuestros vídeos para SaaS.'],
+  organic: ['Todo sobre', 'el contenido orgánico.'],
+  pricing: ['¿Tienes dudas', 'sobre precios y paquetes?'],
 }
 
 /* Spanish stage titles that differ per page although the English key is shared (e.g. "Delivery & Distribution" is on both the Spokesperson and SaaS pages). Keyed by the process section's
    headingId, then by stage id. Applied by ProcessSection in Spanish only; a stage that is not listed keeps its dictionary title. */
 export const ES_STAGE_TITLES = {
-  'spokesperson-process-heading': { filming: 'Grabamos y editamos', delivery: 'Entregamos los vídeos finales' },
-  'saas-process-heading': { delivery: 'Entregamos las versiones finales' },
+  'spokesperson-process-heading': { delivery: 'Entrega' },
+  'saas-process-heading': { delivery: 'Entrega' },
+  'organic-process-heading': { filming: 'Producción' },
 }
 
 /* The short paragraph under each service page's final-CTA headline (and, for UGC, its own note line) in Spanish editorial copy, Nov 2026. English pages have none. Keyed by the final CTA's id. */
 export const ES_FINAL_CTA = {
   'ugc-cta-heading': {
-    text: 'Cuéntanos qué hace tu marca y te presentaremos cinco ideas publicitarias adaptadas a tu negocio en una sesión estratégica gratuita.',
+    text: 'Cuéntanos qué necesitas y te presentamos cinco ideas adaptadas a tu marca en una sesión gratuita.',
     note: 'Disponible para marcas que cumplan los requisitos del programa. Sin compromiso.',
   },
-  'spokesperson-cta-heading': { text: 'Cuéntanos qué quieres comunicar y te ayudaremos a encontrar el presentador, el enfoque y el formato que mejor encajan con tu marca.' },
-  'saas-cta-heading': { text: 'Cuéntanos qué hace tu producto y qué quieres comunicar. Te ayudaremos a encontrar el formato y el enfoque creativo adecuados.' },
-  'organic-cta-heading': { text: 'Cuéntanos qué quieres conseguir con tus redes sociales. Te ayudaremos a definir una estrategia de contenido y un plan de producción que encajen con tu marca.' },
+  'spokesperson-cta-heading': { text: 'Te ayudamos a elegir el presentador y el formato adecuados para tu marca.' },
+  'saas-cta-heading': { text: 'Cuéntanos qué quieres mostrar y encontraremos el formato adecuado.' },
+  'organic-cta-heading': { text: 'Te ayudamos a convertirlo en un plan de contenidos que conecte con tu audiencia.' },
 }
 
 /* One-sentence introductions under the heading of four interactive sections and the UGC FAQ (Spanish editorial copy). English has none, so they render in Spanish only. */
 export const ES_SECTION_INTROS = {
-  'ugc-testing': 'No necesitas cambiar todo el anuncio para descubrir qué funciona. Creamos distintas versiones de una misma idea para que puedas comparar elementos creativos de forma más estructurada.',
-  'spokesperson-formats': 'No todos los vídeos necesitan el mismo enfoque. Adaptamos el guion, el estilo de presentación y los recursos visuales a lo que tu marca quiere comunicar.',
-  'saas-formats': 'No todos los vídeos de SaaS tienen que cumplir la misma función. Elegimos el formato según tu producto, tu público y el objetivo que quieras conseguir.',
-  'organic-content-system': 'Una presencia constante en redes empieza por tener claro qué quieres contar, a quién se lo cuentas y para qué.',
-  'ugc-faq': 'Resolvemos las dudas más habituales antes de empezar un proyecto.',
+  'ugc-testing': 'No hace falta cambiar todo el anuncio para saber qué funciona. Creamos variaciones de una misma idea para que puedas probar elementos concretos.',
+  'spokesperson-formats': 'Adaptamos el guion y la presentación a tu producto y a tu objetivo.',
+  'saas-formats': 'Elegimos el formato que mejor encaja con tu producto y tu público.',
+  'organic-content-system': 'Cada vídeo empieza con una idea clara y un objetivo concreto.',
+  'ugc-faq': 'Precios, creadores, derechos de uso y cómo trabajamos.',
 }
 
-/* Visible note under the UGC page's client testimonials (their wording is kept in the original English). */
-export const ES_TESTIMONIALS_NOTE = 'Opiniones de clientes reproducidas en su idioma original.'

@@ -3,6 +3,8 @@ import { useTr } from '../../i18n/tr.js'
 import { currentLocale } from '../../i18n/locale.js'
 import { statNode } from './GraspoMetrics.jsx'
 import { mix } from '../../i18n/ar/mix.jsx'
+import { GRASPO_FUNNEL as STAGES } from '../../caseStudies/data.js'
+import { stat, isEnglish, cx } from '../caseStudies/format.js'
 
 /* ─────────────────────────────────────────────
    ATTENTION → DEMAND
@@ -14,14 +16,6 @@ import { mix } from '../../i18n/ar/mix.jsx'
 ───────────────────────────────────────────── */
 
 const ACCENT = '#d5ff40'
-
-const STAGES = [
-  { value: '10.7M', label: 'Total views', desc: 'Facebook + Instagram, Jan–Jun 2026', pct: 100 },
-  { value: '3.4M', label: 'Accounts reached', desc: 'Unique people who saw the content', pct: 74 },
-  { value: '75', label: 'Unique inbound leads', desc: 'Real inquiries across Meta, email & WhatsApp', pct: 46 },
-  { value: '26', label: 'High-priority opportunities', desc: 'Qualified for active follow-up', pct: 30 },
-  { value: '10', label: 'Advanced / quotation-stage', desc: 'Offer sent or being prepared, samples shipped, or moved to WhatsApp/sales', pct: 18 },
-]
 
 function useInView(threshold = 0.15) {
   const ref = useRef(null)
@@ -42,6 +36,8 @@ function useInView(threshold = 0.15) {
 export default function GraspoFunnel() {
   const tr = useTr()
   const locale = currentLocale()
+  const ar = locale === 'ar'
+  const en = isEnglish()
   const [ref, visible] = useInView()
 
   return (
@@ -87,11 +83,11 @@ export default function GraspoFunnel() {
                       className="shrink-0 font-display font-bold tabular-nums"
                       style={{ fontSize: 'clamp(1.5rem, 3vw, 2.1rem)', color: i === 0 ? ACCENT : '#ffffff' }}
                     >
-                      {statNode(locale, s.value)}
+                      {ar ? statNode(locale, s.value) : stat(s.value)}
                     </span>
                     <div className="min-w-0">
-                      <p className="text-[14px] font-semibold text-ink truncate">{tr(s.label)}</p>
-                      <p className="text-[11.5px] text-ink-subtle truncate">{tr(s.desc)}</p>
+                      <p className={cx('text-[14px] font-semibold text-ink', (en || ar) && 'truncate')}>{tr(s.label)}</p>
+                      <p className={cx('text-[11.5px] text-ink-subtle', (en || ar) ? 'truncate' : 'leading-snug')}>{tr(s.desc)}</p>
                     </div>
                   </div>
                 </div>

@@ -6,31 +6,33 @@ import { CREATOR_SHOWCASE_PATH } from '../../config.js'
    `secondary` replaces the English CTA object: the label is the approved Spanish one and the href is the English path (localized when rendered) or an in-page anchor. */
 export const ES_HERO = {
   'ugc-h1': {
-    lines: [['Anuncios', 'UGC', 'con', 'personas', 'reales.'], ['Pensados', 'para', 'destacar.']],
-    lead: ['Creados', 'para'],
-    words: ['convertir', 'conectar', 'vender'],
+    lines: [['Vídeos', 'UGC'], ['con', 'personas', 'reales.']],
+    lead: ['Hechos', 'para'],
+    words: ['destacar', 'convertir', 'conectar'],
     sizer: 'convertir.',
-    secondary: { label: 'Ver ejemplos UGC', href: CREATOR_SHOWCASE_PATH },
+    secondary: { label: 'Explorar vídeos UGC', href: CREATOR_SHOWCASE_PATH },
   },
   'spokesperson-h1': {
-    lines: [['Vídeos', 'Spokesperson.'], ['Personas', 'reales.']],
+    lines: [['Vídeos', 'Spokesperson'], ['con', 'personas', 'reales.']],
     lead: ['Mensajes', 'que'],
     words: ['conectan', 'convencen', 'explican'],
     sizer: 'convencen.',
-    secondary: { label: 'Ver vídeos', href: CREATOR_SHOWCASE_PATH },
+    // the Spanish page has no example-video gallery: the secondary CTA goes to the process section
+    secondary: { label: 'Cómo trabajamos', href: '#how-it-works' },
   },
   'organic-h1': {
-    lines: [['Vídeos', 'orgánicos', 'para', 'redes.'], ['Contenido', 'que', 'engancha.']],
-    lead: ['Una', 'marca', 'que'],
-    words: ['conecta', 'inspira', 'destaca'],
-    sizer: 'conecta.',
+    lines: [['Vídeos', 'para', 'redes', 'sociales']],
+    lead: ['que', 'merecen', 'la', 'pena'],
+    // every word completes "que merecen la pena …" naturally; the slot is sized for the longest
+    words: ['guardar', 'compartir', 'recordar'],
+    sizer: 'compartir.',
     secondary: { label: 'Cómo trabajamos', href: '#how-it-works' },
   },
   'saas-h1': {
-    lines: [['Vídeos', 'para', 'SaaS.'], ['Fáciles', 'de', 'entender.']],
-    lead: ['Diseñados', 'para'],
-    words: ['convertir', 'explicar', 'enganchar'],
-    sizer: 'enganchar.',
-    secondary: { label: 'Ver formatos', href: '#saas-formats' },
+    lines: [['Vídeos', 'para', 'SaaS'], ['que', 'hacen', 'tu', 'producto']],
+    lead: ['fácil', 'de'],
+    words: ['entender', 'explicar', 'recordar'],
+    sizer: 'explicar.',
+    secondary: { label: 'Explorar formatos', href: '#saas-formats' },
   },
 }

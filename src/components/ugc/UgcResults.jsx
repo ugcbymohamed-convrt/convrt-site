@@ -8,9 +8,9 @@ import { tr } from '../../i18n/tr.js'
 import { currentLocale } from '../../i18n/locale.js'
 import { localizeStat } from '../../i18n/format.js'
 import { formatMoneyEs } from '../../i18n/es/money.js'
-import { editorial } from '../../i18n/editorial.js'
 import { formatMoneyAr } from '../../i18n/ar/money.js'
 import { AR_REVIEWS } from '../../i18n/ar/reviews.js'
+import { ES_REVIEWS } from '../../i18n/es/reviews.js'
 
 /* SECTION 4: results and client feedback, in one compact block.
    • Elyon 5.28x: ONE individual creator-led UGC video, client-reported, early learning phase, never typical or guaranteed (wording
@@ -87,9 +87,8 @@ export default function UgcResults() {
               </dl>
 
               {/* the client's own messages: ONE evidence container, messages stacked and aligned together */}
-              {/* Arabic (owner, 2026-11-25): the client's two raw English messages are not shown on the Arabic page; the figures above and the qualification line below carry the result. */}
-              {locale !== 'ar' && (
-              <figure className="mt-5 rounded-2xl border border-lime/25 bg-canvas/60 p-4">
+              {/* The client's two raw English messages are shown on the English page only (not on the Spanish or Arabic pages); the figures above and the qualification line below carry the result there. */}
+              {locale === 'en' && <figure className="mt-5 rounded-2xl border border-lime/25 bg-canvas/60 p-4">
                 <figcaption className="mb-3 flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.14em] text-lime">
                   <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-lime" />{tr('Client-reported results')}</figcaption>
                 <ul className="space-y-2">
@@ -99,8 +98,7 @@ export default function UgcResults() {
                     </li>
                   ))}
                 </ul>
-              </figure>
-              )}
+              </figure>}
 
               <p className="mt-4 max-w-xl text-[13px] leading-relaxed text-ink-muted">{tr('One individual creative, client-reported during an early learning phase. Not typical, not a guarantee. Results depend on brand, offer, audience and budget.')}</p>
               <p className="mt-2.5 text-[15px]">
@@ -129,12 +127,12 @@ export default function UgcResults() {
                     className="h-7 w-auto max-w-[140px] object-contain object-left"
                     style={{ filter: 'brightness(0) invert(1)' }}
                   />
-                  {/* Arabic (owner, 2026-11-25): the approved Arabic version of the same review, in Arabic text with no "translated" label; other languages keep the client's English words. */}
+                  {/* Arabic (owner, 2026-11-25): the approved Arabic version of the same review, in Arabic text with no "translated" label; Spanish: the approved Spanish rendering; English: the client's own words. */}
                   {locale === 'ar'
                     ? <blockquote className="mt-4 flex-1 text-[15px] leading-relaxed text-ink">&laquo;{AR_REVIEWS[t.id].ugc ?? AR_REVIEWS[t.id].full}&raquo;</blockquote>
-                    : <blockquote lang={locale === 'en' ? undefined : 'en'} className="mt-4 flex-1 text-[15px] leading-relaxed text-ink">&ldquo;{t.quote}&rdquo;</blockquote>}
+                    : <blockquote className="mt-4 flex-1 text-[15px] leading-relaxed text-ink">{locale === 'es' && ES_REVIEWS[t.id] ? <>«{ES_REVIEWS[t.id].full}»</> : <>&ldquo;{t.quote}&rdquo;</>}</blockquote>}
                   <figcaption className="mt-4 text-sm text-ink-muted">
-                    <span className="font-semibold text-ink">{t.brand}</span> · {tr(t.category)}
+                    <span className="font-semibold text-ink">{t.brand}</span> · {locale === 'es' && ES_REVIEWS[t.id] ? ES_REVIEWS[t.id].category : tr(t.category)}
                   </figcaption>
                 </figure>
               </Reveal>
@@ -142,8 +140,6 @@ export default function UgcResults() {
           })}
         </div>
       </div>
-
-      {editorial(locale)?.TESTIMONIALS_NOTE && <p className="mt-6 text-center text-[13px] text-ink-muted">{editorial(locale).TESTIMONIALS_NOTE}</p>}
 
       <Reveal className="mt-8 flex justify-center">
         <RoadmapCta location="results" />

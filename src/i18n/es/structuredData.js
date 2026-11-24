@@ -8,7 +8,8 @@
    • Services on a Spanish page have page-scoped @ids (…/es/pricing#service-ugc) with Spanish names and descriptions, provider = the stable Organization. */
 
 import { SITE_URL } from '../../config.js'
-import { organizationNode, ORG_ID, WEBSITE_ID, breadcrumbNode } from '../../seo/structuredData.js'
+import { organizationNode, ORG_ID, WEBSITE_ID, breadcrumbNode, CASE_STUDY_SCHEMA, SERVICE_PATHS } from '../../seo/structuredData.js'
+import { translate } from '../tr.js'
 import { coreServiceNodesEs } from './jsonld-parts.js'
 import { absoluteUrl } from '../seo.js'
 import { faqTextEs } from './faq/text.js'
@@ -41,8 +42,38 @@ const BREADCRUMB_NAMES = {
 
 const PAGE_TYPE = { '/about': 'AboutPage', '/contact': 'ContactPage', '/creator-showcase': 'CollectionPage' }
 
+/* The Spanish twin of caseStudyGraph (src/seo/structuredData.js): the same facts (a WebPage about the client work, its two-level breadcrumb and the CONVRT service the study is an
+   example of), in Spanish, with inLanguage "es". Deliberately NOT emitted, as in English: Article, Review/Rating, dates, result figures beyond the visible text, VideoObject.
+   The Service is the Spanish service page's own node (same @id), without its package Offers. */
+function caseStudyGraphEs(basePath, { title, description }) {
+  const url = absoluteUrl(LOCALE, basePath)
+  const cs = CASE_STUDY_SCHEMA[basePath]
+  const servicePath = SERVICE_PATHS[cs.service]
+  const { offers, ...service } = ES_PAGE_GRAPH_EXTRAS[servicePath](absoluteUrl(LOCALE, servicePath)).nodes[0]
+  void offers
+  return graph([
+    organizationNode(),
+    {
+      '@type': 'WebPage',
+      '@id': `${url}#webpage`,
+      url,
+      name: title,
+      description,
+      isPartOf: { '@id': WEBSITE_ID },
+      publisher: { '@id': ORG_ID },
+      about: { '@type': 'Organization', name: cs.client },
+      mentions: { '@id': service['@id'] },
+      breadcrumb: { '@id': `${url}#breadcrumb` },
+      inLanguage: LOCALE,
+    },
+    breadcrumbNode([{ name: 'Inicio', path: '/es/' }, { name: translate(LOCALE, cs.trail), path: `/es${basePath}` }], `${url}#breadcrumb`),
+    service,
+  ])
+}
+
 export function localizedJsonLd(locale, basePath, seo = {}) {
   if (locale !== LOCALE) return undefined
+  if (CASE_STUDY_SCHEMA[basePath]) return caseStudyGraphEs(basePath, seoFor(basePath, seo))
   if (basePath === '/creative-growth-roadmap' || basePath === '/risk-free-trial') return undefined // like the English pages: noindex, no structured data
   const url = absoluteUrl(LOCALE, basePath)
   const { title, description } = seoFor(basePath, seo)

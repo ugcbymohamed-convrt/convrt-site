@@ -34,7 +34,7 @@ export const ES_ABOUT = {
           'Dónde trabajamos: producción remota para clientes internacionales y rodajes presenciales en España. Los rodajes en otros países pueden organizarse según el alcance y la disponibilidad.',
           'Idiomas: español, inglés, francés y árabe. Otros idiomas, bajo petición y según disponibilidad.',
           `Quién está detrás: CONVRT Studio está dirigido por ${founder.name}, su fundador, que desarrolla la actividad como profesional autónomo registrado en España.`,
-          `Nuestros proyectos: entre nuestros trabajos documentados se encuentran los proyectos realizados para Graspo y Elyon Dubai, cuyos resultados se explican en sus respectivos casos de éxito ([[Graspo (en inglés)|${GRASPO.href}]] · [[Elyon Dubai (en inglés)|${ELYON_PROOF.caseStudyHref}]]).`,
+          `Nuestros proyectos: entre nuestros trabajos documentados se encuentran los proyectos realizados para Graspo y Elyon Dubai, cuyos resultados se explican en sus respectivos casos de éxito ([[Graspo|${GRASPO.href}]] · [[Elyon Dubai|${ELYON_PROOF.caseStudyHref}]]).`,
           'Tarifas y condiciones: puedes consultar nuestros paquetes, precios y condiciones en la página de [[tarifas|/pricing]].',
         ] },
       ],
@@ -90,7 +90,7 @@ export const ES_ABOUT = {
     {
       heading: 'Proyectos reales, resultados con contexto',
       body: [
-        `Graspo: ${graspoViews} de visualizaciones orgánicas. Desarrollamos una estrategia de contenido orgánico en Facebook e Instagram dirigida al público de habla árabe para Graspo, una empresa europea del sector de la impresión. El resultado corresponde al periodo comprendido entre enero y junio de 2026 y se documenta en su caso de éxito. [[Leer el caso de Graspo (en inglés)|${GRASPO.href}]]`,
+        `Graspo: ${graspoViews} de visualizaciones orgánicas. Desarrollamos una estrategia de contenido orgánico en Facebook e Instagram dirigida al público de habla árabe para Graspo, una empresa europea del sector de la impresión. El resultado corresponde al periodo comprendido entre enero y junio de 2026 y se documenta en su caso de éxito. [[Leer el caso de Graspo|${GRASPO.href}]]`,
         `Elyon Dubai: ${es(ELYON_PROOF.roas)} de ROAS comunicado por el cliente. En el trabajo documentado con Elyon Dubai, que incluye más de ${es(ELYON_PROOF.creativesProduced).replace('+', '')} creativos producidos, uno de los anuncios UGC obtuvo un ROAS de ${es(ELYON_PROOF.roas)} según los datos facilitados por el cliente. Se trata del resultado de una pieza concreta, no de una media de campaña ni de una garantía de rendimiento. [[Leer el caso de Elyon Dubai (en inglés)|${ELYON_PROOF.caseStudyHref}]]`,
         'Los resultados corresponden a proyectos y periodos concretos. No son resultados habituales ni están garantizados.',
       ],
@@ -108,7 +108,7 @@ export const ES_ABOUT = {
     {
       heading: '¿Tienes un proyecto en mente? Hablemos.',
       body: [
-        `Explora nuestros trabajos, cuéntanos qué necesitas y descubramos cómo podemos ayudarte a convertir tus ideas en vídeos. [[Ver el caso de Graspo (en inglés)|${GRASPO.href}]] · [[Ver el caso de Elyon (en inglés)|${ELYON_PROOF.caseStudyHref}]]`,
+        `Explora nuestros trabajos, cuéntanos qué necesitas y descubramos cómo podemos ayudarte a convertir tus ideas en vídeos. [[Ver el caso de Graspo|${GRASPO.href}]] · [[Ver el caso de Elyon|${ELYON_PROOF.caseStudyHref}]]`,
         `[[Contactar con CONVRT|/contact]] · [[5 conceptos gratis|${OFFER_PATHS.roadmap}]]`,
       ],
     },

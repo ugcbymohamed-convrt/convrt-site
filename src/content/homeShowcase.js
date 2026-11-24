@@ -91,4 +91,48 @@ export const SHOWCASE_INDUSTRIES_AR = [
     accent: '#f59e0b',
   },
 ]
-export const showcaseIndustriesFor = (locale) => (locale === 'ar' ? SHOWCASE_INDUSTRIES_AR : SHOWCASE_INDUSTRIES)
+
+/* THE SPANISH HOMEPAGE'S TWO GROUPS (Nov 2026). Same stage as the English homepage, different content: each group's three videos are the portfolio entries tagged with its `clientId`
+   (`es-showcase-*`, Spanish site only: see src/content/portfolio.js).
+
+   • 'elyon-es'  a CLIENT group: Elyon Dubai (luxury fragrance, e-commerce), three Spanish street-interview videos verified in the footage (title card and Elyon end card).
+   • 'mixed-es'  a PORTFOLIO / CATEGORY group, labelled "E-commerce / UGC": three UGC videos made for three different brands. It is NOT one client and the selector says so (no logo, no client name,
+                 "Portfolio" tag, and a visible caption). Never give it a client name, logo or relationship (owner brief, 2026-11-24).
+
+   `kind: 'portfolio'` makes the selector draw a glyph instead of a client logo and the caption say it is a selection. All strings are Spanish and final (they are not dictionary keys). */
+export const SHOWCASE_GROUPS_ES = [
+  {
+    id: 'elyon-es',
+    kind: 'client',
+    clientId: 'elyon-es',
+    label: 'Perfumería de lujo',
+    client: 'Elyon Dubai',
+    logo: { src: '/clients/elyon.png', alt: 'Elyon Dubai', w: 600, h: 226, height: 56 },
+    selectorHeight: 30,
+    caption: 'Elyon Dubai · Perfumería de lujo · E-commerce',
+    stageLabel: 'Vídeos de Elyon Dubai. Elige un vídeo lateral para traerlo al frente.',
+    link: { href: '/case-studies/elyon', label: 'Ver el caso de Elyon Dubai (en español)' },
+  },
+  {
+    id: 'mixed-es',
+    kind: 'portfolio',
+    clientId: 'mixed-es',
+    label: 'E-commerce / UGC',
+    client: null,
+    logo: null,
+    selectorHeight: 30,
+    caption: 'Selección de portfolio: vídeos UGC de distintos proyectos.',
+    stageLabel: 'Selección de portfolio: vídeos UGC de distintos proyectos. Elige un vídeo lateral para traerlo al frente.',
+    link: { href: '/ugc-video-agency', label: 'Descubre nuestros vídeos UGC' },
+  },
+]
+
+export const SHOWCASE_COPY_ES = {
+  eyebrow: 'Experiencia del fundador',
+  tablistLabel: 'Trabajos por cliente y sector',
+  navLabel: 'Caso de estudio y página de servicio',
+  portfolioTag: 'Portfolio',
+}
+
+/* The groups/clients shown on the homepage showcase in each language: English three industries, Spanish its two groups, Arabic Graspo + One Royal. */
+export const showcaseIndustriesFor = (locale) => (locale === 'ar' ? SHOWCASE_INDUSTRIES_AR : locale === 'es' ? SHOWCASE_GROUPS_ES : SHOWCASE_INDUSTRIES)

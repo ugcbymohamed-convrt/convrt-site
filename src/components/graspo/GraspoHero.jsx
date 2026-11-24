@@ -1,8 +1,10 @@
 import { useEffect, useRef, useState } from 'react'
-import { OFFER_PATHS } from '../../config.js'
 import GraspoHeroScene from './GraspoHeroScene.jsx'
+import { OFFER_PATHS } from '../../config.js'
 import { useTr, hrefFor } from '../../i18n/tr.js'
 import { currentLocale } from '../../i18n/locale.js'
+import { isEnglish } from '../caseStudies/format.js'
+import { heroCta } from '../caseStudies/cta.js'
 
 /* The paper scene is drawn and animated left to right (its JS offsets are in screen pixels). In Arabic it runs as a dir="ltr" island, exactly as in English: sheets are objects, not text, and must never mirror
    or cross into the heading. `contents` keeps the wrapper out of the layout. */
@@ -42,6 +44,9 @@ function FadeUp({ children, inView, delay = 0, className = '' }) {
 
 export default function GraspoHero() {
   const tr = useTr()
+  const en = isEnglish()
+  const ar = currentLocale() === 'ar'
+  const cta = heroCta()
   const [inView, setInView] = useState(false)
   const ref = useRef(null)
 
@@ -80,8 +85,9 @@ export default function GraspoHero() {
           >
             {tr('6 months')}
           </p>
-          <h1 className="mt-2 font-display font-bold text-ink tracking-display-xl leading-[1.05] text-[clamp(1.9rem,5vw,3.6rem)] md:whitespace-nowrap">
-            {tr('10.7M views. 75 inbound leads.')}
+          {/* The English headline stays on one line from md up (so does the Arabic one); the Spanish one is longer, so its two sentences stack instead of overflowing. */}
+          <h1 className={`mt-2 font-display font-bold text-ink tracking-display-xl leading-[1.05] text-[clamp(1.9rem,5vw,3.6rem)] ${en || ar ? 'md:whitespace-nowrap' : ''}`}>
+            {en ? '10.7M views. 75 inbound leads.' : ar ? tr('10.7M views. 75 inbound leads.') : <><span className="block">{tr('10.7M views.')}</span><span className="block">{tr('75 inbound leads.')}</span></>}
           </h1>
         </FadeUp>
 
@@ -94,10 +100,11 @@ export default function GraspoHero() {
         <FadeUp inView={inView} delay={260}>
           <div className="mt-9 flex flex-col sm:flex-row items-center justify-center gap-4">
             <a
-              href={hrefFor(OFFER_PATHS.roadmap)}
+              href={ar ? hrefFor(OFFER_PATHS.roadmap) : cta.href}
+              {...(ar ? {} : cta.attrs)}
               className="cta-gradient inline-flex items-center gap-2 rounded-full px-7 py-3.5 text-sm font-semibold text-canvas"
             >
-              {tr('Book a Creative Call')}
+              {ar ? tr('Book a Creative Call') : cta.label}
               <svg viewBox="0 0 12 12" className="h-3.5 w-3.5" fill="none">
                 <path d="M3 9L9 3M9 3H4M9 3V8" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
@@ -122,7 +129,7 @@ export default function GraspoHero() {
                     {tr(item.label)}
                   </dt>
                   <dd className="mt-2 text-[14px] leading-snug text-ink font-medium">
-                    {tr(item.value)}
+                    {item.value === 'Graspo' ? item.value : tr(item.value)}
                   </dd>
                 </div>
               ))}

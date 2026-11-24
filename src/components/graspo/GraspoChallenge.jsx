@@ -1,3 +1,6 @@
+import { useTr } from '../../i18n/tr.js'
+import { mix } from '../../i18n/ar/mix.jsx'
+
 const POINTS = [
   {
     title: 'A technical business, not a lifestyle brand',
@@ -17,8 +20,6 @@ const POINTS = [
   },
 ]
 
-import { useTr } from '../../i18n/tr.js'
-import { mix } from '../../i18n/ar/mix.jsx'
 
 export default function GraspoChallenge() {
   const tr = useTr()

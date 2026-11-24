@@ -57,7 +57,7 @@ export default function FreeVideoOffer() {
                 {...press}
                 className="cta-gradient group inline-flex w-full items-center justify-center gap-2 whitespace-nowrap rounded-full px-6 py-3.5 text-[15px] font-semibold text-canvas sm:w-auto focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-lime"
               >
-                {tr('Request 1 free video')}
+                {tr('Request my free video')}
                 <svg viewBox="0 0 12 12" className="h-3.5 w-3.5 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 motion-reduce:transition-none" fill="none" aria-hidden="true">
                   <path d="M3 9L9 3M9 3H4M9 3V8" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>

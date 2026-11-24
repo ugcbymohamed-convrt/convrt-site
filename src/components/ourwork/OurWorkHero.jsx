@@ -4,9 +4,7 @@ import { currentLocale } from '../../i18n/locale.js'
 /* SECTION 1: a short, text-only hero. The H1 and one sentence, then the library starts straight away: no statistics, no service copy,
    no phone mock-ups. Dark canvas, white type, lime only on the last word and a faint glow.
 
-   The long attribution paragraph that used to sit under the intro (CREATOR_EXAMPLES_NOTE) was removed from the hero on the owner's instruction (Nov 2026, all languages): it was bulky and repeated. The origin of the
-   videos is still stated where it matters: the "creators' examples, not necessarily CONVRT productions" lines of ShowcaseFormats, the creator / brand / production credit in every video's details (VideoLightbox)
-   and the documented CONVRT projects (case studies). The service-page galleries (UgcGallery) keep their one-line note. */
+   The standing creators-attribution line that used to sit under the intro is removed (owner, Nov 2026); provenance stays in the data, the About page and the legal pages. */
 /* The Arabic subtitle is one sentence (the English one is three translated pieces); a constant keeps it out of the Spanish completeness scan. */
 const AR_SUBTITLE = 'Explore real creator videos across e-commerce, SaaS, services and more.'
 
@@ -18,7 +16,7 @@ export default function OurWorkHero({ empty = false }) {
         <h1 id="our-work-heading" className="max-w-4xl font-display text-[2.4rem] font-bold leading-[1.03] tracking-display-xl text-ink sm:text-5xl md:text-6xl">
           {tr("See what's")} <span className="text-lime">{tr('possible.')}</span>
         </h1>
-        <p className="mt-4 max-w-2xl text-base leading-relaxed text-ink-muted md:mt-5 md:text-lg">{empty ? tr('Examples from independent creators in your language, coming soon.') : currentLocale() === 'ar' ? tr(AR_SUBTITLE) : <>{tr('Explore real creator videos across')}{' '}<span className="whitespace-nowrap">{tr('e-commerce')}</span>{tr(', SaaS, services and more.')}</>}</p>
+        <p className="mt-4 max-w-2xl text-base leading-relaxed text-ink-muted md:mt-5 md:text-lg">{empty ? tr('Examples from independent creators in your language, coming soon.') : currentLocale() === 'en' ? <>{tr('Explore real creator videos across')}{' '}<span className="whitespace-nowrap">{tr('e-commerce')}</span>{tr(', SaaS, services and more.')}</> : currentLocale() === 'ar' ? tr(AR_SUBTITLE) : tr('Discover different styles of UGC and Spokesperson with real creators.')}</p>
       </div>
     </section>
   )

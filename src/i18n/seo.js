@@ -8,9 +8,10 @@ import { LOCALES, LIVE_LOCALES, DEFAULT_LOCALE, isLive } from './locales.js'
 import { isReleased } from './release.js'
 import { localizedPath } from './paths.js'
 import { ES_SEO, ES_OG_IMAGE_ALT, ES_OG_IMAGE_READY, ES_OG_IMAGE_PATH } from './es/seo.js'
+import { FR_SEO } from './fr/seo.js'
 import { AR_SEO, AR_OG_IMAGE_ALT, AR_OG_IMAGE_READY, AR_OG_IMAGE_PATH } from './ar/seo.js'
 
-export const SEO_BY_LOCALE = { es: ES_SEO, ar: AR_SEO }
+export const SEO_BY_LOCALE = { es: ES_SEO, fr: FR_SEO, ar: AR_SEO }
 export const OG_IMAGE_ALT_BY_LOCALE = { es: ES_OG_IMAGE_ALT, ar: AR_OG_IMAGE_ALT }
 /* A language's own share image, once its file exists (the default image has English text burned in). */
 const OG_IMAGE_BY_LOCALE = { es: ES_OG_IMAGE_READY ? ES_OG_IMAGE_PATH : null, ar: AR_OG_IMAGE_READY ? AR_OG_IMAGE_PATH : null }

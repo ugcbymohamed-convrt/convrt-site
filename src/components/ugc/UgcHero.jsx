@@ -3,7 +3,7 @@ import { trackEvent, withUtm } from '../../lib/analytics.js'
 import { usePressFeedback } from '../../lib/usePressFeedback.js'
 import { usePreviewHost } from '../../lib/previewHost.js'
 import { OFFER_PATHS, CREATOR_SHOWCASE_PATH } from '../../config.js'
-import { SECONDARY_OFFERS, SecondaryOffer } from '../Hero.jsx'
+import { SECONDARY_OFFERS, SecondaryOffer, offersShown } from '../Hero.jsx'
 import CreatorVideoStage, { PhoneShowcaseFallback } from './CreatorVideoStage.jsx'
 import { useAutoplayAllowed } from './creatorVideo.jsx'
 import { tr, hrefFor } from '../../i18n/tr.js'
@@ -64,7 +64,7 @@ const HOLD_MS = 2300
 const HOLD_BRAND_MS = 3400
 
 /* The last word of the H1. Until it first rolls, it is plain text. */
-function ReelWord({ words: ROTATING, sizer }) {
+function ReelWord({ words: ROTATING, sizer, center = false }) {
   const allowed = useAutoplayAllowed()
   const [cur, setCur] = useState(0)
   const [rolling, setRolling] = useState(false)
@@ -90,7 +90,7 @@ function ReelWord({ words: ROTATING, sizer }) {
   }, [allowed])
 
   return (
-    <span className="ugc-reel text-lime" data-sizer={sizer}>
+    <span className={`ugc-reel text-lime${center ? ' ugc-reel-center' : ''}`} data-sizer={sizer}>
       <span className={`ugc-reel-track ${rolling ? 'is-rolling' : ''}`}>
         <span>{`${ROTATING[cur]}.`}</span>
         {rolling && <span aria-hidden="true">{`${ROTATING[next]}.`}</span>}
@@ -113,7 +113,7 @@ function Headline({ config, textLed = false }) {
   return (
     <h1
       id={id}
-      className={`font-display font-semibold text-ink tracking-display-xl leading-[1.05] ${textLed ? 'text-[2.15rem] min-[400px]:text-[2.6rem] sm:text-[3rem] md:text-[3.2rem] lg:text-[3.4rem] xl:text-[4rem]' : 'text-[2rem] min-[400px]:text-[2.5rem] sm:text-[3rem] md:text-[3.4rem] lg:text-[2.4rem] xl:text-[3.35rem]'}`}
+      className={`font-display font-semibold text-ink tracking-display-xl leading-[1.05] ${textLed ? `text-[2.15rem] min-[400px]:text-[2.6rem] sm:text-[3rem] md:text-[3.2rem] lg:text-[3.4rem] xl:text-[4rem]${currentLocale() !== 'es' ? '' : ' [text-wrap:balance]'}` : currentLocale() !== 'es' ? 'text-[2rem] min-[400px]:text-[2.5rem] sm:text-[3rem] md:text-[3.4rem] lg:text-[2.4rem] xl:text-[3.35rem]' : 'text-[1.85rem] min-[400px]:text-[2.3rem] sm:text-[2.7rem] md:text-[3.1rem] lg:text-[2.2rem] xl:text-[3.05rem] [text-wrap:balance]'}`}
     >
       {LINES.map((words) => (
         <span key={words[0]} className="block">
@@ -123,8 +123,22 @@ function Headline({ config, textLed = false }) {
         </span>
       ))}
       <span className="block">
-        {lead.flatMap((w) => [word(w, w), ' '])}
-        <span className="ugc-mask"><span className="ugc-word" style={{ animationDelay: `${80 + i * 55}ms` }}><ReelWord words={words} sizer={sizer} /></span></span>
+        {/* Other languages: the last lead word and the rolling word stay together on one line (never "pena / guardar."), and in the centred text-led layout the rolling word is centred in its fixed slot,
+            so the headline never moves while the words change. English keeps its markup. */}
+        {currentLocale() !== 'es' ? (
+          <>
+            {lead.flatMap((w) => [word(w, w), ' '])}
+            <span className="ugc-mask"><span className="ugc-word" style={{ animationDelay: `${80 + i * 55}ms` }}><ReelWord words={words} sizer={sizer} /></span></span>
+          </>
+        ) : (
+          <>
+            {lead.slice(0, -1).flatMap((w) => [word(w, w), ' '])}
+            <span className="whitespace-nowrap">
+              {word(lead.at(-1), lead.at(-1))}{' '}
+              <span className="ugc-mask"><span className="ugc-word" style={{ animationDelay: `${80 + i * 55}ms` }}><ReelWord words={words} sizer={sizer} center={textLed} /></span></span>
+            </span>
+          </>
+        )}
       </span>
     </h1>
   )
@@ -149,7 +163,7 @@ export default function UgcHero({ items, config: configProp = UGC_HERO }) {
   // Other languages: a primary CTA into the English-only Roadmap becomes the booking call; the free-offer cards are shown only where their flows are translated.
   const primary = resolveCta(locale, configProp.primary)
   const primaryLabel = primary.redirected ? tr(primary.label) : config.primary.label
-  const offersAvailable = flowAvailable(locale, 'riskFree') && flowAvailable(locale, 'hooks')
+  const offersAvailable = locale !== 'ar' && offersShown(locale) // Arabic: no free-offer cards under the service-page hero (owner-approved layout)
   const hasWork = items.length > 0
   const textLed = !hasWork && locale !== 'en'
   const primaryPress = usePressFeedback()
@@ -176,7 +190,7 @@ export default function UgcHero({ items, config: configProp = UGC_HERO }) {
               <div className={`cs-fade-up ${textLed ? 'mt-8 md:mt-10' : 'lg:mt-6'}`} style={{ animationDelay: '600ms' }}>
                 {config.leadIn !== null && (
                   <p className="mb-3 text-balance text-[15px] font-medium leading-snug text-ink md:text-base">
-                    {config.leadIn ?? (locale === 'en' ? <>Your next 5 ad concepts. Tailored to your brand. <span className="text-lime">On us.</span></> : flowAvailable(locale, 'roadmap') ? <>{tr('Your next 5 ad concepts. Tailored to your brand.')} <span className="text-lime">{tr('On us.')}</span></> : <>{tr('Book a free strategy call.')} <span className="text-lime">{tr('We tell you exactly what you need.')}</span></>)}
+                    {config.leadIn ?? (locale === 'en' ? <>Your next 5 ad concepts. Tailored to your brand. <span className="text-lime">On us.</span></> : flowAvailable(locale, 'roadmap') ? (locale === 'ar' ? <>{tr('Your next 5 ad concepts. Tailored to your brand.')} <span className="text-lime">{tr('On us.')}</span></> : <>{tr('5 ad concepts for your brand.')} <span className="text-lime">{tr('Free.')}</span></>) : <>{tr('Book a free strategy call.')} <span className="text-lime">{tr('We tell you exactly what you need.')}</span></>)}
                   </p>
                 )}
                 <div className={`flex flex-col items-stretch gap-3 sm:flex-row sm:items-center sm:justify-center ${textLed ? '' : 'lg:justify-start'}`}>
@@ -206,7 +220,7 @@ export default function UgcHero({ items, config: configProp = UGC_HERO }) {
               </div>
 
               {offersAvailable && (
-              <div className="cs-fade-up mx-auto mt-8 max-w-xl md:mt-10 lg:mx-0" style={{ animationDelay: '680ms' }}>
+              <div className={`cs-fade-up mx-auto mt-8 max-w-xl md:mt-10 ${textLed ? '' : 'lg:mx-0'}`} style={{ animationDelay: '680ms' }}>
                 <p className="text-left text-[13px] text-ink-muted">{tr("Not ready yet? We've got two more FREE ways to start.")}</p>
                 <div className="mt-3 grid grid-cols-1 gap-2.5 text-left sm:grid-cols-2">
                   {SECONDARY_OFFERS.map((offer) => <SecondaryOffer key={offer.id} offer={offer} />)}

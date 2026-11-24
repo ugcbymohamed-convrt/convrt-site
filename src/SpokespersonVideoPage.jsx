@@ -76,7 +76,7 @@ export default function SpokespersonVideoPage() {
       <ProcessSection config={PROCESS_CONFIG} footer={<ProcessFooter />}>
         <DeliveryStyles />
       </ProcessSection>
-      <UgcGallery items={galleryItems} config={SPOKESPERSON_GALLERY} />
+      {currentLocale() !== 'es' && <UgcGallery items={galleryItems} config={SPOKESPERSON_GALLERY} />}
       <SectionDivider />
       <SpokespersonProof />
       <SectionDivider />

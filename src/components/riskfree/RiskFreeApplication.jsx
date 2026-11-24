@@ -237,7 +237,7 @@ export default function RiskFreeApplication() {
                         : tr('Your details are sent to CONVRT through our email provider, MailerLite, and used only to review your application and contact you about it. We send no marketing emails.')}
                       {PRIVACY_POLICY_URL && (
                         <>
-                          {' '}{tr('See our')}{' '}
+                          {' '}{currentLocale() === 'es' ? tr('See how we handle your application data in our') : tr('See our')}{' '}
                           <a href={PRIVACY_POLICY_URL} {...(en ? {} : { lang: 'en' })} className="text-ink-muted underline underline-offset-2 hover:text-lime">{tr('privacy policy')}</a>{en ? null : ` ${tr('(in English)')}`}.
                         </>
                       )}

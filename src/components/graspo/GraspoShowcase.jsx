@@ -2,8 +2,8 @@ import { useEffect, useRef, useState } from 'react'
 import Hls from 'hls.js'
 import { streamPoster } from '../../content/posterFrames.js'
 import { useTr } from '../../i18n/tr.js'
-import { currentLocale } from '../../i18n/locale.js'
-import { localizeStat } from '../../i18n/format.js'
+import { GRASPO_VIDEOS as VIDEOS } from '../../caseStudies/data.js'
+import { stat } from '../caseStudies/format.js'
 
 /* ─────────────────────────────────────────────
    CONTENT SHOWCASE
@@ -15,16 +15,8 @@ import { localizeStat } from '../../i18n/format.js'
 
 const ACCENT = '#d5ff40'
 
-const VIDEOS = [
-  { id: '15dd5505109f6821ccdcb13fc3cdc1fd', views: '295K' },
-  { id: '3616606e3ca6d1a85c8a57d7cc2f656f', views: '1.2M' },
-  { id: 'c1379ace38f2fa19ef2a45de1bb5d4b1', views: '7.5M' },
-]
-
 export default function GraspoShowcase() {
   const tr = useTr()
-  const locale = currentLocale()
-  const labels = { alt: tr('Graspo organic content still'), unmute: tr('Unmute'), mute: tr('Mute'), views: tr('views') }
   return (
     <section id="showcase" className="relative py-16 md:py-24 overflow-hidden">
       <div
@@ -48,7 +40,7 @@ export default function GraspoShowcase() {
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 md:gap-8 max-w-4xl mx-auto">
           {VIDEOS.map((v) => (
-            <ShowcasePhone key={v.id} video={v} labels={labels} viewsText={localizeStat(locale, v.views)} />
+            <ShowcasePhone key={v.id} video={v} />
           ))}
         </div>
       </div>
@@ -56,7 +48,8 @@ export default function GraspoShowcase() {
   )
 }
 
-export function ShowcasePhone({ video, labels = { alt: 'Graspo organic content still', unmute: 'Unmute', mute: 'Mute', views: 'views' }, viewsText }) {
+function ShowcasePhone({ video }) {
+  const tr = useTr()
   const wrapperRef = useRef(null)
   const videoRef = useRef(null)
   const [inView, setInView] = useState(false)
@@ -140,7 +133,7 @@ export function ShowcasePhone({ video, labels = { alt: 'Graspo organic content s
           ) : (
             <img
               src={streamPoster(video.id, { height: 600 })}
-              alt={labels.alt}
+              alt={tr('Graspo organic content still')}
               loading="lazy"
               className="absolute inset-0 w-full h-full object-cover"
             />
@@ -154,7 +147,7 @@ export function ShowcasePhone({ video, labels = { alt: 'Graspo organic content s
           <button
             type="button"
             onClick={() => setMuted((m) => !m)}
-            aria-label={muted ? labels.unmute : labels.mute}
+            aria-label={muted ? tr('Unmute') : tr('Mute')}
             className="absolute bottom-3 right-3 z-30 h-8 w-8 rounded-full flex items-center justify-center bg-black/55 backdrop-blur-md text-white transition-colors hover:bg-black/75 active:scale-95"
           >
             {muted
@@ -170,10 +163,10 @@ export function ShowcasePhone({ video, labels = { alt: 'Graspo organic content s
       </div>
       <p className="mt-4 text-center">
         <span className="block font-display font-bold leading-none text-2xl md:text-[28px] tabular-nums" style={{ color: ACCENT }}>
-          {viewsText ?? video.views}
+          {stat(video.views)}
         </span>
         <span className="mt-1.5 block text-[10.5px] font-semibold uppercase tracking-[0.16em] text-ink-subtle">
-          {labels.views}
+          {tr('views')}
         </span>
       </p>
     </div>

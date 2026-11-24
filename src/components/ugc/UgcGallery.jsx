@@ -2,8 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import ViewsBadge from './ViewsBadge.jsx'
 import { trackEvent } from '../../lib/analytics.js'
 import { CREATOR_SHOWCASE_PATH } from '../../config.js'
-import { CREATOR_EXAMPLES_NOTE } from '../../content/attribution.js'
-import { posterUrl, languageLabel, captionOf } from '../../content/portfolio.js'
+import { posterUrl, captionOf, typeLabel } from '../../content/portfolio.js'
 import { mix } from '../../i18n/ar/mix.jsx'
 import { usePreviewHost } from '../../lib/previewHost.js'
 import SectionDivider from '../SectionDivider.jsx'
@@ -59,8 +58,9 @@ export const UGC_GALLERY = {
 function Card({ item, index, playing, onPlay, config }) {
   const sample = item.sample
   // Spanish pages name the language in full ("UGC · Español"); English keeps the two-letter code.
-  /* Arabic: every video on the Arabic site is Arabic, so the repeated language word is dropped from the card pill (owner, 2026-11-25); the language stays in the data and the lightbox details. */
-  const langs = sample ? 'EN' : currentLocale() === 'ar' ? '' : (item.languages ?? []).map((l) => (currentLocale() === 'en' ? l.toUpperCase() : languageLabel(l))).join(' · ')
+  const badge = config.badgeByType && item.type ? typeLabel(item) : config.badge // a mixed gallery (Spanish homepage) names each video's own type
+  // Another language's site names no language on its cards: every video there is in that language, so "UGC · Español" repeated on each card says nothing (Spanish review 3, Nov 2026). The language stays in the records and the Showcase filters.
+  const langs = sample ? 'EN' : currentLocale() === 'en' ? (item.languages ?? []).map((l) => l.toUpperCase()).join(' · ') : ''
   return (
     <figure className="group relative aspect-[9/16] overflow-hidden rounded-3xl border border-lime/25 bg-surface-1 shadow-[0_26px_60px_-30px_rgba(0,0,0,0.9),0_0_44px_-26px_rgba(213,255,64,0.5)] transition-[transform,border-color,box-shadow] duration-300 hover:-translate-y-1 hover:border-lime/60 hover:shadow-[0_30px_64px_-28px_rgba(0,0,0,0.9),0_0_56px_-18px_rgba(213,255,64,0.55)] motion-reduce:transition-none motion-reduce:hover:translate-y-0">
       {playing ? (
@@ -89,9 +89,12 @@ function Card({ item, index, playing, onPlay, config }) {
             />
           )}
           <span aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/35" />
+          {/* Spanish: a generic "UGC" pill on every card of a single-type gallery adds nothing, so it is left out (the mixed homepage gallery still names each video's own type) */}
+          {!(currentLocale() === 'es' && !config.badgeByType) && (
           <span aria-hidden="true" className="absolute left-3 top-3 inline-flex items-center gap-1.5 rounded-full border border-lime/40 bg-black/55 px-2.5 py-1 text-xs font-bold uppercase tracking-[0.1em] text-lime backdrop-blur">
-            <span className="h-1.5 w-1.5 rounded-full bg-lime" />{langs ? `${config.badge} · ${langs}` : config.badge}
+            <span className="h-1.5 w-1.5 rounded-full bg-lime" />{langs ? `${badge} · ${langs}` : badge}
           </span>
+          )}
           <ViewsBadge item={item} className="absolute inset-x-0 bottom-3 mx-auto w-fit" />
           <span aria-hidden="true" className="absolute left-1/2 top-1/2 flex h-14 w-14 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-lime/60 bg-lime/20 text-ink backdrop-blur transition-transform duration-200 group-hover:scale-110 motion-reduce:transition-none">
             <PlayGlyph />
@@ -188,8 +191,6 @@ export default function UgcGallery({ items, config: configProp = UGC_GALLERY }) 
     <Section id={config.id} label={config.headingId} glow>
       <Reveal>
         <Head id={config.headingId} eyebrow={config.eyebrow} title={typeof config.title === 'string' ? mix(config.title) : config.title} intro={config.intro} />
-        {/* The homepage carousel leaves the long note out (owner, Nov 2026, all languages): its videos are labelled creators' examples by the heading, and each video's details carry its credit. The service pages keep it. */}
-        {!config.hideNote && currentLocale() !== 'ar' && <p className="mx-auto mt-3 max-w-xl text-center text-[13px] leading-relaxed text-ink-muted">{tr(CREATOR_EXAMPLES_NOTE)}</p>}
       </Reveal>
 
       <Reveal className="mt-8 md:mt-10">

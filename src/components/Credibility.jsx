@@ -50,7 +50,7 @@ export default function Credibility() {
   const locale = currentLocale()
   const action = primaryAction(locale)
   /* English (design review, Nov 2026): the statement flows straight into the industry showcase below it (no bottom rule, tighter bottom padding) and the two buttons now close the showcase. Other languages keep their layout. */
-  const en = locale === 'en' || locale === 'ar' // Arabic uses the English composition (owner brief 2026-11-23): the founder statement and the buttons live with the client showcase below
+  const en = locale === 'en' || locale === 'es' || locale === 'ar' // English, Spanish and Arabic share the homepage composition (the founder statement lives in the client-work stage)
   return (
     <section id="clients" className={en ? 'relative border-t border-hairline bg-canvas overflow-hidden' : 'relative border-y border-hairline bg-canvas overflow-hidden'}>
       {/*

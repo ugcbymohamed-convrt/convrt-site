@@ -16,7 +16,7 @@ import { Reveal, Check } from '../roadmap/shared.jsx'
 import { TermsLink } from './shared.jsx'
 import { CheckboxField, ErrorText, RadioGroup, TextField } from '../forms/fields.jsx'
 import MarketingConsent from '../forms/MarketingConsent.jsx'
-import { useTr, hrefFor } from '../../i18n/tr.js'
+import { useTr, tr as trNow, hrefFor } from '../../i18n/tr.js'
 import { currentLocale } from '../../i18n/locale.js'
 import { forward } from '../../lib/rtl.js'
 
@@ -42,12 +42,14 @@ const NEXT_STEPS = [
   'Then you can start introducing brands.',
 ]
 
+// Keys are the English sentences (the email address is a {{email}} placeholder in the dictionary lookup); `copyFor` fills the address in after translating.
 const SUBMIT_ERROR_COPY = {
   rate_limited: 'Too many requests right now. Please wait a minute and try again.',
-  cannot_subscribe: `We couldn’t save this email address automatically. Please email ${CONTACT_EMAIL} and we’ll take it from there.`,
+  cannot_subscribe: 'We couldn’t save this email address automatically. Please email {email} and we’ll take it from there.',
   network: 'We couldn’t reach the server. Check your connection and try again.',
-  unavailable: `Something went wrong on our side. Please try again in a moment, or email ${CONTACT_EMAIL}.`,
+  unavailable: 'Something went wrong on our side. Please try again in a moment, or email {email}.',
 }
+const copyFor = (kind) => trNow(SUBMIT_ERROR_COPY[kind]).replace('{email}', CONTACT_EMAIL)
 
 export default function ReferralForm({ preselect }) {
   const tr = useTr()
@@ -232,7 +234,7 @@ export default function ReferralForm({ preselect }) {
                             <a href={PRIVACY_POLICY_URL} target="_blank" rel="noreferrer noopener" className="text-ink underline underline-offset-2 hover:text-lime">
                               {tr('privacy policy')}
                             </a>
-                            {locale === 'ar' ? ` ${tr('(in English)')}` : ''}.
+                            {currentLocale() === 'en' ? null : ` ${tr('(in English)')}`}.
                           </>
                         )}
                         <span className="text-lime" aria-hidden="true"> *</span>
@@ -242,7 +244,7 @@ export default function ReferralForm({ preselect }) {
                       {locale === 'en' && <MarketingConsent checked={marketingConsent} disabled={submitting} onChange={setMarketingConsent} className="" />}
 
                       {submitError && (
-                        <div role="alert"><ErrorText>{SUBMIT_ERROR_COPY[submitError]}</ErrorText></div>
+                        <div role="alert"><ErrorText>{copyFor(submitError)}</ErrorText></div>
                       )}
 
                       <div>
@@ -266,7 +268,7 @@ export default function ReferralForm({ preselect }) {
                           {submitting ? tr('Sending your application…') : tr('Free to join. Approval isn’t guaranteed.')}
                         </p>
                         <p className="text-center">
-                          <TermsLink>Read the full program terms</TermsLink>
+                          <TermsLink>{tr('Read the full program terms')}</TermsLink>
                         </p>
                       </div>
                     </div>
@@ -277,7 +279,7 @@ export default function ReferralForm({ preselect }) {
 
             {/* Mobile: what happens next (below the card) */}
             <div className="mt-6 px-1 lg:hidden">
-              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-ink-muted">What happens next</p>
+              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-ink-muted">{tr('What happens next')}</p>
               <NextSteps />
             </div>
           </div>

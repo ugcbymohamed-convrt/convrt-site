@@ -630,8 +630,11 @@ test('the full program terms stay reachable: compact summary, accordion, and lin
 
 test('the navigation has one "Refer & Earn" link to /referrals (desktop and mobile), "Earn" in lime, naming no single reward, with focus + hover states', () => {
   const nav = read('src/components/Nav.jsx')
-  assert.match(nav, /href=\{localHref\(REFERRALS_PATH\)\}/)
+  assert.match(nav, /href=\{localHref\(REFERRALS_PATH(, locale)?\)\}/)
   assert.match(nav, /Refer &amp; <span className="font-semibold text-lime">Earn<\/span>/)
+  assert.match(read('src/i18n/menu.js'), /es: \['Recomienda y', 'gana'\]/)
+  assert.match(read('src/i18n/menu.js'), /fr: \['Parrainez et', 'gagnez'\]/)
+  assert.match(read('src/i18n/menu.js'), /ar: \['رشّحنا', 'واكسب'\]/)
   assert.ok(!/Refer Us, Earn/.test(nav), 'the 10%-only label (misleading for $150 standard referrals) is not used')
   assert.equal((nav.match(/<ReferralNavLink/g) || []).length, 2, 'desktop nav + mobile menu')
   assert.match(nav, /focus-visible:outline/)

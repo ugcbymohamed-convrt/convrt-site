@@ -198,7 +198,7 @@ test('gallery: SaaS heading, copy, badge, button and four-up horizontal scroller
   assert.ok(g.includes('id="saas-videos"'))
   assert.ok(t.includes('Creator-led videos for software brands.'))
   assert.ok(t.includes('Examples of how software and app products can be presented on camera. Explainers, demos and animation are scoped to your brief.'))
-  assert.ok(t.includes(CREATOR_EXAMPLES_NOTE), 'the independent-creators attribution line is visible in the gallery')
+  assert.ok(!t.includes(CREATOR_EXAMPLES_NOTE), 'the repeated independent-creators line is not shown in the gallery')
   assert.ok(/SaaS ·/.test(t) && !/UGC|Spokesperson/.test(t), 'cards are labelled SaaS')
   assert.match(g, new RegExp(`href="${CREATOR_SHOWCASE_PATH}"[^>]*>[^<]*Explore SaaS Videos`))
   assert.ok(/aria-label="SaaS video examples\. Scroll sideways to see more\."/.test(g))
