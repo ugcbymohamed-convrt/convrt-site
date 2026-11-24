@@ -597,19 +597,43 @@ body {
    Every rule below is scoped to :lang(ar) / dir="rtl", so English and Spanish pages are untouched (tests/arabic.test.mjs).
    • Layout: <html lang="ar" dir="rtl"> is written into the static HTML. The physical left/right utilities of the shared components are mirrored at build time by scripts/postcss-rtl-flip.js
      (a [dir="rtl"] copy of every left/right rule, appended to the generated CSS); Tailwind's rtl: variant and logical utilities (start/end, ms/me, ps/pe) are available for hand-made cases.
-   • Type: Noto Kufi Arabic (SIL Open Font License, self-hosted, Arabic subset only, ONE variable file covering weights 400-700, font-display: swap). The font files load only when a page contains Arabic characters
-     (unicode-range). Latin text, digits and prices keep Inter, so brand names and USD amounts look the same on every language; Arabic glyphs fall through to Noto Kufi Arabic.
+   • Type: IBM Plex Sans Arabic (SIL Open Font License, self-hosted, Arabic subset only, four weights, font-display: swap). The font files load only when a page contains Arabic characters
+     (unicode-range). Latin text, digits and prices keep Inter, so brand names and USD amounts look the same on every language; Arabic glyphs fall through to Plex Arabic.
    • Arabic never gets letter-spacing (it breaks letter joining) and needs a slightly taller line-height. */
 @font-face {
-  font-family: 'Noto Kufi Arabic';
+  font-family: 'IBM Plex Sans Arabic';
   font-style: normal;
-  font-weight: 400 700;
+  font-weight: 400;
   font-display: swap;
-  src: url(/fonts/noto-kufi-arabic-arabic-var.woff2) format('woff2');
+  src: url(/fonts/ibm-plex-sans-arabic-400.woff2) format('woff2');
+  unicode-range: U+0600-06FF, U+0750-077F, U+0870-0891, U+0897-08E1, U+08E3-08FF, U+200C-200E, U+2010-2011, U+204F, U+2E41, U+FB50-FDFF, U+FE70-FE74, U+FE76-FEFC, U+102E0-102FB, U+10E60-10E7E, U+10EC2-10EC7, U+10EC9-10EEE, U+10EF0-10EFF, U+1EE00-1EE03, U+1EE05-1EE1F, U+1EE21-1EE22, U+1EE24, U+1EE27, U+1EE29-1EE32, U+1EE34-1EE37, U+1EE39, U+1EE3B, U+1EE42, U+1EE47, U+1EE49, U+1EE4B, U+1EE4D-1EE4F, U+1EE51-1EE52, U+1EE54, U+1EE57, U+1EE59, U+1EE5B, U+1EE5D, U+1EE5F, U+1EE61-1EE62, U+1EE64, U+1EE67-1EE6A, U+1EE6C-1EE72, U+1EE74-1EE77, U+1EE79-1EE7C, U+1EE7E, U+1EE80-1EE89, U+1EE8B-1EE9B, U+1EEA1-1EEA3, U+1EEA5-1EEA9, U+1EEAB-1EEBB, U+1EEF0-1EEF1;
+}
+@font-face {
+  font-family: 'IBM Plex Sans Arabic';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url(/fonts/ibm-plex-sans-arabic-500.woff2) format('woff2');
+  unicode-range: U+0600-06FF, U+0750-077F, U+0870-0891, U+0897-08E1, U+08E3-08FF, U+200C-200E, U+2010-2011, U+204F, U+2E41, U+FB50-FDFF, U+FE70-FE74, U+FE76-FEFC, U+102E0-102FB, U+10E60-10E7E, U+10EC2-10EC7, U+10EC9-10EEE, U+10EF0-10EFF, U+1EE00-1EE03, U+1EE05-1EE1F, U+1EE21-1EE22, U+1EE24, U+1EE27, U+1EE29-1EE32, U+1EE34-1EE37, U+1EE39, U+1EE3B, U+1EE42, U+1EE47, U+1EE49, U+1EE4B, U+1EE4D-1EE4F, U+1EE51-1EE52, U+1EE54, U+1EE57, U+1EE59, U+1EE5B, U+1EE5D, U+1EE5F, U+1EE61-1EE62, U+1EE64, U+1EE67-1EE6A, U+1EE6C-1EE72, U+1EE74-1EE77, U+1EE79-1EE7C, U+1EE7E, U+1EE80-1EE89, U+1EE8B-1EE9B, U+1EEA1-1EEA3, U+1EEA5-1EEA9, U+1EEAB-1EEBB, U+1EEF0-1EEF1;
+}
+@font-face {
+  font-family: 'IBM Plex Sans Arabic';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url(/fonts/ibm-plex-sans-arabic-600.woff2) format('woff2');
+  unicode-range: U+0600-06FF, U+0750-077F, U+0870-0891, U+0897-08E1, U+08E3-08FF, U+200C-200E, U+2010-2011, U+204F, U+2E41, U+FB50-FDFF, U+FE70-FE74, U+FE76-FEFC, U+102E0-102FB, U+10E60-10E7E, U+10EC2-10EC7, U+10EC9-10EEE, U+10EF0-10EFF, U+1EE00-1EE03, U+1EE05-1EE1F, U+1EE21-1EE22, U+1EE24, U+1EE27, U+1EE29-1EE32, U+1EE34-1EE37, U+1EE39, U+1EE3B, U+1EE42, U+1EE47, U+1EE49, U+1EE4B, U+1EE4D-1EE4F, U+1EE51-1EE52, U+1EE54, U+1EE57, U+1EE59, U+1EE5B, U+1EE5D, U+1EE5F, U+1EE61-1EE62, U+1EE64, U+1EE67-1EE6A, U+1EE6C-1EE72, U+1EE74-1EE77, U+1EE79-1EE7C, U+1EE7E, U+1EE80-1EE89, U+1EE8B-1EE9B, U+1EEA1-1EEA3, U+1EEA5-1EEA9, U+1EEAB-1EEBB, U+1EEF0-1EEF1;
+}
+@font-face {
+  font-family: 'IBM Plex Sans Arabic';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url(/fonts/ibm-plex-sans-arabic-700.woff2) format('woff2');
   unicode-range: U+0600-06FF, U+0750-077F, U+0870-0891, U+0897-08E1, U+08E3-08FF, U+200C-200E, U+2010-2011, U+204F, U+2E41, U+FB50-FDFF, U+FE70-FE74, U+FE76-FEFC, U+102E0-102FB, U+10E60-10E7E, U+10EC2-10EC7, U+10EC9-10EEE, U+10EF0-10EFF, U+1EE00-1EE03, U+1EE05-1EE1F, U+1EE21-1EE22, U+1EE24, U+1EE27, U+1EE29-1EE32, U+1EE34-1EE37, U+1EE39, U+1EE3B, U+1EE42, U+1EE47, U+1EE49, U+1EE4B, U+1EE4D-1EE4F, U+1EE51-1EE52, U+1EE54, U+1EE57, U+1EE59, U+1EE5B, U+1EE5D, U+1EE5F, U+1EE61-1EE62, U+1EE64, U+1EE67-1EE6A, U+1EE6C-1EE72, U+1EE74-1EE77, U+1EE79-1EE7C, U+1EE7E, U+1EE80-1EE89, U+1EE8B-1EE9B, U+1EEA1-1EEA3, U+1EEA5-1EEA9, U+1EEAB-1EEBB, U+1EEF0-1EEF1;
 }
 
-:root { --font-ar: 'Inter', 'Noto Kufi Arabic', 'Noto Sans Arabic', 'Segoe UI', 'Geeza Pro', 'Tahoma', ui-sans-serif, system-ui, sans-serif; }
+:root { --font-ar: 'Inter', 'IBM Plex Sans Arabic', 'Noto Sans Arabic', 'Segoe UI', 'Geeza Pro', 'Tahoma', ui-sans-serif, system-ui, sans-serif; }
 :lang(ar) body, :lang(ar) { font-family: var(--font-ar); }
 html:lang(ar) .font-display, html:lang(ar) .font-sans, html:lang(ar) button, html:lang(ar) input, html:lang(ar) select, html:lang(ar) textarea { font-family: var(--font-ar); }
 :lang(ar) * { letter-spacing: normal !important; }
@@ -656,20 +680,5 @@ html:lang(ar) blockquote.font-editorial { font-family: var(--font-ar); font-weig
 /* The small eyebrow lines (letter-spaced capitals in English) have no case or tracking in Arabic, so at the same pixel size they read smaller than their English twins: a little larger. */
 :lang(ar) #showcase .uppercase { font-size: 13px; }
 
-/* ── Arabic typography: Noto Kufi Arabic (owner brief 2026-11-24) ───────────────────────────────────────────────────────────────────────────────────
-   One variable file (400-700). Weights: hero H1 700, section headings 600-700, navigation 500, body 400, buttons 600, small labels 400-500. Noto Kufi is a wide face, so the sizes are NOT raised:
-   the headings keep the English sizes and only the weights below are set. */
-:lang(ar) body { font-weight: 400; }
-:lang(ar) h1 { font-weight: 700; }
-:lang(ar) h2, :lang(ar) h3 { font-weight: 600; }
-:lang(ar) header nav a, :lang(ar) header nav a[aria-haspopup] { font-weight: 500; }
-:lang(ar) button, :lang(ar) .cta-gradient, :lang(ar) a[class*='rounded-full'][class*='font-bold'], :lang(ar) a[class*='rounded-full'][class*='font-semibold'] { font-weight: 600; }
-:lang(ar) .text-xs, :lang(ar) .text-\[11px\], :lang(ar) .text-\[13px\] { font-weight: 500; }
 /* Services header (Arabic): the supporting sentence is one flowing line under the heading, so the English desktop line break between its two halves is dropped. */
 :lang(ar) #services > div > div > div > p br { display: none; }
-
-/* ── Arabic hero headline (owner, 2026-11-25): smaller, lighter, and the rotating word never clipped ───────────────────────────────────────────────────────────────────────
-   Noto Kufi is a much wider face than Inter, so the English sizes (48-70 px) made the Arabic headline oversized. The size is fluid (about 17% below the English 70 px at 1440 px, 2.25rem on phones) and the weight is 600, as in English.
-   The rolling word's slot used to be sized by the longest STRING; it is now sized by the widest word as drawn (see RotatingWord) and its clip box leaves room above and to the sides for marks and dots, so only the
-   slide-in from below is clipped. */
-:lang(ar) #top h1 { font-size: clamp(2.25rem, 1.6rem + 2.2vw, 3.65rem); font-weight: 600; line-height: 1.32; }

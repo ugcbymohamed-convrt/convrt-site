@@ -27,7 +27,7 @@ language selector and `hreflang`; French is untouched (no French page, no French
    border sides and radii, `text-align`, `float`, `transform-origin`, `object/background-position`, horizontal `linear-gradient(to right|left …)`). It keeps `left:50%` (centring idiom), skips `@keyframes`, is idempotent, and preserves the cascade order so `md:ml-0` still beats `ml-4`.
 2. **Behaviour CSS cannot express** lives in `src/lib/rtl.js`: `stepOfArrow` (the arrow meaning "next" is ← in Arabic), `stepOfSwipe`, `scrollOffset`/`scrollAlong` (RTL `scrollLeft` is 0 → negative), `forward()` (→ / ←). Used by the UGC gallery, the Showcase tabs and lightbox, the three-phone stage (the next phone sits on the reading-direction side), the pricing tablists and chevrons.
 3. **SVG illustrations**: `text-anchor` start/end are swapped for Arabic so labels keep their designed positions (`index.css`).
-4. **Type**: Noto Kufi Arabic (SIL OFL), self-hosted Arabic subset, ONE variable file (`public/fonts/noto-kufi-arabic-arabic-var.woff2`, weights 400-700), `font-display: swap`, `unicode-range` so it downloads only when a page has Arabic (changed from IBM Plex Sans Arabic on 2026-11-24). Inter keeps Latin, digits and prices (brand names and `$3,000` look identical in every language). `letter-spacing: normal !important` and a taller line-height under `:lang(ar)`.
+4. **Type**: IBM Plex Sans Arabic (SIL OFL), self-hosted Arabic subset, weights 400/500/600/700, `font-display: swap`, `unicode-range` so it downloads only when a page has Arabic. (Noto Kufi Arabic was tried on 2026-11-24 and reverted on 2026-11-25 at the owner's request.) Inter keeps Latin, digits and prices (brand names and `$3,000` look identical in every language). `letter-spacing: normal !important` and a taller line-height under `:lang(ar)`.
 5. Mixed text: Latin names (CONVRT, UGC, Sprint, Meta, TikTok) stay Latin inside Arabic sentences; `<bdi>` isolates figures and package names in data-built sentences; e-mail / URL / phone inputs are LTR; English quotes are `dir="ltr"`.
 6. `main.jsx` also sets `lang`/`dir` at runtime for translated pages (no-op on prerendered pages; guarantees RTL in the dev server).
 
@@ -113,7 +113,7 @@ creator = صانع محتوى / صُنّاع المحتوى · concept = فكر�
 
 ## Revision 3 (owner brief 2026-11-24): Noto Kufi Arabic, copy, logo strip, Graspo stage, new hero video
 
-- **Font**: Noto Kufi Arabic (one variable file). Weights set in `src/index.css`: hero H1 700, section headings 600, navigation 500, body 400, buttons 600, small labels 500. Sizes were not raised.
+- **Font**: Noto Kufi Arabic was applied and then REVERTED (2026-11-25, owner: the previous font looks better); the site uses IBM Plex Sans Arabic again, with the weights and hero size of Revision 2. The fixed rolling-word slot (sized by the widest word as drawn) and its roomier clip box stay.
 - **Copy**: every replacement of the brief is in `src/i18n/ar/dict-*.js` (hero subtitle, free offers, services heading, process steps, creator heading and CTA, Elyon review in `reviews.js`, final CTA, FAQ heading). Service tags are their own Arabic wording (`pillsAr` in `Services.jsx`). The services supporting sentence sits under the heading (Arabic only). The final CTA headline is two lines.
   Step 4 keeps «ضمن النطاق المتفق عليه»: the brief's wording alone could read as unlimited revisions.
 - **Hooks**: «افتتاحيات/افتتاحية» became «هوكات/هوك» across the Arabic files (ad hooks only). Code identifiers and routes keep `hook`.

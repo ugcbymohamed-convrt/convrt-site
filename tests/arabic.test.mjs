@@ -225,15 +225,12 @@ test('PostCSS RTL plugin: mirrors left/right under [dir="rtl"] only, keeps centr
   assert.match(pseudo, /\[dir="rtl"\] \.pl-2:not\(\[dir="ltr"\] \*\):not\(\[dir="ltr"\]\)(?::not\(\[dir="ltr"\]\))?::before\s*\{\s*padding-right:\s*1px/, 'the island exclusion goes before a pseudo-element')
 })
 
-test('typography: self-hosted Noto Kufi Arabic (one variable file, 400-700, unicode-range, swap), scoped CSS, no letter-spacing on Arabic', () => {
+test('typography: self-hosted Arabic font (four weights, unicode-range, swap), scoped CSS, no letter-spacing on Arabic', () => {
   const css = read('src/index.css')
-  assert.ok(fs.existsSync(path.join(ROOT, 'public/fonts/noto-kufi-arabic-arabic-var.woff2')))
-  assert.match(css, /font-family: 'Noto Kufi Arabic'[\s\S]*?font-weight: 400 700[\s\S]*?font-display: swap[\s\S]*?noto-kufi-arabic-arabic-var\.woff2[\s\S]*?unicode-range: U\+0600-06FF/)
-  assert.match(css, /--font-ar: 'Inter', 'Noto Kufi Arabic'/)
-  assert.ok(!/IBM Plex/.test(css), 'the previous Arabic face is gone')
+  for (const w of [400, 500, 600, 700]) { assert.ok(fs.existsSync(path.join(ROOT, `public/fonts/ibm-plex-sans-arabic-${w}.woff2`))); assert.match(css, new RegExp(`ibm-plex-sans-arabic-${w}\\.woff2`)) }
+  assert.match(css, /font-family: 'IBM Plex Sans Arabic'[\s\S]*?font-display: swap[\s\S]*?unicode-range: U\+0600-06FF/)
   assert.match(css, /:lang\(ar\) \* \{ letter-spacing: normal !important; \}/)
-  assert.ok(fs.existsSync(path.join(ROOT, 'public/fonts/Noto-Kufi-Arabic-LICENSE.txt')))
-  assert.ok(!fs.readdirSync(path.join(ROOT, 'public/fonts')).some((f) => /ibm-plex/i.test(f)), 'the old font files are removed')
+  assert.ok(fs.existsSync(path.join(ROOT, 'public/fonts/IBM-Plex-Sans-Arabic-LICENSE.txt')))
 })
 
 // ── 2. a real production build ─────────────────────────────────────────────────────────────
@@ -402,5 +399,5 @@ test('the Arabic CSS is shipped: mirrored rules exist and every one is scoped to
   const css = fs.readFileSync(path.join(dist, 'assets', cssFile), 'utf8')
   assert.ok((css.match(/\[dir=rtl\]/g) || []).length > 100, 'mirrored rules are in the bundle')
   assert.ok(/\[dir=rtl\][^{]*:not\(\[dir=ltr\] \*\)/.test(css), 'mirrored rules leave dir=ltr islands alone')
-  assert.ok(/Noto Kufi Arabic/.test(css))
+  assert.ok(/IBM Plex Sans Arabic/.test(css))
 })

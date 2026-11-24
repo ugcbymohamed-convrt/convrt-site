@@ -2,7 +2,7 @@
 export default {
   "Performance creatives": "فيديوهات إعلانية",
   "engineered to": "مصمّمة كي",
-  "From creative strategy and scripting to creator casting, filming and editing. We produce human-led UGC ads, SaaS videos, spokesperson videos and organic social content, ready to perform.": "نتكفل بكل شيء، من الاستراتيجية الإبداعية وكتابة سكريبتات ناجحة، إلى اختيار صنّاع المحتوى المناسبين والتصوير والمونتاج. ننتج إعلانات UGC وفيديوهات SaaS وفيديوهات Spokesperson ومحتوى عضوي للسوشيال ميديا، جاهز للنشر.",
+  "From creative strategy and scripting to creator casting, filming and editing. We produce human-led UGC ads, SaaS videos, spokesperson videos and organic social content, ready to perform.": "نتكفل بكل شيء، من الاستراتيجية وكتابة سكريبتات ناجحة، إلى اختيار صنّاع المحتوى المناسبين والتصوير والمونتاج. ننتج إعلانات UGC وفيديوهات SaaS وفيديوهات Spokesperson، وأيضاً محتوى عضوي للسوشيال ميديا.",
   "Explore Videos": "مكتبة الفيديوهات",
   "more than": "أكثر من",
   "across ecommerce, apps, SaaS, and global consumer markets.": "في التجارة الإلكترونية والتطبيقات وSaaS وأسواق المستهلكين العالمية.",
