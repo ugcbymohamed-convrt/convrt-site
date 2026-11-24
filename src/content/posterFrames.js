@@ -77,6 +77,13 @@ export const POSTER_FRAMES = {
   'c1379ace38f2fa19ef2a45de1bb5d4b1': 4.6, // portfolio:showcase-graspo-3 (home panel graspo); graspo 7.5M
   '20c642c760e1937953fc33e98f3d859f': 1.6, // home-hero:home-hero-main
   '5904f4189ee4726cb4d7e4272a8b915b': 5.5, // home-hero-es:home-hero-es-main (Spanish CONVRT ad; clear face, open eyes, coffee cup, no caption on screen)
+  'a290d76bc0de09f3e404d16f3f40dda1': 3.3, // portfolio:en-josh-ugc-1 (smiling, holding the checklist, clean caption)
+  '0d8c53adaf3db38b291077b3da441513': 6.4, // portfolio:en-josh-ugc-2 (face to camera, three fingers up, no caption in the way)
+  'd0c08b8a1aaed35bfda22a201a2aebe4': 7.2, // portfolio:en-josh-saas-1 (the app scanning a plate: the product in use)
+  '889f8b610a6d7cebde39bfa5844e92b1': 1.2, // portfolio:en-mohamed-spokesperson-1 (the hook line complete, clear face, landmark behind)
+  '5f7b145ce6aff7388691c301d628699f': 5.7, // portfolio:en-mohamed-spokesperson-2 (the headline figure with a clear face)
+  'd2edf70e059c4db4d4ab1368048bd6f4': 2.8, // portfolio:en-mohamed-ugc-1 (clear face, open eyes, the story starts)
+  '2a37b139606ef2d9640281ed09c9d99f': 7.1, // portfolio:en-mohamed-ugc-2 (confident look to camera, lime caption)
   'a5e60be52e693016bb47bed4c801eb5f': 9.2, // scale VSL (poster, no time)
 }
 
