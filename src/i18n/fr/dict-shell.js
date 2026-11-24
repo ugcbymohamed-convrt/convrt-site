@@ -1,5 +1,6 @@
 /* French: the page shell used by the Referral Partner Program page (menu, footer). Keys = exact English strings. */
 export default {
+  "Case Studies": "Études de cas",
   "Book a Creative Call": "Réserver un appel créatif",
   "Primary": "Principale",
   "Services": "Services",

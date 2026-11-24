@@ -1,5 +1,6 @@
 /* Arabic: the page shell used by the Referral Partner Program page (menu, footer). Keys = exact English strings. */
 export default {
+  "Case Studies": "دراسات الحالة",
   "Book a Creative Call": "احجز مكالمة إبداعية",
   "Primary": "الرئيسية",
   "Services": "الخدمات",
