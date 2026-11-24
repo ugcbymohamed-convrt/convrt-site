@@ -5,8 +5,7 @@
    approved the only change is the `true` below: the videos that are already classified in src/content/portfolio.js fill it by themselves.
 
    English: every slot exists (the approved English pages). Anything not listed for a language falls back to `true` (so a new language starts like English until its rules are written here).
-   Spanish: UGC hero + gallery; Spokesperson hero stage only (no gallery); Organic Social and SaaS pages carry no videos.
-   French:  UGC hero + gallery; the three other service pages are text-led (no stage, no gallery).
+   (Spanish and French rules live in the same table on `main` / branch video-library-es-fr: Spanish Spokesperson hero stage only, Organic Social and SaaS none; French UGC only. This branch's Spanish pages keep their older behaviour until the branches merge: merge the two tables.)
    Arabic: UGC hero + gallery; Spokesperson hero + gallery; Organic Social = the approved Graspo project videos (hero presentation); SaaS none.
    The Creator Showcase is NOT governed by this file: it lists every approved video of the language under its content-type filters (portfolio.js `type` and `secondary`). */
 export const GALLERY_POLICY = {
@@ -14,18 +13,6 @@ export const GALLERY_POLICY = {
     ugc: { hero: true, gallery: true },
     spokesperson: { hero: true, gallery: true },
     organic: { hero: true, gallery: false }, // the existing approved Graspo project-video presentation (the three `organic` hero videos); no separate gallery
-    saas: { hero: false, gallery: false },
-  },
-  es: {
-    ugc: { hero: true, gallery: true },
-    spokesperson: { hero: true, gallery: false },
-    organic: { hero: false, gallery: false },
-    saas: { hero: false, gallery: false },
-  },
-  fr: {
-    ugc: { hero: true, gallery: true },
-    spokesperson: { hero: false, gallery: false },
-    organic: { hero: false, gallery: false },
     saas: { hero: false, gallery: false },
   },
 }

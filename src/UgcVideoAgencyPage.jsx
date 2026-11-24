@@ -33,7 +33,7 @@ export default function UgcVideoAgencyPage() {
   }, [])
 
   const heroItems = galleryEnabled(currentLocale(), 'ugc', 'hero') ? forPageLanguage(selectHero()) : []
-  const galleryItems = galleryEnabled(currentLocale(), 'ugc', 'gallery') ? (currentLocale() === 'en' ? forPageLanguage(selectGallery()) : spreadCreators(forPageLanguage(selectGallery()))) : [] // translated galleries alternate creators (src/content/creatorOrder.js)
+  const galleryItems = galleryEnabled(currentLocale(), 'ugc', 'gallery') ? (currentLocale() === 'ar' ? spreadCreators(forPageLanguage(selectGallery())) : forPageLanguage(selectGallery())) : [] // translated galleries alternate creators (src/content/creatorOrder.js)
 
   return (
     <>

@@ -64,7 +64,7 @@ export default function PortfolioLibrary({ items: itemsProp, pageSize = PAGE }) 
   const active = tabs.find((t) => t.id === catId) ?? tabs[0]
   const filtered = useMemo(() => {
     const list = filterByCategory(items, active.id).filter((i) => matchesFilters(i, { language: lang }))
-    return locale === 'en' ? list : spreadCreators(list) // translated libraries alternate creators, re-applied after every filter (src/content/creatorOrder.js)
+    return locale === 'ar' ? spreadCreators(list) : list // the Arabic library alternates creators, re-applied after every filter (src/content/creatorOrder.js); Spanish keeps its owner order on this branch
   }, [items, active.id, lang, locale])
   const shown = filtered.slice(0, limit)
   const openIndex = openId ? filtered.findIndex((i) => i.id === openId) : -1
