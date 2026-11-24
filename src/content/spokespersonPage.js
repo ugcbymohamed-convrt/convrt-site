@@ -85,6 +85,8 @@ export const SPOKESPERSON_GALLERY = {
    so no video is duplicated, and the Spanish heroes (other ids) are unaffected. */
 export const SPOKESPERSON_VIDEO_ORDER = {
   hero: ['spokesperson-hero-2', 'spokesperson-hero-1', 'spokesperson-hero-3'],
+  // The gallery alternates creators (the same presenter is never next to himself); the two videos added on 2026-11-24 sit between the earlier ones.
+  gallery: ['spokesperson-gal-1', 'spokesperson-gal-2', 'en-mohamed-spokesperson-1', 'spokesperson-gal-3', 'en-mohamed-spokesperson-2', 'spokesperson-gal-4'],
 }
 
 /* 5. PROOF. Verified spokesperson-specific material only. Both lists are empty today, so the page shows the compact "what to expect" strip

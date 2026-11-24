@@ -323,14 +323,14 @@ test('portfolio filters: language and category (E-commerce, SaaS, Services, Othe
   const two = [sample(), sample({ id: 'sample-b', languages: ['ar', 'en'], industry: 'saas' })]
   const f = buildFacets(two)
   assert.deepEqual(f.language.map((x) => [x.value, x.label, x.count]), [['ar', 'Arabic', 1], ['en', 'English', 1], ['es', 'Spanish', 1]])
-  assert.deepEqual(f.category.map((x) => [x.value, x.label]), [['saas', 'SaaS'], ['other', 'Other']], 'E-commerce, SaaS, Services and Other: only those with approved videos; beauty groups under Other')
+  assert.deepEqual(f.category.map((x) => [x.value, x.label]), [['saas', 'SaaS'], ['other', 'Organic Social']], 'E-commerce, SaaS, Services and Other: only those with approved videos; beauty groups under Other')
   assert.equal(matchesFilters(two[1], { language: 'en' }), true)
   assert.equal(matchesFilters(two[0], { language: 'en' }), false)
   assert.equal(matchesFilters(two[1], { language: 'en', category: 'other' }), false)
   assert.equal(matchesFilters(two[0], { category: 'other' }), true)
   assert.equal(categoryOf(sample({ industry: 'technology' })), 'saas')
   assert.equal(categoryOf(sample({ industry: 'ecommerce' })), 'ecommerce')
-  assert.equal(buildFacets([sample({ industry: 'ecommerce' }), sample({ id: 'b', industry: 'app', languages: ['en'] }), sample({ id: 'c', industry: 'saas' })]).category.map((x) => x.label).join(), 'E-commerce,SaaS,Other', 'apps group under Other')
+  assert.equal(buildFacets([sample({ industry: 'ecommerce' }), sample({ id: 'b', industry: 'app', languages: ['en'] }), sample({ id: 'c', industry: 'saas' })]).category.map((x) => x.label).join(), 'E-commerce,SaaS,Organic Social', 'apps group under Other')
   assert.equal(matchesFilters(two[0], {}), true)
 })
 

@@ -8,8 +8,8 @@
      /social-media-video-production   the approved ORGANIC social videos, same two slots + a content-style filter selectOrganicHero() / selectOrganicGallery()
      homepage showcase   the client panels (Adscale, Elyon, Graspo): the videos tagged with that client        selectShowcase('elyon')
 
-   HOW TO ADD A VIDEO (no code changes needed): add an object at the TOP of PORTFOLIO below (newest first: /creator-showcase and the UGC gallery
-   keep this order).
+   HOW TO ADD A VIDEO (no code changes needed): add an object at the TOP of PORTFOLIO_ENTRIES below, then put its id in DISPLAY_ORDER (after the array) where it keeps creators alternating:
+   /creator-showcase and the UGC gallery follow DISPLAY_ORDER.
 
      {
        id: 'saas-onboarding-demo-en',          // unique, lowercase letters, digits and hyphens
@@ -87,7 +87,7 @@ import { ES_LANGUAGE_LABELS, ES_INDUSTRY_LABELS, ES_TYPE_LABELS, ES_PRODUCTION_L
 
 const ES_APPROVAL = { status: 'approved', portfolioUse: true, creatorConsent: true, approvedBy: 'CONVRT owner (confirmed in chat)', approvedOn: '2026-11-22' }
 
-export const PORTFOLIO = [
+const PORTFOLIO_ENTRIES = [
   /* ── SPANISH VIDEOS (owner folders ~/Desktop/SPANISH: UGC, Spokesperson; uploaded to Cloudflare Stream 2026-11-22) ─────────────────────────────────────────────────────────────
      Spanish-only entries: `languages: ['es']` + `onlyIn: ['es']`, so they appear on /es/ pages only (the Spanish Showcase and the UGC / Spokesperson galleries and heroes) and never change an English page.
      The owner confirmed in chat (2026-11-22) that all 18 are approved for the website and that the creators agreed to portfolio display. Creators are identified only by opaque ids (the name-to-id
@@ -399,6 +399,27 @@ export const PORTFOLIO = [
       approvedOn: '2026-11-20',
     },
   },
+  /* Creator folder CREATORS > English > Josh > UGC.mp4 (supplied by the owner 2026-11-24; the file name is the service page it is for). Uploaded to Cloudflare Stream 2026-11-24. The creator is identified only by the opaque id cv-en-c02 (the name map is kept privately). No brand, creator name or credit is shown; the title describes only what the footage shows. Industry is not confirmed, so it stays unclassified (All Work only) unless it is a SaaS video. Spoken language: English (on-screen captions). */
+  {
+    id: 'en-josh-ugc-1',
+    title: 'Creator Walk-Around — Home Storm-Readiness Checklist',
+    caption: 'Creator Walk-Around — Home Storm-Readiness Checklist.',
+    type: 'ugc',
+    industry: 'unclassified',
+    languages: ['en'],
+    source: { cloudflareId: 'a290d76bc0de09f3e404d16f3f40dda1' },
+    poster: '/portfolio/en-josh-ugc-1.webp',
+    creatorId: 'cv-en-c02',
+    category: 'UGC · Creator example',
+    placement: 'gallery',
+    approval: {
+      status: 'approved',
+      portfolioUse: true,
+      creatorConsent: true,
+      approvedBy: 'CONVRT owner (confirmed in chat)',
+      approvedOn: '2026-11-24',
+    },
+  },
   {
     id: 'saas-creator-2',
     title: 'Presenter-Led Ad for a Moving-Planner App',
@@ -423,7 +444,7 @@ export const PORTFOLIO = [
      (2026-11-20) that languages ['en'] and industry 'other' are correct for all seven. No brand, creator name, production credit or content `style` was supplied, so none is set
      (the style filter stays hidden until at least two styles are confirmed). Still open: creator consent wording and whether each is a CONVRT production. To add more later, copy an entry below (hero slots: placement 'hero', first = the centre phone, at most 3; everything else = the gallery, at most 10).
      A video made by an independent creator is shown only with the creator's consent and is never presented as a CONVRT production unless it is one. */
-  /* DISPLAY ORDER of the portfolio videos (also the order of the UGC gallery). It is deliberately mixed so that the same creator never appears
+  /* DISPLAY ORDER: see DISPLAY_ORDER after this array. It is deliberately mixed so that the same creator never appears
      twice in a row, in All Work or in any industry tab. When you add videos, interleave them rather than appending a run from one creator.
      The "creator-NN" videos come from the Creator Showcase folder (creator-01, 03, 07, 13, 14 and 18 were duplicates of spokesperson videos and now exist only as spokesperson entries): industry = the folder each file was in (E-commerce, Service, SaaS); titles are
      placeholders, languages and production attribution are unconfirmed, and no brand or credit is shown. */
@@ -510,6 +531,27 @@ export const PORTFOLIO = [
       approvedOn: '2026-11-19',
     },
   },
+  /* Creator folder CREATORS > English > Mohamed > Spokesperson.mp4 (supplied by the owner 2026-11-24; the file name is the service page it is for). Uploaded to Cloudflare Stream 2026-11-24. The creator is identified only by the opaque id cv-en-c01 (the name map is kept privately). No brand, creator name or credit is shown; the title describes only what the footage shows. Industry is not confirmed, so it stays unclassified (All Work only) unless it is a SaaS video. Spoken language: English (on-screen captions). */
+  {
+    id: 'en-mohamed-spokesperson-1',
+    title: 'Presenter — Expat Health Insurance Guide Promo',
+    caption: 'Presenter — Expat Health Insurance Guide Promo.',
+    type: 'spokesperson',
+    industry: 'unclassified',
+    languages: ['en'],
+    source: { cloudflareId: '889f8b610a6d7cebde39bfa5844e92b1' },
+    poster: '/portfolio/en-mohamed-spokesperson-1.webp',
+    creatorId: 'cv-en-c01',
+    category: 'Spokesperson · Presenter-led video',
+    placement: 'gallery',
+    approval: {
+      status: 'approved',
+      portfolioUse: true,
+      creatorConsent: true,
+      approvedBy: 'CONVRT owner (confirmed in chat)',
+      approvedOn: '2026-11-24',
+    },
+  },
   {
     id: 'spokesperson-gal-3',
     title: 'Selfie-Style Presenter Outdoors — Captioned Video',
@@ -572,6 +614,27 @@ export const PORTFOLIO = [
       creatorConsent: true,
       approvedBy: 'CONVRT owner (confirmed in chat)',
       approvedOn: '2026-11-19',
+    },
+  },
+  /* Creator folder CREATORS > English > Mohamed > UGC.mp4 (supplied by the owner 2026-11-24; the file name is the service page it is for). Uploaded to Cloudflare Stream 2026-11-24. The creator is identified only by the opaque id cv-en-c01 (the name map is kept privately). No brand, creator name or credit is shown; the title describes only what the footage shows. Industry is not confirmed, so it stays unclassified (All Work only) unless it is a SaaS video. Spoken language: English (on-screen captions). */
+  {
+    id: 'en-mohamed-ugc-1',
+    title: 'Creator at Home — Odor and Stain Spray Demo',
+    caption: 'Creator at Home — Odor and Stain Spray Demo.',
+    type: 'ugc',
+    industry: 'unclassified',
+    languages: ['en'],
+    source: { cloudflareId: 'd2edf70e059c4db4d4ab1368048bd6f4' },
+    poster: '/portfolio/en-mohamed-ugc-1.webp',
+    creatorId: 'cv-en-c01',
+    category: 'UGC · Creator example',
+    placement: 'gallery',
+    approval: {
+      status: 'approved',
+      portfolioUse: true,
+      creatorConsent: true,
+      approvedBy: 'CONVRT owner (confirmed in chat)',
+      approvedOn: '2026-11-24',
     },
   },
   {
@@ -654,6 +717,27 @@ export const PORTFOLIO = [
       approvedOn: '2026-11-19',
     },
   },
+  /* Creator folder CREATORS > English > Josh > SaaS.mp4 (supplied by the owner 2026-11-24; the file name is the service page it is for). Uploaded to Cloudflare Stream 2026-11-24. The creator is identified only by the opaque id cv-en-c02 (the name map is kept privately). No brand, creator name or credit is shown; the title describes only what the footage shows. Industry is not confirmed, so it stays unclassified (All Work only) unless it is a SaaS video. Spoken language: English (on-screen captions). */
+  {
+    id: 'en-josh-saas-1',
+    title: 'Outdoor Creator — Food-Scanning App Demo',
+    caption: 'Outdoor Creator — Food-Scanning App Demo.',
+    type: 'saas',
+    industry: 'saas',
+    languages: ['en'],
+    source: { cloudflareId: 'd0c08b8a1aaed35bfda22a201a2aebe4' },
+    poster: '/portfolio/en-josh-saas-1.webp',
+    creatorId: 'cv-en-c02',
+    category: 'SaaS · Creator example',
+    placement: 'gallery',
+    approval: {
+      status: 'approved',
+      portfolioUse: true,
+      creatorConsent: true,
+      approvedBy: 'CONVRT owner (confirmed in chat)',
+      approvedOn: '2026-11-24',
+    },
+  },
   {
     id: 'creator-11',
     title: 'Couple Presenting — Wedding Planning Service',
@@ -727,6 +811,27 @@ export const PORTFOLIO = [
       creatorConsent: true,
       approvedBy: 'CONVRT owner (confirmed in chat)',
       approvedOn: '2026-11-19',
+    },
+  },
+  /* Creator folder CREATORS > English > Josh > UGC2.mp4 (supplied by the owner 2026-11-24; the file name is the service page it is for). Uploaded to Cloudflare Stream 2026-11-24. The creator is identified only by the opaque id cv-en-c02 (the name map is kept privately). No brand, creator name or credit is shown; the title describes only what the footage shows. Industry is not confirmed, so it stays unclassified (All Work only) unless it is a SaaS video. Spoken language: English (on-screen captions). */
+  {
+    id: 'en-josh-ugc-2',
+    title: 'Creator at Home — Renovation Preparation Tips',
+    caption: 'Creator at Home — Renovation Preparation Tips.',
+    type: 'ugc',
+    industry: 'unclassified',
+    languages: ['en'],
+    source: { cloudflareId: '0d8c53adaf3db38b291077b3da441513' },
+    poster: '/portfolio/en-josh-ugc-2.webp',
+    creatorId: 'cv-en-c02',
+    category: 'UGC · Creator example',
+    placement: 'gallery',
+    approval: {
+      status: 'approved',
+      portfolioUse: true,
+      creatorConsent: true,
+      approvedBy: 'CONVRT owner (confirmed in chat)',
+      approvedOn: '2026-11-24',
     },
   },
   {
@@ -808,6 +913,27 @@ export const PORTFOLIO = [
       approvedOn: '2026-11-19',
     },
   },
+  /* Creator folder CREATORS > English > Mohamed > Spokesperson2.mp4 (supplied by the owner 2026-11-24; the file name is the service page it is for). Uploaded to Cloudflare Stream 2026-11-24. The creator is identified only by the opaque id cv-en-c01 (the name map is kept privately). No brand, creator name or credit is shown; the title describes only what the footage shows. Industry is not confirmed, so it stays unclassified (All Work only) unless it is a SaaS video. Spoken language: English (on-screen captions). */
+  {
+    id: 'en-mohamed-spokesperson-2',
+    title: 'Presenter — Mileage Tax Refund Explainer',
+    caption: 'Presenter — Mileage Tax Refund Explainer.',
+    type: 'spokesperson',
+    industry: 'unclassified',
+    languages: ['en'],
+    source: { cloudflareId: '5f7b145ce6aff7388691c301d628699f' },
+    poster: '/portfolio/en-mohamed-spokesperson-2.webp',
+    creatorId: 'cv-en-c01',
+    category: 'Spokesperson · Presenter-led video',
+    placement: 'gallery',
+    approval: {
+      status: 'approved',
+      portfolioUse: true,
+      creatorConsent: true,
+      approvedBy: 'CONVRT owner (confirmed in chat)',
+      approvedOn: '2026-11-24',
+    },
+  },
   {
     id: 'ugc-gal-1',
     title: 'Skincare Product Demonstration — Cream and Serum',
@@ -867,6 +993,27 @@ export const PORTFOLIO = [
       creatorConsent: true,
       approvedBy: 'CONVRT owner (confirmed in chat)',
       approvedOn: '2026-11-19',
+    },
+  },
+  /* Creator folder CREATORS > English > Mohamed > UGC2.mp4 (supplied by the owner 2026-11-24; the file name is the service page it is for). Uploaded to Cloudflare Stream 2026-11-24. The creator is identified only by the opaque id cv-en-c01 (the name map is kept privately). No brand, creator name or credit is shown; the title describes only what the footage shows. Industry is not confirmed, so it stays unclassified (All Work only) unless it is a SaaS video. Spoken language: English (on-screen captions). */
+  {
+    id: 'en-mohamed-ugc-2',
+    title: 'Gym Creator — Barbell Tracking Device Demo',
+    caption: 'Gym Creator — Barbell Tracking Device Demo.',
+    type: 'ugc',
+    industry: 'unclassified',
+    languages: ['en'],
+    source: { cloudflareId: '2a37b139606ef2d9640281ed09c9d99f' },
+    poster: '/portfolio/en-mohamed-ugc-2.webp',
+    creatorId: 'cv-en-c01',
+    category: 'UGC · Creator example',
+    placement: 'gallery',
+    approval: {
+      status: 'approved',
+      portfolioUse: true,
+      creatorConsent: true,
+      approvedBy: 'CONVRT owner (confirmed in chat)',
+      approvedOn: '2026-11-24',
     },
   },
   {
@@ -1382,6 +1529,39 @@ export const PORTFOLIO = [
   },
 ]
 
+/* DISPLAY ORDER (the order every list on the site uses: All Work, the industry tabs, the UGC / Spokesperson / SaaS galleries).
+   It is set HERE, in one list, so that the same creator never appears twice in a row (the owner's rule: alternate between creators whenever possible), instead of by where an entry sits in the file.
+   Mohamed, for example, is in more than twenty videos (UGC, spokesperson and organic), so he is spread out between the other creators. When you add or move a video, put its id in this list at the spot that keeps
+   creators alternating; an id that is not listed keeps the position of its entry in the file. The creator groups the order was built from are in tests/creator-showcase.test.mjs (SAME_CREATOR), which fails if two videos of one creator end up next to each other
+   in All Work, an industry tab or a service gallery. Videos that can never alternate (the Organic page has only one creator's videos) are the only exception. The hero stages keep their own order (UGC: hero-1, 2, 3; the other pages: orderedBy). */
+export const DISPLAY_ORDER = [
+  'ugc-gal-4', 'ugc-gal-1', 'en-mohamed-spokesperson-2', 'spokesperson-hero-2',
+  'organic-hero-1', 'spokesperson-gal-4', 'organic-hero-2', 'en-josh-ugc-2',
+  'creator-09', 'en-josh-ugc-1', 'creator-08', 'creator-06',
+  'spokesperson-gal-1', 'spokesperson-hero-3', 'saas-creator-1', 'organic-gal-1',
+  'en-josh-saas-1', 'ugc-gal-6', 'creator-16', 'creator-04',
+  'spokesperson-hero-1', 'ugc-hero-1', 'organic-gal-2', 'saas-creator-2',
+  'organic-gal-3', 'ugc-gal-8', 'en-mohamed-ugc-2', 'ugc-gal-5',
+  'organic-gal-4', 'ugc-gal-2', 'spokesperson-gal-3', 'creator-10',
+  'ugc-hero-2', 'creator-15', 'creator-02', 'creator-11',
+  'creator-12', 'ugc-gal-7', 'en-mohamed-ugc-1', 'ugc-hero-3',
+  'organic-hero-3', 'ugc-gal-3', 'en-mohamed-spokesperson-1', 'spokesperson-gal-2',
+  'creator-17',
+]
+
+/* The listed videos swap places among the slots they occupy in the file, in DISPLAY_ORDER's sequence; every other entry (the Spanish videos, the homepage panels, held videos) stays exactly where it is. */
+export function applyDisplayOrder(entries, order = DISPLAY_ORDER) {
+  const rank = new Map(order.map((id, i) => [id, i]))
+  const slots = []
+  entries.forEach((e, i) => { if (rank.has(e.id)) slots.push(i) })
+  const listed = entries.filter((e) => rank.has(e.id)).sort((a, b) => rank.get(a.id) - rank.get(b.id))
+  const out = entries.slice()
+  slots.forEach((slot, k) => { out[slot] = listed[k] })
+  return out
+}
+
+export const PORTFOLIO = applyDisplayOrder(PORTFOLIO_ENTRIES)
+
 /* ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
    LABELS. Unknown codes or slugs still work (they fall back to the code / a title-cased slug).
    ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── */
@@ -1394,7 +1574,7 @@ export const LANGUAGE_LABELS = {
 export const INDUSTRY_LABELS = {
   saas: 'SaaS', ecommerce: 'E-commerce', app: 'Apps', technology: 'Technology', consumer: 'Consumer products',
   beauty: 'Beauty', health: 'Health & wellness', fashion: 'Fashion', food: 'Food & drink', finance: 'Finance',
-  education: 'Education', travel: 'Travel', home: 'Home & lifestyle', services: 'Services',
+  education: 'Education', travel: 'Travel', home: 'Home & lifestyle', services: 'Services', other: 'Organic Social',
 }
 
 /* What kind of video it is. Only videos explicitly typed 'ugc' reach the UGC page (an unset type is unknown, not UGC). */
@@ -1603,7 +1783,7 @@ export const CATEGORIES = [
   { id: 'ecommerce', label: 'E-commerce', color: '#ec4899' },
   { id: 'saas', label: 'SaaS', color: '#9a7aff' },
   { id: 'services', label: 'Services', color: '#34c9c0' },
-  { id: 'other', label: 'Other', color: '#ffb547' },
+  { id: 'other', label: 'Organic Social', color: '#ffb547' }, // the id stays 'other' (industry 'other'); the owner named this tab Organic Social (2026-11-24)
   /* A TYPE filter, not an industry: every video whose type is 'spokesperson', whatever its industry (a SaaS spokesperson video is under both SaaS and
      Spokesperson). It has a tab only while at least one such video is approved. */
   { id: 'spokesperson', label: 'Spokesperson', color: '#ff6a4d', byType: 'spokesperson' },

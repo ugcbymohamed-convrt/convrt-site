@@ -8,6 +8,7 @@ export default {
   "All Work": "Todos los vídeos",
   "E-commerce": "E-commerce",
   "Other": "Otros",
+  "Organic Social": "Otros",
   "Show previous categories": "Mostrar categorías anteriores",
   "Show next categories": "Mostrar categorías siguientes",
   "Error 404": "Error 404",
