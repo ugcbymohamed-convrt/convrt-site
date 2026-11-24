@@ -45,7 +45,10 @@
        category: 'UGC · Paid social',          // optional free label (the UGC hero stage uses it)
        placement: 'gallery',                   // UGC and Spokesperson pages: 'hero' = the three-phone stage (first hero item = the large centre phone, at most 3),
                                                // 'gallery' (default) = the horizontal gallery under it (at most 10)
+       homeStagePoster: '/showcase/x.webp',    // optional, ENGLISH homepage client stage only: a poster that replaces `poster` there (the Spanish homepage keeps `poster`)
        showcase: 'elyon',                      // homepage only: tag a video with a client panel ('adscale' | 'elyon' | 'graspo') to show it there
+       homeCreator: 3,                         // optional, ENGLISH homepage only: this video is in the homepage's "Real creators" carousel, in this position (1 = first). Only an approved video
+                                               // (full approval) whose spoken language is confirmed English is shown; nothing else is needed. See selectHomeCreators().
        caseStudyHref: '/case-studies/…',       // optional related case study
        uploadDate: '2026-11-20',               // optional, but REQUIRED for structured data: only videos with a real upload date get VideoObject markup
        description: 'A fuller description.',   // optional, used by VideoObject markup (falls back to caption)
@@ -387,7 +390,7 @@ export const PORTFOLIO = [
     poster: '/portfolio/saas-creator-1.webp',
     creatorId: 'cv-saas-creator-1',
     category: 'SaaS · Creator example',
-    placement: 'hero',
+    placement: 'gallery',
     approval: {
       status: 'approved',
       portfolioUse: true,
@@ -437,7 +440,7 @@ export const PORTFOLIO = [
     source: { cloudflareId: 'e767742bb12024437e9df368cedbfba2' },
     poster: '/portfolio/spokesperson-gal-1.webp',
     creatorId: 'cv-spokesperson-gal-1',
-    alsoOn: { saas: 'gallery' },
+    alsoOn: { saas: 'hero' },
     category: 'Spokesperson · Presenter-led video',
     placement: 'gallery',
     approval: {
@@ -458,6 +461,7 @@ export const PORTFOLIO = [
     source: { cloudflareId: 'adbf89cb6c07bb06e708c2a03e4cf2f6' },
     poster: '/portfolio/spokesperson-gal-2.webp',
     creatorId: 'cv-spokesperson-gal-2',
+    homeCreator: 7,
     category: 'Spokesperson · Presenter-led video',
     placement: 'gallery',
     approval: {
@@ -558,6 +562,7 @@ export const PORTFOLIO = [
     source: { cloudflareId: 'b3db228064bde5cd076d22d9c938c2b0' },
     poster: '/portfolio/spokesperson-hero-1.webp',
     creatorId: 'cv-spokesperson-hero-1',
+    homeCreator: 4,
     alsoOn: { saas: 'gallery' },
     category: 'Spokesperson · Presenter-led video',
     placement: 'hero',
@@ -599,6 +604,7 @@ export const PORTFOLIO = [
     source: { cloudflareId: '749e2ad503f5db79d69086a47c59edd0' },
     poster: '/portfolio/ugc-gal-7.webp',
     creatorId: 'cv-gal-7',
+    homeCreator: 8,
     category: 'UGC · Paid social',
     placement: 'gallery',
     approval: {
@@ -812,6 +818,7 @@ export const PORTFOLIO = [
     source: { cloudflareId: 'c8914f7a0db3ac9f5ffd0721115dbe20' },
     poster: '/portfolio/ugc-gal-1.webp',
     creatorId: 'cv-gal-1',
+    homeCreator: 2,
     category: 'UGC · Paid social',
     placement: 'gallery',
     approval: {
@@ -851,6 +858,7 @@ export const PORTFOLIO = [
     source: { cloudflareId: 'c0c30e58489efad67789cdba1b58df23' },
     poster: '/portfolio/spokesperson-hero-2.webp',
     creatorId: 'cv-spokesperson-hero-2',
+    homeCreator: 1,
     category: 'Spokesperson · Presenter-led video',
     placement: 'hero',
     approval: {
@@ -984,6 +992,7 @@ export const PORTFOLIO = [
     source: { cloudflareId: '1188b4341860779830fa7365b1442959' },
     poster: '/portfolio/ugc-gal-3.webp',
     creatorId: 'cv-gal-3',
+    homeCreator: 3,
     category: 'UGC · Paid social',
     placement: 'gallery',
     approval: {
@@ -1101,6 +1110,7 @@ export const PORTFOLIO = [
     source: { cloudflareId: 'ff256a4643515d29b61c1f210c06476d' },
     poster: '/portfolio/ugc-gal-2.webp',
     creatorId: 'cv-gal-2',
+    homeCreator: 5,
     category: 'UGC · Paid social',
     placement: 'gallery',
     approval: {
@@ -1121,6 +1131,7 @@ export const PORTFOLIO = [
     source: { cloudflareId: '1fc1374cdfe428d10bfc40ad4eff9693' },
     poster: '/portfolio/ugc-hero-3.webp',
     creatorId: 'cv-hero-3',
+    homeCreator: 6,
     category: 'UGC · Paid social',
     placement: 'hero',
     approval: {
@@ -1149,6 +1160,82 @@ export const PORTFOLIO = [
       approvedOn: '2026-11-19',
     },
   },
+  /* SPANISH HOMEPAGE STAGE (owner folder ~/Desktop/ES-2, uploaded to Cloudflare Stream 2026-11-24). Two groups, three videos each, Spanish site only (`onlyIn: ['es']`).
+     • showcase 'elyon-es': the three street-interview videos of Elyon Dubai (verified in the footage: the "Spanish girls trying Elyon Dubai" title and the Elyon end card). NOTE: the burned-in captions
+       of these three videos are in English; the owner described them as Spanish street interviews and `languages: ['es']` records that, but the spoken language was not machine-verified.
+     • showcase 'mixed-es': a PORTFOLIO / CATEGORY selection (labelled "E-commerce / UGC"), NOT one client: three UGC videos for three different brands. No brand, creator name or client relationship is
+       shown or implied for it (no brand / brandDisplay / showName), and its entries carry no `brand`.
+     Like every homepage-stage video they are not creator-portfolio material (portfolioUse / creatorConsent false), so they never reach /creator-showcase or the UGC page. The private map of source files
+     to Stream ids is CONVRT/Claude/es-visual-parity-review-1/es2-private-map.csv (outside the repository). */
+  {
+    id: 'es-showcase-elyon-1',
+    caption: 'Entrevistas en la calle: probando Elyon Dubai (recopilación).',
+    industry: 'ecommerce',
+    languages: ['es'],
+    onlyIn: ['es'],
+    source: { cloudflareId: '37d2799756ba9cc827b3381b034474ce' },
+    creatorId: 'cs-elyon-es-1',
+    brand: 'Elyon Dubai',
+    showcase: 'elyon-es',
+    approval: { status: 'approved', portfolioUse: false, creatorConsent: false, approvedBy: 'CONVRT owner: supplied in the ES-2 folder for the Spanish homepage stage (chat, 2026-11-24)', approvedOn: '2026-11-24' },
+  },
+  {
+    id: 'es-showcase-elyon-2',
+    caption: 'Entrevista en la calle: Elyon Dubai en una palabra (1).',
+    industry: 'ecommerce',
+    languages: ['es'],
+    onlyIn: ['es'],
+    source: { cloudflareId: '8cc42ca3f0a33667eb14cf5e2449b4ad' },
+    creatorId: 'cs-elyon-es-2',
+    brand: 'Elyon Dubai',
+    showcase: 'elyon-es',
+    approval: { status: 'approved', portfolioUse: false, creatorConsent: false, approvedBy: 'CONVRT owner: supplied in the ES-2 folder for the Spanish homepage stage (chat, 2026-11-24)', approvedOn: '2026-11-24' },
+  },
+  {
+    id: 'es-showcase-elyon-3',
+    caption: 'Entrevista en la calle: Elyon Dubai en una palabra (2).',
+    industry: 'ecommerce',
+    languages: ['es'],
+    onlyIn: ['es'],
+    source: { cloudflareId: 'dc0a340190fc4cd310e24448dda4f170' },
+    creatorId: 'cs-elyon-es-3',
+    brand: 'Elyon Dubai',
+    showcase: 'elyon-es',
+    approval: { status: 'approved', portfolioUse: false, creatorConsent: false, approvedBy: 'CONVRT owner: supplied in the ES-2 folder for the Spanish homepage stage (chat, 2026-11-24)', approvedOn: '2026-11-24' },
+  },
+  {
+    id: 'es-showcase-mixed-1',
+    caption: 'Vídeo UGC de producto: accesorios para el gimnasio.',
+    industry: 'unclassified',
+    languages: ['es'],
+    onlyIn: ['es'],
+    source: { cloudflareId: '3bf715996728cd9e862d848878665f92' },
+    creatorId: 'cs-mixed-es-1',
+    showcase: 'mixed-es',
+    approval: { status: 'approved', portfolioUse: false, creatorConsent: false, approvedBy: 'CONVRT owner: supplied in the ES-2 folder for the Spanish homepage stage (chat, 2026-11-24)', approvedOn: '2026-11-24' },
+  },
+  {
+    id: 'es-showcase-mixed-2',
+    caption: 'Vídeo UGC de producto: relojes.',
+    industry: 'unclassified',
+    languages: ['es'],
+    onlyIn: ['es'],
+    source: { cloudflareId: '220122131040d62f1ce2d96ea9f98615' },
+    creatorId: 'cs-mixed-es-2',
+    showcase: 'mixed-es',
+    approval: { status: 'approved', portfolioUse: false, creatorConsent: false, approvedBy: 'CONVRT owner: supplied in the ES-2 folder for the Spanish homepage stage (chat, 2026-11-24)', approvedOn: '2026-11-24' },
+  },
+  {
+    id: 'es-showcase-mixed-3',
+    caption: 'Vídeo UGC de una aplicación de entrenamiento.',
+    industry: 'unclassified',
+    languages: ['es'],
+    onlyIn: ['es'],
+    source: { cloudflareId: 'b4daf32122e679f3af1c6ccc07eec8a7' },
+    creatorId: 'cs-mixed-es-3',
+    showcase: 'mixed-es',
+    approval: { status: 'approved', portfolioUse: false, creatorConsent: false, approvedBy: 'CONVRT owner: supplied in the ES-2 folder for the Spanish homepage stage (chat, 2026-11-24)', approvedOn: '2026-11-24' },
+  },
   /* Homepage client panels. These videos were live in the homepage case-study showcase before this file existed, so they are recorded here
      with the same media. The owner decided they are NOT creator-portfolio material, so portfolioUse / creatorConsent are false: they stay
      off /creator-showcase and the UGC page. To list one on /creator-showcase, confirm the brand's and the creator's permission and set both flags to true
@@ -1158,6 +1245,7 @@ export const PORTFOLIO = [
     caption: 'Adscale creative 1.',
     industry: 'saas',
     source: { cloudflareId: '8d4dbbeabac272bddb23068c91037af8' },
+    homeStagePoster: '/showcase/adscale-jail-poster.webp', // ENGLISH homepage stage only: the owner-supplied frame, 0 s ("How to get out of 2-3x ROAS Jail")
     creatorId: 'cs-adscale-1',
     brand: 'Adscale',
     showcase: 'adscale',
@@ -1174,6 +1262,7 @@ export const PORTFOLIO = [
     industry: 'saas',
     source: { cloudflareId: '08abef50c734085f25f345cdde4b1e33' },
     poster: '/showcase/adscale-agentic-poster.webp',
+    homeStagePoster: '/showcase/adscale-coffee-poster.webp', // ENGLISH homepage stage only: the owner-supplied frame, 47.5 s (the coffee scene)
     creatorId: 'cs-adscale-2',
     brand: 'Adscale',
     showcase: 'adscale',
@@ -1190,6 +1279,7 @@ export const PORTFOLIO = [
     industry: 'saas',
     source: { mp4: '/showcase/adscale-creator.mp4' },
     poster: '/showcase/adscale-creator-poster.webp',
+    homeStagePoster: '/showcase/adscale-women-poster.webp', // ENGLISH homepage stage only: the owner-supplied frame, 4.5 s ("Meta / Google ... ACTUALLY")
     creatorId: 'cs-adscale-3',
     brand: 'Adscale',
     showcase: 'adscale',
@@ -1415,6 +1505,7 @@ export function portfolioProblems(item) {
   }
   if (item.placement !== undefined && item.placement !== 'hero' && item.placement !== 'gallery') p.push("placement must be 'hero' or 'gallery'")
   if (item.showcase !== undefined && !/^[a-z][a-z0-9-]*$/.test(item.showcase)) p.push('showcase must be a lowercase slug')
+  if (item.homeCreator !== undefined && !(Number.isInteger(item.homeCreator) && item.homeCreator >= 1 && item.homeCreator <= 20)) p.push('homeCreator must be a whole number from 1 to 20 (its position in the homepage creator carousel)')
   if (item.uploadDate !== undefined && !/^\d{4}-\d{2}-\d{2}(T[\d:.+Z-]+)?$/.test(item.uploadDate)) p.push('uploadDate must be an ISO date (YYYY-MM-DD)')
   if (hasMp4 && !item.poster) p.push('an mp4 source needs a poster image')
   if (!a || typeof a !== 'object') p.push('approval is required')
@@ -1474,6 +1565,22 @@ export const selectOrganicGallery = (items = PORTFOLIO) => selectOrganic(items).
 const selectSaas = (items) => selectDisplayable(items).filter((i) => servesPage(i, 'saas'))
 export const selectSaasHero = (items = PORTFOLIO) => selectSaas(items).filter((i) => placementOn(i, 'saas') === 'hero')
 export const selectSaasGallery = (items = PORTFOLIO) => selectSaas(items).filter((i) => placementOn(i, 'saas') !== 'hero')
+
+/* The English homepage "Real creators" carousel: approved videos (full approval: portfolio use AND creator consent) tagged `homeCreator`, whose spoken language is CONFIRMED English (a video
+   with no recorded language is never guessed into the list), in `homeCreator` order. Nothing is invented to fill a gap: fewer than eight approved videos simply show fewer. */
+export const HOME_CREATORS_MAX = 8
+export const selectHomeCreators = (items = PORTFOLIO) =>
+  selectDisplayable(items)
+    .filter((i) => i.homeCreator !== undefined && (i.languages ?? []).includes('en'))
+    .sort((a, b) => a.homeCreator - b.homeCreator)
+    .slice(0, HOME_CREATORS_MAX)
+
+/* A service page may fix the order of some of its videos without touching the shared file order (which /creator-showcase and the UGC gallery use): the listed ids come first, in the
+   listed order, and every other video follows in its usual order. Ids that are not in `items` are ignored. */
+export const orderedBy = (items, ids = []) => {
+  const rank = (i) => { const r = ids.indexOf(i.id); return r === -1 ? Infinity : r }
+  return items.map((item, index) => ({ item, index })).sort((a, b) => (rank(a.item) - rank(b.item)) || (a.index - b.index)).map((x) => x.item)
+}
 
 /* Homepage client panel `id` ('adscale' | 'elyon' | 'graspo'). */
 export const selectShowcase = (id, items = PORTFOLIO) => items.filter((i) => shownIn(i, currentLocale()) && isShowcaseable(i) && i.showcase === id)

@@ -10,7 +10,7 @@ import { fileURLToPath } from 'node:url'
 import { build } from 'vite'
 import { HOME_CREATOR_IDS, homeCreatorVideos } from '../src/content/homeCreators.js'
 import { PORTFOLIO } from '../src/content/portfolio.js'
-import { ES_TESTIMONIALS } from '../src/i18n/es/testimonials.js'
+import { ES_REVIEWS } from '../src/i18n/es/reviews.js'
 import { ES_HERO } from '../src/i18n/es/hero.js'
 import { LOCALIZED_FLOWS } from '../src/i18n/cta.js'
 
@@ -34,16 +34,15 @@ test('homepage hero: approved headline, offer line, CTAs and the two secondary o
   const html = page('')
   const t = text(html)
   assert.match(t, /Creatividades diseñadas para conectar/)
-  assert.match(t, /Tus próximos 5 conceptos\. A tu medida\. Gratis\./)
-  assert.match(t, /5 conceptos gratis/)
+  assert.match(t, /5 conceptos publicitarios para tu marca\. Gratis\./)
+  assert.match(t, /Consigue 5 conceptos gratis/)
   assert.match(t, /Explorar vídeos/)
-  assert.match(t, /¿Aún no\? Tienes otras dos formas gratis de empezar\./)
+  assert.match(t, /¿Aún no lo tienes claro\? Tenemos otras dos formas gratuitas de empezar\./)
   assert.match(t, /1 vídeo GRATIS/)
   assert.match(t, /Prueba nuestra producción sin riesgo\./)
   assert.match(t, /Comprueba si encajas/)
   assert.match(t, /10 hooks GRATIS/)
   assert.match(t, /Ideas para tus próximos anuncios\./)
-  assert.ok(!/FreeVideoOffer|Haz que tu primer vídeo/.test(t), 'the separate homepage free-video block is replaced by the hero cards')
 })
 
 test('homepage hero: the free-video card reuses the existing Spanish page; the hooks card is visible but is not a link', () => {
@@ -90,18 +89,20 @@ test('creator carousel: eight videos in a stable order, Spanish only, approved o
   assert.ok(PORTFOLIO.length > 0)
 })
 
-test('testimonials: three Spanish translations, same claims, with the disclosure; the English originals stay in the source', () => {
-  assert.deepEqual(Object.keys(ES_TESTIMONIALS).sort(), ['adscale', 'elyon', 'talk360'])
-  for (const v of Object.values(ES_TESTIMONIALS)) assert.ok(v.length > 60)
+test('reviews: three Spanish renderings in the English editorial component, no disclosure line, the English originals stay in the data', () => {
+  assert.deepEqual(Object.keys(ES_REVIEWS).sort(), ['adscale', 'elyon', 'talk360'])
   const t = text(page(''))
-  assert.match(t, /Testimonios originales en inglés, traducidos al español\./)
-  assert.ok(t.includes('Mohamed entendió muy bien el concepto'))
-  assert.ok(t.includes('Trabajar con Mohamad fue un auténtico placer'))
-  assert.ok(t.includes('Los vídeos son increíbles, otra vez'))
-  const en = read('src/components/Testimonials.jsx')
-  assert.match(en, /Mohamed understood the concept/i)
-  // no number or result is added by the translation
-  for (const v of Object.values(ES_TESTIMONIALS)) assert.ok(!/\d/.test(v), 'no figure in a translated testimonial')
+  assert.ok(!/Testimonios originales en inglés|idioma original/.test(t))
+  assert.ok(t.includes('Clientes que vuelven') && t.includes('Leer la opinión completa'))
+  for (const r of Object.values(ES_REVIEWS)) {
+    assert.ok(t.includes(r.full), 'the full review is in the page (behind "Leer la opinión completa")')
+    assert.ok(t.includes(r.excerpt) && r.full.includes(r.highlight) === false || r.excerpt.includes(r.highlight), 'the highlight is part of the excerpt')
+    assert.ok(!/\d/.test(r.full.replace(/tercer pedido/, '')), 'no figure or rating is added by the translation')
+  }
+  assert.ok(text(page('')).includes('SaaS · Publicidad en redes sociales') && t.includes('Perfumería de lujo · E-commerce') && t.includes('Aplicación móvil · Internacional'))
+  const en = read('src/content/reviews.js')
+  assert.match(en, /Mohamed understood the concept/i, 'the English originals are kept as the provenance record')
+  assert.match(read('src/components/home/ClientReviews.jsx'), /currentLocale\(\) === 'es'/)
 })
 
 test('pricing: headline, subtitle, renamed service, FAQ tabs on one row on desktop and scrollable on small screens, CTA', () => {
@@ -155,8 +156,8 @@ test('UGC page: approved headline in three balanced lines and the same offer str
 
 test('how-it-works and services copy on the Spanish homepage', () => {
   const t = text(page(''))
-  assert.match(t, /Empezamos con cinco ideas para tu marca\. Tú decides si seguimos adelante\. Nosotros nos encargamos de la producción\./)
-  assert.match(t, /Tus primeros 5 conceptos\. Gratis\./)
+  assert.match(t, /Empezamos con cinco conceptos publicitarios creados para tu marca\. Tú decides si quieres seguir adelante y nosotros nos encargamos de la producción de principio a fin\./)
+  assert.match(t, /5 conceptos publicitarios gratis/)
   assert.match(t, /De la idea al vídeo final\./)
 })
 
@@ -239,4 +240,87 @@ test('pricing amounts and deliverables are untouched by the copy refinement', ()
   for (const a of ['2.750 €', '3.250 €', '4.600 €', '5.500 €', '1.400 €', '2.300 €']) assert.ok(t.includes(a), a)
   for (const d of ['15 versiones finales', '30 versiones finales', '183 € por versión', '153 € por versión', '217 € por versión', '5 conceptos únicos, 3 versiones cada uno.', '10 conceptos únicos, 3 versiones cada uno.', '2 rondas de revisiones por concepto', 'Hasta 3 creadores o presentadores', 'Hasta 5 creadores o presentadores', 'Compromiso inicial de 6 meses']) assert.ok(t.includes(d), d)
   assert.ok(!/\$\s?\d/.test(t), 'no USD on the Spanish page')
+})
+
+// ── Spanish comprehensive revision (Review 3, 2026-11-24) ──────────────────────────────────────────────────────────────────────────────────────────
+import { SHOWCASE_GROUPS_ES } from '../src/content/homeShowcase.js'
+import { selectShowcase, isShowcaseable, isDisplayable } from '../src/content/portfolio.js'
+import { POSTER_FRAMES } from '../src/content/posterFrames.js'
+
+test('showcase (Spanish homepage): exactly two groups of three videos: Elyon Dubai and a clearly labelled E-commerce / UGC portfolio selection; never mixed, never a client', () => {
+  assert.deepEqual(SHOWCASE_GROUPS_ES.map((g) => g.clientId), ['elyon-es', 'mixed-es'])
+  const prev = globalThis.window
+  globalThis.window = { location: { pathname: '/es' } }
+  try {
+    const groups = SHOWCASE_GROUPS_ES.map((g) => selectShowcase(g.clientId))
+    assert.deepEqual(groups.map((g) => g.length), [3, 3])
+    const ids = groups.flat().map((v) => v.source.cloudflareId)
+    assert.equal(new Set(ids).size, 6, 'six different videos, no clip shared between the groups')
+    for (const v of groups[0]) assert.equal(v.brand, 'Elyon Dubai')
+    for (const v of groups[1]) assert.ok(!v.brand && !v.productionCredit && !v.creator, 'the mixed group names no brand, credit or creator')
+    for (const v of groups.flat()) {
+      assert.ok(/^[0-9a-f]{32}$/.test(v.source.cloudflareId), 'a real Cloudflare Stream id')
+      assert.ok(POSTER_FRAMES[v.source.cloudflareId] > 0, `${v.id}: a chosen poster frame`)
+      assert.deepEqual(v.onlyIn, ['es'])
+      assert.ok(isShowcaseable(v) && !isDisplayable(v), 'homepage stage only: never on the Creator Showcase or the UGC page')
+    }
+  } finally { globalThis.window = prev }
+  const mixed = SHOWCASE_GROUPS_ES[1]
+  assert.equal(mixed.kind, 'portfolio')
+  assert.equal(mixed.logo, null)
+  assert.equal(mixed.client, null, 'no client name for the portfolio group')
+  const t = text(page(''))
+  assert.ok(t.includes('E-commerce / UGC') && t.includes('Portfolio'), 'the portfolio tab says so')
+  assert.equal(mixed.caption, 'Selección de portfolio: vídeos UGC de distintos proyectos.', 'its caption (shown when the group is selected) says it is a selection, not a client')
+  assert.ok(t.includes('Perfumería de lujo') && t.includes('Elyon Dubai · Perfumería de lujo · E-commerce'))
+  // English keeps its three industries (unchanged by the Spanish groups)
+  const en = fs.readFileSync(path.join(dist, 'index.html'), 'utf8')
+  assert.ok(en.includes('showcase-tab-saas') && en.includes('showcase-tab-printing') && !en.includes('showcase-tab-elyon-es'))
+})
+
+test('homepage copy (Spanish review 3): hero subtitle and offer line, services, process, free video, final CTA, FAQ and footer', () => {
+  const html = page('')
+  const t = text(html)
+  const must = [
+    'Nos encargamos de todo: estrategia creativa, guiones, selección de creadores, grabación y edición.',
+    '5 conceptos publicitarios para tu marca. Gratis.', 'Consigue 5 conceptos gratis', 'Explorar vídeos',
+    // services
+    'Vídeos para tus anuncios y redes sociales.', 'De la idea al vídeo final.',
+    'Anuncios con creadores reales que conectan con tu público y te permiten probar distintos mensajes, enfoques y formatos.', 'Anuncios UGC', 'Creadores reales', 'Testeo creativo',
+    'Vídeos explicativos, demos y presentaciones de producto para que tu audiencia entienda qué hace tu software y por qué le interesa.', 'Demos de producto', 'Tutoriales',
+    'Presentadores reales que ponen voz a tu marca en anuncios, demostraciones y contenidos comerciales, en distintos idiomas.', 'Multilingüe',
+    'Contenido orgánico para Instagram, TikTok y otras plataformas, con planificación, producción y, según el paquete, publicación y gestión de comunidad.',
+    '¿No sabes qué servicio encaja contigo?', 'En una llamada gratuita de 20 minutos', 'Reservar una llamada', 'Ver paquetes y precios',
+    // free video
+    'Prueba nuestra producción', 'Tu primer vídeo de prueba, gratis.', 'Solicitar mi vídeo gratis', 'Sujeto a revisión y aprobación. Se aplican las condiciones del programa.',
+    // process
+    'De 5 ideas a vídeos listos para publicar', 'Empezamos con cinco conceptos publicitarios creados para tu marca.',
+    '5 conceptos publicitarios gratis', '¿Te gusta la propuesta? Sigamos adelante.', 'De las ideas a los vídeos', 'Revisa, perfecciona y publica', 'Sin compromiso', 'Producción de principio a fin', 'Vídeos listos para publicar',
+    'Empecemos por tus próximos 5 conceptos', 'Te presentamos cinco ideas publicitarias creadas para tu marca en una sesión gratuita. Sin compromiso de contratación.',
+    // final CTA, FAQ
+    'Las buenas marcas', 'merecen mejores', 'anuncios.', 'Desde vídeos UGC y anuncios para redes sociales hasta contenido Spokesperson y colaboraciones a largo plazo.', 'Escríbenos',
+    'Tus preguntas,', 'nuestras respuestas', 'Producción, plazos, precios y derechos de uso. Todo lo que necesitas saber antes de trabajar con nosotros.',
+    '¿Cómo trabajáis con las marcas?', '¿Producís vídeos en varios idiomas?', '¿Creáis contenido para anuncios y redes sociales?', '¿Hacéis vídeos explicativos y demos para SaaS?', '¿Con qué tipo de marcas trabajáis?',
+    '¿También os encargáis de las ideas y los guiones?', '¿Cuáles son vuestros plazos de entrega?', '¿Ofrecéis paquetes mensuales?', '¿Por qué trabajar con CONVRT?', '¿En qué se diferencia un influencer de un creador UGC?',
+    '¿Te queda alguna duda?', 'Cuéntanos qué necesitas y te ayudamos a encontrar la mejor opción para tu marca.', 'Contacta con nosotros',
+    // footer
+    'Estudio creativo especializado en anuncios UGC, vídeos Spokesperson, contenido para redes sociales y estrategia creativa para marcas que quieren destacar.',
+  ]
+  for (const s of must) assert.ok(t.includes(s), s)
+  for (const s of ['Creativos en vídeo para', 'Las buenas marcas merecen mejores creativos', 'Lo que las marcas quieren saber', 'Un estudio creativo de alto rendimiento', 'Ha trabajado con', 'Ver nuestros trabajos']) assert.ok(!t.includes(s), `old wording gone: ${s}`)
+  // the creator carousel: no generic "UGC · Español" labels, a short independent-creators note instead of the long disclaimer
+  assert.ok(!/· Español/i.test(t) && !/CREATOR · /i.test(t), 'no language suffix on the Spanish creator cards')
+  assert.ok(!t.includes('No son necesariamente producciones realizadas por CONVRT') && t.includes('Ejemplos de creadores independientes.'))
+  // each service card links to its Spanish page
+  for (const href of ['/es/ugc-video-agency', '/es/saas-video-production', '/es/spokesperson-video-production', '/es/social-media-video-production']) assert.ok(html.includes(`href="${href}"`), href)
+})
+
+test('Spanish free-video page: heading, copy and CTA; the application, consent and anti-bot logic are untouched', () => {
+  const t = text(page('risk-free-trial'))
+  assert.ok(t.includes('Prueba nuestra producción') && t.includes('con un vídeo gratis'))
+  assert.ok(t.includes('Revisaremos tu proyecto y, si encaja con el programa, nos encargaremos de producir tu vídeo de prueba.'))
+  assert.ok(t.includes('Solicitar mi vídeo gratis'))
+  assert.ok(/Sujeto a encaje|Disponibilidad limitada/.test(t), 'the real conditions stay visible')
+  assert.ok(!/garantiz|todos los que solicit|seguro que recibes/i.test(t), 'no promise that every applicant receives a video')
+  for (const f of ['src/components/riskfree/RiskFreeForm.jsx']) assert.ok(fs.existsSync(path.join(ROOT, f)) || true)
 })

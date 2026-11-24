@@ -37,7 +37,7 @@ export default function RiskFreeHero() {
 
             <h1
               id="risk-free-h1"
-              className="mt-6 font-display font-bold text-ink tracking-display-xl leading-[1.03] text-[2.6rem] min-[400px]:text-[3.2rem] sm:text-[3.6rem] md:text-[4.2rem] lg:text-[3.4rem] xl:text-[4.2rem]"
+              className={`mt-6 font-display font-bold text-ink tracking-display-xl leading-[1.03] ${currentLocale() === 'en' ? 'text-[2.6rem] min-[400px]:text-[3.2rem] sm:text-[3.6rem] md:text-[4.2rem] lg:text-[3.4rem] xl:text-[4.2rem]' : 'text-[2.15rem] min-[400px]:text-[2.6rem] sm:text-[3.1rem] md:text-[3.5rem] lg:text-[2.75rem] xl:text-[3.4rem] [text-wrap:balance]'}`}
             >
               {currentLocale() === 'en' ? (
                 <>
@@ -46,8 +46,9 @@ export default function RiskFreeHero() {
                 </>
               ) : (
                 <>
-                  <span className="block">{tr('1 video')} <span className="text-lime">{tr('free')}</span></span>
-                  <span className="block">{tr('of production')}</span>
+                  {/* Spanish (Nov 2026): "Prueba nuestra producción / con un vídeo gratis" */}
+                  <span className="block">{tr('Try our production')}</span>
+                  <span className="block">{tr('with one video')} <span className="text-lime">{tr('free')}</span></span>
                 </>
               )}
             </h1>

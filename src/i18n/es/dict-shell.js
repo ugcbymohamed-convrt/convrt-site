@@ -9,12 +9,12 @@ export default {
   'Blog': 'Blog',
   'Contact': 'Contacto',
   'Book a Creative Call': "Reservar una llamada",
-  'Get 5 Free Ad Concepts': "5 conceptos gratis",
+  'Get 5 Free Ad Concepts': "Consigue 5 conceptos gratis",
   'Toggle menu': 'Abrir o cerrar el menú',
   'Language': 'Idioma',
 
   // Footer
-  'A performance creative studio building UGC ads, spokesperson videos, organic social content, and creative strategy for brands that want content with one purpose: conversion.': "Un estudio creativo de alto rendimiento que crea anuncios UGC, vídeos Spokesperson, contenido orgánico para redes sociales y estrategia creativa para marcas que quieren contenido con un único objetivo: convertir.",
+  'A performance creative studio building UGC ads, spokesperson videos, organic social content, and creative strategy for brands that want content with one purpose: conversion.': "Estudio creativo especializado en anuncios UGC, vídeos Spokesperson, contenido para redes sociales y estrategia creativa para marcas que quieren destacar.",
   'Studio': 'Estudio',
   'UGC Video Agency': 'Agencia de vídeos UGC',
   'Spokesperson Videos': "Vídeos Spokesperson",
@@ -22,7 +22,7 @@ export default {
   'SaaS Video Production': 'Producción de vídeo para SaaS',
   'About': 'Sobre CONVRT',
   'Clients': 'Clientes',
-  'Get in touch': 'Contacta con nosotros',
+  'Get in touch': "Contacta con nosotros",
   'CONVRT on LinkedIn': 'CONVRT en LinkedIn',
   'CONVRT on Instagram': 'CONVRT en Instagram',
   'All rights reserved.': 'Todos los derechos reservados.',

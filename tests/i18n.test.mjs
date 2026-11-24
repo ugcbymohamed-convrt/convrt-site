@@ -302,12 +302,13 @@ test('Spanish pages contain no leftover English: every visible sentence is Spani
   }
 })
 
-test('Spanish pages: the homepage shows the owner-approved Spanish translations of the three testimonials (marked lang="es", with the disclosure); the UGC page keeps the originals verbatim (lang="en")', () => {
+test('Spanish pages: the homepage shows the three owner-approved Spanish reviews in the English editorial component (no English original, no disclosure line); the UGC page keeps the originals verbatim (lang="en")', () => {
   const home = page('/es')
-  assert.ok((home.match(/<blockquote lang="es"/g) || []).length >= 3)
-  assert.ok(!home.includes('Mohamed understood the concept really well'), 'the English original is not shown on the Spanish homepage')
-  for (const q of ['Mohamed entendió muy bien el concepto', 'Trabajar con Mohamad fue un auténtico placer', 'Los vídeos son increíbles, otra vez']) assert.ok(home.includes(q), q)
-  assert.match(home, /Testimonios originales en inglés, traducidos al español\./)
+  assert.ok(home.includes('id="testimonials"') && home.includes('Leer la opinión completa') && home.includes('Clientes que vuelven') && home.includes('Colaboraciones que duran'))
+  assert.ok(!home.includes('Mohamed understood the concept really well') && !home.includes('Read full review'), 'the English original is not shown on the Spanish homepage')
+  for (const q of ['Mohamed entendió perfectamente el concepto y la calidad del resultado superó mis expectativas.', 'Trabajar con Mohamad ha sido un auténtico placer.', 'Los vídeos han vuelto a quedar increíbles.']) assert.ok(home.includes(q), q)
+  assert.ok(!/Testimonios originales en inglés|idioma original de los clientes|original language/i.test(home), 'the visible explanatory line is gone')
+  assert.equal((home.match(/Cliente recurrente/g) || []).length >= 3, true, 'each review carries the "Cliente recurrente" badge')
   assert.match(page('/es/ugc-video-agency'), /<blockquote lang="en"/)
   assert.ok(page('/').includes('Mohamed understood the concept really well'), 'English homepage unchanged')
 })
@@ -533,7 +534,7 @@ test('offer matches destination: Spanish Roadmap CTAs open the Spanish Roadmap; 
 })
 
 // ── Spanish video integration (owner folders ~/Desktop/SPANISH, uploaded to Cloudflare Stream 2026-11-22) ───────────────────────────────────────────
-const ES_VIDEOS = PORTFOLIO.filter((v) => v.onlyIn?.includes('es'))
+const ES_VIDEOS = PORTFOLIO.filter((v) => v.onlyIn?.includes('es') && !v.showcase) // the six `showcase` entries are the Spanish homepage stage, not the creator library
 const posters = (h) => [...h.matchAll(/src="(\/portfolio\/[^"]+\.webp)"/g)].map((m) => m[1])
 const cards = (h) => [...h.matchAll(/(?:aria-label="Reproducir vídeo: ([^"]*)"|alt="([^"]*)")/g)].map((m) => m[1] ?? m[2])
 
@@ -634,19 +635,20 @@ test('Spanish structured data stays factual: no VideoObject (no upload dates exi
 test('Spanish homepage: approved copy, one-line short CTA (hero and navigation), 3-line final headline, terminology rules', () => {
   const h = page('/es'), t = textOf(h).join('\n'), body = bodyOf(h)
   assert.match(t, /Creatividades\ndiseñadas para\nconectar/, 'owner-approved headline (Nov 2026)')
-  assert.match(t, /Estrategia, guiones, casting, grabación y edición\. Producimos anuncios UGC con personas reales, vídeos para SaaS, vídeos Spokesperson y contenido orgánico listo para publicar\./)
-  assert.match(t, /Tus próximos 5 conceptos\. A tu medida\.\s*\nGratis\./)
-  assert.equal((body.match(/>5 conceptos gratis</g) ?? []).length >= 2 || (t.match(/^5 conceptos gratis$/gm) ?? []).length >= 3, true, 'the short label is used in the navigation, the hero and the other 5-concepts CTAs')
+  assert.match(t, /Nos encargamos de todo: estrategia creativa, guiones, selección de creadores, grabación y edición\. Producimos anuncios UGC, vídeos Spokesperson, vídeos para SaaS y contenido orgánico para redes sociales\./)
+  assert.match(t, /5 conceptos publicitarios para tu marca\.\s*\nGratis\./)
+  assert.ok((t.match(/^Consigue 5 conceptos gratis$/gm) ?? []).length >= 3, 'the owner-approved label is used in the navigation, the hero and the other 5-concepts CTAs')
   assert.ok(!/Recibe 5 conceptos publicitarios gratis/.test(t))
   // hero CTA: compact, no wrapping, same destination as before (the Spanish Roadmap)
   assert.match(body, /href="\/es\/creative-growth-roadmap" class="cta-gradient hero-cta[^"]*whitespace-nowrap[^"]*px-5 md:px-6/)
   // founder section, services, final headline
-  assert.match(t, /Nuestro fundador ha trabajado con\s+más de\s+500\s+clientes\s+de e-commerce, apps, SaaS y otros sectores\./)
-  assert.match(t, /Las buenas marcas\nmerecen mejores\ncreativos\./)
+  assert.match(t, /Más de\s+500\s+clientes\s*\.\s*\n?\s*Una experiencia que marca la diferencia\./)
+  assert.ok(t.includes('Experiencia acumulada del fundador en CONVRT y otros proyectos creativos.'), 'the founder attribution (owner wording)')
+  assert.match(t, /Las buenas marcas\nmerecen mejores\nanuncios\./)
   assert.ok(/class="block text-ink sm:whitespace-nowrap">merecen mejores</.test(body), 'the middle line of the final headline never wraps from tablet up')
-  for (const s of ['Qué hacemos', 'Creativos en vídeo para', 'Anuncios UGC', 'Vídeos Spokesperson', 'Contenido orgánico para redes sociales', '¿No tienes claro qué servicio necesitas?', 'Reservar una llamada', 'Marcas que confiaron en nosotros.', '¿Qué hace exactamente CONVRT Studio?', '¿En qué se diferencia un vídeo UGC de un vídeo Spokesperson?', '¿Te queda alguna duda?']) assert.ok(t.includes(s), s)
-  // verbatim original testimonials (English), approved labels
-  for (const q of ['Mohamed entendió muy bien el concepto', 'Trabajar con Mohamad fue un auténtico placer', 'Los vídeos son increíbles, otra vez']) assert.ok(t.includes(q), q)
+  for (const s of ['Qué hacemos', 'Vídeos para tus', 'anuncios y redes sociales.', 'Vídeos UGC', 'Vídeos para SaaS', 'Vídeos Spokesperson', 'Vídeos para redes sociales', '¿No sabes qué servicio encaja contigo?', 'Reservar una llamada', 'Ver paquetes y precios', 'Tus preguntas,', '¿Qué hace exactamente CONVRT?', '¿Qué diferencia hay entre UGC y vídeos Spokesperson?', '¿Te queda alguna duda?', 'Contacta con nosotros']) assert.ok(t.includes(s), s)
+  // the three reviews, in the owner-approved Spanish wording
+  for (const q of ['Trabajar con Mohamad ha sido un auténtico placer.', 'Mohamed entendió perfectamente el concepto', 'Los vídeos han vuelto a quedar increíbles.']) assert.ok(t.includes(q), q)
   // terminology: no "creatividad(es)" for ad creative assets, no "listos para rendir", Spokesperson stays the service name
   for (const p of ES_PAGES) {
     const x = textOf(page(p)).join('\n')
@@ -659,9 +661,11 @@ test('Spanish homepage: approved copy, one-line short CTA (hero and navigation),
 
 test('Spanish free offers: the hero shows the same two cards as English: 1 free video (a link to the existing, held application) and 10 free hooks (visible, NOT clickable, "Próximamente"); the five free concepts stay primary', () => {
   const h = page('/es'), body = bodyOf(h), t = textOf(h).join('\n')
-  assert.ok(!body.includes('id="free-video"'), 'the separate homepage block is gone: the hero cards replace it')
-  assert.equal((body.match(/href="\/es\/risk-free-trial"/g) ?? []).length, 1, 'one link to the application (the hero card)')
-  assert.match(t, /¿Aún no\? Tienes otras dos formas gratis de empezar\./)
+  assert.ok(body.includes('id="free-video"'), 'the homepage free-video section (owner copy, Nov 2026) follows the services')
+  assert.match(t, /Tu primer vídeo de prueba,\s*\ngratis\./)
+  assert.ok(t.includes('Sujeto a revisión y aprobación. Se aplican las condiciones del programa.'))
+  assert.equal((body.match(/href="\/es\/risk-free-trial"/g) ?? []).length, 2, 'two links to the application: the hero card and the free-video section')
+  assert.match(t, /¿Aún no lo tienes claro\? Tenemos otras dos formas gratuitas de empezar\./)
   assert.match(t, /1 vídeo\s*\nGRATIS/)
   assert.match(t, /Prueba nuestra producción sin riesgo\./)
   assert.match(t, /Comprueba si encajas/)

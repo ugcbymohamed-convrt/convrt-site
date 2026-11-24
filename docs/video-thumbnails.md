@@ -6,7 +6,7 @@ and the /scale video read the time through `streamPoster()`. Frames are real fra
 generated, uploaded or changed on Cloudflare. Selection: ten candidates per video across its length, reviewed for a clear natural face with open eyes where there is one, a recognisable product, good light and composition,
 no half-cut or motion blur, and as little stray caption as the footage allows (many videos have burned-in subtitles on every frame, so a small caption is sometimes unavoidable).
 
-**68 videos have a chosen frame.** Contact sheet of the chosen frames: `docs/video-thumbnail-contact-sheet.jpg`.
+**74 videos have a chosen frame** (the six Spanish homepage-stage videos of 2026-11-24 are listed at the end of the table; the contact sheet predates them). Contact sheet of the chosen frames: `docs/video-thumbnail-contact-sheet.jpg`.
 
 Not changed: the Roadmap explainer keeps its deliberately chosen 25.6 s frame; the self-hosted Adscale clip (`/showcase/adscale-creator.mp4`) is not on Stream and keeps its poster.
 
@@ -81,3 +81,9 @@ Not changed: the Roadmap explainer keeps its deliberately chosen 25.6 s frame; t
 | `fc89d8e3…` | 11s | portfolio:creator-11 |
 | `ff256a46…` | 9.9s | portfolio:ugc-gal-2 |
 | `fff13512…` | 7.6s | portfolio:es-spokesperson-1 [es] |
+| `37d27997…` | 2.5s | portfolio:es-showcase-elyon-1 (Spanish homepage stage, Elyon Dubai) [es] |
+| `8cc42ca3…` | 9.5s | portfolio:es-showcase-elyon-2 (Spanish homepage stage, Elyon Dubai) [es] |
+| `dc0a3401…` | 11.9s | portfolio:es-showcase-elyon-3 (Spanish homepage stage, Elyon Dubai) [es] |
+| `3bf71599…` | 15.9s | portfolio:es-showcase-mixed-1 (Spanish homepage stage, E-commerce / UGC) [es] |
+| `22012213…` | 10s | portfolio:es-showcase-mixed-2 (Spanish homepage stage, E-commerce / UGC) [es] |
+| `b4daf321…` | 5.9s | portfolio:es-showcase-mixed-3 (Spanish homepage stage, E-commerce / UGC) [es] |

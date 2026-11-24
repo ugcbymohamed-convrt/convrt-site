@@ -136,7 +136,7 @@ test('Pricing: the thirteen approved EUR amounts are all on the Spanish page and
 })
 
 test('Creator Showcase: 18 samples, UGC and Spokesperson filters on the Spanish page only, language named in full, English tabs unchanged', () => {
-  const es = PORTFOLIO.filter((i) => i.onlyIn?.includes('es'))
+  const es = PORTFOLIO.filter((i) => i.onlyIn?.includes('es') && !i.showcase) // `showcase` entries are the homepage stage, not the creator library
   assert.equal(es.length, 18)
   assert.equal(new Set(es.map((i) => i.title)).size, 18, 'titles are distinct')
   assert.ok(es.every((i) => i.approval?.creatorConsent === true && i.approval?.portfolioUse === true), 'approvals untouched')

@@ -7,6 +7,9 @@ import CreatorsShowcase from './components/CreatorsShowcase.jsx'
 import Services from './components/Services.jsx'
 import HowItWorks from './components/HowItWorks.jsx'
 import Testimonials from './components/Testimonials.jsx'
+import FreeVideoOffer from './components/FreeVideoOffer.jsx'
+import IndustryShowcase from './components/home/IndustryShowcase.jsx'
+import ClientReviews from './components/home/ClientReviews.jsx'
 import FAQ from './components/FAQ.jsx'
 import FinalCTA from './components/FinalCTA.jsx'
 import Footer from './components/Footer.jsx'
@@ -22,6 +25,8 @@ import { BUILT_LOCALES } from './i18n/locales.js'
 /* Route-level code splitting: every non-home page is its own chunk, fetched only when
    that URL is opened, so the homepage no longer downloads (or parses) the roadmap,
    hooks, risk-free, case-study, pricing and /scale code. */
+/* The English homepage's creator carousel sits far below the fold: its code is a separate chunk (it is still rendered into the static HTML at build time, and the browser fetches the chunk only to hydrate it). */
+const HomeCreators = lazy(() => import('./components/home/HomeCreators.jsx'))
 const CreativeTestingSprintPage = lazy(() => import('./CreativeTestingSprintPage.jsx'))
 const UgcVideoAgencyPage = lazy(() => import('./UgcVideoAgencyPage.jsx'))
 const SpokespersonVideoPage = lazy(() => import('./SpokespersonVideoPage.jsx'))
@@ -95,18 +100,26 @@ function resolvePage(path) {
 }
 
 function HomePage() {
+  /* English homepage narrative (design review, Nov 2026): credibility → client work (one connected block, no divider between them) → services → process → creators → reviews → conversion.
+     Other languages keep their own homepage sections until their separate design review. */
+  const en = currentLocale() === 'en'
+  const full = en || currentLocale() === 'es' // the English homepage composition (Spanish: own videos, own copy)
   return (
     <>
       <Hero />
       <Credibility />
-      {/* English: the three client case-study panels. Spanish: the creator carousel (eight real Spanish creator videos); the case studies stay reachable from the menu, footer and their own pages. */}
-      {currentLocale() === 'en' ? (<><SectionDivider /><CaseStudies /></>) : <CreatorsShowcase />}
+      {/* English and Spanish share the same client-work composition (founder experience + rotary stage); Spanish feeds it its own two groups (src/content/homeShowcase.js). */}
+      {full ? <IndustryShowcase /> : (<><SectionDivider /><CaseStudies /></>)}
       <SectionDivider />
       <Services />
       <SectionDivider />
+      {/* Translated homepages only: the secondary free-video offer (the English hero already carries it). */}
+      {!en && (<><FreeVideoOffer /><SectionDivider /></>)}
       <HowItWorks />
-      <SectionDivider />
-      <Testimonials />
+      {/* The creator carousel draws its own leading divider. */}
+      {en && <><Suspense fallback={<div aria-hidden="true" className="min-h-[760px]" />}><HomeCreators /></Suspense><SectionDivider /></>}
+      {!en && <><CreatorsShowcase /><SectionDivider /></>}
+      {full ? <ClientReviews /> : <Testimonials />}
       <SectionDivider />
       <FinalCTA />
       <SectionDivider />

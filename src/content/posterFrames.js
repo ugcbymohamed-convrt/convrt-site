@@ -10,6 +10,12 @@
    A video that is not listed keeps its current poster (the Roadmap explainer keeps its deliberately chosen 25.6 s frame). Inventory and contact sheet: docs/video-thumbnails.md. */
 
 export const POSTER_FRAMES = {
+  '37d2799756ba9cc827b3381b034474ce': 2.5, // portfolio:es-showcase-elyon-1 (Spanish homepage stage, group Elyon Dubai): the "Spanish girls trying Elyon Dubai" title frame
+  '8cc42ca3f0a33667eb14cf5e2449b4ad': 9.5, // portfolio:es-showcase-elyon-2
+  'dc0a340190fc4cd310e24448dda4f170': 11.9, // portfolio:es-showcase-elyon-3
+  '3bf715996728cd9e862d848878665f92': 15.9, // portfolio:es-showcase-mixed-1 (group E-commerce / UGC)
+  '220122131040d62f1ce2d96ea9f98615': 10.0, // portfolio:es-showcase-mixed-2
+  'b4daf32122e679f3af1c6ccc07eec8a7': 5.9, // portfolio:es-showcase-mixed-3
   '6c04c13dbb9ff7042f30e028b7394fe6': 4.5, // portfolio:es-ugc-hero-1 [es]
   '816d316906f79fe216d6f62079a0047f': 23.8, // portfolio:es-ugc-hero-2 [es]
   '75e7a204d0d4d2c75fe1ad19f0348461': 3.9, // portfolio:es-ugc-hero-3 [es]

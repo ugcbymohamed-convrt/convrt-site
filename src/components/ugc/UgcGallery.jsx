@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { trackEvent } from '../../lib/analytics.js'
 import { CREATOR_SHOWCASE_PATH } from '../../config.js'
 import { CREATOR_EXAMPLES_NOTE } from '../../content/attribution.js'
-import { posterUrl, languageLabel, captionOf, typeLabel } from '../../content/portfolio.js'
+import { posterUrl, captionOf, typeLabel } from '../../content/portfolio.js'
 import { usePreviewHost } from '../../lib/previewHost.js'
 import SectionDivider from '../SectionDivider.jsx'
 import { Section, Head, Reveal, GhostCta } from './shared.jsx'
@@ -57,7 +57,8 @@ function Card({ item, index, playing, onPlay, config }) {
   const sample = item.sample
   // Spanish pages name the language in full ("UGC · Español"); English keeps the two-letter code.
   const badge = config.badgeByType && item.type ? typeLabel(item) : config.badge // a mixed gallery (Spanish homepage) names each video's own type
-  const langs = sample ? 'EN' : (item.languages ?? []).map((l) => (currentLocale() === 'en' ? l.toUpperCase() : languageLabel(l))).join(' · ')
+  // Another language's site names no language on its cards: every video there is in that language, so "UGC · Español" repeated on each card says nothing (Spanish review 3, Nov 2026). The language stays in the records and the Showcase filters.
+  const langs = sample ? 'EN' : currentLocale() === 'en' ? (item.languages ?? []).map((l) => l.toUpperCase()).join(' · ') : ''
   return (
     <figure className="group relative aspect-[9/16] overflow-hidden rounded-3xl border border-lime/25 bg-surface-1 shadow-[0_26px_60px_-30px_rgba(0,0,0,0.9),0_0_44px_-26px_rgba(213,255,64,0.5)] transition-[transform,border-color,box-shadow] duration-300 hover:-translate-y-1 hover:border-lime/60 hover:shadow-[0_30px_64px_-28px_rgba(0,0,0,0.9),0_0_56px_-18px_rgba(213,255,64,0.55)] motion-reduce:transition-none motion-reduce:hover:translate-y-0">
       {playing ? (
@@ -181,7 +182,7 @@ export default function UgcGallery({ items, config: configProp = UGC_GALLERY }) 
     <Section id={config.id} label={config.headingId} glow>
       <Reveal>
         <Head id={config.headingId} eyebrow={config.eyebrow} title={config.title} intro={config.intro} />
-        <p className="mx-auto mt-3 max-w-xl text-center text-[13px] leading-relaxed text-ink-muted">{tr(CREATOR_EXAMPLES_NOTE)}</p>
+        <p className="mx-auto mt-3 max-w-xl text-center text-[13px] leading-relaxed text-ink-muted">{config.note ?? tr(CREATOR_EXAMPLES_NOTE)}</p>
       </Reveal>
 
       <Reveal className="mt-8 md:mt-10">

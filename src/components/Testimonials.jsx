@@ -1,7 +1,9 @@
 import { useRef, useEffect, useState } from 'react'
 import { useTr } from '../i18n/tr.js'
 import { currentLocale } from '../i18n/locale.js'
-import { ES_TESTIMONIALS } from '../i18n/es/testimonials.js'
+import { REVIEWS as REVIEW_SOURCE } from '../content/reviews.js'
+
+const FULL = Object.fromEntries(REVIEW_SOURCE.map((r) => [r.id, r.full]))
 
 /* ─────────────────────────────────────────────
    SECTION — SOCIAL PROOF / TESTIMONIALS
@@ -18,7 +20,7 @@ const REVIEWS = [
     flag: '🇦🇪',
     stars: 5,
     badge: 'Repeat Client',
-    text: "Mohamed understood the concept really well and actually exceeded my expectations with the quality. The videos are high quality, delivered on time, and the communication throughout was excellent. I've already ordered again, looking forward to continuing this partnership.",
+    text: FULL.elyon,
     accentColor: '#f59e0b',
     glowColor: 'rgba(245,158,11,0.12)',
     logoFilter: 'brightness(0) invert(1)',
@@ -34,7 +36,7 @@ const REVIEWS = [
     flag: '🇮🇱',
     stars: 5,
     badge: 'Repeat Client',
-    text: "Working with Mohamad was an absolute pleasure. He's professional, creative, and truly understands what makes content perform. The UGC videos he created were exactly what we needed to scale our ads. We've already come back for a second order and plan to continue working together long-term.",
+    text: FULL.adscale,
     accentColor: '#3b82f6',
     glowColor: 'rgba(59,130,246,0.12)',
     logoFilter: 'brightness(0) invert(1)',
@@ -50,7 +52,7 @@ const REVIEWS = [
     flag: '🇳🇱',
     stars: 5,
     badge: 'Repeat Client',
-    text: "The videos are amazing again. Every time we work together the quality just keeps getting better. Fast delivery, great communication, and the content performs exactly the way we need it to. This is our third order and it won't be the last.",
+    text: FULL.talk360,
     accentColor: '#22d3ee',
     glowColor: 'rgba(34,211,238,0.12)',
     logoFilter: 'none',
@@ -160,10 +162,9 @@ function ReviewCard({ review, inView, delay }) {
           <StarRow count={review.stars} color="#d5ff40" />
 
           {/* ── Review text ── */}
-          {/* The published wording is the client's own English (REVIEWS[].text, never edited). Spanish pages show a translation of it (src/i18n/es/testimonials.js, owner-approved Nov 2026) under the
-              disclosure "Testimonios originales en inglés, traducidos al español."; any other language keeps the English marked lang="en". */}
-          <blockquote lang={locale === 'en' ? undefined : locale === 'es' && ES_TESTIMONIALS[review.id] ? 'es' : 'en'} className="flex-1 text-[15px] leading-[1.78] text-ink-subtle">
-            {locale === 'es' && ES_TESTIMONIALS[review.id] ? ES_TESTIMONIALS[review.id] : review.text}
+          {/* The quote is the client's own English wording (published with permission): it is never machine- or re-translated; other languages mark it lang="en". */}
+          <blockquote lang={locale === 'en' ? undefined : 'en'} className="flex-1 text-[15px] leading-[1.78] text-ink-subtle">
+            {review.text}
           </blockquote>
 
           {/* ── Bottom row: brand info ── */}

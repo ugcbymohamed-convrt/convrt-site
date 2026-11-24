@@ -37,21 +37,17 @@ export default function Footer() {
             <p className="text-xs font-semibold uppercase tracking-[0.16em] text-ink-subtle">
               {tr('Studio')}
             </p>
+            {/* The Studio menu mirrors the top menu (owner, Nov 2026): the same links in the same order, nothing else. The individual service pages are linked from the Services dropdown in the top bar on
+                every page. English: Services, Creator Showcase, Case Studies, Pricing, Blog, Contact, Refer & Earn. Other languages list what their own top menu lists. */}
             <ul className="mt-4 space-y-2.5 text-sm text-ink-muted">
               <li><a className="hover:text-ink transition-colors" href={`${homePrefix}#services`}>{tr('Services')}</a></li>
-              <li><a className="hover:text-ink transition-colors" href={h('/ugc-video-agency')}>{tr('UGC Video Agency')}</a></li>
-              <li><a className="hover:text-ink transition-colors" href={h('/spokesperson-video-production')}>{tr('Spokesperson Videos')}</a></li>
-              <li><a className="hover:text-ink transition-colors" href={h('/social-media-video-production')}>{tr(SERVICE_LABELS.organic)}</a></li>
-              <li><a className="hover:text-ink transition-colors" href={h('/saas-video-production')}>{tr('SaaS Video Production')}</a></li>
               <li><a className="hover:text-ink transition-colors" href={h(CREATOR_SHOWCASE_PATH)}>{tr('Creator Showcase')}</a></li>
               {(en || hasTranslation(locale, '/case-studies')) && <li><a className="hover:text-ink transition-colors" href={h('/case-studies')}>{tr('Case Studies')}</a></li>}
+              {!en && !hasTranslation(locale, '/case-studies') && <li><a className="hover:text-ink transition-colors" href={`${homePrefix}#how-it-works`}>{tr('How It Works')}</a></li>}
               <li><a className="hover:text-ink transition-colors" href={h('/pricing')}>{tr('Pricing')}</a></li>
-              {TRUST_PAGES_PUBLISHED && <li><a className="hover:text-ink transition-colors" href={h(ABOUT_PATH)}>{tr('About')}</a></li>}
               {en && <li><a className="hover:text-ink transition-colors" href="/blog">Blog</a></li>}
-              <li><a className="hover:text-ink transition-colors" href={`${homePrefix}#how-it-works`}>{tr('How It Works')}</a></li>
-              <li><a className="hover:text-ink transition-colors" href={`${homePrefix}#clients`}>{tr('Clients')}</a></li>
-              {en && <li><a className="hover:text-ink transition-colors" href={REFERRALS_PATH}>Referral Program</a></li>}
               <li><a className="hover:text-ink transition-colors" href={TRUST_PAGES_PUBLISHED ? h(CONTACT_PATH) : `${homePrefix}#contact`}>{tr('Contact')}</a></li>
+              {en && <li><a className="hover:text-ink transition-colors" href={REFERRALS_PATH}>Refer &amp; Earn</a></li>}
             </ul>
           </div>
 
@@ -85,6 +81,7 @@ export default function Footer() {
           <p className="flex flex-wrap items-center gap-x-4 gap-y-1">
             {/* The legal documents exist only in English (approved text). From other languages the links say so and are marked lang="en"; a reviewed translation is
                 prepared in docs/multilingual-legal-translation-review.md and is NOT published. */}
+            {TRUST_PAGES_PUBLISHED && <a className="underline-offset-4 transition-colors hover:text-ink hover:underline" href={h(ABOUT_PATH)}>{tr('About')}</a>}
             {TRUST_PAGES_PUBLISHED && <a className="underline-offset-4 transition-colors hover:text-ink hover:underline" href={PRIVACY_PATH} {...(en ? {} : { lang: 'en' })}>{en ? 'Privacy Policy' : tr('Privacy Policy (in English)')}</a>}
             {TRUST_PAGES_PUBLISHED && <a className="underline-offset-4 transition-colors hover:text-ink hover:underline" href={TERMS_PATH} {...(en ? {} : { lang: 'en' })}>{en ? 'Terms' : tr('Terms (in English)')}</a>}
             {TRUST_PAGES_PUBLISHED && <a className="underline-offset-4 transition-colors hover:text-ink hover:underline" href={LEGAL_NOTICE_PATH} {...(en ? {} : { lang: 'en' })}>{en ? 'Legal Notice' : tr('Legal Notice (in English)')}</a>}

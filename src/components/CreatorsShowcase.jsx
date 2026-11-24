@@ -15,6 +15,7 @@ const CONFIG = {
   intro: 'Discover real creators and videos that bring brands to life.',
   ariaLabel: 'Spanish creator videos. Scroll sideways to see more.',
   badge: 'UGC',
+  note: 'Examples from independent creators.', // the long attribution sentence is kept on the Creator Showcase and the service pages; here one short line says the same thing
   badgeByType: true,
   cta: { label: 'Meet more creators', href: CREATOR_SHOWCASE_PATH },
   track: 'home_creators',
