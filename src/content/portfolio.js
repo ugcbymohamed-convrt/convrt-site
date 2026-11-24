@@ -268,8 +268,7 @@ const PORTFOLIO_ENTRIES = [
      Spanish page. The Arabic brief (2026-11-23) states these are approved Arabic-speaking creator videos for the homepage and the Showcase; that is recorded in `approval` below and flagged for the
      owner's confirmation in docs/multilingual-arabic.md. Creators are identified only by opaque ids; no creator name, nationality, dialect, brand, production credit or upload date is stated (none was
      supplied), so no showName / brandDisplay / creditDisplay and no VideoObject markup. Captions describe only what the footage shows. `production` is left unset (unknown): the pages say these are
-     independent creators' examples and not necessarily CONVRT productions. Three clips from the same folder (AR-CREATOR-06, -09, -12) carry ENGLISH on-screen captions, so they are NOT used on the Arabic
-     site. Spoken language 'ar' is set from the Arabic captions and the brief; a dialect label is never shown. */
+     independent creators' examples and not necessarily CONVRT productions. Three clips from the same folder (AR-CREATOR-06, -09, -12) carry ENGLISH on-screen captions: first held back, then added on the owner's request as ar-ugc-10..12 (tagged `en`). Spoken language 'ar' is set from the Arabic captions and the brief; a dialect label is never shown. */
   {
     id: 'ar-ugc-hero-1',
     title: 'صانع محتوى يشرح خدمة رقمية أمام الكاميرا',
@@ -451,6 +450,56 @@ const PORTFOLIO_ENTRIES = [
     onlyIn: ['ar'],
     source: { cloudflareId: '583c9f5132d0cfe0f2eb26ea1df73446' },
     poster: '/portfolio/ar-ugc-9.webp',
+    creatorId: 'ar-c05',
+    category: 'UGC · إعلان بمشاركة صانع محتوى',
+    placement: 'gallery',
+    approval: AR_APPROVAL,
+  },
+  /* Milad folder, the three clips with ENGLISH on-screen captions (IMG_0769, IMG_4545, IMG_7827). Added to the Arabic Showcase and UGC gallery on the owner's request (2026-11-24, after asking why only 8 of 11 were shown).
+     `languages: ['en']` because the captions are English (no audio transcript was run); the Arabic cards and the Showcase language filter therefore say «الإنجليزية», so no visitor is told these are Arabic videos. Titles describe only the footage; third-party names and logos that appear in it are never named. */
+  {
+    id: 'ar-ugc-10',
+    title: 'عرض قميص بقصّة واسعة وخامة القماش',
+    caption: 'عرض قميص بقصّة واسعة من الأمام والخلف مع لقطة قريبة للقماش.',
+    type: 'ugc',
+    industry: 'unclassified',
+    languages: ['en'],
+    onlyIn: ['ar'],
+    source: { cloudflareId: '0cf5d2139e0769332c053ac71984ca14' },
+    poster: '/portfolio/ar-ugc-10.webp',
+    crossLanguageNote: 'Owner request 2026-11-24: an English-captioned clip shown on the Arabic site; its language is shown as English.',
+    creatorId: 'ar-c05',
+    category: 'UGC · إعلان بمشاركة صانع محتوى',
+    placement: 'gallery',
+    approval: AR_APPROVAL,
+  },
+  {
+    id: 'ar-ugc-11',
+    title: 'صانع محتوى يشرح منصة لإدارة علاقات العملاء',
+    caption: 'صانع محتوى يشرح منصة لإدارة علاقات العملاء أمام الكاميرا.',
+    type: 'ugc',
+    industry: 'unclassified',
+    languages: ['en'],
+    onlyIn: ['ar'],
+    source: { cloudflareId: '7359123313ee51b95976e3ae6adc331e' },
+    poster: '/portfolio/ar-ugc-11.webp',
+    crossLanguageNote: 'Owner request 2026-11-24: an English-captioned clip shown on the Arabic site; its language is shown as English.',
+    creatorId: 'ar-c05',
+    category: 'UGC · إعلان بمشاركة صانع محتوى',
+    placement: 'gallery',
+    approval: AR_APPROVAL,
+  },
+  {
+    id: 'ar-ugc-12',
+    title: 'جولة داخل شقة في برج سكني',
+    caption: 'جولة داخل شقة في برج سكني مع لقطات للمبنى والمرافق.',
+    type: 'ugc',
+    industry: 'unclassified',
+    languages: ['en'],
+    onlyIn: ['ar'],
+    source: { cloudflareId: '60c9247e04b35d3dde12aa6c918aa1d6' },
+    poster: '/portfolio/ar-ugc-12.webp',
+    crossLanguageNote: 'Owner request 2026-11-24: an English-captioned clip shown on the Arabic site; its language is shown as English.',
     creatorId: 'ar-c05',
     category: 'UGC · إعلان بمشاركة صانع محتوى',
     placement: 'gallery',
@@ -2239,7 +2288,7 @@ export function portfolioProblems(item) {
   if (item.onlyIn !== undefined) {
     const ok = Array.isArray(item.onlyIn) && item.onlyIn.length > 0 && item.onlyIn.every((l) => /^[a-z]{2}$/.test(l))
     if (!ok) p.push('onlyIn must be a non-empty list of 2-letter language codes (the language sites that may show this video)')
-    else if (!item.onlyIn.includes('en') && !item.onlyIn.every((l) => (item.languages ?? []).includes(l))) p.push('onlyIn: a video limited to other languages must list those languages in `languages` (its confirmed spoken language)')
+    else if (!item.onlyIn.includes('en') && !item.crossLanguageNote && !item.onlyIn.every((l) => (item.languages ?? []).includes(l))) p.push('onlyIn: a video limited to other languages must list those languages in `languages` (its confirmed spoken language)')
   }
   const hasCf = Boolean(item.source?.cloudflareId)
   const hasMp4 = Boolean(item.source?.mp4)
@@ -2289,7 +2338,9 @@ export const isShowcaseable = (item) => portfolioProblems(item).length === 0 && 
 /* forPageLanguage(): on a page in another language ONLY videos whose confirmed spoken `languages` include that language are shown (the page components apply it to what the selectors return):
    the Spanish pages never show the English library, and a video with no recorded language is never guessed into a language. English is unchanged. It is NOT applied inside the selectors, because
    module-level code (the SEO manifest's `indexable` flags) must stay language-independent. */
-export const forPageLanguage = (items) => (currentLocale() === 'en' ? items : items.filter((i) => (i.languages ?? []).includes(currentLocale())))
+/* A video belongs on a language site when it is spoken in that language, or when the owner has explicitly placed it there (`crossLanguageNote` + `onlyIn`, e.g. the English-captioned clips on the Arabic site). */
+const belongsTo = (i, locale) => (i.languages ?? []).includes(locale) || (!!i.crossLanguageNote && !!i.onlyIn?.includes(locale))
+export const forPageLanguage = (items) => (currentLocale() === 'en' ? items : items.filter((i) => belongsTo(i, currentLocale())))
 /* `onlyIn: ['es']` limits a video to the Spanish site: it is then invisible to every English-facing consumer (English pages, the English indexable flags, English JSON-LD), so adding a
    Spanish-only video can never change an English page. With no `onlyIn` a video behaves exactly as before. */
 const shownIn = (item, locale) => !item.onlyIn || item.onlyIn.includes(locale)
@@ -2298,7 +2349,7 @@ export const ENGLISH_LIBRARY = PORTFOLIO.filter((i) => shownIn(i, DEFAULT_LOCALE
 /* Always the library of the page being rendered: English pages (and anything evaluated without a page) never see Spanish-only videos. */
 export const selectDisplayable = (items = PORTFOLIO) => items.filter((i) => shownIn(i, currentLocale()) && isDisplayable(i))
 /* Approved videos for a language, independent of the page being rendered (used by the release gate, the sitemap and the tests). */
-export const displayableFor = (locale, items = PORTFOLIO) => items.filter(isDisplayable).filter((i) => shownIn(i, locale) && (locale === 'en' || (i.languages ?? []).includes(locale)))
+export const displayableFor = (locale, items = PORTFOLIO) => items.filter(isDisplayable).filter((i) => shownIn(i, locale) && (locale === 'en' || belongsTo(i, locale)))
 
 /* /creator-showcase: everything approved for the portfolio. */
 export const selectOurWork = selectDisplayable

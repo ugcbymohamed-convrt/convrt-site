@@ -29,6 +29,9 @@ export const POSTER_FRAMES = {
   '0241249ccf242630f097d03ac8cc11b9': 14.5, // portfolio:ar-ugc-7 [ar]
   '002d9dab913f13496e6513e4a7761ec9': 10.3, // portfolio:ar-ugc-8 [ar]
   '583c9f5132d0cfe0f2eb26ea1df73446': 6.4, // portfolio:ar-ugc-9 [ar]
+  '0cf5d2139e0769332c053ac71984ca14': 3.0, // portfolio:ar-ugc-10 [ar]
+  '7359123313ee51b95976e3ae6adc331e': 10.4, // portfolio:ar-ugc-11 [ar]
+  '60c9247e04b35d3dde12aa6c918aa1d6': 15.2, // portfolio:ar-ugc-12 [ar]
   '37d2799756ba9cc827b3381b034474ce': 2.5, // portfolio:es-showcase-elyon-1 (Spanish homepage stage, group Elyon Dubai): the "Spanish girls trying Elyon Dubai" title frame
   '8cc42ca3f0a33667eb14cf5e2449b4ad': 9.5, // portfolio:es-showcase-elyon-2
   'dc0a340190fc4cd310e24448dda4f170': 11.9, // portfolio:es-showcase-elyon-3

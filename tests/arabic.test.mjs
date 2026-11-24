@@ -138,14 +138,16 @@ test('language selector: Arabic is offered with lang="ar" dir="rtl"; an equivale
   assert.equal(switchTarget('en', '/ugc-video-agency'), '/ugc-video-agency'); assert.equal(switchTarget('es', '/ugc-video-agency'), '/es/ugc-video-agency')
 })
 
-test('Arabic creator videos: valid entries, real Stream ids, Arabic-only, approved by the brief, no names/brands/credits/dates, no English-captioned clips, none leak into English or Spanish', () => {
+test('Arabic creator videos: valid entries, real Stream ids, Arabic-only, approved by the brief, no names/brands/credits/dates, the three English-captioned clips are labelled English, none leak into English or Spanish', () => {
   const ar = PORTFOLIO.filter((v) => v.onlyIn?.includes('ar') && v.id.startsWith('ar-ugc'))
-  assert.equal(ar.length, 12)
-  assert.equal(new Set(ar.map((v) => v.id)).size, 12); assert.equal(new Set(ar.map((v) => v.source.cloudflareId)).size, 12)
+  assert.equal(ar.length, 15)
+  assert.equal(new Set(ar.map((v) => v.id)).size, 15); assert.equal(new Set(ar.map((v) => v.source.cloudflareId)).size, 15)
+  const ENGLISH_CAPTIONED = ['0cf5d2139e0769332c053ac71984ca14', '7359123313ee51b95976e3ae6adc331e', '60c9247e04b35d3dde12aa6c918aa1d6']
   for (const v of ar) {
     assert.deepEqual(portfolioProblems(v), [], v.id)
     assert.match(v.source.cloudflareId, /^[0-9a-f]{32}$/, v.id)
-    assert.deepEqual(v.languages, ['ar']); assert.deepEqual(v.onlyIn, ['ar'])
+    assert.deepEqual(v.onlyIn, ['ar'])
+    if (ENGLISH_CAPTIONED.includes(v.source.cloudflareId)) { assert.deepEqual(v.languages, ['en'], `${v.id}: English captions, never labelled Arabic`); assert.ok(v.crossLanguageNote, v.id) } else assert.deepEqual(v.languages, ['ar'])
     assert.equal(v.type, 'ugc'); assert.equal(v.industry, 'unclassified')
     assert.ok(/[؀-ۿ]/.test(v.caption), 'caption is Arabic')
     assert.ok(v.creator === undefined && v.brand === undefined && v.productionCredit === undefined && v.uploadDate === undefined && v.production === undefined, `${v.id}: nothing invented (no name, brand, credit, date, production claim)`)
@@ -153,9 +155,9 @@ test('Arabic creator videos: valid entries, real Stream ids, Arabic-only, approv
     assert.ok(fs.existsSync(path.join(ROOT, 'public', v.poster)), `${v.id}: poster file exists`)
     assert.equal(v.approval.status, 'approved')
   }
-  // the three clips with English on-screen captions (AR-CREATOR-06/-09/-12) are not on the site
-  for (const uid of ['0cf5d2139e0769332c053ac71984ca14', '7359123313ee51b95976e3ae6adc331e', '60c9247e04b35d3dde12aa6c918aa1d6']) assert.ok(!JSON.stringify(PORTFOLIO).includes(uid), uid)
-  assert.equal(displayableFor('ar').length, 12 + 9, 'the 12 creator videos + the 9 revision videos (Mohamed, One Royal, Graspo)')
+  // the three clips with English on-screen captions (AR-CREATOR-06/-09/-12) are on the Arabic site only (owner request 2026-11-24), labelled English
+  for (const uid of ENGLISH_CAPTIONED) assert.equal(PORTFOLIO.filter((v) => v.source?.cloudflareId === uid).length, 1, uid)
+  assert.equal(displayableFor('ar').length, 15 + 9, 'the 15 creator videos + the 9 revision videos (Mohamed, One Royal, Graspo)')
   assert.equal(ar.filter((v) => v.placement === 'hero').length, 3, 'a three-phone hero stage, first = centre')
   // English and Spanish never see them
   const enIds = new Set(displayableFor('en').map((v) => v.id)); const esIds = new Set(displayableFor('es').map((v) => v.id))

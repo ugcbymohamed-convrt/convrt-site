@@ -41,7 +41,7 @@ The Saudi query «تصميم اعلانات سناب شات» (~500, ambiguous i
 Direct Google-Sheet access was not used in this run; the targeting above follows the verified findings in the brief and the local keyword exports under `~/Desktop/CONVRT/KEYWORDS/{UAE,SAUDI}`.
 
 ## Creator videos
-Twelve Arabic-speaking creator videos (Cloudflare Stream `AR-CREATOR-nn`, uploaded 2026-11-23) in `src/content/portfolio.js` (`languages: ['ar']`, `onlyIn: ['ar']`), three of them the hero stage (and the homepage stage), nine in the gallery/Showcase. Poster frames in `posterFrames.js` (+ `public/portfolio/ar-*.webp`).
+Fifteen creator videos (twelve Arabic, three English-captioned) (Cloudflare Stream `AR-CREATOR-nn`, uploaded 2026-11-23) in `src/content/portfolio.js` (`languages: ['ar']`, `onlyIn: ['ar']`), three of them the hero stage (and the homepage stage), nine in the gallery/Showcase. Poster frames in `posterFrames.js` (+ `public/portfolio/ar-*.webp`).
 - Creator names, nationalities, dialects, brands, credits and dates are **not** shown or invented; `production` is unset (the pages say these are independent creators' examples, not necessarily CONVRT productions).
 - Three clips from the same folder (`AR-CREATOR-06`, `-09`, `-12`) have **English** on-screen captions, so they were uploaded but are **not used**.
 - The approval flags rest on the brief's wording ("approved Arabic-speaking creators"): the owner should confirm portfolio permission and creator consent for each creator before Production.
@@ -62,7 +62,15 @@ Twelve Arabic-speaking creator videos (Cloudflare Stream `AR-CREATOR-nn`, upload
 | `ar-ugc-8` | `002d9dab913f13496e6513e4a7761ec9` | -14 (IMG_9010) | gallery + Showcase | فيديو يشرح فكرة محتوى المستخدمين بأسلوب بصري |
 | `ar-ugc-9` | `583c9f5132d0cfe0f2eb26ea1df73446` | -15 (IMG_9881) | gallery + Showcase | عرض منتج رياضي واستخداماته |
 
-Not used (English on-screen captions): `0cf5d213…` (-06, IMG_0769), `73591233…` (-09, IMG_4545), `60c9247e…` (-12, IMG_7827). They remain on Stream and can be deleted by the owner.
+Added 2026-11-24 on the owner's request (they have English on-screen captions; tagged `languages: ['en']`, so Arabic cards and the Showcase language filter say «الإنجليزية»; no audio transcript was run). Third-party names/logos that appear in the footage are never named in the copy:
+
+| Entry | Stream id | Upload name | Placement | Caption (describes the footage only) |
+|---|---|---|---|---|
+| `ar-ugc-10` | `0cf5d2139e0769332c053ac71984ca14` | -06 (IMG_0769) | gallery + Showcase | عرض قميص بقصّة واسعة من الأمام والخلف مع لقطة قريبة للقماش |
+| `ar-ugc-11` | `7359123313ee51b95976e3ae6adc331e` | -09 (IMG_4545) | gallery + Showcase | صانع محتوى يشرح منصة لإدارة علاقات العملاء أمام الكاميرا |
+| `ar-ugc-12` | `60c9247e04b35d3dde12aa6c918aa1d6` | -12 (IMG_7827) | gallery + Showcase | جولة داخل شقة في برج سكني مع لقطات للمبنى والمرافق |
+
+Owner check: IMG_4545 shows a company logo and IMG_7827 a developer logo and a «May 2026» date on screen (client/third-party content); confirm they are fit to show.
 
 ## Revision 2 (owner brief, 2026-11-23): design parity with the English homepage, four service pages, Graspo case study
 

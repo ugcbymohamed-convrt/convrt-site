@@ -50,6 +50,9 @@ Not changed: the Roadmap explainer keeps its deliberately chosen 25.6 s frame; t
 | `4af34968…` | 27.3s | portfolio:es-spokesperson-6 [es] |
 | `5639f5ff…` | 19.6s | portfolio:fr-mohamed-skycop [fr] |
 | `583c9f51…` | 6.4s | portfolio:ar-ugc-9 [ar] |
+| `0cf5d213…` | 3.0s | portfolio:ar-ugc-10 [ar] |
+| `73591233…` | 10.4s | portfolio:ar-ugc-11 [ar] |
+| `60c9247e…` | 15.2s | portfolio:ar-ugc-12 [ar] |
 | `5904f418…` | 5.5s | home-hero-es:home-hero-es-main (Spanish CONVRT ad) |
 | `5b1058e9…` | 2.1s | portfolio:fr-ugc-hero-3 [fr] |
 | `5f7b145c…` | 5.7s | portfolio:en-mohamed-spokesperson-2 |
