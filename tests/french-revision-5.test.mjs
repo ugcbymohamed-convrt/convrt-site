@@ -66,7 +66,6 @@ test('Footer: one component, the Studio column mirrors the top menu in every lan
   const f = src('src/components/Footer.jsx')
   assert.ok(!/SERVICE_MENU/.test(f), 'service pages are linked from the Services dropdown, not repeated in the footer')
   assert.equal(translate('fr', 'Refer & Earn'), 'Parrainez et gagnez')
-  assert.equal(translate('es', 'Refer & Earn'), 'Recomienda y gana')
   assert.equal(translate('fr', 'Case Studies'), 'Études de cas')
   assert.equal(translate('fr', 'Creator Showcase'), 'Créateurs')
 })

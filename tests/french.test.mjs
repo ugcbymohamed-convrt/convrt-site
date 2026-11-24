@@ -360,7 +360,7 @@ test('internal links: translated targets stay in French, every other target is a
       assert.ok(known.has(href), `${p}: unknown link ${href}`)
       const label = m[4].replace(/<[^>]+>/g, '')
       const sameAsCurrent = /hreflang="en"/i.test(m[1] + m[3]) // the language selector's own English link
-      if (/^(\/spokesperson|\/social-media|\/saas|\/about|\/contact|\/case-studies|\/privacy|\/terms|\/legal-notice)/.test(href)) assert.ok(/en anglais|English/.test(label) || sameAsCurrent || /lang="en"/.test(m[1] + m[3]), `${p}: link to the English-only page ${href} must say so: "${label.slice(0, 60)}"`)
+      if (/^(\/spokesperson|\/social-media|\/saas|\/about|\/contact|\/case-studies|\/privacy|\/terms|\/legal-notice)/.test(href)) assert.ok(/en anglais|English/.test(label) || sameAsCurrent || /lang="en"/.test(m[1] + m[3]) || /^\s*\(en anglais\)/.test(html.slice(m.index + m[0].length)), `${p}: link to the English-only page ${href} must say so: "${label.slice(0, 60)}"`)
       assert.ok(!['/free-hooks'].includes(href), `${p}: French pages never link to ${href}`) // /referrals is a French page now; /blog is the English blog (labelled)
     }
     assert.ok(!/href="\/free-hooks/.test(html) && !/href="\/referrals/.test(html.replace(/<a [^>]*hreflang="en"[^>]*>[\s\S]*?<\/a>/gi, '')), p) // the language selector's English alternate is the only allowed link to an English referral page

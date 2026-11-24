@@ -228,9 +228,10 @@ export default function ReferralForm({ preselect }) {
                         {PRIVACY_POLICY_URL && (
                           <>
                             {' '}{tr('See the')}{' '}
-                            <a href={PRIVACY_POLICY_URL} target="_blank" rel="noreferrer noopener" {...(currentLocale() === 'en' ? {} : { lang: 'en' })} className="text-ink underline underline-offset-2 hover:text-lime">
-                              {tr('privacy policy')}{currentLocale() === 'en' ? null : ` ${tr('(in English)')}`}
-                            </a>.
+                            <a href={PRIVACY_POLICY_URL} target="_blank" rel="noreferrer noopener" className="text-ink underline underline-offset-2 hover:text-lime">
+                              {tr('privacy policy')}
+                            </a>
+                            {currentLocale() === 'en' ? null : ` ${tr('(in English)')}`}.
                           </>
                         )}
                         <span className="text-lime" aria-hidden="true"> *</span>

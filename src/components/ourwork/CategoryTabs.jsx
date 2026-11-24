@@ -82,7 +82,7 @@ export default function CategoryTabs({ tabs, activeId, counts, onSelect }) {
               {tr(t.label)}
               <span className={`text-[12px] font-bold tabular-nums ${active ? 'text-canvas/70' : 'text-ink-subtle'}`}>{counts[t.id]}</span>
               {/* translated pages: a plain space after the count, so « Toutes les vidéos 9 » and the next label never read as one run of text (“Toutes les vidéos9UGC”) in extracted text */}
-              {currentLocale() !== 'en' && ' '}
+              {currentLocale() === 'fr' && ' '}
             </button>
           )
         })}

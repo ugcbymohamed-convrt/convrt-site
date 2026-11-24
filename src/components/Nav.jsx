@@ -131,7 +131,7 @@ export default function Nav() {
                 <ul className="min-w-[250px] rounded-2xl border border-white/10 bg-[rgba(12,12,14,0.96)] p-2 shadow-[0_24px_60px_-20px_rgba(0,0,0,0.9)] backdrop-blur-xl">
                   {serviceMenuFor(locale, SERVICE_MENU).map((m) => (
                     <li key={m.href}>
-                      <a href={localHref(m.href, locale)} className="block whitespace-nowrap rounded-xl px-4 py-2.5 text-sm text-ink-muted transition-colors hover:bg-white/[0.06] hover:text-ink focus-visible:bg-white/[0.06] focus-visible:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-lime">{SERVICE_MENU_LABELS[locale]?.[m.href] ?? tr(m.label)}</a>
+                      <a href={localHref(m.href, locale)} className="block rounded-xl px-4 py-2.5 text-sm text-ink-muted transition-colors hover:bg-white/[0.06] hover:text-ink focus-visible:bg-white/[0.06] focus-visible:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-lime">{SERVICE_MENU_LABELS[locale]?.[m.href] ?? tr(m.label)}</a>
                     </li>
                   ))}
                 </ul>
