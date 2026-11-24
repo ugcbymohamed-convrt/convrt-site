@@ -54,6 +54,7 @@ export const UGC_GALLERY = {
 
 function Card({ item, index, playing, onPlay, config }) {
   const sample = item.sample
+  // French (owner, 2026-11-24): no generic type pill on the creator cards (the French library and galleries carry none).
   // Spanish pages name the language in full ("UGC · Español"); English keeps the two-letter code.
   const badge = config.badgeByType && item.type ? typeLabel(item) : config.badge // a mixed gallery (Spanish homepage) names each video's own type
   // Another language's site names no language on its cards: every video there is in that language, so "UGC · Español" repeated on each card says nothing (Spanish review 3, Nov 2026). The language stays in the records and the Showcase filters.
@@ -87,7 +88,7 @@ function Card({ item, index, playing, onPlay, config }) {
           )}
           <span aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/35" />
           {/* Spanish: a generic "UGC" pill on every card of a single-type gallery adds nothing, so it is left out (the mixed homepage gallery still names each video's own type) */}
-          {!(currentLocale() === 'es' && !config.badgeByType) && (
+          {!(currentLocale() === 'es' && !config.badgeByType) && currentLocale() !== 'fr' && (
           <span aria-hidden="true" className="absolute left-3 top-3 inline-flex items-center gap-1.5 rounded-full border border-lime/40 bg-black/55 px-2.5 py-1 text-xs font-bold uppercase tracking-[0.1em] text-lime backdrop-blur">
             <span className="h-1.5 w-1.5 rounded-full bg-lime" />{langs ? `${badge} · ${langs}` : badge}
           </span>

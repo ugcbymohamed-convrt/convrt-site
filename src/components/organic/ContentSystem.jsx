@@ -7,7 +7,7 @@ import { PILLARS } from './OrganicScenes.jsx'
 import { tr } from '../../i18n/tr.js'
 import { currentLocale } from '../../i18n/locale.js'
 import { localizeConfig } from '../../i18n/content.js'
-import { ES_SECTION_INTROS } from '../../i18n/es/labels.js'
+import { editorial } from '../../i18n/editorial.js'
 
 /* "Not just more posts. A content system." The organic counterpart of the UGC page's creative-testing diagram and the Spokesperson page's delivery formats, with the SAME
    interaction system (src/components/ugc/TestingDiagram.jsx): one scene on a stage at a time, a live caption, one button per state, a one-time pass through the states
@@ -246,7 +246,7 @@ export default function ContentSystem() {
       <div className="mx-auto max-w-2xl text-center">
         <p className="text-xs font-semibold uppercase tracking-[0.16em] text-lime">{eyebrow}</p>
         <h3 className="mt-2 font-display text-xl font-semibold leading-snug tracking-snug text-ink md:text-[1.7rem]">{title}</h3>
-        {currentLocale() === 'es' && <p className="mx-auto mt-3 max-w-xl text-[15px] leading-relaxed text-ink-muted">{ES_SECTION_INTROS['organic-content-system']}</p>}
+        {editorial()?.sectionIntros?.['organic-content-system'] && <p className="mx-auto mt-3 max-w-xl text-[15px] leading-relaxed text-ink-muted">{editorial().sectionIntros['organic-content-system']}</p>}
       </div>
 
       <Flow step={step} />

@@ -426,12 +426,15 @@ test('regression: the nine homepage client videos (and the six Spanish homepage-
   const english = PORTFOLIO.filter((v) => v.showcase && !v.onlyIn)
   assert.equal(english.length, 9)
   assert.deepEqual([...new Set(english.map((v) => v.showcase))].sort(), ['adscale', 'elyon', 'graspo'])
-  const spanish = PORTFOLIO.filter((v) => v.showcase && v.onlyIn)
+  const spanish = PORTFOLIO.filter((v) => v.showcase && v.onlyIn && v.onlyIn.includes('es'))
   assert.equal(spanish.length, 6, 'the Spanish homepage stage: three Elyon Dubai videos and three mixed UGC videos')
   assert.deepEqual([...new Set(spanish.map((v) => v.showcase))].sort(), ['elyon-es', 'mixed-es'])
   assert.ok(spanish.every((v) => v.onlyIn.length === 1 && v.onlyIn[0] === 'es'), 'Spanish site only')
   assert.ok(spanish.filter((v) => v.showcase === 'mixed-es').every((v) => !v.brand), 'the mixed group is a portfolio selection: no brand or client is attached to its videos')
-  const clients = [...english, ...spanish]
+  const french = PORTFOLIO.filter((v) => v.showcase && v.onlyIn && v.onlyIn.includes('fr'))
+  assert.equal(french.length, 3, 'the French client stage: three FIXD landscape videos')
+  assert.ok(french.every((v) => v.showcase === 'fixd' && v.onlyIn.length === 1), 'French site only')
+  const clients = [...english, ...spanish, ...french]
   for (const v of clients) {
     assert.equal(v.approval.portfolioUse, false, `${v.id}: portfolioUse stays false`)
     assert.equal(v.approval.creatorConsent, false, `${v.id}: creatorConsent stays false`)

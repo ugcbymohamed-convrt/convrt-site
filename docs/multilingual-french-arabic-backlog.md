@@ -1,5 +1,7 @@
 # French and Arabic: research inventory and implementation backlog
 
+**UPDATE (Nov 2026): French is built on branch `french-localization`: see `docs/multilingual-french-release.md`. The French section below is historical.**
+
 Status: architecture prepared, nothing published (`status: 'prepared'` in `src/i18n/locales.js`; no routes are built; no selector entry; no hreflang; no dictionary). **No French or Arabic keyword volume,
 market-size or creator-availability claim exists in this repository, and none may be added without research and owner verification.**
 

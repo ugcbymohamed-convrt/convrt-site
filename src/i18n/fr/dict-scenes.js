@@ -1,0 +1,87 @@
+/* French dictionary: interface states a static render cannot reach (404 page, players, calendar gate, closed panels, process scenes). Keys are the exact English strings. */
+export default {
+  // Page not found
+  "Page not found | CONVRT": "Page introuvable | CONVRT",
+  "This page could not be found.": "Cette page est introuvable.",
+  "Error 404": "Erreur 404",
+  "This page": "Cette page",
+  "doesn’t exist.": "n’existe pas.",
+  "The link may be old or mistyped. Here is where most people want to go.": "Le lien est peut-être ancien ou mal saisi. Voici où vont la plupart des visiteurs.",
+  "Back to the homepage": "Retour à l’accueil",
+
+  // Players and carousels
+  "Mute": "Couper le son",
+  "Pause": "Pause",
+  "Pause video": "Mettre la vidéo en pause",
+  "Turn sound off": "Couper le son",
+  "Tap a side phone to bring it forward": "Touchez un téléphone sur le côté pour le mettre au premier plan",
+  "This video could not be loaded. Please try again.": "Impossible de charger cette vidéo. Veuillez réessayer.",
+  "Seek": "Position de lecture",
+  "Volume": "Volume",
+  "Close video": "Fermer la vidéo",
+  "Cookie settings": "Paramètres des cookies",
+
+  // Hero strings used only where the Roadmap flow is unavailable (never shown in French, kept complete)
+  "Book a free strategy call.": "Réservez un appel stratégique offert.",
+  "We tell you exactly what you need.": "Nous vous disons précisément ce qu’il vous faut.",
+  "Not ready yet? We've got two more FREE ways to start.": "Pas encore prêt ? Il existe deux autres façons de démarrer, offertes elles aussi.",
+  "The online Roadmap application is not available in this language yet. Book a free 20-minute strategy call (subject to a short fit check, no obligation) and we explain how to get your five ad concepts.": "La demande en ligne de la stratégie créative n’est pas encore disponible dans cette langue. Réservez un appel stratégique offert de 20 minutes (après un court échange pour vérifier que l’offre vous convient, sans engagement) et nous vous expliquons comment recevoir vos cinq concepts publicitaires.",
+  "for more.": "pour en savoir plus.",
+
+  // Calendar gate and Roadmap booking
+  "Show the booking calendar": "Afficher le calendrier de réservation",
+  "Show the calendar": "Afficher le calendrier",
+  "Open Calendly in a new tab": "Ouvrir Calendly dans un nouvel onglet",
+  "← Change my answers": "← Modifier mes réponses",
+  "You’re a good fit": "Votre profil nous correspond",
+  "You’re booked. See you on the call!": "C’est réservé. À très vite lors de l’appel !",
+  "Choose a time for your strategy session.": "Choisissez un créneau pour votre session stratégique.",
+  "Calendly will email your confirmation and meeting details. We’ll prepare your roadmap concepts ahead of the session.": "Calendly vous enverra la confirmation et les détails du rendez-vous par e-mail. Nous préparerons les concepts de votre stratégie créative avant la session.",
+  "Pick a time below to book your free Creative Growth Roadmap session. You’ll enter your details on the next screen and Calendly will confirm your booking. Your concepts are prepared for confirmed bookings, so please choose a time that works.": "Choisissez ci-dessous un créneau pour votre session de stratégie créative offerte. Vous saisirez vos coordonnées à l’écran suivant et Calendly confirmera votre réservation. Les concepts sont préparés pour les réservations confirmées : choisissez donc un horaire qui vous convient.",
+  "Loading calendar…": "Chargement du calendrier…",
+  "Book your Free Creative Growth Roadmap session with CONVRT": "Réservez votre session de stratégie créative offerte avec CONVRT",
+  "The calendar is taking a while to load.": "Le calendrier met du temps à se charger.",
+  "Calendar not loading?": "Le calendrier ne s’affiche pas ?",
+  "Open it in a new tab": "Ouvrez-le dans un nouvel onglet",
+  "or email": "ou écrivez à",
+  "Prefer email? Write to": "Vous préférez l’e-mail ? Écrivez à",
+
+  // Free-video application states
+  "Submitting…": "Envoi en cours…",
+  "Application received!": "Candidature reçue !",
+  "Thanks for applying for your free video production trial. Our team will review your brand and production needs. If there’s a good fit, we’ll reach out to discuss the next steps.": "Merci d’avoir candidaté pour la vidéo de test offerte. Notre équipe va étudier votre marque et vos besoins de production. Si le projet correspond, nous vous contacterons pour discuter des prochaines étapes.",
+  "Back to home": "Retour à l’accueil",
+
+  // Creator Showcase library states
+  "New work is on its way.": "De nouvelles vidéos arrivent.",
+  "Videos appear here as soon as they are approved for public display.": "Les vidéos apparaissent ici dès qu’elles sont validées pour une diffusion publique.",
+  "Filter videos by spoken language": "Filtrer les vidéos par langue parlée",
+  "All languages": "Toutes les langues",
+  "video": "vidéo",
+  "Show more": "Afficher plus",
+  "more": "de plus",
+  "Use the tabs above to browse by industry:": "Utilisez les onglets ci-dessus pour parcourir par secteur :",
+  "Related case study": "Étude de cas associée",
+  "All": "Toutes",
+
+  // Pricing, UGC page chrome
+  "Pricing questions,": "Vos questions sur les offres,",
+  "UGC video production,": "Vos questions sur la production UGC,",
+  "answered.": "nos réponses.",
+  "Rec": "Enreg.",
+  "and": "et",
+  "We write the script": "Nous écrivons le script",
+  "You approve": "Vous validez",
+  "Free strategy session. Every industry welcome, subject to a short fit check. No obligation.": "Session stratégique offerte. Tous les secteurs sont les bienvenus, après un court échange pour vérifier que l’offre convient. Sans engagement.",
+  "2 · Learn what resonates": "2 · Identifier ce qui fonctionne",
+  "Next batch builds on it": "Le lot suivant s’appuie dessus",
+  "Test it the same way, then repeat": "Testez-le de la même façon, puis recommencez",
+  "Conceptual illustration, not real results": "Illustration conceptuelle, pas des résultats réels",
+  "We match the right creator": "Nous choisissons le bon créateur",
+  "Story": "Récit",
+  "Call": "CTA",
+  "Delivered": "Livré",
+  "Ready to test": "Prêt à tester",
+  "Finished versions, plus guidance on what to test next.": "Les versions finalisées, avec des recommandations sur ce qu’il faut tester ensuite.",
+  "Pause animation": "Mettre l’animation en pause",
+}

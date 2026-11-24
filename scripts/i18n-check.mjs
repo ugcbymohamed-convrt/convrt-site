@@ -12,9 +12,9 @@ import { DICTIONARIES } from '../src/i18n/dictionaries.js'
 const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', 'src')
 const walk = (d, out = []) => { for (const e of fs.readdirSync(d, { withFileTypes: true })) { const p = path.join(d, e.name); e.isDirectory() ? (e.name === 'i18n' ? 0 : walk(p, out)) : /\.(jsx?|mjs)$/.test(e.name) && out.push(p) } return out }
 
-export function literalKeys() {
+export function literalKeys(uses = new Map()) {
   const keys = new Map()
-  const add = (k, f) => { if (!keys.has(k)) keys.set(k, f) }
+  const add = (k, f) => { if (!keys.has(k)) keys.set(k, f); (uses.get(k) ?? uses.set(k, []).get(k)).push(f) }
   for (const f of walk(ROOT)) {
     const s = fs.readFileSync(f, 'utf8')
     for (const m of s.matchAll(/\btr\(\s*'((?:[^'\\]|\\.)*)'\s*\)/g)) add(m[1].replace(/\\'/g, "'").replace(/\\\\/g, '\\'), f)
@@ -24,9 +24,19 @@ export function literalKeys() {
   return keys
 }
 
+/* Pages a language does not have are not its business: a string only a page the language lacks uses is not required in that dictionary. French has every service page now (UGC, Spokesperson,
+   SaaS, Organic Social: docs/multilingual-french-release.md), so nothing is excluded for it any more; the map stays so a future language can scope itself the same way. */
+const SCOPE_EXCLUDED = {
+  // Spanish has no case-study pages yet (the French ones were built first, Nov 2026): their components are not Spanish's business until /es/case-studies exists.
+  es: [/^components[\\/](graspo|elyon|caseStudies)[\\/]/, /^(CaseStudiesPage|GraspoCaseStudyPage|ElyonCaseStudyPage)\.jsx$/],
+}
 export function missingFor(locale) {
   const dict = DICTIONARIES[locale] ?? {}
-  return [...literalKeys()].filter(([k]) => !(k in dict)).map(([k, f]) => ({ key: k, file: path.relative(ROOT, f) }))
+  const excluded = SCOPE_EXCLUDED[locale] ?? []
+  const uses = new Map()
+  const keys = literalKeys(uses)
+  // a string is required when ANY file that uses it belongs to a page the language has (the first file found is not enough: several pages share strings)
+  return [...keys].map(([k, f]) => [k, uses.get(k).find((u) => !excluded.some((re) => re.test(path.relative(ROOT, u)))) ?? f, uses.get(k).some((u) => !excluded.some((re) => re.test(path.relative(ROOT, u))))]).filter(([k, , needed]) => !(k in dict) && needed).map(([k, f]) => [k, f]).map(([k, f]) => ({ key: k, file: path.relative(ROOT, f) }))
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {

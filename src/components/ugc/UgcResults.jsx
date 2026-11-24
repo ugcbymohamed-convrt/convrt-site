@@ -8,6 +8,8 @@ import { currentLocale } from '../../i18n/locale.js'
 import { localizeStat } from '../../i18n/format.js'
 import { formatMoneyEs } from '../../i18n/es/money.js'
 import { ES_REVIEWS } from '../../i18n/es/reviews.js'
+import { editorial } from '../../i18n/editorial.js'
+import ClientQuote from '../ClientQuote.jsx'
 
 /* SECTION 4: results and client feedback, in one compact block.
    • Elyon 5.28x: ONE individual creator-led UGC video, client-reported, early learning phase, never typical or guaranteed (wording
@@ -20,7 +22,7 @@ const LOGOS = {
   adscale: { src: '/clients/adscale.png', alt: 'Adscale', w: 531, h: 149 },
   elyon: { src: '/clients/elyon.png', alt: 'Elyon Dubai', w: 600, h: 226 },
 }
-/* The client's own messages, word for word (as published in the Elyon case study). */
+/* The client's own messages, word for word (as published in the Elyon case study). English only: they are the client's raw wording (typos included), so a translated page states the same facts in its own words instead of showing them. */
 const CLIENT_MESSAGES = ['It has 9 sales with an revenue of 3421.25$', 'Roas 5.28']
 
 /* One-time number reveal: the page text is always the final figure ("5.28x"); when it scrolls into view it counts up once, over about
@@ -54,7 +56,7 @@ function RoasNumber({ value, locale }) {
 export default function UgcResults() {
   const e = ELYON_PROOF
   const locale = currentLocale()
-  const revenue = locale === 'en' ? e.revenue : formatMoneyEs({ amount: Number(e.revenue.replace(/[$,]/g, '')), currency: 'USD' })
+  const revenue = locale === 'en' ? e.revenue : editorial(locale).formatMoney({ amount: Number(e.revenue.replace(/[$,]/g, '')), currency: 'USD' })
   return (
     <Section id="results" label="ugc-results-heading" glow>
       <Reveal>
@@ -121,7 +123,9 @@ export default function UgcResults() {
                     className="h-7 w-auto max-w-[140px] object-contain object-left"
                     style={{ filter: 'brightness(0) invert(1)' }}
                   />
-                  <blockquote className="mt-4 flex-1 text-[15px] leading-relaxed text-ink">{locale === 'es' && ES_REVIEWS[t.id] ? <>«{ES_REVIEWS[t.id].full}»</> : <>&ldquo;{t.quote}&rdquo;</>}</blockquote>
+                  {locale === 'es' && ES_REVIEWS[t.id]
+                    ? <blockquote className="mt-4 flex-1 text-[15px] leading-relaxed text-ink">«{ES_REVIEWS[t.id].full}»</blockquote>
+                    : <ClientQuote text={t.quote} typographic className="mt-4 flex-1 text-[15px] leading-relaxed text-ink" innerClass="text-[15px] leading-relaxed text-ink" outerClass="mt-4 flex flex-1 flex-col gap-3" />}
                   <figcaption className="mt-4 text-sm text-ink-muted">
                     <span className="font-semibold text-ink">{t.brand}</span> · {locale === 'es' && ES_REVIEWS[t.id] ? ES_REVIEWS[t.id].category : tr(t.category)}
                   </figcaption>
@@ -131,6 +135,8 @@ export default function UgcResults() {
           })}
         </div>
       </div>
+
+      {editorial(locale)?.testimonialsNote && <p className="mt-6 text-center text-[13px] text-ink-muted">{editorial(locale).testimonialsNote}</p>}
 
       <Reveal className="mt-8 flex justify-center">
         <RoadmapCta location="results" />

@@ -17,14 +17,17 @@ import { localizedPath } from './paths.js'
 import { hasTranslation } from './registry.js'
 import { hasPriceTokens, resolvePriceTokens } from './pricing.js'
 import { hasRewardTokens, resolveRewardTokens } from './referralReward.js'
+import { frTypography } from './fr/typography.js'
 
 export function translate(locale, text) {
   if (locale === DEFAULT_LOCALE) return text
   const hit = DICTIONARIES[locale]?.[text]
   if (hit !== undefined) {
     const v = hasRewardTokens(hit) ? resolveRewardTokens(locale, hit) : hit
-    return hasPriceTokens(v) ? resolvePriceTokens(locale, v) : v
+    const out = hasPriceTokens(v) ? resolvePriceTokens(locale, v) : v
+    return locale === 'fr' ? frTypography(out) : out
   }
+  if (!/[A-Za-z]/.test(text)) return text // pure numerals and punctuation ('75', '4', '12–34') need no translation
   // Record the miss: the build (vite-plugin-static-routes.js) refuses to write a translated page that rendered any untranslated string.
   ;(globalThis.__i18nMisses ||= new Set()).add(`${locale}: ${text}`)
   if (typeof window !== 'undefined' && window.location?.hostname === 'localhost') console.warn(`[i18n] missing ${locale} translation: ${text}`)
@@ -48,6 +51,8 @@ export function hrefFor(href, locale = currentLocale()) {
   const [path, ...rest] = href.split('#')
   return `${localHref(path, locale)}${rest.length ? `#${rest.join('#')}` : ''}`
 }
+/* True when a link from a page in `locale` to `basePath` lands on the ENGLISH page because that page has no translation (src/i18n/registry.js). Used to say so on the link. */
+export const isFallbackPath = (basePath, locale = currentLocale()) => locale !== DEFAULT_LOCALE && !hasTranslation(locale, basePath)
 export const useHref = () => {
   const locale = currentLocale()
   return (basePath) => localHref(basePath, locale)
@@ -61,3 +66,10 @@ export const tr = (text) => translate(currentLocale(), text)
 export function T({ children }) {
   return tr(typeof children === 'string' ? children : String(children))
 }
+
+/* The label of a five-concept CTA on a PAGE (hero, final CTA, pricing): French says « Recevoir mes 5 concepts gratuits » there; the shorter « Recevoir 5 concepts gratuits » stays on the nav button and the homepage
+   (src/i18n/fr/dict-shell.js). Every other label goes through the dictionary unchanged. */
+export const ctaText = (label, locale = currentLocale()) => (locale === 'fr' && label === 'Get 5 Free Ad Concepts' ? 'Recevoir mes 5 concepts gratuits' : translate(locale, label))
+
+/* A percentage shown in a chart: English '14.2%'; French '14,2 %' (decimal comma, non-breaking space before the sign); Spanish '14,2 %'. */
+export const pctText = (n, locale = currentLocale()) => (locale === DEFAULT_LOCALE ? `${n}%` : `${String(n).replace('.', ',')}\u00a0%`)

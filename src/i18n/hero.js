@@ -1,7 +1,8 @@
 import { localizeConfig } from './content.js'
 import { ES_HERO } from './es/hero.js'
+import { FR_HERO } from './fr/hero.js'
 
-const BY_LOCALE = { es: ES_HERO }
+const BY_LOCALE = { es: ES_HERO, fr: FR_HERO }
 
 /* A service-page hero config in the page's language (English: the config itself). Text goes through the dictionary; the H1 words come from src/i18n/<locale>/hero.js. */
 export function localizeHero(config, locale) {

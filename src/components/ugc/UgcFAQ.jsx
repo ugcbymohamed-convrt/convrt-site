@@ -5,7 +5,7 @@ import { Section, Head, Reveal, TextLink } from './shared.jsx'
 import { tr, T } from '../../i18n/tr.js'
 import { currentLocale } from '../../i18n/locale.js'
 import { localizeFaq } from '../../i18n/content.js'
-import { ES_FAQ_TITLES, ES_SECTION_INTROS } from '../../i18n/es/labels.js'
+import { editorial } from '../../i18n/editorial.js'
 
 /* SECTION 5: FAQ (14 questions). EVERY question and answer is always in the DOM (and so in the prerendered HTML). Collapsed answers stay in
    the document but are visibility:hidden, so they are out of the tab order and accessibility tree. The same UGC_FAQ array feeds
@@ -78,8 +78,8 @@ export const UGC_FAQ_CONFIG = {
 
 export default function UgcFAQ({ config = UGC_FAQ_CONFIG }) {
   const { prefix, title: titleEn } = config
-  // Spanish: the approved editorial heading ("Todo lo que necesitas saber ... ."), split so the last words keep the lime accent. English keeps its own title.
-  const esTitle = currentLocale() === 'es' ? ES_FAQ_TITLES[prefix] : null
+  // Translated pages: the approved editorial heading (for example Spanish "Todo lo que necesitas saber ... ."), split so the last words keep the lime accent. English keeps its own title.
+  const esTitle = editorial()?.faqTitles?.[prefix] ?? null
   const title = esTitle ? <>{esTitle[0]}{' '}<span className="text-lime">{esTitle[1]}</span></> : titleEn
   // Questions and answers go through the page language's dictionary (identity in English); order, ids and links are the English ones.
   const items = localizeFaq(config.items, currentLocale())
@@ -94,7 +94,7 @@ export default function UgcFAQ({ config = UGC_FAQ_CONFIG }) {
     <Section id={`${prefix}-faq`} label={`${prefix}-faq-heading`}>
       <div className="mx-auto max-w-3xl">
         <Reveal>
-          <Head id={`${prefix}-faq-heading`} eyebrow={tr('FAQ')} title={title} intro={currentLocale() === 'es' ? ES_SECTION_INTROS[`${prefix}-faq`] : undefined} />
+          <Head id={`${prefix}-faq-heading`} eyebrow={tr('FAQ')} title={title} intro={editorial()?.sectionIntros?.[`${prefix}-faq`]} />
         </Reveal>
         <div className="mt-8 h-px bg-white/[0.06]" />
         {items.map((item) => (

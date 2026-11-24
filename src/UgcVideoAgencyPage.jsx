@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react'
 import SectionDivider from './components/SectionDivider.jsx'
 import UgcHero from './components/ugc/UgcHero.jsx'
 import UgcGallery from './components/ugc/UgcGallery.jsx'
+import UgcOverview from './components/ugc/UgcOverview.jsx'
 import UgcProcess from './components/ugc/UgcProcess.jsx'
 import UgcResults from './components/ugc/UgcResults.jsx'
 import UgcFAQ from './components/ugc/UgcFAQ.jsx'
@@ -43,6 +44,8 @@ export default function UgcVideoAgencyPage() {
       </nav>
       <UgcHero items={heroItems} />
       <SectionDivider />
+      {/* French only: the buyer's four questions in one block (renders nothing in English and Spanish). */}
+      <UgcOverview />
       <UgcProcess />
       <UgcGallery items={galleryItems} />
       <SectionDivider />

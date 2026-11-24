@@ -27,12 +27,27 @@ export const TRANSLATED_PATHS = {
     '/creative-growth-roadmap',
     // The 1 FREE video application (noindex like the English page and, on top of that, held by a release gate until the owner and the lawyer have reviewed it: src/i18n/release.js).
     '/risk-free-trial',
-    // The Referral Partner Program (noindex like the English page while its launch gate is closed: src/config.js REFERRALS_INDEXABLE).
     '/referrals',
   ],
-  // French and Arabic: the complete translations live on their own branches (french-localization, arabic-localization), not merged here. On THIS branch each language holds only the Referral
-  // Partner Program page: its locale is in 'review' status (reachable by URL, noindex, no sitemap, no hreflang, not in the selector). See docs/multilingual-referrals-fr-ar.md.
-  fr: ['/referrals'],
+  // French (France-first, Nov 2026): the homepage, the four service pages (UGC, spokesperson, organic social, SaaS: native French, no video galleries, see
+  // docs/multilingual-french-release.md), pricing, the creator showcase, the case studies, the two conversion flows and the Referral Partner Program. Everything else (About, Contact, blog, legal)
+  // is deliberately not translated yet: French pages link to the English page and say so.
+  fr: [
+    '/',
+    '/ugc-video-agency',
+    '/spokesperson-video-production',
+    '/social-media-video-production',
+    '/saas-video-production',
+    '/pricing',
+    '/creator-showcase',
+    '/case-studies',
+    '/case-studies/graspo',
+    '/case-studies/elyon',
+    '/creative-growth-roadmap',
+    '/risk-free-trial',
+    '/referrals',
+  ],
+  // Arabic: on this branch only the Referral Partner Program page (its locale is in 'review' status); the complete Arabic site lives on arabic-localization.
   ar: ['/referrals'],
 }
 

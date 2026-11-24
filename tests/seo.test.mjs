@@ -80,11 +80,11 @@ test('manifest: "/" copy matches the static <head> in index.html (no drift)', ()
   assert.ok(html.replace(/\s+/g, ' ').includes(`content="${SITE_SEO['/'].description}"`))
 })
 
-test('manifest: Referrals keeps its own in-page head code (its tests pin that file) — copy must match the manifest', () => {
+test('manifest: the Referrals page takes its head from the manifest (pageHead), so its copy cannot drift', () => {
   const page = read('src/ReferralsPage.jsx')
-  assert.ok(page.includes(`'${SITE_SEO[REFERRALS_PATH].title}'`), 'title drifted')
-  assert.ok(page.includes(`'${SITE_SEO[REFERRALS_PATH].description}'`), 'description drifted')
-  assert.match(page, /noindex: !REFERRALS_INDEXABLE/)
+  assert.match(page, /pageHead\(REFERRALS_PATH\)/)
+  assert.ok(SITE_SEO[REFERRALS_PATH].title && SITE_SEO[REFERRALS_PATH].description)
+  assert.equal(SITE_SEO[REFERRALS_PATH].indexable, REFERRALS_INDEXABLE)
 })
 
 test('manifest: every page with a head has a unique title and description, absolute canonical on www', () => {

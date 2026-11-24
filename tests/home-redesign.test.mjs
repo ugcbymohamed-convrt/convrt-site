@@ -416,7 +416,7 @@ test('motion and accessibility: the new animations are off for prefers-reduced-m
   assert.match(css, /@media \(prefers-reduced-motion: reduce\) \{\s*\.sc-panel-in \{ animation: none; \}/)
   assert.ok(!/\.rv-card/.test(css), 'the old review-card styles are gone')
   const showcase = read('src/components/home/IndustryShowcase.jsx')
-  for (const k of ['role="tablist"', 'role="tab"', 'aria-selected', 'ArrowRight: 1', "matchMedia?.('(prefers-reduced-motion: reduce)')", 'motion-reduce:']) assert.ok(showcase.includes(k), k)
+  for (const k of ["'tablist'", "role: 'tab'", 'aria-selected', 'ArrowRight: 1', "matchMedia?.('(prefers-reduced-motion: reduce)')", 'motion-reduce:']) assert.ok(showcase.includes(k), k)
   const stage = read('src/components/home/RotaryStage.jsx')
   for (const k of ["e.key === 'ArrowRight'", "e.key === 'ArrowLeft'", 'tabIndex={0}', 'aria-roledescription="carousel"', 'onPointerUp', 'motion-reduce:']) assert.ok(stage.includes(k), k)
   const reviews = read('src/components/home/ClientReviews.jsx')

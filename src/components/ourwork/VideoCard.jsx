@@ -2,6 +2,9 @@ import { posterUrl, titleOf, industryLabel, categoryOf, CATEGORIES, creatorLabel
 import { PlayGlyph } from '../ugc/creatorVideo.jsx'
 import { tr } from '../../i18n/tr.js'
 import { currentLocale } from '../../i18n/locale.js'
+import { editorial } from '../../i18n/editorial.js'
+
+const sharedFounderNote = () => Boolean(editorial()?.hideFounderOnCards)
 
 /* One portrait (9:16) card. Poster first: there is NO <video> element, stream or download until a visitor opens the card, so a library of
    hundreds of videos costs only its thumbnails. The whole card is one button (the accessible name is "Play video: <title>").
@@ -19,7 +22,10 @@ export default function VideoCard({ item, priority = false, onOpen }) {
   const title = titleOf(item)
   // Spanish names the language in full ("Español"); English keeps the two-letter code.
   const langs = currentLocale() === 'es' ? '' : (item.languages ?? []).map((l) => (currentLocale() === 'en' ? l.toUpperCase() : languageLabel(l))).join(' · ')
-  const who = [brandLabel(item), creatorLabel(item)].filter(Boolean).join(' · ')
+  // A translated library shows one language only (the page's own): repeating « Français » on every card says nothing, so the pill is left out there (the language stays in the data and the player).
+  const onlyPageLanguage = currentLocale() !== 'en' && (item.languages ?? []).length === 1 && item.languages[0] === currentLocale()
+  // The founder is named once for the whole library (a note under the filters), not under each of his videos; every other creator/brand line stays.
+  const who = [brandLabel(item), item.creator?.showName && sharedFounderNote() ? '' : creatorLabel(item)].filter(Boolean).join(' · ')
   return (
     <button
       type="button"
@@ -47,7 +53,7 @@ export default function VideoCard({ item, priority = false, onOpen }) {
             <span className="truncate">{industry}</span>
           </span>
         ) : <span />}
-        {langs && <span className="shrink-0 rounded-full border border-white/15 bg-black/55 px-2 py-1 text-[10px] font-bold tracking-[0.08em] text-ink-muted backdrop-blur md:text-[11px]">{langs}</span>}
+        {langs && !onlyPageLanguage && <span className="shrink-0 rounded-full border border-white/15 bg-black/55 px-2 py-1 text-[10px] font-bold tracking-[0.08em] text-ink-muted backdrop-blur md:text-[11px]">{langs}</span>}
       </span>
 
       <span aria-hidden="true" className="absolute left-1/2 top-1/2 flex h-12 w-12 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-white/30 bg-black/40 text-ink backdrop-blur transition-[transform,background-color,border-color] duration-200 group-hover:scale-110 group-hover:border-[var(--c)] group-hover:bg-[var(--c)] group-hover:text-canvas motion-reduce:transition-none motion-reduce:group-hover:scale-100 md:h-14 md:w-14">

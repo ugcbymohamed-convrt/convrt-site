@@ -4,7 +4,7 @@ import { Section, Reveal, RoadmapCta, GhostCta } from './shared.jsx'
 import { tr } from '../../i18n/tr.js'
 import { currentLocale } from '../../i18n/locale.js'
 import { localizeConfig } from '../../i18n/content.js'
-import { ES_FINAL_CTA } from '../../i18n/es/labels.js'
+import { editorial } from '../../i18n/editorial.js'
 
 /* Final CTA: deliberately short, not a sixth content section. The Free Creative Growth Roadmap is open to brands in every industry. */
 
@@ -20,7 +20,7 @@ export const UGC_CTA = {
 
 export default function UgcFinalCTA({ config: configProp = UGC_CTA }) {
   const config = localizeConfig(configProp, currentLocale())
-  const esCta = currentLocale() === 'es' ? ES_FINAL_CTA[config.id] : undefined
+  const esCta = editorial()?.finalCta?.[config.id]
   return (
     <Section id="get-started" label={config.id} className="!pt-4 !pb-12 md:!pb-16">
       <Reveal>

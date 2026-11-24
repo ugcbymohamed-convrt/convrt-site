@@ -2,7 +2,8 @@ import { useEffect, useRef, useState } from 'react'
 import { OFFER_PATHS } from '../config.js'
 import { PATHS } from '../routes.js'
 import { SERVICE_LABELS } from '../seo/businessKnowledge.js'
-import { useTr, useHref } from '../i18n/tr.js'
+import { useTr, useHref, isFallbackPath } from '../i18n/tr.js'
+import { editorial } from '../i18n/editorial.js'
 import { currentLocale } from '../i18n/locale.js'
 import { primaryAction } from '../i18n/cta.js'
 
@@ -198,6 +199,8 @@ function ServiceCard({ service: s, index }) {
   const href = useHref()
   const [ref, visible] = useInView(0.12)
   const Icon = s.icon
+  // A service whose page exists only in English (French: all but UGC) says so on the card and declares the language of its target.
+  const fallbackNote = editorial()?.fallbackNote && isFallbackPath(s.href) ? editorial().fallbackNote : null
   const titleId = `service-${s.id}-title`
   const descId = `service-${s.id}-desc`
 
@@ -207,7 +210,7 @@ function ServiceCard({ service: s, index }) {
       className={`h-full transition-[opacity,transform] duration-700 ease-out motion-reduce:!translate-y-0 motion-reduce:!opacity-100 motion-reduce:transition-none ${visible ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'}`}
       style={{ transitionDelay: visible ? `${(index % 2) * 90 + Math.floor(index / 2) * 90}ms` : '0ms' }}
     >
-      <a href={href(s.href)} className="svc-card" style={cardVars(s)} aria-labelledby={titleId} aria-describedby={descId}>
+      <a href={href(s.href)} {...(fallbackNote ? { hrefLang: 'en' } : {})} className="svc-card" style={cardVars(s)} aria-labelledby={titleId} aria-describedby={descId}>
         {/* Border ring (hover version fades in) */}
         <span aria-hidden="true" className="svc-layer svc-frame" />
         <span aria-hidden="true" className="svc-layer svc-frame-hi" />
@@ -248,7 +251,7 @@ function ServiceCard({ service: s, index }) {
           <div aria-hidden="true" className="svc-rule mt-5" />
           <div className="mt-4 flex">
             <span className="svc-cta">
-              {tr('Explore Service')}
+              {fallbackNote ? `${tr('Explore Service')} (${fallbackNote})` : tr('Explore Service')}
               <svg className="svc-arrow" aria-hidden="true" width="14" height="14" viewBox="0 0 12 12" fill="none">
                 <path d="M3 9L9 3M9 3H4M9 3V8" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
               </svg>

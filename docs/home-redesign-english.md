@@ -122,3 +122,9 @@ The founder / client-work section is one symmetrical, centred composition on a s
 
 - **Posters (English homepage stage only, via `homeStagePoster` in `portfolio.js`; the Spanish homepage keeps its own posters):** the three Adscale videos use the exact frames the owner supplied, as same-origin 540 x 960 webp files: `adscale-jail-poster.webp` (front video, 0 s, "How to get out of 2-3x ROAS Jail"), `adscale-coffee-poster.webp` (47.5 s, the coffee scene) and `adscale-women-poster.webp` (4.5 s of the self-hosted clip, "Meta / Google ... ACTUALLY"). Frames were located by comparing the supplied images with the footage (the coffee frame is the closest match to the cut at about 47.5 s). The older `adscale-creator-poster.webp` / `adscale-agentic-poster.webp` stay for the Referrals page.
 - **Play when reached:** the front (jail) video starts by itself, muted, the first time the stage scrolls into view (35 % visible), through the hero player UI (the sound button turns sound on). Only that video and only once; nothing downloads before the visitor gets there (the HTML still has posters only). Not for prefers-reduced-motion or data-saver visitors. It pauses when the stage leaves the screen and resumes on return unless the visitor paused it; rotating to another video never starts that one; once the visitor picks another client nothing starts by itself.
+
+
+---
+
+## Cross-language sync (Nov 2026, French revision)
+`IndustryShowcase`, `RotaryStage` (now `landscape` + `pose2` for two 16:9 frames), `ClientReviews` and `HomeCreators` are language-aware: English output is byte-identical (checked with the parity script, ignoring only the selector and hreflang). Spanish adopts the stage and reviews; French adopts all four (see `docs/multilingual-french-release.md`).

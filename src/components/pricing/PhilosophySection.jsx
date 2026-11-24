@@ -6,7 +6,7 @@ import { localizeStat } from '../../i18n/format.js'
 import { CONVRT_STATS, FOUNDER_EXPERIENCE } from '../../lib/siteStats.js'
 import { withUtm } from '../../lib/analytics.js'
 import { SPRINT, SPRINT_PLUS, ORGANIC_STAGES, ORGANIC, ORGANIC_CTA, PRODUCTION_LANGUAGES } from '../../seo/businessKnowledge.js'
-import { tr, hrefFor } from '../../i18n/tr.js'
+import { tr, ctaText, hrefFor } from '../../i18n/tr.js'
 
 /* SECTION 2: creative philosophy + credibility + the free Roadmap offer, as one cohesive block.
    Left: the philosophy for the selected goal (Paid: the concept-to-variation diagram for the STANDARD Sprint; Organic:
@@ -191,7 +191,7 @@ function RoadmapCard() {
         href={rcta.href}
         {...(rcta.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
         className="cta-gradient group mt-4 flex items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-semibold text-canvas"
-      >{tr(rcta.redirected ? rcta.label : 'Get 5 Free Ad Concepts')}<svg viewBox="0 0 12 12" className="h-3.5 w-3.5 transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" fill="none" aria-hidden="true">
+      >{rcta.redirected ? tr(rcta.label) : ctaText('Get 5 Free Ad Concepts')}<svg viewBox="0 0 12 12" className="h-3.5 w-3.5 transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" fill="none" aria-hidden="true">
           <path d="M3 9L9 3M9 3H4M9 3V8" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       </a>

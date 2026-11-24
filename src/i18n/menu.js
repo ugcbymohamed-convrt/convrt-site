@@ -22,9 +22,16 @@ export const SERVICE_MENU_LABELS = {
     '/saas-video-production': 'Vídeos SaaS',
     '/social-media-video-production': 'Vídeos orgánicos para redes sociales',
   },
+  // French (owner, 2026-11-24): the same order as Spanish: UGC, Spokesperson, SaaS, organic.
+  fr: {
+    '/ugc-video-agency': 'Vidéos UGC',
+    '/spokesperson-video-production': 'Vidéos Spokesperson',
+    '/saas-video-production': 'Vidéos SaaS',
+    '/social-media-video-production': 'Vidéos organiques pour les réseaux',
+  },
 }
 
-/* Spanish order of the dropdown (owner): UGC, Spokesperson, SaaS, Organic. The other languages keep the English order. */
+/* Spanish and French order of the dropdown (owner): UGC, Spokesperson, SaaS, Organic. The other languages keep the English order. */
 export const serviceMenuFor = (locale, items) => {
   const order = SERVICE_MENU_LABELS[locale] ? Object.keys(SERVICE_MENU_LABELS[locale]) : null
   return order ? order.map((href) => items.find((m) => m.href === href)).filter(Boolean) : items
@@ -34,8 +41,9 @@ export const HOME_LABELS = { en: 'CONVRT — home', es: 'CONVRT — inicio', fr:
 
 /* Is a menu entry that opens `path` (an English base path; undefined for an in-page anchor) listed in this language?
    • A LIVE language lists an entry only when that page is translated there (Spanish has no Blog, so its menu has none).
+   • FRENCH lists the Blog (owner, 2026-11-24: Services, Créateurs, Études de cas, Tarifs, Blog, Contact, Parrainez et gagnez); it opens the English blog, and the footer says « (en anglais) ».
    • A language still IN REVIEW (French, Arabic on this branch: they hold only the referral page, their full translations are on their own branches) keeps the same menu as English, so the
      component looks and behaves the same; an entry whose page is not translated opens the English page (localHref falls back). The Blog is never listed outside English. */
-export const menuHas = (locale, path) => !path || locale === 'en' || hasTranslation(locale, path) || (!isLive(locale) && path !== BLOG_PATH)
+export const menuHas = (locale, path) => !path || locale === 'en' || hasTranslation(locale, path) || (!isLive(locale) && path !== BLOG_PATH) || (locale === 'fr' && path === BLOG_PATH)
 
 export const showReferralLink = (locale) => locale === 'en' || (hasTranslation(locale, REFERRALS_PATH) && flowAvailable(locale, 'referrals'))
