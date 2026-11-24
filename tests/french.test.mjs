@@ -211,7 +211,7 @@ test('French homepage hero uses only French-spoken videos that are also in the p
   for (const h of HOME_HERO_FR) { assert.deepEqual(h.languages, ['fr']); assert.ok(isDisplayable(h)) }
   // centre = the French-dubbed CONVRT advertisement (its own Stream upload, not a creator video); left = the French female creator, right = the French male creator (the same Stream videos as the UGC hero)
   const [main, left, right] = HOME_HERO_FR
-  assert.equal(main.source.cloudflareId, '06d0cf7f9cea77275b486f62144b3708'); assert.equal(main.creatorId, 'cv-home-hero')
+  assert.equal(main.source.cloudflareId, 'ce7f495642b90a531e44f17b8e7454c5'); assert.equal(main.creatorId, 'cv-home-hero')
   assert.ok(ids.has(left.source.cloudflareId) && ids.has(right.source.cloudflareId))
   assert.equal(left.creatorId, 'fr-c01'); assert.equal(right.creatorId, 'fr-c02')
   // Comma (the founder's football-shirt video) is NOT a hero video: it is in the carousel and the showcase

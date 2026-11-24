@@ -15,7 +15,7 @@ export const POSTER_FRAMES = {
   '5b1058e9c68ab7b05bd24858ceaadb9c': 2.1, // portfolio:fr-ugc-hero-3 [fr]
   '7c681c012def2539e7c32c99889d8662': 18.6, // portfolio:fr-ugc-1 [fr]
   'a273a9e766e0baf7eed8a6ad72c8892b': 6.3, // portfolio:fr-ugc-2 [fr]
-  '06d0cf7f9cea77275b486f62144b3708': 0.4, // home-hero-fr:home-hero-fr-main (French-dubbed CONVRT ad; clear face, open eyes, coffee cup, only the comment bubble on screen)
+  'ce7f495642b90a531e44f17b8e7454c5': 0.4, // home-hero-fr:home-hero-fr-main (French-dubbed CONVRT ad with dubbed on-screen text, FRENCH-with-Dubbed-Text.mp4; clear face, open eyes, coffee cup, the comment bubble, no caption word mid-frame)
   '8797ae3fba20c95e9d9d10eefda840c9': 3.4, // portfolio:fr-mohamed-comma [fr]
   'a4a52503d855717880ed6dcbaca724b5': 1.9, // portfolio:fr-mohamed-route-facile [fr]
   '5639f5ff6b02b7501b946aef4466ad4c': 19.6, // portfolio:fr-mohamed-skycop [fr]

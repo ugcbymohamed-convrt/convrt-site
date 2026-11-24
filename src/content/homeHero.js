@@ -88,7 +88,7 @@ export const HOME_HERO_ES = [
    English and Spanish keep their own heroes. */
 const frApproval = { ...approval, approvedOn: '2026-11-23' }
 export const HOME_HERO_FR = [
-  { id: 'home-hero-fr-main', creatorId: 'cv-home-hero', industry: 'unclassified', languages: ['fr'], caption: 'Publicité CONVRT, version française.', poster: '/portfolio/fr-home-hero.webp', source: { cloudflareId: '06d0cf7f9cea77275b486f62144b3708' }, approval: frApproval },
+  { id: 'home-hero-fr-main', creatorId: 'cv-home-hero', industry: 'unclassified', languages: ['fr'], caption: 'Publicité CONVRT, version française.', poster: '/portfolio/fr-home-hero.webp', source: { cloudflareId: 'ce7f495642b90a531e44f17b8e7454c5' }, approval: frApproval },
   { id: 'home-hero-fr-left', creatorId: 'fr-c01', industry: 'unclassified', languages: ['fr'], caption: 'Complément alimentaire : démonstration du produit face caméra.', poster: '/portfolio/fr-ugc-hero-1.webp', source: { cloudflareId: 'c1dd083d5550608a139f656670bd77a5' }, approval: frApproval },
   { id: 'home-hero-fr-right', creatorId: 'fr-c02', industry: 'unclassified', languages: ['fr'], caption: 'Application pour voyager : un créateur raconte son expérience.', poster: '/portfolio/fr-ugc-hero-2.webp', source: { cloudflareId: '0346ed0881533220ba77bc4b3d4c26f9' }, approval: frApproval },
 ]

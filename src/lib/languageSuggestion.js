@@ -1,11 +1,11 @@
-/* LANGUAGE SUGGESTION for visitors in Spain (Spanish) and France (French): a small, dismissible hint on ENGLISH pages. A progressive enhancement only.
+/* LANGUAGE SUGGESTION for visitors in Spain (Spanish) and in France or any other French-speaking country (French): a small, dismissible hint on ENGLISH pages. A progressive enhancement only.
 
    What it is NOT: a redirect. No page, URL, canonical, hreflang, sitemap entry, metadata or JSON-LD changes, and the prerendered HTML never contains the hint (it is mounted in its own React root
    after the page has loaded and hydrated), so crawlers and visitors outside Spain receive exactly the same page as before. Both languages stay independently reachable and indexable.
 
    When it appears (all must hold): an English page that exists as a prerendered public page (not the 404 page, not the private pages, not the legal pages), the language is live, the visitor has no stored
    language choice (src/lib/languagePreference.js), and the server says the request came from that language's country (GET /api/visitor-country, which reads Vercel's x-vercel-ip-country header and answers
-   { spain, france, known } with `Cache-Control: private, no-store`). If the lookup works and says no, nothing is shown. ONLY when the server cannot place the request at all (known: false: the lookup failed or no
+   { spain, france, french, known } with `Cache-Control: private, no-store`). If the lookup works and says no, nothing is shown. ONLY when the server cannot place the request at all (known: false: the lookup failed or no
    country was available) is the browser's preferred-language list used instead, and only if its first supported language is one of ours. No browser location permission, no external geolocation service,
    no IP address stored, no tracking events. A new language is added to SUGGESTIBLE below together with its country in api/_lib/geo.js and its card text in src/components/LanguageSuggestion.jsx. */
 
@@ -22,7 +22,7 @@ const LEGAL = new Set([PATHS.privacy, PATHS.terms, PATHS.legalNotice])
 const isPublicPage = (basePath) => KNOWN_PATHS.includes(basePath) || basePath.startsWith(`${BLOG_PATH}/`)
 
 /* The languages we suggest: each with the visitor flag the server answers for its country. */
-export const SUGGESTIBLE = { fr: 'france', es: 'spain' }
+export const SUGGESTIBLE = { fr: 'french', es: 'spain' }
 
 /* Where the suggestion's link goes for this English page and language: the equivalent translated page when it exists and is released, otherwise the language's homepage. Null = do not offer. */
 export function suggestionTargetFor(locale, pathname) {
@@ -36,7 +36,7 @@ export const suggestionTarget = (pathname) => suggestionTargetFor('es', pathname
 
 /* Asks the server where this request came from. Any failure (network, status, bad JSON, timeout) is "unknown": { spain: false, france: false, known: false }. */
 export async function visitorGeo(fetchImpl = (typeof fetch === 'undefined' ? undefined : fetch), timeoutMs = 4000) {
-  const none = { spain: false, france: false, known: false }
+  const none = { spain: false, france: false, french: false, known: false }
   if (!fetchImpl) return none
   const ctrl = typeof AbortController === 'undefined' ? null : new AbortController()
   const timer = ctrl ? setTimeout(() => ctrl.abort(), timeoutMs) : null
@@ -44,7 +44,7 @@ export async function visitorGeo(fetchImpl = (typeof fetch === 'undefined' ? und
     const res = await fetchImpl(GEO_ENDPOINT, { method: 'GET', cache: 'no-store', credentials: 'same-origin', signal: ctrl?.signal })
     if (!res.ok) return none
     const j = await res.json()
-    return { spain: j?.spain === true, france: j?.france === true, known: j?.known === true }
+    return { spain: j?.spain === true, france: j?.france === true, french: j?.french === true, known: j?.known === true }
   } catch {
     return none
   } finally {

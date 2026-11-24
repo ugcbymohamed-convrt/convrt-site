@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { rememberLanguage, rememberDismissal } from '../lib/languagePreference.js'
 
-/* The language suggestion for visitors in Spain and France (see src/lib/languageSuggestion.js). A compact, non-modal card at the bottom of an English page: no focus trap, no focus steal, no overlay.
+/* The language suggestion for visitors in Spain and in French-speaking countries (see src/lib/languageSuggestion.js). A compact, non-modal card at the bottom of an English page: no focus trap, no focus steal, no overlay.
    The card's text is in the suggested language, on an English page, so it carries that language's lang attribute.
    • The primary button (« Passer en français » / "Ver en español") is an ordinary link to the translated page (it works even if scripts fail); the click remembers that language.
    • The other button (« Rester en anglais » / "Continuar en inglés") remembers English and closes the card; the visitor stays where they are.
@@ -11,7 +11,7 @@ import { rememberLanguage, rememberDismissal } from '../lib/languagePreference.j
 /* The card's text per language (a new language adds its entry here and in src/lib/languageSuggestion.js SUGGESTIBLE). */
 const COPY = {
   es: { region: 'Sugerencia de idioma', close: 'Cerrar', title: '¿Prefieres navegar en español?', text: 'También puedes visitar nuestra web en español.', stay: 'Continuar en inglés', go: 'Ver en español', hrefLang: 'es' },
-  fr: { region: 'Suggestion de langue', close: 'Fermer', title: 'Vous êtes en France ?', text: 'Découvrez notre site en français.', stay: 'Rester en anglais', go: 'Passer en français', hrefLang: 'fr-FR' },
+  fr: { region: 'Suggestion de langue', close: 'Fermer', title: 'Vous préférez naviguer en français ?', text: 'Découvrez notre site en français.', stay: 'Rester en anglais', go: 'Passer en français', hrefLang: 'fr-FR' },
 }
 
 const btn = 'inline-flex min-h-[44px] flex-1 items-center justify-center whitespace-nowrap rounded-full px-3 py-2 text-[13.5px] font-semibold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-lime'

@@ -14,7 +14,6 @@ Not changed: the Roadmap explainer keeps its deliberately chosen 25.6 s frame; t
 |---|---|---|
 | `0346ed08…` | 22.6s | portfolio:fr-ugc-hero-2 [fr]; home-hero-fr:home-hero-fr-right |
 | `04b0b981…` | 24.5s | portfolio:es-ugc-1 [es]; home-hero-es:home-hero-es-right |
-| `06d0cf7f…` | 0.4s | home-hero-fr:home-hero-fr-main |
 | `08abef50…` | 37.5s | portfolio:showcase-adscale-2 (home panel adscale) |
 | `0905b814…` | 10.6s | portfolio:showcase-elyon-2 (home panel elyon); elyon case study: Street Interview |
 | `0b429c9c…` | 5.6s | portfolio:saas-creator-2 |
@@ -88,6 +87,7 @@ Not changed: the Roadmap explainer keeps its deliberately chosen 25.6 s frame; t
 | `c8ed4698…` | 1.4s | portfolio:organic-gal-4 |
 | `cc23b5a0…` | 11.7s | portfolio:organic-hero-1 |
 | `cd6654c2…` | 16.7s | portfolio:creator-04 |
+| `ce7f4956…` | 0.4s | home-hero-fr:home-hero-fr-main |
 | `d0c08b8a…` | 7.2s | portfolio:en-josh-saas-1 |
 | `d2edf70e…` | 2.8s | portfolio:en-mohamed-ugc-1 |
 | `d9613dac…` | 5.9s | portfolio:organic-hero-3 |
