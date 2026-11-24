@@ -2,6 +2,9 @@ import { useEffect, useRef } from 'react'
 import SectionDivider from './components/SectionDivider.jsx'
 import UgcHero from './components/ugc/UgcHero.jsx'
 import UgcGallery from './components/ugc/UgcGallery.jsx'
+import { galleryEnabled } from './content/galleryPolicy.js'
+import { currentLocale } from './i18n/locale.js'
+import { spreadCreators } from './content/creatorOrder.js'
 import UgcProcess from './components/ugc/UgcProcess.jsx'
 import UgcResults from './components/ugc/UgcResults.jsx'
 import UgcFAQ from './components/ugc/UgcFAQ.jsx'
@@ -29,8 +32,8 @@ export default function UgcVideoAgencyPage() {
     trackEvent('ugc_page_view')
   }, [])
 
-  const heroItems = forPageLanguage(selectHero())
-  const galleryItems = forPageLanguage(selectGallery())
+  const heroItems = galleryEnabled(currentLocale(), 'ugc', 'hero') ? forPageLanguage(selectHero()) : []
+  const galleryItems = galleryEnabled(currentLocale(), 'ugc', 'gallery') ? (currentLocale() === 'en' ? forPageLanguage(selectGallery()) : spreadCreators(forPageLanguage(selectGallery()))) : [] // translated galleries alternate creators (src/content/creatorOrder.js)
 
   return (
     <>

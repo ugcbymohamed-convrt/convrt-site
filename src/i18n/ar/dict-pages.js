@@ -166,6 +166,7 @@ export default {
   "Ready to put the right face behind your message?": "خلنا نختار الوجه المناسب لرسالتك.",
   "Spokesperson video production": "إنتاج فيديوهات Spokesperson",
   "Organic Social Video Production": "إنتاج فيديوهات للسوشيال ميديا",
+  "Organic Social": "سوشيال ميديا",
   "Turn your brand into content worth following. We handle short-form social media video production end to end: creative strategy, creator-led filming, editing, publishing and community management, so your brand shows up consistently.": "من تخطيط المحتوى والسكريبتات إلى التصوير والمونتاج والنشر. نساعد علامتك تحافظ على حضور مستمر بمحتوى أصلي يناسب جمهورك.",
   "Organic social videos": "فيديوهات للسوشيال ميديا",
   "How we run your organic content.": "محتوى منظّم. من الفكرة للنشر.",

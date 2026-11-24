@@ -23,6 +23,11 @@
                                                // Organic Social page. Set it ONLY once the owner has confirmed how the video should be classified.
        format: 'demo',                         // SaaS-page videos only, optional: explainer | demo | presenter | animated | ad (SAAS_FORMATS). Drives the optional filter on the
                                                // SaaS page. Set it ONLY once the owner has confirmed how the video should be classified.
+       secondary: ['saas'],                    // optional: extra CONTENT TYPES the video genuinely is (ugc | spokesperson | organic | saas), beside its primary `type`. Classification only: the Creator Showcase
+                                               // filters (Spanish, French) list the video under each of its types. It never puts the video on a service page (that is `type` and `alsoOn`), so a gallery that a language
+                                               // does not have stays absent (src/content/galleryPolicy.js). Set it only after inspecting the footage: e.g. a creator walking through a mobile app is UGC + saas.
+       review: 'why a person must look at it',  // optional: while present the video is HELD (never shown anywhere). The import workflow (scripts/video-registry.mjs, docs/video-library.md) sets it when the classification, language or
+                                               // creator could not be confirmed; remove it once the owner has confirmed.
        alsoOn: { saas: 'gallery' },            // optional: ALSO show this video on another service page ('ugc' | 'spokesperson' | 'organic' | 'saas'), with its placement there
                                                // ('hero' | 'gallery'). Only for a video the owner approved for that page, e.g. a presenter demonstrating software on both the
                                                // Spokesperson and SaaS pages. A video is never added to a service page because of what it shows.
@@ -83,6 +88,7 @@
 import { currentLocale } from '../i18n/locale.js'
 import { DEFAULT_LOCALE } from '../i18n/locales.js'
 import { streamPoster } from './posterFrames.js'
+import { spreadCreators } from './creatorOrder.js'
 import { ES_LANGUAGE_LABELS, ES_INDUSTRY_LABELS, ES_TYPE_LABELS, ES_PRODUCTION_LABELS, captionEs } from '../i18n/es/labels.js'
 import { AR_LANGUAGE_LABELS, AR_INDUSTRY_LABELS, AR_TYPE_LABELS, AR_PRODUCTION_LABELS, captionAr } from '../i18n/ar/labels.js'
 
@@ -156,6 +162,7 @@ export const PORTFOLIO = [
     title: 'تقديم تطبيق لتصميم الديكور الداخلي',
     caption: 'Mohamed، مؤسس CONVRT، يقدّم تطبيقًا لتصميم الديكور الداخلي ويعرض شاشاته.',
     type: 'spokesperson',
+    secondary: ['saas'], // presenter introducing an interior-design app, app screens shown (footage inspected 2026-11-24): classification only, no service-page placement
     industry: 'unclassified',
     languages: ['ar'],
     onlyIn: ['ar'],
@@ -267,6 +274,7 @@ export const PORTFOLIO = [
     title: 'صانع محتوى يشرح خدمة رقمية أمام الكاميرا',
     caption: 'صانع محتوى يشرح خدمة رقمية أمام الكاميرا.',
     type: 'ugc',
+    secondary: ['saas'], // creator explaining a business-management / AI-assistant platform, interface shown (footage inspected 2026-11-24): classification only, no service-page placement
     industry: 'unclassified',
     languages: ['ar'],
     onlyIn: ['ar'],
@@ -393,6 +401,7 @@ export const PORTFOLIO = [
     title: 'صانع محتوى يشرح خدمة تقنية للجمهور',
     caption: 'صانع محتوى يشرح خدمة تقنية للجمهور.',
     type: 'ugc',
+    secondary: ['saas'], // creator explaining an AI recruiting platform (footage inspected 2026-11-24): classification only, no service-page placement
     industry: 'unclassified',
     languages: ['ar'],
     onlyIn: ['ar'],
@@ -1728,6 +1737,8 @@ export const isClassified = (item) => Boolean(item.industry) && item.industry !=
 /* '' for an unconfirmed industry, so nothing is displayed (callers drop empty labels). */
 export const industryLabel = (slug) => (!slug || slug === UNCLASSIFIED ? '' : ((table()?.industry ?? INDUSTRY_LABELS)[slug]) ?? titleCase(slug))
 export const typeOf = (item) => item.type
+/* Every content type the video is: its primary `type` first, then its `secondary` ones (classification only: see the field's note at the top of this file). */
+export const typesOf = (item) => (item.type ? [item.type, ...(item.secondary ?? [])] : [])
 export const typeLabel = (item) => (item.type ? ((table()?.type ?? TYPE_LABELS)[item.type]) ?? titleCase(item.type) : '')
 /* A video's caption in the page's language: generic captions ("UGC ad example 5.") are translated; a hand-written one is shown as written. */
 /* LANGUAGE-SPECIFIC COPY. An entry may carry `i18n: { es: { title, caption } }`: copy WRITTEN for that language's page (the Spanish Showcase has its own creators and videos, not translations of the English
@@ -1768,6 +1779,11 @@ export function portfolioProblems(item) {
   }
   if (item.type !== undefined && !/^[a-z][a-z0-9-]*$/.test(item.type)) p.push('type must be a lowercase slug')
   if (item.industry !== undefined && !/^[a-z][a-z0-9-]*$/.test(item.industry)) p.push("industry must be a lowercase slug (or 'unclassified')")
+  if (item.secondary !== undefined) {
+    const ok = Array.isArray(item.secondary) && item.secondary.length > 0 && item.secondary.every((t, i, a) => SERVICE_PAGES.includes(t) && t !== item.type && a.indexOf(t) === i)
+    if (!ok) p.push(`secondary must be a list of other content types (${SERVICE_PAGES.join(', ')}), none repeated and none equal to the primary type`)
+  }
+  if (item.review !== undefined && (typeof item.review !== 'string' || !item.review.trim())) p.push('review must say, in a sentence, what a person has to confirm')
   if (item.production !== undefined && !(item.production in PRODUCTION_LABELS)) p.push("production must be 'independent' or 'convrt' (leave it out when unknown)")
   if (item.productionCredit !== undefined && (typeof item.productionCredit !== 'string' || !item.productionCredit.trim())) p.push('productionCredit must be a non-empty string')
   const langsOk = Array.isArray(item.languages) && item.languages.length > 0 && item.languages.every((l) => /^[a-z]{2}$/.test(l))
@@ -1807,11 +1823,11 @@ export function portfolioProblems(item) {
 export function isDisplayable(item) {
   if (portfolioProblems(item).length) return false
   const a = item.approval
-  return a.status === 'approved' && a.portfolioUse === true && a.creatorConsent === true
+  return !item.review && a.status === 'approved' && a.portfolioUse === true && a.creatorConsent === true // a video held for manual review (`review`) is never shown
 }
 
 /* The gate for a homepage client panel: a valid, approved video tagged with that client. It does NOT imply portfolio permission. */
-export const isShowcaseable = (item) => portfolioProblems(item).length === 0 && item.approval.status === 'approved' && Boolean(item.showcase)
+export const isShowcaseable = (item) => portfolioProblems(item).length === 0 && !item.review && item.approval.status === 'approved' && Boolean(item.showcase)
 
 /* ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
    SELECTORS: one per page. Order is the order of PORTFOLIO.
@@ -1907,6 +1923,11 @@ export const CATEGORIES = [
 /* The UGC TYPE filter exists only on the Spanish page: its videos are all 'unclassified' by industry, so without it the Spanish library offered only All + Spokesperson. It is NOT in
    CATEGORIES, so the English tabs (and tests/creator-showcase.test.mjs) are unchanged; it sits between the industry tabs and Spokesperson. */
 const ES_UGC_CATEGORY = { id: 'ugc', label: 'UGC', color: '#d5ff40', byType: 'ugc' }
+/* The other TYPE filters of a translated library (SaaS = software explainers and app demonstrations; Organic Social): translated pages only, each shown only while at least one approved video is of that
+   type (primary or secondary), counts computed from the data. Their ids differ from the industry tabs'. */
+const TRANSLATED_SAAS_CATEGORY = { id: 'type-saas', label: 'SaaS', color: '#9a7aff', byType: 'saas' }
+const TRANSLATED_ORGANIC_CATEGORY = { id: 'type-organic', label: 'Organic Social', color: '#ffb547', byType: 'organic' }
+const TRANSLATED_TYPE_CATEGORIES = [ES_UGC_CATEGORY, TRANSLATED_SAAS_CATEGORY, TRANSLATED_ORGANIC_CATEGORY]
 export const CATEGORY_LABELS = Object.fromEntries(CATEGORIES.map((c) => [c.id, c.label]))
 const CATEGORY_ORDER = CATEGORIES.map((c) => c.id)
 const CATEGORY_OF_INDUSTRY = { saas: 'saas', technology: 'saas', ecommerce: 'ecommerce', services: 'services' }
@@ -1914,13 +1935,13 @@ export const categoryOf = (item) => (isClassified(item) ? CATEGORY_OF_INDUSTRY[i
 
 /* Is the video in the filter `categoryId`? An industry filter by its industry group; the Spokesperson filter by the video's type. */
 export const inCategory = (item, categoryId) => {
-  const c = CATEGORIES.find((x) => x.id === categoryId) ?? (categoryId === ES_UGC_CATEGORY.id ? ES_UGC_CATEGORY : undefined)
-  return c?.byType ? typeOf(item) === c.byType : categoryOf(item) === categoryId
+  const c = CATEGORIES.find((x) => x.id === categoryId) ?? TRANSLATED_TYPE_CATEGORIES.find((x) => x.id === categoryId)
+  return c?.byType ? typesOf(item).includes(c.byType) : categoryOf(item) === categoryId
 }
 
 /* The tabs /creator-showcase offers: All Work, then each category that has at least one classified video (an empty category is hidden). */
 export const availableCategories = (items) => {
-  const list = (isEs() || currentLocale() === 'ar') ? [...CATEGORIES.filter((c) => c.id !== 'spokesperson'), ES_UGC_CATEGORY, ...CATEGORIES.filter((c) => c.id === 'spokesperson')] : CATEGORIES
+  const list = (isEs() || currentLocale() === 'ar') ? [...CATEGORIES.filter((c) => c.id !== 'spokesperson'), ES_UGC_CATEGORY, ...CATEGORIES.filter((c) => c.id === 'spokesperson'), TRANSLATED_SAAS_CATEGORY, TRANSLATED_ORGANIC_CATEGORY] : CATEGORIES
   return [ALL_CATEGORY, ...list.filter((c) => items.some((i) => inCategory(i, c.id)))]
 }
 export const countIn = (items, categoryId) => (categoryId === 'all' ? items.length : items.filter((i) => inCategory(i, categoryId)).length)
@@ -1950,17 +1971,5 @@ export function buildFacets(items) {
 export const matchesFilters = (item, { language = null, category = null } = {}) =>
   (!language || (item.languages ?? []).includes(language)) && (!category || categoryOf(item) === category)
 
-/* CREATOR DIVERSITY (Arabic library, owner 2026-11-25): the same creator is never shown again within a desktop row (4 cards) while another creator is available. Deterministic and applied to the list
-   that is actually on screen (after any filter): it takes the items in their normal order and, for each position, the first remaining item whose creator is not among the last three chosen
-   (otherwise simply the first remaining one). Nothing is dropped or invented; items without a creatorId count as different from each other. English keeps its own file-order convention. */
-export function diversifyByCreator(list, window = 3) {
-  const left = [...list]
-  const out = []
-  while (left.length) {
-    const recent = out.slice(-window).map((i) => i.creatorId).filter(Boolean)
-    let k = left.findIndex((i) => !i.creatorId || !recent.includes(i.creatorId))
-    if (k < 0) k = 0
-    out.push(left.splice(k, 1)[0])
-  }
-  return out
-}
+/* CREATOR DIVERSITY for translated libraries: see src/content/creatorOrder.js (shared by Spanish, French and Arabic; English keeps its own file-order convention). Kept as a named export for existing callers. */
+export const diversifyByCreator = (list, window = 4) => spreadCreators(list, { window })

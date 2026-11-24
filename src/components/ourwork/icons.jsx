@@ -33,6 +33,9 @@ export const CATEGORY_ICONS = {
     <svg {...base} {...p}><path d="M10 3l1.6 4.4L16 9l-4.4 1.6L10 15l-1.6-4.4L4 9l4.4-1.6L10 3z" /><path d="M15.5 14.5v3M14 16h3" /></svg>
   ),
 }
+// The type filters of a translated library reuse the industry icons of the same meaning.
+CATEGORY_ICONS['type-saas'] = CATEGORY_ICONS.saas
+CATEGORY_ICONS['type-organic'] = CATEGORY_ICONS.other
 
 export const Chevron = ({ dir: dirProp = 1, className = 'h-4 w-4' }) => {
   const dir = isRtlPage() ? -dirProp : dirProp // the chevron points the way the button moves on screen

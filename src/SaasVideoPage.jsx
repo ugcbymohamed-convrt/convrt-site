@@ -2,6 +2,9 @@ import { useEffect, useRef } from 'react'
 import SectionDivider from './components/SectionDivider.jsx'
 import UgcHero from './components/ugc/UgcHero.jsx'
 import UgcGallery from './components/ugc/UgcGallery.jsx'
+import { serviceVideos } from './i18n/serviceVideos.js'
+import { galleryEnabled } from './content/galleryPolicy.js'
+import { currentLocale } from './i18n/locale.js'
 import { ProcessSection } from './components/ugc/UgcProcess.jsx'
 import UgcFAQ from './components/ugc/UgcFAQ.jsx'
 import UgcFinalCTA from './components/ugc/UgcFinalCTA.jsx'
@@ -66,8 +69,8 @@ export default function SaasVideoPage() {
     trackEvent('saas_page_view')
   }, [])
 
-  const heroItems = orderedBy(forPageLanguage(selectSaasHero()), SAAS_VIDEO_ORDER.hero)
-  const galleryItems = orderedBy(forPageLanguage(selectSaasGallery()), SAAS_VIDEO_ORDER.gallery)
+  const heroItems = orderedBy(serviceVideos(selectSaasHero(), 'saas', 'hero'), SAAS_VIDEO_ORDER.hero)
+  const galleryItems = orderedBy(serviceVideos(selectSaasGallery(), 'saas', 'gallery'), SAAS_VIDEO_ORDER.gallery)
 
   return (
     <>
@@ -83,7 +86,7 @@ export default function SaasVideoPage() {
       <ProcessSection config={PROCESS_CONFIG} footer={<ProcessFooter />}>
         <SaasFormats />
       </ProcessSection>
-      <UgcGallery items={galleryItems} config={SAAS_GALLERY} />
+      {galleryEnabled(currentLocale(), 'saas', 'gallery') && <UgcGallery items={galleryItems} config={SAAS_GALLERY} />}
       <SectionDivider />
       <SpokespersonProof config={PROOF_CONFIG} />
       <SectionDivider />

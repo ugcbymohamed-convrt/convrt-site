@@ -3,6 +3,8 @@ import { currentLocale } from './i18n/locale.js'
 import SectionDivider from './components/SectionDivider.jsx'
 import UgcHero from './components/ugc/UgcHero.jsx'
 import UgcGallery from './components/ugc/UgcGallery.jsx'
+import { serviceVideos } from './i18n/serviceVideos.js'
+import { galleryEnabled } from './content/galleryPolicy.js'
 import { ProcessSection } from './components/ugc/UgcProcess.jsx'
 import UgcFAQ from './components/ugc/UgcFAQ.jsx'
 import UgcFinalCTA from './components/ugc/UgcFinalCTA.jsx'
@@ -59,8 +61,8 @@ export default function SpokespersonVideoPage() {
     trackEvent('spokesperson_page_view')
   }, [])
 
-  const heroItems = orderedBy(forPageLanguage(selectSpokespersonHero()), SPOKESPERSON_VIDEO_ORDER.hero)
-  const galleryItems = forPageLanguage(selectSpokespersonGallery())
+  const heroItems = orderedBy(serviceVideos(selectSpokespersonHero(), 'spokesperson', 'hero'), SPOKESPERSON_VIDEO_ORDER.hero)
+  const galleryItems = serviceVideos(selectSpokespersonGallery(), 'spokesperson', 'gallery')
 
   return (
     <>
@@ -76,7 +78,7 @@ export default function SpokespersonVideoPage() {
       <ProcessSection config={PROCESS_CONFIG} footer={<ProcessFooter />}>
         <DeliveryStyles />
       </ProcessSection>
-      <UgcGallery items={galleryItems} config={SPOKESPERSON_GALLERY} />
+      {galleryEnabled(currentLocale(), 'spokesperson', 'gallery') && <UgcGallery items={galleryItems} config={SPOKESPERSON_GALLERY} />}
       <SectionDivider />
       <SpokespersonProof />
       <SectionDivider />

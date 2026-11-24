@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { availableCategories, countIn, filterByCategory, prioritizeLanguage, buildFacets, matchesFilters, languageLabel, diversifyByCreator } from '../../content/portfolio.js'
+import { availableCategories, countIn, filterByCategory, prioritizeLanguage, buildFacets, matchesFilters, languageLabel } from '../../content/portfolio.js'
 import { currentLocale } from '../../i18n/locale.js'
 import { trackEvent } from '../../lib/analytics.js'
 import { Section } from '../ugc/shared.jsx'
@@ -7,6 +7,7 @@ import { RoadmapCta, GhostCta } from '../ugc/shared.jsx'
 import CategoryTabs from './CategoryTabs.jsx'
 import VideoCard from './VideoCard.jsx'
 import VideoLightbox from './VideoLightbox.jsx'
+import { spreadCreators } from '../../content/creatorOrder.js'
 import { tr } from '../../i18n/tr.js'
 import { arVideos, arShowMore } from '../../i18n/ar/plural.js'
 
@@ -63,7 +64,7 @@ export default function PortfolioLibrary({ items: itemsProp, pageSize = PAGE }) 
   const active = tabs.find((t) => t.id === catId) ?? tabs[0]
   const filtered = useMemo(() => {
     const list = filterByCategory(items, active.id).filter((i) => matchesFilters(i, { language: lang }))
-    return locale === 'ar' ? diversifyByCreator(list) : list // Arabic: alternate creators, re-applied after every filter
+    return locale === 'en' ? list : spreadCreators(list) // translated libraries alternate creators, re-applied after every filter (src/content/creatorOrder.js)
   }, [items, active.id, lang, locale])
   const shown = filtered.slice(0, limit)
   const openIndex = openId ? filtered.findIndex((i) => i.id === openId) : -1

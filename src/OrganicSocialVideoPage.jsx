@@ -3,6 +3,8 @@ import { currentLocale } from './i18n/locale.js'
 import SectionDivider from './components/SectionDivider.jsx'
 import UgcHero from './components/ugc/UgcHero.jsx'
 import UgcGallery from './components/ugc/UgcGallery.jsx'
+import { serviceVideos } from './i18n/serviceVideos.js'
+import { galleryEnabled } from './content/galleryPolicy.js'
 import { ProcessSection } from './components/ugc/UgcProcess.jsx'
 import UgcFAQ from './components/ugc/UgcFAQ.jsx'
 import UgcFinalCTA from './components/ugc/UgcFinalCTA.jsx'
@@ -74,8 +76,8 @@ export default function OrganicSocialVideoPage() {
     trackEvent('organic_page_view')
   }, [])
 
-  const heroItems = forPageLanguage(selectOrganicHero())
-  const galleryItems = forPageLanguage(selectOrganicGallery())
+  const heroItems = serviceVideos(selectOrganicHero(), 'organic', 'hero')
+  const galleryItems = serviceVideos(selectOrganicGallery(), 'organic', 'gallery')
 
   return (
     <>
@@ -91,7 +93,7 @@ export default function OrganicSocialVideoPage() {
       <ProcessSection config={PROCESS_CONFIG} footer={<ProcessFooter />}>
         <ContentSystem />
       </ProcessSection>
-      <UgcGallery items={galleryItems} config={ORGANIC_GALLERY} />
+      {galleryEnabled(currentLocale(), 'organic', 'gallery') && <UgcGallery items={galleryItems} config={ORGANIC_GALLERY} />}
       <SectionDivider />
       <SpokespersonProof config={PROOF_CONFIG} />
       <SectionDivider />
