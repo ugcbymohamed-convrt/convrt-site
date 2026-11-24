@@ -275,7 +275,7 @@ test('showcase (Spanish homepage): exactly two groups of three videos: Elyon Dub
   assert.ok(t.includes('Perfumería de lujo') && t.includes('Elyon Dubai · Perfumería de lujo · E-commerce'))
   // English keeps its three industries (unchanged by the Spanish groups)
   const en = fs.readFileSync(path.join(dist, 'index.html'), 'utf8')
-  assert.ok(en.includes('showcase-tab-saas') && en.includes('showcase-tab-printing') && !en.includes('showcase-tab-elyon-es'))
+  assert.ok(en.includes('showcase-tab-saas') && !en.includes('showcase-tab-printing') && !en.includes('showcase-tab-elyon-es'))
 })
 
 test('homepage copy (Spanish review 3): hero subtitle and offer line, services, process, free video, final CTA, FAQ and footer', () => {
