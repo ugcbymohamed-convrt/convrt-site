@@ -55,8 +55,10 @@ export default function RiskFreeHero() {
 
             <p className="mt-6 max-w-xl text-base leading-relaxed text-ink-muted md:text-lg">
               <span className="font-semibold text-ink">{tr('Try CONVRT risk free. See if you qualify.')}</span>
+              {currentLocale() !== 'es' && <>
               <br />
               {tr('Apply for a complimentary video ad produced by our team, with two bonus hook variations to test. We review every application and invite the right-fit brands to a short call before anything goes into production.')}
+              </>}
             </p>
 
             <div className="mt-8 flex flex-col items-stretch gap-4 sm:items-start">

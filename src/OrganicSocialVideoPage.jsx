@@ -19,6 +19,7 @@ import { ORGANIC_CTA } from './seo/businessKnowledge.js'
 import {
   ORGANIC_HERO, ORGANIC_PAGE_STAGES, ORGANIC_PROCESS, ORGANIC_GALLERY, ORGANIC_PAGE_CTA, ORGANIC_PATH_LABEL, ORGANIC_PROOF, ORGANIC_PROOF_COPY, ORGANIC_PRICING_HREF, ORGANIC_SCOPE_NOTE,
 } from './content/organicSocialPage.js'
+import { currentLocale } from './i18n/locale.js'
 import { tr, T, hrefFor } from './i18n/tr.js'
 
 /* /social-media-video-production: the Organic Social Video Production & Management page. It reuses the UGC and Spokesperson pages' architecture and design system, and each
@@ -42,7 +43,7 @@ const PROOF_CONFIG = {
   proof: ORGANIC_PROOF,
   expectations: null, // no filler strip: when there is no verified organic proof the section is simply absent
   headingId: ORGANIC_PROOF_COPY.headingId,
-  heading: { eyebrow: ORGANIC_PROOF_COPY.eyebrow, title: ORGANIC_PROOF_COPY.title },
+  heading: { eyebrow: ORGANIC_PROOF_COPY.eyebrow, title: ORGANIC_PROOF_COPY.title, esIntro: 'Here is how we helped Graspo reach new audiences and generate commercial opportunities.' },
   track: ORGANIC_PROOF_COPY.track,
   // The Roadmap is a paid-ads offer, so the button under the Graspo result is the organic strategy call (same route as the hero and the final CTA).
   cta: { label: ORGANIC_CTA.label, href: ORGANIC_CTA.href, external: ORGANIC_CTA.external },
@@ -89,7 +90,7 @@ export default function OrganicSocialVideoPage() {
       <ProcessSection config={PROCESS_CONFIG} footer={<ProcessFooter />}>
         <ContentSystem />
       </ProcessSection>
-      <UgcGallery items={galleryItems} config={ORGANIC_GALLERY} />
+      {currentLocale() !== 'es' && <UgcGallery items={galleryItems} config={ORGANIC_GALLERY} />}
       <SectionDivider />
       <SpokespersonProof config={PROOF_CONFIG} />
       <SectionDivider />

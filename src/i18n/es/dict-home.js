@@ -32,7 +32,7 @@ export default {
   'for itself.': "por sí solos.",
   'Real brands, real budgets — three case studies from clients who trusted us with their creative.': "Tres proyectos, tres retos distintos y una misma prioridad: crear vídeos que merezcan la atención.",
   'Get creatives like these': "Quiero anuncios como estos",
-  'Read the full case studies:': "Ver los casos completos (en inglés):",
+  'Read the full case studies:': "Ver los casos completos:",
   'View': 'Ver',
   'Unmute': 'Activar sonido',
   'Mute': 'Silenciar',

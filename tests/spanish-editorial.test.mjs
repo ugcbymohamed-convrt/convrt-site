@@ -38,16 +38,16 @@ const text = (html) => html.replace(/<script[\s\S]*?<\/script>/g, ' ').replace(/
 test('hero: the four Spanish H1s are the approved editorial headlines and every secondary CTA goes to a real place', () => {
   assert.deepEqual(Object.keys(ES_HERO).sort(), ['organic-h1', 'saas-h1', 'spokesperson-h1', 'ugc-h1'])
   const h1 = (p) => text(page(p).match(/<h1[\s\S]*?<\/h1>/)[0]).replace(/\s+\./g, '.')
-  assert.match(h1('ugc-video-agency'), /UGC con personas reales\. Para tus anuncios\. Para conectar\./)
-  assert.match(h1('spokesperson-video-production'), /Vídeos Spokesperson\. Personas reales\. Mensajes que conectan\./)
-  assert.match(h1('social-media-video-production'), /Vídeos orgánicos para redes\. Contenido que engancha\. Una marca que conecta\./)
-  assert.match(h1('saas-video-production'), /Vídeos para SaaS\. Fáciles de entender\. Diseñados para convertir\./)
+  assert.match(h1('ugc-video-agency'), /Vídeos UGC con personas reales\. Hechos para destacar\./)
+  assert.match(h1('spokesperson-video-production'), /Vídeos Spokesperson con personas reales\. Mensajes que conectan\./)
+  assert.match(h1('social-media-video-production'), /Vídeos para redes sociales que merecen la pena ver\./)
+  assert.match(h1('saas-video-production'), /Vídeos para SaaS que hacen tu producto fácil de entender\./)
   // SaaS scrolls to the formats section, Organic to the process section: both anchors must exist on the page that links to them.
   assert.equal(ES_HERO['saas-h1'].secondary.href, '#saas-formats')
   assert.ok(page('saas-video-production').includes('id="saas-formats"'))
   assert.equal(ES_HERO['organic-h1'].secondary.href, '#how-it-works')
   assert.ok(page('social-media-video-production').includes('id="how-it-works"'))
-  assert.match(page('saas-video-production'), /href="#saas-formats"[^>]*>[^<]*Ver formatos/)
+  assert.match(page('saas-video-production'), /href="#saas-formats"[^>]*>[^<]*Explorar formatos/)
   assert.match(page('social-media-video-production'), /href="#how-it-works"[^>]*>[^<]*Cómo trabajamos/)
 })
 
@@ -96,7 +96,8 @@ test('Graspo and Elyon figures survive (Spanish notation, same values)', () => {
   const ugc = text(page('ugc-video-agency'))
   for (const s of ['5,28x', '3.421,25 USD', '9 Compras', 'Resultados comunicados por el cliente']) assert.ok(ugc.includes(s), s)
   assert.ok(!/3\.421,25 €|€ ?3\.421/.test(ugc), 'the historical USD revenue is never converted to EUR')
-  assert.ok(ugc.includes("The UGC videos he created were exactly what we needed to scale our ads"), 'English testimonial wording is verbatim')
+  assert.ok(ugc.includes('Los vídeos UGC que creó eran justo lo que necesitábamos') && !ugc.includes('The UGC videos he created'), 'the UGC page shows the approved Spanish reviews, no English original')
+  assert.ok(!/It has 9 sales|Roas 5\.28/.test(ugc), 'the raw English client note is not on the Spanish page')
 })
 
 test('About: every figure comes from the data; the four statistics are the founder\'s combined experience; no invented claims', () => {

@@ -124,7 +124,7 @@ export default function PortfolioLibrary({ items: itemsProp, pageSize = PAGE }) 
               type="button"
               onClick={() => { focusFrom.current = limit; setLimit((n) => n + pageSize) }}
               className="min-h-[48px] rounded-full border border-[var(--cat)] bg-surface-2 px-7 text-[15px] font-semibold text-ink transition-colors hover:bg-[var(--cat)] hover:text-canvas focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--cat)] motion-reduce:transition-none"
-            >{tr('Show more')}{' '}<span className="opacity-70">({filtered.length - limit} {tr('more')})</span>
+            >{locale === 'es' ? `Ver ${filtered.length - limit} ${filtered.length - limit === 1 ? 'vídeo' : 'vídeos'} más` : <>{tr('Show more')}{' '}<span className="opacity-70">({filtered.length - limit} {tr('more')})</span></>}
             </button>
           </div>
         )}

@@ -44,17 +44,17 @@ const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), '..')
 const read = (p) => fs.readFileSync(path.join(ROOT, p), 'utf8')
 
 // ── 1. pure checks ─────────────────────────────────────────────────────────────────────────────────────────────
-test('locales: English, Spanish, French and Arabic are registered; Arabic is right-to-left; only English and Spanish are live', () => {
+test('locales: English, Spanish, French and Arabic are registered; Arabic is right-to-left; only English and Spanish are live; French and Arabic are in review (referral page only)', () => {
   assert.deepEqual(LOCALE_CODES, ['en', 'es', 'fr', 'ar'])
   assert.equal(LOCALES.ar.dir, 'rtl')
   for (const c of ['en', 'es', 'fr']) assert.equal(LOCALES[c].dir, 'ltr')
   assert.deepEqual(LOCALES.en.prefix, '')
   assert.equal(LOCALES.es.prefix, '/es'); assert.equal(LOCALES.fr.prefix, '/fr'); assert.equal(LOCALES.ar.prefix, '/ar')
   assert.deepEqual(LIVE_LOCALES, ['en', 'es'])
-  assert.deepEqual(BUILT_LOCALES, ['en', 'es'], 'French and Arabic are prepared: no routes are built for them')
+  assert.deepEqual(BUILT_LOCALES, ['en', 'es', 'fr', 'ar'], 'French and Arabic are in review on this branch: only the Referral Partner Program page is routed for them')
   assert.ok(isLive('es') && !isLive('fr') && !isLive('ar'))
-  assert.deepEqual(TRANSLATED_PATHS.fr, []); assert.deepEqual(TRANSLATED_PATHS.ar, [])
-  assert.deepEqual(allLocalizedPaths(['fr', 'ar']), [])
+  assert.deepEqual(TRANSLATED_PATHS.fr, ['/referrals']); assert.deepEqual(TRANSLATED_PATHS.ar, ['/referrals'])
+  assert.deepEqual(allLocalizedPaths(['fr', 'ar']), ['/fr/referrals', '/ar/referrals'])
 })
 
 test('paths: English URLs never change; other languages live under their prefix with the same slugs', () => {
@@ -70,7 +70,7 @@ test('paths: English URLs never change; other languages live under their prefix 
   assert.deepEqual(parsePath('/'), { locale: 'en', basePath: '/' })
   assert.deepEqual(parsePath('/blog/some-article'), { locale: 'en', basePath: '/blog/some-article' })
   assert.deepEqual(parsePath('/escape'), { locale: 'en', basePath: '/escape' }, 'only an exact language segment is a locale')
-  assert.deepEqual(allLocalizedPaths(['es']), ['/es', '/es/ugc-video-agency', '/es/spokesperson-video-production', '/es/social-media-video-production', '/es/saas-video-production', '/es/pricing', '/es/creator-showcase', '/es/about', '/es/contact', '/es/case-studies', '/es/case-studies/graspo', '/es/case-studies/elyon', '/es/creative-growth-roadmap', '/es/risk-free-trial'])
+  assert.deepEqual(allLocalizedPaths(['es']), ['/es', '/es/ugc-video-agency', '/es/spokesperson-video-production', '/es/social-media-video-production', '/es/saas-video-production', '/es/pricing', '/es/creator-showcase', '/es/about', '/es/contact', '/es/case-studies', '/es/case-studies/graspo', '/es/case-studies/elyon', '/es/creative-growth-roadmap', '/es/risk-free-trial', '/es/referrals'])
 })
 
 test('every translated path is a real English page with SEO data and a Spanish title/description/OG copy', () => {
@@ -148,7 +148,8 @@ test('dictionary: complete for every literal tr()/<T> in the source, no empty va
       if (v === '') assert.ok(PARTS.trust === dict, `empty translation only allowed in dict-trust.js: "${k.slice(0, 60)}"`)
     }
   }
-  assert.equal(DICTIONARIES.fr, undefined); assert.equal(DICTIONARIES.ar, undefined)
+  // French and Arabic carry only the shared shell and the Referral Partner Program page on this branch (their full dictionaries live on their own branches)
+  assert.ok(DICTIONARIES.fr && DICTIONARIES.ar)
 })
 
 const OMITTED_FIGURE = /free library of 10 ad hooks/
@@ -178,11 +179,12 @@ test('Spanish money: EUR notation "3.000 €" (non-breaking space), USD kept onl
   assert.equal(localizeStat('es', '1,200+'), '1.200+'); assert.equal(localizeStat('es', '10.7M'), '10,7 M'); assert.equal(localizeStat('en', '10.7M'), '10.7M')
 })
 
-test('conversion flows: the Roadmap and the 1 FREE video application are translated for Spanish; the 10 free hooks and referrals stay English-only (never promoted in Spanish); French and Arabic have none', () => {
-  for (const l of ['fr', 'ar']) for (const f of ['roadmap', 'riskFree', 'hooks', 'referrals']) assert.equal(LOCALIZED_FLOWS[l][f], false, `${l}.${f}`)
+test('conversion flows: the Roadmap and the 1 FREE video application are translated for Spanish; the 10 free hooks stay English-only (never promoted in Spanish); the Referral Partner Program is translated in Spanish, French and Arabic', () => {
+  for (const l of ['fr', 'ar']) for (const f of ['roadmap', 'riskFree', 'hooks']) assert.equal(LOCALIZED_FLOWS[l][f], false, `${l}.${f}`)
+  for (const l of ['es', 'fr', 'ar']) assert.equal(LOCALIZED_FLOWS[l].referrals, true, `${l}.referrals`)
   assert.equal(LOCALIZED_FLOWS.es.roadmap, true)
   assert.equal(LOCALIZED_FLOWS.es.riskFree, true)
-  for (const f of ['hooks', 'referrals']) assert.equal(LOCALIZED_FLOWS.es[f], false, `es.${f}`)
+  assert.equal(LOCALIZED_FLOWS.es.hooks, false, 'es.hooks')
   assert.equal(flowAvailable('en', 'roadmap'), true)
   assert.equal(flowAvailable('es', 'roadmap'), true)
   assert.equal(flowAvailable('es', 'hooks'), false)
@@ -280,8 +282,8 @@ test('English pages keep their canonical, robots and sitemap entries (the Spanis
   for (const p of ['/', '/pricing', '/ugc-video-agency', '/spokesperson-video-production', '/social-media-video-production', '/saas-video-production', '/creator-showcase', '/about', '/contact', '/privacy', '/terms', '/legal-notice']) assert.ok(sm.includes(`<loc>${SITE_URL}${p === '/' ? '/' : p}</loc>`), p)
 })
 
-test('no French or Arabic page exists in the build, and nothing links to one', () => {
-  assert.ok(!fs.existsSync(path.join(dist, 'fr')) && !fs.existsSync(path.join(dist, 'ar')))
+test('French and Arabic exist in the build only as the Referral Partner Program page (review status: noindex, no hreflang, no sitemap), and no Spanish page links to one', () => {
+  for (const l of ['fr', 'ar']) assert.deepEqual(fs.readdirSync(path.join(dist, l)).sort(), ['referrals'], `/${l} holds only /referrals`)
   const all = [...ES_PAGES, ...TRANSLATED_PATHS.es].map(page).join('\n')
   assert.ok(!/href="\/(fr|ar)(\/|")/.test(all) && !/hreflang="(fr|ar)/.test(all))
   assert.ok(fs.existsSync(path.join(dist, '404.html')))
@@ -290,7 +292,8 @@ test('no French or Arabic page exists in the build, and nothing links to one', (
 test('Spanish pages contain no leftover English: every visible sentence is Spanish except verbatim client quotes (lang="en"), brand and package names', () => {
   const EN = new Set('the and your with you our for are this that from what how will we of its is to can has have be or not it by at an on in as but'.split(' '))
   const ES = new Set('el la los las de del y en que un una con para por tu tus su sus es se no al lo como más pero si o a'.split(' '))
-  const verbatim = /It has 9 sales|Roas 5\.28|Mohamed understood the concept|Working with Mohamad|The videos are amazing again|The UGC videos he created/
+  // the partner-kit preview shows the English messages exactly as they are sent (marked lang="en" on the page)
+  const verbatim = /It has 9 sales|Roas 5\.28|Mohamed understood the concept|Working with Mohamad|The videos are amazing again|The UGC videos he created|I thought of you because|I know a creative studio|They also offer a Free Creative|Happy to introduce you|Full disclosure: I may|Hey \[Name\]|Quick introduction|If you decide to work with them/
   for (const p of ES_PAGES) {
     for (const line of textOf(page(p))) {
       if (verbatim.test(line)) continue
@@ -309,7 +312,8 @@ test('Spanish pages: the homepage shows the three owner-approved Spanish reviews
   for (const q of ['Mohamed entendió perfectamente el concepto y la calidad del resultado superó mis expectativas.', 'Trabajar con Mohamad ha sido un auténtico placer.', 'Los vídeos han vuelto a quedar increíbles.']) assert.ok(home.includes(q), q)
   assert.ok(!/Testimonios originales en inglés|idioma original de los clientes|original language/i.test(home), 'the visible explanatory line is gone')
   assert.equal((home.match(/Cliente recurrente/g) || []).length >= 3, true, 'each review carries the "Cliente recurrente" badge')
-  assert.match(page('/es/ugc-video-agency'), /<blockquote lang="en"/)
+  assert.doesNotMatch(page('/es/ugc-video-agency'), /<blockquote lang="en"/, 'the UGC page shows the same Spanish reviews, no English original')
+  assert.ok(page('/es/ugc-video-agency').includes('Mohamed entendió perfectamente el concepto') && page('/es/ugc-video-agency').includes('Trabajar con Mohamad ha sido un auténtico placer'))
   assert.ok(page('/').includes('Mohamed understood the concept really well'), 'English homepage unchanged')
 })
 
@@ -326,10 +330,11 @@ test('Spanish prices are the owner-approved EUR amounts: shown everywhere a pric
   for (const p of ES_PAGES) {
     const h = page(p), t = textOf(h).join('\n')
     assert.ok(!t.includes(cfg.placeholder), `${p}: no price placeholder`)
-    assert.ok(!/\$\s?\d/.test(t), `${p}: no "$N" amount`)
+    // the referral rewards are the English page's US-dollar amounts ($150, 10 % up to $500), never converted
+    if (p !== '/es/referrals') assert.ok(!/\$\s?\d/.test(t), `${p}: no "$N" amount`)
     // the only dollars on a Spanish page are a client's real reported result (UGC page) and the Roadmap's ad-spend answer brackets (qualification thresholds, unchanged)
     const usd = t.match(/[\d.,]+ ?\s?USD|dólar/g) ?? []
-    assert.ok(usd.every((u) => (p === '/es/ugc-video-agency' && /3\.421,25/.test(u)) || (/^\/es\/case-studies/.test(p) && /^(0|229,89|835|3\.421,25) ?\s?USD$/.test(u.trim())) || (['/es/creative-growth-roadmap', '/es/risk-free-trial'].includes(p) && /^(5|20)\.000/.test(u))), `${p}: USD left on a Spanish page: ${usd}`)
+    assert.ok(usd.every((u) => (p === '/es/ugc-video-agency' && /3\.421,25/.test(u)) || (/^\/es\/case-studies/.test(p) && /^(0|229,89|835|3\.421,25) ?\s?USD$/.test(u.trim())) || (['/es/creative-growth-roadmap', '/es/risk-free-trial'].includes(p) && /^(5|20)\.000/.test(u)) || (p === '/es/referrals' && /^(150|500|5\.000) ?\s?USD$/.test(u.trim()))), `${p}: USD left on a Spanish page: ${usd}`)
     assert.ok(!/"priceCurrency":"USD"/.test(h), `${p}: no USD price in JSON-LD`)
   }
   // /es/pricing: every approved amount and the derived per-variation figures
@@ -401,10 +406,11 @@ test('JSON-LD: one stable Organization @id across languages; Spanish WebPage/FAQ
 })
 
 test('Spanish pages never route into the English-only conversion flows (the Roadmap is the one translated flow); booking opens in a new tab with rel=noopener; the privacy link is kept', () => {
-  const FORM_PAGES = ['/es/creative-growth-roadmap', '/es/risk-free-trial']
+  const FORM_PAGES = ['/es/creative-growth-roadmap', '/es/risk-free-trial', '/es/referrals']
   for (const p of ES_PAGES) {
     // the language switcher's English alternate (hrefLang="en") is the only link allowed to point at an English page
     const h = bodyOf(page(p)).replace(/<a [^>]*hrefLang="en"[^>]*>/g, '')
+    // the Referral Partner Program is translated (Nov 2026): /es/referrals is its Spanish page, and the English /referrals is never linked from a Spanish page
     for (const flow of [OFFER_PATHS.roadmap, OFFER_PATHS.hooks, OFFER_PATHS.riskFree, '/referrals']) assert.ok(!h.includes(`href="${flow}`), `${p} links ${flow}`)
     if (FORM_PAGES.includes(p)) assert.match(h, /<form[\s>]/, `${p}: the translated application form`)
     else assert.ok(!/<form[\s>]|<textarea|<input(?![^>]*type="range")[\s>]|type="email"/.test(h), `${p}: no form on the other translated pages`)
@@ -573,19 +579,21 @@ test('Spanish homepage hero: Front (the Spanish version of the CONVRT ad) in the
   assert.ok(!/es-ugc|es-home-hero/.test(en) && en.includes('ugc-hero-1.webp') && en.includes('/portfolio/home-hero.webp'), 'the English homepage still shows its own three videos')
 })
 
-test('Spanish UGC and Spokesperson pages: hero stage and gallery use ONLY the provided Spanish videos, in the owner\'s order; no English-library video', () => {
+test('Spanish UGC and Spokesperson pages: hero stage (and, for UGC, the gallery) use ONLY the provided Spanish videos, in the owner\'s order; no English-library video; the Spokesperson page has no example-video gallery', () => {
   for (const [p, type] of [['/es/ugc-video-agency', 'ugc'], ['/es/spokesperson-video-production', 'spokesperson']]) {
     const h = page(p)
     const mine = ES_VIDEOS.filter((v) => v.type === type)
     const want = mine.map((v) => v.poster)
     const got = posters(h)
     assert.deepEqual(got.filter((x) => /\/portfolio\/es-/.test(x)).slice(0, 3), want.slice(0, 3), `${p}: hero stage, first video is the centre phone`)
-    for (const v of mine) assert.ok(h.includes(v.poster), `${p}: shows ${v.id}`)
+    // the UGC page keeps its example gallery; the Spanish Spokesperson page carries the hero stage only (owner, Nov 2026: no example-video galleries on Spokesperson, Organic and SaaS)
+    if (type === 'ugc') for (const v of mine) assert.ok(h.includes(v.poster), `${p}: shows ${v.id}`)
+    else assert.ok(!/spokesperson-videos-heading|Explorar vídeos Spokesperson/.test(h), `${p}: no example-video gallery`)
     assert.ok(!got.some((x) => !/\/portfolio\/es-/.test(x) && /ugc-|spokesperson-|creator-|saas-|organic-/.test(x)), `${p}: no English-library poster`)
     assert.ok(!/\/portfolio\/es-spokesperson/.test(page('/es/ugc-video-agency')), 'spokesperson videos never appear on the UGC page')
     assert.ok(!/\/portfolio\/es-ugc/.test(page('/es/spokesperson-video-production')), 'UGC videos never appear on the Spokesperson page')
     assert.match(h, /aria-roledescription="carousel"/, `${p}: the video-led hero stage`)
-    assert.equal(cards(h).filter((c) => mine.some((v) => c === v.caption)).length >= 6, true)
+    if (type === 'ugc') assert.equal(cards(h).filter((c) => mine.some((v) => c === v.caption)).length >= 6, true)
   }
 })
 
@@ -689,7 +697,8 @@ test('Spanish free offers: the hero shows the same two cards as English: 1 free 
   for (const p of ES_PAGES) {
     const x = page(p)
     assert.ok(!/href="[^"]*free-hooks/.test(x), `${p}: no hooks link`)
-    assert.ok(!/ganchos (publicitarios )?gratis|10 FREE|Free Ad Hooks/i.test(textOf(x).join('\n')), `${p}: no English hooks promotion`)
+    // (the referral program's terms name the 10 free hooks only to say the Creative Upgrade is separate from them: a condition, not a promotion)
+    if (p !== '/es/referrals') assert.ok(!/ganchos (publicitarios )?gratis|10 FREE|Free Ad Hooks/i.test(textOf(x).join('\n')), `${p}: no English hooks promotion`)
   }
   assert.equal(LOCALIZED_FLOWS.es.hooks, false)
   // the English homepage hero still carries both free offers

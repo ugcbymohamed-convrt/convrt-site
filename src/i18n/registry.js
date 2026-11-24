@@ -27,10 +27,13 @@ export const TRANSLATED_PATHS = {
     '/creative-growth-roadmap',
     // The 1 FREE video application (noindex like the English page and, on top of that, held by a release gate until the owner and the lawyer have reviewed it: src/i18n/release.js).
     '/risk-free-trial',
+    // The Referral Partner Program (noindex like the English page while its launch gate is closed: src/config.js REFERRALS_INDEXABLE).
+    '/referrals',
   ],
-  // French and Arabic: nothing is translated yet, so nothing is routed. See docs/multilingual-french-arabic-backlog.md.
-  fr: [],
-  ar: [],
+  // French and Arabic: the complete translations live on their own branches (french-localization, arabic-localization), not merged here. On THIS branch each language holds only the Referral
+  // Partner Program page: its locale is in 'review' status (reachable by URL, noindex, no sitemap, no hreflang, not in the selector). See docs/multilingual-referrals-fr-ar.md.
+  fr: ['/referrals'],
+  ar: ['/referrals'],
 }
 
 export const hasTranslation = (locale, basePath) => (TRANSLATED_PATHS[locale] ?? []).includes(basePath)

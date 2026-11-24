@@ -8,22 +8,19 @@ import { usePressFeedback } from '../lib/usePressFeedback.js'
 import LanguageSelector from './LanguageSelector.jsx'
 import { parsePath, localizedPath } from '../i18n/paths.js'
 import { translate, localHref } from '../i18n/tr.js'
+import { REFERRAL_LABELS, menuHas, showReferralLink } from '../i18n/menu.js'
 import { primaryAction } from '../i18n/cta.js'
 import { SERVICE_LABELS } from '../seo/businessKnowledge.js'
 
-// `compactHide`: shown in the desktop bar only from xl (1280px) up, so the bar doesn't crowd
-// at 1024–1279px now that Blog (and the referral link) have joined it. It is still in the
-// mobile menu, the footer, and the hero/CTA buttons — nothing is removed.
-// `englishOnly`: the page exists only in English (no translation yet), so other languages' menus do not list it (never a link from a translated page into
-// an untranslated one). It appears in a language's menu by itself once the page is translated and registered in src/i18n/registry.js.
-// `notInEnglish`: left out of the ENGLISH menu only (owner, Nov 2026, to give the language selector more room); translated menus keep it. The section is still on the page and in the footer.
+// `compactHide`: shown in the desktop bar only from xl (1280px) up, so the bar doesn't crowd at 1024–1279px (it is still in the mobile menu, the footer and the hero/CTA buttons).
+// `path`: the page the entry opens. A translated menu lists an entry only when that page exists in the language (src/i18n/menu.js), so no translated page links to an untranslated one;
+// English lists everything. Same entries, same order, in every language.
 const links = [
   { label: 'Services', href: '#services' },
-  { label: 'Creator Showcase', href: CREATOR_SHOWCASE_PATH },
-  { label: 'Case Studies', href: '/case-studies', englishOnly: true },
-  { label: 'How It Works', href: '#how-it-works', notInEnglish: true },
-  { label: 'Pricing', href: '/pricing' },
-  { label: 'Blog', href: '/blog', englishOnly: true },
+  { label: 'Creator Showcase', href: CREATOR_SHOWCASE_PATH, path: CREATOR_SHOWCASE_PATH },
+  { label: 'Case Studies', href: '/case-studies', path: '/case-studies' },
+  { label: 'Pricing', href: '/pricing', path: '/pricing' },
+  { label: 'Blog', href: '/blog', path: '/blog' },
   { label: 'Contact', href: '#contact', compactHide: true },
 ]
 
@@ -40,17 +37,18 @@ const SERVICE_MENU = [
    Standard referrals earn $150 and Agency & Strategic partners 10% (capped at $500), and the
    destination page shows both rewards side by side straight away. The whole label is a
    single link. */
-function ReferralNavLink({ onClick, className = '', underline = false }) {
+function ReferralNavLink({ onClick, className = '', underline = false, locale = 'en' }) {
+  const [plain, accent] = REFERRAL_LABELS[locale] ?? REFERRAL_LABELS.en
   return (
     <a
-      href={REFERRALS_PATH}
+      href={localHref(REFERRALS_PATH, locale)}
       onClick={() => {
         trackEvent('referral_cta_click', { location: 'nav' })
         onClick?.()
       }}
       className={`group relative whitespace-nowrap rounded text-ink-muted transition-colors hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-lime ${className}`}
     >
-      Refer &amp; <span className="font-semibold text-lime">Earn</span>
+      {locale === 'en' ? <>Refer &amp; <span className="font-semibold text-lime">Earn</span></> : <>{plain} <span className="font-semibold text-lime">{accent}</span></>}
       {underline && (
         <span
           aria-hidden="true"
@@ -69,9 +67,9 @@ export default function Nav() {
   const { locale, basePath } = parsePath(typeof window !== 'undefined' ? window.location.pathname : '/')
   const tr = (t) => translate(locale, t)
   const onHome = basePath === '/'
-  const homePrefix = onHome ? '' : localizedPath(locale, '/')
+  const homePrefix = onHome ? '' : localHref('/', locale)
   const resolveHref = (href) => (href.startsWith('#') ? `${homePrefix}${href}` : localHref(href, locale))
-  const visibleLinks = links.filter((l) => (locale === 'en' ? !l.notInEnglish : !l.englishOnly))
+  const visibleLinks = links.filter((l) => menuHas(locale, l.path))
   const action = primaryAction(locale)
 
   // /scale is a paid-acquisition page with its own in-page booking modal
@@ -150,7 +148,7 @@ export default function Nav() {
               {tr(l.label)}
             </a>
           )))}
-          {locale === 'en' && <ReferralNavLink underline className="text-[13px] xl:text-sm" />}
+          {showReferralLink(locale) && <ReferralNavLink locale={locale} underline className="text-[13px] xl:text-sm" />}
         </nav>
 
         <div className="flex items-center gap-2">
@@ -210,7 +208,7 @@ export default function Nav() {
                 )}
               </div>
             ))}
-            {locale === 'en' && <ReferralNavLink onClick={() => setOpen(false)} className="block px-3 py-3 text-base hover:bg-surface-1" />}
+            {showReferralLink(locale) && <ReferralNavLink locale={locale} onClick={() => setOpen(false)} className="block px-3 py-3 text-base hover:bg-surface-1" />}
             <LanguageSelector variant="list" onNavigate={() => setOpen(false)} className="mt-1 border-t border-hairline pt-1" />
             <a
               href={ctaHref}

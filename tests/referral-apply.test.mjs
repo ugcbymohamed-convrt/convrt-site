@@ -539,7 +539,7 @@ test('the form is bot-protected, labelled, and shows the specified CTA and confi
   assert.match(SRC.form, /name="hp_check"/)
   assert.match(SRC.form, /tabIndex=\{-1\}/)
   assert.match(SRC.form, /Join the Referral Program/)
-  assert.match(SRC.form, /Let’s Become <span className="text-lime">Partners\.<\/span>/)
+  assert.match(SRC.form, /\{tr\('Let’s Become'\)\} <span className="text-lime">\{tr\('Partners\.'\)\}<\/span>/)
   assert.match(SRC.form, /You’re One Step Closer to Becoming a CONVRT Partner\./)
   assert.match(SRC.form, /If approved, we’ll send\s+you everything you need to start referring\./)
   assert.match(SRC.form, /role="alert"/)
@@ -574,7 +574,7 @@ test('press feedback and reduced motion: buttons give visible feedback and anima
 })
 
 test('copy: headline, offer figures and the Creative Upgrade match the brief', () => {
-  assert.match(SRC.hero, /Know a Brand That Needs <span className="text-lime">Better Video Ads\?<\/span>/)
+  assert.match(SRC.hero, /\{tr\('Know a Brand That Needs'\)\} <span className="text-lime">\{tr\('Better Video Ads\?'\)\}<\/span>/)
   assert.match(SRC.hero, /Introduce SaaS and e-commerce brands to CONVRT\. Get rewarded when they become clients\./)
   assert.match(SRC.hero, /Simple introductions\. No selling required\./)
   for (const t of ['You refer', 'We create', 'You earn']) assert.ok(SRC.hero.includes(`title: '${t}'`), t)
@@ -629,8 +629,11 @@ test('the full program terms stay reachable: compact summary, accordion, and lin
 
 test('the navigation has one "Refer & Earn" link to /referrals (desktop and mobile), "Earn" in lime, naming no single reward, with focus + hover states', () => {
   const nav = read('src/components/Nav.jsx')
-  assert.match(nav, /href=\{REFERRALS_PATH\}/)
+  assert.match(nav, /href=\{localHref\(REFERRALS_PATH, locale\)\}/)
   assert.match(nav, /Refer &amp; <span className="font-semibold text-lime">Earn<\/span>/)
+  assert.match(read('src/i18n/menu.js'), /es: \['Recomienda y', 'gana'\]/)
+  assert.match(read('src/i18n/menu.js'), /fr: \['Parrainez et', 'gagnez'\]/)
+  assert.match(read('src/i18n/menu.js'), /ar: \['رشّحنا', 'واكسب'\]/)
   assert.ok(!/Refer Us, Earn/.test(nav), 'the 10%-only label (misleading for $150 standard referrals) is not used')
   assert.equal((nav.match(/<ReferralNavLink/g) || []).length, 2, 'desktop nav + mobile menu')
   assert.match(nav, /focus-visible:outline/)

@@ -66,7 +66,7 @@ function Results({ config }) {
   return (
     <Section id="results" label={config.headingId} glow>
       <Reveal>
-        <Head id={config.headingId} eyebrow={config.heading.eyebrow} title={config.heading.title} />
+        <Head id={config.headingId} eyebrow={config.heading.eyebrow} title={config.heading.title} intro={currentLocale() === 'es' ? config.heading.esIntro : undefined} />
       </Reveal>
       <div className="mt-8 grid grid-cols-1 gap-5 md:mt-10 lg:grid-cols-12 lg:gap-6">
         {results.map((r) => (

@@ -3,6 +3,7 @@ import { CATEGORIES, categoryOf, typeOf } from '../../content/portfolio.js'
 import { trackEvent } from '../../lib/analytics.js'
 import { Section, TextLink } from '../ugc/shared.jsx'
 import { tr, hrefFor } from '../../i18n/tr.js'
+import { currentLocale } from '../../i18n/locale.js'
 
 /* "What you'll find here": crawlable, factual context under the library (SEO/GEO Batch 2, audit C-11). It sits BELOW the gallery so the library experience is unchanged.
 
@@ -28,11 +29,13 @@ export default function ShowcaseFormats({ items }) {
     <Section id="showcase-guide" label="showcase-guide-heading" className="!py-8 md:!py-10">
       <div className="mx-auto max-w-4xl">
         <h2 id="showcase-guide-heading" className="font-display text-2xl font-bold leading-tight tracking-display text-ink md:text-3xl">{tr('What you’ll find in the Creator Showcase')}</h2>
-        <p className="mt-3 max-w-3xl text-[15px] leading-relaxed text-ink-muted">
-          {/* A reader comparing agencies uses this page to compare styles before briefing a project. */}
-          {tr('The library brings together examples from independent creators in different formats, so you can compare styles and creative approaches before you brief a project.')}
-          {industries.length > 0 && <> {tr('Use the tabs above to browse by industry:')} {list(industries)}.</>}
-        </p>
+        {currentLocale() !== 'es' && (
+          <p className="mt-3 max-w-3xl text-[15px] leading-relaxed text-ink-muted">
+            {/* A reader comparing agencies uses this page to compare styles before briefing a project. */}
+            {tr('The library brings together examples from independent creators in different formats, so you can compare styles and creative approaches before you brief a project.')}
+            {industries.length > 0 && <> {tr('Use the tabs above to browse by industry:')} {list(industries)}.</>}
+          </p>
+        )}
         {formats.length > 0 && (
           <ul className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
             {formats.map((f) => (
@@ -46,11 +49,13 @@ export default function ShowcaseFormats({ items }) {
             ))}
           </ul>
         )}
+        {currentLocale() !== 'es' && (
         <p className="mt-6 max-w-3xl text-[14px] leading-relaxed text-ink-muted">
           {tr('These are creators’ examples, not necessarily CONVRT productions. For documented CONVRT projects, read our')}{' '}
           <TextLink href={PATHS.caseStudyGraspo} onClick={() => trackEvent('showcase_service_link_click', { service: 'case-study-organic' })}>{tr('organic social media case study')}</TextLink> {tr('and our')}{' '}
           <TextLink href={PATHS.caseStudyElyon} onClick={() => trackEvent('showcase_service_link_click', { service: 'case-study-ugc' })}>{tr('paid social UGC case study')}</TextLink>.
         </p>
+        )}
       </div>
     </Section>
   )

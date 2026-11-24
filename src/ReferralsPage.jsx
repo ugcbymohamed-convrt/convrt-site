@@ -12,6 +12,9 @@ import { captureAttribution, trackEvent } from './lib/analytics.js'
 import { scrollToApply } from './lib/roadmapForm.js'
 import { useDocumentHead } from './lib/useDocumentHead.js'
 import { REFERRALS_INDEXABLE, REFERRALS_PATH, SITE_URL } from './config.js'
+import { pageHead } from './seo/siteSeo.js'
+import { tr } from './i18n/tr.js'
+import { currentLocale } from './i18n/locale.js'
 
 /* ─────────────────────────────────────────────
    /referrals — Referral Partner Program.
@@ -47,8 +50,8 @@ function useFaqStructuredData() {
       '@type': 'FAQPage',
       mainEntity: FAQS.map((item) => ({
         '@type': 'Question',
-        name: item.q,
-        acceptedAnswer: { '@type': 'Answer', text: item.a },
+        name: tr(item.q),
+        acceptedAnswer: { '@type': 'Answer', text: tr(item.a) },
       })),
     })
     document.head.appendChild(script)
@@ -57,12 +60,10 @@ function useFaqStructuredData() {
 }
 
 export default function ReferralsPage() {
-  useDocumentHead({
-    title: PAGE_TITLE,
-    description: PAGE_DESCRIPTION,
-    url: PAGE_URL,
-    noindex: !REFERRALS_INDEXABLE,
-  })
+  // English keeps its own head (unchanged); a translated page takes its title, description, canonical and robots from the localized SEO entry (src/i18n/<locale>/seo.js).
+  useDocumentHead(currentLocale() === 'en'
+    ? { title: PAGE_TITLE, description: PAGE_DESCRIPTION, url: PAGE_URL, noindex: !REFERRALS_INDEXABLE }
+    : pageHead(REFERRALS_PATH))
   useFaqStructuredData()
 
   // Reward-card CTAs: remember which card was chosen, then scroll. `id` changes on every

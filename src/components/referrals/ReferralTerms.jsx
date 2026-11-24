@@ -1,6 +1,7 @@
 import { useEffect, useId, useState } from 'react'
 import { Reveal } from '../roadmap/shared.jsx'
 import { TERMS_OPEN_EVENT } from './shared.jsx'
+import { tr } from '../../i18n/tr.js'
 
 /* ─────────────────────────────────────────────
    PROGRAM TERMS — a compact summary, with the FULL terms one click away in an accordion
@@ -56,13 +57,12 @@ export default function ReferralTerms() {
           <div className="rounded-3xl border border-hairline-strong bg-surface-1 p-6 sm:p-8">
             <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between md:gap-8">
               <div className="min-w-0">
-                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-lime">Program terms</p>
+                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-lime">{tr('Program terms')}</p>
                 <h2 id="terms-heading" className="mt-2 font-display text-2xl font-bold leading-tight tracking-display text-ink sm:text-3xl">
-                  Simple, Transparent Rewards.
+                  {tr('Simple, Transparent Rewards.')}
                 </h2>
                 <p className="mt-3 max-w-xl text-[15px] leading-relaxed text-ink-muted">
-                  Rewards apply to eligible new clients once their first qualifying payment clears. All referrals are
-                  reviewed and confirmed by CONVRT.
+                  {tr('Rewards apply to eligible new clients once their first qualifying payment clears. All referrals are reviewed and confirmed by CONVRT.')}
                 </p>
               </div>
               <button
@@ -73,7 +73,7 @@ export default function ReferralTerms() {
                 onClick={() => setOpen((v) => !v)}
                 className="group inline-flex min-h-[48px] shrink-0 items-center justify-center gap-2 rounded-full border border-hairline-strong px-6 py-3 text-sm font-semibold text-ink transition-colors hover:border-lime/50 hover:text-lime active:scale-[0.97] motion-reduce:transition-none motion-reduce:active:scale-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-lime"
               >
-                {open ? 'Hide Full Program Terms' : 'Read Full Program Terms'}
+                {open ? tr('Hide Full Program Terms') : tr('Read Full Program Terms')}
                 <svg
                   viewBox="0 0 16 16"
                   className={`h-3.5 w-3.5 transition-transform duration-300 motion-reduce:transition-none ${open ? 'rotate-180' : ''}`}
@@ -98,13 +98,12 @@ export default function ReferralTerms() {
                     {TERMS.map((term) => (
                       <li key={term} className="flex gap-3 text-sm leading-snug text-ink-muted">
                         <span className="mt-[7px] h-1.5 w-1.5 shrink-0 rounded-full bg-lime" aria-hidden="true" />
-                        <span>{term}</span>
+                        <span>{tr(term)}</span>
                       </li>
                     ))}
                   </ul>
                   <p className="mt-5 text-sm leading-relaxed text-ink-muted">
-                    A plain-language summary, not a legal agreement. Final conditions are confirmed with each partner
-                    before they start referring.
+                    {tr('A plain-language summary, not a legal agreement. Final conditions are confirmed with each partner before they start referring.')}
                   </p>
                 </div>
               </div>

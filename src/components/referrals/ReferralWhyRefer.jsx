@@ -1,4 +1,5 @@
 import { Reveal, SectionHeader } from '../roadmap/shared.jsx'
+import { tr, hrefFor } from '../../i18n/tr.js'
 
 /* ─────────────────────────────────────────────
    WHY REFER CONVRT — lowers the reputational risk of recommending us.
@@ -43,8 +44,8 @@ export default function ReferralWhyRefer() {
     <section id="why-refer" aria-labelledby="why-heading" className="relative scroll-mt-20 py-16 md:scroll-mt-24 md:py-24">
       <div className="mx-auto max-w-7xl px-5 md:px-8">
         <Reveal>
-          <SectionHeader id="why-heading" eyebrow="Why refer CONVRT" title="A Creative Partner You’ll Feel Good Recommending.">
-            Your reputation matters. Your referrals get a professional experience.
+          <SectionHeader id="why-heading" eyebrow={tr('Why refer CONVRT')} title={tr('A Creative Partner You’ll Feel Good Recommending.')}>
+            {tr('Your reputation matters. Your referrals get a professional experience.')}
           </SectionHeader>
         </Reveal>
 
@@ -60,7 +61,7 @@ export default function ReferralWhyRefer() {
                       </svg>
                     </span>
                     <div className="min-w-0">
-                      <h3 className="font-display text-base font-bold leading-snug tracking-snug text-ink">{c.title}</h3>
+                      <h3 className="font-display text-base font-bold leading-snug tracking-snug text-ink">{tr(c.title)}</h3>
                                           </div>
                   </div>
                 </Reveal>
@@ -70,7 +71,7 @@ export default function ReferralWhyRefer() {
 
           <Reveal delay={120} className="lg:col-span-5">
             <div className="rounded-2xl border border-hairline bg-surface-1 p-4 sm:p-5">
-              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-ink-muted">From our work</p>
+              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-ink-muted">{tr('From our work')}</p>
               <div className="mt-4 grid grid-cols-2 gap-3">
                 {FRAMES.map((f) => (
                   <img
@@ -78,7 +79,7 @@ export default function ReferralWhyRefer() {
                     src={f.src}
                     width={f.w}
                     height={f.h}
-                    alt={f.alt}
+                    alt={tr(f.alt)}
                     loading="lazy"
                     decoding="async"
                     className="aspect-[9/16] w-full rounded-xl border border-hairline object-cover"
@@ -86,10 +87,10 @@ export default function ReferralWhyRefer() {
                 ))}
               </div>
               <a
-                href="/case-studies"
+                href={hrefFor('/case-studies')}
                 className="mt-4 inline-flex min-h-[44px] items-center gap-1.5 text-sm font-semibold text-ink transition-colors hover:text-lime focus-visible:rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-lime"
               >
-                See more of CONVRT’s work <span aria-hidden="true">→</span>
+                {tr('See more of CONVRT’s work')} <span aria-hidden="true">→</span>
               </a>
             </div>
           </Reveal>

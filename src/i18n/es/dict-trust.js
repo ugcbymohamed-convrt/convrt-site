@@ -36,7 +36,7 @@ export default {
   "Founder: [[Mohamed Doukkali Azizi on LinkedIn|https://www.linkedin.com/in/mohameddoukkaliazizi/]] (personal profile)": "Fundador: [[Mohamed Doukkali Azizi en LinkedIn|https://www.linkedin.com/in/mohameddoukkaliazizi/]] (perfil personal)",
   "Freelance creators who would like to work with CONVRT can use the [[creator form|https://forms.gle/Bg8ubU2tnmMj88m7A]].": "",
   "Referral partners": "Socios de referidos",
-  "Know a business that needs better video ads? See the [[Referral Partner Program|/referrals]].": "",
+  "Know a business that needs better video ads? See the [[Referral Partner Program|/referrals]].": "¿Conoces una empresa que necesita mejores anuncios en vídeo? Descubre el [[programa de socios recomendadores|/referrals]].",
   "Who runs this website": "Quién gestiona este sitio web",
   "CONVRT Studio is operated by Mohamed Doukkali Azizi, a self-employed professional (autónomo) registered in Spain. The full details are in the [[Legal Notice|/legal-notice]]. For questions about personal data, see the [[Privacy Policy|/privacy]].": "CONVRT Studio está gestionado por Mohamed Doukkali Azizi, profesional autónomo registrado en España. Los datos completos figuran en el [[Aviso Legal (en inglés)|/legal-notice]]. Para consultas sobre datos personales, consulta la [[Política de privacidad (en inglés)|/privacy]].",
 }

@@ -35,8 +35,10 @@ export default function RoadmapHero() {
 
             <p className="mt-6 max-w-xl text-base leading-relaxed text-ink-muted md:text-lg">
               <span className="font-semibold text-ink">{tr('Stop guessing what ad to create next.')}</span>
+              {currentLocale() !== 'es' && <>
               <br />
               {tr('Get five personalized advertising concepts built around your brand, audience, and growth goals, presented in a free creative strategy session with CONVRT.')}
+              </>}
             </p>
 
             <div className="mt-8 flex flex-col items-stretch gap-4 sm:items-start">

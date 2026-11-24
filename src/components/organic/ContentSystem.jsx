@@ -98,7 +98,7 @@ function ScenePlan() {
         <div className="w-full max-w-[17rem] shrink-0 sm:max-w-[22rem] lg:w-[16.5rem]">
           <Cap>{tr('3 · Content calendar')}</Cap>
           <div className="mt-1.5 rounded-2xl border border-lime/40 bg-surface-2 p-2 sm:p-2.5" style={{ boxShadow: '0 0 40px -18px rgba(213,255,64,0.45)' }}>
-            <div className="mb-1 grid grid-cols-5 gap-1 text-center text-[9px] font-semibold uppercase tracking-[0.1em] text-ink-muted">{['M', 'T', 'W', 'T', 'F'].map((d, i) => <span key={`${d}${i}`}>{d}</span>)}</div>
+            <div className="mb-1 grid grid-cols-5 gap-1 text-center text-[9px] font-semibold uppercase tracking-[0.1em] text-ink-muted">{(currentLocale() === 'es' ? ['L', 'M', 'X', 'J', 'V'] : ['M', 'T', 'W', 'T', 'F']).map((d, i) => <span key={`${d}${i}`}>{d}</span>)}</div>
             {slots.map((row, r) => (
               <div key={r} className="mb-1 grid grid-cols-5 gap-1 last:mb-0">
                 {row.map((idx, c) => {
@@ -169,7 +169,8 @@ function SceneProduce() {
 
 /* STATE 3: finished videos drop into the publishing calendar, then a simple review of what the platforms report feeds the next plan. Metric names only: no numbers, bars or trends. */
 function ScenePublishLearn() {
-  const cal = [['M', 'educational', 'IG'], ['T', null], ['W', 'entertaining', 'TT'], ['T', 'product', 'FB'], ['F', 'founder', 'IG']]
+  const es = currentLocale() === 'es'
+  const cal = [[es ? 'L' : 'M', 'educational', 'IG'], [es ? 'M' : 'T', null], [es ? 'X' : 'W', 'entertaining', 'TT'], [es ? 'J' : 'T', 'product', 'FB'], [es ? 'V' : 'F', 'founder', 'IG']]
   const metrics = ['Reach', 'Watch time', 'Engagement']
   return (
     <div className="flex h-full w-full flex-col justify-center gap-3 sm:gap-4">

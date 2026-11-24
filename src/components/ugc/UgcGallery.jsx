@@ -87,9 +87,12 @@ function Card({ item, index, playing, onPlay, config }) {
             />
           )}
           <span aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/35" />
+          {/* Spanish: a generic "UGC" pill on every card of a single-type gallery adds nothing, so it is left out (the mixed homepage gallery still names each video's own type) */}
+          {!(currentLocale() === 'es' && !config.badgeByType) && (
           <span aria-hidden="true" className="absolute left-3 top-3 inline-flex items-center gap-1.5 rounded-full border border-lime/40 bg-black/55 px-2.5 py-1 text-xs font-bold uppercase tracking-[0.1em] text-lime backdrop-blur">
             <span className="h-1.5 w-1.5 rounded-full bg-lime" />{langs ? `${badge} · ${langs}` : badge}
           </span>
+          )}
           <span aria-hidden="true" className="absolute left-1/2 top-1/2 flex h-14 w-14 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-lime/60 bg-lime/20 text-ink backdrop-blur transition-transform duration-200 group-hover:scale-110 motion-reduce:transition-none">
             <PlayGlyph />
           </span>

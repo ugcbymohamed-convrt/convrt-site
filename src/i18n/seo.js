@@ -8,8 +8,10 @@ import { LOCALES, LIVE_LOCALES, DEFAULT_LOCALE, isLive } from './locales.js'
 import { isReleased } from './release.js'
 import { localizedPath } from './paths.js'
 import { ES_SEO, ES_OG_IMAGE_ALT, ES_OG_IMAGE_READY, ES_OG_IMAGE_PATH } from './es/seo.js'
+import { FR_SEO } from './fr/seo.js'
+import { AR_SEO } from './ar/seo.js'
 
-export const SEO_BY_LOCALE = { es: ES_SEO }
+export const SEO_BY_LOCALE = { es: ES_SEO, fr: FR_SEO, ar: AR_SEO }
 export const OG_IMAGE_ALT_BY_LOCALE = { es: ES_OG_IMAGE_ALT }
 
 /* Absolute URL of a page in a locale. English '/' stays '/', Spanish home is '/es/'. */

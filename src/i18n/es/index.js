@@ -10,6 +10,7 @@ import roadmap from './dict-roadmap.js'
 import geo from './dict-geo.js'
 import riskfree from './dict-riskfree.js'
 import casestudies from './dict-casestudies.js'
+import referrals from './dict-referrals.js'
 
-export default { ...shell, ...home, ...services, ...pricing, ...showcase, ...trust, ...scenes, ...roadmap, ...geo, ...riskfree, ...casestudies }
-export const PARTS = { shell, home, services, pricing, showcase, trust, scenes, roadmap, geo, riskfree, casestudies }
+export default { ...shell, ...home, ...services, ...pricing, ...showcase, ...trust, ...scenes, ...roadmap, ...geo, ...riskfree, ...casestudies, ...referrals }
+export const PARTS = { shell, home, services, pricing, showcase, trust, scenes, roadmap, geo, riskfree, casestudies, referrals }

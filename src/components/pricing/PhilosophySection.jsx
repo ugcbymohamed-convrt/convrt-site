@@ -178,7 +178,7 @@ function RoadmapCard() {
   return (
     <div className="rounded-[24px] border border-lime/25 bg-gradient-to-br from-lime/[0.09] via-surface-1/60 to-surface-1/40 p-5 md:p-6">
       <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-lime">{tr('Your free Creative Growth Roadmap')}</p>
-      <h3 className="mt-2 font-display text-[22px] font-bold leading-tight tracking-display text-ink md:text-[26px]">{tr('Your next')}{' '}<span className="text-lime">{tr('5 winning ad concepts.')}</span>
+      <h3 className="mt-2 font-display text-[22px] font-bold leading-tight tracking-display text-ink md:text-[26px]">{currentLocale() === 'es' ? <>{tr('5 ad concepts for your brand.')}{' '}<span className="text-lime">{tr('Free.')}</span></> : <>{tr('Your next')}{' '}<span className="text-lime">{tr('5 winning ad concepts.')}</span></>}
       </h3>
       <div className="mt-4"><PitchBoard /></div>
       <p className="mt-4 text-[14.5px] leading-relaxed text-ink-muted">{tr('Five personalized creative ideas for your brand, built around your product and audience.')}</p>

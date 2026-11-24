@@ -3,6 +3,7 @@ import LanguageSelector from './LanguageSelector.jsx'
 import { parsePath, localizedPath } from '../i18n/paths.js'
 import { translate, localHref } from '../i18n/tr.js'
 import { hasTranslation } from '../i18n/registry.js'
+import { REFERRAL_LABELS, menuHas, showReferralLink } from '../i18n/menu.js'
 import CookieSettingsLink from './CookieSettingsLink.jsx'
 import { SERVICE_LABELS } from '../seo/businessKnowledge.js'
 import { CONTACT_EMAIL, REFERRALS_PATH, CREATOR_SHOWCASE_PATH, ABOUT_PATH, CONTACT_PATH, PRIVACY_PATH, TERMS_PATH, LEGAL_NOTICE_PATH, TRUST_PAGES_PUBLISHED, COMPANY_LINKEDIN_URL, INSTAGRAM_URL } from '../config.js'
@@ -14,7 +15,7 @@ export default function Footer() {
   const h = (p) => localHref(p, locale)
   const en = locale === 'en'
   const onHome = basePath === '/'
-  const homePrefix = onHome ? '' : localizedPath(locale, '/')
+  const homePrefix = onHome ? '' : h('/')
   return (
     <footer className="border-t border-hairline bg-canvas">
       <div className="mx-auto max-w-7xl px-5 py-14 md:px-8 md:py-16">
@@ -42,12 +43,12 @@ export default function Footer() {
             <ul className="mt-4 space-y-2.5 text-sm text-ink-muted">
               <li><a className="hover:text-ink transition-colors" href={`${homePrefix}#services`}>{tr('Services')}</a></li>
               <li><a className="hover:text-ink transition-colors" href={h(CREATOR_SHOWCASE_PATH)}>{tr('Creator Showcase')}</a></li>
-              {(en || hasTranslation(locale, '/case-studies')) && <li><a className="hover:text-ink transition-colors" href={h('/case-studies')}>{tr('Case Studies')}</a></li>}
-              {!en && !hasTranslation(locale, '/case-studies') && <li><a className="hover:text-ink transition-colors" href={`${homePrefix}#how-it-works`}>{tr('How It Works')}</a></li>}
+              {menuHas(locale, '/case-studies') && <li><a className="hover:text-ink transition-colors" href={h('/case-studies')}>{tr('Case Studies')}</a></li>}
               <li><a className="hover:text-ink transition-colors" href={h('/pricing')}>{tr('Pricing')}</a></li>
               {en && <li><a className="hover:text-ink transition-colors" href="/blog">Blog</a></li>}
               <li><a className="hover:text-ink transition-colors" href={TRUST_PAGES_PUBLISHED ? h(CONTACT_PATH) : `${homePrefix}#contact`}>{tr('Contact')}</a></li>
               {en && <li><a className="hover:text-ink transition-colors" href={REFERRALS_PATH}>Refer &amp; Earn</a></li>}
+              {!en && showReferralLink(locale) && <li><a className="hover:text-ink transition-colors" href={h(REFERRALS_PATH)}>{REFERRAL_LABELS[locale][0]} <span className="font-semibold text-lime">{REFERRAL_LABELS[locale][1]}</span></a></li>}
             </ul>
           </div>
 

@@ -17,6 +17,7 @@ import { selectSpokespersonHero, selectSpokespersonGallery, forPageLanguage, ord
 import {
   SPOKESPERSON_HERO, SPOKESPERSON_STAGES, SPOKESPERSON_PROCESS, SPOKESPERSON_GALLERY, SPOKESPERSON_CTA, SPOKESPERSON_PATH_LABEL, SPOKESPERSON_VIDEO_ORDER,
 } from './content/spokespersonPage.js'
+import { currentLocale } from './i18n/locale.js'
 import { tr, T, hrefFor } from './i18n/tr.js'
 
 /* /spokesperson-video-production: the Spokesperson service page. It reuses the UGC page's architecture and design system, and each section is
@@ -74,7 +75,7 @@ export default function SpokespersonVideoPage() {
       <ProcessSection config={PROCESS_CONFIG} footer={<ProcessFooter />}>
         <DeliveryStyles />
       </ProcessSection>
-      <UgcGallery items={galleryItems} config={SPOKESPERSON_GALLERY} />
+      {currentLocale() !== 'es' && <UgcGallery items={galleryItems} config={SPOKESPERSON_GALLERY} />}
       <SectionDivider />
       <SpokespersonProof />
       <SectionDivider />

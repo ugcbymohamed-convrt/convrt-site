@@ -101,6 +101,8 @@ test('dictionary sentences carry price tokens, never a typed amount; tokens reso
     for (const line of t.split('\n')) {
       if (/^\s*"(Under \$5,000|\$5,000–\$20,000|\$20,000\+)"/.test(line)) continue // the Roadmap's ad-spend answer brackets: qualification thresholds, deliberately unchanged
       const value = line.replace(/^\s*"(?:[^"\\]|\\.)*":\s*/, '')
+      // the Referral Partner Program rewards are the English page's own US-dollar amounts ($150, 10 % up to $500): shown as written, never converted and never a CONVRT package price
+      if (f === 'dict-referrals.js') { assert.ok(!/\d[\d.,]*\s?(€|EUR|euros?)\b/i.test(value), `${f}: no euro amount in the referral dictionary`); continue }
       assert.ok(!/\d[\d.,]*\s?(USD|€|EUR|euros?)\b/i.test(value), `${f}: a Spanish value types an amount instead of a price token: ${value.slice(0, 90)}`)
     }
   }
