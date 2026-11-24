@@ -102,3 +102,11 @@ Copy a native reviewer should check: the three H1s and titles, « formules sur m
 - **Footer:** one component for every language; the Studio column mirrors the top menu (English and French: Services, Creator Showcase / Créateurs, Case Studies / Études de cas, Pricing / Tarifs, Blog, Contact, Refer & Earn / Parrainez et gagnez; Spanish lists its own menu); About, the legal documents (English only, marked) and cookie settings sit in the bottom row.
 
 **Integration notes.** `Nav.jsx` (dropdown), `Footer.jsx` (menu mirror) and the English Pricing FAQ tab classes now also change the English site on this branch: they match what `footer-two-column-menu` already holds, so merge that branch first or accept identical hunks. The Organic accent cards exist on `arabic-localization` (`PackageCardAr`) and here (`AccentCard`, driven by editorial data): unify when the branches meet. Arabic is not on this branch, so the Arabic footer and menu were not touched.
+
+## Release branch `french-release` (Nov 2026): French reconciled with the Spanish release on main
+
+`main` received the Spanish release (visual parity, case studies, referral pages in es/fr/ar, one menu model, lime/magenta Organic cards, shorter Organic lines) while this branch was in progress. The two were reconciled on `french-release`:
+- **Taken from main (Spanish-tested):** the case-study and referral components and dictionaries (`fr/dict-referrals.js` and the `{{reward:…}}` euro reward rule come from main), `OrganicPackages.jsx` + `i18n/organicPackagesCopy.js` (the French lines match the owner's text), the menu model (`i18n/menu.js`, French added: order UGC, Spokesperson, SaaS, organic; Blog listed in French and linked to the English blog), `Hero.jsx`'s `SecondaryOffer` and `offersShown`.
+- **French grafted on top:** `IndustryShowcase.jsx` (one client, three landscape videos, still plate), `ClientReviews.jsx` (French excerpts, visible heading), `Hero.jsx` (rotating words, offer copy), `UgcHero.jsx` (offer cards on the UGC page only), footer notes « (en anglais) », `fr/dict-release.js` (strings of the merged components).
+- **English** is identical to main's build except the privacy-policy wording about the language suggestion; **Spanish** differs only by French appearing in the language selector.
+- `fr` status is `live` in `src/i18n/locales.js` (main had it in `review`).
