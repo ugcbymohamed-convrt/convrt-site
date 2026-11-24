@@ -198,7 +198,7 @@ test('data: validation rejects bad entries; language is optional until confirmed
 
 // ── categories ──────────────────────────────────────────────────────────────────────────
 test('categories: All Work + the four approved industry filters (E-commerce, SaaS, Services, Other) + the Spokesperson type filter; a category with no videos has no tab', () => {
-  assert.deepEqual([ALL_CATEGORY, ...CATEGORIES].map((c) => c.label), ['All Work', 'E-commerce', 'SaaS', 'Services', 'Other', 'Spokesperson'])
+  assert.deepEqual([ALL_CATEGORY, ...CATEGORIES].map((c) => c.label), ['All Work', 'E-commerce', 'SaaS', 'Services', 'Organic Social', 'Spokesperson'])
   assert.deepEqual([ALL_CATEGORY, ...CATEGORIES].map((c) => c.color), ['#d5ff40', '#ec4899', '#9a7aff', '#34c9c0', '#ffb547', '#ff6a4d'])
   assert.ok(CATEGORIES.every((c) => /^#[0-9a-f]{6}$/.test(c.color)))
   const tailwind = read('tailwind.config.js')
@@ -263,7 +263,7 @@ test('card: title, industry, language and brand shown; creator name only with pe
 test('library: only categories with videos get a tab, the default view is All Work, and the active accent is a CSS variable (the page never recolours)', () => {
   const html = renderToStaticMarkup(createElement(Library.default, { items: [...many(2, 'saas'), ...many(1, 'ecommerce')] }))
   assert.ok(/All Work/.test(html) && /SaaS/.test(html) && /E-commerce/.test(html))
-  assert.ok(!/Services/.test(html) && !/>Other</.test(html), 'empty categories are hidden')
+  assert.ok(!/Services/.test(html) && !/>Organic Social</.test(html), 'empty categories are hidden')
   assert.match(html, /aria-pressed="true"[^>]*>[\s\S]*?All Work/)
   assert.match(html, /style="--cat:#d5ff40"/, 'All Work accent')
   assert.match(html, /Showing 3 videos/, 'screen-reader count')
@@ -361,7 +361,7 @@ test('rename: canonical, og:url, sitemap and structured data all use /creator-sh
   const ld = JSON.stringify(jsonLdFor(PATH, SITE_SEO[PATH]))
   assert.ok(ld.includes(`${SITE_URL}/creator-showcase`) && !ld.includes('our-work'))
   assert.equal(SITE_SEO[PATH].title, 'Creator Showcase | UGC Video Examples | CONVRT', 'the approved title is unchanged')
-  assert.deepEqual(CATEGORIES.map((c) => c.label).slice(0, 4), ['E-commerce', 'SaaS', 'Services', 'Other'], 'the four approved filters, unchanged and in order (the Spokesperson filter follows them)')
+  assert.deepEqual(CATEGORIES.map((c) => c.label).slice(0, 4), ['E-commerce', 'SaaS', 'Services', 'Organic Social'], 'the four approved filters, unchanged and in order (the Spokesperson filter follows them)')
   assert.ok(textOf(html).includes("See what's possible."))
 })
 
@@ -502,10 +502,10 @@ test('regression: an unclassified video is in All Work only, never under Other o
   assert.ok(isDisplayable(unknown[0]) && isDisplayable(unknown[1]), 'permissions alone make it public; the industry is optional')
   assert.equal(industryLabel('unclassified'), '')
   assert.equal(industryLabel(undefined), '')
-  assert.equal(industryLabel('other'), 'Other')
+  assert.equal(industryLabel('other'), 'Organic Social')
   // rendering: All Work only, a card without an industry badge, no word "Unclassified" anywhere
   const html = renderToStaticMarkup(createElement(Library.default, { items: unknown }))
-  assert.ok(!/Unclassified|>Other</i.test(html), 'never exposed')
+  assert.ok(!/Unclassified|>Other<|>Organic Social</i.test(html), 'never exposed')
   assert.equal((html.match(/aria-pressed=/g) || []).length, 1, 'only the All Work pill')
   assert.equal((html.match(/aria-label="Play video: /g) || []).length, 3)
   assert.ok(!/uppercase tracking-\[0\.08em\] text-ink backdrop-blur/.test(html), 'no industry badge on an unclassified card')
@@ -590,11 +590,11 @@ test('Spokesperson filter: a type filter after the four industry filters; it hol
   // the shipped page: a Spokesperson pill with seven videos, after the industry pills
   const html = rootOf(page(PATH))
   const pills = [...html.matchAll(/aria-pressed="(?:true|false)"[^>]*>[\s\S]*?<\/svg>([A-Za-z -]+)<span[^>]*>(\d+)<\/span>/g)].map((m) => [m[1].trim(), Number(m[2])])
-  assert.deepEqual(pills, [['All Work', 45], ['E-commerce', 9], ['SaaS', 9], ['Services', 7], ['Other', 7], ['Spokesperson', 9]])
+  assert.deepEqual(pills, [['All Work', 45], ['E-commerce', 9], ['SaaS', 9], ['Services', 7], ['Organic Social', 7], ['Spokesperson', 9]])
   assert.match(html, /aria-label="Filter videos by industry or type"/)
   const lib = renderToStaticMarkup(createElement(Library.default, { items: selectOurWork() }))
   assert.ok(lib.includes('Spokesperson'))
-  assert.ok(/Other<span/.test(lib), 'Other has a tab now that the seven organic videos (industry "other") exist; it would vanish again with none')
+  assert.ok(/Organic Social<span/.test(lib), 'Other has a tab now that the seven organic videos (industry "other") exist; it would vanish again with none')
 })
 
 // ── descriptive titles (SEO/GEO showcase-titles pass, 2026-11-21): evidence-based, short, unique, no invented names ───────────────────────────

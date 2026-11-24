@@ -1498,7 +1498,7 @@ export const LANGUAGE_LABELS = {
 export const INDUSTRY_LABELS = {
   saas: 'SaaS', ecommerce: 'E-commerce', app: 'Apps', technology: 'Technology', consumer: 'Consumer products',
   beauty: 'Beauty', health: 'Health & wellness', fashion: 'Fashion', food: 'Food & drink', finance: 'Finance',
-  education: 'Education', travel: 'Travel', home: 'Home & lifestyle', services: 'Services',
+  education: 'Education', travel: 'Travel', home: 'Home & lifestyle', services: 'Services', other: 'Organic Social',
 }
 
 /* What kind of video it is. Only videos explicitly typed 'ugc' reach the UGC page (an unset type is unknown, not UGC). */
@@ -1707,7 +1707,7 @@ export const CATEGORIES = [
   { id: 'ecommerce', label: 'E-commerce', color: '#ec4899' },
   { id: 'saas', label: 'SaaS', color: '#9a7aff' },
   { id: 'services', label: 'Services', color: '#34c9c0' },
-  { id: 'other', label: 'Other', color: '#ffb547' },
+  { id: 'other', label: 'Organic Social', color: '#ffb547' }, // the id stays 'other' (industry 'other'); the owner named this tab Organic Social (2026-11-24)
   /* A TYPE filter, not an industry: every video whose type is 'spokesperson', whatever its industry (a SaaS spokesperson video is under both SaaS and
      Spokesperson). It has a tab only while at least one such video is approved. */
   { id: 'spokesperson', label: 'Spokesperson', color: '#ff6a4d', byType: 'spokesperson' },
