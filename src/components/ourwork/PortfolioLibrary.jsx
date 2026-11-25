@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { availableCategories, countIn, filterByCategory, prioritizeLanguage, buildFacets, matchesFilters, languageLabel, diversifyByCreator } from '../../content/portfolio.js'
+import { availableCategories, countIn, filterByCategory, prioritizeLanguage, buildFacets, matchesFilters, languageLabel } from '../../content/portfolio.js'
 import { currentLocale } from '../../i18n/locale.js'
 import { trackEvent } from '../../lib/analytics.js'
 import { Section } from '../ugc/shared.jsx'
@@ -62,9 +62,8 @@ export default function PortfolioLibrary({ items: itemsProp, pageSize = PAGE }) 
 
   const active = tabs.find((t) => t.id === catId) ?? tabs[0]
   const filtered = useMemo(() => {
-    const list = filterByCategory(items, active.id).filter((i) => matchesFilters(i, { language: lang }))
-    return locale === 'ar' ? diversifyByCreator(list) : list // Arabic: alternate creators, re-applied after every filter
-  }, [items, active.id, lang, locale])
+    return filterByCategory(items, active.id).filter((i) => matchesFilters(i, { language: lang })) // Arabic: the order is curated (AR_SHOWCASE_ORDER), so it is kept after every filter
+  }, [items, active.id, lang])
   const shown = filtered.slice(0, limit)
   const openIndex = openId ? filtered.findIndex((i) => i.id === openId) : -1
   const open = openIndex >= 0 ? filtered[openIndex] : null

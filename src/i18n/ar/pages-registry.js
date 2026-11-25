@@ -33,7 +33,7 @@ export const AR_PAGE_GRAPH_EXTRAS = {
       nodes: [pageServiceAr(url, {
         name: 'إنتاج فيديوهات UGC',
         serviceType: 'إنتاج إعلانات فيديو UGC',
-        description: `${AR_CORE_SERVICES.ugc.description} يصنع فيديوهات UGC صُنّاع محتوى حقيقيون.`,
+        description: `${AR_CORE_SERVICES.ugc.description} يصنع فيديوهات UGC صناع محتوى حقيقيون.`,
         ...offersOf([
           monthlyOfferAr(SPRINT.name, SPRINT.monthly, packages), oneOffOfferAr(SPRINT.name, SPRINT.oneOff, packages),
           monthlyOfferAr(SPRINT_PLUS.name, SPRINT_PLUS.monthly, packages), oneOffOfferAr(SPRINT_PLUS.name, SPRINT_PLUS.oneOff, packages),

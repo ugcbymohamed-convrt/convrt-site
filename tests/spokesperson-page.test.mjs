@@ -388,5 +388,5 @@ test('accessibility: one H1, headings never skip a level, buttons are real butto
 
 test('spokesperson page order is independent of the Showcase order: hero 1, 2, 3 (first = centre) and the gallery alternates creators', () => {
   assert.deepEqual(orderedBy(selectSpokespersonHero(), SPOKESPERSON_VIDEO_ORDER.hero).map((v) => v.id), ['spokesperson-hero-2', 'spokesperson-hero-1', 'spokesperson-hero-3'])
-  assert.deepEqual(orderedBy(selectSpokespersonGallery(), SPOKESPERSON_VIDEO_ORDER.gallery).map((v) => v.id), ['spokesperson-gal-1', 'spokesperson-gal-2', 'en-mohamed-spokesperson-1', 'spokesperson-gal-3', 'en-mohamed-spokesperson-2', 'spokesperson-gal-4'])
+  assert.deepEqual(orderedBy(selectSpokespersonGallery(), SPOKESPERSON_VIDEO_ORDER.gallery).map((v) => v.id), ['spokesperson-gal-1', 'spokesperson-gal-2', 'en-mohamed-spokesperson-1', 'spokesperson-gal-3', 'en-mohamed-spokesperson-2', 'spokesperson-gal-4', 'en-milad-spokesperson-1'])
 })

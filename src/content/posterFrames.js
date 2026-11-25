@@ -11,27 +11,28 @@
 
 export const POSTER_FRAMES = {
   'a32cb282a9ef41333b79f86da02a46ad': 22.2, // portfolio:ar-mohamed-zory [ar]
-  '9e7fca5cfa5146f40a26d0e2d066ed14': 6.5, // portfolio:ar-mohamed-clothing [ar]
-  '1bb5e1f61c5c4efb56c378f568ca0f5b': 27.7, // portfolio:ar-mohamed-bag [ar]
+  '9e7fca5cfa5146f40a26d0e2d066ed14': 13.6, // portfolio:ar-mohamed-clothing [ar] // owner-chosen frame 2026-11-25 (Videos Placement folder screenshot)
+  '1bb5e1f61c5c4efb56c378f568ca0f5b': 25.2, // portfolio:ar-mohamed-bag [ar] // owner-chosen frame 2026-11-25 (Videos Placement folder screenshot)
   'a256f8f429c8e2d26256e894af970dbf': 18.8, // portfolio:ar-oneroyal-1 [ar]
-  '871ea801a38e653cd48c036374966382': 5.8, // portfolio:ar-oneroyal-2 [ar]
+  '871ea801a38e653cd48c036374966382': 5.1, // portfolio:ar-oneroyal-2 [ar] // owner-chosen frame 2026-11-25 (Videos Placement folder screenshot)
   '8bc61e80a5240cde3f16a90f63dbc4fa': 11.6, // portfolio:ar-oneroyal-3 [ar]
   'afdb58ebb92354534b513dabca0d64f5': 8.0, // home-hero-ar:home-hero-ar-main [ar]: presenter smiling at the camera with open eyes, one Arabic caption word (every frame carries the burned-in «مدبلج إلى العربية» badge)
   '442dfb5fe6a49dffd032ecd920414512': 13.0, // portfolio:ar-ugc-hero-1 [ar]
   'e76683d744c46ecfe8e1fb53b273b926': 15.6, // portfolio:ar-ugc-hero-2 [ar]
-  '7f68e3f6c92e70395cad4876fcb389a8': 24.9, // portfolio:ar-ugc-hero-3 [ar]
   '6d550ed3188d606de1b28dfd389c3abd': 33.2, // portfolio:ar-ugc-1 [ar]
-  'ad0e4e3babf8a7dc94a67df48d48399a': 30.4, // portfolio:ar-ugc-2 [ar]
-  '49313eccb88e9b95a4985d59777d8e41': 7.3, // portfolio:ar-ugc-3 [ar]
-  'a073ed5202bdd7c83de8312cefa3e419': 20.8, // portfolio:ar-ugc-4 [ar]
-  '10c436de7f9b0c5bfbdee723aff56659': 6.4, // portfolio:ar-ugc-5 [ar]
-  'fa580c253a9bb4d64b04c1226de96819': 39.6, // portfolio:ar-ugc-6 [ar]
+  'ad0e4e3babf8a7dc94a67df48d48399a': 25.8, // portfolio:ar-ugc-2 [ar] // owner-chosen frame 2026-11-25 (Videos Placement folder screenshot)
+  '49313eccb88e9b95a4985d59777d8e41': 30.9, // portfolio:ar-ugc-3 [ar] // owner-chosen frame 2026-11-25 (Videos Placement folder screenshot)
+  'a073ed5202bdd7c83de8312cefa3e419': 1.7, // portfolio:ar-ugc-4 [ar] // owner-chosen frame 2026-11-25 (Videos Placement folder screenshot)
+  '10c436de7f9b0c5bfbdee723aff56659': 15.4, // portfolio:ar-ugc-5 [ar] // owner-chosen frame 2026-11-25 (Videos Placement folder screenshot)
+  'fa580c253a9bb4d64b04c1226de96819': 29.0, // portfolio:ar-ugc-6 [ar] // owner-chosen frame 2026-11-25 (Videos Placement folder screenshot)
   '0241249ccf242630f097d03ac8cc11b9': 14.5, // portfolio:ar-ugc-7 [ar]
-  '002d9dab913f13496e6513e4a7761ec9': 10.3, // portfolio:ar-ugc-8 [ar]
-  '583c9f5132d0cfe0f2eb26ea1df73446': 6.4, // portfolio:ar-ugc-9 [ar]
-  '0cf5d2139e0769332c053ac71984ca14': 3.0, // portfolio:ar-ugc-10 [ar]
-  '7359123313ee51b95976e3ae6adc331e': 10.4, // portfolio:ar-ugc-11 [ar]
-  '60c9247e04b35d3dde12aa6c918aa1d6': 15.2, // portfolio:ar-ugc-12 [ar]
+  '002d9dab913f13496e6513e4a7761ec9': 35.9, // portfolio:ar-ugc-8 [ar] // owner-chosen frame 2026-11-25 (Videos Placement folder screenshot)
+  '583c9f5132d0cfe0f2eb26ea1df73446': 7.0, // portfolio:ar-ugc-9 [ar] // owner-chosen frame 2026-11-25 (Videos Placement folder screenshot)
+  '573acd81f098fb29bf4145d3dd1463a4': 2.6, // portfolio:ar-mohamed-clothing-2 [ar]: face centred, eyes open, no caption in the way
+  'ed635c7d6db2d44efda5fc73454acfa3': 9.0, // portfolio:ar-mohamed-bottle [ar]: face centred, eyes open, no caption in the way
+  '0cf5d2139e0769332c053ac71984ca14': 0.5, // portfolio:ar-ugc-10 [ar] // owner-chosen frame 2026-11-25 (Videos Placement folder screenshot)
+  '7359123313ee51b95976e3ae6adc331e': 10.4, // portfolio:en-milad-saas-1; owner-chosen frame 2026-11-25 (SOLUTION)
+  '60c9247e04b35d3dde12aa6c918aa1d6': 1.8, // portfolio:en-milad-spokesperson-1 // owner-chosen frame 2026-11-25 (Videos Placement folder screenshot)
   '37d2799756ba9cc827b3381b034474ce': 2.5, // portfolio:es-showcase-elyon-1 (Spanish homepage stage, group Elyon Dubai): the "Spanish girls trying Elyon Dubai" title frame
   '8cc42ca3f0a33667eb14cf5e2449b4ad': 9.5, // portfolio:es-showcase-elyon-2
   'dc0a340190fc4cd310e24448dda4f170': 11.9, // portfolio:es-showcase-elyon-3
@@ -126,6 +127,14 @@ export const POSTER_FRAMES = {
   'd2edf70e059c4db4d4ab1368048bd6f4': 2.8, // portfolio:en-mohamed-ugc-1 (clear face, open eyes, the story starts)
   '2a37b139606ef2d9640281ed09c9d99f': 7.8, // portfolio:en-mohamed-ugc-2 (confident look to camera, lime caption); owner-chosen frame 2026-11-24 (holding the device out to camera)
   'a5e60be52e693016bb47bed4c801eb5f': 9.2, // scale VSL (poster, no time)
+}
+
+/* A poster file that must show a DIFFERENT frame from the shared one for its video (same-origin poster path -> seconds). The three Arabic Graspo posters use it: those Stream videos also appear on the English homepage panels and case
+   study, whose frames (above) must not change. scripts/poster-frames.py reads it. */
+export const POSTER_FRAME_OVERRIDES = {
+  '/portfolio/ar-graspo-1.webp': 0.9, // owner-chosen frame 2026-11-25 (Videos Placement folder, Organic hero)
+  '/portfolio/ar-graspo-2.webp': 3.2,
+  '/portfolio/ar-graspo-3.webp': 12.8,
 }
 
 /* A Stream thumbnail for a video id at its chosen frame (the first frame when none is listed). height = pixel height of the returned image. */

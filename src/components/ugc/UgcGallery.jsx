@@ -30,6 +30,7 @@ import { PORTRAITS } from './illustrations.jsx'
    out of view (Player, shared with the portfolio grid). */
 
 const TOTAL = 10
+const TOTAL_AR = 11 // the Arabic UGC carousel: positions 1 to 4 plus the seven carousel-only videos the owner placed (2026-11-25)
 
 /* CONFIGURATION-DRIVEN. UGC_GALLERY is this page's content and the default. /spokesperson-video-production passes its own: heading, badge, button, analytics
    prefix and (importantly) NO stand-in portraits, so its preview-host layout cards are neutral empty frames, never creator imagery.
@@ -116,7 +117,7 @@ const Chevron = ({ dir: dirProp }) => {
 export default function UgcGallery({ items, config: configProp = UGC_GALLERY }) {
   const config = localizeConfig(configProp, currentLocale())
   const preview = usePreviewHost()
-  const real = items.slice(0, TOTAL)
+  const real = items.slice(0, currentLocale() === 'ar' ? TOTAL_AR : TOTAL)
   // Stand-in cards are an English-preview layout aid only: a translated page with no genuine video shows no gallery at all (no empty frames, no placeholders), even on a Preview.
   const sample = real.length === 0 && preview && currentLocale() === 'en'
   const fcfg = config.filter

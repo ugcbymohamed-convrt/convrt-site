@@ -131,7 +131,7 @@ export default {
   // faq
   "Quick answers.": "إجابات سريعة.",
   "Who can join?": "من يقدر ينضم؟",
-  "Clients, founders, creators, consultants, agencies and other professionals. CONVRT reviews and approves every application.": "عملاء ومؤسسون وصُنّاع محتوى ومستشارون ووكالات ومهنيون آخرون. وتراجع CONVRT كل طلب وتعتمده.",
+  "Clients, founders, creators, consultants, agencies and other professionals. CONVRT reviews and approves every application.": "عملاء ومؤسسون وصناع محتوى ومستشارون ووكالات ومهنيون آخرون. وتراجع CONVRT كل طلب وتعتمده.",
   "How much do I earn?": "كم أربح؟",
   "Standard partners earn $150 per eligible new client, as cash or production credit. Approved agencies earn 10% of the first qualifying project payment, up to $500 per referred client. There’s no limit on eligible referrals.": "يربح الشركاء القياسيون {{reward:standard}} عن كل عميل جديد مؤهل، نقدًا أو رصيد إنتاج. وتربح الوكالات المعتمدة 10% من دفعة أول مشروع مؤهل، بحد أقصى {{reward:cap}} لكل عميل مُحال. ولا يوجد حد للإحالات المؤهلة.",
   "What does the referred brand get?": "ماذا تحصل عليه العلامة المُحالة؟",

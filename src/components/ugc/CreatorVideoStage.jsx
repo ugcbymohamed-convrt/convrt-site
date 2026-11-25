@@ -214,7 +214,8 @@ export function HeroPlayerControls({ item, playing, muted, progress, nudge = fal
         </button>
       )}
       <div className={`absolute inset-x-3 bottom-3.5 z-20 md:inset-x-4 md:bottom-5 ${barClass}`.trim()} onPointerDown={(e) => e.stopPropagation()}>
-        <div className="flex items-center gap-2 rounded-full bg-black/55 py-1.5 pl-1.5 pr-1.5 backdrop-blur-md">
+        {/* Player controls keep their normal left-to-right layout on every page, Arabic included (the seek bar fills from the left, play on the left, sound on the right). */}
+        <div dir="ltr" className="flex items-center gap-2 rounded-full bg-black/55 py-1.5 pl-1.5 pr-1.5 backdrop-blur-md">
           <button
             type="button"
             onClick={onTogglePlay}

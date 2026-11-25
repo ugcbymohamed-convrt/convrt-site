@@ -29,7 +29,8 @@ import { switchTarget, languageOptions } from '../src/i18n/switch.js'
 import { SITE_SEO } from '../src/seo/siteSeo.js'
 import { SITE_URL } from '../src/config.js'
 import { SPRINT, SPRINT_PLUS, ORGANIC, COMMITMENT, ORGANIC_COMMITMENT, RAW_FOOTAGE } from '../src/seo/businessKnowledge.js'
-import { PORTFOLIO, portfolioProblems, displayableFor, selectDisplayable, selectHero, selectGallery, creatorLabel, brandLabel } from '../src/content/portfolio.js'
+import { PORTFOLIO, portfolioProblems, displayableFor, selectDisplayable, selectHero, selectGallery, selectOurWork, forPageLanguage, availableCategories, countIn, filterByCategory, AR_SHOWCASE_ORDER, creatorLabel, brandLabel } from '../src/content/portfolio.js'
+import { POSTER_FRAMES, POSTER_FRAME_OVERRIDES } from '../src/content/posterFrames.js'
 import { HOME_HERO_AR, HOME_HERO } from '../src/content/homeHero.js'
 import { stepOfArrow, stepOfSwipe } from '../src/lib/rtl.js'
 import { buildSitemap, localizedSitemapPaths } from '../src/lib/seo/sitemap.js'
@@ -138,36 +139,39 @@ test('language selector: Arabic is offered with lang="ar" dir="rtl"; an equivale
   assert.equal(switchTarget('en', '/ugc-video-agency'), '/ugc-video-agency'); assert.equal(switchTarget('es', '/ugc-video-agency'), '/es/ugc-video-agency')
 })
 
-test('Arabic creator videos: valid entries, real Stream ids, Arabic-only, approved by the brief, no names/brands/credits/dates, the three English-captioned clips are labelled English, none leak into English or Spanish', () => {
-  const ar = PORTFOLIO.filter((v) => v.onlyIn?.includes('ar') && v.id.startsWith('ar-ugc'))
-  assert.equal(ar.length, 15)
-  assert.equal(new Set(ar.map((v) => v.id)).size, 15); assert.equal(new Set(ar.map((v) => v.source.cloudflareId)).size, 15)
-  const ENGLISH_CAPTIONED = ['0cf5d2139e0769332c053ac71984ca14', '7359123313ee51b95976e3ae6adc331e', '60c9247e04b35d3dde12aa6c918aa1d6']
+const asArabic = (fn) => { const prev = globalThis.window; globalThis.window = { location: { pathname: '/ar/creator-showcase' } }; try { return fn() } finally { if (prev === undefined) delete globalThis.window; else globalThis.window = prev } }
+const AR_ONLY = () => PORTFOLIO.filter((v) => v.onlyIn?.includes('ar'))
+
+test('Arabic creator videos: valid entries, real Stream ids, Arabic-only, approved, no names/brands/credits/dates, the English-captioned clip is labelled English, none leak into English or Spanish', () => {
+  const ar = AR_ONLY().filter((v) => /^ar-(ugc|mohamed-(clothing-2|bottle))/.test(v.id))
+  assert.equal(ar.length, 14, '12 ar-ugc entries (hero-1, hero-2, 1 to 10) + the two Mohamed videos added 2026-11-25 (UGC carousel positions 2 and 4)')
+  assert.equal(new Set(ar.map((v) => v.id)).size, 14); assert.equal(new Set(ar.map((v) => v.source.cloudflareId)).size, 14)
   for (const v of ar) {
     assert.deepEqual(portfolioProblems(v), [], v.id)
     assert.match(v.source.cloudflareId, /^[0-9a-f]{32}$/, v.id)
     assert.deepEqual(v.onlyIn, ['ar'])
-    if (ENGLISH_CAPTIONED.includes(v.source.cloudflareId)) { assert.deepEqual(v.languages, ['en'], `${v.id}: English captions, never labelled Arabic`); assert.ok(v.crossLanguageNote, v.id) } else assert.deepEqual(v.languages, ['ar'])
-    assert.equal(v.type, 'ugc'); assert.equal(v.industry, 'unclassified')
+    if (v.id === 'ar-ugc-10') { assert.deepEqual(v.languages, ['en'], 'English on-screen captions: never labelled Arabic'); assert.ok(v.crossLanguageNote) } else assert.deepEqual(v.languages, ['ar'], v.id)
+    assert.ok(['ugc', 'spokesperson', 'saas'].includes(v.type), v.id); assert.equal(v.industry, 'unclassified')
     assert.ok(/[؀-ۿ]/.test(v.caption), 'caption is Arabic')
     assert.ok(v.creator === undefined && v.brand === undefined && v.productionCredit === undefined && v.uploadDate === undefined && v.production === undefined, `${v.id}: nothing invented (no name, brand, credit, date, production claim)`)
     assert.equal(creatorLabel(v), null); assert.equal(brandLabel(v), null)
     assert.ok(fs.existsSync(path.join(ROOT, 'public', v.poster)), `${v.id}: poster file exists`)
     assert.equal(v.approval.status, 'approved')
   }
-  // the three clips with English on-screen captions (AR-CREATOR-06/-09/-12) are on the Arabic site only (owner request 2026-11-24), labelled English
-  for (const uid of ENGLISH_CAPTIONED) assert.equal(PORTFOLIO.filter((v) => v.source?.cloudflareId === uid).length, 1, uid)
-  assert.equal(displayableFor('ar').length, 15 + 9, 'the 15 creator videos + the 9 revision videos (Mohamed, One Royal, Graspo)')
-  assert.equal(ar.filter((v) => v.placement === 'hero').length, 3, 'a three-phone hero stage, first = centre')
+  // removed on the owner's instruction (2026-11-25): the left hero phone everywhere, and the two English-captioned clips that went to the English site
+  for (const id of ['ar-ugc-hero-3', 'ar-ugc-11', 'ar-ugc-12']) assert.ok(!PORTFOLIO.some((v) => v.id === id), `${id} is gone`)
+  assert.ok(!AR_ONLY().some((v) => ['7359123313ee51b95976e3ae6adc331e', '60c9247e04b35d3dde12aa6c918aa1d6', '7f68e3f6c92e70395cad4876fcb389a8'].includes(v.source.cloudflareId)), 'IMG_4545, IMG_7827 and the old hero-3 video are not on the Arabic site')
+  assert.equal(displayableFor('ar').length, 14 + 9, 'the 14 creator videos + the 9 revision videos (Mohamed, One Royal, Graspo)')
   // English and Spanish never see them
   const enIds = new Set(displayableFor('en').map((v) => v.id)); const esIds = new Set(displayableFor('es').map((v) => v.id))
-  for (const v of PORTFOLIO.filter((x) => x.onlyIn?.includes('ar'))) assert.ok(!enIds.has(v.id) && !esIds.has(v.id), v.id)
+  for (const v of AR_ONLY()) assert.ok(!enIds.has(v.id) && !esIds.has(v.id), v.id)
   assert.equal(HOME_HERO_AR.length, 3); assert.ok(HOME_HERO_AR.every((v) => v.languages.includes('ar')))
+  assert.deepEqual(HOME_HERO_AR.map((v) => v.source.cloudflareId), ['afdb58ebb92354534b513dabca0d64f5', '442dfb5fe6a49dffd032ecd920414512', '10c436de7f9b0c5bfbdee723aff56659'], 'home hero stage order: the dubbed video in the centre, then the right phone (digital-service creator), then the left phone (chocolate) (owner, 2026-11-25)')
   assert.ok(HOME_HERO.every((v) => !v.languages?.includes('ar')), 'the English hero is unchanged')
 })
 
 test('Arabic revision videos (owner brief 2026-11-23): Mohamed, One Royal and Graspo are valid, Arabic-only, real Stream ids, with verified views only where the published case study has them', () => {
-  const rev = PORTFOLIO.filter((v) => /^ar-(mohamed|oneroyal|graspo)/.test(v.id))
+  const rev = PORTFOLIO.filter((v) => /^ar-(mohamed-(zory|clothing|bag)$|oneroyal|graspo)/.test(v.id))
   assert.equal(rev.length, 9)
   assert.equal(new Set(rev.map((v) => v.source.cloudflareId)).size, 9)
   for (const v of rev) {
@@ -183,15 +187,48 @@ test('Arabic revision videos (owner brief 2026-11-23): Mohamed, One Royal and Gr
   // views: ONLY the Graspo videos, exactly the figures the English case study publishes for the same Stream ids; never summed, never on others
   const published = { c1379ace38f2fa19ef2a45de1bb5d4b1: '7.5M', '3616606e3ca6d1a85c8a57d7cc2f656f': '1.2M', '15dd5505109f6821ccdcb13fc3cdc1fd': '295K' }
   const showcaseSrc = read('src/caseStudies/data.js') // the published figures live in the case-study data
-  for (const v of by('ar-graspo')) { assert.equal(v.views, published[v.source.cloudflareId], v.id); assert.ok(showcaseSrc.includes(`id: '${v.source.cloudflareId}', views: '${v.views}'`), `${v.id}: the figure is the one the English case study publishes`); assert.equal(v.type, 'organic'); assert.equal(v.production, 'convrt'); assert.equal(brandLabel(v), 'Graspo') }
+  for (const v of by('ar-graspo')) { assert.equal(v.views, published[v.source.cloudflareId], v.id); assert.ok(showcaseSrc.includes(`id: '${v.source.cloudflareId}', views: '${v.views}'`), `${v.id}: the figure is the one the English case study publishes`); assert.equal(v.type, 'organic'); assert.equal(v.production, 'convrt'); assert.equal(v.placement, 'hero') }
   assert.ok(rev.filter((v) => !v.id.startsWith('ar-graspo')).every((v) => v.views === undefined), 'no view count on a video without a published figure')
-  for (const v of by('ar-oneroyal')) { assert.equal(brandLabel(v), 'One Royal'); assert.equal(v.type, 'spokesperson'); assert.equal(v.showcase, 'oneroyal') }
+  for (const v of by('ar-oneroyal')) { assert.equal(brandLabel(v), 'One Royal'); assert.equal(v.showcase, 'oneroyal') }
   for (const v of by('ar-mohamed')) assert.equal(creatorLabel(v), 'Mohamed')
   for (const v of [...by('ar-oneroyal'), ...by('ar-mohamed')]) assert.ok(fs.existsSync(path.join(ROOT, 'public', v.poster)), `${v.id}: poster file exists`)
   // the Sharjah clip (third parties) was never uploaded
   assert.ok(!/sharjah|الشارقة/i.test(JSON.stringify(PORTFOLIO)))
   // the English library and pages never see them
   const enIds = new Set(displayableFor('en').map((v) => v.id)); for (const v of rev) assert.ok(!enIds.has(v.id), v.id)
+})
+
+test('Arabic placement (owner folder "Videos Placement/Arabic", 2026-11-25): four heroes of three videos, an 11-video UGC carousel, no carousel on the other three pages, the seven carousel-only videos stay out of the library', () => {
+  const heroOf = (type) => AR_ONLY().filter((v) => v.type === type && v.placement === 'hero').map((v) => v.id) // file order = stage order: centre, right, left
+  assert.deepEqual(heroOf('ugc'), ['ar-ugc-8', 'ar-mohamed-clothing', 'ar-mohamed-bag'])
+  assert.deepEqual(heroOf('spokesperson'), ['ar-ugc-hero-2', 'ar-ugc-1', 'ar-oneroyal-2'])
+  assert.deepEqual(heroOf('saas'), ['ar-ugc-hero-1', 'ar-mohamed-zory', 'ar-ugc-6'])
+  assert.deepEqual(heroOf('organic'), ['ar-graspo-1', 'ar-graspo-3', 'ar-graspo-2'])
+  const gallery = AR_ONLY().filter((v) => v.placement !== 'hero')
+  assert.deepEqual(gallery.map((v) => v.id), ['ar-ugc-5', 'ar-mohamed-clothing-2', 'ar-ugc-2', 'ar-mohamed-bottle', 'ar-ugc-7', 'ar-oneroyal-3', 'ar-ugc-9', 'ar-oneroyal-1', 'ar-ugc-3', 'ar-ugc-10', 'ar-ugc-4'], 'UGC carousel: positions 1 to 4 (chocolate, clothing, tea, bottle) then the seven carousel-only videos')
+  assert.ok(gallery.every((v) => v.type === 'ugc'), 'the Spokesperson, SaaS and Organic pages have no carousel: every one of their videos is in the hero')
+  assert.deepEqual(gallery.filter((v) => v.carouselOnly).map((v) => v.id).sort(), ['ar-oneroyal-1', 'ar-oneroyal-3', 'ar-ugc-10', 'ar-ugc-3', 'ar-ugc-4', 'ar-ugc-7', 'ar-ugc-9'])
+  // the chosen frames of the owner's screenshots
+  const FR = { 'ar-ugc-8': 35.9, 'ar-mohamed-bag': 25.2, 'ar-mohamed-clothing': 13.6, 'ar-ugc-5': 15.4, 'ar-ugc-2': 25.8, 'ar-ugc-3': 30.9, 'ar-ugc-4': 1.7, 'ar-ugc-9': 7, 'ar-ugc-10': 0.5, 'ar-ugc-6': 29, 'ar-oneroyal-2': 5.1 }
+  for (const [id, t] of Object.entries(FR)) assert.equal(POSTER_FRAMES[PORTFOLIO.find((v) => v.id === id).source.cloudflareId], t, id)
+  assert.deepEqual(POSTER_FRAME_OVERRIDES, { '/portfolio/ar-graspo-1.webp': 0.9, '/portfolio/ar-graspo-2.webp': 3.2, '/portfolio/ar-graspo-3.webp': 12.8 })
+  assert.equal(POSTER_FRAMES.c1379ace38f2fa19ef2a45de1bb5d4b1, 4.6, 'the shared Graspo frames (English panels and case study) are untouched')
+  // the library: sixteen videos, none of the carousel-only ones, in the curated order
+  const lib = asArabic(() => forPageLanguage(selectOurWork()))
+  assert.equal(lib.length, 16)
+  assert.deepEqual(lib.map((v) => v.id), AR_SHOWCASE_ORDER)
+  assert.ok(lib.every((v) => !v.carouselOnly))
+})
+
+test('Arabic Creator Showcase: four type tabs with the owner\'s labels, and no creator has two videos next to each other in All Videos or in any tab', () => {
+  const { lib, tabs } = asArabic(() => { const lib = forPageLanguage(selectOurWork()); return { lib, tabs: availableCategories(lib).map((c) => ({ id: c.id, label: c.label, n: countIn(lib, c.id), list: filterByCategory(lib, c.id) })) } })
+  assert.deepEqual(tabs.map((t) => [t.id, t.n]), [['all', 16], ['ar-ugc', 7], ['ar-spokesperson', 3], ['ar-saas', 3], ['ar-organic', 3]])
+  const ar = DICTIONARIES.ar
+  assert.deepEqual(tabs.filter((t) => t.id !== 'all').map((t) => ar[t.label]), ['فيديوهات UGC', 'فيديوهات Spokesperson', 'فيديوهات SaaS', 'فيديوهات عضوية'])
+  for (const t of tabs) for (let i = 1; i < t.list.length; i++) assert.notEqual(t.list[i - 1].creatorId, t.list[i].creatorId, `${t.id}: ${t.list[i - 1].id} and ${t.list[i].id} (same creator) are next to each other`)
+  // and in the four-column desktop grid no creator sits directly above the same creator in All Videos where the counts allow it: report, do not hide, the remaining pairs
+  const vertical = []; for (let i = 4; i < lib.length; i++) if (lib[i].creatorId === lib[i - 4].creatorId) vertical.push([lib[i - 4].id, lib[i].id])
+  assert.ok(vertical.length <= 3, `same creator in one column: ${JSON.stringify(vertical)}`)
 })
 
 test('right-to-left helpers: the arrow that means "next" follows the reading direction; swipe likewise', () => {
@@ -348,7 +385,8 @@ test('UGC page: Arabic H1 with the search intent, Arabic gallery videos only, cr
   const html = rootOf(h)
   const hero = selectHero(); const gallery = selectGallery()
   assert.ok(!/<video/.test(html) || true)
-  assert.match(html, /\/portfolio\/ar-ugc-hero-1\.webp/)
+  for (const f of ['ar-ugc-8', 'ar-mohamed-clothing', 'ar-mohamed-bag']) assert.match(html, new RegExp(`/portfolio/${f}\\.webp`)) // the UGC hero: centre, right, left (owner, 2026-11-25)
+  assert.ok(!/ar-ugc-hero-3/.test(html), 'the removed hero video is gone')
   assert.ok(!/\/portfolio\/es-/.test(html) && !/\/portfolio\/ugc-/.test(html.replace(/ar-ugc-/g, '')), 'no Spanish or English library video')
   const t = rootText(h).join(' ')
   assert.ok(!/días laborables|Producción de|Ver ejemplos/.test(t), 'no Spanish leftovers')
@@ -361,7 +399,7 @@ test('homepage: Arabic hero, the three Arabic creator videos on the stage, found
   const t = rootText(h).join(' ')
   assert.match(t, /فيديوهات إعلانية/); assert.match(t, /احصل على 5 أفكار إعلانية مجانًا/); assert.match(t, /مكتبة الفيديوهات/); assert.match(t, /أفكارك الإعلانية الخمس التالية، مخصصة لعلامتك التجارية\./)
   assert.match(t, /خبرة المؤسس عبر CONVRT Studio وأعمال إنتاج إبداعي أخرى/, 'founder-wide attribution is stated under the clients headline'); assert.doesNotMatch(t, /الخبرة المهنية الإجمالية لمؤسسنا/, 'the statistics strip does not repeat the long footnote: the page states the attribution once, under the clients headline (owner, Nov 2026)')
-  for (const f of ['ar-hero-gulf', 'ar-ugc-hero-2', 'ar-ugc-hero-3']) assert.match(rootOf(h), new RegExp(f)) // the centre is the owner's 2026-11-24 video; the two side videos are unchanged
+  for (const f of ['ar-hero-gulf', 'ar-ugc-5', 'ar-ugc-hero-1']) assert.match(rootOf(h), new RegExp(f)) // the centre is the owner's 2026-11-24 video; the side videos are the owner's 2026-11-25 choices (chocolate, digital-service creator)
   for (const bad of ['مكتبنا', 'فرعنا', 'مقرنا', 'فريقنا في']) assert.ok(!t.includes(bad), bad)
   assert.ok(!/Adscale.{0,40}(نتائج|ROAS)/.test(t), 'no results claim attached to the Adscale service example')
 })

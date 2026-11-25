@@ -38,6 +38,7 @@ export function Player({ item }) {
     <video
       ref={ref}
       controls
+      dir="ltr" /* the browser's own controls (seek bar, volume) keep their normal left-to-right layout on Arabic pages too */
       playsInline
       preload="none"
       poster={posterUrl(item)}

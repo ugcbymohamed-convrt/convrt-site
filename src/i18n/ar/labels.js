@@ -41,5 +41,5 @@ export function captionAr(caption) {
 /* One-sentence introductions under the heading of two sections (Arabic editorial copy; English has none). */
 export const AR_SECTION_INTROS = {
   'ugc-testing': 'مو لازم تغيّر الإعلان كامل عشان تعرف وش ينجح. نجهّز نسخًا مختلفة من الفكرة نفسها، حتى تقدر تقارن النتائج بشكل أوضح.',
-  'ugc-faq': 'من الأسعار وحقوق الاستخدام إلى اختيار الصُنّاع وطريقة الإنتاج.',
+  'ugc-faq': 'من الأسعار وحقوق الاستخدام إلى اختيار الصناع وطريقة الإنتاج.',
 }

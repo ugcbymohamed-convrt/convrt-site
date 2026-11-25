@@ -110,7 +110,7 @@ The English site is the visual source of truth; `origin/main` (English design re
 7. Booking (Calendly) and the Roadmap/Qualification option **values** stay English by design (the qualification logic compares them); labels are Arabic.
 
 ## Terminology (fixed across the dictionary)
-creator = صانع محتوى / صُنّاع المحتوى · concept = فكرة إبداعية (أفكار) · hook = الافتتاحية · version = نسخة · usage rights = حقوق الاستخدام · raw footage = اللقطات الخام · Free Creative Growth Roadmap = خطة نمو إبداعية مجانية ·
+creator = صانع محتوى / صناع المحتوى · concept = فكرة إبداعية (أفكار) · hook = الافتتاحية · version = نسخة · usage rights = حقوق الاستخدام · raw footage = اللقطات الخام · Free Creative Growth Roadmap = خطة نمو إبداعية مجانية ·
 "Get 5 Free Ad Concepts" = احصل على 5 أفكار إعلانية مخصصة (five personalised **concepts**, not five videos) · Spokesperson video = فيديو بمقدّم · organic social = المحتوى العضوي للسوشيال ميديا. Package names and UGC/SaaS/Meta/TikTok/Snapchat stay Latin.
 
 ## Tests and tooling
@@ -158,3 +158,34 @@ creator = صانع محتوى / صُنّاع المحتوى · concept = فكر�
 - **Organic pricing (Arabic)**: `OrganicPackages.jsx` renders its own Arabic cards: Organic Light lime, Organic Growth magenta (+ «موصى بها»), three compact lines below, link «قارن الباقات والتفاصيل».
 - **/ar/blog**: `BlogPageAr.jsx` (same masthead as English, in Arabic). Arabic articles live in `src/content/blogAr.js` (empty: nothing is invented, English articles are never shown as Arabic). The page is reachable (menu and footer link to it) but gated in `release.js` (noindex, out of the sitemap and hreflang) until an Arabic article exists. Article pages for Arabic still need their route generation in `vite-plugin-blog.js` when the first article is approved.
 - **Library**: `diversifyByCreator` alternates creators (not the same creator within a desktop row) and is re-applied after every filter, Arabic only.
+
+## Placement revision (owner folder "Videos Placement/Arabic", 2026-11-25)
+
+The owner's folder shows, with screenshots, where each Arabic video goes and which frame is its thumbnail. What was done:
+
+**Heroes (three videos each, stage order = centre, right, left; the stage sits on the left side of the page in RTL)**
+| Page | Centre | Right | Left |
+|---|---|---|---|
+| Home | the dubbed Arabic ad (unchanged) | `ar-ugc-hero-1` (digital-service creator) | `ar-ugc-5` (chocolate) |
+| UGC | `ar-ugc-8` | `ar-mohamed-clothing` | `ar-mohamed-bag` |
+| Spokesperson | `ar-ugc-hero-2` | `ar-ugc-1` | `ar-oneroyal-2` |
+| SaaS | `ar-ugc-hero-1` | `ar-mohamed-zory` | `ar-ugc-6` |
+| Organic | `ar-graspo-1` | `ar-graspo-3` | `ar-graspo-2` |
+
+The Spokesperson, SaaS and Organic pages have **no carousel** (all their videos are in the hero). Their `type` therefore follows the page: `ar-ugc-hero-2`, `ar-ugc-1` are `spokesperson`; `ar-ugc-hero-1`, `ar-ugc-6`, `ar-mohamed-zory` are `saas`.
+
+**UGC carousel (11 cards; the Arabic cap is 11, English stays 10)**: positions 1 to 4 = `ar-ugc-5` (chocolate), `ar-mohamed-clothing-2` (new, `2.mp4`), `ar-ugc-2` (tea), `ar-mohamed-bottle` (new, `4.mp4`); then the seven carousel-only videos (`carouselOnly: true`: not in the Creator Showcase): `ar-ugc-7`, `ar-oneroyal-3`, `ar-ugc-9`, `ar-oneroyal-1`, `ar-ugc-3`, `ar-ugc-10` (English captions, shown as «الإنجليزية»), `ar-ugc-4`.
+
+**New videos**: `2.mp4` (clothing, in a car; a clothing brand's logo appears on screen) and `4.mp4` (a water bottle). Re-encoded from 4K to 1080 p and uploaded to Cloudflare Stream as `AR-MOHAMED-04` (`573acd81…`) and `AR-MOHAMED-05` (`ed635c7d…`). They are filed under the creator id `ar-mohamed` (same person and same room as the existing Mohamed videos), but **no name is shown** because the folder does not say who presents: the owner should confirm. Poster frames 2.6 s and 9.0 s (no screenshot was supplied for them).
+
+**Removed**: `ar-ugc-hero-3` ("To remove from all website"). `ar-ugc-11` (IMG_4545, CRM) and `ar-ugc-12` (IMG_7827, apartment walkthrough) moved to the **English** site: new entries `en-milad-saas-1` (English SaaS carousel + English Creator Showcase) and `en-milad-spokesperson-1` (English Spokesperson carousel + English Creator Showcase), creator id `cv-en-c03`, appended to the English display order without moving any other English video.
+
+**Thumbnails**: each screenshot was matched frame by frame against its Stream video (the time shown in the screenshot's player is the frame), and `posterFrames.js` now holds exactly those frames. The three Arabic Graspo posters use `POSTER_FRAME_OVERRIDES` (0.9 s, 3.2 s, 12.8 s) so the shared Graspo frames used by the English homepage panels and case study do not change.
+
+**Creator Showcase (Arabic)**: 16 videos (the heroes of the four pages plus carousel positions 1 to 4), in the curated order `AR_SHOWCASE_ORDER` (no runtime shuffling), found by a search that forbids the same creator in two neighbouring cards in All Videos and in every tab. Mohamed has six videos and Milad four, so none had to be removed; the Graspo videos have separate creator ids. Four tabs by type: فيديوهات UGC (7), فيديوهات Spokesperson (3), فيديوهات SaaS (3), فيديوهات عضوية (3). `tests/arabic.test.mjs` checks the order, the tabs and the adjacency.
+
+**Home creator carousel**: the eight hero videos of the UGC, Spokesperson and SaaS pages that are not in the home hero, alternating UGC, Spokesperson, SaaS, never the same creator twice in a row (`homeCreator` 1 to 8).
+
+**Players**: the seek bar and the control pill keep their normal left-to-right layout on Arabic pages (`dir="ltr"` on the control bars and on the native-controls video).
+
+**Spelling**: «صُنّاع» is now «صناع» across the Arabic copy.

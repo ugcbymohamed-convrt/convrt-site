@@ -26,7 +26,7 @@ export const faqNodeAr = (items, id) => ({
 const BREADCRUMB_NAMES = {
   '/pricing': 'الأسعار',
   '/ugc-video-agency': 'وكالة UGC',
-  '/creator-showcase': 'صُنّاع المحتوى',
+  '/creator-showcase': 'صناع المحتوى',
   '/spokesperson-video-production': 'فيديوهات Spokesperson',
   '/social-media-video-production': 'فيديوهات للسوشيال ميديا',
   '/saas-video-production': 'فيديوهات شرح التطبيقات (SaaS)',

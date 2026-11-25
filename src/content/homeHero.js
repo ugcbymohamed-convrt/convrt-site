@@ -85,6 +85,7 @@ export const HOME_HERO_ES = [
    (the same Stream videos and posters as the Arabic UGC hero in src/content/portfolio.js). The replaced centre video (ar-c01) is still on the Arabic UGC page. Who presents the new video, who made it and whether the
    presenter has consented are NOT recorded, so no name, brand, production credit or date is stated; the caption describes only the footage. Spoken language is set from the Arabic on-screen captions (the opening
    frames also carry an English comment overlay). English keeps HOME_HERO unchanged. */
+/* Order = the stage order: the centre phone, then the phone on the RIGHT of the screen, then the one on the LEFT (CreatorVideoStage). The owner (2026-11-25): chocolate on the left, the digital-service creator on the right. */
 export const HOME_HERO_AR = [
   {
     id: 'home-hero-ar-main',
@@ -97,24 +98,24 @@ export const HOME_HERO_AR = [
     approval: { ...approval, approvedBy: 'CONVRT owner (2026-11-24: supplied ARABIC-with-Dubbed-Text.mp4 as the Arabic hero video)', approvedOn: '2026-11-24' },
   },
   {
-    id: 'home-hero-ar-left',
-    creatorId: 'ar-c02',
+    id: 'home-hero-ar-right',
+    creatorId: 'ar-c01',
     industry: 'unclassified',
     languages: ['ar'],
-    caption: 'صانعة محتوى تقدّم خدمة تعليمية أمام الكاميرا.',
-    poster: '/portfolio/ar-ugc-hero-2.webp',
-    source: { cloudflareId: 'e76683d744c46ecfe8e1fb53b273b926' },
-    approval: { ...approval, approvedOn: '2026-11-23' },
+    caption: 'صانع محتوى يشرح خدمة رقمية أمام الكاميرا.',
+    poster: '/portfolio/ar-ugc-hero-1.webp',
+    source: { cloudflareId: '442dfb5fe6a49dffd032ecd920414512' },
+    approval: { ...approval, approvedBy: 'CONVRT owner (2026-11-25, Videos Placement folder: Home Page - Hero, right)', approvedOn: '2026-11-25' },
   },
   {
-    id: 'home-hero-ar-right',
-    creatorId: 'ar-c03',
+    id: 'home-hero-ar-left',
+    creatorId: 'ar-c05',
     industry: 'unclassified',
     languages: ['ar'],
-    caption: 'صانع محتوى يعرض مزايا منتج برسوم توضيحية.',
-    poster: '/portfolio/ar-ugc-hero-3.webp',
-    source: { cloudflareId: '7f68e3f6c92e70395cad4876fcb389a8' },
-    approval: { ...approval, approvedOn: '2026-11-23' },
+    caption: 'عرض منتجات شوكولاتة في الهواء الطلق.',
+    poster: '/portfolio/ar-ugc-5.webp',
+    source: { cloudflareId: '10c436de7f9b0c5bfbdee723aff56659' },
+    approval: { ...approval, approvedBy: 'CONVRT owner (2026-11-25, Videos Placement folder: Home Page - Hero, left)', approvedOn: '2026-11-25' },
   },
 ]
 

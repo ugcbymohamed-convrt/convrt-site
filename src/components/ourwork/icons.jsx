@@ -34,6 +34,12 @@ export const CATEGORY_ICONS = {
   ),
 }
 
+/* The Arabic library's four type tabs reuse the icons above (src/content/portfolio.js AR_TYPE_CATEGORIES). */
+CATEGORY_ICONS['ar-ugc'] = CATEGORY_ICONS.ugc
+CATEGORY_ICONS['ar-spokesperson'] = CATEGORY_ICONS.spokesperson
+CATEGORY_ICONS['ar-saas'] = CATEGORY_ICONS.saas
+CATEGORY_ICONS['ar-organic'] = CATEGORY_ICONS.other
+
 export const Chevron = ({ dir: dirProp = 1, className = 'h-4 w-4' }) => {
   const dir = isRtlPage() ? -dirProp : dirProp // the chevron points the way the button moves on screen
   return (

@@ -392,7 +392,7 @@ test('other pages unchanged: UGC, Spokesperson and Organic keep their H1, reel w
   assert.ok(!org.includes('saas-h1') && !sp.includes('saas-h1') && !ugc.includes('saas-h1'))
   // the Creator Showcase still lists exactly what it listed before the SaaS page existed (no SaaS-typed video ships)
   // the SaaS-typed videos are independent creator examples from the owner's folder: no CONVRT-production claim, and they are all on the SaaS page (and in the Creator Showcase)
-  const saasTyped = PORTFOLIO.filter((v) => v.type === 'saas')
+  const saasTyped = PORTFOLIO.filter((v) => v.type === 'saas' && !v.onlyIn) // English videos (the Arabic ones have onlyIn)
   assert.ok(saasTyped.every((v) => v.production === undefined && v.brand === undefined && selectOurWork().includes(v) && selectSaasHero().concat(selectSaasGallery()).includes(v)))
 })
 

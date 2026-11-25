@@ -91,7 +91,8 @@ function Player({ item, color }) {
         </button>
       )}
       <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent px-3 pb-3 pt-10">
-        <div className="flex items-center gap-2.5 rounded-full bg-black/55 py-1 pl-1.5 pr-3 backdrop-blur-md">
+        {/* Player controls keep their normal left-to-right layout on every page, Arabic included. */}
+        <div dir="ltr" className="flex items-center gap-2.5 rounded-full bg-black/55 py-1 pl-1.5 pr-3 backdrop-blur-md">
           <button type="button" onClick={toggle} aria-label={playing ? tr('Pause') : tr('Play')} className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white/10 text-ink transition-colors hover:bg-white/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-lime">
             {playing ? <PauseGlyph /> : <PlayGlyph className="h-3.5 w-3.5" />}
           </button>

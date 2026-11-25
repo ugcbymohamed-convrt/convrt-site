@@ -61,7 +61,7 @@ export function packageNodesAr(pageUrl) {
     '@id': idOf(p.id),
     name: p.name,
     serviceType: SERVICE_TYPE_PAID,
-    description: `${p.concepts} مفاهيم إبداعية مختلفة، لكل مفهوم ${p.variationsPerConcept} نسخ (${p.variations} نسخة إعلانية نهائية)، وإنتاج متكامل خلال ${p.turnaroundBusinessDays} أيام عمل بعد اعتماد المفاهيم والنصوص، وجولتا مراجعة لكل مفهوم، و${USAGE_RIGHTS.includedMonths} أشهر من حقوق الاستخدام عالميًا، بمشاركة ما يصل إلى ${p.maxCreators} من صُنّاع المحتوى أو المقدّمين.`,
+    description: `${p.concepts} مفاهيم إبداعية مختلفة، لكل مفهوم ${p.variationsPerConcept} نسخ (${p.variations} نسخة إعلانية نهائية)، وإنتاج متكامل خلال ${p.turnaroundBusinessDays} أيام عمل بعد اعتماد المفاهيم والنصوص، وجولتا مراجعة لكل مفهوم، و${USAGE_RIGHTS.includedMonths} أشهر من حقوق الاستخدام عالميًا، بمشاركة ما يصل إلى ${p.maxCreators} من صناع المحتوى أو المقدّمين.`,
     provider: orgProvider,
     isRelatedTo: [{ '@id': idOf('ugc') }, { '@id': idOf('spokesperson') }],
     ...offersOf([monthlyOfferAr(p.name, p.monthly, packagesUrl), oneOffOfferAr(p.name, p.oneOff, packagesUrl)]),
