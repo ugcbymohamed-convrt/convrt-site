@@ -1,6 +1,5 @@
-/* FRENCH SERVICE PAGES: NO VIDEOS (owner decision, Nov 2026). /fr/spokesperson-video-production, /fr/social-media-video-production and /fr/saas-video-production are text-led: no three-phone
-   hero stage, no showcase gallery, no placeholders, no "coming soon" section. Those pages ask `serviceVideos()` (src/i18n/serviceVideos.js) for their videos, which returns [] while this is
-   false, so the hero turns text-led (UgcHero) and the gallery renders nothing, whatever the portfolio holds. English and Spanish are not affected.
-   To add a French gallery later: (1) add French-language approved videos to src/content/portfolio.js for the page's type (`languages: ['fr']`, `onlyIn: ['fr']`, see
-   docs/multilingual-french-release.md), (2) set this to true. The stage and the gallery then return by themselves. */
-export const FR_SERVICE_PAGE_VIDEOS = false
+/* FRENCH SERVICE PAGES: NO VIDEOS on the Organic Social and SaaS pages (owner decision, Nov 2026): text-led, no stage, no gallery, no placeholders. (Spokesperson and UGC have a hero stage only, owner 2026-11-25.) The rule itself now lives in
+   src/content/galleryPolicy.js (one table for every language); this constant is derived from it for the French tests and docs. It is false while every French slot of those two pages is off. */
+import { galleryEnabled } from '../../content/galleryPolicy.js'
+
+export const FR_SERVICE_PAGE_VIDEOS = ['organic', 'saas'].some((page) => ['hero', 'gallery'].some((slot) => galleryEnabled('fr', page, slot)))

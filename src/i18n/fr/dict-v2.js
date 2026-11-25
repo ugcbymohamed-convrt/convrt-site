@@ -1,7 +1,8 @@
 /* French dictionary: the redesigned homepage sections shared with English (client stage, reviews, creator carousel; Nov 2026 revision). Keys are the exact English strings. */
 export default {
   "Brands from the founder's professional experience": "Marques issues de l’expérience professionnelle du fondateur",
-  "Our creators": "Nos créateurs",
+  "Our creators": "Les créateurs",
+  "Presenter-led videos that deliver a scripted message to camera.": "Des vidéos portées par un présentateur, qui délivrent un message écrit face caméra.",
   "Real creators. Real presence.": "De vrais créateurs. Une vraie présence.",
   "Ready for your brand.": "Au service de votre marque.",
   "Explore the people and creative styles behind our videos.": "Découvrez les talents et les styles qui peuvent donner vie à vos prochaines vidéos.",

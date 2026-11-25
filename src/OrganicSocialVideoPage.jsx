@@ -22,6 +22,7 @@ import {
 } from './content/organicSocialPage.js'
 import { tr, T, hrefFor } from './i18n/tr.js'
 import { serviceVideos } from './i18n/serviceVideos.js'
+import { galleryEnabled } from './content/galleryPolicy.js'
 
 /* /social-media-video-production: the Organic Social Video Production & Management page. It reuses the UGC and Spokesperson pages' architecture and design system, and each
    section is the same configuration-driven component fed with organic-social content (src/content/organicSocialPage.js):
@@ -75,8 +76,8 @@ export default function OrganicSocialVideoPage() {
     trackEvent('organic_page_view')
   }, [])
 
-  const heroItems = serviceVideos(selectOrganicHero())
-  const galleryItems = serviceVideos(selectOrganicGallery())
+  const heroItems = serviceVideos(selectOrganicHero(), 'organic', 'hero')
+  const galleryItems = serviceVideos(selectOrganicGallery(), 'organic', 'gallery')
 
   return (
     <>
@@ -92,7 +93,7 @@ export default function OrganicSocialVideoPage() {
       <ProcessSection config={PROCESS_CONFIG} footer={<ProcessFooter />}>
         <ContentSystem />
       </ProcessSection>
-      {currentLocale() !== 'es' && <UgcGallery items={galleryItems} config={ORGANIC_GALLERY} />}
+      {galleryEnabled(currentLocale(), 'organic', 'gallery') && <UgcGallery items={galleryItems} config={ORGANIC_GALLERY} />}
       <SectionDivider />
       <SpokespersonProof config={PROOF_CONFIG} />
       <SectionDivider />

@@ -20,6 +20,7 @@ import {
 import { currentLocale } from './i18n/locale.js'
 import { tr, T, hrefFor } from './i18n/tr.js'
 import { serviceVideos } from './i18n/serviceVideos.js'
+import { galleryEnabled } from './content/galleryPolicy.js'
 
 /* /saas-video-production: the SaaS Video Production service page. It reuses the UGC and Spokesperson pages' architecture and design system, and each section is the same
    configuration-driven component fed with SaaS content (src/content/saasPage.js):
@@ -68,8 +69,8 @@ export default function SaasVideoPage() {
     trackEvent('saas_page_view')
   }, [])
 
-  const heroItems = orderedBy(serviceVideos(selectSaasHero()), SAAS_VIDEO_ORDER.hero)
-  const galleryItems = orderedBy(serviceVideos(selectSaasGallery()), SAAS_VIDEO_ORDER.gallery)
+  const heroItems = orderedBy(serviceVideos(selectSaasHero(), 'saas', 'hero'), SAAS_VIDEO_ORDER.hero)
+  const galleryItems = orderedBy(serviceVideos(selectSaasGallery(), 'saas', 'gallery'), SAAS_VIDEO_ORDER.gallery)
 
   return (
     <>
@@ -85,7 +86,7 @@ export default function SaasVideoPage() {
       <ProcessSection config={PROCESS_CONFIG} footer={<ProcessFooter />}>
         <SaasFormats />
       </ProcessSection>
-      {currentLocale() !== 'es' && <UgcGallery items={galleryItems} config={SAAS_GALLERY} />}
+      {galleryEnabled(currentLocale(), 'saas', 'gallery') && <UgcGallery items={galleryItems} config={SAAS_GALLERY} />}
       <SectionDivider />
       <SpokespersonProof config={PROOF_CONFIG} />
       <SectionDivider />

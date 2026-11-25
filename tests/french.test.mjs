@@ -180,7 +180,7 @@ test('French creator videos: nine valid French-only gallery videos (five of two 
   assert.equal(founder.length, 4)
   for (const v of founder) {
     assert.deepEqual(portfolioProblems(v), [], v.id); assert.equal(v.creator.displayName, 'Mohamed, fondateur de CONVRT'); assert.equal(v.creator.showName, true)
-    assert.equal(v.brand, undefined); assert.equal(v.productionCredit, undefined); assert.equal(v.uploadDate, undefined); assert.equal(v.production, undefined); assert.ok(isDisplayable(v)); assert.equal(v.placement, 'gallery')
+    assert.equal(v.brand, undefined); assert.equal(v.productionCredit, undefined); assert.equal(v.uploadDate, undefined); assert.equal(v.production, undefined); assert.ok(isDisplayable(v)); assert.ok(['gallery', 'hero'].includes(v.placement))
     assert.match(v.source.cloudflareId, /^[0-9a-f]{32}$/); assert.ok(fs.existsSync(path.join(ROOT, 'public', v.poster)), v.poster)
   }
   const fr = all.filter((v) => !v.showcase && v.creatorId !== 'fr-c03')
@@ -209,11 +209,12 @@ test('French homepage hero uses only French-spoken videos that are also in the p
   const ids = new Set(PORTFOLIO.filter((i) => (i.onlyIn ?? []).includes('fr')).map((i) => i.source.cloudflareId))
   assert.equal(HOME_HERO_FR.length, 3)
   for (const h of HOME_HERO_FR) { assert.deepEqual(h.languages, ['fr']); assert.ok(isDisplayable(h)) }
-  // centre = the French-dubbed CONVRT advertisement (its own Stream upload, not a creator video); left = the French female creator, right = the French male creator (the same Stream videos as the UGC hero)
-  const [main, left, right] = HOME_HERO_FR
+  // centre = the French-dubbed CONVRT advertisement (its own Stream upload, not a creator video); left = the roofing-company video, right = the food-supplement video (owner placement 2026-11-25; the same Stream videos as the French Spokesperson and UGC heroes)
+  const [main, right, left] = HOME_HERO_FR // the stage shows [centre, right, left]
   assert.equal(main.source.cloudflareId, 'ce7f495642b90a531e44f17b8e7454c5'); assert.equal(main.creatorId, 'cv-home-hero')
   assert.ok(ids.has(left.source.cloudflareId) && ids.has(right.source.cloudflareId))
-  assert.equal(left.creatorId, 'fr-c01'); assert.equal(right.creatorId, 'fr-c02')
+  assert.equal(left.creatorId, 'fr-c02'); assert.equal(right.creatorId, 'fr-c01')
+  assert.equal(left.source.cloudflareId, '7c681c012def2539e7c32c99889d8662'); assert.equal(right.source.cloudflareId, 'c1dd083d5550608a139f656670bd77a5')
   // Comma (the founder's football-shirt video) is NOT a hero video: it is in the carousel and the showcase
   const comma = PORTFOLIO.find((i) => i.id === 'fr-mohamed-comma')
   assert.ok(comma && !HOME_HERO_FR.some((h) => h.source.cloudflareId === comma.source.cloudflareId))
