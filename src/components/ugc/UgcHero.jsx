@@ -169,7 +169,7 @@ export default function UgcHero({ items, config: configProp = UGC_HERO }) {
   const primaryLabel = primary.redirected ? tr(primary.label) : configProp.primary.label === 'Get 5 Free Ad Concepts' ? ctaText(configProp.primary.label) : config.primary.label
   const hasWork = items.length > 0
   // The free-offer cards follow the homepage hero (src/components/Hero.jsx offersShown). French: on the UGC page only, the one French service page with a video stage (the three text-led French pages show no offer cards).
-  const offersAvailable = offersShown(locale) && (locale !== 'fr' || hasWork)
+  const offersAvailable = offersShown(locale) && (locale !== 'fr' || (hasWork && configProp === UGC_HERO))
   const textLed = !hasWork && locale !== 'en'
   const primaryPress = usePressFeedback()
   const ghostPress = usePressFeedback()

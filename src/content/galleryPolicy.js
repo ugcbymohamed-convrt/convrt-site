@@ -6,7 +6,7 @@
 
    English: every slot exists (the approved English pages). Anything not listed for a language falls back to `true` (so a new language starts like English until its rules are written here).
    Spanish: UGC hero + gallery; Spokesperson hero stage only (no gallery); Organic Social and SaaS pages carry no videos.
-   French:  UGC hero + gallery; the three other service pages are text-led (no stage, no gallery).
+   French:  UGC hero stage and Spokesperson hero stage only (owner placement, 2026-11-25): no gallery strip under either; the SaaS and Organic Social pages carry no videos (text-led).
    The Creator Showcase is NOT governed by this file: it lists every approved video of the language under its content-type filters (portfolio.js `type` and `secondary`). */
 export const GALLERY_POLICY = {
   es: {
@@ -16,12 +16,22 @@ export const GALLERY_POLICY = {
     saas: { hero: false, gallery: false },
   },
   fr: {
-    ugc: { hero: true, gallery: true },
-    spokesperson: { hero: false, gallery: false },
+    ugc: { hero: true, gallery: false },
+    spokesperson: { hero: true, gallery: false },
     organic: { hero: false, gallery: false },
     saas: { hero: false, gallery: false },
   },
 }
+
+/* THE ORDER OF A HERO STAGE, per language and page (the owner's left / centre / right placement). The stage shows [centre, right, left]: the FIRST id is the large centre phone, the second the
+   right phone, the third the left phone (CreatorVideoStage). Ids that are not approved are ignored; videos not listed follow in file order. English and Spanish keep their own orders. */
+export const HERO_ORDER = {
+  fr: {
+    ugc: ['fr-mohamed-comma', 'fr-ugc-hero-1', 'fr-ugc-hero-2'], // centre football jersey · right food supplement · left travel app
+    spokesperson: ['fr-ugc-1', 'fr-ugc-hero-3', 'fr-mohamed-skycop'], // centre roofing company · right wealth-management app · left delayed-flight compensation
+  },
+}
+export const heroOrder = (locale, page) => HERO_ORDER[locale]?.[page]
 
 /** Does `locale`'s service page `page` ('ugc' | 'spokesperson' | 'organic' | 'saas') have the slot `slot` ('hero' | 'gallery')? English always does. */
 export const galleryEnabled = (locale, page, slot) => locale === 'en' || (GALLERY_POLICY[locale]?.[page]?.[slot] ?? true)

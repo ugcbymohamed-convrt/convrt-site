@@ -11,8 +11,8 @@ import { captureAttribution, trackEvent } from './lib/analytics.js'
 import { useDocumentHead } from './lib/useDocumentHead.js'
 import { pageHead } from './seo/siteSeo.js'
 import { PATHS } from './routes.js'
-import { selectHero, selectGallery, forPageLanguage } from './content/portfolio.js'
-import { galleryEnabled } from './content/galleryPolicy.js'
+import { selectHero, selectGallery, forPageLanguage, orderedBy } from './content/portfolio.js'
+import { galleryEnabled, heroOrder } from './content/galleryPolicy.js'
 import { currentLocale } from './i18n/locale.js'
 import { spreadCreators } from './content/creatorOrder.js'
 import { tr, T, hrefFor } from './i18n/tr.js'
@@ -33,7 +33,7 @@ export default function UgcVideoAgencyPage() {
     trackEvent('ugc_page_view')
   }, [])
 
-  const heroItems = galleryEnabled(currentLocale(), 'ugc', 'hero') ? forPageLanguage(selectHero()) : []
+  const heroItems = galleryEnabled(currentLocale(), 'ugc', 'hero') ? orderedBy(forPageLanguage(selectHero()), heroOrder(currentLocale(), 'ugc')) : []
   const galleryItems = galleryEnabled(currentLocale(), 'ugc', 'gallery') ? (currentLocale() === 'en' ? forPageLanguage(selectGallery()) : spreadCreators(forPageLanguage(selectGallery()))) : [] // translated galleries alternate creators (src/content/creatorOrder.js)
 
   return (

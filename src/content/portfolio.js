@@ -128,8 +128,8 @@ const PORTFOLIO_ENTRIES = [
     creatorId: 'fr-c03',
     creator: { displayName: 'Mohamed, fondateur de CONVRT', showName: true },
     category: 'UGC · Publicité avec créateur',
-    placement: 'gallery',
-    homeCreator: { fr: 1 },
+    placement: 'hero', // centre of the French UGC hero stage (owner placement 2026-11-25)
+    homeCreator: { fr: 1 }, // French homepage carousel: UGC and Spokesperson hero videos alternate, none of the main hero's, no creator twice in a row (owner, 2026-11-25)
     approval: FR_MOHAMED_APPROVAL,
   },
   {
@@ -146,14 +146,13 @@ const PORTFOLIO_ENTRIES = [
     creator: { displayName: 'Mohamed, fondateur de CONVRT', showName: true },
     category: 'UGC · Publicité avec créateur',
     placement: 'gallery',
-    homeCreator: { fr: 5 },
     approval: FR_MOHAMED_APPROVAL,
   },
   {
     id: 'fr-mohamed-skycop',
     title: 'Indemnisation après un vol retardé',
     caption: 'Indemnisation après un vol retardé',
-    type: 'ugc',
+    type: 'spokesperson', // owner placement 2026-11-25: presenter-led, shown on the French Spokesperson hero
     industry: 'unclassified',
     languages: ['fr'],
     onlyIn: ['fr'],
@@ -161,9 +160,9 @@ const PORTFOLIO_ENTRIES = [
     poster: '/portfolio/fr-mohamed-skycop.webp',
     creatorId: 'fr-c03',
     creator: { displayName: 'Mohamed, fondateur de CONVRT', showName: true },
-    category: 'UGC · Publicité avec créateur',
-    placement: 'gallery',
-    homeCreator: { fr: 3 },
+    category: 'Spokesperson · Vidéo avec présentateur',
+    placement: 'hero',
+    homeCreator: { fr: 4 }, // French homepage carousel: UGC and Spokesperson hero videos alternate, none of the main hero's, no creator twice in a row (owner, 2026-11-25)
     approval: FR_MOHAMED_APPROVAL,
   },
   {
@@ -180,7 +179,6 @@ const PORTFOLIO_ENTRIES = [
     creator: { displayName: 'Mohamed, fondateur de CONVRT', showName: true },
     category: 'UGC · Publicité avec créateur',
     placement: 'gallery',
-    homeCreator: { fr: 7 },
     approval: FR_MOHAMED_APPROVAL,
   },
   {
@@ -253,13 +251,14 @@ const PORTFOLIO_ENTRIES = [
     creatorId: 'fr-c02',
     category: 'UGC · Publicité avec créateur',
     placement: 'hero',
+    homeCreator: { fr: 3 }, // French homepage carousel: UGC and Spokesperson hero videos alternate, none of the main hero's, no creator twice in a row (owner, 2026-11-25)
     approval: FR_APPROVAL,
   },
   {
     id: 'fr-ugc-hero-3',
     title: 'Présentation d’une application de gestion de patrimoine',
     caption: 'Présentation d’une application de gestion de patrimoine',
-    type: 'ugc',
+    type: 'spokesperson', // owner placement 2026-11-25: presenter-led, shown on the French Spokesperson hero
     secondary: ['saas'], // creator demonstrating a wealth-management app throughout (screens shown) (footage inspected 2026-11-24): UGC/Spokesperson by format, SaaS by content; classification only, no service-page placement
     industry: 'unclassified',
     languages: ['fr'],
@@ -267,25 +266,24 @@ const PORTFOLIO_ENTRIES = [
     source: { cloudflareId: '5b1058e9c68ab7b05bd24858ceaadb9c' },
     poster: '/portfolio/fr-ugc-hero-3.webp',
     creatorId: 'fr-c01',
-    category: 'UGC · Publicité avec créateur',
+    category: 'Spokesperson · Vidéo avec présentateur',
     placement: 'hero',
-    homeCreator: { fr: 2 },
+    homeCreator: { fr: 2 }, // French homepage carousel: UGC and Spokesperson hero videos alternate, none of the main hero's, no creator twice in a row (owner, 2026-11-25)
     approval: FR_APPROVAL,
   },
   {
     id: 'fr-ugc-1',
     title: 'Présentation d’une entreprise de toiture',
     caption: 'Présentation d’une entreprise de toiture',
-    type: 'ugc',
+    type: 'spokesperson', // owner placement 2026-11-25: presenter-led, shown on the French Spokesperson hero
     industry: 'unclassified',
     languages: ['fr'],
     onlyIn: ['fr'],
     source: { cloudflareId: '7c681c012def2539e7c32c99889d8662' },
     poster: '/portfolio/fr-ugc-1.webp',
     creatorId: 'fr-c02',
-    category: 'UGC · Publicité avec créateur',
-    placement: 'gallery',
-    homeCreator: { fr: 4 },
+    category: 'Spokesperson · Vidéo avec présentateur',
+    placement: 'hero',
     approval: FR_APPROVAL,
   },
   {
@@ -301,7 +299,6 @@ const PORTFOLIO_ENTRIES = [
     creatorId: 'fr-c02',
     category: 'UGC · Publicité avec créateur',
     placement: 'gallery',
-    homeCreator: { fr: 6 },
     approval: FR_APPROVAL,
   },
   /* ── SPANISH VIDEOS (owner folders ~/Desktop/SPANISH: UGC, Spokesperson; uploaded to Cloudflare Stream 2026-11-22) ─────────────────────────────────────────────────────────────

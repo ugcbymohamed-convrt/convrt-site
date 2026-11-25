@@ -16,16 +16,16 @@ export const POSTER_FRAMES = {
   '3bf715996728cd9e862d848878665f92': 15.9, // portfolio:es-showcase-mixed-1 (group E-commerce / UGC)
   '220122131040d62f1ce2d96ea9f98615': 12.6, // portfolio:es-showcase-mixed-2 (owner-picked frame: single white watch, 2026-11-24)
   'b4daf32122e679f3af1c6ccc07eec8a7': 7.6, // portfolio:es-showcase-mixed-3 (owner-picked frame: bending stretch, 2026-11-24)
-  'c1dd083d5550608a139f656670bd77a5': 17.6, // portfolio:fr-ugc-hero-1 [fr]
-  '0346ed0881533220ba77bc4b3d4c26f9': 22.6, // portfolio:fr-ugc-hero-2 [fr]
-  '5b1058e9c68ab7b05bd24858ceaadb9c': 20.0, // reviewed 2026-11-24 (contact sheet, was 2.1 s):/ portfolio:fr-ugc-hero-3 [fr]
-  '7c681c012def2539e7c32c99889d8662': 31.0, // reviewed 2026-11-24 (contact sheet, was 18.6 s):/ portfolio:fr-ugc-1 [fr]
-  'a273a9e766e0baf7eed8a6ad72c8892b': 6.3, // portfolio:fr-ugc-2 [fr]
+  'c1dd083d5550608a139f656670bd77a5': 27.3, // owner-placed thumbnail 2026-11-25 (matched to the owner's reference screenshots): portfolio:fr-ugc-hero-1 [fr]
+  '0346ed0881533220ba77bc4b3d4c26f9': 8.3, // owner-placed thumbnail 2026-11-25 (matched to the owner's reference screenshots): portfolio:fr-ugc-hero-2 [fr]
+  '5b1058e9c68ab7b05bd24858ceaadb9c': 20.9, // owner-placed thumbnail 2026-11-25 (matched to the owner's reference screenshots): portfolio:fr-ugc-hero-3 [fr]
+  '7c681c012def2539e7c32c99889d8662': 18.6, // owner-placed thumbnail 2026-11-25 (matched to the owner's reference screenshots): portfolio:fr-ugc-1 [fr]
+  'a273a9e766e0baf7eed8a6ad72c8892b': 6.3, // owner-placed thumbnail 2026-11-25 (matched to the owner's reference screenshots): portfolio:fr-ugc-2 [fr]
   'ce7f495642b90a531e44f17b8e7454c5': 0.4, // home-hero-fr:home-hero-fr-main (French-dubbed CONVRT ad with dubbed on-screen text, FRENCH-with-Dubbed-Text.mp4; clear face, open eyes, coffee cup, the comment bubble, no caption word mid-frame)
-  '8797ae3fba20c95e9d9d10eefda840c9': 3.4, // portfolio:fr-mohamed-comma [fr]
-  'a4a52503d855717880ed6dcbaca724b5': 23.7, // reviewed 2026-11-24 (contact sheet, was 1.9 s):/ portfolio:fr-mohamed-route-facile [fr]
-  '5639f5ff6b02b7501b946aef4466ad4c': 19.6, // portfolio:fr-mohamed-skycop [fr]
-  'e4e8c66b5d6fef3d15ddf31ebcd17550': 21.3, // reviewed 2026-11-24 (contact sheet, was 22.1 s):/ portfolio:fr-mohamed-tripmap [fr]
+  '8797ae3fba20c95e9d9d10eefda840c9': 3.4, // owner-placed thumbnail 2026-11-25 (matched to the owner's reference screenshots): portfolio:fr-mohamed-comma [fr]
+  'a4a52503d855717880ed6dcbaca724b5': 1.9, // owner-placed thumbnail 2026-11-25 (matched to the owner's reference screenshots): portfolio:fr-mohamed-route-facile [fr]
+  '5639f5ff6b02b7501b946aef4466ad4c': 1.4, // owner-placed thumbnail 2026-11-25 (matched to the owner's reference screenshots): portfolio:fr-mohamed-skycop [fr]
+  'e4e8c66b5d6fef3d15ddf31ebcd17550': 22.1, // owner-placed thumbnail 2026-11-25 (matched to the owner's reference screenshots): portfolio:fr-mohamed-tripmap [fr]
   '9eedb31ea2296e96882de394b0a7e3a7': 3.0, // portfolio:fr-showcase-fixd-1 (French client stage, landscape)
   '490a0502253d32c4b22085077b396437': 3.0, // portfolio:fr-showcase-fixd-2 (French client stage, landscape)
   '39e4049b9e5993f5143037b2ebbc9bb5': 20.0, // portfolio:fr-showcase-fixd-3 (French client stage, landscape; the FIXD device in hand)

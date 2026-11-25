@@ -24,5 +24,5 @@ export const FR_SHOWCASE = {
   selectorHeight: 22,
   stageLabel: 'Vidéos du client FIXD. Choisissez la vidéo en arrière-plan pour la placer au premier plan.',
   primaryLabel: 'Recevoir 5 concepts gratuits',
-  secondary: { label: 'Voir nos créateurs', href: '/creator-showcase' },
+  secondary: { label: 'Voir les créateurs', href: '/creator-showcase' },
 }

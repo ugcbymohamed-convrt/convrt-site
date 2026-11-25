@@ -7,9 +7,9 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { execFileSync } from 'node:child_process'
 import { fileURLToPath } from 'node:url'
-import { PORTFOLIO, isDisplayable, portfolioProblems, typesOf, availableCategories, countIn, filterByCategory, selectOurWork, selectGallery, selectHero, selectSpokespersonHero, selectSpokespersonGallery, selectSaasGallery, selectOrganicGallery } from '../src/content/portfolio.js'
+import { PORTFOLIO, isDisplayable, portfolioProblems, typesOf, availableCategories, countIn, filterByCategory, selectOurWork, orderedBy, selectGallery, selectHero, selectSpokespersonHero, selectSpokespersonGallery, selectSaasGallery, selectOrganicGallery } from '../src/content/portfolio.js'
 import { POSTER_FRAMES } from '../src/content/posterFrames.js'
-import { galleryEnabled, GALLERY_POLICY } from '../src/content/galleryPolicy.js'
+import { galleryEnabled, GALLERY_POLICY, heroOrder } from '../src/content/galleryPolicy.js'
 import { serviceVideos } from '../src/i18n/serviceVideos.js'
 import { spreadCreators } from '../src/content/creatorOrder.js'
 import { FR_SERVICE_PAGE_VIDEOS } from '../src/i18n/fr/servicePages.js'
@@ -23,8 +23,9 @@ test('gallery policy: English has every slot; Spanish and French keep their owne
   assert.deepEqual(GALLERY_POLICY.es.ugc, { hero: true, gallery: true })
   assert.equal(galleryEnabled('es', 'spokesperson', 'gallery'), false)
   assert.equal(galleryEnabled('es', 'organic', 'gallery'), false); assert.equal(galleryEnabled('es', 'saas', 'gallery'), false)
-  assert.deepEqual(GALLERY_POLICY.fr.ugc, { hero: true, gallery: true })
-  for (const page of ['spokesperson', 'organic', 'saas']) for (const slot of ['hero', 'gallery']) assert.equal(galleryEnabled('fr', page, slot), false, `fr ${page} ${slot}`)
+  assert.deepEqual(GALLERY_POLICY.fr.ugc, { hero: true, gallery: false })
+  assert.deepEqual(GALLERY_POLICY.fr.spokesperson, { hero: true, gallery: false })
+  for (const page of ['organic', 'saas']) for (const slot of ['hero', 'gallery']) assert.equal(galleryEnabled('fr', page, slot), false, `fr ${page} ${slot}`)
   assert.equal(FR_SERVICE_PAGE_VIDEOS, false)
   assert.equal(galleryEnabled('de', 'saas', 'gallery'), true)
 })
@@ -34,7 +35,16 @@ test('service pages: Spanish and French galleries are filled from the data only 
     assert.equal(serviceVideos(selectSpokespersonHero(), 'spokesperson', 'hero').length, 3, 'the Spanish Spokesperson stage keeps its three presenters')
     assert.equal(serviceVideos(selectSpokespersonGallery(), 'spokesperson', 'gallery').length, 0, 'no Spanish Spokesperson gallery')
   })
-  at('/fr/spokesperson-video-production', () => { assert.equal(serviceVideos(selectSpokespersonHero(), 'spokesperson', 'hero').length, 0) })
+  at('/fr/spokesperson-video-production', () => {
+    const hero = orderedBy(serviceVideos(selectSpokespersonHero(), 'spokesperson', 'hero'), heroOrder('fr', 'spokesperson'))
+    assert.deepEqual(hero.map((v) => v.id), ['fr-ugc-1', 'fr-ugc-hero-3', 'fr-mohamed-skycop'], 'centre roofing, right wealth app, left delayed flight (owner placement)')
+    assert.equal(serviceVideos(selectSpokespersonGallery(), 'spokesperson', 'gallery').length, 0, 'no French Spokesperson gallery')
+  })
+  at('/fr/ugc-video-agency', () => {
+    const hero = orderedBy(serviceVideos(selectHero(), 'ugc', 'hero'), heroOrder('fr', 'ugc'))
+    assert.deepEqual(hero.map((v) => v.id), ['fr-mohamed-comma', 'fr-ugc-hero-1', 'fr-ugc-hero-2'], 'centre football jersey, right supplement, left travel app')
+    assert.equal(serviceVideos(selectGallery(), 'ugc', 'gallery').length, 0, 'no French UGC gallery')
+  })
   for (const l of ['es', 'fr']) at(`/${l}/saas-video-production`, () => { assert.equal(serviceVideos(selectSaasGallery(), 'saas', 'gallery').length, 0); assert.equal(serviceVideos(selectOrganicGallery(), 'organic', 'gallery').length, 0) })
   // a secondary type never creates a gallery entry
   for (const v of lib('es').concat(lib('fr'))) if (v.secondary) { at('/es/saas-video-production', () => assert.ok(!selectSaasGallery().some((x) => x.id === v.id), `${v.id} is not a SaaS gallery video`)) }
@@ -73,7 +83,7 @@ test('Creator Showcase type filters (translated pages): UGC, Spokesperson and Sa
       assert.deepEqual(tabs.map((t) => t.id), ['all', 'ugc', 'spokesperson', 'type-saas'])
       assert.equal(countIn(items, 'type-saas'), 4, 'two UGC and two Spokesperson videos show software')
       assert.equal(countIn(items, 'spokesperson'), 9)
-    } else assert.deepEqual(tabs.map((t) => t.id), ['all', 'ugc', 'type-saas'])
+    } else { assert.deepEqual(tabs.map((t) => t.id), ['all', 'ugc', 'spokesperson', 'type-saas']); assert.equal(countIn(items, 'spokesperson'), 3); assert.equal(countIn(items, 'ugc'), 6) }
   })
   at('/creator-showcase', () => assert.deepEqual(availableCategories(selectOurWork()).map((t) => t.id), ['all', 'ecommerce', 'saas', 'services', 'other', 'spokesperson']))
 })
