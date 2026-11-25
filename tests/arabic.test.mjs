@@ -29,7 +29,7 @@ import { switchTarget, languageOptions } from '../src/i18n/switch.js'
 import { SITE_SEO } from '../src/seo/siteSeo.js'
 import { SITE_URL } from '../src/config.js'
 import { SPRINT, SPRINT_PLUS, ORGANIC, COMMITMENT, ORGANIC_COMMITMENT, RAW_FOOTAGE } from '../src/seo/businessKnowledge.js'
-import { PORTFOLIO, portfolioProblems, displayableFor, selectDisplayable, selectHero, selectGallery, selectOurWork, forPageLanguage, availableCategories, countIn, filterByCategory, AR_SHOWCASE_ORDER, creatorLabel, brandLabel } from '../src/content/portfolio.js'
+import { PORTFOLIO, portfolioProblems, displayableFor, selectDisplayable, selectHero, selectGallery, selectOurWork, selectSpokespersonGallery, selectSaasGallery, selectOrganicGallery, forPageLanguage, availableCategories, countIn, filterByCategory, AR_SHOWCASE_ORDER, creatorLabel, brandLabel } from '../src/content/portfolio.js'
 import { POSTER_FRAMES, POSTER_FRAME_OVERRIDES } from '../src/content/posterFrames.js'
 import { HOME_HERO_AR, HOME_HERO } from '../src/content/homeHero.js'
 import { stepOfArrow, stepOfSwipe } from '../src/lib/rtl.js'
@@ -161,7 +161,7 @@ test('Arabic creator videos: valid entries, real Stream ids, Arabic-only, approv
   // removed on the owner's instruction (2026-11-25): the left hero phone everywhere, and the two English-captioned clips that went to the English site
   for (const id of ['ar-ugc-hero-3', 'ar-ugc-11', 'ar-ugc-12']) assert.ok(!PORTFOLIO.some((v) => v.id === id), `${id} is gone`)
   assert.ok(!AR_ONLY().some((v) => ['7359123313ee51b95976e3ae6adc331e', '60c9247e04b35d3dde12aa6c918aa1d6', '7f68e3f6c92e70395cad4876fcb389a8'].includes(v.source.cloudflareId)), 'IMG_4545, IMG_7827 and the old hero-3 video are not on the Arabic site')
-  assert.equal(displayableFor('ar').length, 14 + 9, 'the 14 creator videos + the 9 revision videos (Mohamed, One Royal, Graspo)')
+  assert.equal(displayableFor('ar').length, 13 + 9, 'the 13 listed creator videos (ar-ugc-10 is unlisted) + the 9 revision videos (Mohamed, One Royal, Graspo)')
   // English and Spanish never see them
   const enIds = new Set(displayableFor('en').map((v) => v.id)); const esIds = new Set(displayableFor('es').map((v) => v.id))
   for (const v of AR_ONLY()) assert.ok(!enIds.has(v.id) && !esIds.has(v.id), v.id)
@@ -198,37 +198,43 @@ test('Arabic revision videos (owner brief 2026-11-23): Mohamed, One Royal and Gr
   const enIds = new Set(displayableFor('en').map((v) => v.id)); for (const v of rev) assert.ok(!enIds.has(v.id), v.id)
 })
 
-test('Arabic placement (owner folder "Videos Placement/Arabic", 2026-11-25): four heroes of three videos, an 11-video UGC carousel, no carousel on the other three pages, the seven carousel-only videos stay out of the library', () => {
+test('Arabic placement (owner folder "Videos Placement/Arabic", 2026-11-25): four heroes of three videos, a four-video UGC carousel, no carousel on the other three pages, the showcase-only videos on no page', () => {
   const heroOf = (type) => AR_ONLY().filter((v) => v.type === type && v.placement === 'hero').map((v) => v.id) // file order = stage order: centre, right, left
   assert.deepEqual(heroOf('ugc'), ['ar-ugc-8', 'ar-mohamed-clothing', 'ar-mohamed-bag'])
   assert.deepEqual(heroOf('spokesperson'), ['ar-ugc-hero-2', 'ar-ugc-1', 'ar-oneroyal-2'])
   assert.deepEqual(heroOf('saas'), ['ar-ugc-hero-1', 'ar-mohamed-zory', 'ar-ugc-6'])
   assert.deepEqual(heroOf('organic'), ['ar-graspo-1', 'ar-graspo-3', 'ar-graspo-2'])
   const gallery = AR_ONLY().filter((v) => v.placement !== 'hero')
-  assert.deepEqual(gallery.map((v) => v.id), ['ar-ugc-5', 'ar-mohamed-clothing-2', 'ar-ugc-2', 'ar-mohamed-bottle', 'ar-ugc-7', 'ar-oneroyal-3', 'ar-ugc-9', 'ar-oneroyal-1', 'ar-ugc-3', 'ar-ugc-10', 'ar-ugc-4'], 'UGC carousel: positions 1 to 4 (chocolate, clothing, tea, bottle) then the seven carousel-only videos')
   assert.ok(gallery.every((v) => v.type === 'ugc'), 'the Spokesperson, SaaS and Organic pages have no carousel: every one of their videos is in the hero')
-  assert.deepEqual(gallery.filter((v) => v.carouselOnly).map((v) => v.id).sort(), ['ar-oneroyal-1', 'ar-oneroyal-3', 'ar-ugc-10', 'ar-ugc-3', 'ar-ugc-4', 'ar-ugc-7', 'ar-ugc-9'])
+  assert.deepEqual(gallery.filter((v) => !v.showcaseOnly && !v.unlisted).map((v) => v.id), ['ar-ugc-5', 'ar-mohamed-clothing-2', 'ar-ugc-2', 'ar-mohamed-bottle'], 'UGC carousel: only positions 1 to 4 (chocolate, clothing, tea, bottle)')
+  assert.deepEqual(gallery.filter((v) => v.showcaseOnly).map((v) => v.id).sort(), ['ar-oneroyal-1', 'ar-oneroyal-3', 'ar-ugc-3', 'ar-ugc-4', 'ar-ugc-7', 'ar-ugc-9'], 'in the Creator Showcase, on no page')
+  assert.deepEqual(gallery.filter((v) => v.unlisted).map((v) => v.id), ['ar-ugc-10'], 'the one video dropped so that no creator has two videos side by side')
+  // the page selectors (run as the Arabic page) show exactly the carousel videos and the heroes
+  const pages = asArabic(() => { const f = (l) => forPageLanguage(l).map((v) => v.id); return { ugcHero: f(selectHero()), ugcGallery: f(selectGallery()), spokeGallery: f(selectSpokespersonGallery()), saasGallery: f(selectSaasGallery()), organicGallery: f(selectOrganicGallery()) } })
+  assert.deepEqual(pages.ugcHero, ['ar-ugc-8', 'ar-mohamed-clothing', 'ar-mohamed-bag'])
+  assert.deepEqual(pages.ugcGallery, ['ar-ugc-5', 'ar-mohamed-clothing-2', 'ar-ugc-2', 'ar-mohamed-bottle'])
+  assert.deepEqual([pages.spokeGallery, pages.saasGallery, pages.organicGallery], [[], [], []], 'no carousel on the Spokesperson, SaaS and Organic pages')
   // the chosen frames of the owner's screenshots
   const FR = { 'ar-ugc-8': 35.9, 'ar-mohamed-bag': 25.2, 'ar-mohamed-clothing': 13.6, 'ar-ugc-5': 15.4, 'ar-ugc-2': 25.8, 'ar-ugc-3': 30.9, 'ar-ugc-4': 1.7, 'ar-ugc-9': 7, 'ar-ugc-10': 0.5, 'ar-ugc-6': 29, 'ar-oneroyal-2': 5.1 }
   for (const [id, t] of Object.entries(FR)) assert.equal(POSTER_FRAMES[PORTFOLIO.find((v) => v.id === id).source.cloudflareId], t, id)
   assert.deepEqual(POSTER_FRAME_OVERRIDES, { '/portfolio/ar-graspo-1.webp': 0.9, '/portfolio/ar-graspo-2.webp': 3.2, '/portfolio/ar-graspo-3.webp': 12.8 })
   assert.equal(POSTER_FRAMES.c1379ace38f2fa19ef2a45de1bb5d4b1, 4.6, 'the shared Graspo frames (English panels and case study) are untouched')
-  // the library: sixteen videos, none of the carousel-only ones, in the curated order
+  // the library: twenty-two videos (the unlisted one is not in it), in the curated order
   const lib = asArabic(() => forPageLanguage(selectOurWork()))
-  assert.equal(lib.length, 16)
+  assert.equal(lib.length, 22)
   assert.deepEqual(lib.map((v) => v.id), AR_SHOWCASE_ORDER)
-  assert.ok(lib.every((v) => !v.carouselOnly))
+  assert.ok(!lib.some((v) => v.unlisted))
 })
 
 test('Arabic Creator Showcase: four type tabs with the owner\'s labels, and no creator has two videos next to each other in All Videos or in any tab', () => {
   const { lib, tabs } = asArabic(() => { const lib = forPageLanguage(selectOurWork()); return { lib, tabs: availableCategories(lib).map((c) => ({ id: c.id, label: c.label, n: countIn(lib, c.id), list: filterByCategory(lib, c.id) })) } })
-  assert.deepEqual(tabs.map((t) => [t.id, t.n]), [['all', 16], ['ar-ugc', 7], ['ar-spokesperson', 3], ['ar-saas', 3], ['ar-organic', 3]])
+  assert.deepEqual(tabs.map((t) => [t.id, t.n]), [['all', 22], ['ar-ugc', 13], ['ar-spokesperson', 3], ['ar-saas', 3], ['ar-organic', 3]])
   const ar = DICTIONARIES.ar
   assert.deepEqual(tabs.filter((t) => t.id !== 'all').map((t) => ar[t.label]), ['فيديوهات UGC', 'فيديوهات Spokesperson', 'فيديوهات SaaS', 'فيديوهات عضوية'])
   for (const t of tabs) for (let i = 1; i < t.list.length; i++) assert.notEqual(t.list[i - 1].creatorId, t.list[i].creatorId, `${t.id}: ${t.list[i - 1].id} and ${t.list[i].id} (same creator) are next to each other`)
   // and in the four-column desktop grid no creator sits directly above the same creator in All Videos where the counts allow it: report, do not hide, the remaining pairs
   const vertical = []; for (let i = 4; i < lib.length; i++) if (lib[i].creatorId === lib[i - 4].creatorId) vertical.push([lib[i - 4].id, lib[i].id])
-  assert.ok(vertical.length <= 3, `same creator in one column: ${JSON.stringify(vertical)}`)
+  assert.ok(vertical.length <= 5, `same creator in one column: ${JSON.stringify(vertical)}`)
 })
 
 test('right-to-left helpers: the arrow that means "next" follows the reading direction; swipe likewise', () => {

@@ -124,9 +124,9 @@ const PORTFOLIO_ENTRIES = [
      `languages: ['en']` because the captions are English (no audio transcript was run); the Arabic cards and the Showcase language filter therefore say «الإنجليزية», so no visitor is told these are Arabic videos. Titles describe only the footage; third-party names and logos that appear in it are never named. */
   /* ── ORDER OF THE ARABIC ENTRIES (owner folder "Videos Placement/Arabic", 2026-11-25) ───────────────────────────────────────────────────────────────────────────────────────────
      Each service page shows its videos in this file order, so the entries are grouped by where they appear: the UGC page hero (centre, then the phone on the right, then the one on the left), the UGC carousel
-     (positions 1 to 4 first, then the seven carousel-only videos, which have `carouselOnly: true` and are NOT in the Creator Showcase), then the Spokesperson, SaaS and Organic heroes (front, right, left).
+     (only positions 1 to 4: the owner, 2026-11-25, wants just those four in the carousel), then the Spokesperson, SaaS and Organic heroes (front, right, left).
      HOME CREATOR CAROUSEL (Arabic, owner 2026-11-25): the eight hero videos of the UGC, Spokesperson and SaaS pages (`homeCreator` 1 to 8) that are NOT in the homepage hero, alternating UGC, Spokesperson, SaaS and never the same creator twice in a row.
-     The Spokesperson, SaaS and Organic pages have no carousel (every video of theirs is in the hero). The Creator Showcase order is AR_SHOWCASE_ORDER further down. Removed on the owner's instruction:
+     The Spokesperson, SaaS and Organic pages have no carousel (every video of theirs is in the hero). `showcaseOnly: true` = in the Creator Showcase but on no page (six videos); `unlisted: true` = on no page and not in the library (ar-ugc-10: Milad would otherwise have two videos side by side in the UGC tab). The Creator Showcase order is AR_SHOWCASE_ORDER further down. Removed on the owner's instruction:
      ar-ugc-hero-3 (all pages), and ar-ugc-11 / ar-ugc-12 (IMG_4545 / IMG_7827: they moved to the English SaaS and Spokesperson carousels and the English Creator Showcase). */
   {
     id: 'ar-ugc-8',
@@ -249,7 +249,7 @@ const PORTFOLIO_ENTRIES = [
     creatorId: 'ar-c05',
     category: 'UGC · إعلان بمشاركة صانع محتوى',
     placement: 'gallery',
-    carouselOnly: true,
+    showcaseOnly: true,
     approval: AR_APPROVAL,
   },
   {
@@ -267,7 +267,7 @@ const PORTFOLIO_ENTRIES = [
     brand: 'One Royal',
     showcase: 'oneroyal',
     placement: 'gallery',
-    carouselOnly: true,
+    showcaseOnly: true,
     approval: AR_BRAND_APPROVAL,
   },
   {
@@ -283,7 +283,7 @@ const PORTFOLIO_ENTRIES = [
     creatorId: 'ar-c05',
     category: 'UGC · إعلان بمشاركة صانع محتوى',
     placement: 'gallery',
-    carouselOnly: true,
+    showcaseOnly: true,
     approval: AR_APPROVAL,
   },
   {
@@ -301,7 +301,7 @@ const PORTFOLIO_ENTRIES = [
     brand: 'One Royal',
     showcase: 'oneroyal',
     placement: 'gallery',
-    carouselOnly: true,
+    showcaseOnly: true,
     approval: AR_BRAND_APPROVAL,
   },
   {
@@ -317,7 +317,7 @@ const PORTFOLIO_ENTRIES = [
     creatorId: 'ar-c05',
     category: 'UGC · إعلان بمشاركة صانع محتوى',
     placement: 'gallery',
-    carouselOnly: true,
+    showcaseOnly: true,
     approval: AR_APPROVAL,
   },
   {
@@ -334,7 +334,7 @@ const PORTFOLIO_ENTRIES = [
     creatorId: 'ar-c05',
     category: 'UGC · إعلان بمشاركة صانع محتوى',
     placement: 'gallery',
-    carouselOnly: true,
+    unlisted: true,
     approval: AR_APPROVAL,
   },
   {
@@ -350,7 +350,7 @@ const PORTFOLIO_ENTRIES = [
     creatorId: 'ar-c05',
     category: 'UGC · إعلان بمشاركة صانع محتوى',
     placement: 'gallery',
-    carouselOnly: true,
+    showcaseOnly: true,
     approval: AR_APPROVAL,
   },
   {
@@ -2229,14 +2229,16 @@ export function applyDisplayOrder(entries, order = DISPLAY_ORDER) {
 
 export const PORTFOLIO = applyDisplayOrder(PORTFOLIO_ENTRIES)
 
-/* THE ARABIC CREATOR SHOWCASE ORDER (owner, 2026-11-25: "no creator has two videos side to side"). Sixteen videos: the heroes of the four service pages plus UGC carousel positions 1 to 4; the seven carousel-only videos are not in
-   the library. Found by a search that forbids the same creator in two neighbouring cards in All Videos AND in every tab (UGC, Spokesperson, SaaS, Organic), and keeps the same creator as far apart as the
-   counts allow (Mohamed has six videos, Milad four). tests/arabic.test.mjs checks it. When a video is added or removed, re-check the order. */
+/* THE ARABIC CREATOR SHOWCASE ORDER (owner, 2026-11-25: "no creator has two videos side to side"). Twenty-two videos: the heroes of the four pages, the four UGC carousel videos and six showcase-only videos. Found by a search that forbids
+   the same creator in two neighbouring cards in All Videos AND in every tab, and keeps the same creator as far apart as the counts allow. The UGC tab has seven Milad and six Mohamed videos, so it alternates exactly; an eighth Milad video
+   (ar-ugc-10) would force two side by side, so it is `unlisted`. tests/arabic.test.mjs checks the order. When a video is added or removed, re-check it. */
 export const AR_SHOWCASE_ORDER = [
-  'ar-mohamed-bag', 'ar-ugc-6', 'ar-graspo-3', 'ar-oneroyal-2',
-  'ar-ugc-5', 'ar-ugc-1', 'ar-mohamed-clothing-2', 'ar-ugc-hero-2',
-  'ar-graspo-2', 'ar-mohamed-zory', 'ar-graspo-1', 'ar-ugc-8',
-  'ar-mohamed-clothing', 'ar-ugc-hero-1', 'ar-ugc-2', 'ar-mohamed-bottle',
+  'ar-oneroyal-2', 'ar-ugc-4', 'ar-ugc-hero-2', 'ar-oneroyal-3',
+  'ar-ugc-5', 'ar-ugc-hero-1', 'ar-mohamed-bottle', 'ar-ugc-7',
+  'ar-mohamed-bag', 'ar-graspo-3', 'ar-ugc-2', 'ar-oneroyal-1',
+  'ar-graspo-2', 'ar-ugc-3', 'ar-mohamed-clothing', 'ar-ugc-1',
+  'ar-ugc-9', 'ar-mohamed-zory', 'ar-graspo-1', 'ar-ugc-6',
+  'ar-mohamed-clothing-2', 'ar-ugc-8',
 ]
 
 /* ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
@@ -2387,6 +2389,7 @@ export function portfolioProblems(item) {
 
 /* THE gate between data and /creator-showcase and the UGC page: full approval, portfolio permission AND creator consent. */
 export function isDisplayable(item) {
+  if (item.unlisted === true) return false // kept on Stream and in the data, shown nowhere (see the Arabic entries' comment)
   if (portfolioProblems(item).length) return false
   const a = item.approval
   return !item.review && a.status === 'approved' && a.portfolioUse === true && a.creatorConsent === true // a video held for manual review (`review`) is never shown
@@ -2414,34 +2417,36 @@ export const selectDisplayable = (items = PORTFOLIO) => items.filter((i) => show
 /* Approved videos for a language, independent of the page being rendered (used by the release gate, the sitemap and the tests). */
 export const displayableFor = (locale, items = PORTFOLIO) => items.filter(isDisplayable).filter((i) => shownIn(i, locale) && (locale === 'en' || belongsTo(i, locale)))
 
-/* /creator-showcase: everything approved for the portfolio, except the videos marked `carouselOnly` (they appear in a page carousel only, never in the library).
+/* /creator-showcase: everything approved for the portfolio.
    The Arabic library has its own curated order (AR_SHOWCASE_ORDER): the owner asked that no creator ever has two videos side by side, so the order is fixed here, not computed on the page. */
 export const selectOurWork = (items = PORTFOLIO) => {
-  const list = selectDisplayable(items).filter((i) => !i.carouselOnly)
+  const list = selectDisplayable(items)
   return currentLocale() === 'ar' ? orderedBy(list, AR_SHOWCASE_ORDER) : list
 }
 
 /* /ugc-video-agency: approved UGC videos, split into the hero stage (placement 'hero') and the gallery under it (everything else). */
-const selectUgc = (items) => selectDisplayable(items).filter((i) => servesPage(i, 'ugc'))
+/* A video marked `showcaseOnly` is in the Creator Showcase but never on a service page (hero or carousel). */
+const onPages = (items) => selectDisplayable(items).filter((i) => !i.showcaseOnly)
+const selectUgc = (items) => onPages(items).filter((i) => servesPage(i, 'ugc'))
 export const selectHero = (items = PORTFOLIO) => selectUgc(items).filter((i) => placementOn(i, 'ugc') === 'hero')
 export const selectGallery = (items = PORTFOLIO) => selectUgc(items).filter((i) => placementOn(i, 'ugc') !== 'hero')
 
 /* /spokesperson-video-production: approved videos whose type is explicitly 'spokesperson', split the same way (hero stage / gallery). A UGC video can never
    appear here and a spokesperson video can never appear on the UGC page: the type is the only switch, and there is no fallback to the other list. */
-const selectSpokesperson = (items) => selectDisplayable(items).filter((i) => servesPage(i, 'spokesperson'))
+const selectSpokesperson = (items) => onPages(items).filter((i) => servesPage(i, 'spokesperson'))
 export const selectSpokespersonHero = (items = PORTFOLIO) => selectSpokesperson(items).filter((i) => placementOn(i, 'spokesperson') === 'hero')
 export const selectSpokespersonGallery = (items = PORTFOLIO) => selectSpokesperson(items).filter((i) => placementOn(i, 'spokesperson') !== 'hero')
 
 /* /social-media-video-production: approved videos whose type is explicitly 'organic', split the same way. Like the spokesperson list there is no fallback: no UGC,
    spokesperson or homepage-client ('social') video can appear here, and an organic video can never appear on the other service pages. */
-const selectOrganic = (items) => selectDisplayable(items).filter((i) => servesPage(i, 'organic'))
+const selectOrganic = (items) => onPages(items).filter((i) => servesPage(i, 'organic'))
 export const selectOrganicHero = (items = PORTFOLIO) => selectOrganic(items).filter((i) => placementOn(i, 'organic') === 'hero')
 export const selectOrganicGallery = (items = PORTFOLIO) => selectOrganic(items).filter((i) => placementOn(i, 'organic') !== 'hero')
 
 /* /saas-video-production: approved videos whose type is explicitly 'saas', plus any approved video that lists `alsoOn.saas` (e.g. a presenter demonstrating software that the
    owner approved for both the Spokesperson and SaaS pages). Split the same way (hero stage / gallery). No fallback: UGC, organic and homepage-client ('social') videos never
    appear here, and a spokesperson video appears only when its entry says so. */
-const selectSaas = (items) => selectDisplayable(items).filter((i) => servesPage(i, 'saas'))
+const selectSaas = (items) => onPages(items).filter((i) => servesPage(i, 'saas'))
 export const selectSaasHero = (items = PORTFOLIO) => selectSaas(items).filter((i) => placementOn(i, 'saas') === 'hero')
 export const selectSaasGallery = (items = PORTFOLIO) => selectSaas(items).filter((i) => placementOn(i, 'saas') !== 'hero')
 
