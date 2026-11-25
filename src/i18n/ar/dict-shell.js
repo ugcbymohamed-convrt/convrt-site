@@ -13,7 +13,7 @@ export default {
   "Play video": "تشغيل الفيديو",
   "Turn sound on": "تشغيل الصوت",
   "Case Studies": "دراسات الحالة",
-  "Book a Creative Call": "احجز مكالمة إبداعية",
+  "Book a Creative Call": "احجز مكالمة مع المؤسس",
   "SaaS Video Production": "فيديوهات SaaS",
   "Spokesperson Videos": "فيديوهات Spokesperson",
   "Get in touch": "تواصل معنا",
