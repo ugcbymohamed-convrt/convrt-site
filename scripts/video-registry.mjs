@@ -41,7 +41,7 @@ function validate(locale) {
   for (const v of entriesFor(locale)) {
     const e = (m) => errors.push(`${v.id}: ${m}`); const w = (m) => warns.push(`${v.id}: ${m}`)
     for (const p of portfolioProblems(v)) e(p)
-    if (!(v.languages ?? []).includes(locale)) e(`spoken language not confirmed as ${locale}`)
+    if (!(v.languages ?? []).includes(locale)) { if (v.crossLanguageNote) w(`${v.languages}-language clip placed here on the owner's request (crossLanguageNote)`); else e(`spoken language not confirmed as ${locale}`) }
     if (!v.type && !v.showcase) e('no content type (ugc | spokesperson | organic | saas)')
     if (v.type && !SERVICE_PAGES.includes(v.type)) w(`type '${v.type}' is not one of ${SERVICE_PAGES.join(', ')}`)
     if (v.source?.cloudflareId && !(v.source.cloudflareId in POSTER_FRAMES)) e('no poster frame chosen (src/content/posterFrames.js): look at a contact sheet and pick one')
