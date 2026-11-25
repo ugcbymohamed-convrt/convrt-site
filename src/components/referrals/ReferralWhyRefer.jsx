@@ -1,5 +1,7 @@
 import { Reveal, SectionHeader } from '../roadmap/shared.jsx'
-import { tr, hrefFor } from '../../i18n/tr.js'
+import { useTr, hrefFor } from '../../i18n/tr.js'
+import { currentLocale } from '../../i18n/locale.js'
+import { forward } from '../../lib/rtl.js'
 
 /* ─────────────────────────────────────────────
    WHY REFER CONVRT — lowers the reputational risk of recommending us.
@@ -40,6 +42,7 @@ const FRAMES = [
 ]
 
 export default function ReferralWhyRefer() {
+  const tr = useTr()
   return (
     <section id="why-refer" aria-labelledby="why-heading" className="relative scroll-mt-20 py-16 md:scroll-mt-24 md:py-24">
       <div className="mx-auto max-w-7xl px-5 md:px-8">
@@ -87,10 +90,10 @@ export default function ReferralWhyRefer() {
                 ))}
               </div>
               <a
-                href={hrefFor('/case-studies')}
+                href={hrefFor(currentLocale() === 'ar' ? '/case-studies/graspo' : '/case-studies')}
                 className="mt-4 inline-flex min-h-[44px] items-center gap-1.5 text-sm font-semibold text-ink transition-colors hover:text-lime focus-visible:rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-lime"
               >
-                {tr('See more of CONVRT’s work')} <span aria-hidden="true">→</span>
+                {tr('See more of CONVRT’s work')} <span aria-hidden="true">{forward()}</span>
               </a>
             </div>
           </Reveal>

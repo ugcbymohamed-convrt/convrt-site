@@ -1,3 +1,4 @@
+import { stepOfArrow } from '../../lib/rtl.js'
 import { useEffect, useRef } from 'react'
 import { GOALS } from '../../seo/businessKnowledge.js'
 import { PaidCards, OrganicCards, BillingSwitch } from './PricingCards.jsx'
@@ -21,13 +22,13 @@ function GoalSelector({ value, onChange }) {
   const onKeyDown = (e) => {
     if (!['ArrowRight', 'ArrowLeft', 'ArrowDown', 'ArrowUp'].includes(e.key)) return
     e.preventDefault()
-    const dir = e.key === 'ArrowRight' || e.key === 'ArrowDown' ? 1 : -1
+    const dir = e.key === 'ArrowDown' ? 1 : e.key === 'ArrowUp' ? -1 : stepOfArrow(e.key)
     const next = GOALS[(idx + dir + GOALS.length) % GOALS.length]
     onChange(next.id)
     document.getElementById(`service-tab-${next.id}`)?.focus()
   }
   return (
-    <div className={`mx-auto mt-6 md:mt-7 ${currentLocale() === 'en' ? 'max-w-2xl' : 'max-w-3xl'}`}>
+    <div className={`mx-auto mt-6 md:mt-7 ${['en', 'ar'].includes(currentLocale()) ? 'max-w-2xl' : 'max-w-3xl'}`}>
       <p className="mb-3 text-center text-[13px] font-bold uppercase tracking-[0.18em] text-lime sm:text-[15px]">{tr('What are you looking to achieve?')}</p>
       <div role="tablist" aria-label={tr('What are you looking to achieve?')} onKeyDown={onKeyDown} className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
         {GOALS.map((g) => {

@@ -4,6 +4,7 @@
    screen" so each step is understood at a glance; they are used WITHOUT names, handles or claims, every scene that shows them is
    aria-hidden, and the page says in words that the scenes are illustrative. Colours are the site's own accents. */
 
+import { isRtlPage } from '../../lib/rtl.js'
 export const PORTRAITS = [1, 2, 3, 4, 5].map((n) => `/creators/portrait-${n}.webp`)
 
 /* A portrait that fills its box (object-fit: cover, framed on the face). variant 0-4 picks the person. */
@@ -42,7 +43,7 @@ export const CheckBadge = ({ className = '', size = 'h-6 w-6' }) => (
 )
 
 export const ArrowRight = ({ className = 'h-3 w-6 text-ink-muted' }) => (
-  <svg viewBox="0 0 24 12" className={`shrink-0 ${className}`} fill="none" aria-hidden="true"><path d="M1 6h20M16 1l5 5-5 5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" /></svg>
+  <svg viewBox="0 0 24 12" className={`shrink-0 ${className}`} style={isRtlPage() ? { transform: 'scaleX(-1)' } : undefined} fill="none" aria-hidden="true"><path d="M1 6h20M16 1l5 5-5 5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" /></svg>
 )
 
 export const ArrowDown = ({ className = 'h-6 w-3 text-ink-muted' }) => (

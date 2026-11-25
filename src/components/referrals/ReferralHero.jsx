@@ -1,8 +1,7 @@
 import { trackEvent } from '../../lib/analytics.js'
 import { scrollToApply } from '../../lib/roadmapForm.js'
 import { Arrow, ScrollCta, goToSection } from './shared.jsx'
-import { tr } from '../../i18n/tr.js'
-import { currentLocale } from '../../i18n/locale.js'
+import { useTr } from '../../i18n/tr.js'
 
 /* ─────────────────────────────────────────────
    HERO — one headline, one sentence, two CTAs, one trust line and a lightweight CSS + SVG
@@ -52,6 +51,7 @@ const TONE = {
 }
 
 export default function ReferralHero() {
+  const tr = useTr()
   return (
     <section aria-labelledby="referrals-h1" className="relative overflow-hidden">
       <div
@@ -141,7 +141,7 @@ export default function ReferralHero() {
                       )}
                       <div className="min-w-0 pt-0.5">
                         <p className="font-display text-lg font-bold uppercase leading-tight tracking-snug text-ink sm:text-xl">
-                          <span className={`${currentLocale() === 'ar' ? 'ml-2' : 'mr-2'} text-sm font-semibold tabular-nums text-ink-muted`} aria-hidden="true">0{i + 1}</span>
+                          <span className="mr-2 text-sm font-semibold tabular-nums text-ink-muted" aria-hidden="true">0{i + 1}</span>
                           {tr(step.title)}
                         </p>
                         <p className="mt-1.5 text-sm leading-snug text-ink-muted">{tr(step.note)}</p>

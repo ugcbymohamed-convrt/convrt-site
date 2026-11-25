@@ -67,13 +67,14 @@ test('client work: the studio scene with three posters, the client selector in o
   assert.ok(!/Work that speaks|for itself\.|Real brands, real budgets|CASE STUDIES|>Case Studies<\/span>/.test(h.replace(/<nav[\s\S]*?<\/nav>|<footer[\s\S]*?<\/footer>/g, '')), 'the old section introduction is gone')
   assert.ok(!/href="#showcase"/.test(h))
   const tabs = [...s.matchAll(/role="tab"[^>]*aria-label="([^"]+)"/g)].map((m) => m[1])
-  assert.deepEqual(tabs, ['Adscale, SaaS', 'Elyon Dubai, E-commerce', 'Graspo, Printing'])
+  assert.deepEqual(tabs, ['Adscale, SaaS', 'Elyon Dubai, E-commerce'])
   assert.match(s, /role="tablist"/); assert.equal((s.match(/aria-selected="true"/g) || []).length, 1)
   for (const c of SHOWCASE_INDUSTRIES) {
     assert.ok(s.includes(`src="${c.logo.src}"`) && s.includes(`alt="${c.logo.alt}"`), `${c.id}: the real client logo`)
     assert.ok(s.includes(`href="${c.link.href}"`), `${c.id}: destination ${c.link.href} stays in the HTML`)
   }
-  for (const href of ['/case-studies/graspo', '/case-studies/elyon', PATHS.saasVideoProduction]) assert.ok(s.includes(`href="${href}"`), href)
+  for (const href of ['/case-studies/elyon', PATHS.saasVideoProduction]) assert.ok(s.includes(`href="${href}"`), href)
+  assert.ok(!/graspo/i.test(s), 'Graspo is no longer on the English homepage showcase (owner, 2026-11-24)')
   assert.match(s, /<nav aria-label="Client case studies and service page" class="sr-only">/, 'the destinations are a visually hidden client navigation (drawn only when a keyboard user focuses a link)')
   assert.equal((s.match(/role="tabpanel"/g) || []).length, 1, 'the one stage the selector controls')
   // the stage: three videos of the first client, centre one playable, sides only selectable, nothing playing
@@ -166,12 +167,12 @@ test('rotary stage logic: shortest direction, ease-in-out, 550-750 ms, and a cli
 })
 
 test('industry showcase data: Adscale is the verified SaaS client (no invented case study or result); every industry has exactly its three client videos', () => {
-  assert.deepEqual(SHOWCASE_INDUSTRIES.map((c) => [c.label, c.client, c.clientId]), [['SaaS', 'Adscale', 'adscale'], ['E-commerce', 'Elyon Dubai', 'elyon'], ['Printing', 'Graspo', 'graspo']])
+  assert.deepEqual(SHOWCASE_INDUSTRIES.map((c) => [c.label, c.client, c.clientId]), [['SaaS', 'Adscale', 'adscale'], ['E-commerce', 'Elyon Dubai', 'elyon']])
   const saas = SHOWCASE_INDUSTRIES[0]
   assert.equal(saas.link.href, PATHS.saasVideoProduction, 'Adscale has no case-study page: the link goes to the SaaS service page')
   assert.ok(!/\/case-studies\/adscale|adscale-case/.test(JSON.stringify(SHOWCASE_INDUSTRIES)))
   assert.ok(!/\d/.test(saas.headline + saas.text), 'no figure is claimed for Adscale')
-  assert.equal(SHOWCASE_INDUSTRIES[1].link.href, '/case-studies/elyon'); assert.equal(SHOWCASE_INDUSTRIES[2].link.href, '/case-studies/graspo')
+  assert.equal(SHOWCASE_INDUSTRIES[1].link.href, '/case-studies/elyon')
   for (const c of SHOWCASE_INDUSTRIES) assert.ok(selectShowcase(c.clientId).length >= 3, c.id)
   const src = read('src/components/home/IndustryShowcase.jsx')
   assert.ok(!/cloudflareId|videodelivery/.test(src) && !/cloudflareId|videodelivery/.test(read('src/content/homeShowcase.js')), 'no video is copied into a component: they come from portfolio.js')
@@ -417,9 +418,10 @@ test('motion and accessibility: the new animations are off for prefers-reduced-m
   assert.match(css, /@media \(prefers-reduced-motion: reduce\) \{\s*\.sc-panel-in \{ animation: none; \}/)
   assert.ok(!/\.rv-card/.test(css), 'the old review-card styles are gone')
   const showcase = read('src/components/home/IndustryShowcase.jsx')
-  for (const k of ['role="tablist"', 'role="tab"', 'aria-selected', 'ArrowRight: 1', "matchMedia?.('(prefers-reduced-motion: reduce)')", 'motion-reduce:']) assert.ok(showcase.includes(k), k)
+  for (const k of ["'tablist'", "role: 'tab'", 'aria-selected', "matchMedia?.('(prefers-reduced-motion: reduce)')", 'motion-reduce:']) assert.ok(showcase.includes(k), k)
+  assert.ok(showcase.includes('ArrowRight: 1') || showcase.includes('stepOfArrow(e.key)'), 'arrow keys move between the tabs (mirrored in right-to-left)')
   const stage = read('src/components/home/RotaryStage.jsx')
-  for (const k of ["e.key === 'ArrowRight'", "e.key === 'ArrowLeft'", 'tabIndex={0}', 'aria-roledescription="carousel"', 'onPointerUp', 'motion-reduce:']) assert.ok(stage.includes(k), k)
+  for (const k of ['stepOfArrow(e.key)', 'stepOfSwipe(dx)', 'tabIndex={0}', 'aria-roledescription="carousel"', 'onPointerUp', 'motion-reduce:']) assert.ok(stage.includes(k), k)
   const reviews = read('src/components/home/ClientReviews.jsx')
   for (const k of ['role="tablist"', 'role="tab"', 'ArrowDown: 1', '<details', '<summary', 'motion-reduce:transition-none', 'duration-300']) assert.ok(reviews.includes(k), k)
 })

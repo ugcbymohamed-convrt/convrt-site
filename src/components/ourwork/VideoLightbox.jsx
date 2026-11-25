@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom'
 import { titleOf, posterUrl, industryLabel, typeLabel, languageLabel, creatorLabel, brandLabel, creditLabel, productionLabel } from '../../content/portfolio.js'
 import { useAttachSource, PlayGlyph, PauseGlyph, SoundGlyph } from '../ugc/creatorVideo.jsx'
 import { CloseGlyph, Chevron } from './icons.jsx'
+import { stepOfArrow } from '../../lib/rtl.js'
 import { tr } from '../../i18n/tr.js'
 
 /* The enlarged, vertical viewing experience for ONE video. There is exactly one player on the page: it is mounted only while a card is
@@ -152,8 +153,9 @@ export default function VideoLightbox({ item, color, onClose, onPrev, onNext }) 
   const onKeyDown = useCallback((e) => {
     if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); onClose(); return }
     const onRange = e.target instanceof HTMLInputElement
-    if (e.key === 'ArrowLeft' && onPrev && !onRange) { e.preventDefault(); onPrev() }
-    if (e.key === 'ArrowRight' && onNext && !onRange) { e.preventDefault(); onNext() }
+    const step = stepOfArrow(e.key)
+    if (step < 0 && onPrev && !onRange) { e.preventDefault(); onPrev() }
+    if (step > 0 && onNext && !onRange) { e.preventDefault(); onNext() }
     if (e.key === 'Tab' && dialog.current) {
       const nodes = [...dialog.current.querySelectorAll(FOCUSABLE)].filter((n) => n.offsetParent !== null || n === document.activeElement)
       if (!nodes.length) return

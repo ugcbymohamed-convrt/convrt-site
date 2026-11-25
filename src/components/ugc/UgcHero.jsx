@@ -6,9 +6,10 @@ import { OFFER_PATHS, CREATOR_SHOWCASE_PATH } from '../../config.js'
 import { SECONDARY_OFFERS, SecondaryOffer, offersShown } from '../Hero.jsx'
 import CreatorVideoStage, { PhoneShowcaseFallback } from './CreatorVideoStage.jsx'
 import { useAutoplayAllowed } from './creatorVideo.jsx'
-import { tr, hrefFor } from '../../i18n/tr.js'
+import { tr, hrefFor, ctaText } from '../../i18n/tr.js'
 import { currentLocale } from '../../i18n/locale.js'
 import { resolveCta, flowAvailable } from '../../i18n/cta.js'
+import { FR_HOME_HERO } from '../../i18n/fr/hero.js'
 import { localizeHero } from '../../i18n/hero.js'
 
 /* SECTION 1: hero. The homepage hero's system: the left column has the same structure, type scale, CTA styles and the two free-offer
@@ -113,7 +114,7 @@ function Headline({ config, textLed = false }) {
   return (
     <h1
       id={id}
-      className={`font-display font-semibold text-ink tracking-display-xl leading-[1.05] ${textLed ? `text-[2.15rem] min-[400px]:text-[2.6rem] sm:text-[3rem] md:text-[3.2rem] lg:text-[3.4rem] xl:text-[4rem]${currentLocale() === 'en' ? '' : ' [text-wrap:balance]'}` : currentLocale() === 'en' ? 'text-[2rem] min-[400px]:text-[2.5rem] sm:text-[3rem] md:text-[3.4rem] lg:text-[2.4rem] xl:text-[3.35rem]' : 'text-[1.85rem] min-[400px]:text-[2.3rem] sm:text-[2.7rem] md:text-[3.1rem] lg:text-[2.2rem] xl:text-[3.05rem] [text-wrap:balance]'}`}
+      className={`font-display font-semibold text-ink tracking-display-xl leading-[1.05] ${textLed ? `text-[2.15rem] min-[400px]:text-[2.6rem] sm:text-[3rem] md:text-[3.2rem] lg:text-[3.4rem] xl:text-[4rem]${['en', 'ar'].includes(currentLocale()) ? '' : ' [text-wrap:balance]'}` : ['en', 'ar'].includes(currentLocale()) ? 'text-[2rem] min-[400px]:text-[2.5rem] sm:text-[3rem] md:text-[3.4rem] lg:text-[2.4rem] xl:text-[3.35rem]' : 'text-[1.85rem] min-[400px]:text-[2.3rem] sm:text-[2.7rem] md:text-[3.1rem] lg:text-[2.2rem] xl:text-[3.05rem] [text-wrap:balance]'}`}
     >
       {LINES.map((words) => (
         <span key={words[0]} className="block">
@@ -125,7 +126,7 @@ function Headline({ config, textLed = false }) {
       <span className="block">
         {/* Other languages: the last lead word and the rolling word stay together on one line (never "pena / guardar."), and in the centred text-led layout the rolling word is centred in its fixed slot,
             so the headline never moves while the words change. English keeps its markup. */}
-        {currentLocale() === 'en' ? (
+        {['en', 'ar'].includes(currentLocale()) ? (
           <>
             {lead.flatMap((w) => [word(w, w), ' '])}
             <span className="ugc-mask"><span className="ugc-word" style={{ animationDelay: `${80 + i * 55}ms` }}><ReelWord words={words} sizer={sizer} /></span></span>
@@ -147,10 +148,13 @@ function Headline({ config, textLed = false }) {
 const PRIMARY_CTA = `cta-gradient hero-cta group inline-flex w-full sm:w-auto min-h-[64px] md:min-h-[68px] items-center justify-center gap-2.5
                              rounded-full px-6 md:px-7 lg:px-6 xl:px-7 py-4 text-base md:text-[17px] font-bold tracking-snug text-canvas
                              focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-lime`
+/* French: the labels are longer than the English ones ("Recevoir 5 concepts sur mesure"), so the two buttons stay on one line each (nowrap, a little less padding), like the French homepage hero. */
+const PRIMARY_CTA_FR = PRIMARY_CTA.replace('px-6 md:px-7 lg:px-6 xl:px-7', 'px-5 md:px-6 whitespace-nowrap')
 const GHOST_CTA = `hero-cta-ghost group inline-flex w-full sm:w-auto min-h-[48px] sm:min-h-[64px] md:min-h-[68px] items-center justify-center gap-2
                              rounded-full border border-hairline-strong bg-surface-2 px-6 md:px-7 lg:px-5 xl:px-7 py-3 sm:py-4 text-base md:text-[17px] font-semibold tracking-snug text-ink
                              hover:border-ink-muted
                              focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink`
+const GHOST_CTA_FR = GHOST_CTA.replace('px-6 md:px-7 lg:px-5 xl:px-7', 'px-5 md:px-6 whitespace-nowrap')
 const Arrow = ({ cls }) => (
   <svg viewBox="0 0 12 12" className={`${cls} transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0 motion-reduce:group-hover:translate-y-0`} fill="none" aria-hidden="true">
     <path d="M3 9L9 3M9 3H4M9 3V8" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" />
@@ -162,9 +166,10 @@ export default function UgcHero({ items, config: configProp = UGC_HERO }) {
   const config = localizeHero(configProp, locale)
   // Other languages: a primary CTA into the English-only Roadmap becomes the booking call; the free-offer cards are shown only where their flows are translated.
   const primary = resolveCta(locale, configProp.primary)
-  const primaryLabel = primary.redirected ? tr(primary.label) : config.primary.label
-  const offersAvailable = offersShown(locale)
+  const primaryLabel = primary.redirected ? tr(primary.label) : configProp.primary.label === 'Get 5 Free Ad Concepts' ? ctaText(configProp.primary.label) : config.primary.label
   const hasWork = items.length > 0
+  // The free-offer cards follow the homepage hero (src/components/Hero.jsx offersShown). French: on the UGC page only, the one French service page with a video stage (the three text-led French pages show no offer cards).
+  const offersAvailable = locale !== 'ar' && offersShown(locale) && (locale !== 'fr' || hasWork) // Arabic: no free-offer cards under the service-page hero (owner-approved layout)
   const textLed = !hasWork && locale !== 'en'
   const primaryPress = usePressFeedback()
   const ghostPress = usePressFeedback()
@@ -190,7 +195,7 @@ export default function UgcHero({ items, config: configProp = UGC_HERO }) {
               <div className={`cs-fade-up ${textLed ? 'mt-8 md:mt-10' : 'lg:mt-6'}`} style={{ animationDelay: '600ms' }}>
                 {config.leadIn !== null && (
                   <p className="mb-3 text-balance text-[15px] font-medium leading-snug text-ink md:text-base">
-                    {config.leadIn ?? (locale === 'en' ? <>Your next 5 ad concepts. Tailored to your brand. <span className="text-lime">On us.</span></> : flowAvailable(locale, 'roadmap') ? <>{tr('5 ad concepts for your brand.')} <span className="text-lime">{tr('Free.')}</span></> : <>{tr('Book a free strategy call.')} <span className="text-lime">{tr('We tell you exactly what you need.')}</span></>)}
+                    {config.leadIn ?? (locale === 'en' ? <>Your next 5 ad concepts. Tailored to your brand. <span className="text-lime">On us.</span></> : flowAvailable(locale, 'roadmap') ? (locale === 'ar' ? <>{tr('Your next 5 ad concepts. Tailored to your brand.')} <span className="text-lime">{tr('On us.')}</span></> : <>{tr('5 ad concepts for your brand.')} <span className="text-lime">{tr('Free.')}</span></>) : <>{tr('Book a free strategy call.')} <span className="text-lime">{tr('We tell you exactly what you need.')}</span></>)}
                   </p>
                 )}
                 <div className={`flex flex-col items-stretch gap-3 sm:flex-row sm:items-center sm:justify-center ${textLed ? '' : 'lg:justify-start'}`}>
@@ -202,7 +207,7 @@ export default function UgcHero({ items, config: configProp = UGC_HERO }) {
                       if (primary.external) e.currentTarget.href = withUtm(primary.href)
                     }}
                     {...primaryPress}
-                    className={PRIMARY_CTA}
+                    className={locale === 'fr' ? PRIMARY_CTA_FR : PRIMARY_CTA}
                   >
                     {primaryLabel}
                     <Arrow cls="h-4 w-4 md:h-[18px] md:w-[18px]" />
@@ -211,7 +216,7 @@ export default function UgcHero({ items, config: configProp = UGC_HERO }) {
                     href={hrefFor(config.secondary.href)}
                     onClick={() => trackEvent(config.track.work, { location: 'hero' })}
                     {...ghostPress}
-                    className={GHOST_CTA}
+                    className={locale === 'fr' ? GHOST_CTA_FR : GHOST_CTA}
                   >
                     {config.secondary.label}
                     <Arrow cls="h-3.5 w-3.5 md:h-4 md:w-4" />
@@ -221,7 +226,7 @@ export default function UgcHero({ items, config: configProp = UGC_HERO }) {
 
               {offersAvailable && (
               <div className={`cs-fade-up mx-auto mt-8 max-w-xl md:mt-10 ${textLed ? '' : 'lg:mx-0'}`} style={{ animationDelay: '680ms' }}>
-                <p className="text-left text-[13px] text-ink-muted">{tr("Not ready yet? We've got two more FREE ways to start.")}</p>
+                <p className="text-left text-[13px] text-ink-muted">{locale === 'fr' ? FR_HOME_HERO.offersLabel : tr("Not ready yet? We've got two more FREE ways to start.")}</p>
                 <div className="mt-3 grid grid-cols-1 gap-2.5 text-left sm:grid-cols-2">
                   {SECONDARY_OFFERS.map((offer) => <SecondaryOffer key={offer.id} offer={offer} />)}
                 </div>

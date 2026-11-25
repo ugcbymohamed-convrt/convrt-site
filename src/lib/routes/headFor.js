@@ -3,7 +3,8 @@
 
 import { BLOG_PATH } from '../../config.js'
 import { pageHead, canonicalPathFor } from '../../seo/siteSeo.js'
-import { articleHead, blogIndexHead } from '../blog/seo.js'
+import { articleHead, blogIndexHead, arabicBlogHead } from '../blog/seo.js'
+import { AR_ARTICLES } from '../../content/blogAr.js'
 import { isPrivatePath, privateHead } from '../../seo/privateSeo.js'
 import { parsePath } from '../../i18n/paths.js'
 import { withoutAlternates } from '../../caseStudies/head.js'
@@ -21,9 +22,10 @@ export function headParamsFor(path, publishedMetas = []) {
   }
   // Translated pages: /es/pricing → the Spanish head of the English base path /pricing.
   const { locale, basePath } = parsePath(path)
-  // /es/case-studies is the Spanish default study: it carries that study's Spanish head (canonical = /es/case-studies/graspo), like its English twin.
+  if (locale === 'ar' && basePath === BLOG_PATH) return arabicBlogHead(AR_ARTICLES)
+  // /es/case-studies and /fr/case-studies are the default study's duplicate: they carry that study's head (canonical = the study), like their English twin.
   const canonical = canonicalPathFor(basePath)
   const head = pageHead(canonical, locale)
-  // /case-studies renders the default study, so it carries that study's head, but no hreflang (it is not the canonical page).
+  // the duplicate has no hreflang of its own (it is not the canonical page).
   return canonical === basePath ? head : withoutAlternates(head)
 }

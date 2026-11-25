@@ -1,4 +1,4 @@
-# Language suggestion for visitors in Spain
+# Language suggestion for visitors in Spain and France
 
 A small, dismissible card on **English** pages: "¿Prefieres navegar en español? / También puedes visitar nuestra web en español." with **Continuar en inglés** and **Ver en español**.
 It is a progressive enhancement. It is not a redirect: nothing about routing, redirects, canonicals, hreflang, the sitemap, metadata or JSON-LD changes, and the prerendered HTML never contains it
@@ -30,3 +30,15 @@ No fingerprints, IP lists or hard-coded addresses: each browser simply stores it
 ## Files
 `api/visitor-country.js`, `api/_lib/geo.js`, `src/lib/languagePreference.js`, `src/lib/languageSuggestion.js`, `src/components/LanguageSuggestion.jsx`, `src/components/mountLanguageSuggestion.jsx` (own React root, like the cookie banner),
 wiring in `src/main.jsx` and `src/components/LanguageSelector.jsx`, dev route in `vite.config.js`, Privacy Policy line in `src/content/trustPages.js`.
+
+## French-speaking countries (French), added Nov 2026; widened 2026-11-24
+Same mechanism, second language. `GET /api/visitor-country` now answers `{ "spain": bool, "france": bool, "french": bool, "known": bool }` (`known` = the edge gave some country; still only booleans about the requester, `private, no-store`).
+An English public page offers French to a visitor in France, Belgium, Switzerland, Luxembourg, Monaco, Canada, the French overseas territories and French-speaking Africa (the list is `FRENCH_SPEAKING` in `api/_lib/geo.js`; the Maghreb is left out on purpose because Arabic is the main language there): « Vous préférez naviguer en français ? Découvrez notre site en français. » with **Passer en français** (a plain link to the equivalent French page or `/fr/`) and **Rester en anglais**; × / Escape dismiss. Spain keeps the Spanish card.
+Never a redirect, never in the prerendered HTML, never on `/fr/` or `/es/`, never again after any stored choice (`convrt_language` now also holds `fr`), waits for the cookie banner.
+**Fallback when the country is unknown only** (`known: false`: no header, lookup failed or timed out, e.g. a local preview): the browser's preferred-language list decides, and only if its first non-English language is one we offer (`preferredSuggestible`, the single place that reads `navigator.languages`). When the edge DID place the visitor elsewhere the browser language is ignored.
+To add a language: its country flag in `api/_lib/geo.js` + the endpoint, an entry in `SUGGESTIBLE` (`src/lib/languageSuggestion.js`) and its card text in `COPY` (`src/components/LanguageSuggestion.jsx`). Tests: `tests/language-suggestion.test.mjs`.
+
+## Arabic-speaking countries (Arabic), added 2026-11-24
+Third language on the same mechanism (`SUGGESTIBLE.ar = 'arabic'`). The endpoint also answers `"arabic": bool`: true for the Arab League states (Saudi Arabia, the UAE, Qatar, Kuwait, Bahrain, Oman, Yemen, Iraq, Jordan, Lebanon, Syria, Palestine, Egypt, Sudan, Libya, Tunisia, Algeria, Morocco, Mauritania, Somalia: `ARAB_COUNTRIES` in `api/_lib/geo.js`). Djibouti and the Comoros are Arab League members too but stay on French (listed there, both languages official), so French is offered first.
+- Text (`COPY.ar`, `dir="rtl"`, `lang="ar"`; the card sits bottom-left on desktop): «هل تفضّل تصفّح الموقع بالعربية؟» / «يمكنك أيضًا زيارة موقعنا باللغة العربية.» / «المتابعة بالإنجليزية» / «عرض بالعربية» / «إغلاق». Native Gulf copy review still pending like the rest of the Arabic copy.
+- «عرض بالعربية» links to the equivalent released Arabic page, otherwise `/ar/` (English-only pages such as the blog fall back to `/ar/`); it stores `ar` in `convrt_language`. Never a redirect, never on `/ar/` pages, never in the prerendered HTML. The browser-language fallback also covers `ar` when the country is unknown.

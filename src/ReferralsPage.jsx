@@ -43,6 +43,7 @@ const PAGE_DESCRIPTION =
 /* FAQPage structured data built from the FAQ shown on the page, so it can never drift from it. */
 function useFaqStructuredData() {
   useEffect(() => {
+    const locale = currentLocale()
     const script = document.createElement('script')
     script.type = 'application/ld+json'
     script.text = JSON.stringify({

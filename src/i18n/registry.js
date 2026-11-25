@@ -27,13 +27,42 @@ export const TRANSLATED_PATHS = {
     '/creative-growth-roadmap',
     // The 1 FREE video application (noindex like the English page and, on top of that, held by a release gate until the owner and the lawyer have reviewed it: src/i18n/release.js).
     '/risk-free-trial',
-    // The Referral Partner Program (noindex like the English page while its launch gate is closed: src/config.js REFERRALS_INDEXABLE).
     '/referrals',
   ],
-  // French and Arabic: the complete translations live on their own branches (french-localization, arabic-localization), not merged here. On THIS branch each language holds only the Referral
-  // Partner Program page: its locale is in 'review' status (reachable by URL, noindex, no sitemap, no hreflang, not in the selector). See docs/multilingual-referrals-fr-ar.md.
-  fr: ['/referrals'],
-  ar: ['/referrals'],
+  // French (France-first, Nov 2026): the homepage, the four service pages (UGC, spokesperson, organic social, SaaS: native French, no video galleries, see
+  // docs/multilingual-french-release.md), pricing, the creator showcase, the case studies, the two conversion flows and the Referral Partner Program. Everything else (About, Contact, blog, legal)
+  // is deliberately not translated yet: French pages link to the English page and say so.
+  fr: [
+    '/',
+    '/ugc-video-agency',
+    '/spokesperson-video-production',
+    '/social-media-video-production',
+    '/saas-video-production',
+    '/pricing',
+    '/creator-showcase',
+    '/case-studies',
+    '/case-studies/graspo',
+    '/case-studies/elyon',
+    '/creative-growth-roadmap',
+    '/risk-free-trial',
+    '/referrals',
+  ],
+  // Arabic (one shared website for the UAE and Saudi Arabia, USD): the homepage, the FOUR service pages (UGC, Spokesperson, Organic Social, SaaS), the Graspo case study, pricing, the Creator
+  // Showcase and the two application flows. About, Contact, the Elyon case study and the legal pages stay English-only: links to them keep their English URL (never a dead /ar/ URL).
+  ar: [
+    '/',
+    '/ugc-video-agency',
+    '/spokesperson-video-production',
+    '/social-media-video-production',
+    '/saas-video-production',
+    '/case-studies/graspo',
+    '/pricing',
+    '/creator-showcase',
+    '/creative-growth-roadmap',
+    '/risk-free-trial',
+    '/referrals',
+    '/blog', // the Arabic blog index (src/BlogPageAr.jsx); Arabic articles are listed in src/content/blogAr.js
+  ],
 }
 
 export const hasTranslation = (locale, basePath) => (TRANSLATED_PATHS[locale] ?? []).includes(basePath)

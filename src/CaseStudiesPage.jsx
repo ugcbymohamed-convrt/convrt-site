@@ -6,6 +6,7 @@ import { usePrefersReducedMotion } from './components/caseStudies/shared/usePref
 import { CASE_STUDIES, DEFAULT_CASE_STUDY_ID, isValidCaseStudyId, getCaseStudy } from './caseStudies/registry.js'
 import GraspoCaseStudyPage from './GraspoCaseStudyPage.jsx'
 import ElyonCaseStudyPage from './ElyonCaseStudyPage.jsx'
+import { currentLocale } from './i18n/locale.js'
 import { useTr, hrefFor } from './i18n/tr.js'
 
 const PAGES = {
@@ -33,7 +34,12 @@ function resolveInitialId() {
   return DEFAULT_CASE_STUDY_ID
 }
 
+/* Arabic (owner brief 2026-11-23): one dedicated Arabic case study, Graspo. The Elyon study and the switcher are English-only, so the Arabic page is the study alone. */
 export default function CaseStudiesPage() {
+  return currentLocale() === 'ar' ? <GraspoCaseStudyPage /> : <CaseStudiesPageEn />
+}
+
+function CaseStudiesPageEn() {
   const tr = useTr()
   const [activeId, setActiveId] = useState(resolveInitialId)
   const [renderedId, setRenderedId] = useState(activeId)

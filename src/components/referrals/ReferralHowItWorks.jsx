@@ -1,5 +1,5 @@
 import { Reveal, SectionHeader } from '../roadmap/shared.jsx'
-import { tr } from '../../i18n/tr.js'
+import { useTr } from '../../i18n/tr.js'
 
 /* ─────────────────────────────────────────────
    HOW IT WORKS — three steps joined by a connector: horizontal on md+, vertical on
@@ -13,6 +13,7 @@ const STEPS = [
 ]
 
 export default function ReferralHowItWorks() {
+  const tr = useTr()
   return (
     <section
       id="how-it-works"

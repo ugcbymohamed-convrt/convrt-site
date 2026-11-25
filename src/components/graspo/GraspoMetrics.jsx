@@ -1,7 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
 import { useTr } from '../../i18n/tr.js'
+import { currentLocale } from '../../i18n/locale.js'
+import { localizeStat } from '../../i18n/format.js'
 import { GRASPO_METRICS as METRICS } from '../../caseStudies/data.js'
-import { stat, isEnglish } from '../caseStudies/format.js'
+import { stat } from '../caseStudies/format.js'
 
 /* ─────────────────────────────────────────────
    HERO METRICS — the numbers that carry the page.
@@ -10,6 +12,13 @@ import { stat, isEnglish } from '../caseStudies/format.js'
 ───────────────────────────────────────────── */
 
 const ACCENT = '#d5ff40'
+
+/* Arabic figures read "10.7 مليون": the unit is set smaller than the number so a big figure stays on one line inside its card (English is untouched: it returns the plain string). */
+export function statNode(locale, v) {
+  const t = localizeStat(locale, v)
+  const m = locale === 'ar' ? String(t).match(/^(\S+) (\S+)$/) : null
+  return m ? <>{m[1]} <span className="text-[0.5em] font-semibold">{m[2]}</span></> : t
+}
 
 function useInView(threshold = 0.15) {
   const ref = useRef(null)
@@ -29,6 +38,7 @@ function useInView(threshold = 0.15) {
 
 export default function GraspoMetrics() {
   const tr = useTr()
+  const locale = currentLocale()
   const [wrapRef, visible] = useInView()
 
   return (
@@ -54,7 +64,7 @@ export default function GraspoMetrics() {
                 className="relative font-display font-bold tracking-display leading-none text-[clamp(1.9rem,4vw,2.6rem)] tabular-nums"
                 style={{ color: i === 3 || i === 4 ? ACCENT : '#ffffff' }}
               >
-                {stat(m.value)}
+                {locale === 'ar' ? statNode(locale, m.value) : stat(m.value)}
               </p>
               <p className="relative mt-3 text-[13px] font-semibold text-ink">{tr(m.label)}</p>
               <p className="relative mt-1 text-[11.5px] text-ink-subtle">{tr(m.sub)}</p>
@@ -64,8 +74,8 @@ export default function GraspoMetrics() {
         <p className="mt-5 text-center text-xs text-ink-subtle">
           {tr('Source: Meta Business Suite analytics, Jan 1 – Jun 19 2026 · Leads: internal inbound tracker across Meta, email and WhatsApp')}
         </p>
-        {/* Spanish only: the limitation stated on the Organic page for the same figures (src/content/organicSocialPage.js), shown here too. The English page is unchanged. */}
-        {!isEnglish() && (
+        {/* Spanish and French (not English, not Arabic): the limitation stated on the Organic page for the same figures (src/content/organicSocialPage.js), shown here too. The English page is unchanged. */}
+        {locale !== 'en' && locale !== 'ar' && (
           <p className="mx-auto mt-2 max-w-2xl text-center text-xs text-ink-subtle">
             {tr('Results are specific to this client and period; they are not typical and not guaranteed.')}
           </p>

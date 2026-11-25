@@ -9,6 +9,9 @@ import { currentLocale } from '../../i18n/locale.js'
 ───────────────────────────────────────────── */
 
 export default function RoadmapHero() {
+  /* Arabic (owner brief 2026-11-23): one short heading, one short line, one button and one line of conditions. The long explanation and the second reassurance line are not repeated here (the form,
+     the FAQ and the process below carry the details). English and Spanish keep their full text. */
+  const lean = currentLocale() === 'ar'
   return (
     <section aria-labelledby="roadmap-h1" className="relative overflow-hidden">
       <div
@@ -35,7 +38,7 @@ export default function RoadmapHero() {
 
             <p className="mt-6 max-w-xl text-base leading-relaxed text-ink-muted md:text-lg">
               <span className="font-semibold text-ink">{tr('Stop guessing what ad to create next.')}</span>
-              {currentLocale() !== 'es' && <>
+              {!lean && currentLocale() !== 'es' && <>
               <br />
               {tr('Get five personalized advertising concepts built around your brand, audience, and growth goals, presented in a free creative strategy session with CONVRT.')}
               </>}
@@ -45,7 +48,7 @@ export default function RoadmapHero() {
               <ApplyButton location="hero" className="w-full sm:w-auto" />
               <div className="text-sm leading-relaxed text-ink-subtle">
                 <p>{tr('For brands in every industry. No obligation.')}</p>
-                <p>{tr('Takes about a minute. Qualifying brands can book right away.')}</p>
+                {!lean && <p>{tr('Takes about a minute. Qualifying brands can book right away.')}</p>}
               </div>
             </div>
           </div>

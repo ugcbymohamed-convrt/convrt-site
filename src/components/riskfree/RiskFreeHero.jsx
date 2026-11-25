@@ -1,3 +1,4 @@
+import { forward } from '../../lib/rtl.js'
 import { trackEvent } from '../../lib/analytics.js'
 import { scrollToApply } from '../../lib/roadmapForm.js'
 import { Check } from '../roadmap/shared.jsx'
@@ -37,7 +38,7 @@ export default function RiskFreeHero() {
 
             <h1
               id="risk-free-h1"
-              className={`mt-6 font-display font-bold text-ink tracking-display-xl leading-[1.03] ${currentLocale() === 'en' ? 'text-[2.6rem] min-[400px]:text-[3.2rem] sm:text-[3.6rem] md:text-[4.2rem] lg:text-[3.4rem] xl:text-[4.2rem]' : 'text-[2.15rem] min-[400px]:text-[2.6rem] sm:text-[3.1rem] md:text-[3.5rem] lg:text-[2.75rem] xl:text-[3.4rem] [text-wrap:balance]'}`}
+              className={`mt-6 font-display font-bold text-ink tracking-display-xl leading-[1.03] ${['en', 'ar'].includes(currentLocale()) ? 'text-[2.6rem] min-[400px]:text-[3.2rem] sm:text-[3.6rem] md:text-[4.2rem] lg:text-[3.4rem] xl:text-[4.2rem]' : 'text-[2.15rem] min-[400px]:text-[2.6rem] sm:text-[3.1rem] md:text-[3.5rem] lg:text-[2.75rem] xl:text-[3.4rem] [text-wrap:balance]'}`}
             >
               {currentLocale() === 'en' ? (
                 <>
@@ -45,11 +46,18 @@ export default function RiskFreeHero() {
                   <span className="block">Video Production</span>
                 </>
               ) : (
+                currentLocale() === 'ar' ? (
+                <>
+                  <span className="block">{tr('1 video')} <span className="text-lime">{tr('free')}</span></span>
+                  <span className="block">{tr('of production')}</span>
+                </>
+                ) : (
                 <>
                   {/* Spanish (Nov 2026): "Prueba nuestra producción / con un vídeo gratis" */}
                   <span className="block">{tr('Try our production')}</span>
                   <span className="block">{tr('with one video')} <span className="text-lime">{tr('free')}</span></span>
                 </>
+                )
               )}
             </h1>
 
@@ -73,7 +81,7 @@ export default function RiskFreeHero() {
                            focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-lime"
               >
                 {tr('See If You Qualify')}
-                <span aria-hidden="true" className="transition-transform duration-200 group-hover:translate-x-0.5 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0">→</span>
+                <span aria-hidden="true" className="transition-transform duration-200 group-hover:translate-x-0.5 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0">{forward()}</span>
               </a>
               <div className="text-sm leading-relaxed text-ink-subtle">
                 <p>{tr('Takes about two minutes. No obligation.')}</p>

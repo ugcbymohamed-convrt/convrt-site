@@ -79,3 +79,54 @@ export const HOME_HERO_ES = [
     approval: { ...approval, approvedOn: '2026-11-22' },
   },
 ]
+
+/* The Arabic homepage hero: three videos. THE CENTRE (FEATURED) PHONE is CONVRT_AD_GULF_ARABIC_FINAL.mp4, which the owner supplied on 2026-11-24 to replace the previous centre video (1080x1920, 61 s, H.264 + AAC;
+   uploaded to Cloudflare Stream the same day as AR-HERO-GULF-FINAL; the original file is untouched on the owner's Desktop). The two side phones are the approved Arabic-speaking creator videos that were already there
+   (the same Stream videos and posters as the Arabic UGC hero in src/content/portfolio.js). The replaced centre video (ar-c01) is still on the Arabic UGC page. Who presents the new video, who made it and whether the
+   presenter has consented are NOT recorded, so no name, brand, production credit or date is stated; the caption describes only the footage. Spoken language is set from the Arabic on-screen captions (the opening
+   frames also carry an English comment overlay). English keeps HOME_HERO unchanged. */
+export const HOME_HERO_AR = [
+  {
+    id: 'home-hero-ar-main',
+    creatorId: 'ar-hero-gulf-c',
+    industry: 'unclassified',
+    languages: ['ar'],
+    caption: 'مقدّم يتحدث أمام الكاميرا في أماكن مختلفة، مع عناوين عربية مكتوبة على الشاشة.',
+    poster: '/portfolio/ar-hero-gulf.webp',
+    source: { cloudflareId: 'afdb58ebb92354534b513dabca0d64f5' },
+    approval: { ...approval, approvedBy: 'CONVRT owner (2026-11-24: supplied ARABIC-with-Dubbed-Text.mp4 as the Arabic hero video)', approvedOn: '2026-11-24' },
+  },
+  {
+    id: 'home-hero-ar-left',
+    creatorId: 'ar-c02',
+    industry: 'unclassified',
+    languages: ['ar'],
+    caption: 'صانعة محتوى تقدّم خدمة تعليمية أمام الكاميرا.',
+    poster: '/portfolio/ar-ugc-hero-2.webp',
+    source: { cloudflareId: 'e76683d744c46ecfe8e1fb53b273b926' },
+    approval: { ...approval, approvedOn: '2026-11-23' },
+  },
+  {
+    id: 'home-hero-ar-right',
+    creatorId: 'ar-c03',
+    industry: 'unclassified',
+    languages: ['ar'],
+    caption: 'صانع محتوى يعرض مزايا منتج برسوم توضيحية.',
+    poster: '/portfolio/ar-ugc-hero-3.webp',
+    source: { cloudflareId: '7f68e3f6c92e70395cad4876fcb389a8' },
+    approval: { ...approval, approvedOn: '2026-11-23' },
+  },
+]
+
+/* The French homepage hero. Same structure as the English hero; only the language and the three videos differ (they are data here, never hard-coded in the layout: to swap one, change its entry).
+   - FRONT (the large centre phone): the FRENCH-DUBBED version of the CONVRT advertisement, ~/Downloads/CONVRT_French_Premium_FR_V2.mp4 (1080x1920, 52.8 s), uploaded to Cloudflare Stream on 2026-11-23 at the owner's
+     request. It replaces the earlier French centre video. The Comma video is NOT the hero: it lives in the French creator carousel and showcase.
+   - LEFT: the approved French female creator (fr-ugc-hero-1) and RIGHT: the approved French male creator (fr-ugc-hero-2). TEMPORARY choices (owner, 2026-11-23): to be replaced once better videos are selected.
+     Left and right are the same Stream videos as the French UGC page's hero phones (uploaded once). They are creators' own examples, not CONVRT productions; the page says so under the stage (CREATOR_EXAMPLES_NOTE).
+   English and Spanish keep their own heroes. */
+const frApproval = { ...approval, approvedOn: '2026-11-23' }
+export const HOME_HERO_FR = [
+  { id: 'home-hero-fr-main', creatorId: 'cv-home-hero', industry: 'unclassified', languages: ['fr'], caption: 'Publicité CONVRT, version française.', poster: '/portfolio/fr-home-hero.webp', source: { cloudflareId: 'ce7f495642b90a531e44f17b8e7454c5' }, approval: frApproval },
+  { id: 'home-hero-fr-left', creatorId: 'fr-c01', industry: 'unclassified', languages: ['fr'], caption: 'Complément alimentaire : démonstration du produit face caméra.', poster: '/portfolio/fr-ugc-hero-1.webp', source: { cloudflareId: 'c1dd083d5550608a139f656670bd77a5' }, approval: frApproval },
+  { id: 'home-hero-fr-right', creatorId: 'fr-c02', industry: 'unclassified', languages: ['fr'], caption: 'Application pour voyager : un créateur raconte son expérience.', poster: '/portfolio/fr-ugc-hero-2.webp', source: { cloudflareId: '0346ed0881533220ba77bc4b3d4c26f9' }, approval: frApproval },
+]

@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react'
+import { currentLocale } from './i18n/locale.js'
 import SectionDivider from './components/SectionDivider.jsx'
 import UgcHero from './components/ugc/UgcHero.jsx'
 import UgcGallery from './components/ugc/UgcGallery.jsx'
@@ -14,13 +15,13 @@ import { useDocumentHead } from './lib/useDocumentHead.js'
 import { pageHead } from './seo/siteSeo.js'
 import { PATHS } from './routes.js'
 import { ORGANIC_SOCIAL_FAQ } from './seo/organicSocialFaq.js'
-import { selectOrganicHero, selectOrganicGallery, forPageLanguage } from './content/portfolio.js'
+import { selectOrganicHero, selectOrganicGallery } from './content/portfolio.js'
 import { ORGANIC_CTA } from './seo/businessKnowledge.js'
 import {
   ORGANIC_HERO, ORGANIC_PAGE_STAGES, ORGANIC_PROCESS, ORGANIC_GALLERY, ORGANIC_PAGE_CTA, ORGANIC_PATH_LABEL, ORGANIC_PROOF, ORGANIC_PROOF_COPY, ORGANIC_PRICING_HREF, ORGANIC_SCOPE_NOTE,
 } from './content/organicSocialPage.js'
-import { currentLocale } from './i18n/locale.js'
 import { tr, T, hrefFor } from './i18n/tr.js'
+import { serviceVideos } from './i18n/serviceVideos.js'
 
 /* /social-media-video-production: the Organic Social Video Production & Management page. It reuses the UGC and Spokesperson pages' architecture and design system, and each
    section is the same configuration-driven component fed with organic-social content (src/content/organicSocialPage.js):
@@ -57,7 +58,8 @@ function ProcessFooter() {
         <a href={hrefFor(ORGANIC_PRICING_HREF)} className="font-medium text-ink underline decoration-lime/60 underline-offset-4 transition-colors hover:text-lime">{tr('pricing and terms')}</a>.
       </p>
       <p className="mx-auto mt-2 max-w-3xl text-center text-[15px] leading-relaxed text-ink-muted">{tr(ORGANIC_SCOPE_NOTE)}</p>
-      {currentLocale() !== 'es' && <p className="mx-auto mt-2 max-w-3xl text-center text-xs text-ink-muted">{tr('Scenes are illustrative. The portraits are for illustration only.')}</p>}
+      {/* Arabic (owner, 2026-11-25) and Spanish: the repeated "scenes are illustrative" line is not shown. */}
+      {currentLocale() !== 'es' && currentLocale() !== 'ar' && <p className="mx-auto mt-2 max-w-3xl text-center text-xs text-ink-muted">{tr('Scenes are illustrative. The portraits are for illustration only.')}</p>}
     </>
   )
 }
@@ -73,8 +75,8 @@ export default function OrganicSocialVideoPage() {
     trackEvent('organic_page_view')
   }, [])
 
-  const heroItems = forPageLanguage(selectOrganicHero())
-  const galleryItems = forPageLanguage(selectOrganicGallery())
+  const heroItems = serviceVideos(selectOrganicHero())
+  const galleryItems = serviceVideos(selectOrganicGallery())
 
   return (
     <>

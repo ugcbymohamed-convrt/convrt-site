@@ -7,7 +7,7 @@ import { useAutoplayAllowed } from './creatorVideo.jsx'
 import TestingDiagram from './TestingDiagram.jsx'
 import { tr } from '../../i18n/tr.js'
 import { currentLocale } from '../../i18n/locale.js'
-import { ES_STAGE_TITLES } from '../../i18n/es/labels.js'
+import { editorial } from '../../i18n/editorial.js'
 import { localizeConfig } from '../../i18n/content.js'
 
 /* SECTION 3: how we create and test UGC ads. Four stages. All four titles and one-line explanations are always visible, so the
@@ -226,9 +226,12 @@ function UgcProcessFooter() {
         <span className="font-semibold text-ink">{tr('Production turnaround:')}</span>{' '}
         {currentLocale() === 'en'
           ? <>{SPRINT.turnaroundBusinessDays} business days for the {SPRINT.name} and{' '}{SPRINT_PLUS.turnaroundBusinessDays} for {SPRINT_PLUS.name}, counted from the moment you approve concepts and scripts. {TURNAROUND.note}</>
-          : <>{SPRINT.turnaroundBusinessDays} días laborables para {SPRINT.name} y {SPRINT_PLUS.turnaroundBusinessDays} para {SPRINT_PLUS.name}, a partir de la aprobación de los conceptos y guiones, no desde el pago.</>}
+          : currentLocale() === 'ar'
+            ? <><bdi>{SPRINT.turnaroundBusinessDays}</bdi> أيام عمل لباقة <bdi>{SPRINT.name}</bdi> و<bdi>{SPRINT_PLUS.turnaroundBusinessDays}</bdi> يومًا لباقة <bdi>{SPRINT_PLUS.name}</bdi>، تُحسب من لحظة اعتمادك للأفكار والنصوص، وليس من تاريخ الدفع.</>
+          : editorial().turnaround({ name: SPRINT.name, days: SPRINT.turnaroundBusinessDays }, { name: SPRINT_PLUS.name, days: SPRINT_PLUS.turnaroundBusinessDays })}
       </p>
-      <p className="mx-auto mt-2 max-w-3xl text-center text-xs text-ink-muted">{tr('Scenes are illustrative. The portraits are for illustration only.')}</p>
+      {/* Arabic (owner, 2026-11-25): the repeated "scenes are illustrative" line is not shown. */}
+      {currentLocale() !== 'ar' && <p className="mx-auto mt-2 max-w-3xl text-center text-xs text-ink-muted">{tr('Scenes are illustrative. The portraits are for illustration only.')}</p>}
     </>
   )
 }
@@ -236,7 +239,7 @@ function UgcProcessFooter() {
 export function ProcessSection({ config: configProp, footer, children }) {
   const config = localizeConfig(configProp, currentLocale())
   // Spanish: a few stage titles differ per page although the English key is shared (src/i18n/es/labels.js).
-  const stageTitles = currentLocale() === 'es' ? ES_STAGE_TITLES[configProp.headingId] : null
+  const stageTitles = editorial()?.stageTitles?.[configProp.headingId] ?? null
   const STAGES = stageTitles ? config.stages.map((st) => (stageTitles[st.id] ? { ...st, title: stageTitles[st.id] } : st)) : config.stages
   const { visuals: VISUALS } = config
   const [active, setActive] = useState(0)

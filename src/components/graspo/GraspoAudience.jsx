@@ -1,6 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
 import { GRASPO_FOLLOWING } from '../../lib/siteStats.js'
 import { useTr } from '../../i18n/tr.js'
+import { mix } from '../../i18n/ar/mix.jsx'
+import { currentLocale } from '../../i18n/locale.js'
+import { localizeStat } from '../../i18n/format.js'
 import { GRASPO_IG_COUNTRIES as IG_COUNTRIES, GRASPO_FB_COUNTRIES as FB_COUNTRIES, GRASPO_DEMOGRAPHICS as DEMO } from '../../caseStudies/data.js'
 import { esGraspoFollowing } from '../../i18n/es/casestudies.js'
 import { stat, pct, isEnglish } from '../caseStudies/format.js'
@@ -31,6 +34,9 @@ function useInView(threshold = 0.15) {
 
 export default function GraspoAudience() {
   const tr = useTr()
+  const locale = currentLocale()
+  const ar = locale === 'ar'
+  const fol = (k) => localizeStat(locale, GRASPO_FOLLOWING[k])
   const en = isEnglish()
   const [ref, visible] = useInView()
   const maxPct = 25
@@ -46,7 +52,7 @@ export default function GraspoAudience() {
           <h2 className="font-display font-bold text-ink tracking-display leading-[1.05] text-3xl md:text-[44px]">
             {tr('Millions of views are useless')}
             <br />
-            {tr("if they're the wrong audience.")}
+            {mix(tr("if they're the wrong audience."))}
           </h2>
           <p className="mt-6 text-[15px] md:text-base text-ink-muted leading-relaxed">
             {tr("Graspo's content wasn't just watched at scale, it was watched in the exact markets where its print buyers, publishers and agencies actually operate. The same countries show up on both sides: in the analytics, and in the inbound leads.")}
@@ -77,7 +83,11 @@ export default function GraspoAudience() {
           />
         </div>
 
-        {en ? (
+        {ar ? (
+        <p className="mt-6 text-[13px] text-ink-subtle leading-relaxed max-w-2xl mx-auto text-center">
+          {tr('Working-age adults, overwhelmingly male, concentrated in the 25–44 range, the demographic most likely to hold purchasing or procurement decisions for a printing project, not a passive consumer audience. Both followings have kept growing since the report window, now')} {fol('facebook')} {tr('on Facebook,')} {fol('instagram')} {tr('on Instagram and')} {fol('tiktok')} {tr('on TikTok')} ({fol('combined')} {tr('combined')}).
+        </p>
+        ) : en ? (
           <p className="mt-6 text-[13px] text-ink-subtle leading-relaxed max-w-2xl mx-auto text-center">
             Working-age adults, overwhelmingly male, concentrated in the 25–44 range, the
             demographic most likely to hold purchasing or procurement decisions for a printing
@@ -104,7 +114,7 @@ function CountryPanel({ title, countries, visible, maxPct, delayBase = 0, color 
           <div key={c.name}>
             <div className="flex items-baseline justify-between mb-1.5">
               <span className="text-[13px] text-ink-muted">{tr(c.name)}</span>
-              <span className="text-[12px] font-semibold text-ink tabular-nums">{pct(c.pct)}</span>
+              <span className="text-[12px] font-semibold text-ink tabular-nums">{currentLocale() === 'ar' ? `${c.pct}%` : pct(c.pct)}</span>
             </div>
             <div className="h-2 w-full rounded-full bg-surface-3 overflow-hidden">
               <div

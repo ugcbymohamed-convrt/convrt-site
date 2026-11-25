@@ -43,12 +43,14 @@ const row2 = [
   { src: '/clients/graspo.png',   alt: 'Graspo',   height: 36 },
 ]
 
+const FOUNDER_BRANDS_LABEL = "Brands from the founder's professional experience" // English and Arabic only (the other languages do not render the logo group)
+
 export default function Credibility() {
   const tr = useTr()
   const locale = currentLocale()
   const action = primaryAction(locale)
   /* English (design review, Nov 2026): the statement flows straight into the industry showcase below it (no bottom rule, tighter bottom padding) and the two buttons now close the showcase. Other languages keep their layout. */
-  const en = locale === 'en' || locale === 'es' // English and Spanish share the homepage composition (the founder statement lives in the client-work stage)
+  const en = locale === 'en' || locale === 'es' || locale === 'fr' || locale === 'ar' // the languages that carry the redesigned homepage: logos only here, the founder statement lives with the client stage (components/home/IndustryShowcase.jsx)
   return (
     <section id="clients" className={en ? 'relative border-t border-hairline bg-canvas overflow-hidden' : 'relative border-y border-hairline bg-canvas overflow-hidden'}>
       {/*
@@ -119,7 +121,7 @@ export default function Credibility() {
               </div>
             </>
           )
-          return en ? <div role="group" aria-label={tr("Brands from the founder's professional experience")}>{rows}</div> : rows
+          return en ? <div role="group" aria-label={tr(FOUNDER_BRANDS_LABEL)}>{rows}</div> : rows
         })()}
 
         {/* Headline + CTA below. English: the founder statement now lives with the client-work stage (components/home/IndustryShowcase.jsx). */}
@@ -195,7 +197,9 @@ function LogoMarquee({ logos, direction = 'forward' }) {
   }, [logos.length])
 
   return (
-    <div className="relative overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)]">
+    /* dir="ltr": the strip is a row of logos, not text. Under direction: rtl a w-max flex track is anchored at the RIGHT edge of its clip box while the animation moves it left, which leaves the strip half empty
+       and makes the loop jump (Arabic revision, Nov 2026). The marquee therefore always runs left to right, exactly as the English one. */
+    <div {...(currentLocale() === 'ar' ? { dir: 'ltr' } : {})} className="relative overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)]">
       <div
         ref={trackRef}
         className={`flex w-max items-center gap-8 md:gap-16 lg:gap-20 ${trackClass}`}

@@ -45,4 +45,12 @@ export default {
   'Turn sound on': 'Activar el sonido',
   'Turn sound off': 'Silenciar el sonido',
   'Video': 'Vídeo',
+  "Logo of": "Logotipo de",
+  "Founder experience": "Experiencia del fundador",
+  "Worked with": "Han trabajado con",
+  "Videos of": "Vídeos de",
+  "Choose a side video to bring it to the front.": "Elige un vídeo lateral para traerlo al frente.",
+  "Client work by industry": "Trabajos por cliente y sector",
+  "Client case studies and service page": "Caso de estudio y página de servicio",
+  "Read full program terms": "Leer las condiciones completas del programa",
 }

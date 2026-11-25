@@ -9,7 +9,7 @@ entries and approved copy are unchanged. Spanish is a complete launch candidate.
 | English | unchanged (`/`, `/pricing`, …) | live |
 | Spanish | `/es/` and `/es/<same slug>` | live (flip to `'review'` to withdraw: noindex, no sitemap, no hreflang, no selector) |
 | French | `/fr/…` | prepared: no routes are built, so `/fr/…` is a real HTTP 404 |
-| Arabic | `/ar/…` (right-to-left) | prepared: same |
+| Arabic | `/ar/…` (right-to-left) | live on the `arabic-localization` branch (Preview): home, UGC page, pricing, Showcase, Roadmap, free video; see `docs/multilingual-arabic.md` |
 
 A page exists in a language **only** when it is listed in `src/i18n/registry.js` (`TRANSLATED_PATHS`). That one list builds the static HTML, the sitemap entry, the reciprocal
 hreflang and the selector link. Nothing else can route to a translation, so an unfinished page cannot leak.

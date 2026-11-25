@@ -10,12 +10,47 @@
    A video that is not listed keeps its current poster (the Roadmap explainer keeps its deliberately chosen 25.6 s frame). Inventory and contact sheet: docs/video-thumbnails.md. */
 
 export const POSTER_FRAMES = {
+  'a32cb282a9ef41333b79f86da02a46ad': 22.2, // portfolio:ar-mohamed-zory [ar]
+  '9e7fca5cfa5146f40a26d0e2d066ed14': 6.5, // portfolio:ar-mohamed-clothing [ar]
+  '1bb5e1f61c5c4efb56c378f568ca0f5b': 27.7, // portfolio:ar-mohamed-bag [ar]
+  'a256f8f429c8e2d26256e894af970dbf': 18.8, // portfolio:ar-oneroyal-1 [ar]
+  '871ea801a38e653cd48c036374966382': 5.8, // portfolio:ar-oneroyal-2 [ar]
+  '8bc61e80a5240cde3f16a90f63dbc4fa': 11.6, // portfolio:ar-oneroyal-3 [ar]
+  'afdb58ebb92354534b513dabca0d64f5': 8.0, // home-hero-ar:home-hero-ar-main [ar]: presenter smiling at the camera with open eyes, one Arabic caption word (every frame carries the burned-in «مدبلج إلى العربية» badge)
+  '442dfb5fe6a49dffd032ecd920414512': 13.0, // portfolio:ar-ugc-hero-1 [ar]
+  'e76683d744c46ecfe8e1fb53b273b926': 15.6, // portfolio:ar-ugc-hero-2 [ar]
+  '7f68e3f6c92e70395cad4876fcb389a8': 24.9, // portfolio:ar-ugc-hero-3 [ar]
+  '6d550ed3188d606de1b28dfd389c3abd': 33.2, // portfolio:ar-ugc-1 [ar]
+  'ad0e4e3babf8a7dc94a67df48d48399a': 30.4, // portfolio:ar-ugc-2 [ar]
+  '49313eccb88e9b95a4985d59777d8e41': 7.3, // portfolio:ar-ugc-3 [ar]
+  'a073ed5202bdd7c83de8312cefa3e419': 20.8, // portfolio:ar-ugc-4 [ar]
+  '10c436de7f9b0c5bfbdee723aff56659': 6.4, // portfolio:ar-ugc-5 [ar]
+  'fa580c253a9bb4d64b04c1226de96819': 39.6, // portfolio:ar-ugc-6 [ar]
+  '0241249ccf242630f097d03ac8cc11b9': 14.5, // portfolio:ar-ugc-7 [ar]
+  '002d9dab913f13496e6513e4a7761ec9': 10.3, // portfolio:ar-ugc-8 [ar]
+  '583c9f5132d0cfe0f2eb26ea1df73446': 6.4, // portfolio:ar-ugc-9 [ar]
+  '0cf5d2139e0769332c053ac71984ca14': 3.0, // portfolio:ar-ugc-10 [ar]
+  '7359123313ee51b95976e3ae6adc331e': 10.4, // portfolio:ar-ugc-11 [ar]
+  '60c9247e04b35d3dde12aa6c918aa1d6': 15.2, // portfolio:ar-ugc-12 [ar]
   '37d2799756ba9cc827b3381b034474ce': 2.5, // portfolio:es-showcase-elyon-1 (Spanish homepage stage, group Elyon Dubai): the "Spanish girls trying Elyon Dubai" title frame
   '8cc42ca3f0a33667eb14cf5e2449b4ad': 9.5, // portfolio:es-showcase-elyon-2
   'dc0a340190fc4cd310e24448dda4f170': 11.9, // portfolio:es-showcase-elyon-3
   '3bf715996728cd9e862d848878665f92': 15.9, // portfolio:es-showcase-mixed-1 (group E-commerce / UGC)
   '220122131040d62f1ce2d96ea9f98615': 12.6, // portfolio:es-showcase-mixed-2 (owner-picked frame: single white watch, 2026-11-24)
   'b4daf32122e679f3af1c6ccc07eec8a7': 7.6, // portfolio:es-showcase-mixed-3 (owner-picked frame: bending stretch, 2026-11-24)
+  'c1dd083d5550608a139f656670bd77a5': 17.6, // portfolio:fr-ugc-hero-1 [fr]
+  '0346ed0881533220ba77bc4b3d4c26f9': 22.6, // portfolio:fr-ugc-hero-2 [fr]
+  '5b1058e9c68ab7b05bd24858ceaadb9c': 2.1, // portfolio:fr-ugc-hero-3 [fr]
+  '7c681c012def2539e7c32c99889d8662': 18.6, // portfolio:fr-ugc-1 [fr]
+  'a273a9e766e0baf7eed8a6ad72c8892b': 6.3, // portfolio:fr-ugc-2 [fr]
+  'ce7f495642b90a531e44f17b8e7454c5': 0.4, // home-hero-fr:home-hero-fr-main (French-dubbed CONVRT ad with dubbed on-screen text, FRENCH-with-Dubbed-Text.mp4; clear face, open eyes, coffee cup, the comment bubble, no caption word mid-frame)
+  '8797ae3fba20c95e9d9d10eefda840c9': 3.4, // portfolio:fr-mohamed-comma [fr]
+  'a4a52503d855717880ed6dcbaca724b5': 1.9, // portfolio:fr-mohamed-route-facile [fr]
+  '5639f5ff6b02b7501b946aef4466ad4c': 19.6, // portfolio:fr-mohamed-skycop [fr]
+  'e4e8c66b5d6fef3d15ddf31ebcd17550': 22.1, // portfolio:fr-mohamed-tripmap [fr]
+  '9eedb31ea2296e96882de394b0a7e3a7': 3.0, // portfolio:fr-showcase-fixd-1 (French client stage, landscape)
+  '490a0502253d32c4b22085077b396437': 3.0, // portfolio:fr-showcase-fixd-2 (French client stage, landscape)
+  '39e4049b9e5993f5143037b2ebbc9bb5': 20.0, // portfolio:fr-showcase-fixd-3 (French client stage, landscape; the FIXD device in hand)
   '6c04c13dbb9ff7042f30e028b7394fe6': 4.5, // portfolio:es-ugc-hero-1 [es]
   '816d316906f79fe216d6f62079a0047f': 23.8, // portfolio:es-ugc-hero-2 [es]
   '75e7a204d0d4d2c75fe1ad19f0348461': 3.9, // portfolio:es-ugc-hero-3 [es]

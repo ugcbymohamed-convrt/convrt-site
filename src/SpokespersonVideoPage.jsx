@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react'
+import { currentLocale } from './i18n/locale.js'
 import SectionDivider from './components/SectionDivider.jsx'
 import UgcHero from './components/ugc/UgcHero.jsx'
 import UgcGallery from './components/ugc/UgcGallery.jsx'
@@ -13,12 +14,12 @@ import { useDocumentHead } from './lib/useDocumentHead.js'
 import { pageHead } from './seo/siteSeo.js'
 import { PATHS } from './routes.js'
 import { SPOKESPERSON_FAQ } from './seo/spokespersonFaq.js'
-import { selectSpokespersonHero, selectSpokespersonGallery, forPageLanguage, orderedBy } from './content/portfolio.js'
+import { selectSpokespersonHero, selectSpokespersonGallery, orderedBy } from './content/portfolio.js'
 import {
   SPOKESPERSON_HERO, SPOKESPERSON_STAGES, SPOKESPERSON_PROCESS, SPOKESPERSON_GALLERY, SPOKESPERSON_CTA, SPOKESPERSON_PATH_LABEL, SPOKESPERSON_VIDEO_ORDER,
 } from './content/spokespersonPage.js'
-import { currentLocale } from './i18n/locale.js'
 import { tr, T, hrefFor } from './i18n/tr.js'
+import { serviceVideos } from './i18n/serviceVideos.js'
 
 /* /spokesperson-video-production: the Spokesperson service page. It reuses the UGC page's architecture and design system, and each section is
    the same configuration-driven component fed with spokesperson content (src/content/spokespersonPage.js):
@@ -42,7 +43,8 @@ function ProcessFooter() {
         {tr('Timelines and deliverables depend on your package or custom brief. See')}{' '}
         <a href={hrefFor('/pricing#packages')} className="font-medium text-ink underline decoration-lime/60 underline-offset-4 transition-colors hover:text-lime">{tr('pricing and terms')}</a>.
       </p>
-      <p className="mx-auto mt-2 max-w-3xl text-center text-xs text-ink-muted">{tr('Scenes are illustrative. The portraits are for illustration only.')}</p>
+      {/* Arabic (owner, 2026-11-25): the repeated "scenes are illustrative" line is not shown. */}
+      {currentLocale() !== 'ar' && <p className="mx-auto mt-2 max-w-3xl text-center text-xs text-ink-muted">{tr('Scenes are illustrative. The portraits are for illustration only.')}</p>}
     </>
   )
 }
@@ -58,8 +60,8 @@ export default function SpokespersonVideoPage() {
     trackEvent('spokesperson_page_view')
   }, [])
 
-  const heroItems = orderedBy(forPageLanguage(selectSpokespersonHero()), SPOKESPERSON_VIDEO_ORDER.hero)
-  const galleryItems = orderedBy(forPageLanguage(selectSpokespersonGallery()), SPOKESPERSON_VIDEO_ORDER.gallery)
+  const heroItems = orderedBy(serviceVideos(selectSpokespersonHero()), SPOKESPERSON_VIDEO_ORDER.hero)
+  const galleryItems = orderedBy(serviceVideos(selectSpokespersonGallery()), SPOKESPERSON_VIDEO_ORDER.gallery)
 
   return (
     <>

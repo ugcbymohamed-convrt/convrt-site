@@ -1,3 +1,6 @@
+import { stepOfArrow, stepOfSwipe, isRtlPage } from '../../lib/rtl.js'
+import { currentLocale } from '../../i18n/locale.js'
+import ViewsBadge from './ViewsBadge.jsx'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { attachHls } from '../../lib/hls.js'
 import { posterUrl, hlsUrl, languageLabel, industryLabel, captionOf } from '../../content/portfolio.js'
@@ -88,8 +91,8 @@ function useParallax(ref, enabled) {
 const PREVIEW_PORTRAITS = ['/creators/portrait-1.webp', '/creators/portrait-4.webp', '/creators/portrait-3.webp']
 const DRIFT = { transform: 'translate3d(var(--mx,0px), var(--my,0px), 0)', transition: 'transform 500ms cubic-bezier(0.22,1,0.36,1)' }
 
-const ChevronLeft = () => <svg viewBox="0 0 12 12" className="h-4 w-4" fill="none" aria-hidden="true"><path d="M8 2L4 6l4 4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
-const ChevronRight = () => <svg viewBox="0 0 12 12" className="h-4 w-4" fill="none" aria-hidden="true"><path d="M4 2l4 4-4 4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
+const ChevronLeft = () => <svg viewBox="0 0 12 12" className="h-4 w-4" fill="none" aria-hidden="true"><path d={isRtlPage() ? 'M4 2l4 4-4 4' : 'M8 2L4 6l4 4'} stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
+const ChevronRight = () => <svg viewBox="0 0 12 12" className="h-4 w-4" fill="none" aria-hidden="true"><path d={isRtlPage() ? 'M8 2L4 6l4 4' : 'M4 2l4 4-4 4'} stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
 
 /* ── Fallback (no approved videos yet): the same three frames, empty, but alive. They are built like short-form video screens (profile
    line, caption lines, side buttons as quiet outlines), the stage rotates by itself every few seconds so the switching is obvious,
@@ -124,7 +127,7 @@ export function PhoneShowcaseFallback({ portraits = false }) {
           if (startX.current == null) return
           const dx = e.clientX - startX.current
           startX.current = null
-          if (Math.abs(dx) > 45) pick(active + (dx < 0 ? 1 : -1))
+          if (Math.abs(dx) > 45) pick(active + stepOfSwipe(dx))
         }}
         className="relative mx-auto flex w-full touch-pan-y select-none justify-center py-5 [perspective:1400px]"
       >
@@ -132,7 +135,7 @@ export function PhoneShowcaseFallback({ portraits = false }) {
           <Lighting accent={tones[active]} />
           {tones.map((tone, i) => {
             const rel = (i - active + 3) % 3
-            const slot = rel === 0 ? 'center' : rel === 1 ? 'right' : 'left'
+            const slot = rel === 0 ? 'center' : (rel === 1) !== isRtlPage() ? 'right' : 'left' // the next phone sits on the reading-direction side
             const isActive = rel === 0
             return (
               <div
@@ -324,6 +327,7 @@ function StagePhone({ item, slot, n, index, active, load, wantPlay, muted, playi
           aria-hidden="true"
           className="absolute inset-0 h-full w-full object-cover"
         />
+        <ViewsBadge item={item} className="absolute inset-x-0 top-9 z-10 mx-auto w-fit md:top-11" />
         {/* the inactive phones are dimmed with an overlay (cheaper to animate than a filter) */}
         <div aria-hidden="true" className={`pointer-events-none absolute inset-0 bg-black transition-opacity motion-reduce:transition-none ${active ? 'opacity-0' : 'opacity-40'}`} style={{ transitionDuration: `${MS}ms` }} />
 
@@ -414,18 +418,18 @@ export default function CreatorVideoStage({ items, label = 'Creator UGC videos',
   const wantPlay = inView && tabVisible && (userIntent ?? autoplay)
   const item = shown[active]
   const onKeyDown = (e) => {
-    if (e.key === 'ArrowRight') { e.preventDefault(); select(active + 1, 'key') }
-    if (e.key === 'ArrowLeft') { e.preventDefault(); select(active - 1, 'key') }
+    const step = stepOfArrow(e.key)
+    if (step) { e.preventDefault(); select(active + step, 'key') }
   }
   const onPointerDown = (e) => { startX.current = e.clientX }
   const onPointerUp = (e) => {
     if (startX.current == null) return
     const dx = e.clientX - startX.current
     startX.current = null
-    if (Math.abs(dx) > 45) select(active + (dx < 0 ? 1 : -1), 'swipe')
+    if (Math.abs(dx) > 45) select(active + stepOfSwipe(dx), 'swipe')
   }
   const togglePlay = () => { const next = !playing; setUserIntent(next); setNudge(false); trackEvent(`${trackPrefix}_hero_video_play`, { state: next ? 'play' : 'pause' }) }
-  const meta = [industryLabel(item.industry), (item.languages ?? []).map(languageLabel).join(' · ')].filter(Boolean).join(' · ')
+  const meta = [industryLabel(item.industry), currentLocale() === 'ar' ? '' : (item.languages ?? []).map(languageLabel).join(' · ')].filter(Boolean).join(' · ')
 
   return (
     <div role="group" aria-roledescription="carousel" aria-label={label} className="mx-auto w-full">
@@ -473,7 +477,7 @@ export default function CreatorVideoStage({ items, label = 'Creator UGC videos',
       {n > 1 && (
         <div className="mt-1 flex items-center justify-center gap-3">
           <button type="button" onClick={() => select(active - 1, 'button')} aria-label={tr('Previous video')} className="flex h-11 w-11 items-center justify-center rounded-full border border-hairline-strong bg-surface-2 text-ink transition-colors hover:border-ink-subtle focus-visible:outline focus-visible:outline-2 focus-visible:outline-lime">
-            <svg viewBox="0 0 12 12" className="h-4 w-4" fill="none" aria-hidden="true"><path d="M8 2L4 6l4 4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
+            <svg viewBox="0 0 12 12" className="h-4 w-4" fill="none" aria-hidden="true"><path d={isRtlPage() ? 'M4 2l4 4-4 4' : 'M8 2L4 6l4 4'} stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
           </button>
           <ol className="flex items-center">
             {shown.map((it, i) => (
@@ -485,7 +489,7 @@ export default function CreatorVideoStage({ items, label = 'Creator UGC videos',
             ))}
           </ol>
           <button type="button" onClick={() => select(active + 1, 'button')} aria-label={tr('Next video')} className="flex h-11 w-11 items-center justify-center rounded-full border border-hairline-strong bg-surface-2 text-ink transition-colors hover:border-ink-subtle focus-visible:outline focus-visible:outline-2 focus-visible:outline-lime">
-            <svg viewBox="0 0 12 12" className="h-4 w-4" fill="none" aria-hidden="true"><path d="M4 2l4 4-4 4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
+            <svg viewBox="0 0 12 12" className="h-4 w-4" fill="none" aria-hidden="true"><path d={isRtlPage() ? 'M8 2L4 6l4 4' : 'M4 2l4 4-4 4'} stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
           </button>
         </div>
       )}

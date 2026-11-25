@@ -1,3 +1,4 @@
+import { isRtlPage } from '../../lib/rtl.js'
 /* Icons for the Creator Showcase: one per category tab, plus the player and gallery controls. Inline SVG (no icon library), 20px grid, currentColor. */
 
 const base = { viewBox: '0 0 20 20', fill: 'none', stroke: 'currentColor', strokeWidth: 1.6, strokeLinecap: 'round', strokeLinejoin: 'round', 'aria-hidden': true }
@@ -33,9 +34,12 @@ export const CATEGORY_ICONS = {
   ),
 }
 
-export const Chevron = ({ dir = 1, className = 'h-4 w-4' }) => (
+export const Chevron = ({ dir: dirProp = 1, className = 'h-4 w-4' }) => {
+  const dir = isRtlPage() ? -dirProp : dirProp // the chevron points the way the button moves on screen
+  return (
   <svg viewBox="0 0 12 12" className={className} fill="none" aria-hidden="true"><path d={dir < 0 ? 'M8 2L4 6l4 4' : 'M4 2l4 4-4 4'} stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
-)
+  )
+}
 
 export const CloseGlyph = ({ className = 'h-4 w-4' }) => (
   <svg viewBox="0 0 16 16" className={className} fill="none" aria-hidden="true"><path d="M3.5 3.5l9 9M12.5 3.5l-9 9" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" /></svg>

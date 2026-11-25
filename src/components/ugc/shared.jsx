@@ -1,7 +1,8 @@
+import { forward } from '../../lib/rtl.js'
 import { trackEvent, withUtm } from '../../lib/analytics.js'
 import { usePressFeedback } from '../../lib/usePressFeedback.js'
 import { OFFER_PATHS } from '../../config.js'
-import { tr, hrefFor } from '../../i18n/tr.js'
+import { tr, hrefFor, ctaText } from '../../i18n/tr.js'
 import { currentLocale } from '../../i18n/locale.js'
 import { resolveCta } from '../../i18n/cta.js'
 import { Reveal, Eyebrow } from '../roadmap/shared.jsx'
@@ -70,7 +71,7 @@ export function RoadmapCta({ location, className = '', hero = false, children = 
   const href = hrefFor(resolved.href, locale)
   const external = resolved.external
   // A redirected CTA gets the booking label; the default label is translated here; a label a caller already localized (page config) is shown as given.
-  const label = resolved.redirected || resolved.label === 'Get 5 Free Ad Concepts' ? tr(resolved.label) : resolved.label
+  const label = resolved.redirected ? tr(resolved.label) : resolved.label === 'Get 5 Free Ad Concepts' ? ctaText(resolved.label) : resolved.label
   return (
     <a
       href={href}
@@ -83,7 +84,7 @@ export function RoadmapCta({ location, className = '', hero = false, children = 
       className={`${hero ? 'hero-cta ' : ''}cta-gradient group inline-flex min-h-[52px] items-center justify-center gap-2 rounded-full px-7 py-3.5 text-[15px] font-semibold text-canvas focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-lime ${className}`}
     >
       {label}
-      <span aria-hidden="true" className="transition-transform duration-200 group-hover:translate-x-0.5 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0">→</span>
+      <span aria-hidden="true" className="transition-transform duration-200 group-hover:translate-x-0.5 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0">{forward()}</span>
     </a>
   )
 }

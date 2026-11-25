@@ -580,16 +580,6 @@ body {
   .ow-fade { animation: none; }
 }
 
-/* ── Right-to-left and Arabic readiness (no effect on LTR pages: every rule is scoped to dir="rtl" / lang="ar") ──────────────────────────────────────────────
-   French and Arabic are prepared, not published (src/i18n/locales.js). When Arabic goes live its pages carry <html lang="ar" dir="rtl">. Layout mirrors through
-   Tailwind's rtl: variant and logical utilities (start/end, ms/me, ps/pe). Arabic text needs an Arabic-capable font stack, no negative letter-spacing (it breaks
-   the joining of Arabic letters) and a slightly looser line-height. Latin brand names and numerals inside Arabic text stay LTR via dir="auto"/<bdi> where needed.
-   TODO before Arabic launch: self-host an Arabic web font (for example Noto Sans Arabic, subsetted) as Inter is for Latin; the stack below uses system fonts only. */
-:lang(ar) body, :lang(ar) { font-family: 'Noto Sans Arabic', 'Segoe UI', 'Geeza Pro', 'Tahoma', ui-sans-serif, system-ui, sans-serif; }
-:lang(ar) * { letter-spacing: normal !important; }
-:lang(ar) h1, :lang(ar) h2, :lang(ar) h3 { line-height: 1.25; }
-html[dir='rtl'] { direction: rtl; }
-
 /* ── English homepage (design review, Nov 2026): industry-showcase panel swap and review cards ──
    A short fade-and-rise when an industry's panel appears (a `hidden` panel replays it on reveal). Off for prefers-reduced-motion. */
 @keyframes sc-panel-in {
@@ -603,3 +593,98 @@ html[dir='rtl'] { direction: rtl; }
   .sc-panel-in { animation: none; }
 }
 
+
+
+/* ── Right-to-left and Arabic (the Arabic site, /ar/; docs/multilingual-arabic.md) ──────────────────────────────────────────────────────────────────────────────
+   Every rule below is scoped to :lang(ar) / dir="rtl", so English and Spanish pages are untouched (tests/arabic.test.mjs).
+   • Layout: <html lang="ar" dir="rtl"> is written into the static HTML. The physical left/right utilities of the shared components are mirrored at build time by scripts/postcss-rtl-flip.js
+     (a [dir="rtl"] copy of every left/right rule, appended to the generated CSS); Tailwind's rtl: variant and logical utilities (start/end, ms/me, ps/pe) are available for hand-made cases.
+   • Type: IBM Plex Sans Arabic (SIL Open Font License, self-hosted, Arabic subset only, four weights, font-display: swap). The font files load only when a page contains Arabic characters
+     (unicode-range). Latin text, digits and prices keep Inter, so brand names and USD amounts look the same on every language; Arabic glyphs fall through to Plex Arabic.
+   • Arabic never gets letter-spacing (it breaks letter joining) and needs a slightly taller line-height. */
+@font-face {
+  font-family: 'IBM Plex Sans Arabic';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/fonts/ibm-plex-sans-arabic-400.woff2) format('woff2');
+  unicode-range: U+0600-06FF, U+0750-077F, U+0870-0891, U+0897-08E1, U+08E3-08FF, U+200C-200E, U+2010-2011, U+204F, U+2E41, U+FB50-FDFF, U+FE70-FE74, U+FE76-FEFC, U+102E0-102FB, U+10E60-10E7E, U+10EC2-10EC7, U+10EC9-10EEE, U+10EF0-10EFF, U+1EE00-1EE03, U+1EE05-1EE1F, U+1EE21-1EE22, U+1EE24, U+1EE27, U+1EE29-1EE32, U+1EE34-1EE37, U+1EE39, U+1EE3B, U+1EE42, U+1EE47, U+1EE49, U+1EE4B, U+1EE4D-1EE4F, U+1EE51-1EE52, U+1EE54, U+1EE57, U+1EE59, U+1EE5B, U+1EE5D, U+1EE5F, U+1EE61-1EE62, U+1EE64, U+1EE67-1EE6A, U+1EE6C-1EE72, U+1EE74-1EE77, U+1EE79-1EE7C, U+1EE7E, U+1EE80-1EE89, U+1EE8B-1EE9B, U+1EEA1-1EEA3, U+1EEA5-1EEA9, U+1EEAB-1EEBB, U+1EEF0-1EEF1;
+}
+@font-face {
+  font-family: 'IBM Plex Sans Arabic';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url(/fonts/ibm-plex-sans-arabic-500.woff2) format('woff2');
+  unicode-range: U+0600-06FF, U+0750-077F, U+0870-0891, U+0897-08E1, U+08E3-08FF, U+200C-200E, U+2010-2011, U+204F, U+2E41, U+FB50-FDFF, U+FE70-FE74, U+FE76-FEFC, U+102E0-102FB, U+10E60-10E7E, U+10EC2-10EC7, U+10EC9-10EEE, U+10EF0-10EFF, U+1EE00-1EE03, U+1EE05-1EE1F, U+1EE21-1EE22, U+1EE24, U+1EE27, U+1EE29-1EE32, U+1EE34-1EE37, U+1EE39, U+1EE3B, U+1EE42, U+1EE47, U+1EE49, U+1EE4B, U+1EE4D-1EE4F, U+1EE51-1EE52, U+1EE54, U+1EE57, U+1EE59, U+1EE5B, U+1EE5D, U+1EE5F, U+1EE61-1EE62, U+1EE64, U+1EE67-1EE6A, U+1EE6C-1EE72, U+1EE74-1EE77, U+1EE79-1EE7C, U+1EE7E, U+1EE80-1EE89, U+1EE8B-1EE9B, U+1EEA1-1EEA3, U+1EEA5-1EEA9, U+1EEAB-1EEBB, U+1EEF0-1EEF1;
+}
+@font-face {
+  font-family: 'IBM Plex Sans Arabic';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url(/fonts/ibm-plex-sans-arabic-600.woff2) format('woff2');
+  unicode-range: U+0600-06FF, U+0750-077F, U+0870-0891, U+0897-08E1, U+08E3-08FF, U+200C-200E, U+2010-2011, U+204F, U+2E41, U+FB50-FDFF, U+FE70-FE74, U+FE76-FEFC, U+102E0-102FB, U+10E60-10E7E, U+10EC2-10EC7, U+10EC9-10EEE, U+10EF0-10EFF, U+1EE00-1EE03, U+1EE05-1EE1F, U+1EE21-1EE22, U+1EE24, U+1EE27, U+1EE29-1EE32, U+1EE34-1EE37, U+1EE39, U+1EE3B, U+1EE42, U+1EE47, U+1EE49, U+1EE4B, U+1EE4D-1EE4F, U+1EE51-1EE52, U+1EE54, U+1EE57, U+1EE59, U+1EE5B, U+1EE5D, U+1EE5F, U+1EE61-1EE62, U+1EE64, U+1EE67-1EE6A, U+1EE6C-1EE72, U+1EE74-1EE77, U+1EE79-1EE7C, U+1EE7E, U+1EE80-1EE89, U+1EE8B-1EE9B, U+1EEA1-1EEA3, U+1EEA5-1EEA9, U+1EEAB-1EEBB, U+1EEF0-1EEF1;
+}
+@font-face {
+  font-family: 'IBM Plex Sans Arabic';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url(/fonts/ibm-plex-sans-arabic-700.woff2) format('woff2');
+  unicode-range: U+0600-06FF, U+0750-077F, U+0870-0891, U+0897-08E1, U+08E3-08FF, U+200C-200E, U+2010-2011, U+204F, U+2E41, U+FB50-FDFF, U+FE70-FE74, U+FE76-FEFC, U+102E0-102FB, U+10E60-10E7E, U+10EC2-10EC7, U+10EC9-10EEE, U+10EF0-10EFF, U+1EE00-1EE03, U+1EE05-1EE1F, U+1EE21-1EE22, U+1EE24, U+1EE27, U+1EE29-1EE32, U+1EE34-1EE37, U+1EE39, U+1EE3B, U+1EE42, U+1EE47, U+1EE49, U+1EE4B, U+1EE4D-1EE4F, U+1EE51-1EE52, U+1EE54, U+1EE57, U+1EE59, U+1EE5B, U+1EE5D, U+1EE5F, U+1EE61-1EE62, U+1EE64, U+1EE67-1EE6A, U+1EE6C-1EE72, U+1EE74-1EE77, U+1EE79-1EE7C, U+1EE7E, U+1EE80-1EE89, U+1EE8B-1EE9B, U+1EEA1-1EEA3, U+1EEA5-1EEA9, U+1EEAB-1EEBB, U+1EEF0-1EEF1;
+}
+
+:root { --font-ar: 'Inter', 'IBM Plex Sans Arabic', 'Noto Sans Arabic', 'Segoe UI', 'Geeza Pro', 'Tahoma', ui-sans-serif, system-ui, sans-serif; }
+:lang(ar) body, :lang(ar) { font-family: var(--font-ar); }
+html:lang(ar) .font-display, html:lang(ar) .font-sans, html:lang(ar) button, html:lang(ar) input, html:lang(ar) select, html:lang(ar) textarea { font-family: var(--font-ar); }
+:lang(ar) * { letter-spacing: normal !important; }
+:lang(ar) h1, :lang(ar) h2, :lang(ar) h3 { line-height: 1.28; }
+:lang(ar) p, :lang(ar) li { line-height: 1.85; }
+:lang(ar) h1 { line-height: 1.3; }
+html[dir='rtl'] { direction: rtl; }
+/* Latin runs (brand names, e-mail addresses, URLs, phone numbers, amounts) keep left-to-right order inside Arabic text. Components mark them with <bdi> or dir="ltr"; inputs below default to LTR. */
+:lang(ar) input[type='email'], :lang(ar) input[type='url'], :lang(ar) input[type='tel'], :lang(ar) input[type='number'], :lang(ar) input[autocomplete='url'], :lang(ar) input[name='website'] { direction: ltr; text-align: right; }
+:lang(ar) input[type='email']::placeholder, :lang(ar) input[type='url']::placeholder, :lang(ar) input[type='tel']::placeholder, :lang(ar) input[autocomplete='url']::placeholder { text-align: right; }
+
+/* Arabic: the small "nudge" of an arrow on hover goes the other way (the arrow glyphs themselves are mirrored in the components, see forward() in src/lib/rtl.js). */
+:lang(ar) .group:hover .group-hover\:translate-x-0\.5 { --tw-translate-x: -0.125rem; }
+/* English-language content kept verbatim inside the Arabic site (client quotes, client-reported messages) reads left to right. */
+:lang(ar) [lang='en'][dir='ltr'] { text-align: left; }
+/* SVG illustrations (the Roadmap card, the testing diagram, the process scenes) place text with `x` and the default start anchor, designed left to right. Under direction: rtl the browser anchors "start"
+   at the RIGHT end, which shifts every label. These rules restore the designed positions: a left-anchored label stays at its x (anchor end = its left edge in RTL), a right-anchored label (text-anchor="end")
+   uses start, centred labels are unchanged. Scoped to Arabic pages. */
+:lang(ar) svg text { text-anchor: end; }
+:lang(ar) svg text[text-anchor='end'] { text-anchor: start; }
+:lang(ar) svg text[text-anchor='middle'] { text-anchor: middle; }
+
+/* ── Arabic revision (owner brief 2026-11-23) ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── */
+/* NAVIGATION CONTRAST. The Arabic labels set in the regular weight of the Arabic face read dimmer than the English ones at the same grey; the top bar and the mobile menu use the near-white of the English
+   headings instead (same size, same weight scale, no bold), and the hover/focus colour is the brand lime. The dropdown, language selector and CTA are unchanged. */
+:lang(ar) header nav a, :lang(ar) header nav a[aria-haspopup] { color: #e9e9ec; }
+:lang(ar) header nav a:hover, :lang(ar) header nav a:focus-visible, :lang(ar) header nav .group:hover > a, :lang(ar) header nav .group:focus-within > a { color: #d5ff40; }
+:lang(ar) header nav ul a { color: #d4d4d8; }
+:lang(ar) header nav ul a:hover, :lang(ar) header nav ul a:focus-visible { color: #fff; }
+:lang(ar) header .lg\:hidden.border-t a, :lang(ar) header .lg\:hidden.border-t a:not(.nav-cta) { color: #e9e9ec; }
+:lang(ar) header .lg\:hidden.border-t a:not(.nav-cta):hover { color: #d5ff40; }
+/* ROTATING HEADLINE WORD. The word sits in an inline-block that clips its animation with overflow:hidden; for such a box the browser takes the BOTTOM EDGE as its baseline, which lifts the word above the
+   rest of the line (more visibly in the Arabic face, whose line box is taller). clip-path clips the same area without touching the baseline, so the box keeps the baseline of its own text and the word
+   shares the baseline of the words around it, at every width and for every word. */
+:lang(ar) h1 .inline-block.overflow-hidden { overflow: visible; clip-path: inset(-0.55em -0.4em 0 -0.4em); }
+/* CLIENT REVIEWS: the English section sets its quotes in a serif; the Arabic quote uses the site's Arabic face, a little smaller and with the open line height Arabic needs. */
+html:lang(ar) blockquote.font-editorial { font-family: var(--font-ar); font-weight: 500; line-height: 1.5; font-size: clamp(1.5rem, 1.1rem + 2.1vw, 3rem); text-wrap: balance; }
+/* The rolling word of the service-page headlines (.ugc-reel) is a fixed-height box aligned with vertical-align: bottom and a line-height of 1.14, while the Arabic headline's lines use 1.3: the word then sat
+   higher or lower than its neighbours depending on the face's metrics. In Arabic the box takes the headline's own line height, keeps its baseline (overflow is clipped with clip-path, which leaves the
+   baseline alone) and aligns on it, so every word of the roll shares the baseline of the line. */
+/* Arabic words carry dots and marks above and below the line (المشاهدة, تؤثّر): a 1.3em cell clipped them. The cell is now 1.7em tall with the text centred in it, and the box's extra height is taken back with
+   negative vertical margins, so the headline's own line box (and the word's baseline) are exactly as before. The clip window is still one cell, so a neighbouring word never shows. Horizontally the clip window is open (-2em): words sit on one line, so only the slot WIDTH (set by the longest word) used to cut a wider word at the end. */
+:lang(ar) .ugc-reel { overflow: visible; clip-path: inset(0 -2em); vertical-align: baseline; line-height: 1.7; height: 1.7em; margin-block: -0.2em; }
+:lang(ar) .ugc-reel::before { height: 1.7em; line-height: 1.7; }
+:lang(ar) .ugc-reel-track > span { height: 1.7em; line-height: 1.7; }
+/* The small eyebrow lines (letter-spaced capitals in English) have no case or tracking in Arabic, so at the same pixel size they read smaller than their English twins: a little larger. */
+:lang(ar) #showcase .uppercase { font-size: 13px; }
+
+/* Services header (Arabic): the supporting sentence is one flowing line under the heading, so the English desktop line break between its two halves is dropped. */
+:lang(ar) #services > div > div > div > p br { display: none; }
+/* Graspo case study (Arabic): the long English hero figure line may wrap instead of overflowing (Arabic is wider). */
+:lang(ar) h1.md\:whitespace-nowrap { white-space: normal; }

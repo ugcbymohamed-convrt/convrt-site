@@ -1,7 +1,7 @@
 import { useEffect, useId, useState } from 'react'
 import { Reveal } from '../roadmap/shared.jsx'
 import { TERMS_OPEN_EVENT } from './shared.jsx'
-import { tr } from '../../i18n/tr.js'
+import { useTr } from '../../i18n/tr.js'
 
 /* ─────────────────────────────────────────────
    PROGRAM TERMS — a compact summary, with the FULL terms one click away in an accordion
@@ -34,6 +34,7 @@ export const TERMS = [
 ]
 
 export default function ReferralTerms() {
+  const tr = useTr()
   const [open, setOpen] = useState(false)
   const uid = useId()
   const buttonId = `${uid}-btn`

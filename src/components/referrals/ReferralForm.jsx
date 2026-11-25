@@ -16,8 +16,9 @@ import { Reveal, Check } from '../roadmap/shared.jsx'
 import { TermsLink } from './shared.jsx'
 import { CheckboxField, ErrorText, RadioGroup, TextField } from '../forms/fields.jsx'
 import MarketingConsent from '../forms/MarketingConsent.jsx'
-import { tr, hrefFor } from '../../i18n/tr.js'
+import { useTr, tr as trNow, hrefFor } from '../../i18n/tr.js'
 import { currentLocale } from '../../i18n/locale.js'
+import { forward } from '../../lib/rtl.js'
 
 /* ─────────────────────────────────────────────
    REGISTRATION FORM — joins the program. Short on purpose: name, email and partner type are
@@ -48,9 +49,11 @@ const SUBMIT_ERROR_COPY = {
   network: 'We couldn’t reach the server. Check your connection and try again.',
   unavailable: 'Something went wrong on our side. Please try again in a moment, or email {email}.',
 }
-const copyFor = (kind) => tr(SUBMIT_ERROR_COPY[kind]).replace('{email}', CONTACT_EMAIL)
+const copyFor = (kind) => trNow(SUBMIT_ERROR_COPY[kind]).replace('{email}', CONTACT_EMAIL)
 
 export default function ReferralForm({ preselect }) {
+  const tr = useTr()
+  const locale = currentLocale()
   const [values, setValues] = useState(EMPTY_REFERRAL)
   const [errors, setErrors] = useState({})
   const [honeypot, setHoneypot] = useState('')
@@ -237,7 +240,8 @@ export default function ReferralForm({ preselect }) {
                         <span className="text-lime" aria-hidden="true"> *</span>
                       </CheckboxField>
 
-                      {currentLocale() === 'en' && <MarketingConsent checked={marketingConsent} disabled={submitting} onChange={setMarketingConsent} className="" />}
+                      {/* The optional marketing checkbox is shown in English only (its wording is a versioned legal text with no approved Arabic version); Arabic submits false. */}
+                      {locale === 'en' && <MarketingConsent checked={marketingConsent} disabled={submitting} onChange={setMarketingConsent} className="" />}
 
                       {submitError && (
                         <div role="alert"><ErrorText>{copyFor(submitError)}</ErrorText></div>
@@ -257,7 +261,7 @@ export default function ReferralForm({ preselect }) {
                               {tr('Submitting…')}
                             </>
                           ) : (
-                            <>{tr('Join the Referral Program')} <span aria-hidden="true">→</span></>
+                            <>{tr('Join the Referral Program')} <span aria-hidden="true">{forward()}</span></>
                           )}
                         </button>
                         <p className="mt-3 text-center text-sm text-ink-muted" role="status">
@@ -286,6 +290,7 @@ export default function ReferralForm({ preselect }) {
 }
 
 function NextSteps() {
+  const tr = useTr()
   return (
     <ol className="mt-4 space-y-3.5" aria-label={tr('What happens next')}>
       {NEXT_STEPS.map((t, i) => (
@@ -301,6 +306,7 @@ function NextSteps() {
 /* Shown only after the server has saved the application. No booking link, no approval,
    no promise of payment and no review turnaround time. */
 function Received({ headingRef }) {
+  const tr = useTr()
   return (
     <div className="cs-fade-up px-1 py-4 text-center sm:py-8" role="status">
       <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full border border-lime/40 bg-lime/10 text-lime">

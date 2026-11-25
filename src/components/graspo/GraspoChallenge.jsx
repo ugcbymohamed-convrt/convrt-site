@@ -1,4 +1,5 @@
 import { useTr } from '../../i18n/tr.js'
+import { mix } from '../../i18n/ar/mix.jsx'
 
 const POINTS = [
   {
@@ -19,6 +20,7 @@ const POINTS = [
   },
 ]
 
+
 export default function GraspoChallenge() {
   const tr = useTr()
   return (
@@ -30,7 +32,7 @@ export default function GraspoChallenge() {
             <span className="text-xs font-medium uppercase tracking-[0.18em] text-ink-muted">{tr('The Challenge')}</span>
           </div>
           <h2 className="font-display font-bold text-ink tracking-display leading-[1.05] text-3xl md:text-[44px]">
-            {tr('"Post more on Instagram" was never going to be the strategy.')}
+            {mix(tr('"Post more on Instagram" was never going to be the strategy.'))}
           </h2>
           <p className="mt-6 text-[15px] md:text-base text-ink-muted leading-relaxed">
             {tr('Real relevance in new markets, translated into serious commercial interest, not just likes.')}

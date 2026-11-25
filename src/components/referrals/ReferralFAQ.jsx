@@ -1,6 +1,6 @@
 import { useId, useState } from 'react'
 import { Reveal, SectionHeader } from '../roadmap/shared.jsx'
-import { tr } from '../../i18n/tr.js'
+import { useTr } from '../../i18n/tr.js'
 
 /* ─────────────────────────────────────────────
    FAQ — accessible accordion (button + aria-expanded + aria-controls, answer is a
@@ -49,6 +49,7 @@ export const FAQS = [
 ]
 
 function FAQItem({ item, open, onToggle }) {
+  const tr = useTr()
   const uid = useId()
   const buttonId = `${uid}-q`
   const panelId = `${uid}-a`
@@ -92,6 +93,7 @@ function FAQItem({ item, open, onToggle }) {
 }
 
 export default function ReferralFAQ() {
+  const tr = useTr()
   const [openIndex, setOpenIndex] = useState(null)
   return (
     <section id="faq" aria-labelledby="faq-heading" className="relative scroll-mt-20 pb-20 md:scroll-mt-24 md:pb-28">

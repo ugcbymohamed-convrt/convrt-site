@@ -1,3 +1,4 @@
+import { stepOfArrow } from '../../lib/rtl.js'
 import { OFFER_PATHS } from '../../config.js'
 import { currentLocale } from '../../i18n/locale.js'
 import { resolveCta } from '../../i18n/cta.js'
@@ -7,7 +8,7 @@ import {
   SPRINT, SPRINT_PLUS, ORGANIC, ORGANIC_COMMITMENT, CUSTOM_PACKAGES, BILLING_OPTIONS, formatMoney, pricePerVariation, creatorsLine,
   END_TO_END,
 } from '../../seo/businessKnowledge.js'
-import { tr } from '../../i18n/tr.js'
+import { tr, ctaText } from '../../i18n/tr.js'
 
 /* The three-column pricing cards (Paid Social: Sprint / Sprint Plus / Custom; Organic: Light / Growth / Custom).
    Every number comes from src/seo/businessKnowledge.js. Both billing options are always in the DOM (the inactive
@@ -132,7 +133,7 @@ function PricingCard({ tone, id, label, badge, description, price, sub, features
         {...(cta.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
         className={`mt-6 inline-flex items-center justify-center gap-2 rounded-full px-6 py-3.5 text-sm font-semibold transition-transform duration-150 active:scale-[0.98] ${t.cta}`}
       >
-        {tr(cta.redirected && ctaLabel === 'Get 5 Free Ad Concepts' ? cta.label : ctaLabel)}
+        {cta.redirected && ctaLabel === 'Get 5 Free Ad Concepts' ? tr(cta.label) : ctaText(ctaLabel)}
         <svg viewBox="0 0 12 12" className="h-3.5 w-3.5" fill="none" aria-hidden="true">
           <path d="M3 9L9 3M9 3H4M9 3V8" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
@@ -156,7 +157,8 @@ function BillingPrice({ pkg, billing }) {
   )
 }
 
-const LetsTalk = () => <span className="text-[40px] md:text-[46px]">{tr('Let’s talk.')}</span>
+// a translation longer than the English two words (« Parlons de votre projet ») is set smaller so it stays on the card
+const LetsTalk = () => { const t = tr('Let’s talk.'); return <span className={t.length > 14 ? 'text-[26px] leading-tight md:text-[30px]' : 'text-[40px] md:text-[46px]'}>{t}</span> }
 
 /* The original two-pill row under the price, texts swapped (owner, Nov 2026): the lime pill (black chip with lime text on the lime card)
    carries the package size, the grey pill carries the price per variation. The per-variation figure is derived from the package price
@@ -295,7 +297,7 @@ export function BillingSwitch({ value, onChange }) {
   const onKeyDown = (e) => {
     if (!['ArrowRight', 'ArrowLeft', 'ArrowDown', 'ArrowUp'].includes(e.key)) return
     e.preventDefault()
-    const dir = e.key === 'ArrowRight' || e.key === 'ArrowDown' ? 1 : -1
+    const dir = e.key === 'ArrowDown' ? 1 : e.key === 'ArrowUp' ? -1 : stepOfArrow(e.key)
     const next = BILLING_OPTIONS[(idx + dir + BILLING_OPTIONS.length) % BILLING_OPTIONS.length]
     onChange(next.id)
     document.getElementById(`billing-${next.id}`)?.focus()

@@ -1,7 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
+import ViewsBadge from './ViewsBadge.jsx'
 import { trackEvent } from '../../lib/analytics.js'
 import { CREATOR_SHOWCASE_PATH } from '../../config.js'
 import { posterUrl, captionOf, typeLabel } from '../../content/portfolio.js'
+import { mix } from '../../i18n/ar/mix.jsx'
 import { usePreviewHost } from '../../lib/previewHost.js'
 import SectionDivider from '../SectionDivider.jsx'
 import { Section, Head, Reveal, GhostCta } from './shared.jsx'
@@ -9,6 +11,7 @@ import { PlayGlyph } from './creatorVideo.jsx'
 import { tr, hrefFor } from '../../i18n/tr.js'
 import { currentLocale } from '../../i18n/locale.js'
 import { localizeConfig } from '../../i18n/content.js'
+import { isRtlPage, stepOfArrow, scrollOffset, scrollAlong, forward } from '../../lib/rtl.js'
 import { Player } from './UgcWork.jsx'
 import { PORTRAITS } from './illustrations.jsx'
 
@@ -54,6 +57,7 @@ export const UGC_GALLERY = {
 
 function Card({ item, index, playing, onPlay, config }) {
   const sample = item.sample
+  // French (owner, 2026-11-24): no generic type pill on the creator cards (the French library and galleries carry none).
   // Spanish pages name the language in full ("UGC · Español"); English keeps the two-letter code.
   const badge = config.badgeByType && item.type ? typeLabel(item) : config.badge // a mixed gallery (Spanish homepage) names each video's own type
   // Another language's site names no language on its cards: every video there is in that language, so "UGC · Español" repeated on each card says nothing (Spanish review 3, Nov 2026). The language stays in the records and the Showcase filters.
@@ -87,11 +91,12 @@ function Card({ item, index, playing, onPlay, config }) {
           )}
           <span aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/35" />
           {/* Spanish: a generic "UGC" pill on every card of a single-type gallery adds nothing, so it is left out (the mixed homepage gallery still names each video's own type) */}
-          {!(currentLocale() === 'es' && !config.badgeByType) && (
+          {!(currentLocale() === 'es' && !config.badgeByType) && currentLocale() !== 'fr' && (
           <span aria-hidden="true" className="absolute left-3 top-3 inline-flex items-center gap-1.5 rounded-full border border-lime/40 bg-black/55 px-2.5 py-1 text-xs font-bold uppercase tracking-[0.1em] text-lime backdrop-blur">
             <span className="h-1.5 w-1.5 rounded-full bg-lime" />{langs ? `${badge} · ${langs}` : badge}
           </span>
           )}
+          <ViewsBadge item={item} className="absolute inset-x-0 bottom-3 mx-auto w-fit" />
           <span aria-hidden="true" className="absolute left-1/2 top-1/2 flex h-14 w-14 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-lime/60 bg-lime/20 text-ink backdrop-blur transition-transform duration-200 group-hover:scale-110 motion-reduce:transition-none">
             <PlayGlyph />
           </span>
@@ -101,9 +106,12 @@ function Card({ item, index, playing, onPlay, config }) {
   )
 }
 
-const Chevron = ({ dir }) => (
-  <svg viewBox="0 0 12 12" className="h-4 w-4" fill="none" aria-hidden="true"><path d={dir < 0 ? 'M8 2L4 6l4 4' : 'M4 2l4 4-4 4'} stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
+const Chevron = ({ dir: dirProp }) => {
+  const dir = isRtlPage() ? -dirProp : dirProp // the arrow points the way the button scrolls on screen
+  return (
+    <svg viewBox="0 0 12 12" className="h-4 w-4" fill="none" aria-hidden="true"><path d={dir < 0 ? 'M8 2L4 6l4 4' : 'M4 2l4 4-4 4'} stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
 )
+}
 
 export default function UgcGallery({ items, config: configProp = UGC_GALLERY }) {
   const config = localizeConfig(configProp, currentLocale())
@@ -129,7 +137,7 @@ export default function UgcGallery({ items, config: configProp = UGC_GALLERY }) 
     if (!el) return
     const max = el.scrollWidth - el.clientWidth
     const thumb = Math.min(100, (el.clientWidth / el.scrollWidth) * 100)
-    setBar({ thumb, left: max > 0 ? (el.scrollLeft / max) * (100 - thumb) : 0, prev: el.scrollLeft > 4, next: el.scrollLeft < max - 4 })
+    setBar({ thumb, left: max > 0 ? (scrollOffset(el) / max) * (100 - thumb) : 0, prev: scrollOffset(el) > 4, next: scrollOffset(el) < max - 4 })
   }, [])
   useEffect(() => {
     const el = scroller.current
@@ -152,12 +160,12 @@ export default function UgcGallery({ items, config: configProp = UGC_GALLERY }) 
     const el = scroller.current
     if (!el) return
     const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
-    el.scrollBy({ left: dir * el.clientWidth * 0.8, behavior: reduce ? 'auto' : 'smooth' })
+    scrollAlong(el, dir * el.clientWidth * 0.8, reduce ? 'auto' : 'smooth')
     trackEvent(`${config.track}_gallery_scroll`, { how: 'button' })
   }
   const onKeyDown = (e) => {
-    if (e.key === 'ArrowRight') { e.preventDefault(); by(1) }
-    if (e.key === 'ArrowLeft') { e.preventDefault(); by(-1) }
+    const step = stepOfArrow(e.key)
+    if (step) { e.preventDefault(); by(step) }
   }
   /* mouse drag (touch and trackpad scroll natively) */
   const onPointerDown = (e) => {
@@ -183,7 +191,7 @@ export default function UgcGallery({ items, config: configProp = UGC_GALLERY }) 
     <SectionDivider />
     <Section id={config.id} label={config.headingId} glow>
       <Reveal>
-        <Head id={config.headingId} eyebrow={config.eyebrow} title={config.title} intro={config.intro} />
+        <Head id={config.headingId} eyebrow={config.eyebrow} title={typeof config.title === 'string' ? mix(config.title) : config.title} intro={config.intro} />
       </Reveal>
 
       <Reveal className="mt-8 md:mt-10">
@@ -239,7 +247,7 @@ export default function UgcGallery({ items, config: configProp = UGC_GALLERY }) 
 
         <div className="mt-2 flex items-center gap-4">
           <div aria-hidden="true" className="relative h-1 flex-1 overflow-hidden rounded-full bg-white/10">
-            <span className="absolute inset-y-0 rounded-full bg-lime transition-[left] duration-150 motion-reduce:transition-none" style={{ width: `${bar.thumb}%`, left: `${bar.left}%` }} />
+            <span className="absolute inset-y-0 rounded-full bg-lime transition-[left] duration-150 motion-reduce:transition-none" style={isRtlPage() ? { width: `${bar.thumb}%`, right: `${bar.left}%` } : { width: `${bar.thumb}%`, left: `${bar.left}%` }} />
           </div>
           <div className="flex items-center gap-2">
             {[-1, 1].map((dir) => (
@@ -248,7 +256,7 @@ export default function UgcGallery({ items, config: configProp = UGC_GALLERY }) 
                 type="button"
                 onClick={() => by(dir)}
                 disabled={dir < 0 ? !bar.prev : !bar.next}
-                aria-label={dir < 0 ? tr('Scroll videos left') : tr('Scroll videos right')}
+                aria-label={(dir < 0) !== isRtlPage() ? tr('Scroll videos left') : tr('Scroll videos right')}
                 className="flex h-11 w-11 items-center justify-center rounded-full border border-lime/40 bg-surface-2 text-lime transition-colors hover:bg-lime hover:text-canvas focus-visible:outline focus-visible:outline-2 focus-visible:outline-lime disabled:cursor-default disabled:border-hairline disabled:text-ink-muted disabled:hover:bg-surface-2 disabled:hover:text-ink-muted"
               >
                 <Chevron dir={dir} />
@@ -260,7 +268,7 @@ export default function UgcGallery({ items, config: configProp = UGC_GALLERY }) 
 
       <div className="mt-9 flex justify-center">
         <GhostCta href={config.cta.href} onClick={() => trackEvent(`${config.track}_see_all_videos_click`, { location: 'gallery' })}>
-          {`${config.cta.label} `}<span aria-hidden="true">→</span>
+          {`${config.cta.label} `}<span aria-hidden="true">{forward()}</span>
         </GhostCta>
       </div>
     </Section>

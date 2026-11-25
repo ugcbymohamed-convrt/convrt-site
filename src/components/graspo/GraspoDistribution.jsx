@@ -1,5 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import { useTr } from '../../i18n/tr.js'
+import { mix } from '../../i18n/ar/mix.jsx'
+import { currentLocale } from '../../i18n/locale.js'
+import { localizeStat } from '../../i18n/format.js'
 import { GRASPO_IG_VIEWS as IG_VIEWS, GRASPO_FB_VIEWS as FB_VIEWS, GRASPO_IG_SHORT, GRASPO_FB_SHORT, GRASPO_TOP_CONTENT as TOP_CONTENT } from '../../caseStudies/data.js'
 import { esGraspoOrganicProof } from '../../i18n/es/casestudies.js'
 import { stat, pct, isEnglish, cx } from '../caseStudies/format.js'
@@ -39,7 +42,11 @@ function useInView(threshold = 0.15) {
 
 export default function GraspoDistribution() {
   const tr = useTr()
+  const locale = currentLocale()
+  const ar = locale === 'ar'
   const en = isEnglish()
+  // Arabic writes a percentage plainly ("56%"); Spanish uses its own notation (pct).
+  const pctL = (n) => (ar ? `${n}%` : pct(n))
   const [ref, visible] = useInView()
 
   return (
@@ -53,7 +60,7 @@ export default function GraspoDistribution() {
           <h2 className="font-display font-bold text-ink tracking-display leading-[1.05] text-3xl md:text-[44px]">
             {tr("The content didn't need")}
             <br />
-            {tr('media spend to travel.')}
+            {mix(tr('media spend to travel.'))}
           </h2>
         </div>
 
@@ -66,7 +73,7 @@ export default function GraspoDistribution() {
             <p className="text-xs text-ink-subtle">{tr('Jan 1 – Jun 19 2026')}</p>
           </div>
 
-          <div className="relative w-full" style={{ height: 'clamp(140px, 22vw, 200px)' }}>
+          <div className="relative w-full" dir={ar ? 'ltr' : undefined} style={{ height: 'clamp(140px, 22vw, 200px)' }}>
             <svg viewBox="0 0 1000 220" preserveAspectRatio="none" className="absolute inset-0 h-full w-full" aria-hidden="true">
               <defs>
                 <linearGradient id="viewsFill" x1="0" y1="0" x2="0" y2="1">
@@ -101,7 +108,7 @@ export default function GraspoDistribution() {
             </div>
           </div>
 
-          <div className="mt-3 flex items-center justify-between text-[11px] text-ink-subtle">
+          <div className="mt-3 flex items-center justify-between text-[11px] text-ink-subtle" dir={ar ? 'ltr' : undefined}>
             <span>{tr('Jan 1')}</span>
             <span>{tr('Feb 20')}</span>
             <span>{tr('Apr 11')}</span>
@@ -114,7 +121,7 @@ export default function GraspoDistribution() {
           <div className="lg:col-span-7 rounded-3xl border border-hairline bg-surface-1/40 px-7 py-8 md:px-9 md:py-9">
             <div className="flex items-baseline justify-between mb-2">
               <p className="text-sm font-semibold text-ink">{tr('Views by platform')}</p>
-              <p className="text-xs text-ink-subtle">{tr('10.7M total')}</p>
+              {ar ? <p className="text-xs text-ink-subtle">{localizeStat(locale, '10.7M')} {tr('total')}</p> : <p className="text-xs text-ink-subtle">{tr('10.7M total')}</p>}
             </div>
 
             <div className="mt-5 h-4 w-full rounded-full overflow-hidden flex bg-surface-3">
@@ -141,7 +148,7 @@ export default function GraspoDistribution() {
                   <span className="text-xs font-semibold text-ink-muted">Instagram</span>
                 </div>
                 <p className="mt-1.5 font-display font-bold text-2xl text-ink tabular-nums">{stat(GRASPO_IG_SHORT)}</p>
-                <p className="text-[11px] text-ink-subtle">{pct(IG_PCT.toFixed(0))} {tr('of total views')}</p>
+                <p className="text-[11px] text-ink-subtle">{pctL(IG_PCT.toFixed(0))} {tr('of total views')}</p>
               </div>
               <div>
                 <div className="flex items-center gap-2">
@@ -149,7 +156,7 @@ export default function GraspoDistribution() {
                   <span className="text-xs font-semibold text-ink-muted">Facebook</span>
                 </div>
                 <p className="mt-1.5 font-display font-bold text-2xl text-ink tabular-nums">{stat(GRASPO_FB_SHORT)}</p>
-                <p className="text-[11px] text-ink-subtle">{pct(FB_PCT.toFixed(0))} {tr('of total views')}</p>
+                <p className="text-[11px] text-ink-subtle">{pctL(FB_PCT.toFixed(0))} {tr('of total views')}</p>
               </div>
             </div>
 
@@ -167,6 +174,10 @@ export default function GraspoDistribution() {
                   Instagram views came from organic reach, <span className="tabular-nums">$0</span> spent
                   on paid amplification for that distribution.
                 </p>
+              ) : ar ? (
+                <p className="text-[13px] text-ink-muted leading-relaxed">
+                  <span className="font-semibold text-ink">{tr('100% organic on Instagram.')}</span> {tr('All 6.27M Instagram views came from organic reach,')} <span className="tabular-nums" dir="ltr">$0</span> {tr('spent on paid amplification for that distribution.')}
+                </p>
               ) : (
                 <p className="text-[13px] text-ink-muted leading-relaxed">
                   <span className="font-semibold text-ink">{tr('100% organic on Instagram.')}</span> {esGraspoOrganicProof(GRASPO_IG_SHORT)}
@@ -183,7 +194,7 @@ export default function GraspoDistribution() {
                 <div key={c.short}>
                   <div className="flex items-baseline justify-between mb-1.5">
                     <span className="text-[12px] text-ink-muted">{tr(c.note)}</span>
-                    <span className={cx('text-[12px] font-semibold text-ink tabular-nums', !en && 'ml-3 shrink-0 whitespace-nowrap')}>{stat(c.short)} {tr('views')}</span>
+                    <span className={cx('text-[12px] font-semibold text-ink tabular-nums', !en && !ar && 'ml-3 shrink-0 whitespace-nowrap')}>{stat(c.short)} {tr('views')}</span>
                   </div>
                   <div className="h-2 w-full rounded-full bg-surface-3 overflow-hidden">
                     <div

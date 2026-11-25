@@ -70,7 +70,7 @@ test('EUR amounts format naturally and come from the Spanish config, never from 
   // the committed (approved) configuration
   assert.equal(money(SPRINT.monthly, 'es'), `2.750${NB}€`)
   assert.throws(() => priceOf('es', { amount: 3000, currency: 'USD' }), /no key/)
-  assert.throws(() => priceOf('fr', SPRINT.monthly), /No pricing configuration/)
+  assert.throws(() => priceOf('de', SPRINT.monthly), /No pricing configuration/)
   assert.equal(money(SPRINT.monthly, 'en'), '$3,000')
 })
 
@@ -110,7 +110,7 @@ test('dictionary sentences carry price tokens, never a typed amount; tokens reso
 })
 
 test('future languages register their own pricing; English is never in the registry', () => {
-  assert.deepEqual(Object.keys(PRICING), ['es'])
+  assert.deepEqual(Object.keys(PRICING), ['es', 'fr', 'ar'])
   assert.equal(pricingConfig('en'), null)
   assert.equal(pricingConfig('es').currency, 'EUR')
 })
@@ -137,7 +137,7 @@ test('safety net: with a PENDING configuration a real build shows placeholders, 
   // A throw-away COPY of the project whose Spanish pricing is pending: head metadata is built by Node-side build code, so a resolver swap cannot reach it.
   const proj = path.join(tmp, 'proj'), dist = path.join(proj, 'dist')
   fs.mkdirSync(path.join(proj, 'public'), { recursive: true })
-  for (const f of ['src', 'index.html', 'package.json', 'vite.config.js', 'vite-plugin-blog.js', 'vite-plugin-sitemap.js', 'vite-plugin-static-routes.js', 'tailwind.config.js', 'postcss.config.js']) fs.cpSync(path.join(ROOT, f), path.join(proj, f), { recursive: true })
+  for (const f of ['src', 'scripts', 'index.html', 'package.json', 'vite.config.js', 'vite-plugin-blog.js', 'vite-plugin-sitemap.js', 'vite-plugin-static-routes.js', 'tailwind.config.js', 'postcss.config.js']) fs.cpSync(path.join(ROOT, f), path.join(proj, f), { recursive: true })
   fs.cpSync(path.join(ROOT, 'public', 'fonts'), path.join(proj, 'public', 'fonts'), { recursive: true })
   fs.symlinkSync(path.join(ROOT, 'node_modules'), path.join(proj, 'node_modules'), 'dir')
   const pending = pendingFixture()
@@ -159,7 +159,7 @@ export const ES_PRICED_PAGES = ${JSON.stringify(ES_PRICED_PAGES)}
   for (const bp of ES_PRICED_PAGES) {
     const es = page(`/es${bp}`)
     assert.match(es.slice(0, es.indexOf('</head>')), /name="robots" content="noindex, follow"/, `${bp}: launch-blocked`)
-    assert.ok(!sm.includes(`/es${bp}`) && !/hreflang/.test(page(bp)), `${bp}: no sitemap entry, no hreflang`)
+    assert.ok(!sm.includes(`/es${bp}`) && !/hreflang="es"/.test(page(bp)), `${bp}: no sitemap entry, no hreflang`)
   }
   assert.ok(!/desde/.test(page('/es/ugc-video-agency').match(/<meta name="description" content="[^"]*"/)[0]), 'no price claim in the description')
   assert.ok(sm.includes('/es/about'), 'unrelated pages stay released')

@@ -3,7 +3,7 @@ import { scrollToApply } from '../../lib/roadmapForm.js'
 import { KIT_EMAIL_PARAGRAPHS, KIT_EMAIL_PREVIEW_PARAGRAPHS, KIT_EMAIL_SUBJECT, KIT_ITEMS, KIT_SHORT_MESSAGE } from '../../lib/partnerKit.js'
 import { Check, Reveal, SectionHeader } from '../roadmap/shared.jsx'
 import { Arrow, ScrollCta } from './shared.jsx'
-import { tr } from '../../i18n/tr.js'
+import { useTr, translate } from '../../i18n/tr.js'
 import { currentLocale } from '../../i18n/locale.js'
 
 /* ─────────────────────────────────────────────
@@ -15,10 +15,12 @@ import { currentLocale } from '../../i18n/locale.js'
 ───────────────────────────────────────────── */
 
 /* The kit messages are sent in English (docs/partner-kit.md), so on a translated page the preview shows them as they are and says so with lang="en" (the labels around them are translated). */
-const En = ({ children }) => (currentLocale() === 'en' ? children : <span lang="en" dir="ltr">{children}</span>)
+/* Arabic (owner-reviewed translation of the kit messages) shows them translated. */
+const En = ({ children }) => (currentLocale() === 'en' ? children : currentLocale() === 'ar' ? translate('ar', children) : <span lang="en" dir="ltr">{children}</span>)
 
 export default function ReferralKit() {
-  const MSG = currentLocale() === 'en' ? {} : { lang: 'en', dir: 'ltr' }
+  const tr = useTr()
+  const MSG = currentLocale() === 'en' || currentLocale() === 'ar' ? {} : { lang: 'en', dir: 'ltr' }
   return (
     <section id="kit" aria-labelledby="kit-heading" className="relative scroll-mt-20 py-16 md:scroll-mt-24 md:py-24">
       <div className="mx-auto max-w-7xl px-5 md:px-8">
@@ -81,7 +83,7 @@ export default function ReferralKit() {
                   </p>
                   <div className="mt-4 space-y-3 text-sm leading-relaxed text-ink-muted">
                     {KIT_EMAIL_PARAGRAPHS.slice(0, KIT_EMAIL_PREVIEW_PARAGRAPHS).map((p) => (
-                      <p key={p} {...MSG}>{p}</p>
+                      <p key={p} {...MSG}>{currentLocale() === 'ar' ? tr(p) : p}</p>
                     ))}
                     <p aria-hidden="true">…</p>
                   </div>

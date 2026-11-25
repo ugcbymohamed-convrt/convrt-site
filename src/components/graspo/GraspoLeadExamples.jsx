@@ -1,4 +1,6 @@
 import { useTr } from '../../i18n/tr.js'
+import { mix } from '../../i18n/ar/mix.jsx'
+import { currentLocale } from '../../i18n/locale.js'
 
 const ACCENT = '#d5ff40'
 
@@ -46,16 +48,17 @@ const LEADS = [
 
 export default function GraspoLeadExamples() {
   const tr = useTr()
+  const ar = currentLocale() === 'ar' // the Arabic headline is one longer line: a slightly wider column keeps it on one line
   return (
     <section className="relative py-16 md:py-24">
       <div className="mx-auto max-w-7xl px-5 md:px-8 text-center">
-        <div className="max-w-2xl mx-auto mb-12 md:mb-14">
+        <div className={`${ar ? 'max-w-3xl' : 'max-w-2xl'} mx-auto mb-12 md:mb-14`}>
           <div className="inline-flex items-center gap-2 rounded-full border border-hairline bg-surface-1/60 px-4 py-1.5 mb-6 backdrop-blur">
             <span className="h-1.5 w-1.5 rounded-full animate-pulse" style={{ background: ACCENT }} />
             <span className="text-xs font-medium uppercase tracking-[0.18em] text-ink-muted">{tr('What Those Leads Looked Like')}</span>
           </div>
           <h2 className="font-display font-bold text-ink tracking-display leading-[1.05] text-3xl md:text-[44px]">
-            {tr('Not random Instagram DMs.')}
+            {mix(tr('Not random Instagram DMs.'))}
           </h2>
           <p className="mt-6 text-[15px] md:text-base text-ink-muted leading-relaxed">
             {tr('Six real examples from the inbound tracker, anonymized, but unedited in substance. Specific quantities, specs and next steps, from people who buy printing for a living.')}

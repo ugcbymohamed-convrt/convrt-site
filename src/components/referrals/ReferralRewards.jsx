@@ -2,8 +2,9 @@ import { trackEvent } from '../../lib/analytics.js'
 import { Check, Reveal, SectionHeader } from '../roadmap/shared.jsx'
 import { TermsLink } from './shared.jsx'
 import { standardRewardCard } from '../../i18n/referralReward.js'
+import { useTr } from '../../i18n/tr.js'
 import { currentLocale } from '../../i18n/locale.js'
-import { tr } from '../../i18n/tr.js'
+import { forward } from '../../lib/rtl.js'
 
 /* ─────────────────────────────────────────────
    EVERYONE WINS — two reward cards + the FREE Creative Upgrade strip.
@@ -59,6 +60,8 @@ const CARDS = [
 ]
 
 export default function ReferralRewards({ onSelect }) {
+  const tr = useTr()
+  const ar = currentLocale() === 'ar'
   return (
     <section id="rewards" aria-labelledby="rewards-heading" className="relative scroll-mt-20 py-16 md:scroll-mt-24 md:py-24">
       <div className="mx-auto max-w-7xl px-5 md:px-8">
@@ -88,7 +91,7 @@ export default function ReferralRewards({ onSelect }) {
 
                   <p className="mt-3 flex items-baseline gap-3">
                     <span className="text-base font-semibold text-ink">{tr(card.lead)}</span>
-                    <span className={`font-display text-6xl font-bold leading-none tracking-display-xl sm:text-7xl ${card.accent.text}`}>{card.id === 'standard' ? standardRewardCard(currentLocale()) : card.amount}</span>
+                    <span className={`font-display text-6xl font-bold leading-none tracking-display-xl sm:text-7xl ${card.accent.text}`} dir={ar ? 'ltr' : undefined}>{card.id === 'standard' ? standardRewardCard(currentLocale()) : card.amount}</span>
                   </p>
                   <p className="mt-2 text-sm leading-snug text-ink-muted">{tr(card.note)}</p>
 
@@ -118,7 +121,7 @@ export default function ReferralRewards({ onSelect }) {
                                 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 ${card.accent.button}`}
                   >
                     {tr(card.cta)}
-                    <span aria-hidden="true" className="transition-transform duration-200 group-hover:translate-x-0.5 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0">→</span>
+                    <span aria-hidden="true" className="transition-transform duration-200 group-hover:translate-x-0.5 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0">{forward()}</span>
                   </button>
                 </div>
               </article>

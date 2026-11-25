@@ -2,7 +2,8 @@ import { useEffect, useRef, useState } from 'react'
 import { OFFER_PATHS } from '../config.js'
 import { PATHS } from '../routes.js'
 import { SERVICE_LABELS } from '../seo/businessKnowledge.js'
-import { useTr, useHref } from '../i18n/tr.js'
+import { useTr, useHref, isFallbackPath } from '../i18n/tr.js'
+import { editorial } from '../i18n/editorial.js'
 import { currentLocale } from '../i18n/locale.js'
 import { primaryAction } from '../i18n/cta.js'
 
@@ -26,6 +27,7 @@ const SERVICES = [
     description: 'Human-led UGC ads built to capture attention and test creative angles.',
     href: PATHS.ugcVideoAgency,
     pills: ['UGC Ads', 'Creator-Led', 'Creative Testing'],
+    pillsAr: ['إعلانات UGC', 'صنّاع محتوى حقيقيون', 'اختبار أفكار إبداعية مختلفة'],
     icon: IconUGC,
     rgb: '139 92 246', rgb2: '139 92 246', text: '#a78bfa', textHi: '#c4b5fd',
     glowA: { pos: '8% 12%', r: '480px', rest: 0.22, hover: 0.42 },
@@ -40,6 +42,7 @@ const SERVICES = [
     description: 'Product demos, explainers and video ads that make software easier to understand.',
     href: PATHS.saasVideoProduction,
     pills: ['Product Demos', 'Explainers', 'Video Ads'],
+    pillsAr: ['فيديوهات توضيحية', 'فيديوهات تقديمية', 'شروحات'],
     icon: IconSaas,
     rgb: '56 189 248', rgb2: '34 211 238', text: '#7dd3fc', textHi: '#bae6fd',
     glowA: { pos: '88% 8%', r: '460px', rest: 0.20, hover: 0.38 },
@@ -53,6 +56,7 @@ const SERVICES = [
     description: 'Professional, multilingual presenters for ads, demonstrations and brand messages.',
     href: PATHS.spokespersonVideoProduction,
     pills: ['Human-Led', 'Multilingual', 'Product Demos'],
+    pillsAr: ['صنّاع محتوى حقيقيون', 'متعددو اللغات', 'فيديوهات تقديمية'],
     icon: IconSpokesperson,
     rgb: '255 106 77', rgb2: '255 106 77', text: '#ff8c70', textHi: '#ffb59c',
     glowA: { pos: '8% 12%', r: '460px', rest: 0.20, hover: 0.38 },
@@ -67,6 +71,8 @@ const SERVICES = [
     description: 'Organic social videos, content planning, publishing and community management.',
     href: PATHS.socialMediaVideoProduction,
     pills: ['Organic Video', 'Posting', 'Community'],
+    /* The approved Arabic tags (owner brief, Nov 2026) are their own wording, not a translation of the English pills, so they are listed here and not routed through the dictionary. */
+    pillsAr: ['فيديوهات عضوية', 'نمو عضوي', 'إنستغرام', 'تيك توك'],
     icon: IconSocial,
     rgb: '213 255 64', rgb2: '213 255 64', text: '#d5ff40', textHi: '#e8ff7a',
     glowA: { pos: '88% 8%', r: '440px', rest: 0.16, hover: 0.32 },
@@ -109,6 +115,8 @@ export default function Services() {
   const tr = useTr()
   const href = useHref()
   const action = primaryAction(currentLocale())
+  /* Arabic (owner brief, Nov 2026): the supporting sentence sits directly under the heading, not alone on the opposite side of the row. */
+  const stacked = currentLocale() === 'ar'
 
   return (
     <section id="services" className="relative overflow-hidden py-16 md:py-20">
@@ -136,12 +144,12 @@ export default function Services() {
             <span className="h-1.5 w-1.5 rounded-full bg-lime animate-pulse" />
             <span className="text-xs font-medium uppercase tracking-[0.18em] text-ink-muted">{tr('What We Offer')}</span>
           </div>
-          <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-5">
+          <div className={stacked ? 'flex flex-col gap-5' : 'flex flex-col lg:flex-row lg:items-end lg:justify-between gap-5'}>
             <h2 className="font-display font-bold text-ink tracking-display leading-[1.02] text-4xl md:text-5xl lg:text-[62px]">
               {tr('Video creative for')}<br />
               <span className="text-lime">{tr('paid and organic social.')}</span>
             </h2>
-            <p className="text-[15px] text-ink-muted leading-relaxed max-w-sm mx-auto lg:mx-0 text-center lg:text-right pb-1">
+            <p className={stacked ? 'text-[15px] text-ink-muted leading-relaxed max-w-xl mx-auto lg:mx-0 text-center lg:text-left' : 'text-[15px] text-ink-muted leading-relaxed max-w-sm mx-auto lg:mx-0 text-center lg:text-right pb-1'}>
               {tr('Creative strategy and full video production,')}{' '}<br className="hidden lg:block" />
               {tr('from concept and creator casting to finished, platform-ready videos.')}
             </p>
@@ -198,6 +206,8 @@ function ServiceCard({ service: s, index }) {
   const href = useHref()
   const [ref, visible] = useInView(0.12)
   const Icon = s.icon
+  // A service whose page exists only in English (French: all but UGC) says so on the card and declares the language of its target.
+  const fallbackNote = editorial()?.fallbackNote && isFallbackPath(s.href) ? editorial().fallbackNote : null
   const titleId = `service-${s.id}-title`
   const descId = `service-${s.id}-desc`
 
@@ -207,7 +217,7 @@ function ServiceCard({ service: s, index }) {
       className={`h-full transition-[opacity,transform] duration-700 ease-out motion-reduce:!translate-y-0 motion-reduce:!opacity-100 motion-reduce:transition-none ${visible ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'}`}
       style={{ transitionDelay: visible ? `${(index % 2) * 90 + Math.floor(index / 2) * 90}ms` : '0ms' }}
     >
-      <a href={href(s.href)} className="svc-card" style={cardVars(s)} aria-labelledby={titleId} aria-describedby={descId}>
+      <a href={href(s.href)} {...(fallbackNote ? { hrefLang: 'en' } : {})} className="svc-card" style={cardVars(s)} aria-labelledby={titleId} aria-describedby={descId}>
         {/* Border ring (hover version fades in) */}
         <span aria-hidden="true" className="svc-layer svc-frame" />
         <span aria-hidden="true" className="svc-layer svc-frame-hi" />
@@ -241,14 +251,14 @@ function ServiceCard({ service: s, index }) {
           <p id={descId} className="svc-desc mt-3 max-w-[38ch] text-[14.5px] leading-relaxed">{tr(s.description)}</p>
 
           <ul className="mt-5 flex flex-wrap gap-2">
-            {s.pills.map((pill) => (<li key={pill} className="svc-pill">{tr(pill)}</li>))}
+            {(currentLocale() === 'ar' ? s.pillsAr : s.pills).map((pill) => (<li key={pill} className="svc-pill">{currentLocale() === 'ar' ? pill : tr(pill)}</li>))}
           </ul>
 
           <div className="min-h-[24px] flex-1" />
           <div aria-hidden="true" className="svc-rule mt-5" />
           <div className="mt-4 flex">
             <span className="svc-cta">
-              {tr('Explore Service')}
+              {fallbackNote ? `${tr('Explore Service')} (${fallbackNote})` : tr('Explore Service')}
               <svg className="svc-arrow" aria-hidden="true" width="14" height="14" viewBox="0 0 12 12" fill="none">
                 <path d="M3 9L9 3M9 3H4M9 3V8" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
               </svg>

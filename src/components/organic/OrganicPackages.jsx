@@ -23,15 +23,22 @@ const ACCENTS = {
 }
 
 function PackageCard({ pkg }) {
-  const a = ACCENTS[pkg.id === ORGANIC.growth.id ? 'growth' : 'light']
+  const growth = pkg.id === ORGANIC.growth.id
+  const a = ACCENTS[growth ? 'growth' : 'light']
+  const ar = currentLocale() === 'ar' // Arabic: "شهريًا" for the period, the figure as a left-to-right island, the "Recommended" chip on Organic Growth (owner, 2026-11-25)
   return (
     <div className={`relative flex h-full flex-col overflow-hidden rounded-3xl border bg-surface-1/60 p-6 backdrop-blur-md transition-colors duration-300 md:p-7 ${a.border}`}>
       <div aria-hidden="true" className={`pointer-events-none absolute -right-16 -top-20 h-48 w-48 rounded-full blur-[70px] ${a.glow}`} />
       <div className="relative flex h-full flex-col">
-        <h3 className="font-display text-xl font-semibold tracking-snug text-ink">{pkg.name}</h3>
+        {ar && growth ? (
+          <div className="flex items-center justify-between gap-3">
+            <h3 className="font-display text-xl font-semibold tracking-snug text-ink">{pkg.name}</h3>
+            <span className={`rounded-full border px-2.5 py-0.5 text-[11px] font-semibold ${a.chip}`}>{tr('Recommended')}</span>
+          </div>
+        ) : <h3 className="font-display text-xl font-semibold tracking-snug text-ink">{pkg.name}</h3>}
         <p className="mt-3 flex items-baseline gap-1.5">
-          <span className={`font-display text-[2.6rem] font-bold leading-none tracking-display ${a.price}`}>{money(pkg.monthly)}</span>
-          <span className="text-[15px] text-ink-muted">{tr('/month')}</span>
+          <span {...(ar ? { dir: 'ltr' } : {})} className={`font-display text-[2.6rem] font-bold leading-none tracking-display ${a.price}`}>{money(pkg.monthly)}</span>
+          <span className="text-[15px] text-ink-muted">{ar ? 'شهريًا' : tr('/month')}</span>
         </p>
         <p className="mt-3 flex items-start gap-2.5 text-[15px] leading-relaxed text-ink-muted"><Tick className={a.tick} />{tr(pkg.cadence)}</p>
       </div>

@@ -47,8 +47,10 @@
                                                // 'gallery' (default) = the horizontal gallery under it (at most 10)
        homeStagePoster: '/showcase/x.webp',    // optional, ENGLISH homepage client stage only: a poster that replaces `poster` there (the Spanish homepage keeps `poster`)
        showcase: 'elyon',                      // homepage only: tag a video with a client panel ('adscale' | 'elyon' | 'graspo') to show it there
+       orientation: 'landscape',               // optional, only for a `showcase` video: 16:9 footage. The French client stage shows two landscape frames. Default portrait (9:16). Never put a landscape video in a gallery.
        homeCreator: 3,                         // optional, ENGLISH homepage only: this video is in the homepage's "Real creators" carousel, in this position (1 = first). Only an approved video
                                                // (full approval) whose spoken language is confirmed English is shown; nothing else is needed. See selectHomeCreators().
+                                               // For another language use an object: homeCreator: { fr: 1 } (the French homepage carousel, spoken language confirmed French).
        caseStudyHref: '/case-studies/…',       // optional related case study
        uploadDate: '2026-11-20',               // optional, but REQUIRED for structured data: only videos with a real upload date get VideoObject markup
        description: 'A fuller description.',   // optional, used by VideoObject markup (falls back to caption)
@@ -83,11 +85,630 @@
 import { currentLocale } from '../i18n/locale.js'
 import { DEFAULT_LOCALE } from '../i18n/locales.js'
 import { streamPoster } from './posterFrames.js'
-import { ES_LANGUAGE_LABELS, ES_INDUSTRY_LABELS, ES_TYPE_LABELS, ES_PRODUCTION_LABELS, captionEs } from '../i18n/es/labels.js'
+import { AR_LANGUAGE_LABELS, AR_INDUSTRY_LABELS, AR_TYPE_LABELS, AR_PRODUCTION_LABELS, captionAr } from '../i18n/ar/labels.js'
 
+import { editorial } from '../i18n/editorial.js'
+
+const AR_APPROVAL = { status: 'approved', portfolioUse: true, creatorConsent: true, approvedBy: 'CONVRT owner (Arabic site brief, 2026-11-23: approved Arabic-speaking creator videos)', approvedOn: '2026-11-23' }
+/* Arabic revision (owner brief 2026-11-23): Mohamed (the founder), One Royal and Graspo. brandDisplay: the owner asked for the clients to be named. See the entries' comment. */
+const AR_BRAND_APPROVAL = { ...AR_APPROVAL, brandDisplay: true, approvedBy: 'CONVRT owner (Arabic revision brief, 2026-11-23: feature Mohamed, One Royal and the Graspo videos)' }
+
+const FR_APPROVAL = { status: 'approved', portfolioUse: true, creatorConsent: true, approvedBy: 'CONVRT owner (French creator folder supplied for the French site; signed portfolio agreements to be confirmed)', approvedOn: '2026-11-23' }
+const FR_MOHAMED_APPROVAL = { status: 'approved', portfolioUse: true, creatorConsent: true, approvedBy: 'CONVRT owner and creator (Mohamed, founder): French creators folder, confirmed in chat', approvedOn: '2026-11-23' }
+/* The French client stage only (like the English client-stage videos): approved to appear there, NOT portfolio-gallery videos. */
+const FR_CLIENT_STAGE_APPROVAL = { status: 'approved', portfolioUse: false, creatorConsent: false, approvedBy: 'CONVRT owner (confirmed in chat 2026-11-23): French client case study; the client logo is one of the 13 verified relationships', approvedOn: '2026-11-23' }
 const ES_APPROVAL = { status: 'approved', portfolioUse: true, creatorConsent: true, approvedBy: 'CONVRT owner (confirmed in chat)', approvedOn: '2026-11-22' }
 
 const PORTFOLIO_ENTRIES = [
+  /* ── ARABIC REVISION (owner brief 2026-11-23): Mohamed (the founder), One Royal and Graspo ─────────────────────────────────────────────────────────────────────────────────────────────
+     Mohamed's videos come from ~/Desktop/CONVRT/CREATORS/Arabic/Mohamed (EDIT_CAPTIONS_MUSIC, V2-POLISHED-MUSIC, ZORY-AI-MOHAMED) and its OneRoyal folder (scripts 2, 3 and 5); they were re-encoded to
+     1080 p and uploaded to Cloudflare Stream on 2026-11-23 as AR-MOHAMED-01..03 and AR-ONEROYAL-01..03. A fourth file (the Sharjah book-fair clip) features third parties, so it was NOT uploaded.
+     Mohamed is the CONVRT founder and presents on camera; the owner asked for these to be featured (this brief), so portfolioUse and creatorConsent are true. One Royal (a trading brand) and Graspo are
+     shown by name on the owner's instruction (brandDisplay). The three Graspo entries are the SAME three Stream videos as the English homepage's Graspo panel (showcase-graspo-1..3), copied here as
+     Arabic-only entries (the English entries and the English pages are unchanged); their `views` are the figures already published on the English Graspo case study (src/components/graspo/GraspoShowcase.jsx,
+     Meta Business Suite, Jan to Jun 2026), mapped by Stream id: nothing here is estimated. The owner's brief mentioned "7M, 5M and 3M"; the records support 7.5M, 1.2M and 295K, so those are used.
+     `production: 'convrt'` only for Graspo (the published case study documents CONVRT's content work); Mohamed's and One Royal's production is left unset. */
+  {
+    id: 'ar-oneroyal-1',
+    title: 'كفّ عن مراقبة صفقتك طوال الوقت',
+    caption: 'فيديو بمقدّم لعلامة One Royal في مجال التداول: «كفّ عن مراقبة صفقتك».',
+    type: 'spokesperson',
+    industry: 'unclassified',
+    languages: ['ar'],
+    onlyIn: ['ar'],
+    source: { cloudflareId: 'a256f8f429c8e2d26256e894af970dbf' },
+    poster: '/portfolio/ar-oneroyal-1.webp',
+    creatorId: 'ar-mohamed',
+    creator: { displayName: 'Mohamed', showName: true },
+    brand: 'One Royal',
+    showcase: 'oneroyal',
+    placement: 'hero',
+    approval: AR_BRAND_APPROVAL,
+  },
+  {
+    id: 'ar-oneroyal-2',
+    title: 'التداول: السوشيال ميديا مقابل الواقع',
+    caption: 'فيديو بمقدّم لعلامة One Royal في مجال التداول: «السوشيال ميديا مقابل الواقع».',
+    type: 'spokesperson',
+    industry: 'unclassified',
+    languages: ['ar'],
+    onlyIn: ['ar'],
+    source: { cloudflareId: '871ea801a38e653cd48c036374966382' },
+    poster: '/portfolio/ar-oneroyal-2.webp',
+    creatorId: 'ar-mohamed',
+    creator: { displayName: 'Mohamed', showName: true },
+    brand: 'One Royal',
+    showcase: 'oneroyal',
+    placement: 'hero',
+    approval: AR_BRAND_APPROVAL,
+  },
+  {
+    id: 'ar-oneroyal-3',
+    title: 'ليت أحدًا أخبرني بهذا',
+    caption: 'فيديو بمقدّم لعلامة One Royal في مجال التداول: «ليت أحدًا أخبرني بهذا».',
+    type: 'spokesperson',
+    industry: 'unclassified',
+    languages: ['ar'],
+    onlyIn: ['ar'],
+    source: { cloudflareId: '8bc61e80a5240cde3f16a90f63dbc4fa' },
+    poster: '/portfolio/ar-oneroyal-3.webp',
+    creatorId: 'ar-mohamed',
+    creator: { displayName: 'Mohamed', showName: true },
+    brand: 'One Royal',
+    showcase: 'oneroyal',
+    placement: 'gallery',
+    approval: AR_BRAND_APPROVAL,
+  },
+  {
+    id: 'ar-mohamed-zory',
+    title: 'تقديم تطبيق لتصميم الديكور الداخلي',
+    caption: 'Mohamed، مؤسس CONVRT، يقدّم تطبيقًا لتصميم الديكور الداخلي ويعرض شاشاته.',
+    type: 'spokesperson',
+    industry: 'unclassified',
+    languages: ['ar'],
+    onlyIn: ['ar'],
+    source: { cloudflareId: 'a32cb282a9ef41333b79f86da02a46ad' },
+    poster: '/portfolio/ar-mohamed-zory.webp',
+    creatorId: 'ar-mohamed',
+    creator: { displayName: 'Mohamed', showName: true },
+    placement: 'hero',
+    approval: AR_BRAND_APPROVAL,
+  },
+  {
+    id: 'ar-mohamed-clothing',
+    homeCreator: 2,
+    title: 'عرض قطعة ملابس وشرح جودتها',
+    caption: 'Mohamed، مؤسس CONVRT، يعرض قطعة ملابس ويتحدث عن جودتها ومقاسها وألوانها.',
+    type: 'ugc',
+    industry: 'unclassified',
+    languages: ['ar'],
+    onlyIn: ['ar'],
+    source: { cloudflareId: '9e7fca5cfa5146f40a26d0e2d066ed14' },
+    poster: '/portfolio/ar-mohamed-clothing.webp',
+    creatorId: 'ar-mohamed',
+    creator: { displayName: 'Mohamed', showName: true },
+    placement: 'gallery',
+    approval: AR_BRAND_APPROVAL,
+  },
+  {
+    id: 'ar-mohamed-bag',
+    homeCreator: 1,
+    title: 'عرض حقيبة رياضية في النادي',
+    caption: 'Mohamed، مؤسس CONVRT، يعرض حقيبة رياضية في النادي وفي الهواء الطلق.',
+    type: 'ugc',
+    industry: 'unclassified',
+    languages: ['ar'],
+    onlyIn: ['ar'],
+    source: { cloudflareId: '1bb5e1f61c5c4efb56c378f568ca0f5b' },
+    poster: '/portfolio/ar-mohamed-bag.webp',
+    creatorId: 'ar-mohamed',
+    creator: { displayName: 'Mohamed', showName: true },
+    placement: 'gallery',
+    approval: AR_BRAND_APPROVAL,
+  },
+  {
+    id: 'ar-graspo-1',
+    title: 'فيديو عضوي لشركة Graspo (1)',
+    caption: 'فيديو عضوي قصير لشركة Graspo للطباعة، من العمل الموثّق في دراسة الحالة.',
+    type: 'organic',
+    industry: 'unclassified',
+    languages: ['ar'],
+    onlyIn: ['ar'],
+    source: { cloudflareId: 'c1379ace38f2fa19ef2a45de1bb5d4b1' },
+    poster: '/portfolio/ar-graspo-1.webp', /* same-origin frame (scripts/poster-frames.py): the three stage frames never depend on a live Stream thumbnail request */
+    creatorId: 'ar-graspo-c1',
+    brand: 'Graspo',
+    production: 'convrt',
+    views: '7.5M',
+    showcase: 'graspo',
+    placement: 'hero',
+    caseStudyHref: '/case-studies/graspo',
+    approval: AR_BRAND_APPROVAL,
+  },
+  {
+    id: 'ar-graspo-2',
+    title: 'فيديو عضوي لشركة Graspo (2)',
+    caption: 'فيديو عضوي قصير لشركة Graspo للطباعة، من العمل الموثّق في دراسة الحالة.',
+    type: 'organic',
+    industry: 'unclassified',
+    languages: ['ar'],
+    onlyIn: ['ar'],
+    source: { cloudflareId: '3616606e3ca6d1a85c8a57d7cc2f656f' },
+    poster: '/portfolio/ar-graspo-2.webp', /* same-origin frame (scripts/poster-frames.py): the three stage frames never depend on a live Stream thumbnail request */
+    creatorId: 'ar-graspo-c2',
+    brand: 'Graspo',
+    production: 'convrt',
+    views: '1.2M',
+    showcase: 'graspo',
+    placement: 'hero',
+    caseStudyHref: '/case-studies/graspo',
+    approval: AR_BRAND_APPROVAL,
+  },
+  {
+    id: 'ar-graspo-3',
+    title: 'فيديو عضوي لشركة Graspo (3)',
+    caption: 'فيديو عضوي قصير لشركة Graspo للطباعة، من العمل الموثّق في دراسة الحالة.',
+    type: 'organic',
+    industry: 'unclassified',
+    languages: ['ar'],
+    onlyIn: ['ar'],
+    source: { cloudflareId: '15dd5505109f6821ccdcb13fc3cdc1fd' },
+    poster: '/portfolio/ar-graspo-3.webp', /* same-origin frame (scripts/poster-frames.py): the three stage frames never depend on a live Stream thumbnail request */
+    creatorId: 'ar-graspo-c3',
+    brand: 'Graspo',
+    production: 'convrt',
+    views: '295K',
+    showcase: 'graspo',
+    placement: 'hero',
+    caseStudyHref: '/case-studies/graspo',
+    approval: AR_BRAND_APPROVAL,
+  },
+  /* ── ARABIC VIDEOS (owner folder ~/Desktop/CONVRT/CREATORS/Arabic: default*.mp4 and the "Milad" folder; uploaded to Cloudflare Stream 2026-11-23 as AR-CREATOR-nn) ───────────────────────────────
+     Arabic-only entries: `languages: ['ar']` + `onlyIn: ['ar']`, so they appear on /ar/ pages only (the Arabic Showcase, the UGC gallery and hero, the homepage hero) and never change an English or
+     Spanish page. The Arabic brief (2026-11-23) states these are approved Arabic-speaking creator videos for the homepage and the Showcase; that is recorded in `approval` below and flagged for the
+     owner's confirmation in docs/multilingual-arabic.md. Creators are identified only by opaque ids; no creator name, nationality, dialect, brand, production credit or upload date is stated (none was
+     supplied), so no showName / brandDisplay / creditDisplay and no VideoObject markup. Captions describe only what the footage shows. `production` is left unset (unknown): the pages say these are
+     independent creators' examples and not necessarily CONVRT productions. Three clips from the same folder (AR-CREATOR-06, -09, -12) carry ENGLISH on-screen captions: first held back, then added on the owner's request as ar-ugc-10..12 (tagged `en`). Spoken language 'ar' is set from the Arabic captions and the brief; a dialect label is never shown. */
+  {
+    id: 'ar-ugc-hero-1',
+    title: 'صانع محتوى يشرح خدمة رقمية أمام الكاميرا',
+    caption: 'صانع محتوى يشرح خدمة رقمية أمام الكاميرا.',
+    type: 'ugc',
+    industry: 'unclassified',
+    languages: ['ar'],
+    onlyIn: ['ar'],
+    source: { cloudflareId: '442dfb5fe6a49dffd032ecd920414512' },
+    poster: '/portfolio/ar-ugc-hero-1.webp',
+    creatorId: 'ar-c01',
+    category: 'UGC · إعلان بمشاركة صانع محتوى',
+    placement: 'hero',
+    approval: AR_APPROVAL,
+  },
+  {
+    id: 'ar-ugc-hero-2',
+    title: 'صانعة محتوى تقدّم خدمة تعليمية أمام الكاميرا',
+    caption: 'صانعة محتوى تقدّم خدمة تعليمية أمام الكاميرا.',
+    type: 'ugc',
+    industry: 'unclassified',
+    languages: ['ar'],
+    onlyIn: ['ar'],
+    source: { cloudflareId: 'e76683d744c46ecfe8e1fb53b273b926' },
+    poster: '/portfolio/ar-ugc-hero-2.webp',
+    creatorId: 'ar-c02',
+    category: 'UGC · إعلان بمشاركة صانع محتوى',
+    placement: 'hero',
+    approval: AR_APPROVAL,
+  },
+  {
+    id: 'ar-ugc-hero-3',
+    title: 'صانع محتوى يعرض مزايا منتج برسوم توضيحية',
+    caption: 'صانع محتوى يعرض مزايا منتج برسوم توضيحية.',
+    type: 'ugc',
+    industry: 'unclassified',
+    languages: ['ar'],
+    onlyIn: ['ar'],
+    source: { cloudflareId: '7f68e3f6c92e70395cad4876fcb389a8' },
+    poster: '/portfolio/ar-ugc-hero-3.webp',
+    creatorId: 'ar-c03',
+    category: 'UGC · إعلان بمشاركة صانع محتوى',
+    placement: 'hero',
+    approval: AR_APPROVAL,
+  },
+  {
+    id: 'ar-ugc-1',
+    homeCreator: 3,
+    title: 'صانع محتوى يتحدث عن فكرة مشروع بخلفيات مرئية',
+    caption: 'صانع محتوى يتحدث عن فكرة مشروع بخلفيات مرئية.',
+    type: 'ugc',
+    industry: 'unclassified',
+    languages: ['ar'],
+    onlyIn: ['ar'],
+    source: { cloudflareId: '6d550ed3188d606de1b28dfd389c3abd' },
+    poster: '/portfolio/ar-ugc-1.webp',
+    creatorId: 'ar-c04',
+    category: 'UGC · إعلان بمشاركة صانع محتوى',
+    placement: 'gallery',
+    approval: AR_APPROVAL,
+  },
+  {
+    id: 'ar-ugc-2',
+    homeCreator: 4,
+    title: 'عرض منتج شاي وتجربة تحضيره',
+    caption: 'عرض منتج شاي وتجربة تحضيره.',
+    type: 'ugc',
+    industry: 'unclassified',
+    languages: ['ar'],
+    onlyIn: ['ar'],
+    source: { cloudflareId: 'ad0e4e3babf8a7dc94a67df48d48399a' },
+    poster: '/portfolio/ar-ugc-2.webp',
+    creatorId: 'ar-c05',
+    category: 'UGC · إعلان بمشاركة صانع محتوى',
+    placement: 'gallery',
+    approval: AR_APPROVAL,
+  },
+  {
+    id: 'ar-ugc-3',
+    homeCreator: 5,
+    title: 'عرض عطر أمام الكاميرا',
+    caption: 'عرض عطر أمام الكاميرا.',
+    type: 'ugc',
+    industry: 'unclassified',
+    languages: ['ar'],
+    onlyIn: ['ar'],
+    source: { cloudflareId: '49313eccb88e9b95a4985d59777d8e41' },
+    poster: '/portfolio/ar-ugc-3.webp',
+    creatorId: 'ar-c05',
+    category: 'UGC · إعلان بمشاركة صانع محتوى',
+    placement: 'gallery',
+    approval: AR_APPROVAL,
+  },
+  {
+    id: 'ar-ugc-4',
+    homeCreator: 6,
+    title: 'جولة تعريفية في مشروع عقاري',
+    caption: 'جولة تعريفية في مشروع عقاري.',
+    type: 'ugc',
+    industry: 'unclassified',
+    languages: ['ar'],
+    onlyIn: ['ar'],
+    source: { cloudflareId: 'a073ed5202bdd7c83de8312cefa3e419' },
+    poster: '/portfolio/ar-ugc-4.webp',
+    creatorId: 'ar-c05',
+    category: 'UGC · إعلان بمشاركة صانع محتوى',
+    placement: 'gallery',
+    approval: AR_APPROVAL,
+  },
+  {
+    id: 'ar-ugc-5',
+    homeCreator: 7,
+    title: 'عرض منتجات شوكولاتة في الهواء الطلق',
+    caption: 'عرض منتجات شوكولاتة في الهواء الطلق.',
+    type: 'ugc',
+    industry: 'unclassified',
+    languages: ['ar'],
+    onlyIn: ['ar'],
+    source: { cloudflareId: '10c436de7f9b0c5bfbdee723aff56659' },
+    poster: '/portfolio/ar-ugc-5.webp',
+    creatorId: 'ar-c05',
+    category: 'UGC · إعلان بمشاركة صانع محتوى',
+    placement: 'gallery',
+    approval: AR_APPROVAL,
+  },
+  {
+    id: 'ar-ugc-6',
+    homeCreator: 8,
+    title: 'صانع محتوى يشرح خدمة تقنية للجمهور',
+    caption: 'صانع محتوى يشرح خدمة تقنية للجمهور.',
+    type: 'ugc',
+    industry: 'unclassified',
+    languages: ['ar'],
+    onlyIn: ['ar'],
+    source: { cloudflareId: 'fa580c253a9bb4d64b04c1226de96819' },
+    poster: '/portfolio/ar-ugc-6.webp',
+    creatorId: 'ar-c05',
+    category: 'UGC · إعلان بمشاركة صانع محتوى',
+    placement: 'gallery',
+    approval: AR_APPROVAL,
+  },
+  {
+    id: 'ar-ugc-7',
+    title: 'مقطع بأسلوب الحياة يعرض خدمة عبر تطبيق',
+    caption: 'مقطع بأسلوب الحياة يعرض خدمة عبر تطبيق.',
+    type: 'ugc',
+    industry: 'unclassified',
+    languages: ['ar'],
+    onlyIn: ['ar'],
+    source: { cloudflareId: '0241249ccf242630f097d03ac8cc11b9' },
+    poster: '/portfolio/ar-ugc-7.webp',
+    creatorId: 'ar-c05',
+    category: 'UGC · إعلان بمشاركة صانع محتوى',
+    placement: 'gallery',
+    approval: AR_APPROVAL,
+  },
+  {
+    id: 'ar-ugc-8',
+    title: 'فيديو يشرح فكرة محتوى المستخدمين بأسلوب بصري',
+    caption: 'فيديو يشرح فكرة محتوى المستخدمين بأسلوب بصري.',
+    type: 'ugc',
+    industry: 'unclassified',
+    languages: ['ar'],
+    onlyIn: ['ar'],
+    source: { cloudflareId: '002d9dab913f13496e6513e4a7761ec9' },
+    poster: '/portfolio/ar-ugc-8.webp',
+    creatorId: 'ar-c05',
+    category: 'UGC · إعلان بمشاركة صانع محتوى',
+    placement: 'gallery',
+    approval: AR_APPROVAL,
+  },
+  {
+    id: 'ar-ugc-9',
+    title: 'عرض منتج رياضي واستخداماته',
+    caption: 'عرض منتج رياضي واستخداماته.',
+    type: 'ugc',
+    industry: 'unclassified',
+    languages: ['ar'],
+    onlyIn: ['ar'],
+    source: { cloudflareId: '583c9f5132d0cfe0f2eb26ea1df73446' },
+    poster: '/portfolio/ar-ugc-9.webp',
+    creatorId: 'ar-c05',
+    category: 'UGC · إعلان بمشاركة صانع محتوى',
+    placement: 'gallery',
+    approval: AR_APPROVAL,
+  },
+  /* Milad folder, the three clips with ENGLISH on-screen captions (IMG_0769, IMG_4545, IMG_7827). Added to the Arabic Showcase and UGC gallery on the owner's request (2026-11-24, after asking why only 8 of 11 were shown).
+     `languages: ['en']` because the captions are English (no audio transcript was run); the Arabic cards and the Showcase language filter therefore say «الإنجليزية», so no visitor is told these are Arabic videos. Titles describe only the footage; third-party names and logos that appear in it are never named. */
+  {
+    id: 'ar-ugc-10',
+    title: 'عرض قميص بقصّة واسعة وخامة القماش',
+    caption: 'عرض قميص بقصّة واسعة من الأمام والخلف مع لقطة قريبة للقماش.',
+    type: 'ugc',
+    industry: 'unclassified',
+    languages: ['en'],
+    onlyIn: ['ar'],
+    source: { cloudflareId: '0cf5d2139e0769332c053ac71984ca14' },
+    poster: '/portfolio/ar-ugc-10.webp',
+    crossLanguageNote: 'Owner request 2026-11-24: an English-captioned clip shown on the Arabic site; its language is shown as English.',
+    creatorId: 'ar-c05',
+    category: 'UGC · إعلان بمشاركة صانع محتوى',
+    placement: 'gallery',
+    approval: AR_APPROVAL,
+  },
+  {
+    id: 'ar-ugc-11',
+    title: 'صانع محتوى يشرح منصة لإدارة علاقات العملاء',
+    caption: 'صانع محتوى يشرح منصة لإدارة علاقات العملاء أمام الكاميرا.',
+    type: 'ugc',
+    industry: 'unclassified',
+    languages: ['en'],
+    onlyIn: ['ar'],
+    source: { cloudflareId: '7359123313ee51b95976e3ae6adc331e' },
+    poster: '/portfolio/ar-ugc-11.webp',
+    crossLanguageNote: 'Owner request 2026-11-24: an English-captioned clip shown on the Arabic site; its language is shown as English.',
+    creatorId: 'ar-c05',
+    category: 'UGC · إعلان بمشاركة صانع محتوى',
+    placement: 'gallery',
+    approval: AR_APPROVAL,
+  },
+  {
+    id: 'ar-ugc-12',
+    title: 'جولة داخل شقة في برج سكني',
+    caption: 'جولة داخل شقة في برج سكني مع لقطات للمبنى والمرافق.',
+    type: 'ugc',
+    industry: 'unclassified',
+    languages: ['en'],
+    onlyIn: ['ar'],
+    source: { cloudflareId: '60c9247e04b35d3dde12aa6c918aa1d6' },
+    poster: '/portfolio/ar-ugc-12.webp',
+    crossLanguageNote: 'Owner request 2026-11-24: an English-captioned clip shown on the Arabic site; its language is shown as English.',
+    creatorId: 'ar-c05',
+    category: 'UGC · إعلان بمشاركة صانع محتوى',
+    placement: 'gallery',
+    approval: AR_APPROVAL,
+  },
+  /* ── FRENCH VIDEOS (owner folder ~/Desktop/CONVRT/CREATORS/French, uploaded to Cloudflare Stream 2026-11-23 for the French site) ─────────────────────────────────────────────────────────
+     French-only entries: `languages: ['fr']` + `onlyIn: ['fr']`, so they appear on /fr/ pages only (the French Showcase, the UGC gallery and hero, the homepage hero) and never change an English or Spanish page.
+     SOURCE: the five videos of the two French-speaking creators in that folder whose on-screen captions are French. A sixth file (a phone-case ad, captions in English) is NOT used: its spoken language is
+     unconfirmed. Creators are identified only by opaque ids (fr-c01, fr-c02; the name map is private, outside the repository); creator names, brands and production credits are NOT shown (no showName /
+     brandDisplay / creditDisplay). The footage itself shows brand names the creators filmed for; the page copy never names them. Titles describe only what the footage shows. No uploadDate is recorded,
+     so these entries emit no VideoObject structured data. `type` is 'ugc' (the folder's own category; the owner has not classified them further) and the industry stays 'unclassified'.
+     APPROVAL: the owner supplied this folder for the French site. The creators came through the creator portfolio onboarding (Creator Portfolio Agreement: limited website display); the signed records
+     must be confirmed in the admin before Production (docs/multilingual-french-release.md). Spoken language: French captions confirm it for these five; no audio transcript was run. */
+  /* ── MOHAMED (the founder of CONVRT), French creator folder CREATORS/French/Mohamed, uploaded to Cloudflare Stream 2026-11-23 for the French site ─────────────────────────────────────────────────────
+     Mohamed is both a creator/presenter and the founder of CONVRT; the owner placed these files in the French creators folder and asked for them in the French creator library, so he is the creator
+     (creatorId fr-c03) and his first name and role are shown (`creator.showName`): « Mohamed, fondateur de CONVRT ». Nothing else is claimed: no experience, credential, client or result. The French on-screen
+     captions confirm the spoken language of each file (no audio transcript was run). Brands that appear in the footage are never named in the copy (no brandDisplay / creditDisplay); titles describe only what the
+     footage shows. No uploadDate is recorded, so no VideoObject markup is emitted. `production` is left out on purpose (the owner has not said whether CONVRT produced each one).
+     USED WHERE: the four vertical videos (placement 'gallery'): Creator Showcase, UGC page gallery; Comma, SKYCOP, ROUTE-FACILE and TRIPMAP are also in the French homepage creator carousel (`homeCreator: { fr }`).
+     FIXD1, FIXD2 and FIXD3 (4K, 16:9; uploaded as 1080p derivatives, the originals untouched; FIXD3 = ~/Desktop/FR-2/FIXD3.mp4, a third hook variation, 2026-11-24) are the three landscape frames of the French client stage (`showcase: 'fixd'`): they are NOT portfolio-gallery videos
+     (portfolioUse false), exactly like the English client-stage videos. Comma is NOT the French hero video: the hero's main video is the French-dubbed CONVRT advertisement (homeHero.js). */
+  {
+    id: 'fr-mohamed-comma',
+    title: 'Présentation d’un maillot de football',
+    caption: 'Présentation d’un maillot de football',
+    type: 'ugc',
+    industry: 'unclassified',
+    languages: ['fr'],
+    onlyIn: ['fr'],
+    source: { cloudflareId: '8797ae3fba20c95e9d9d10eefda840c9' },
+    poster: '/portfolio/fr-mohamed-comma.webp',
+    creatorId: 'fr-c03',
+    creator: { displayName: 'Mohamed, fondateur de CONVRT', showName: true },
+    category: 'UGC · Publicité avec créateur',
+    placement: 'gallery',
+    homeCreator: { fr: 1 },
+    approval: FR_MOHAMED_APPROVAL,
+  },
+  {
+    id: 'fr-mohamed-route-facile',
+    title: 'Présentation d’un service de location de voiture',
+    caption: 'Présentation d’un service de location de voiture',
+    type: 'ugc',
+    industry: 'unclassified',
+    languages: ['fr'],
+    onlyIn: ['fr'],
+    source: { cloudflareId: 'a4a52503d855717880ed6dcbaca724b5' },
+    poster: '/portfolio/fr-mohamed-route-facile.webp',
+    creatorId: 'fr-c03',
+    creator: { displayName: 'Mohamed, fondateur de CONVRT', showName: true },
+    category: 'UGC · Publicité avec créateur',
+    placement: 'gallery',
+    homeCreator: { fr: 5 },
+    approval: FR_MOHAMED_APPROVAL,
+  },
+  {
+    id: 'fr-mohamed-skycop',
+    title: 'Indemnisation après un vol retardé',
+    caption: 'Indemnisation après un vol retardé',
+    type: 'ugc',
+    industry: 'unclassified',
+    languages: ['fr'],
+    onlyIn: ['fr'],
+    source: { cloudflareId: '5639f5ff6b02b7501b946aef4466ad4c' },
+    poster: '/portfolio/fr-mohamed-skycop.webp',
+    creatorId: 'fr-c03',
+    creator: { displayName: 'Mohamed, fondateur de CONVRT', showName: true },
+    category: 'UGC · Publicité avec créateur',
+    placement: 'gallery',
+    homeCreator: { fr: 3 },
+    approval: FR_MOHAMED_APPROVAL,
+  },
+  {
+    id: 'fr-mohamed-tripmap',
+    title: 'Présentation d’une carte de voyage à épingler',
+    caption: 'Présentation d’une carte de voyage à épingler',
+    type: 'ugc',
+    industry: 'unclassified',
+    languages: ['fr'],
+    onlyIn: ['fr'],
+    source: { cloudflareId: 'e4e8c66b5d6fef3d15ddf31ebcd17550' },
+    poster: '/portfolio/fr-mohamed-tripmap.webp',
+    creatorId: 'fr-c03',
+    creator: { displayName: 'Mohamed, fondateur de CONVRT', showName: true },
+    category: 'UGC · Publicité avec créateur',
+    placement: 'gallery',
+    homeCreator: { fr: 7 },
+    approval: FR_MOHAMED_APPROVAL,
+  },
+  {
+    id: 'fr-showcase-fixd-1',
+    caption: 'FIXD : présentation du boîtier et de l’application, face caméra puis au volant.',
+    industry: 'unclassified',
+    languages: ['fr'],
+    onlyIn: ['fr'],
+    orientation: 'landscape',
+    source: { cloudflareId: '9eedb31ea2296e96882de394b0a7e3a7' },
+    poster: '/portfolio/fr-showcase-fixd-1.webp',
+    creatorId: 'fr-c03',
+    brand: 'FIXD',
+    showcase: 'fixd',
+    approval: FR_CLIENT_STAGE_APPROVAL,
+  },
+  {
+    id: 'fr-showcase-fixd-2',
+    caption: 'FIXD : explication détaillée du boîtier et de l’application, en voiture et en extérieur.',
+    industry: 'unclassified',
+    languages: ['fr'],
+    onlyIn: ['fr'],
+    orientation: 'landscape',
+    source: { cloudflareId: '490a0502253d32c4b22085077b396437' },
+    poster: '/portfolio/fr-showcase-fixd-2.webp',
+    creatorId: 'fr-c03',
+    brand: 'FIXD',
+    showcase: 'fixd',
+    approval: FR_CLIENT_STAGE_APPROVAL,
+  },
+  {
+    id: 'fr-showcase-fixd-3',
+    caption: 'FIXD : variation d’accroche, du boîtier à l’application, dans la rue puis en voiture.',
+    industry: 'unclassified',
+    languages: ['fr'],
+    onlyIn: ['fr'],
+    orientation: 'landscape',
+    source: { cloudflareId: '39e4049b9e5993f5143037b2ebbc9bb5' },
+    poster: '/portfolio/fr-showcase-fixd-3.webp',
+    creatorId: 'fr-c03',
+    brand: 'FIXD',
+    showcase: 'fixd',
+    approval: FR_CLIENT_STAGE_APPROVAL,
+  },
+  {
+    id: 'fr-ugc-hero-1',
+    title: 'Présentation d’un complément alimentaire',
+    caption: 'Présentation d’un complément alimentaire',
+    type: 'ugc',
+    industry: 'unclassified',
+    languages: ['fr'],
+    onlyIn: ['fr'],
+    source: { cloudflareId: 'c1dd083d5550608a139f656670bd77a5' },
+    poster: '/portfolio/fr-ugc-hero-1.webp',
+    creatorId: 'fr-c01',
+    category: 'UGC · Publicité avec créateur',
+    placement: 'hero',
+    approval: FR_APPROVAL,
+  },
+  {
+    id: 'fr-ugc-hero-2',
+    title: 'Une application de voyage, racontée par un créateur',
+    caption: 'Une application de voyage, racontée par un créateur',
+    type: 'ugc',
+    industry: 'unclassified',
+    languages: ['fr'],
+    onlyIn: ['fr'],
+    source: { cloudflareId: '0346ed0881533220ba77bc4b3d4c26f9' },
+    poster: '/portfolio/fr-ugc-hero-2.webp',
+    creatorId: 'fr-c02',
+    category: 'UGC · Publicité avec créateur',
+    placement: 'hero',
+    approval: FR_APPROVAL,
+  },
+  {
+    id: 'fr-ugc-hero-3',
+    title: 'Présentation d’une application de gestion de patrimoine',
+    caption: 'Présentation d’une application de gestion de patrimoine',
+    type: 'ugc',
+    industry: 'unclassified',
+    languages: ['fr'],
+    onlyIn: ['fr'],
+    source: { cloudflareId: '5b1058e9c68ab7b05bd24858ceaadb9c' },
+    poster: '/portfolio/fr-ugc-hero-3.webp',
+    creatorId: 'fr-c01',
+    category: 'UGC · Publicité avec créateur',
+    placement: 'hero',
+    homeCreator: { fr: 2 },
+    approval: FR_APPROVAL,
+  },
+  {
+    id: 'fr-ugc-1',
+    title: 'Présentation d’une entreprise de toiture',
+    caption: 'Présentation d’une entreprise de toiture',
+    type: 'ugc',
+    industry: 'unclassified',
+    languages: ['fr'],
+    onlyIn: ['fr'],
+    source: { cloudflareId: '7c681c012def2539e7c32c99889d8662' },
+    poster: '/portfolio/fr-ugc-1.webp',
+    creatorId: 'fr-c02',
+    category: 'UGC · Publicité avec créateur',
+    placement: 'gallery',
+    homeCreator: { fr: 4 },
+    approval: FR_APPROVAL,
+  },
+  {
+    id: 'fr-ugc-2',
+    title: 'Démonstration d’une application de jeu mobile',
+    caption: 'Démonstration d’une application de jeu mobile',
+    type: 'ugc',
+    industry: 'unclassified',
+    languages: ['fr'],
+    onlyIn: ['fr'],
+    source: { cloudflareId: 'a273a9e766e0baf7eed8a6ad72c8892b' },
+    poster: '/portfolio/fr-ugc-2.webp',
+    creatorId: 'fr-c02',
+    category: 'UGC · Publicité avec créateur',
+    placement: 'gallery',
+    homeCreator: { fr: 6 },
+    approval: FR_APPROVAL,
+  },
   /* ── SPANISH VIDEOS (owner folders ~/Desktop/SPANISH: UGC, Spokesperson; uploaded to Cloudflare Stream 2026-11-22) ─────────────────────────────────────────────────────────────
      Spanish-only entries: `languages: ['es']` + `onlyIn: ['es']`, so they appear on /es/ pages only (the Spanish Showcase and the UGC / Spokesperson galleries and heroes) and never change an English page.
      The owner confirmed in chat (2026-11-22) that all 18 are approved for the website and that the creators agreed to portfolio display. Creators are identified only by opaque ids (the name-to-id
@@ -1609,26 +2230,28 @@ export const saasFormatLabel = (id) => SAAS_FORMATS.find((f) => f.id === id)?.la
 
 const titleCase = (slug) => slug.replace(/[-_]+/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())
 /* The label helpers below speak the language of the page being rendered (from the URL; English everywhere unless the page is /es/…). The data itself stays English. */
-const isEs = () => currentLocale() === 'es'
-export const languageLabel = (code) => (isEs() ? ES_LANGUAGE_LABELS[code] : LANGUAGE_LABELS[code]) ?? code.toUpperCase()
+/* `ed()` = the editorial data of the page's language (src/i18n/editorial.js), or null on English pages. Arabic reads its own label tables (src/i18n/ar/labels.js) so it never depends on the shared table. */
+const AR_ED = { languageLabels: AR_LANGUAGE_LABELS, industryLabels: AR_INDUSTRY_LABELS, typeLabels: AR_TYPE_LABELS, productionLabels: AR_PRODUCTION_LABELS, caption: captionAr }
+const ed = () => (currentLocale() === 'ar' ? AR_ED : editorial())
+export const languageLabel = (code) => (ed()?.languageLabels ?? LANGUAGE_LABELS)[code] ?? code.toUpperCase()
 
 /* An industry that has not been confirmed. It is internal: it is never shown as a label and never becomes a tab. */
 export const UNCLASSIFIED = 'unclassified'
 export const isClassified = (item) => Boolean(item.industry) && item.industry !== UNCLASSIFIED
 /* '' for an unconfirmed industry, so nothing is displayed (callers drop empty labels). */
-export const industryLabel = (slug) => (!slug || slug === UNCLASSIFIED ? '' : (isEs() ? ES_INDUSTRY_LABELS[slug] : INDUSTRY_LABELS[slug]) ?? titleCase(slug))
+export const industryLabel = (slug) => (!slug || slug === UNCLASSIFIED ? '' : (ed()?.industryLabels ?? INDUSTRY_LABELS)[slug] ?? titleCase(slug))
 export const typeOf = (item) => item.type
-export const typeLabel = (item) => (item.type ? (isEs() ? ES_TYPE_LABELS[item.type] : TYPE_LABELS[item.type]) ?? titleCase(item.type) : '')
+export const typeLabel = (item) => (item.type ? (ed()?.typeLabels ?? TYPE_LABELS)[item.type] ?? titleCase(item.type) : '')
 /* A video's caption in the page's language: generic captions ("UGC ad example 5.") are translated; a hand-written one is shown as written. */
 /* LANGUAGE-SPECIFIC COPY. An entry may carry `i18n: { es: { title, caption } }`: copy WRITTEN for that language's page (the Spanish Showcase has its own creators and videos, not translations of the English
    ones). Resolution on a /es/ page: the entry's own `i18n.es` text, else (for the generic placeholder captions only) the pattern translation, else the entry's own text as written. */
-const own = (item, field) => (isEs() ? item.i18n?.es?.[field] : undefined)
-export const captionOf = (item) => own(item, 'caption') ?? (isEs() ? captionEs(item.caption) ?? item.caption : item.caption)
-export const titleOf = (item) => own(item, 'title') ?? (isEs() ? captionEs(item.title ?? item.caption) ?? item.title ?? item.caption : item.title ?? item.caption)
+const own = (item, field) => (ed() ? item.i18n?.[currentLocale()]?.[field] : undefined)
+export const captionOf = (item) => own(item, 'caption') ?? (ed() ? ed().caption(item.caption) ?? item.caption : item.caption)
+export const titleOf = (item) => own(item, 'title') ?? (ed() ? ed().caption(item.title ?? item.caption) ?? item.title ?? item.caption : item.title ?? item.caption)
 
 /* PRODUCTION ATTRIBUTION. 'independent' = a creator's own example; 'convrt' = produced through CONVRT; unset = unknown (nothing is claimed). */
 export const PRODUCTION_LABELS = { independent: 'Independent creator', convrt: 'Produced by CONVRT' }
-export const productionLabel = (item) => (isEs() ? ES_PRODUCTION_LABELS : PRODUCTION_LABELS)[item.production] ?? ''
+export const productionLabel = (item) => (ed()?.productionLabels ?? PRODUCTION_LABELS)[item.production] ?? ''
 export const isConvrtProduction = (item) => item.production === 'convrt'
 
 /* Brand name and credit line: shown only with the explicit permission recorded in the approval. */
@@ -1665,7 +2288,7 @@ export function portfolioProblems(item) {
   if (item.onlyIn !== undefined) {
     const ok = Array.isArray(item.onlyIn) && item.onlyIn.length > 0 && item.onlyIn.every((l) => /^[a-z]{2}$/.test(l))
     if (!ok) p.push('onlyIn must be a non-empty list of 2-letter language codes (the language sites that may show this video)')
-    else if (!item.onlyIn.includes('en') && !item.onlyIn.every((l) => (item.languages ?? []).includes(l))) p.push('onlyIn: a video limited to other languages must list those languages in `languages` (its confirmed spoken language)')
+    else if (!item.onlyIn.includes('en') && !item.crossLanguageNote && !item.onlyIn.every((l) => (item.languages ?? []).includes(l))) p.push('onlyIn: a video limited to other languages must list those languages in `languages` (its confirmed spoken language)')
   }
   const hasCf = Boolean(item.source?.cloudflareId)
   const hasMp4 = Boolean(item.source?.mp4)
@@ -1685,7 +2308,14 @@ export function portfolioProblems(item) {
   }
   if (item.placement !== undefined && item.placement !== 'hero' && item.placement !== 'gallery') p.push("placement must be 'hero' or 'gallery'")
   if (item.showcase !== undefined && !/^[a-z][a-z0-9-]*$/.test(item.showcase)) p.push('showcase must be a lowercase slug')
-  if (item.homeCreator !== undefined && !(Number.isInteger(item.homeCreator) && item.homeCreator >= 1 && item.homeCreator <= 20)) p.push('homeCreator must be a whole number from 1 to 20 (its position in the homepage creator carousel)')
+  if (item.views !== undefined && !(typeof item.views === 'string' && /^\d+(\.\d+)?[KM]$/.test(item.views))) p.push("views must be a verified figure like '7.5M' or '295K' (copy it from the published case study; never estimate)")
+  if (item.homeCreator !== undefined) {
+    const okPos = (n) => Number.isInteger(n) && n >= 1 && n <= 20
+    const ok = okPos(item.homeCreator) || (item.homeCreator && typeof item.homeCreator === 'object' && !Array.isArray(item.homeCreator) && Object.entries(item.homeCreator).every(([l, n]) => /^[a-z]{2}$/.test(l) && okPos(n)))
+    if (!ok) p.push('homeCreator must be a whole number from 1 to 20 (its position in the English homepage creator carousel) or { <language>: position }')
+  }
+  if (item.orientation !== undefined && item.orientation !== 'landscape' && item.orientation !== 'portrait') p.push("orientation must be 'landscape' or 'portrait'")
+  if (item.orientation === 'landscape' && !item.showcase) p.push('a landscape video is only for a client stage (`showcase`): the galleries are portrait')
   if (item.uploadDate !== undefined && !/^\d{4}-\d{2}-\d{2}(T[\d:.+Z-]+)?$/.test(item.uploadDate)) p.push('uploadDate must be an ISO date (YYYY-MM-DD)')
   if (hasMp4 && !item.poster) p.push('an mp4 source needs a poster image')
   if (!a || typeof a !== 'object') p.push('approval is required')
@@ -1708,7 +2338,9 @@ export const isShowcaseable = (item) => portfolioProblems(item).length === 0 && 
 /* forPageLanguage(): on a page in another language ONLY videos whose confirmed spoken `languages` include that language are shown (the page components apply it to what the selectors return):
    the Spanish pages never show the English library, and a video with no recorded language is never guessed into a language. English is unchanged. It is NOT applied inside the selectors, because
    module-level code (the SEO manifest's `indexable` flags) must stay language-independent. */
-export const forPageLanguage = (items) => (currentLocale() === 'en' ? items : items.filter((i) => (i.languages ?? []).includes(currentLocale())))
+/* A video belongs on a language site when it is spoken in that language, or when the owner has explicitly placed it there (`crossLanguageNote` + `onlyIn`, e.g. the English-captioned clips on the Arabic site). */
+const belongsTo = (i, locale) => (i.languages ?? []).includes(locale) || (!!i.crossLanguageNote && !!i.onlyIn?.includes(locale))
+export const forPageLanguage = (items) => (currentLocale() === 'en' ? items : items.filter((i) => belongsTo(i, currentLocale())))
 /* `onlyIn: ['es']` limits a video to the Spanish site: it is then invisible to every English-facing consumer (English pages, the English indexable flags, English JSON-LD), so adding a
    Spanish-only video can never change an English page. With no `onlyIn` a video behaves exactly as before. */
 const shownIn = (item, locale) => !item.onlyIn || item.onlyIn.includes(locale)
@@ -1717,7 +2349,7 @@ export const ENGLISH_LIBRARY = PORTFOLIO.filter((i) => shownIn(i, DEFAULT_LOCALE
 /* Always the library of the page being rendered: English pages (and anything evaluated without a page) never see Spanish-only videos. */
 export const selectDisplayable = (items = PORTFOLIO) => items.filter((i) => shownIn(i, currentLocale()) && isDisplayable(i))
 /* Approved videos for a language, independent of the page being rendered (used by the release gate, the sitemap and the tests). */
-export const displayableFor = (locale, items = PORTFOLIO) => items.filter(isDisplayable).filter((i) => shownIn(i, locale) && (locale === 'en' || (i.languages ?? []).includes(locale)))
+export const displayableFor = (locale, items = PORTFOLIO) => items.filter(isDisplayable).filter((i) => shownIn(i, locale) && (locale === 'en' || belongsTo(i, locale)))
 
 /* /creator-showcase: everything approved for the portfolio. */
 export const selectOurWork = selectDisplayable
@@ -1746,14 +2378,18 @@ const selectSaas = (items) => selectDisplayable(items).filter((i) => servesPage(
 export const selectSaasHero = (items = PORTFOLIO) => selectSaas(items).filter((i) => placementOn(i, 'saas') === 'hero')
 export const selectSaasGallery = (items = PORTFOLIO) => selectSaas(items).filter((i) => placementOn(i, 'saas') !== 'hero')
 
-/* The English homepage "Real creators" carousel: approved videos (full approval: portfolio use AND creator consent) tagged `homeCreator`, whose spoken language is CONFIRMED English (a video
+/* The homepage "Real creators" carousel (English; the Arabic homepage has the same carousel with Arabic-language videos tagged the same way): approved videos (full approval: portfolio use AND creator consent) tagged `homeCreator`, whose spoken language is CONFIRMED English (a video
    with no recorded language is never guessed into the list), in `homeCreator` order. Nothing is invented to fill a gap: fewer than eight approved videos simply show fewer. */
 export const HOME_CREATORS_MAX = 8
-export const selectHomeCreators = (items = PORTFOLIO) =>
-  selectDisplayable(items)
-    .filter((i) => i.homeCreator !== undefined && (i.languages ?? []).includes('en'))
-    .sort((a, b) => a.homeCreator - b.homeCreator)
+/* Position of a video in the homepage creator carousel of `locale`: a number is the English (and Arabic) position; an object is per language ({ fr: 1 }). */
+const homePosition = (item, locale) => (typeof item.homeCreator === 'number' ? (locale === 'en' || locale === 'ar' ? item.homeCreator : undefined) : item.homeCreator?.[locale])
+export const selectHomeCreators = (items = PORTFOLIO) => {
+  const locale = currentLocale()
+  return selectDisplayable(items)
+    .filter((i) => homePosition(i, locale) !== undefined && (i.languages ?? []).includes(locale))
+    .sort((a, b) => homePosition(a, locale) - homePosition(b, locale))
     .slice(0, HOME_CREATORS_MAX)
+}
 
 /* A service page may fix the order of some of its videos without touching the shared file order (which /creator-showcase and the UGC gallery use): the listed ids come first, in the
    listed order, and every other video follows in its usual order. Ids that are not in `items` are ignored. */
@@ -1763,7 +2399,12 @@ export const orderedBy = (items, ids = []) => {
 }
 
 /* Homepage client panel `id` ('adscale' | 'elyon' | 'graspo'). */
-export const selectShowcase = (id, items = PORTFOLIO) => items.filter((i) => shownIn(i, currentLocale()) && isShowcaseable(i) && i.showcase === id)
+/* A language site with its OWN videos for that client (entries limited to it with `onlyIn`, e.g. the Arabic Graspo and One Royal entries) shows only those, never the English ones as well. */
+export const selectShowcase = (id, items = PORTFOLIO) => {
+  const all = items.filter((i) => shownIn(i, currentLocale()) && isShowcaseable(i) && i.showcase === id)
+  const own = currentLocale() === DEFAULT_LOCALE ? [] : all.filter((i) => i.onlyIn?.includes(currentLocale()))
+  return own.length ? own : all
+}
 
 /* Name shown on a card: only with explicit permission. */
 export const creatorLabel = (item) => (item.creator?.showName === true && item.creator?.displayName ? item.creator.displayName : null)
@@ -1788,9 +2429,9 @@ export const CATEGORIES = [
      Spokesperson). It has a tab only while at least one such video is approved. */
   { id: 'spokesperson', label: 'Spokesperson', color: '#ff6a4d', byType: 'spokesperson' },
 ]
-/* The UGC TYPE filter exists only on the Spanish page: its videos are all 'unclassified' by industry, so without it the Spanish library offered only All + Spokesperson. It is NOT in
+/* The UGC TYPE filter exists only on translated pages (Spanish, French): its videos are all 'unclassified' by industry, so without it the Spanish library offered only All + Spokesperson. It is NOT in
    CATEGORIES, so the English tabs (and tests/creator-showcase.test.mjs) are unchanged; it sits between the industry tabs and Spokesperson. */
-const ES_UGC_CATEGORY = { id: 'ugc', label: 'UGC', color: '#d5ff40', byType: 'ugc' }
+const TRANSLATED_UGC_CATEGORY = { id: 'ugc', label: 'UGC', color: '#d5ff40', byType: 'ugc' }
 export const CATEGORY_LABELS = Object.fromEntries(CATEGORIES.map((c) => [c.id, c.label]))
 const CATEGORY_ORDER = CATEGORIES.map((c) => c.id)
 const CATEGORY_OF_INDUSTRY = { saas: 'saas', technology: 'saas', ecommerce: 'ecommerce', services: 'services' }
@@ -1798,13 +2439,13 @@ export const categoryOf = (item) => (isClassified(item) ? CATEGORY_OF_INDUSTRY[i
 
 /* Is the video in the filter `categoryId`? An industry filter by its industry group; the Spokesperson filter by the video's type. */
 export const inCategory = (item, categoryId) => {
-  const c = CATEGORIES.find((x) => x.id === categoryId) ?? (categoryId === ES_UGC_CATEGORY.id ? ES_UGC_CATEGORY : undefined)
+  const c = CATEGORIES.find((x) => x.id === categoryId) ?? (categoryId === TRANSLATED_UGC_CATEGORY.id ? TRANSLATED_UGC_CATEGORY : undefined)
   return c?.byType ? typeOf(item) === c.byType : categoryOf(item) === categoryId
 }
 
 /* The tabs /creator-showcase offers: All Work, then each category that has at least one classified video (an empty category is hidden). */
 export const availableCategories = (items) => {
-  const list = isEs() ? [...CATEGORIES.filter((c) => c.id !== 'spokesperson'), ES_UGC_CATEGORY, ...CATEGORIES.filter((c) => c.id === 'spokesperson')] : CATEGORIES
+  const list = ed() ? [...CATEGORIES.filter((c) => c.id !== 'spokesperson'), TRANSLATED_UGC_CATEGORY, ...CATEGORIES.filter((c) => c.id === 'spokesperson')] : CATEGORIES
   return [ALL_CATEGORY, ...list.filter((c) => items.some((i) => inCategory(i, c.id)))]
 }
 export const countIn = (items, categoryId) => (categoryId === 'all' ? items.length : items.filter((i) => inCategory(i, categoryId)).length)
@@ -1833,3 +2474,18 @@ export function buildFacets(items) {
 
 export const matchesFilters = (item, { language = null, category = null } = {}) =>
   (!language || (item.languages ?? []).includes(language)) && (!category || categoryOf(item) === category)
+
+/* CREATOR DIVERSITY (Arabic library, owner 2026-11-25): the same creator is never shown again within a desktop row (4 cards) while another creator is available. Deterministic and applied to the list
+   that is actually on screen (after any filter): it takes the items in their normal order and, for each position, the first remaining item whose creator is not among the last three chosen
+   (otherwise simply the first remaining one). Nothing is dropped or invented; items without a creatorId count as different from each other. English keeps its own file-order convention. */
+export function diversifyByCreator(list, window = 3) {
+  const left = [...list]
+  const out = []
+  while (left.length) {
+    const recent = out.slice(-window).map((i) => i.creatorId).filter(Boolean)
+    let k = left.findIndex((i) => !i.creatorId || !recent.includes(i.creatorId))
+    if (k < 0) k = 0
+    out.push(left.splice(k, 1)[0])
+  }
+  return out
+}

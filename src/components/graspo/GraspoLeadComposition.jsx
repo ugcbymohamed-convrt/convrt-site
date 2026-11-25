@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useTr } from '../../i18n/tr.js'
+import { mix } from '../../i18n/ar/mix.jsx'
+import { currentLocale } from '../../i18n/locale.js'
 import { GRASPO_LEAD_CATEGORIES as CATEGORIES, GRASPO_LEADS_BY_MONTH as MONTHS } from '../../caseStudies/data.js'
 import { pct, isEnglish, cx } from '../caseStudies/format.js'
 
@@ -28,6 +30,7 @@ function useInView(threshold = 0.15) {
 export default function GraspoLeadComposition() {
   const tr = useTr()
   const en = isEnglish()
+  const ar = currentLocale() === 'ar'
   const [ref, visible] = useInView()
 
   return (
@@ -41,7 +44,7 @@ export default function GraspoLeadComposition() {
           <h2 className="font-display font-bold text-ink tracking-display leading-[1.05] text-3xl md:text-[44px]">
             {tr('Consistent demand, not')}
             <br />
-            {tr('one viral accident.')}
+            {mix(tr('one viral accident.'))}
           </h2>
         </div>
 
@@ -49,7 +52,7 @@ export default function GraspoLeadComposition() {
           {/* Category breakdown */}
           <div className="lg:col-span-7 rounded-3xl border border-hairline bg-surface-1/40 px-7 py-8 md:px-9 md:py-9">
             <p className="text-sm font-semibold text-ink mb-1">{tr('What the 75 leads were about')}</p>
-            <p className="text-[12px] text-ink-subtle mb-6">{en ? <>By inquiry group, {TOTAL_LEADS} unique leads</> : tr(`By inquiry group, ${TOTAL_LEADS} unique leads`)}</p>
+            <p className="text-[12px] text-ink-subtle mb-6">{en ? <>By inquiry group, {TOTAL_LEADS} unique leads</> : ar ? <>{tr('By inquiry group,')} {TOTAL_LEADS} {tr('unique leads')}</> : tr(`By inquiry group, ${TOTAL_LEADS} unique leads`)}</p>
 
             <div className="h-4 w-full rounded-full overflow-hidden flex bg-surface-3 mb-6">
               {CATEGORIES.map((c, i) => (
@@ -69,10 +72,10 @@ export default function GraspoLeadComposition() {
                 <div key={c.label} className="flex items-center justify-between gap-4">
                   <div className="flex items-center gap-2.5 min-w-0">
                     <span className="h-2.5 w-2.5 rounded-full shrink-0" style={{ background: c.color }} />
-                    <span className={cx('text-[13px] text-ink-muted', en && 'truncate')}>{tr(c.label)}</span>
+                    <span className={cx('text-[13px] text-ink-muted', (en || ar) && 'truncate')}>{tr(c.label)}</span>
                   </div>
                   <span className="text-[13px] font-semibold text-ink tabular-nums shrink-0">
-                    {c.count} <span className="text-ink-subtle font-normal">({pct(Math.round((c.count / TOTAL_LEADS) * 100))})</span>
+                    {c.count} <span className="text-ink-subtle font-normal">({ar ? `${Math.round((c.count / TOTAL_LEADS) * 100)}%` : pct(Math.round((c.count / TOTAL_LEADS) * 100))})</span>
                   </span>
                 </div>
               ))}

@@ -1,5 +1,7 @@
 import { scrollToElement } from '../../lib/scroll.js'
 import { usePressFeedback } from '../../lib/usePressFeedback.js'
+import { tr } from '../../i18n/tr.js'
+import { forward } from '../../lib/rtl.js'
 
 /* Link-styled CTA that starts scrolling on the very next frame (see src/lib/scroll.js).
    Plain left-clicks are intercepted; modified clicks (new tab, etc.) keep normal link
@@ -32,7 +34,7 @@ export const Arrow = () => (
     aria-hidden="true"
     className="transition-transform duration-200 group-hover:translate-x-0.5 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0"
   >
-    →
+    {forward()}
   </span>
 )
 
@@ -61,7 +63,7 @@ export function openTerms() {
 }
 
 /* Inline-looking text link with a 44px touch target. */
-export function TermsLink({ children = 'Read full program terms', className = '' }) {
+export function TermsLink({ children = tr('Read full program terms'), className = '' }) {
   return (
     <a
       href="#terms"

@@ -704,7 +704,7 @@ test('homepage HTML: services heading and cards, hero line, internal links', () 
   ]) assert.ok(t.includes(n), n)
   assert.ok(!/Built for modern|Explore the Creative Testing Sprint|Compare packages and pricing|significantly better results|personally approved by the founder|prolific creator/.test(t))
   const root = rootOf(h)
-  for (const href of ['/pricing', '/case-studies/graspo', '/case-studies/elyon', '/creative-growth-roadmap', '/free-hooks', '/risk-free-trial', '/blog']) assert.ok(root.includes(`href="${href}"`), href)
+  for (const href of ['/pricing', '/case-studies/elyon', '/creative-growth-roadmap', '/free-hooks', '/risk-free-trial', '/blog']) assert.ok(root.includes(`href="${href}"`), href)
   assert.ok(count(root, /href="\/pricing"/g) >= 4, 'nav, services link, footer and two FAQ answers link to /pricing')
   assert.ok(!root.includes('case=elyon'))
   // conversion CTAs unchanged

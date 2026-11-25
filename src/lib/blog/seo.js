@@ -9,6 +9,7 @@
 import { SITE_URL, OG_IMAGE, BLOG_PATH, BLOG_INDEXABLE } from '../../config.js'
 import { articlePath } from './schema.js'
 import { organizationRef, websiteRef } from '../../seo/structuredData.js'
+import { LOCALES } from '../../i18n/locales.js'
 
 export const BLOG_TITLE = 'CONVRT Blog | Video Ads, UGC & Creative Strategy'
 export const BLOG_DESCRIPTION =
@@ -133,4 +134,25 @@ export function buildBlogSitemap(published, { indexable = BLOG_INDEXABLE } = {})
     .map((e) => `  <url><loc>${esc(e.loc)}</loc>${e.lastmod ? `<lastmod>${e.lastmod}</lastmod>` : ''}</url>`)
     .join('\n')
   return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${body}${body ? '\n' : ''}</urlset>\n`
+}
+
+/* The Arabic blog index (/ar/blog). It is an Arabic page of its own, not a redirect to /blog. While it has no published Arabic article it is "noindex, follow" and out of the sitemap and hreflang
+   (a page with no articles is not worth indexing); it starts to be indexable by itself once src/content/blogAr.js lists an article AND the English blog is indexable. */
+export const AR_BLOG_TITLE = 'مدونة CONVRT | إعلانات UGC وإنتاج الفيديو واستراتيجية المحتوى'
+export const AR_BLOG_DESCRIPTION = 'أفكار ونصائح عن إعلانات UGC، وإنتاج الفيديو، واستراتيجية المحتوى للعلامات التجارية.'
+export function arabicBlogHead(articles = []) {
+  return {
+    title: AR_BLOG_TITLE,
+    description: AR_BLOG_DESCRIPTION,
+    url: `${SITE_URL}/ar${BLOG_PATH}`,
+    image: OG_IMAGE.url,
+    imageAlt: OG_IMAGE.alt,
+    imageWidth: OG_IMAGE.width,
+    imageHeight: OG_IMAGE.height,
+    robots: robotsFor(BLOG_INDEXABLE && articles.length > 0),
+    lang: LOCALES.ar.htmlLang,
+    dir: LOCALES.ar.dir,
+    ogLocale: LOCALES.ar.ogLocale,
+    alternates: [],
+  }
 }

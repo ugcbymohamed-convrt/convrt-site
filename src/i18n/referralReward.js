@@ -14,10 +14,12 @@ const NB = ' '
 export const REFERRAL_REWARDS = {
   es: { standard: `150${NB}€`, cap: `500${NB}USD`, example: `5.000${NB}USD` },
   fr: { standard: `150${NB}€`, cap: `500${NB}USD`, example: `5${NB}000${NB}USD` },
+  // Arabic: the original US-dollar amounts, written in Arabic ("150 دولارًا"); the big figure on the reward card stays "$150" (standardRewardCard).
+  ar: { standard: `150${NB}دولارًا`, cap: `500${NB}دولار`, example: `5,000${NB}دولار` },
 }
 
 /* The big figure on the Standard reward card. English and Arabic: the original "$150". */
-export const standardRewardCard = (locale) => (REFERRAL_REWARDS[locale] ? REFERRAL_REWARDS[locale].standard : '$150')
+export const standardRewardCard = (locale) => (locale !== 'ar' && REFERRAL_REWARDS[locale] ? REFERRAL_REWARDS[locale].standard : '$150')
 
 export const hasRewardTokens = (text) => text.includes('{{reward:')
 export function resolveRewardTokens(locale, text) {

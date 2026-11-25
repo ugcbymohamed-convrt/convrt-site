@@ -101,7 +101,10 @@ function applySheet(el, v) {
   el.style.filter = v.blur > 0.1 ? `blur(${v.blur}px)` : 'none'
 }
 
-export default function GraspoHeroScene({ mobile = false }) {
+/* offsetPx: where the gust starts, in px of the scene's distance from the top of the viewport. English uses the default (320). The Arabic page has no "Case Studies" switcher above its hero, so its hero
+   starts ~374 px higher on the page than the English one; with the English offset the gust was already finished when the page loaded and nothing moved. GraspoHero passes the English start point,
+   shifted by that difference, so the sequence plays over the same scrolling distance as in English. */
+export default function GraspoHeroScene({ mobile = false, offsetPx = THROUGH_OFFSET_PX }) {
   const sceneRef = useRef(null)
   const reducedMotion = usePrefersReducedMotion()
 
@@ -150,7 +153,7 @@ export default function GraspoHeroScene({ mobile = false }) {
     }))
   }, [])
 
-  useScrollDriver(sceneRef, onTick, { disabled: reducedMotion, throughPx: THROUGH_PX, throughOffsetPx: THROUGH_OFFSET_PX })
+  useScrollDriver(sceneRef, onTick, { disabled: reducedMotion, throughPx: THROUGH_PX, throughOffsetPx: offsetPx })
 
   useEffect(() => {
     if (reducedMotion) {

@@ -2,6 +2,7 @@
 // Exercises the shared validation, api/_lib/referral.js and the Vercel handler with a fake
 // MailerLite + Resend (injected fetch) — no network, no real credentials, no real subscribers.
 import test from 'node:test'
+import { readSource } from './helpers/i18nSource.mjs'
 import assert from 'node:assert/strict'
 import { readdirSync, readFileSync, statSync, existsSync } from 'node:fs'
 import { join, dirname } from 'node:path'
@@ -477,7 +478,7 @@ test('the endpoint is registered in the Vite dev middleware and the page route +
    and rules that matter. Real rendering, scrolling, focus and responsive layout are verified by
    hand in the Browser pane (docs/referral-program-setup.md §11). */
 
-const read = (rel) => readFileSync(join(ROOT, rel), 'utf8')
+const read = (rel) => readSource(join(ROOT, rel)) // tr('…') calls are unwrapped, so the English source of the Arabic-ready components is still matched literally
 const SRC = {
   faq: read('src/components/referrals/ReferralFAQ.jsx'),
   form: read('src/components/referrals/ReferralForm.jsx'),
@@ -539,7 +540,7 @@ test('the form is bot-protected, labelled, and shows the specified CTA and confi
   assert.match(SRC.form, /name="hp_check"/)
   assert.match(SRC.form, /tabIndex=\{-1\}/)
   assert.match(SRC.form, /Join the Referral Program/)
-  assert.match(SRC.form, /\{tr\('Let’s Become'\)\} <span className="text-lime">\{tr\('Partners\.'\)\}<\/span>/)
+  assert.match(SRC.form, /Let’s Become <span className="text-lime">Partners\.<\/span>/)
   assert.match(SRC.form, /You’re One Step Closer to Becoming a CONVRT Partner\./)
   assert.match(SRC.form, /If approved, we’ll send\s+you everything you need to start referring\./)
   assert.match(SRC.form, /role="alert"/)
@@ -574,7 +575,7 @@ test('press feedback and reduced motion: buttons give visible feedback and anima
 })
 
 test('copy: headline, offer figures and the Creative Upgrade match the brief', () => {
-  assert.match(SRC.hero, /\{tr\('Know a Brand That Needs'\)\} <span className="text-lime">\{tr\('Better Video Ads\?'\)\}<\/span>/)
+  assert.match(SRC.hero, /Know a Brand That Needs <span className="text-lime">Better Video Ads\?<\/span>/)
   assert.match(SRC.hero, /Introduce SaaS and e-commerce brands to CONVRT\. Get rewarded when they become clients\./)
   assert.match(SRC.hero, /Simple introductions\. No selling required\./)
   for (const t of ['You refer', 'We create', 'You earn']) assert.ok(SRC.hero.includes(`title: '${t}'`), t)
@@ -629,7 +630,7 @@ test('the full program terms stay reachable: compact summary, accordion, and lin
 
 test('the navigation has one "Refer & Earn" link to /referrals (desktop and mobile), "Earn" in lime, naming no single reward, with focus + hover states', () => {
   const nav = read('src/components/Nav.jsx')
-  assert.match(nav, /href=\{localHref\(REFERRALS_PATH, locale\)\}/)
+  assert.match(nav, /href=\{localHref\(REFERRALS_PATH(, locale)?\)\}/)
   assert.match(nav, /Refer &amp; <span className="font-semibold text-lime">Earn<\/span>/)
   assert.match(read('src/i18n/menu.js'), /es: \['Recomienda y', 'gana'\]/)
   assert.match(read('src/i18n/menu.js'), /fr: \['Parrainez et', 'gagnez'\]/)
