@@ -50,12 +50,12 @@ export default function LanguageSelector({ variant = 'dropdown', className = '',
         href={o.href}
         lang={o.htmlLang}
         hrefLang={o.htmlLang}
-        dir={o.dir}
         aria-current={o.current ? 'true' : undefined}
         onClick={() => { rememberLanguage(o.code); setOpen(false); onNavigate?.() }}
         className={`${itemClass} ${o.current ? 'text-ink font-semibold' : 'text-ink-muted hover:text-ink'}`}
       >
-        <span>{o.label}</span>
+        {/* The direction sits on the label, not the row: the row keeps the page's direction, so «العربية» lines up with the other languages. */}
+        <span dir={o.dir}>{o.label}</span>
         {o.current && (
           <svg viewBox="0 0 12 12" className="h-3 w-3 text-lime" fill="none" aria-hidden="true">
             <path d="M2.5 6.4l2.3 2.3L9.5 3.8" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
