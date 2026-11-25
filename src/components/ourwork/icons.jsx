@@ -33,6 +33,9 @@ export const CATEGORY_ICONS = {
     <svg {...base} {...p}><path d="M10 3l1.6 4.4L16 9l-4.4 1.6L10 15l-1.6-4.4L4 9l4.4-1.6L10 3z" /><path d="M15.5 14.5v3M14 16h3" /></svg>
   ),
 }
+// The type filters of a translated library reuse the industry icons of the same meaning (software layers, the 'other' glyph).
+CATEGORY_ICONS['type-saas'] = CATEGORY_ICONS.saas
+CATEGORY_ICONS['type-organic'] = CATEGORY_ICONS.other
 
 /* The Arabic library's four type tabs reuse the icons above (src/content/portfolio.js AR_TYPE_CATEGORIES). */
 CATEGORY_ICONS['ar-ugc'] = CATEGORY_ICONS.ugc

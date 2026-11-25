@@ -236,9 +236,9 @@ test('no « (en anglais) » on links to the three pages (home cards, footer, pri
   assert.match(pricing, /Vidéos Spokesperson(?! \(en anglais\))/); assert.match(pricing, /Comment fonctionne le contenu organique(?! \(en anglais\))/)
 })
 
-test('NO videos on the three French pages: no <video>, no iframe, no stream URL, no gallery or showcase section, no placeholder, no “coming soon”, no empty three-phone stage', () => {
+test('NO videos on the French SaaS and Organic Social pages (the Spokesperson hero stage is covered in video-library.test.mjs): no <video>, no iframe, no stream URL, no gallery or showcase section, no placeholder, no “coming soon”, no empty three-phone stage', () => {
   assert.equal(FR_SERVICE_PAGE_VIDEOS, false)
-  for (const bp of SERVICES) {
+  for (const bp of [SAAS, ORG]) {
     const h = page(fr(bp)), body = visible(h)
     assert.ok(!/<video\b|<iframe\b|videodelivery\.net|cloudflarestream|\.m3u8|\/portfolio\/|data-video|poster=/.test(body), `${bp}: no video or poster markup`)
     assert.ok(!/id="(spokesperson|saas|organic)-videos(-heading)?"/.test(body), `${bp}: no gallery section`)

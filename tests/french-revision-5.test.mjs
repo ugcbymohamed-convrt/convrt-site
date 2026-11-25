@@ -26,7 +26,7 @@ test('Services dropdown: one shared component, the four French labels in the own
 
 test('UGC hero: the free-video card is a real link, the 10 hooks card a still « Bientôt disponible »', () => {
   const hero = src('src/components/ugc/UgcHero.jsx')
-  assert.match(hero, /offersShown\(locale\) && \(locale !== 'fr' \|\| hasWork\)/)
+  assert.match(hero, /offersShown\(locale\) && \(locale !== 'fr' \|\| \(hasWork && configProp === UGC_HERO\)\)/)
   assert.deepEqual(FR_HOME_HERO.offers.video.title, ['1 vidéo', 'OFFERTE'])
   assert.equal(FR_HOME_HERO.offers.video.cta, 'Vérifier mon éligibilité')
   assert.deepEqual(FR_HOME_HERO.offers.hooks.title, ['10 hooks', 'GRATUITS'])

@@ -20,6 +20,7 @@ import {
 } from './content/spokespersonPage.js'
 import { tr, T, hrefFor } from './i18n/tr.js'
 import { serviceVideos } from './i18n/serviceVideos.js'
+import { galleryEnabled, heroOrder } from './content/galleryPolicy.js'
 
 /* /spokesperson-video-production: the Spokesperson service page. It reuses the UGC page's architecture and design system, and each section is
    the same configuration-driven component fed with spokesperson content (src/content/spokespersonPage.js):
@@ -60,8 +61,8 @@ export default function SpokespersonVideoPage() {
     trackEvent('spokesperson_page_view')
   }, [])
 
-  const heroItems = orderedBy(serviceVideos(selectSpokespersonHero()), SPOKESPERSON_VIDEO_ORDER.hero)
-  const galleryItems = orderedBy(serviceVideos(selectSpokespersonGallery()), SPOKESPERSON_VIDEO_ORDER.gallery)
+  const heroItems = orderedBy(serviceVideos(selectSpokespersonHero(), 'spokesperson', 'hero'), heroOrder(currentLocale(), 'spokesperson') ?? SPOKESPERSON_VIDEO_ORDER.hero)
+  const galleryItems = orderedBy(serviceVideos(selectSpokespersonGallery(), 'spokesperson', 'gallery'), SPOKESPERSON_VIDEO_ORDER.gallery)
 
   return (
     <>
@@ -77,7 +78,7 @@ export default function SpokespersonVideoPage() {
       <ProcessSection config={PROCESS_CONFIG} footer={<ProcessFooter />}>
         <DeliveryStyles />
       </ProcessSection>
-      {currentLocale() !== 'es' && <UgcGallery items={galleryItems} config={SPOKESPERSON_GALLERY} />}
+      {galleryEnabled(currentLocale(), 'spokesperson', 'gallery') && <UgcGallery items={galleryItems} config={SPOKESPERSON_GALLERY} />}
       <SectionDivider />
       <SpokespersonProof />
       <SectionDivider />
