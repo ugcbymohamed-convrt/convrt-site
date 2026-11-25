@@ -48,12 +48,12 @@ Not changed: the Roadmap explainer keeps its deliberately chosen 25.6 s frame; t
 | `490a0502…` | 3s | portfolio:fr-showcase-fixd-2 (home panel fixd) [fr] |
 | `49313ecc…` | 30.9s | portfolio:ar-ugc-3 [ar] |
 | `4af34968…` | 27.3s | portfolio:es-spokesperson-6 [es] |
+| `2833c727…` | 2s | home-hero-es:home-hero-es-main (Spanish CONVRT ad, dubbed version, 2026-11-24) |
 | `5639f5ff…` | 19.6s | portfolio:fr-mohamed-skycop [fr] |
 | `583c9f51…` | 7s | portfolio:ar-ugc-9 [ar] |
 | `0cf5d213…` | 0.5s | portfolio:ar-ugc-10 [ar] |
 | `73591233…` | 10.4s | portfolio:en-milad-saas-1 |
 | `60c9247e…` | 1.8s | portfolio:en-milad-spokesperson-1 |
-| `5904f418…` | 5.5s | home-hero-es:home-hero-es-main (Spanish CONVRT ad) |
 | `5b1058e9…` | 2.1s | portfolio:fr-ugc-hero-3 [fr] |
 | `5f7b145c…` | 5.7s | portfolio:en-mohamed-spokesperson-2 |
 | `5fc04645…` | 1.5s | portfolio:creator-12 |

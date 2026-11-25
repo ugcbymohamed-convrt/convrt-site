@@ -33,7 +33,7 @@ const BAR_UNTIL_STARTED = 'pointer-events-none opacity-0 transition-opacity dura
 /* The English stage's poster: an owner-supplied frame (`homeStagePoster`) where there is one, otherwise the video's usual poster. */
 const stagePoster = (item) => item.homeStagePoster ?? posterUrl(item)
 
-function Phone({ item, i, n, active, moving, inView, autoMode, landscape, onSelect, setEl, setShade, mirror, showLabel }) {
+function Phone({ item, i, n, active, moving, inView, autoMode, autoAll, soundOn, landscape, onSelect, setEl, setShade, mirror, showLabel }) {
   const ref = useRef(null)
   const [armed, setArmed] = useState(false) // the visitor pressed play once: the stream is attached from then on
   const [playing, setPlaying] = useState(false)
@@ -63,16 +63,17 @@ function Phone({ item, i, n, active, moving, inView, autoMode, landscape, onSele
   }, [armed, item])
 
   useEffect(() => { if (ref.current) ref.current.muted = muted }, [muted, armed])
-  useEffect(() => { if (!active) { ref.current?.pause?.(); userPaused.current = true } }, [active]) // rotating away pauses it and it never restarts by itself
+  // rotating away pauses it. English: it never restarts by itself. Autoplay-all (Spanish homepage): only a pause the VISITOR made sticks; a video that is brought to the front plays again.
+  useEffect(() => { if (!active) { ref.current?.pause?.(); if (!autoAll) userPaused.current = true } }, [active, autoAll])
 
   /* PLAY WHEN REACHED. The first time the stage scrolls into view, the FRONT video starts by itself, muted (the hero's sound button is there to turn sound on). Only that one video, only once the
      visitor reaches it (nothing loads before), never for prefers-reduced-motion / data-saver visitors, and never again after they pause it. It pauses when the stage leaves the screen and resumes when it comes
      back (unless the visitor paused it). Rotating to another video never starts that one: a side video is only selected. */
   useEffect(() => {
     if (!active || moving) return
-    if (inView && autoMode && !armed && !autoStarted.current) {
+    if (inView && autoMode && !armed && (autoAll || !autoStarted.current)) {
       autoStarted.current = true
-      setMuted(true)
+      setMuted(!soundOn.current) // the first automatic start is muted; after the visitor has turned sound on, the next videos follow that choice (a click or swipe has already happened)
       setArmed(true)
     } else if (armed) {
       const v = ref.current
@@ -80,7 +81,7 @@ function Phone({ item, i, n, active, moving, inView, autoMode, landscape, onSele
       if (!inView) v.pause()
       else if (autoMode && autoStarted.current && !userPaused.current && v.paused) v.play().catch(() => {})
     }
-  }, [inView, autoMode, active, moving, armed])
+  }, [inView, autoMode, autoAll, active, moving, armed, soundOn])
 
   const toggle = () => {
     if (!armed) { autoStarted.current = true; userPaused.current = false; setArmed(true); return }
@@ -110,7 +111,7 @@ function Phone({ item, i, n, active, moving, inView, autoMode, landscape, onSele
           {item.views && <ViewsBadge item={item} className="absolute inset-x-0 top-[5%] z-10 mx-auto w-fit scale-[0.8]" />}
           <span ref={setShade} aria-hidden="true" className="pointer-events-none absolute inset-0 bg-black" style={{ opacity: f(poseFor(i, 0, n, landscape, mirror).shade) }} />
           {active && !moving && (
-            <HeroPlayerControls item={item} playing={playing} muted={muted} progress={progress} barClass={armed ? '' : BAR_UNTIL_STARTED} onTogglePlay={toggle} onToggleMute={() => setMuted((m) => !m)} onSeek={seek} />
+            <HeroPlayerControls item={item} playing={playing} muted={muted} progress={progress} barClass={armed ? '' : BAR_UNTIL_STARTED} onTogglePlay={toggle} onToggleMute={() => setMuted((m) => { soundOn.current = m; return !m })} onSeek={seek} />
           )}
           {!active && (
             <button
@@ -127,7 +128,8 @@ function Phone({ item, i, n, active, moving, inView, autoMode, landscape, onSele
   )
 }
 
-export default function RotaryStage({ items, label, autoPlayOnView = false, landscape = false }) {
+export default function RotaryStage({ items, label, autoPlayOnView = false, autoAll = false, landscape = false }) {
+  const soundOn = useRef(false) // the visitor turned sound on for a video: later videos follow it
   const tr = useTr()
   const mirror = isRtlPage()
   const ar = currentLocale() === 'ar'
@@ -236,7 +238,9 @@ export default function RotaryStage({ items, label, autoPlayOnView = false, land
             active={i === active}
             moving={moving}
             inView={inView}
-            autoMode={autoPlayOnView && autoAllowed && i === 0}
+            autoMode={autoPlayOnView && autoAllowed && (autoAll || i === 0)}
+            autoAll={autoAll}
+            soundOn={soundOn}
             landscape={landscape}
             mirror={mirror}
             showLabel={showLabel}

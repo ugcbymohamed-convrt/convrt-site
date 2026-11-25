@@ -584,7 +584,7 @@ test('Spanish videos: 18 approved entries, valid, Spanish-only, opaque creators,
 test('Spanish homepage hero: Front (the Spanish version of the CONVRT ad) in the centre, then the two Spanish videos; English homepage unchanged', () => {
   assert.equal(HOME_HERO_ES.length, 3)
   assert.notEqual(HOME_HERO_ES[0].source.cloudflareId, HOME_HERO[0].source.cloudflareId, 'Front is no longer the English ad')
-  assert.equal(HOME_HERO_ES[0].source.cloudflareId, '5904f4189ee4726cb4d7e4272a8b915b', 'Front is the Spanish CONVRT ad (CONVRT_AD_SPANISH_FINAL.mp4)')
+  assert.equal(HOME_HERO_ES[0].source.cloudflareId, '2833c72764ffb5cc73f001565ca32954', 'Front is the Spanish CONVRT ad (CONVRT_AD_SPANISH_FINAL.mp4)')
   assert.deepEqual(HOME_HERO_ES.map((v) => v.languages), [['es'], ['es'], ['es']])
   const es = page('/es'), en = page('/')
   assert.deepEqual(posters(es).filter((p) => /home-hero|es-ugc/.test(p)).slice(0, 3), ['/portfolio/es-home-hero.webp', '/portfolio/es-ugc-2.webp', '/portfolio/es-ugc-1.webp'], 'the hero stage (the creator carousel further down follows)')
