@@ -28,7 +28,7 @@ export const POSTER_FRAMES = {
   '0241249ccf242630f097d03ac8cc11b9': 14.5, // portfolio:ar-ugc-7 [ar]
   '002d9dab913f13496e6513e4a7761ec9': 35.9, // portfolio:ar-ugc-8 [ar] // owner-chosen frame 2026-11-25 (Videos Placement folder screenshot)
   '583c9f5132d0cfe0f2eb26ea1df73446': 7.0, // portfolio:ar-ugc-9 [ar] // owner-chosen frame 2026-11-25 (Videos Placement folder screenshot)
-  '573acd81f098fb29bf4145d3dd1463a4': 2.6, // portfolio:ar-mohamed-clothing-2 [ar]: face centred, eyes open, no caption in the way
+  '573acd81f098fb29bf4145d3dd1463a4': 19.2, // portfolio:ar-mohamed-clothing-2 [ar]; owner-chosen frame 2026-11-25 (looking down, the clothing brand's logo on screen)
   'ed635c7d6db2d44efda5fc73454acfa3': 9.0, // portfolio:ar-mohamed-bottle [ar]: face centred, eyes open, no caption in the way
   '0cf5d2139e0769332c053ac71984ca14': 0.5, // portfolio:ar-ugc-10 [ar] // owner-chosen frame 2026-11-25 (Videos Placement folder screenshot)
   '7359123313ee51b95976e3ae6adc331e': 10.4, // portfolio:en-milad-saas-1; owner-chosen frame 2026-11-25 (SOLUTION)

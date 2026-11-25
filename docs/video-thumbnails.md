@@ -128,5 +128,5 @@ Not changed: the Roadmap explainer keeps its deliberately chosen 25.6 s frame; t
 | `fc89d8e3…` | 11s | portfolio:creator-11 |
 | `ff256a46…` | 9.9s | portfolio:ugc-gal-2 |
 | `fff13512…` | 7.6s | portfolio:es-spokesperson-1 [es] |
-| `573acd81…` | 2.6s | portfolio:ar-mohamed-clothing-2 [ar] |
+| `573acd81…` | 19.2s | portfolio:ar-mohamed-clothing-2 [ar] |
 | `ed635c7d…` | 9s | portfolio:ar-mohamed-bottle [ar] |
