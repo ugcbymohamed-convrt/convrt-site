@@ -123,7 +123,7 @@ function Headline({ config, textLed = false }) {
           ))}
         </span>
       ))}
-      <span className="block">
+      {words?.length > 0 && <span className="block">
         {/* Other languages: the last lead word and the rolling word stay together on one line (never "pena / guardar."), and in the centred text-led layout the rolling word is centred in its fixed slot,
             so the headline never moves while the words change. English keeps its markup. */}
         {['en', 'ar'].includes(currentLocale()) ? (
@@ -140,7 +140,7 @@ function Headline({ config, textLed = false }) {
             </span>
           </>
         )}
-      </span>
+      </span>}
     </h1>
   )
 }

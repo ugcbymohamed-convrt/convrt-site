@@ -29,7 +29,7 @@ const BREADCRUMB_NAMES = {
   '/creator-showcase': 'صناع المحتوى',
   '/spokesperson-video-production': 'فيديوهات Spokesperson',
   '/social-media-video-production': 'فيديوهات للسوشيال ميديا',
-  '/saas-video-production': 'فيديوهات شرح التطبيقات (SaaS)',
+  '/saas-video-production': 'فيديوهات برامج SaaS أو التطبيقات',
   '/case-studies/graspo': 'دراسة حالة Graspo',
 }
 

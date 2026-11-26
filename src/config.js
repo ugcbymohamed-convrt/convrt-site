@@ -34,7 +34,7 @@ export const OG_IMAGE = {
   url: `${SITE_URL}/og/convrt-og.png`,
   width: 1200,
   height: 630,
-  alt: 'CONVRT: performance creatives engineered to convert. UGC ads, SaaS videos, spokesperson videos and organic social.',
+  alt: 'CONVRT: performance creatives engineered to convert. UGC ads, SaaS and app videos, spokesperson videos and organic social.',
 }
 
 // Calendly event shown to qualified visitors. Currently the site-wide event; point

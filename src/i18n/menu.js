@@ -19,14 +19,14 @@ export const SERVICE_MENU_LABELS = {
   es: {
     '/ugc-video-agency': 'Vídeos UGC',
     '/spokesperson-video-production': 'Vídeos Spokesperson',
-    '/saas-video-production': 'Vídeos SaaS',
+    '/saas-video-production': 'Vídeos para SaaS y aplicaciones',
     '/social-media-video-production': 'Vídeos orgánicos para redes sociales',
   },
   // French (owner, 2026-11-24): the same order as Spanish: UGC, Spokesperson, SaaS, organic.
   fr: {
     '/ugc-video-agency': 'Vidéos UGC',
     '/spokesperson-video-production': 'Vidéos Spokesperson',
-    '/saas-video-production': 'Vidéos SaaS',
+    '/saas-video-production': 'Vidéos SaaS et applications',
     '/social-media-video-production': 'Vidéos organiques pour les réseaux',
   },
 }

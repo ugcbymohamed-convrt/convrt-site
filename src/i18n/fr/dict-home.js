@@ -4,8 +4,7 @@ export default {
   // Hero. H1 = « Des vidéos publicitaires / pensées pour [convertir | convaincre | marquer | vendre] » (the rolling words live in src/components/Hero.jsx).
   "Performance creatives": "Des vidéos publicitaires",
   "engineered to": "pensées pour",
-  "From creative strategy and scripting to creator casting, filming and editing. We produce human-led UGC ads, SaaS videos, spokesperson videos and organic social content, ready to perform.":
-    "De la stratégie au montage, nous produisons des publicités UGC, des vidéos Spokesperson, des vidéos SaaS et du contenu pour les réseaux sociaux, conçus pour performer.",
+  "From creative strategy and scripting to creator casting, filming and editing. We produce human-led UGC ads, SaaS and app videos, spokesperson videos and organic social content, ready to perform.": "De la stratégie au montage, nous produisons des publicités UGC, des vidéos Spokesperson, des vidéos pour SaaS et applications et du contenu pour les réseaux sociaux, conçus pour performer.",
   "Explore Videos": "Explorer les vidéos",
 
   // Founder credibility (the figures are the founder's combined experience: the attribution caption lives in dict-geo.js)
@@ -39,7 +38,7 @@ export default {
   "Creator-Led": "Avec des créateurs",
   "Creative Testing": "Test créatif",
   "Explore Service": "Découvrir le service",
-  "Product demos, explainers and video ads that make software easier to understand.": "Démos produit, vidéos explicatives et publicités vidéo qui rendent un logiciel plus facile à comprendre.",
+  "Product demos, explainers and video ads that make your software or app easier to understand.": "Démos produit, vidéos explicatives et publicités vidéo qui rendent votre logiciel ou votre application plus facile à comprendre.",
   "Product Demos": "Démos produit",
   "Explainers": "Vidéos explicatives",
   "Video Ads": "Publicités vidéo",

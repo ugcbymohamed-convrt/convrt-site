@@ -110,7 +110,7 @@ test('Organization structured data: sameAs is Instagram + the company LinkedIn p
 
 test('About: services, founder-led model, in-house and freelance creators, how creators are chosen and approved, languages, performance focus; nothing invented', () => {
   const a = page('about')
-  for (const s of ['UGC video ads', 'SaaS video production', 'Spokesperson videos', 'Organic social video']) assert.ok(a.includes(s), s)
+  for (const s of ['UGC video ads', 'SaaS and app video production', 'Spokesperson videos', 'Organic social video']) assert.ok(a.includes(s), s)
   assert.match(a, /founder-led creative studio/)
   assert.match(a, /in-house talent and freelance creators/)
   assert.match(a, /Creator selection is based on your campaign goals, target audience and approved creative concepts/)

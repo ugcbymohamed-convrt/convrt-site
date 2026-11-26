@@ -60,7 +60,7 @@ export default {
   "Your reputation matters. Your referrals get a professional experience.": "Votre réputation compte. Vos filleuls bénéficient d’un travail professionnel.",
   "Human-led UGC & spokesperson videos": "Vidéos UGC et porte-parole avec de vraies personnes",
   "Multilingual video production": "Production vidéo multilingue",
-  "SaaS explainers & product demos": "Vidéos explicatives et démos produit pour le SaaS",
+  "SaaS and app explainers & product demos": "Vidéos explicatives et démos produit pour les SaaS et les applications",
   "Performance-focused creative strategy": "Stratégie créative axée sur la performance",
   "Video for paid ads & social": "Vidéo pour la publicité payante et les réseaux sociaux",
   "From our work": "Nos réalisations",

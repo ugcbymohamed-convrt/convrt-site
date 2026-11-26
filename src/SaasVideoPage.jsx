@@ -33,7 +33,7 @@ import { galleryEnabled } from './content/galleryPolicy.js'
 const FAQ_CONFIG = {
   items: SAAS_FAQ,
   prefix: 'saas',
-  title: <><T>SaaS video production,</T>{' '}<span className="text-lime"><T>answered.</T></span></>,
+  title: <><T>SaaS & app video production,</T>{' '}<span className="text-lime"><T>answered.</T></span></>,
 }
 
 const PROCESS_CONFIG = { ...SAAS_PROCESS, stages: SAAS_STAGES, visuals: SAAS_VISUALS }
@@ -53,7 +53,7 @@ function ProcessFooter() {
         {tr('Scope depends on your approved brief. See')}{' '}
         <a href={hrefFor('/pricing#packages')} className="font-medium text-ink underline decoration-lime/60 underline-offset-4 transition-colors hover:text-lime">{tr('pricing and terms')}</a>.
       </p>
-      <p className="mx-auto mt-2 max-w-3xl text-center text-xs text-ink-muted">{tr('Scenes are illustrative. The software shown is generic and the portraits are for illustration only.')}</p>
+      <p className="mx-auto mt-2 max-w-3xl text-center text-xs text-ink-muted">{tr('Scenes are illustrative. The software or app shown is generic and the portraits are for illustration only.')}</p>
     </>
   )
 }

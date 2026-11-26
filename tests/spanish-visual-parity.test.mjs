@@ -287,7 +287,7 @@ test('homepage copy (Spanish review 3): hero subtitle and offer line, services, 
     // services
     'Vídeos para tus anuncios y redes sociales.', 'De la idea al vídeo final.',
     'Anuncios con creadores reales que conectan con tu público y te permiten probar distintos mensajes, enfoques y formatos.', 'Anuncios UGC', 'Creadores reales', 'Testeo creativo',
-    'Vídeos explicativos, demos y presentaciones de producto para que tu audiencia entienda qué hace tu software y por qué le interesa.', 'Demos de producto', 'Tutoriales',
+    'Vídeos explicativos, demos y presentaciones de producto para que tu audiencia entienda qué hace tu software o aplicación y por qué le interesa.', 'Demos de producto', 'Tutoriales',
     'Presentadores reales que ponen voz a tu marca en anuncios, demostraciones y contenidos comerciales, en distintos idiomas.', 'Multilingüe',
     'Contenido orgánico para Instagram, TikTok y otras plataformas, con planificación, producción y, según el paquete, publicación y gestión de comunidad.',
     '¿No sabes qué servicio encaja contigo?', 'En una llamada gratuita de 20 minutos', 'Reservar una llamada', 'Ver paquetes y precios',
@@ -300,7 +300,7 @@ test('homepage copy (Spanish review 3): hero subtitle and offer line, services, 
     // final CTA, FAQ
     'Las buenas marcas', 'merecen mejores', 'anuncios.', 'Desde vídeos UGC y anuncios para redes sociales hasta contenido Spokesperson y colaboraciones a largo plazo.', 'Escríbenos',
     'Tus preguntas,', 'nuestras respuestas', 'Producción, plazos, precios y derechos de uso. Todo lo que necesitas saber antes de trabajar con nosotros.',
-    '¿Cómo trabajáis con las marcas?', '¿Producís vídeos en varios idiomas?', '¿Creáis contenido para anuncios y redes sociales?', '¿Hacéis vídeos explicativos y demos para SaaS?', '¿Con qué tipo de marcas trabajáis?',
+    '¿Cómo trabajáis con las marcas?', '¿Producís vídeos en varios idiomas?', '¿Creáis contenido para anuncios y redes sociales?', '¿Hacéis vídeos explicativos y demos para SaaS y aplicaciones?', '¿Con qué tipo de marcas trabajáis?',
     '¿También os encargáis de las ideas y los guiones?', '¿Cuáles son vuestros plazos de entrega?', '¿Ofrecéis paquetes mensuales?', '¿Por qué trabajar con CONVRT?', '¿En qué se diferencia un influencer de un creador UGC?',
     '¿Te queda alguna duda?', 'Cuéntanos qué necesitas y te ayudamos a encontrar la mejor opción para tu marca.', 'Contacta con nosotros',
     // footer

@@ -12,7 +12,7 @@ export default {
   // Hero
   'Performance creatives': "Creatividades",
   'engineered to': "diseñadas para",
-  'From creative strategy and scripting to creator casting, filming and editing. We produce human-led UGC ads, SaaS videos, spokesperson videos and organic social content, ready to perform.': "Nos encargamos de todo: estrategia creativa, guiones, selección de creadores, grabación y edición. Producimos anuncios UGC, vídeos Spokesperson, vídeos para SaaS y contenido orgánico para redes sociales.",
+  "From creative strategy and scripting to creator casting, filming and editing. We produce human-led UGC ads, SaaS and app videos, spokesperson videos and organic social content, ready to perform.": "Nos encargamos de todo: estrategia creativa, guiones, selección de creadores, grabación y edición. Producimos anuncios UGC, vídeos Spokesperson, vídeos para SaaS y aplicaciones y contenido orgánico para redes sociales.",
   'Book a free strategy call.': 'Reserva una llamada estratégica gratuita.',
   'We tell you exactly what you need.': 'Te decimos exactamente lo que necesitas.',
   // Founder experience + client work (Spanish homepage stage)
@@ -67,7 +67,7 @@ export default {
   'UGC Ads': "Anuncios UGC",
   'Creator-Led': "Creadores reales",
   'Creative Testing': "Testeo creativo",
-  'Product demos, explainers and video ads that make software easier to understand.': "Vídeos explicativos, demos y presentaciones de producto para que tu audiencia entienda qué hace tu software y por qué le interesa.",
+  "Product demos, explainers and video ads that make your software or app easier to understand.": "Vídeos explicativos, demos y presentaciones de producto para que tu audiencia entienda qué hace tu software o aplicación y por qué le interesa.",
   'Product Demos': 'Demos de producto',
   'Explainers': "Vídeos explicativos",
   'Video Ads': "Tutoriales",

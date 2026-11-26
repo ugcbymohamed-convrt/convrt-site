@@ -21,13 +21,13 @@ const graspoViews = `${es(GRASPO.metric).replace(/ M$/, '')} millones`
 export const ES_ABOUT = {
   h1: 'Ideas que conectan. Vídeos que convierten.',
   intro:
-    'CONVRT Studio es un estudio creativo especializado en anuncios UGC, vídeos Spokesperson, producción de vídeo para SaaS y contenido orgánico para redes sociales. Ayudamos a marcas y empresas a transformar sus ideas en vídeos con un propósito claro. Nos encargamos de la estrategia, los guiones, la selección de creadores, la grabación y la edición, para que todo el proceso creativo esté coordinado desde un mismo lugar. Somos un estudio dirigido por su fundador, con base en Almería, España, y colaboramos con marcas de distintos sectores y mercados internacionales.',
+    'CONVRT Studio es un estudio creativo especializado en anuncios UGC, vídeos Spokesperson, producción de vídeos para SaaS y aplicaciones y contenido orgánico para redes sociales. Ayudamos a marcas y empresas a transformar sus ideas en vídeos con un propósito claro. Nos encargamos de la estrategia, los guiones, la selección de creadores, la grabación y la edición, para que todo el proceso creativo esté coordinado desde un mismo lugar. Somos un estudio dirigido por su fundador, con base en Almería, España, y colaboramos con marcas de distintos sectores y mercados internacionales.',
   sections: [
     {
       heading: 'Qué hacemos y cómo trabajamos',
       body: [
         { list: [
-          'Nuestros servicios: producción de [[anuncios UGC|/ugc-video-agency]], [[vídeos para SaaS|/saas-video-production]], [[vídeos Spokesperson|/spokesperson-video-production]] y [[contenido orgánico para redes sociales|/social-media-video-production]].',
+          'Nuestros servicios: producción de [[anuncios UGC|/ugc-video-agency]], [[vídeos para SaaS y aplicaciones|/saas-video-production]], [[vídeos Spokesperson|/spokesperson-video-production]] y [[contenido orgánico para redes sociales|/social-media-video-production]].',
           'Nuestros clientes: trabajamos exclusivamente con empresas, entre ellas marcas de e-commerce, SaaS, aplicaciones, tecnología y productos de consumo, además de otros sectores.',
           'Nuestro proceso: estrategia creativa, conceptos, guiones, selección de creadores, grabación, edición y entrega de los vídeos finales.',
           'Nuestros creadores: trabajamos con personas reales ante la cámara y una red de creadores y presentadores independientes. El talento se selecciona según las necesidades de cada proyecto.',
@@ -44,7 +44,7 @@ export const ES_ABOUT = {
       body: [
         { list: [
           'Anuncios UGC: creamos anuncios con personas reales, pensados para conectar con tu público y testear diferentes mensajes y enfoques en campañas de pago. Nos encargamos de todo el proceso: conceptos, guiones, creadores, grabación y edición. [[Descubrir nuestros anuncios UGC|/ugc-video-agency]]',
-          'Producción de vídeo para SaaS: transformamos funcionalidades y conceptos de software en vídeos fáciles de entender. Producimos vídeos explicativos, demostraciones de producto, animaciones y anuncios adaptados a las necesidades de cada marca. [[Descubrir nuestros vídeos para SaaS|/saas-video-production]]',
+          'Producción de vídeos para SaaS y aplicaciones: transformamos funcionalidades y conceptos de software o de apps en vídeos fáciles de entender. Producimos vídeos explicativos, demostraciones de producto, animaciones y anuncios adaptados a las necesidades de cada marca. [[Descubrir nuestros vídeos para SaaS y aplicaciones|/saas-video-production]]',
           'Vídeos Spokesperson: trabajamos con presentadores profesionales para comunicar mensajes de marca, presentar productos, explicar servicios y protagonizar anuncios. Seleccionamos el talento y desarrollamos los guiones para cada proyecto. [[Descubrir nuestros vídeos Spokesperson|/spokesperson-video-production]]',
           'Contenido orgánico para redes sociales: ayudamos a las marcas a mantener una presencia constante en redes sociales mediante estrategia de contenido, producción de vídeos, planificación, publicación y gestión de comunidad, según el paquete contratado. [[Descubrir nuestro servicio de contenido orgánico|/social-media-video-production]]',
         ] },

@@ -64,7 +64,7 @@ export default {
   'What type of video would you like to test?': "¿Qué tipo de vídeo quieres probar?",
   'UGC / Creator-led ad': 'Anuncio UGC / con creador',
   'Spokesperson video': 'Vídeo Spokesperson',
-  'SaaS product demo / Explainer': 'Demo de producto SaaS / vídeo explicativo',
+  "SaaS or app demo / Explainer": "Demo de SaaS o de aplicación / vídeo explicativo",
   'When are you looking to produce new video ads?': "¿Cuándo necesitas nuevos anuncios?",
   'If the trial performs well, would you consider ongoing video production with CONVRT?': "¿Te plantearías trabajar con CONVRT si la prueba va bien?",
   'Possibly, depending on the results': 'Posiblemente, según los resultados',

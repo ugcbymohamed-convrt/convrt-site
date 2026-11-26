@@ -93,7 +93,7 @@ export const BREADCRUMB_TRAILS = {
   [PATHS.ugcVideoAgency]: [{ name: 'Home', path: '/' }, { name: 'UGC Video Agency', path: PATHS.ugcVideoAgency }],
   [PATHS.spokespersonVideoProduction]: [{ name: 'Home', path: '/' }, { name: 'Spokesperson Video Production', path: PATHS.spokespersonVideoProduction }],
   [PATHS.socialMediaVideoProduction]: [{ name: 'Home', path: '/' }, { name: 'Organic Social Video Production', path: PATHS.socialMediaVideoProduction }],
-  [PATHS.saasVideoProduction]: [{ name: 'Home', path: '/' }, { name: 'SaaS Video Production', path: PATHS.saasVideoProduction }],
+  [PATHS.saasVideoProduction]: [{ name: 'Home', path: '/' }, { name: 'SaaS & App Video Production', path: PATHS.saasVideoProduction }],
   [PATHS.showcase]: [{ name: 'Home', path: '/' }, { name: 'Creator Showcase', path: PATHS.showcase }],
 }
 
@@ -371,8 +371,8 @@ export function spokespersonGraph({ title, description }) {
   ])
 }
 
-/* SaaS service page (/saas-video-production). Same shape as spokespersonGraph. CONVRT lists "SaaS video production" under its additional expertise, not as a priced core service, so
-   this Service has its own @id on the page and is related to the services and the custom package that already exist on /pricing (SaaS demos and explainers are scoped as custom
+/* SaaS service page (/saas-video-production). Same shape as spokespersonGraph. CONVRT lists "SaaS and app video production" under its additional expertise, not as a priced core service, so
+   this Service has its own @id on the page and is related to the services and the custom package that already exist on /pricing (SaaS and app demos and explainers are scoped as custom
    packages). It carries NO Offer: no SaaS-specific price is published. The FAQPage is generated from the exact Q&A the page renders. No ratings, reviews, addresses, awards,
    results, client names or VideoObject. */
 export function saasGraph({ title, description }) {
@@ -395,7 +395,7 @@ export function saasGraph({ title, description }) {
     breadcrumbNode(trail, `${url}#breadcrumb`),
     {
       ...coreServiceNode('saas'),
-      audience: { '@type': 'Audience', audienceType: 'SaaS, software and app companies' },
+      audience: { '@type': 'Audience', audienceType: 'SaaS, software, web app and mobile app companies' },
       isRelatedTo: [{ '@id': serviceId('ugc') }, { '@id': serviceId('spokesperson') }, { '@id': serviceId(CUSTOM_PACKAGES.paid.id) }],
     },
     faqNode(SAAS_FAQ, `${url}#faq`),

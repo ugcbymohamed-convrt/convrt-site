@@ -15,7 +15,7 @@ export const ES_INDUSTRY_LABELS = {
 }
 
 export const ES_TYPE_LABELS = {
-  ugc: 'UGC', spokesperson: 'Spokesperson', organic: 'Social orgánico', saas: 'Vídeo para SaaS', demo: 'Demo de producto', testimonial: 'Testimonio',
+  ugc: 'UGC', spokesperson: 'Spokesperson', organic: 'Social orgánico', saas: 'Vídeo para SaaS y aplicaciones', demo: 'Demo de producto', testimonial: 'Testimonio',
   interview: 'Entrevista en la calle', social: 'Social orgánico', ad: 'Creativo publicitario',
 }
 
@@ -48,7 +48,7 @@ export function captionEs(caption) {
 export const ES_FAQ_TITLES = {
   ugc: ['Todo sobre', 'nuestros vídeos UGC.'],
   spokesperson: ['Tus preguntas sobre', 'vídeos Spokesperson.'],
-  saas: ['Todo sobre', 'nuestros vídeos para SaaS.'],
+  saas: ['Todo sobre', 'nuestros vídeos para SaaS y aplicaciones.'],
   organic: ['Todo sobre', 'el contenido orgánico.'],
   pricing: ['¿Tienes dudas', 'sobre precios y paquetes?'],
 }

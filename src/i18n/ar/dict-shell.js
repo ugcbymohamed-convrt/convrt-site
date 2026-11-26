@@ -14,7 +14,7 @@ export default {
   "Turn sound on": "تشغيل الصوت",
   "Case Studies": "دراسات الحالة",
   "Book a Creative Call": "احجز مكالمة مع المؤسس",
-  "SaaS Video Production": "فيديوهات SaaS",
+  "SaaS & App Video Production": "فيديوهات برامج SaaS أو التطبيقات",
   "Spokesperson Videos": "فيديوهات Spokesperson",
   "Get in touch": "تواصل معنا",
   "A performance creative studio building UGC ads, spokesperson videos, organic social content, and creative strategy for brands that want content with one purpose: conversion.": "استوديو إبداعي متخصص في إنتاج إعلانات UGC وفيديوهات Spokesperson ومحتوى منصات التواصل الاجتماعي، مدعوم باستراتيجيات إبداعية مصممة خصيصًا لكل علامة تجارية.",
@@ -29,4 +29,5 @@ export default {
   "Terms (in English)": "الشروط والأحكام (بالإنجليزية)",
   "Legal Notice (in English)": "الإشعار القانوني (بالإنجليزية)",
   "Built to convert.": "صُمّم للتحويل.",
+  "SaaS & App Videos": "فيديوهات برامج SaaS والتطبيقات",
 }

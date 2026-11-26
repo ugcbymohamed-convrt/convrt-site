@@ -52,10 +52,10 @@ export const AR_PAGE_GRAPH_EXTRAS = {
   '/saas-video-production': (url) => ({
     about: { '@id': `${url}#service` },
     nodes: [pageServiceAr(url, {
-      name: 'إنتاج فيديوهات شرح التطبيقات ومنتجات SaaS',
-      serviceType: 'إنتاج فيديو لشركات SaaS والتطبيقات',
+      name: 'فيديوهات برامج SaaS أو التطبيقات',
+      serviceType: 'إنتاج فيديوهات لبرامج SaaS والتطبيقات',
       description: AR_CORE_SERVICES.saas.description,
-      audience: { '@type': 'Audience', audienceType: 'شركات SaaS والبرمجيات والتطبيقات' },
+      audience: { '@type': 'Audience', audienceType: 'شركات SaaS والبرمجيات وتطبيقات الويب والجوال' },
     })],
   }),
   '/social-media-video-production': (url) => {

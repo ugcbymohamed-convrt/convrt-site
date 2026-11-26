@@ -41,7 +41,7 @@ test('hero: the four Spanish H1s are the approved editorial headlines and every 
   assert.match(h1('ugc-video-agency'), /Vídeos UGC con personas reales\. Hechos para destacar\./)
   assert.match(h1('spokesperson-video-production'), /Vídeos Spokesperson con personas reales\. Mensajes que conectan\./)
   assert.match(h1('social-media-video-production'), /Vídeos para redes sociales que merecen la pena guardar\./)
-  assert.match(h1('saas-video-production'), /Vídeos para SaaS que hacen tu producto fácil de entender\./)
+  assert.match(h1('saas-video-production'), /Vídeos que explican tu software o aplicación\./)
   // SaaS scrolls to the formats section, Organic to the process section: both anchors must exist on the page that links to them.
   assert.equal(ES_HERO['saas-h1'].secondary.href, '#saas-formats')
   assert.ok(page('saas-video-production').includes('id="saas-formats"'))

@@ -76,11 +76,11 @@ export const SITE_SEO = {
     indexable: selectOrganicHero(ENGLISH_LIBRARY).length + selectOrganicGallery(ENGLISH_LIBRARY).length > 0,
   },
   [PATHS.saasVideoProduction]: {
-    title: 'SaaS Video Production Agency | Explainers, Demos & Ads | CONVRT',
+    title: 'SaaS & App Video Production Agency | Explainers, Demos & Ads | CONVRT',
     description:
-      'SaaS video production for software and app brands. Human-led explainers, product demos, animated videos and performance-driven ads, from concept to delivery.',
-    ogTitle: 'CONVRT: SaaS Video Production for Software and App Brands',
-    ogDescription: 'Explainers, product demos, animated videos and video ads for software companies, with strategy, scripting, presenters, motion graphics and editing in one place.',
+      'Video production for SaaS and app brands: human-led explainers, product demos, animated videos and performance-driven ads, from concept to delivery.',
+    ogTitle: 'CONVRT: SaaS & App Video Production for Software and App Brands',
+    ogDescription: 'Explainers, product demos, animated videos and video ads for SaaS, software and app companies, with strategy, scripting, presenters, motion graphics and editing in one place.',
     // Indexable (and in the sitemap) once at least one approved SaaS video exists for this page, so the page is not promoted to search while its showcase is still empty.
     // It flips by itself when the first approved SaaS video is added to src/content/portfolio.js (same rule as the Spokesperson and Organic Social pages and /our-work).
     indexable: selectSaasHero(ENGLISH_LIBRARY).length + selectSaasGallery(ENGLISH_LIBRARY).length > 0,
@@ -146,7 +146,7 @@ export const SITE_SEO = {
   [ABOUT_PATH]: {
     title: 'About CONVRT | Founder-Led Video Creative Studio',
     description:
-      'Founder-led creative studio producing human-led UGC ads, SaaS videos, spokesperson videos and organic social content in English, Spanish, French and Arabic.',
+      'Founder-led creative studio producing human-led UGC ads, SaaS and app videos, spokesperson videos and organic social content in English, Spanish, French and Arabic.',
     indexable: TRUST_PAGES_PUBLISHED,
   },
   [CONTACT_PATH]: {

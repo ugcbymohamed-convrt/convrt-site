@@ -22,7 +22,7 @@ export const SHOWCASE_INDUSTRIES = [
     selectorHeight: 22,
     headline: "Long-form creatives that can't be skipped.",
     text: 'Aesthetic transitions, catchy visuals and a delivery so engaging that long creatives build trust instead of getting scrolled past.',
-    link: { href: '/saas-video-production', label: 'Explore SaaS video production' },
+    link: { href: '/saas-video-production', label: 'Explore SaaS & app video production' },
     accent: '#3b82f6',
   },
   {

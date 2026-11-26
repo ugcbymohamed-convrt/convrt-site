@@ -31,14 +31,14 @@ const SERVICE_MENU = [
   { label: 'UGC Video Agency', href: '/ugc-video-agency' },
   { label: 'Spokesperson Videos', href: '/spokesperson-video-production' },
   { label: SERVICE_LABELS.organic, href: '/social-media-video-production' },
-  { label: 'SaaS Video Production', href: '/saas-video-production' },
+  { label: 'SaaS & App Videos', href: '/saas-video-production' },
 ]
 
 /* The Arabic services menu (owner, 2026-11-25): exactly these four labels, in this order. They are written out here (not routed through the dictionary) because they are the owner's own wording. */
 const SERVICE_MENU_AR = [
   { label: 'فيديوهات UGC', href: '/ugc-video-agency' },
   { label: 'فيديوهات Spokesperson', href: '/spokesperson-video-production' },
-  { label: 'فيديوهات SaaS', href: '/saas-video-production' },
+  { label: 'فيديوهات برامج SaaS والتطبيقات', href: '/saas-video-production' },
   { label: 'فيديوهات عضوية للسوشل ميديا', href: '/social-media-video-production' },
 ]
 

@@ -344,7 +344,7 @@ test('homepage Services: four equal-card links in the approved order, each ONE a
   const cards = [...sec.matchAll(/<a href="([^"]+)" class="svc-card"([^>]*)>([\s\S]*?)<\/a>/g)]
   const want = [
     ['01', 'UGC Video Ads', PATHS.ugcVideoAgency, '/ugc-video-agency', 'Human-led UGC ads built to capture attention and test creative angles.', ['UGC Ads', 'Creator-Led', 'Creative Testing']],
-    ['02', 'SaaS Video Production', PATHS.saasVideoProduction, '/saas-video-production', 'Product demos, explainers and video ads that make software easier to understand.', ['Product Demos', 'Explainers', 'Video Ads']],
+    ['02', 'SaaS &amp; App Videos', PATHS.saasVideoProduction, '/saas-video-production', 'Product demos, explainers and video ads that make your software or app easier to understand.', ['Product Demos', 'Explainers', 'Video Ads']],
     ['03', 'Spokesperson Videos', PATHS.spokespersonVideoProduction, '/spokesperson-video-production', 'Professional, multilingual presenters for ads, demonstrations and brand messages.', ['Human-Led', 'Multilingual', 'Product Demos']],
     ['04', 'Organic Social Video', PATHS.socialMediaVideoProduction, '/social-media-video-production', 'Organic social videos, content planning, publishing and community management.', ['Organic Video', 'Posting', 'Community']],
   ]
@@ -697,9 +697,9 @@ test('homepage HTML: services heading and cards, hero line, internal links', () 
   const t = unescape(visibleText(h))
   for (const n of [
     'Video creative for paid and organic social.', 'Creative strategy and full video production, from concept and creator casting to finished, platform-ready videos.',
-    'Human-led UGC ads built to capture attention and test creative angles.', 'Product demos, explainers and video ads that make software easier to understand.',
+    'Human-led UGC ads built to capture attention and test creative angles.', 'Product demos, explainers and video ads that make your software or app easier to understand.',
     'Professional, multilingual presenters for ads, demonstrations and brand messages.', 'Organic social videos, content planning, publishing and community management.',
-    'From creative strategy and scripting to creator casting, filming and editing. We produce human-led UGC ads, SaaS videos, spokesperson videos and organic social content, ready to perform.',
+    'From creative strategy and scripting to creator casting, filming and editing. We produce human-led UGC ads, SaaS and app videos, spokesperson videos and organic social content, ready to perform.',
     'Explore packages and pricing',
   ]) assert.ok(t.includes(n), n)
   assert.ok(!/Built for modern|Explore the Creative Testing Sprint|Compare packages and pricing|significantly better results|personally approved by the founder|prolific creator/.test(t))

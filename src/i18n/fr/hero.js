@@ -23,10 +23,11 @@ export const FR_HERO = {
     secondary: { label: 'Découvrir notre méthode', href: '#how-it-works' },
   },
   'saas-h1': {
-    lines: [['Vidéos', 'SaaS :'], ['rendez', 'votre', 'produit']],
-    lead: ['facile', 'à'],
-    words: ['comprendre', 'expliquer', 'essayer'],
-    sizer: 'comprendre.',
+    // owner copy (2026-11-26): one fixed sentence, no rolling word (words: [] makes UgcHero skip the reel)
+    lines: [['Des', 'vidéos', 'qui', 'expliquent'], ['votre', 'logiciel', 'ou', 'votre', 'application.']],
+    lead: [],
+    words: [],
+    sizer: '',
     secondary: { label: 'Voir les formats', href: '#saas-formats' },
   },
   'organic-h1': {

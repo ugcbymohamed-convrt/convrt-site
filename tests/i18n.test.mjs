@@ -656,7 +656,7 @@ test('Spanish structured data stays factual: no VideoObject (no upload dates exi
 test('Spanish homepage: approved copy, one-line short CTA (hero and navigation), 3-line final headline, terminology rules', () => {
   const h = page('/es'), t = textOf(h).join('\n'), body = bodyOf(h)
   assert.match(t, /Creatividades\ndiseñadas para\nconectar/, 'owner-approved headline (Nov 2026)')
-  assert.match(t, /Nos encargamos de todo: estrategia creativa, guiones, selección de creadores, grabación y edición\. Producimos anuncios UGC, vídeos Spokesperson, vídeos para SaaS y contenido orgánico para redes sociales\./)
+  assert.match(t, /Nos encargamos de todo: estrategia creativa, guiones, selección de creadores, grabación y edición\. Producimos anuncios UGC, vídeos Spokesperson, vídeos para SaaS y aplicaciones y contenido orgánico para redes sociales\./)
   assert.match(t, /5 conceptos publicitarios para tu marca\.\s*\nGratis\./)
   assert.ok((t.match(/^Consigue 5 conceptos gratis$/gm) ?? []).length >= 3, 'the owner-approved label is used in the navigation, the hero and the other 5-concepts CTAs')
   assert.ok(!/Recibe 5 conceptos publicitarios gratis/.test(t))

@@ -16,7 +16,7 @@ import { currentLocale } from '../../i18n/locale.js'
 const FORMATS = [
   { type: 'ugc', title: 'UGC-style videos', text: 'Creator-led, natural-style videos of the kind brands run as paid social ads.', label: 'UGC video production', href: PATHS.ugcVideoAgency },
   { type: 'spokesperson', title: 'Spokesperson videos', text: 'Presenter-led videos that deliver a scripted message to camera.', label: 'Spokesperson video production', href: PATHS.spokespersonVideoProduction },
-  { type: 'saas', title: 'Software and app examples', text: 'Creator videos for software and app brands. SaaS explainers and demos are scoped per project.', label: 'SaaS video production', href: PATHS.saasVideoProduction },
+  { type: 'saas', title: 'Software and app examples', text: 'Creator videos for software and app brands. SaaS explainers and demos are scoped per project.', label: 'SaaS & app video production', href: PATHS.saasVideoProduction },
   { type: 'organic', title: 'Organic social examples', text: 'Short-form videos made for a brand’s own social accounts.', label: 'Organic social video production', href: PATHS.socialMediaVideoProduction },
 ]
 

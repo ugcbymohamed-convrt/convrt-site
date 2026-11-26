@@ -39,7 +39,7 @@ export default {
   "Flexible production volume": "Volumen de producción flexible",
   "Tailored creator selection": "Selección personalizada de creadores",
   "Multilingual campaigns": "Campañas multilingües",
-  "SaaS demos and explainers": "Demos de producto y vídeos explicativos para SaaS",
+  "SaaS and app demos and explainers": "Demos de producto y vídeos explicativos para SaaS y aplicaciones",
   "Long-form video production": "Vídeos de larga duración",
   "Custom licensing options": "Opciones de licencia adaptadas al proyecto",
   "Scope, pricing and terms are tailored to your project.": "Alcance, presupuesto y condiciones adaptados a tu proyecto.",

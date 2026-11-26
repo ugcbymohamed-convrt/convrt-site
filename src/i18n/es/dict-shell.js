@@ -19,7 +19,7 @@ export default {
   'UGC Video Agency': 'Agencia de vídeos UGC',
   'Spokesperson Videos': "Vídeos Spokesperson",
   'Organic Social Videos': 'Vídeos para redes sociales',
-  'SaaS Video Production': 'Producción de vídeo para SaaS',
+  "SaaS & App Video Production": "Producción de vídeos para SaaS y aplicaciones",
   'About': 'Sobre CONVRT',
   'Clients': 'Clientes',
   'Get in touch': "Contacta con nosotros",

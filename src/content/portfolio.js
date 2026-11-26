@@ -2258,7 +2258,7 @@ export const INDUSTRY_LABELS = {
 
 /* What kind of video it is. Only videos explicitly typed 'ugc' reach the UGC page (an unset type is unknown, not UGC). */
 export const TYPE_LABELS = {
-  ugc: 'UGC', spokesperson: 'Spokesperson', organic: 'Organic social', saas: 'SaaS video', demo: 'Product demo', testimonial: 'Testimonial', interview: 'Street interview',
+  ugc: 'UGC', spokesperson: 'Spokesperson', organic: 'Organic social', saas: 'SaaS & app video', demo: 'Product demo', testimonial: 'Testimonial', interview: 'Street interview',
   social: 'Organic social', ad: 'Ad creative',
 }
 
@@ -2525,7 +2525,7 @@ export const inCategory = (item, categoryId) => {
 const AR_TYPE_CATEGORIES = [
   { id: 'ar-ugc', label: 'UGC videos', color: '#d5ff40', byType: 'ugc' },
   { id: 'ar-spokesperson', label: 'Spokesperson videos', color: '#ff6a4d', byType: 'spokesperson' },
-  { id: 'ar-saas', label: 'SaaS videos', color: '#9a7aff', byType: 'saas' },
+  { id: 'ar-saas', label: 'SaaS videos', color: '#9a7aff', byType: 'saas' }, // the owner-chosen Arabic type-tab label, kept on purpose: a video category that names SaaS
   { id: 'ar-organic', label: 'Organic videos', color: '#ffb547', byType: 'organic' },
 ]
 

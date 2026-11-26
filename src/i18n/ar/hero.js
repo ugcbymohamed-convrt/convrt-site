@@ -27,10 +27,11 @@ export const AR_HERO = {
     secondary: { label: 'كيف نعمل', href: '#how-it-works' },
   },
   'saas-h1': {
-    lines: [['فيديوهات', 'SaaS']],
-    lead: ['تشرح', 'منتجك'],
-    words: ['بوضوح', 'ببساطة', 'بسهولة'],
-    sizer: 'ببساطة.',
+    // owner copy (2026-11-26), exact: one fixed sentence, no rolling word (words: [] makes UgcHero skip the reel)
+    lines: [['فيديوهات', 'تشرح'], ['تطبيقك', 'أو', 'برنامجك']], // two lines, like the English: the break falls before the object of the sentence
+    lead: [],
+    words: [],
+    sizer: '',
     secondary: { label: 'شاهد الصيغ', href: '#saas-formats' },
   },
 }

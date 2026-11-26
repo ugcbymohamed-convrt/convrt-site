@@ -156,7 +156,7 @@ export const UGC_FAQ = [
     links: [
       { label: 'Get 5 free ad concepts', href: OFFER_PATHS.roadmap },
       { label: 'Prefer a presenter-led format? See spokesperson video production', href: PATHS.spokespersonVideoProduction },
-      { label: 'Selling software? See SaaS video production', href: PATHS.saasVideoProduction },
+      { label: 'Selling software or an app? See SaaS and app video production', href: PATHS.saasVideoProduction },
     ],
   },
 ]

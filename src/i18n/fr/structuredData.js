@@ -33,7 +33,7 @@ const BREADCRUMB_NAMES = {
   '/ugc-video-agency': 'Vidéos UGC',
   '/spokesperson-video-production': 'Vidéos Spokesperson',
   '/social-media-video-production': 'Vidéos organiques pour les réseaux',
-  '/saas-video-production': 'Vidéos SaaS',
+  '/saas-video-production': 'Production vidéo pour SaaS et applications',
   '/creator-showcase': 'Créateurs',
 }
 

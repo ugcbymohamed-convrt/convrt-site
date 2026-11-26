@@ -19,7 +19,7 @@ test('Services dropdown: one shared component, the four French labels in the own
   assert.match(nav, /const SERVICE_MENU = \[/)
   assert.ok(nav.includes("aria-haspopup=\"true\"") && nav.includes('group-focus-within:visible'), 'opens on hover and on keyboard focus')
   assert.ok(!/locale === 'fr'.*SERVICE_MENU/.test(nav), 'no French-only dropdown')
-  assert.match(src('src/i18n/menu.js'), /fr: \{\n    '\/ugc-video-agency': 'Vidéos UGC',\n    '\/spokesperson-video-production': 'Vidéos Spokesperson',\n    '\/saas-video-production': 'Vidéos SaaS',\n    '\/social-media-video-production': 'Vidéos organiques pour les réseaux'/, 'the French dropdown order and labels')
+  assert.match(src('src/i18n/menu.js'), /fr: \{\n    '\/ugc-video-agency': 'Vidéos UGC',\n    '\/spokesperson-video-production': 'Vidéos Spokesperson',\n    '\/saas-video-production': 'Vidéos SaaS et applications',\n    '\/social-media-video-production': 'Vidéos organiques pour les réseaux'/, 'the French dropdown order and labels')
   const labels = ['UGC Video Agency', 'Spokesperson Videos', 'Organic Social Video', 'SaaS Video Production'].map((k) => translate('fr', k))
   assert.equal(labels.length, 4)
 })
