@@ -144,15 +144,15 @@ export const SITE_SEO = {
   // approval is that all four are public and indexable (self-referencing canonical, sitemap, footer links), so one flag controls all four; there is no
   // separate permanent noindex for Privacy and Terms any more.
   [ABOUT_PATH]: {
-    title: 'About CONVRT | Founder-Led Video Creative Studio',
+    title: 'About CONVRT | Creative Video Production Studio',
     description:
       'Founder-led creative studio producing human-led UGC ads, SaaS and app videos, spokesperson videos and organic social content in English, Spanish, French and Arabic.',
     indexable: TRUST_PAGES_PUBLISHED,
   },
   [CONTACT_PATH]: {
-    title: 'Contact CONVRT | Talk to the Studio',
+    title: 'Contact CONVRT | Tell Us About Your Project',
     description:
-      'Contact CONVRT by email, book a creative call or apply for the free Creative Growth Roadmap. Founder-led video production for SaaS, e-commerce and app brands.',
+      'Tell CONVRT about your project: UGC videos, spokesperson ads, organic social video or a long-term creative partnership. Send an inquiry or email us.',
     indexable: TRUST_PAGES_PUBLISHED,
   },
   [PRIVACY_PATH]: {
@@ -162,13 +162,13 @@ export const SITE_SEO = {
     indexable: TRUST_PAGES_PUBLISHED,
   },
   [TERMS_PATH]: {
-    title: 'Terms of Service | CONVRT Studio',
+    title: 'Terms and Conditions | CONVRT Studio',
     description: 'Terms for using the CONVRT Studio website and its free offers, the legal notice, and how paid services are agreed. For businesses.',
     ...(TRUST_PAGES_PUBLISHED ? {} : { robots: 'noindex, follow' }),
     indexable: TRUST_PAGES_PUBLISHED,
   },
   [LEGAL_NOTICE_PATH]: {
-    title: 'Legal Notice (Aviso Legal) | CONVRT Studio',
+    title: 'Legal Notice | CONVRT Studio',
     description: 'Who operates convrt.studio: the operator, tax ID, postal address and contact details required by Spanish law, plus how the website may be used.',
     ...(TRUST_PAGES_PUBLISHED ? {} : { robots: 'noindex, follow' }),
     indexable: TRUST_PAGES_PUBLISHED,

@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'react'
 import { trackEvent } from '../../lib/analytics.js'
 import { scrollToElement } from '../../lib/scroll.js'
 import { CONTACT_EMAIL, OFFER_PATHS, PRIVACY_POLICY_URL } from '../../config.js'
+import { useTrustLinks } from '../../i18n/trustLinks.js'
 import {
   EMPTY_APPLICATION,
   FIELD_ORDER,
@@ -47,6 +48,7 @@ const SUBMIT_ERROR_COPY = {
 /* Translated pages: the OPTIONAL marketing-email checkbox is not shown until a Spanish wording exists with its own recorded consent version (reviewed by the owner's lawyer). Nothing is
    collected without it: the form sends marketingConsent=false, exactly as when an English visitor leaves the box unticked. */
 export default function RiskFreeApplication() {
+  const privacy = useTrustLinks()('privacy')
   const locale = currentLocale()
   const en = locale === 'en'
   const [values, setValues] = useState(EMPTY_APPLICATION)
@@ -238,7 +240,7 @@ export default function RiskFreeApplication() {
                       {PRIVACY_POLICY_URL && (
                         <>
                           {' '}{currentLocale() === 'es' ? tr('See how we handle your application data in our') : tr('See our')}{' '}
-                          <a href={PRIVACY_POLICY_URL} {...(en ? {} : { lang: 'en' })} className="text-ink-muted underline underline-offset-2 hover:text-lime">{tr('privacy policy')}</a>{en ? null : ` ${tr('(in English)')}`}.
+                          <a href={privacy.href} {...(privacy.lang ? { lang: privacy.lang } : {})} className="text-ink-muted underline underline-offset-2 hover:text-lime">{tr('privacy policy')}</a>{en || !privacy.lang ? null : ` ${tr('(in English)')}`}.
                         </>
                       )}
                     </p>

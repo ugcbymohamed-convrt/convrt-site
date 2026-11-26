@@ -34,8 +34,11 @@ const BREADCRUMB_NAMES = {
   '/social-media-video-production': 'Vídeos para redes sociales',
   '/saas-video-production': 'Producción de vídeos para SaaS y aplicaciones',
   '/creator-showcase': 'Creadores',
-  '/about': 'Sobre CONVRT',
+  '/about': 'Sobre nosotros',
   '/contact': 'Contacto',
+  '/privacy': 'Política de privacidad',
+  '/terms': 'Términos y condiciones',
+  '/legal-notice': 'Aviso legal',
   '/creative-growth-roadmap': 'Hoja de ruta de crecimiento creativo',
   '/risk-free-trial': '1 vídeo gratis',
 }

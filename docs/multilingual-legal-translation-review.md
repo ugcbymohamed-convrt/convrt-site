@@ -1,3 +1,5 @@
+> **Update (26 Nov 2026):** the Spanish, French and Arabic legal documents now exist as translations (`src/content/legal/`), built but held until approved. See `docs/contact-about-legal-localization.md`; this note describes the earlier state.
+
 # Legal pages: what a complete Spanish release needs
 
 The English About, Contact, Privacy Policy, Terms of Service and Legal Notice are published and approved. **Nothing in the legal meaning was changed and the legal documents are NOT built in Spanish**

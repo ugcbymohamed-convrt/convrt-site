@@ -31,7 +31,7 @@ const founder = BRAND.founder
 /* The headline figures of the two published case studies, read from the data the service pages already use (their qualifiers are kept). */
 const GRASPO = ORGANIC_PROOF.results[0]
 const mail = `[[${CONTACT_EMAIL}|mailto:${CONTACT_EMAIL}]]`
-const CREATOR_FORM = 'https://forms.gle/Bg8ubU2tnmMj88m7A'
+export const CREATOR_FORM = 'https://forms.gle/Bg8ubU2tnmMj88m7A'
 
 /* The legally required operator details (LSSI art. 10). The tax ID (NIF) and postal address are on file but stay private until the owner approves
    showing them (LEGAL_NOTICE_DETAILS_APPROVED); until then a visible marker shows where they go. */
@@ -127,45 +127,6 @@ export const TRUST_CONTENT = {
         body: [
           'Read how we approached [[Graspo|/case-studies/graspo]] and [[Elyon Dubai|/case-studies/elyon]], then [[get in touch|/contact]] or apply for the [[free Creative Growth Roadmap|' + OFFER_PATHS.roadmap + ']].',
         ],
-      },
-    ],
-  },
-
-  contact: {
-    h1: 'Contact CONVRT Studio',
-    intro: 'The quickest way to start is a short conversation. Choose whichever route suits you.',
-    sections: [
-      {
-        heading: 'Talk to us',
-        body: [
-          { list: [
-            `Email: ${mail}`,
-            `Book a creative call: [[choose a time|${BOOKING_URL}]] (opens our Calendly)`,
-            `Free Creative Growth Roadmap: [[apply here|${OFFER_PATHS.roadmap}]]. Five personalised ad concepts, presented on a call. No obligation.`,
-          ] },
-        ],
-      },
-      {
-        heading: 'Find us online',
-        body: [
-          { list: [
-            `CONVRT Studio on LinkedIn: [[official company page|${COMPANY_LINKEDIN_URL}]]`,
-            `Instagram: [[@convrtcreativestudio|${INSTAGRAM_URL}]]`,
-            `Founder: [[${founder.name} on LinkedIn|${founder.linkedin}]] (personal profile)`,
-          ] },
-        ],
-      },
-      {
-        heading: 'Creators',
-        body: [`Freelance creators who would like to work with CONVRT can use the [[creator form|${CREATOR_FORM}]].`],
-      },
-      {
-        heading: 'Referral partners',
-        body: ['Know a business that needs better video ads? See the [[Referral Partner Program|/referrals]].'],
-      },
-      {
-        heading: 'Who runs this website',
-        body: [`${OPERATOR.tradingName} is operated by ${OPERATOR.name}, ${OPERATOR.structure}. The full details are in the [[Legal Notice|${LEGAL_NOTICE_PATH}]]. For questions about personal data, see the [[Privacy Policy|${PRIVACY_PATH}]].`],
       },
     ],
   },
@@ -294,13 +255,13 @@ export const TRUST_CONTENT = {
       },
       {
         heading: 'Changes',
-        body: [`We may update this policy and will change the date when we do. Related: our [[Terms of Service|${TERMS_PATH}]] and [[Legal Notice|${LEGAL_NOTICE_PATH}]].`],
+        body: [`We may update this policy and will change the date when we do. Related: our [[Terms and Conditions|${TERMS_PATH}]] and [[Legal Notice|${LEGAL_NOTICE_PATH}]].`],
       },
     ],
   },
 
   terms: {
-    h1: 'Terms of Service',
+    h1: 'Terms and Conditions',
     intro: `The terms for using the CONVRT Studio website and its free offers. Last updated ${UPDATED}.`,
     sections: [
       {
@@ -388,7 +349,7 @@ export const TRUST_CONTENT = {
   },
 
   legalNotice: {
-    h1: 'Legal Notice (Aviso Legal)',
+    h1: 'Legal Notice',
     intro: `The information about the operator of www.convrt.studio that Spanish law (Ley 34/2002, de servicios de la sociedad de la información, art. 10) requires a commercial website to make available. Last updated ${UPDATED}.`,
     sections: [
       {
@@ -423,7 +384,7 @@ export const TRUST_CONTENT = {
       },
       {
         heading: 'Terms, applicable law and jurisdiction',
-        body: [`The use of the website and the free offers is governed by our [[Terms of Service|${TERMS_PATH}]]. Spanish law applies, and disputes between CONVRT and a business user are submitted to the competent Spanish courts.`],
+        body: [`The use of the website and the free offers is governed by our [[Terms and Conditions|${TERMS_PATH}]]. Spanish law applies, and disputes between CONVRT and a business user are submitted to the competent Spanish courts.`],
       },
     ],
   },

@@ -22,7 +22,7 @@ const links = [
   { label: 'Case Studies', href: '/case-studies', path: '/case-studies', arHref: '/case-studies/graspo' },
   { label: 'Pricing', href: '/pricing', path: '/pricing' },
   { label: 'Blog', href: '/blog', path: '/blog', arShow: true },
-  { label: 'Contact', href: '#contact', compactHide: true },
+  { label: 'Contact', href: '/contact', path: '/contact', compactHide: true },
 ]
 
 /* The "Services" menu (owner, 2026-11-26): hovering (or keyboard-focusing) Services in the top bar opens a panel with TWO entries. "Paid Social" is a group: hovering or focusing it opens a second panel with

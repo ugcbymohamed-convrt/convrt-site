@@ -512,10 +512,10 @@ export function ourWorkGraph({ title, description }) {
    beyond what the page text says. */
 /* Trails for the trust pages live apart from BREADCRUMB_TRAILS (which the service-page tests pin key by key). */
 const TRUST_TRAILS = {
-  [PATHS.about]: [{ name: 'Home', path: '/' }, { name: 'About', path: PATHS.about }],
+  [PATHS.about]: [{ name: 'Home', path: '/' }, { name: 'About CONVRT', path: PATHS.about }],
   [PATHS.contact]: [{ name: 'Home', path: '/' }, { name: 'Contact', path: PATHS.contact }],
   [PATHS.privacy]: [{ name: 'Home', path: '/' }, { name: 'Privacy Policy', path: PATHS.privacy }],
-  [PATHS.terms]: [{ name: 'Home', path: '/' }, { name: 'Terms of Service', path: PATHS.terms }],
+  [PATHS.terms]: [{ name: 'Home', path: '/' }, { name: 'Terms and Conditions', path: PATHS.terms }],
   [PATHS.legalNotice]: [{ name: 'Home', path: '/' }, { name: 'Legal Notice', path: PATHS.legalNotice }],
 }
 const TRUST_PAGE_TYPE = { [PATHS.about]: 'AboutPage', [PATHS.contact]: 'ContactPage' }

@@ -6,10 +6,12 @@ import { editorial } from '../i18n/editorial.js'
 import { hasTranslation } from '../i18n/registry.js'
 import { REFERRAL_LABELS, menuHas, showReferralLink } from '../i18n/menu.js'
 import CookieSettingsLink from './CookieSettingsLink.jsx'
+import { useTrustLinks } from '../i18n/trustLinks.js'
 import { SERVICE_LABELS } from '../seo/businessKnowledge.js'
-import { CONTACT_EMAIL, REFERRALS_PATH, CREATOR_SHOWCASE_PATH, ABOUT_PATH, CONTACT_PATH, PRIVACY_PATH, TERMS_PATH, LEGAL_NOTICE_PATH, TRUST_PAGES_PUBLISHED, COMPANY_LINKEDIN_URL, INSTAGRAM_URL } from '../config.js'
+import { CONTACT_EMAIL, REFERRALS_PATH, CREATOR_SHOWCASE_PATH, CONTACT_PATH, TRUST_PAGES_PUBLISHED, COMPANY_LINKEDIN_URL, INSTAGRAM_URL } from '../config.js'
 
 export default function Footer() {
+  const trust = useTrustLinks()
   const year = new Date().getFullYear()
   const { locale, basePath } = parsePath(typeof window !== 'undefined' ? window.location.pathname : '/')
   const tr = (t) => translate(locale, t)
@@ -87,12 +89,12 @@ export default function Footer() {
         <div className="mt-12 pt-6 border-t border-hairline flex flex-col md:flex-row md:items-center md:justify-between gap-3 text-xs text-ink-subtle">
           <p suppressHydrationWarning>© {year} CONVRT Studio. {tr('All rights reserved.')}</p>
           <p className="flex flex-wrap items-center gap-x-4 gap-y-1">
-            {/* The legal documents exist only in English (approved text). From other languages the links say so and are marked lang="en"; a reviewed translation is
-                prepared in docs/multilingual-legal-translation-review.md and is NOT published. */}
-            {TRUST_PAGES_PUBLISHED && <a className="underline-offset-4 transition-colors hover:text-ink hover:underline" href={h(ABOUT_PATH)} {...(fb(ABOUT_PATH) ? { hrefLang: 'en' } : {})}>{tr('About')}{fb(ABOUT_PATH) ? ` (${note})` : ''}</a>}
-            {TRUST_PAGES_PUBLISHED && <a className="underline-offset-4 transition-colors hover:text-ink hover:underline" href={PRIVACY_PATH} {...(en ? {} : { lang: 'en' })}>{en ? 'Privacy Policy' : tr('Privacy Policy (in English)')}</a>}
-            {TRUST_PAGES_PUBLISHED && <a className="underline-offset-4 transition-colors hover:text-ink hover:underline" href={TERMS_PATH} {...(en ? {} : { lang: 'en' })}>{en ? 'Terms' : tr('Terms (in English)')}</a>}
-            {TRUST_PAGES_PUBLISHED && <a className="underline-offset-4 transition-colors hover:text-ink hover:underline" href={LEGAL_NOTICE_PATH} {...(en ? {} : { lang: 'en' })}>{en ? 'Legal Notice' : tr('Legal Notice (in English)')}</a>}
+            {/* About, Contact and the legal documents in the visitor's own language (src/i18n/trustLinks.js). A translated legal document is linked only once it is approved
+                (LEGAL_TRANSLATIONS_APPROVED, src/config.js); until then the link goes to the English document and says so ("(in English)", lang="en"). */}
+            {TRUST_PAGES_PUBLISHED && ['about', 'privacy', 'terms', 'legalNotice'].map((k) => {
+              const l = trust(k)
+              return <a key={k} className="underline-offset-4 transition-colors hover:text-ink hover:underline" href={l.href} {...(l.lang ? { lang: l.lang } : {})}>{l.label}</a>
+            })}
             <CookieSettingsLink />
             <span>{tr('Built to convert.')}</span>
           </p>

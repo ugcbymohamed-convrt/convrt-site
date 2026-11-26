@@ -9,7 +9,7 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { build } from 'vite'
 import { ES_HERO } from '../src/i18n/es/hero.js'
-import { ES_ABOUT } from '../src/i18n/es/about.js'
+import { ABOUT_COPY } from '../src/content/aboutCopy.js'
 import { ES_FAQ_TITLES, ES_STAGE_TITLES, ES_FINAL_CTA, ES_SECTION_INTROS } from '../src/i18n/es/labels.js'
 import { CONVRT_STATS } from '../src/lib/siteStats.js'
 import { ELYON_PROOF } from '../src/content/ugcProof.js'
@@ -100,17 +100,14 @@ test('Graspo and Elyon figures survive (Spanish notation, same values)', () => {
   assert.ok(!/It has 9 sales|Roas 5\.28/.test(ugc), 'the raw English client note is not on the Spanish page')
 })
 
-test('About: every figure comes from the data; the four statistics are the founder\'s combined experience; no invented claims', () => {
-  const flat = JSON.stringify(ES_ABOUT)
-  assert.ok(flat.includes('más de 1.200 vídeos producidos') && flat.includes('más de 500 clientes atendidos') && flat.includes('más de 40 M de visualizaciones') && flat.includes('más del 50 % de clientes recurrentes'))
-  assert.equal(CONVRT_STATS.videos, '1,200+')
-  assert.ok(flat.includes('experiencia profesional combinada de nuestro fundador') && flat.includes('No representan exclusivamente proyectos realizados bajo la marca CONVRT Studio'))
-  assert.ok(flat.includes('Almería') && flat.includes('profesional autónomo registrado en España'))
-  assert.ok(flat.includes('10,7 millones') && flat.includes(`ROAS de ${ELYON_PROOF.roas.replace('.', ',')}`) && flat.includes('más de 160 creativos'))
-  assert.ok(PUBLIC_CLAIMS.some((c) => c.id === 'elyon-creatives' && c.status === 'published-client-reported'), '160+ is a recorded, published production count')
-  assert.ok(!/oficina|sucursal|premio|valoraci|reseñas|equipo de \d+|fundad[oa] en \d{4}|calle |avenida /i.test(flat.replace(/valoración/g, '')), 'no offices, branches, awards, reviews, ratings, team size, founding date or street address')
-  assert.ok(!/incluid[oa]s? en los paquetes estándar/.test(flat), 'on-location filming is never described as included in standard packages')
+test('About (owner-approved copy, 26 Nov 2026): the four statistics are the founder\'s combined experience and the disclosure is visible; no invented claims', () => {
+  const flat = JSON.stringify(ABOUT_COPY.es)
   const html = page('about')
+  const t = text(html)
+  assert.equal(CONVRT_STATS.videos, '1,200+')
+  for (const s of ['1.200+', '40 M+', '500+', '50%+', 'vídeos producidos', 'clientes recurrentes']) assert.ok(t.includes(s), s)
+  assert.ok(flat.includes('Estas cifras reflejan la trayectoria profesional de nuestro fundador, incluyendo CONVRT Studio y otros proyectos de producción creativa.') && t.includes('trayectoria profesional de nuestro fundador'))
+  assert.ok(!/oficina|sucursal|premio|valoraci|reseñas|equipo de \d+|fundad[oa] en \d{4}|calle |avenida /i.test(flat.replace(/valoración/g, '')), 'no offices, branches, awards, reviews, ratings, team size, founding date or street address')
   assert.equal((html.match(/<h1[ >]/g) ?? []).length, 1)
   assert.ok(!html.includes('LocalBusiness'), 'no LocalBusiness schema')
 })

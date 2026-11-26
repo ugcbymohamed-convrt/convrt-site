@@ -19,6 +19,9 @@ export const TRANSLATED_PATHS = {
     '/creator-showcase',
     '/about',
     '/contact',
+    '/privacy',
+    '/terms',
+    '/legal-notice',
     // The case studies. /case-studies renders the default study (Graspo) and canonicalises to it, exactly as in English (src/seo/siteSeo.js).
     '/case-studies',
     '/case-studies/graspo',
@@ -30,8 +33,8 @@ export const TRANSLATED_PATHS = {
     '/referrals',
   ],
   // French (France-first, Nov 2026): the homepage, the four service pages (UGC, spokesperson, organic social, SaaS: native French, no video galleries, see
-  // docs/multilingual-french-release.md), pricing, the creator showcase, the case studies, the two conversion flows and the Referral Partner Program. Everything else (About, Contact, blog, legal)
-  // is deliberately not translated yet: French pages link to the English page and say so.
+  // docs/multilingual-french-release.md), pricing, the creator showcase, the case studies, the two conversion flows and the Referral Partner Program. About, Contact and the three legal documents (Privacy Policy, Conditions générales, Mentions légales: built, held until approved) join them
+  // (Nov 2026); the blog stays English and French pages link to it and say so.
   fr: [
     '/',
     '/ugc-video-agency',
@@ -46,9 +49,14 @@ export const TRANSLATED_PATHS = {
     '/creative-growth-roadmap',
     '/risk-free-trial',
     '/referrals',
+    '/about',
+    '/contact',
+    '/privacy',
+    '/terms',
+    '/legal-notice',
   ],
   // Arabic (one shared website for the UAE and Saudi Arabia, USD): the homepage, the FOUR service pages (UGC, Spokesperson, Organic Social, SaaS), the Graspo case study, pricing, the Creator
-  // Showcase and the two application flows. About, Contact, the Elyon case study and the legal pages stay English-only: links to them keep their English URL (never a dead /ar/ URL).
+  // Showcase and the two application flows. About, Contact and the three legal documents (held until approved, src/i18n/release.js) are translated too (Nov 2026); the Elyon case study stays English-only: its links keep their English URL (never a dead /ar/ URL).
   ar: [
     '/',
     '/ugc-video-agency',
@@ -61,6 +69,11 @@ export const TRANSLATED_PATHS = {
     '/creative-growth-roadmap',
     '/risk-free-trial',
     '/referrals',
+    '/about',
+    '/contact',
+    '/privacy',
+    '/terms',
+    '/legal-notice',
     '/blog', // the Arabic blog index (src/BlogPageAr.jsx); Arabic articles are listed in src/content/blogAr.js
   ],
 }

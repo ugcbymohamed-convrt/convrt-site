@@ -2,6 +2,7 @@ import { forward } from '../../lib/rtl.js'
 import { useEffect, useRef, useState } from 'react'
 import { trackEvent } from '../../lib/analytics.js'
 import { scrollToElement } from '../../lib/scroll.js'
+import { useTrustLinks } from '../../i18n/trustLinks.js'
 import { OFFER_PATHS, PRIVACY_POLICY_URL, ROADMAP_BOOKING_URL, CONTACT_PATH } from '../../config.js'
 import { tr, hrefFor } from '../../i18n/tr.js'
 import { currentLocale } from '../../i18n/locale.js'
@@ -54,6 +55,7 @@ const NEXT_STEPS = [
 ]
 
 export default function RoadmapApplication() {
+  const privacy = useTrustLinks()('privacy') // the visitor's own language once the translated policy is approved, else the English policy labelled as such
   const [values, setValues] = useState(EMPTY)
   const [errors, setErrors] = useState({})
   const [result, setResult] = useState(null) // { status, answers } once the visitor has continued
@@ -176,8 +178,8 @@ export default function RoadmapApplication() {
                       {PRIVACY_POLICY_URL && (
                         <>
                           {' '}{tr('See our')}{' '}
-                          {/* The policy exists in English only: from other languages the link says so and is marked lang="en". */}
-                          <a href={PRIVACY_POLICY_URL} {...(currentLocale() === 'en' ? {} : { lang: 'en' })} className="text-ink-muted underline underline-offset-2 hover:text-lime">{currentLocale() === 'en' ? 'privacy policy' : tr('privacy policy (in English)')}</a>.
+                          {/* Until a language's translated policy is approved, its link goes to the English policy, says so and is marked lang="en". */}
+                          <a href={privacy.href} {...(privacy.lang ? { lang: privacy.lang } : {})} className="text-ink-muted underline underline-offset-2 hover:text-lime">{currentLocale() === 'en' ? 'privacy policy' : privacy.lang ? tr('privacy policy (in English)') : tr('privacy policy')}</a>.
                         </>
                       )}
                     </p>

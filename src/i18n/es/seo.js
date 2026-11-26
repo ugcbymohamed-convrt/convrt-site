@@ -28,6 +28,31 @@ export const ES_OG_IMAGE_PATH = '/og/convrt-og-es.png'
 export const ES_OG_IMAGE_ALT = 'CONVRT: creativos de alto rendimiento diseñados para convertir. Anuncios UGC, vídeos para SaaS y aplicaciones, vídeos Spokesperson y contenido orgánico para redes sociales.'
 
 export const ES_SEO = {
+  '/about': {
+    title: 'Sobre CONVRT | Estudio creativo de producción de vídeo',
+    description:
+      'CONVRT es un estudio creativo que combina estrategia, creadores de contenido y producción audiovisual para crear vídeos que captan la atención y mejoran los resultados de las marcas.',
+  },
+  '/contact': {
+    title: 'Contacto | Cuéntanos tu proyecto | CONVRT',
+    description:
+      'Cuéntanos tu proyecto: vídeos UGC, anuncios con spokesperson, contenido orgánico o un aliado creativo a largo plazo. Envía tu consulta o escríbenos por email.',
+  },
+  '/privacy': {
+    title: 'Política de privacidad | CONVRT',
+    description:
+      'Cómo CONVRT Studio recoge, utiliza y protege los datos personales en convrt.studio, y cómo controlar las cookies y tus datos.',
+  },
+  '/terms': {
+    title: 'Términos y condiciones | CONVRT Studio',
+    description:
+      'Condiciones de uso del sitio web de CONVRT Studio y de sus ofertas gratuitas, y cómo se acuerdan los servicios de pago. Para empresas.',
+  },
+  '/legal-notice': {
+    title: 'Aviso legal | CONVRT Studio',
+    description:
+      'Quién gestiona convrt.studio: el titular, el NIF, la dirección postal y los datos de contacto que exige la ley española, y cómo puede utilizarse el sitio web.',
+  },
   '/': {
     title: 'Agencia UGC y de vídeos publicitarios para marcas | CONVRT',
     description:
@@ -77,11 +102,6 @@ export const ES_SEO = {
     ogTitle: 'Creator Showcase de CONVRT: ejemplos de vídeos UGC',
     ogDescription: 'Vídeos reales de creadores en e-commerce, SaaS, servicios y más. Ejemplos de creadores independientes.',
   },
-  '/about': {
-    title: 'Sobre CONVRT | Estudio de vídeo liderado por su fundador',
-    description:
-      'Estudio creativo liderado por su fundador que produce anuncios UGC, vídeos para SaaS y aplicaciones, vídeos Spokesperson y contenido orgánico para redes sociales en español, inglés, francés y árabe.',
-  },
   '/creative-growth-roadmap': {
     title: 'Hoja de ruta de crecimiento creativo gratuita | CONVRT',
     description:
@@ -109,10 +129,5 @@ export const ES_SEO = {
     description: `Cómo CONVRT creó un sistema repetible de anuncios con creadores para Elyon Dubai: más de ${es(ELYON_PROOF.creativesProduced).replace('+', '')} creativos, entrevistas en la calle y un vídeo con un ROAS de ${es(ELYON_PROOF.roas)} comunicado por el cliente.`,
     ogTitle: 'Elyon Dubai × CONVRT: creativos de rendimiento para una marca de fragancias de lujo',
     ogDescription: 'Anuncios con creadores, entrevistas en la calle y testeo creativo continuo, convertidos en compras y ROAS medibles para Elyon Dubai.',
-  },
-  '/contact': {
-    title: 'Contacto | Habla con el estudio de CONVRT',
-    description:
-      'Contacta con CONVRT por correo, reserva una llamada creativa o solicita la Hoja de Ruta de Crecimiento Creativo gratuita. Estudio de vídeo liderado por su fundador para SaaS, e-commerce y apps.',
   },
 }

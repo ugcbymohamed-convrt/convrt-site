@@ -34,6 +34,31 @@ export const FR_PRIMARY_KEYWORDS = {
 }
 
 export const FR_SEO = {
+  '/about': {
+    title: 'À propos de CONVRT | Studio de production vidéo créative',
+    description:
+      'CONVRT est un studio créatif qui associe stratégie, créateurs de contenu et production vidéo pour créer des vidéos qui captent l’attention et servent les performances des marques.',
+  },
+  '/contact': {
+    title: 'Contact | Parlons de votre projet | CONVRT',
+    description:
+      'Parlez-nous de votre projet : vidéos UGC, vidéos spokesperson, contenu organique ou partenariat créatif sur le long terme. Envoyez votre demande ou écrivez-nous.',
+  },
+  '/privacy': {
+    title: 'Politique de confidentialité | CONVRT',
+    description:
+      'Comment CONVRT Studio collecte, utilise et protège les données personnelles sur convrt.studio, et comment gérer les cookies et vos données.',
+  },
+  '/terms': {
+    title: 'Conditions générales | CONVRT Studio',
+    description:
+      'Conditions d’utilisation du site de CONVRT Studio et de ses offres gratuites, et façon dont les services payants sont convenus. Pour les entreprises.',
+  },
+  '/legal-notice': {
+    title: 'Mentions légales | CONVRT Studio',
+    description:
+      'Qui exploite convrt.studio : l’exploitant, le numéro d’identification fiscale, l’adresse postale et les coordonnées exigés par la loi espagnole, et les conditions d’utilisation du site.',
+  },
   '/': {
     title: 'Agence vidéo publicitaire et création de contenus | CONVRT',
     description:

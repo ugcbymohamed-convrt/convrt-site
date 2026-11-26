@@ -31,9 +31,14 @@ const BREADCRUMB_NAMES = {
   '/social-media-video-production': 'فيديوهات للسوشيال ميديا',
   '/saas-video-production': 'فيديوهات برامج SaaS أو التطبيقات',
   '/case-studies/graspo': 'دراسة حالة Graspo',
+  '/about': 'من نحن',
+  '/contact': 'تواصل معنا',
+  '/privacy': 'سياسة الخصوصية',
+  '/terms': 'الشروط والأحكام',
+  '/legal-notice': 'الإشعار القانوني',
 }
 
-const PAGE_TYPE = { '/creator-showcase': 'CollectionPage' }
+const PAGE_TYPE = { '/about': 'AboutPage', '/contact': 'ContactPage', '/creator-showcase': 'CollectionPage' }
 
 export function localizedJsonLd(locale, basePath, seo = {}) {
   if (locale !== LOCALE) return undefined
@@ -54,7 +59,7 @@ export function localizedJsonLd(locale, basePath, seo = {}) {
       name: title,
       description,
       isPartOf: { '@id': WEBSITE_ID },
-      ...(isHome ? { about: { '@id': ORG_ID } } : {}),
+      ...(isHome || basePath === '/about' ? { about: { '@id': ORG_ID } } : {}),
       ...(extras.about ? { about: extras.about } : {}),
       ...(extras.mentions ? { mentions: extras.mentions } : {}),
       ...(trail ? { breadcrumb: { '@id': `${url}#breadcrumb` } } : {}),

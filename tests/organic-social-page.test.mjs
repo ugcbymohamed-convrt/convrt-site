@@ -343,7 +343,7 @@ test('positioning and SEO copy: one primary cluster (social media video producti
   assert.ok(!/search volume|rank(s|ing)? #|first page of google|\b#1\b/i.test(t))
   assert.ok(!/Human-led UGC ads\. Built for paid social|One message\. Different ways to deliver it/.test(t), 'no copy borrowed from the UGC or Spokesperson pages')
   const mine = new Set(t.split(/(?<=[.!?])\s/).filter((s) => s.length > 60))
-  const other = textOf(page(PATHS.spokespersonVideoProduction)).split(/(?<=[.!?])\s/).filter((s) => mine.has(s) && !/English Español|Not ready yet|Your next 5 ad concepts|Free strategy session|A performance creative studio|Scenes are illustrative|See if you qualify|^Studio Services|CONVRT works with both in-house talent|Other languages are available on request|Videos shown are examples from independent creators/.test(s))
+  const other = textOf(page(PATHS.spokespersonVideoProduction)).split(/(?<=[.!?])\s/).filter((s) => mine.has(s) && !/English Español|Not ready yet|Your next 5 ad concepts|Free strategy session|A performance creative studio|Scenes are illustrative|See if you qualify|^Studio Services|^About CONVRT Privacy Policy Terms and Conditions Legal Notice|CONVRT works with both in-house talent|Other languages are available on request|Videos shown are examples from independent creators/.test(s))
   assert.deepEqual(other, [], 'no long sentence is shared with the Spokesperson page apart from the shared chrome and the approved business-data facts (talent model, other languages)')
 })
 

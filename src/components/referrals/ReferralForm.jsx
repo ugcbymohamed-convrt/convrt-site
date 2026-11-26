@@ -19,6 +19,7 @@ import MarketingConsent from '../forms/MarketingConsent.jsx'
 import { useTr, tr as trNow, hrefFor } from '../../i18n/tr.js'
 import { currentLocale } from '../../i18n/locale.js'
 import { forward } from '../../lib/rtl.js'
+import { useTrustLinks } from '../../i18n/trustLinks.js'
 
 /* ─────────────────────────────────────────────
    REGISTRATION FORM — joins the program. Short on purpose: name, email and partner type are
@@ -52,6 +53,7 @@ const SUBMIT_ERROR_COPY = {
 const copyFor = (kind) => trNow(SUBMIT_ERROR_COPY[kind]).replace('{email}', CONTACT_EMAIL)
 
 export default function ReferralForm({ preselect }) {
+  const privacy = useTrustLinks()('privacy')
   const tr = useTr()
   const locale = currentLocale()
   const [values, setValues] = useState(EMPTY_REFERRAL)
@@ -231,10 +233,10 @@ export default function ReferralForm({ preselect }) {
                         {PRIVACY_POLICY_URL && (
                           <>
                             {' '}{tr('See the')}{' '}
-                            <a href={PRIVACY_POLICY_URL} target="_blank" rel="noreferrer noopener" className="text-ink underline underline-offset-2 hover:text-lime">
+                            <a href={privacy.href} {...(privacy.lang ? { lang: privacy.lang } : {})} target="_blank" rel="noreferrer noopener" className="text-ink underline underline-offset-2 hover:text-lime">
                               {tr('privacy policy')}
                             </a>
-                            {currentLocale() === 'en' ? null : ` ${tr('(in English)')}`}.
+                            {currentLocale() === 'en' || !privacy.lang ? null : ` ${tr('(in English)')}`}.
                           </>
                         )}
                         <span className="text-lime" aria-hidden="true"> *</span>

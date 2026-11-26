@@ -35,6 +35,11 @@ const BREADCRUMB_NAMES = {
   '/social-media-video-production': 'Vidéos organiques pour les réseaux',
   '/saas-video-production': 'Production vidéo pour SaaS et applications',
   '/creator-showcase': 'Créateurs',
+  '/about': 'À propos',
+  '/contact': 'Contact',
+  '/privacy': 'Politique de confidentialité',
+  '/terms': 'Conditions générales',
+  '/legal-notice': 'Mentions légales',
 }
 
 // Case studies: like the English graph (src/seo/structuredData.js caseStudyGraph): a WebPage about the client, its breadcrumb and the service it is an example of. No Article, Review,
@@ -43,7 +48,7 @@ const CASE_STUDY_FR = {
   '/case-studies/graspo': { client: 'Graspo', service: '/social-media-video-production', trail: 'Étude de cas Graspo' },
   '/case-studies/elyon': { client: 'Elyon Dubai', service: '/ugc-video-agency', trail: 'Étude de cas Elyon Dubai' },
 }
-const PAGE_TYPE = { '/creator-showcase': 'CollectionPage' }
+const PAGE_TYPE = { '/about': 'AboutPage', '/contact': 'ContactPage', '/creator-showcase': 'CollectionPage' }
 
 const seoFor = (basePath, seo) => ({ title: FR_SEO[basePath]?.title, description: FR_SEO[basePath]?.description, ...seo, ...FR_SEO[basePath] })
 
@@ -73,7 +78,7 @@ export function localizedJsonLd(locale, basePath, seo = {}) {
       name: title,
       description,
       isPartOf: { '@id': WEBSITE_ID },
-      ...(isHome ? { about: { '@id': ORG_ID } } : {}),
+      ...(isHome || basePath === '/about' ? { about: { '@id': ORG_ID } } : {}),
       ...(extras.about ? { about: extras.about } : {}),
       ...(trail ? { breadcrumb: { '@id': `${url}#breadcrumb` } } : {}),
       inLanguage: IN_LANGUAGE,

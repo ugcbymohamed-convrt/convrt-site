@@ -335,7 +335,7 @@ test('USD everywhere: no € / EUR / euro in pricing data, components, FAQ or JS
   // Whole site: no € in any source file (the only "European" hits are a case-study description of Graspo).
   const walk = (d) => fs.readdirSync(d, { withFileTypes: true }).flatMap((e) => (e.isDirectory() ? walk(path.join(d, e.name)) : [path.join(d, e.name)]))
   // The Spanish site has its own EUR pricing (src/i18n/es/*): the USD rule is about the English business data, components, FAQ, JSON-LD and API.
-  for (const f of [...walk(path.join(ROOT, 'src')), ...walk(path.join(ROOT, 'api')), path.join(ROOT, 'index.html')].filter((x) => /\.(jsx?|html|md)$/.test(x) && !x.includes(`${path.sep}i18n${path.sep}`))) {
+  for (const f of [...walk(path.join(ROOT, 'src')), ...walk(path.join(ROOT, 'api')), path.join(ROOT, 'index.html')].filter((x) => /\.(jsx?|html|md)$/.test(x) && !x.includes(`${path.sep}i18n${path.sep}`) && !x.endsWith(`${path.sep}contactCopy.js`) && !x.endsWith(`${path.sep}contactInquiry.js`))) { // contactCopy.js: the Spanish and French contact form shows its budget bands in EUR (owner, 26 Nov 2026); proposed bands flagged for approval
     const t = fs.readFileSync(f, 'utf8')
     assert.ok(!/€/.test(t), `${path.relative(ROOT, f)} contains €`)
     assert.ok(!/\bEUR\b|\beuros?\b/i.test(t.replace(/priceCurrency/g, '')), `${path.relative(ROOT, f)} mentions euros`)

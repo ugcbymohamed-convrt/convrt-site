@@ -50,10 +50,11 @@ test('Arabic is one shared language variant: ar, right-to-left, live, no country
 })
 
 test('Arabic page map: homepage, the FOUR service pages, the Graspo case study, pricing, the Showcase and the two application flows', () => {
-  const ALL = ['/', '/ugc-video-agency', '/spokesperson-video-production', '/social-media-video-production', '/saas-video-production', '/case-studies/graspo', '/pricing', '/creator-showcase', '/creative-growth-roadmap', '/risk-free-trial', '/referrals', '/blog']
+  const ALL = ['/', '/ugc-video-agency', '/spokesperson-video-production', '/social-media-video-production', '/saas-video-production', '/case-studies/graspo', '/pricing', '/creator-showcase', '/creative-growth-roadmap', '/risk-free-trial', '/referrals', '/about', '/contact', '/privacy', '/terms', '/legal-notice', '/blog']
   assert.deepEqual(TRANSLATED_PATHS.ar, ALL)
   assert.deepEqual(AR_PAGES, ALL.map((p) => (p === '/' ? '/ar' : `/ar${p}`)))
-  for (const p of ['/about', '/contact', '/case-studies/elyon', '/case-studies']) assert.ok(!hasTranslation('ar', p), `${p} has no Arabic page`)
+  for (const p of ['/case-studies/elyon', '/case-studies']) assert.ok(!hasTranslation('ar', p), `${p} has no Arabic page`)
+  for (const p of ['/about', '/contact', '/privacy', '/terms', '/legal-notice']) assert.ok(hasTranslation('ar', p), `${p} has an Arabic page (Nov 2026)`)
   // one Arabic route per service, mirroring the English route (no invented structure) and no country pages
   for (const p of ['/ugc-video-agency', '/spokesperson-video-production', '/social-media-video-production', '/saas-video-production']) assert.ok(AR_PAGES.includes(`/ar${p}`), p)
 })
@@ -148,7 +149,7 @@ test('language selector: Arabic is offered with lang="ar" dir="rtl"; an equivale
   const o = languageOptions('en', '/pricing').find((x) => x.code === 'ar')
   assert.deepEqual([o.label, o.htmlLang, o.dir, o.href, o.exact], ['العربية', 'ar', 'rtl', '/ar/pricing', true])
   assert.equal(switchTarget('ar', '/ugc-video-agency'), '/ar/ugc-video-agency')
-  assert.equal(switchTarget('ar', '/saas-video-production'), '/ar/saas-video-production'); assert.equal(switchTarget('ar', '/case-studies/graspo'), '/ar/case-studies/graspo'); assert.equal(switchTarget('ar', '/case-studies/elyon'), '/ar/'); assert.equal(switchTarget('ar', '/about'), '/ar/'); assert.equal(switchTarget('ar', '/blog'), '/ar/')
+  assert.equal(switchTarget('ar', '/saas-video-production'), '/ar/saas-video-production'); assert.equal(switchTarget('ar', '/case-studies/graspo'), '/ar/case-studies/graspo'); assert.equal(switchTarget('ar', '/case-studies/elyon'), '/ar/'); assert.equal(switchTarget('ar', '/about'), '/ar/about'); assert.equal(switchTarget('ar', '/privacy'), '/ar/', 'a held legal translation is not an equivalent'); assert.equal(switchTarget('ar', '/blog'), '/ar/')
   assert.equal(switchTarget('en', '/ugc-video-agency'), '/ugc-video-agency'); assert.equal(switchTarget('es', '/ugc-video-agency'), '/es/ugc-video-agency')
 })
 
@@ -352,7 +353,8 @@ test('hreflang: one reciprocal set (en, es, ar, x-default = English) on the Engl
   const gset = (h) => [...headOf(h).matchAll(/<link rel="alternate" hreflang="([^"]+)" href="([^"]+)"/g)].map((m) => `${m[1]} ${m[2]}`).join('|')
   assert.equal(gset(page('/ar/case-studies/graspo')), gset(page('/case-studies/graspo')))
   assert.match(gset(page('/ar/case-studies/graspo')), /^en [^|]+\|(es [^|]+\|)?(fr-FR [^|]+\|)?ar [^|]+\|x-default /)
-  for (const bp of ['/about', '/case-studies/elyon']) assert.ok(!/hreflang="ar"/.test(page(bp)), `${bp}: no hreflang to a page that does not exist`)
+  for (const bp of ['/case-studies/elyon', '/privacy', '/terms', '/legal-notice']) assert.ok(!/hreflang="ar"/.test(page(bp)), `${bp}: no hreflang to a page that does not exist or is held`)
+  for (const bp of ['/about', '/contact']) assert.match(page(bp), /hreflang="ar"/, `${bp}: reciprocal Arabic annotation`)
   assert.deepEqual(alternatesFor('/ugc-video-agency', SITE_SEO['/ugc-video-agency']).map((a) => a.hreflang), ['en', 'es', 'fr-FR', 'ar', 'x-default'])
 })
 
@@ -378,7 +380,7 @@ test('Arabic Graspo case study (editorial pass, 2026-11-26): the client is «غ�
 test('sitemap: the indexable Arabic URLs (home, four services, Graspo case study, pricing, Showcase), nothing else Arabic', () => {
   const xml = fs.readFileSync(path.join(dist, 'sitemap.xml'), 'utf8')
   const ar = [...xml.matchAll(/<loc>([^<]+\/ar[^<]*)<\/loc>/g)].map((m) => m[1].replace(SITE_URL, ''))
-  assert.deepEqual(ar.slice().sort(), ['/ar/', '/ar/ugc-video-agency', '/ar/spokesperson-video-production', '/ar/social-media-video-production', '/ar/saas-video-production', '/ar/case-studies/graspo', '/ar/pricing', '/ar/creator-showcase'].sort())
+  assert.deepEqual(ar.slice().sort(), ['/ar/', '/ar/ugc-video-agency', '/ar/spokesperson-video-production', '/ar/social-media-video-production', '/ar/saas-video-production', '/ar/case-studies/graspo', '/ar/pricing', '/ar/creator-showcase', '/ar/about', '/ar/contact'].sort())
   assert.deepEqual(localizedSitemapPaths().filter((p) => p.startsWith('/ar')).sort(), ar.slice().sort())
   assert.ok(buildSitemap().includes(`${SITE_URL}/ar/ugc-video-agency`))
 })
@@ -432,7 +434,8 @@ test('Arabic pricing editorial pass (2026-11-26): MSA with the agreed marketing 
   assert.ok((t.match(/كونسيبت/g) || []).length > 25)
   assert.ok(!/ضريبة|VAT|القيمة المضافة/.test(t))
   // no Arabic page (text or JSON-LD) says VAT; the machine-readable flag is the only tax field that stays
-  for (const p of AR_PAGES) {
+  // The three legal documents (Terms, Legal Notice) carry the legally required tax disclosure ("prices exclude VAT"): the no-VAT rule is about marketing copy and never overrides a legally required disclosure (owner, 26 Nov 2026).
+  for (const p of AR_PAGES.filter((x) => !['/ar/privacy', '/ar/terms', '/ar/legal-notice'].includes(x))) {
     const h = page(p)
     assert.ok(!/ضريبة القيمة المضافة|قبل الضريبة/.test(rootText(h).join(' ')), `${p}: visible VAT wording`)
     for (const block of jsonLd(h)) assert.ok(!/ضريبة|قبل الضريبة/.test(JSON.stringify(block)), `${p}: VAT wording in JSON-LD`)

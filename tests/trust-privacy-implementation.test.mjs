@@ -20,6 +20,7 @@ import { organizationNode } from '../src/seo/structuredData.js'
 import { pageHead, sitemapRoutes } from '../src/seo/siteSeo.js'
 import { LEGAL_ENTITY, CONVRT_ADDRESS } from '../src/content/creatorLegal.js'
 import { captureAttribution, withUtm, ATTRIBUTION_STORAGE_KEY } from '../src/lib/analytics.js'
+import { CONTACT_COPY } from '../src/content/contactCopy.js'
 
 const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), '..')
 const read = (p) => readSource(path.join(ROOT, p))
@@ -28,6 +29,9 @@ const walk = (dir) => fs.readdirSync(path.join(ROOT, dir), { withFileTypes: true
 const SRC_FILES = walk('src').filter((f) => /\.(js|jsx)$/.test(f))
 
 const page = (k) => plainText(TRUST_CONTENT[k])
+/* The redesigned Contact page (src/components/contact/*, src/content/contactCopy.js) is no longer a TRUST_CONTENT text page: its words are the four-language copy file. */
+const contactText = () => JSON.stringify(CONTACT_COPY)
+const contactSource = () => ['src/components/contact/ContactPage.jsx', 'src/components/contact/ContactForm.jsx', 'src/content/contactCopy.js'].map(read).join('\n')
 const headings = (k) => TRUST_CONTENT[k].sections.map((s) => s.heading)
 
 /* ───────── operator identity ───────── */
@@ -54,13 +58,14 @@ test('the legally required operator details (LSSI art. 10) are in the Legal Noti
   // they appear on the Legal Notice and in the Privacy Policy's controller identity, and are kept off the Contact page
   assert.ok(page('legalNotice').includes(OPERATOR.taxId) && page('legalNotice').includes(OPERATOR.address))
   assert.ok(page('privacy').includes('Operator: Mohamed Doukkali Azizi'))
-  assert.ok(!page('contact').includes(OPERATOR.taxId) && !page('contact').includes('Almería'), 'Legal Notice stays distinct from Contact')
+  assert.ok(!contactText().includes(OPERATOR.taxId) && !contactText().includes('Almería'), 'Legal Notice stays distinct from Contact')
 })
 
 test('the owner decision "no public phone number or office hours" holds on every trust page', () => {
-  for (const k of ['about', 'contact', 'privacy', 'terms']) {
+  for (const k of ['about', 'privacy', 'terms']) {
     assert.ok(!/\b(phone|telephone|tel\.|whatsapp|office hours|opening hours)\b/i.test(page(k)), k)
   }
+  assert.ok(!/\b(phone|telephone|tel\.|whatsapp|office hours|opening hours)\b/i.test(contactText()), 'contact')
   assert.ok(!/telephone|contactPoint.*phone/i.test(JSON.stringify(organizationNode())))
 })
 
@@ -89,14 +94,13 @@ test('footer: ONE LinkedIn icon, and it is the company page (the founder profile
 })
 
 test('About and Contact show the company page and, separately labelled, the founder profile', () => {
-  for (const k of ['about', 'contact']) {
-    const raw = JSON.stringify(TRUST_CONTENT[k])
-    assert.ok(raw.includes(COMPANY_LINKEDIN_URL), `${k}: company page`)
-    assert.ok(raw.includes(FOUNDER_LINKEDIN_URL), `${k}: founder profile kept`)
-  }
-  assert.match(page('contact'), /CONVRT Studio on LinkedIn: official company page/)
-  assert.match(page('contact'), /Mohamed Doukkali Azizi on LinkedIn \(personal profile\)/)
-  assert.ok(JSON.stringify(TRUST_CONTENT.contact).includes(INSTAGRAM_URL))
+  const raw = JSON.stringify(TRUST_CONTENT.about)
+  assert.ok(raw.includes(COMPANY_LINKEDIN_URL), 'about: company page')
+  assert.ok(raw.includes(FOUNDER_LINKEDIN_URL), 'about: founder profile kept')
+  // Contact (redesign, Nov 2026): the company page is a card, the founder's personal profile a separately labelled link, both read from config.js (never retyped).
+  const src = read('src/components/contact/ContactPage.jsx')
+  assert.match(src, /href: COMPANY_LINKEDIN_URL/); assert.match(src, /href=\{FOUNDER_LINKEDIN_URL\}/); assert.match(src, /href: INSTAGRAM_URL/)
+  for (const l of ['en', 'es', 'fr', 'ar']) assert.match(CONTACT_COPY[l].founderLinkedin, /Mohamed Doukkali Azizi/, `${l}: the founder link names the founder`)
 })
 
 test('Organization structured data: sameAs is Instagram + the company LinkedIn page, never the founder profile; the founder keeps his own Person profile', () => {
@@ -125,11 +129,15 @@ test('About: services, founder-led model, in-house and freelance creators, how c
   assert.ok(!/\b(he|she|his|her|him)\b/i.test(a))
 })
 
-test('Contact: email, Calendly, company LinkedIn, Instagram, creator and referral links; no form, phone or address', () => {
-  const raw = JSON.stringify(TRUST_CONTENT.contact)
-  for (const must of [`mailto:${CONTACT_EMAIL}`, BOOKING_URL, COMPANY_LINKEDIN_URL, INSTAGRAM_URL, 'forms.gle', '/referrals']) assert.ok(raw.includes(must), must)
-  assert.ok(!/<form|contact form|crm/i.test(page('contact')))
-  assert.ok(!page('contact').includes('Almería') && !page('contact').includes(OPERATOR.taxId))
+test('Contact (redesign): the general inquiry form, email, company LinkedIn, Instagram, creator and referral links; NO Calendly or booking, no phone or address', () => {
+  const page = read('src/components/contact/ContactPage.jsx')
+  for (const must of ['CONTACT_EMAIL', 'COMPANY_LINKEDIN_URL', 'INSTAGRAM_URL', 'CREATOR_FORM', 'REFERRALS_PATH', 'ContactForm']) assert.ok(page.includes(must), must)
+  assert.ok(CONTACT_EMAIL === 'mohamed@convrt.studio')
+  const src = contactSource()
+  assert.ok(!/calendly|BOOKING_URL|ROADMAP_BOOKING_URL|CalendlyGate|BookingModal|bookingModal|withUtm|Book a Creative Call|choose a time|Reserva una llamada|Réserver un appel|احجز/i.test(src), 'no booking link, widget, button or scheduling prompt on the Contact page')
+  assert.ok(!src.includes(BOOKING_URL))
+  assert.ok(!src.includes(OPERATOR.taxId) && !src.includes('Almería') && !/Who runs this website/i.test(src))
+  assert.ok(!/\b(crm)\b/i.test(src))
 })
 
 /* ───────── Privacy Policy ───────── */
@@ -220,7 +228,7 @@ test('Terms of Service: every required topic, Spanish law stated, no invented co
     'Using the website', 'Enquiries and applications', 'Free creative concepts offer', 'Free Video Production eligibility',
     'Website content and intellectual property', 'No guarantee of results', 'Liability', 'Governing law and disputes', 'Website terms and signed client agreements',
   ]) assert.ok(h.includes(topic), topic)
-  assert.equal(TRUST_CONTENT.terms.h1, 'Terms of Service')
+  assert.equal(TRUST_CONTENT.terms.h1, 'Terms and Conditions') // the owner's approved name (26 Nov 2026); the clauses are unchanged
   const t = page('terms')
   assert.match(t, /Sending an enquiry or application does not create a contract/)
   assert.match(t, /governed by Spanish law/)
@@ -242,7 +250,7 @@ test('Legal Notice (Aviso Legal): its own page with the LSSI art. 10 information
   assert.match(t, /prices exclude VAT/i)
   assert.deepEqual(ownerMarkersIn(TRUST_CONTENT.legalNotice), [])
   assert.equal(LEGAL_NOTICE_PATH, '/legal-notice')
-  assert.ok(JSON.stringify(TRUST_CONTENT.contact).includes(`${LEGAL_NOTICE_PATH}`), 'Contact points to the Legal Notice')
+  assert.ok(!('contact' in TRUST_CONTENT), 'Contact is the redesigned page, not a text page; the operator details stay in the Legal Notice (footer link)')
 })
 
 test('the B2B Client Service Agreement is an unpublished outline only: no route, no page, no link, not in the sitemap', () => {
@@ -271,7 +279,9 @@ test('every form and the cookie preferences link the Privacy Policy, and the foo
     assert.match(read(f), /PRIVACY_POLICY_URL/, f)
   }
   const footer = read('src/components/Footer.jsx')
-  for (const p of ['ABOUT_PATH', 'PRIVACY_PATH', 'TERMS_PATH', 'LEGAL_NOTICE_PATH', 'CONTACT_PATH']) assert.ok(footer.includes(`href={${p}}`) || footer.includes(`href={h(${p})}`) || footer.includes(`? ${p} :`) || footer.includes(`? h(${p}) :`) || footer.includes(`L(${p},`) || footer.includes(`? L(${p},`), p)
+  // About, Privacy Policy, Terms and Conditions and Legal Notice come from useTrustLinks (src/i18n/trustLinks.js: the visitor's language once approved, else the English document); Contact is a menu link.
+  assert.ok(footer.includes("['about', 'privacy', 'terms', 'legalNotice']") && footer.includes('useTrustLinks'), 'the four trust links')
+  assert.ok(footer.includes('L(CONTACT_PATH,'), 'CONTACT_PATH')
 })
 
 async function importSim(flags, dirName) {
@@ -422,12 +432,13 @@ test('booking links and /scale attribution keep working: utm values are appended
 
 test('code audit: no reader or writer of the attribution store touches click identifiers (only the one-time cleanup names them)', () => {
   const users = SRC_FILES.filter((f) => /gclid|fbclid|ttclid|wbraid|gbraid/.test(read(f)))
-  // analytics.js (one-time cleanup) and the Privacy Policy text that says they are not stored
-  assert.deepEqual(users.sort(), [path.join('src', 'content', 'trustPages.js'), path.join('src', 'lib', 'analytics.js')], users.join(', '))
+  // analytics.js (one-time cleanup) and the Privacy Policy text that says they are not stored, in English and in its Spanish, French and Arabic translations
+  const L = (l) => path.join('src', 'content', 'legal', `${l}.js`)
+  assert.deepEqual(users.sort(), [L('ar'), L('es'), L('fr'), path.join('src', 'content', 'trustPages.js'), path.join('src', 'lib', 'analytics.js')], users.join(', '))
   const a = read('src/lib/analytics.js')
   assert.match(a, /const LEGACY_CLICK_ID_KEYS = \['gclid', 'fbclid', 'ttclid', 'wbraid', 'gbraid'\]/)
   assert.ok(!/CLICK_ID_KEYS\)/.test(a.replace(/LEGACY_CLICK_ID_KEYS\.some/, '')), 'the list is only used for cleanup')
-  const readers = SRC_FILES.filter((f) => f !== path.join('src', 'content', 'trustPages.js') && /convrt_scale_attribution|ATTRIBUTION_STORAGE_KEY/.test(read(f)))
+  const readers = SRC_FILES.filter((f) => f !== path.join('src', 'content', 'trustPages.js') && !f.startsWith(path.join('src', 'content', 'legal')) && /convrt_scale_attribution|ATTRIBUTION_STORAGE_KEY/.test(read(f)))
   assert.deepEqual(readers.sort(), [path.join('src', 'lib', 'analytics.js')].sort(), 'one module owns the store')
 })
 

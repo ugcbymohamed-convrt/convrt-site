@@ -11,10 +11,17 @@ import { ES_PRICED_PAGES } from './es/pricing.js'
 import { AR_PRICED_PAGES } from './ar/pricing.js'
 import { AR_ARTICLES } from '../content/blogAr.js'
 import { FR_PRICED_PAGES } from './fr/pricing.js'
+import { LEGAL_TRANSLATIONS_APPROVED } from '../config.js'
 
 /* Spanish pages that carry a price are blocked until the owner has approved every EUR amount (src/i18n/es/pricing.js); a gate lifts by itself when its condition is met. */
+/* The Spanish, French and Arabic Privacy Policy, Terms and Legal Notice (src/content/legal/*.js) are built and reachable for the owner's review but are held (noindex, out of the sitemap,
+   out of hreflang, not linked from the footer or the forms) until LEGAL_TRANSLATIONS_APPROVED (src/config.js) is true, i.e. until the owner (and a legal adviser) have approved them. */
+const LEGAL_HELD = Object.fromEntries(['/privacy', '/terms', '/legal-notice'].map((p) => [p, () => !LEGAL_TRANSLATIONS_APPROVED]))
+const LEGAL_REASON = 'legal translation awaiting owner/legal approval'
+
 const BLOCKS = {
   es: {
+    ...LEGAL_HELD,
     '/creator-showcase': () => displayableFor('es').length === 0,
     '/risk-free-trial': () => !ES_FREE_VIDEO_REVIEWED,
     ...Object.fromEntries(ES_PRICED_PAGES.map((p) => [p, () => !isPricingApproved('es')])),
@@ -22,6 +29,7 @@ const BLOCKS = {
   // Arabic: the Showcase needs approved Arabic-language videos (its own creators, never the English library); the free-video application is built and linked but held for owner/legal review
   // (its consent wording and eligibility copy); priced pages need the Arabic (USD) pricing config to be valid, which it is by construction (src/i18n/ar/pricing.js).
   ar: {
+    ...LEGAL_HELD,
     '/creator-showcase': () => displayableFor('ar').length === 0,
     '/risk-free-trial': () => !AR_FREE_VIDEO_REVIEWED,
     '/blog': () => AR_ARTICLES.length === 0, // the Arabic blog index is reachable (the menu links to it) but noindex / out of the sitemap and hreflang until it lists an Arabic article
@@ -30,6 +38,7 @@ const BLOCKS = {
   /* French: the showcase waits for approved French-spoken videos (never the English library), the free-video page waits for the owner's/lawyer's review of its consent wording (same as
      Spanish), and the two pages that show a price wait for approved EUR pricing (which reuses the Spanish table, src/i18n/fr/pricing.js). */
   fr: {
+    ...LEGAL_HELD,
     '/creator-showcase': () => displayableFor('fr').length === 0,
     '/risk-free-trial': () => !FR_FREE_VIDEO_REVIEWED,
     ...Object.fromEntries(FR_PRICED_PAGES.map((p) => [p, () => !isPricingApproved('fr')])),
@@ -43,9 +52,9 @@ export const AR_FREE_VIDEO_REVIEWED = false
 /* French twin: the French free-video application is built and reachable, but stays out of indexing, the sitemap and hreflang until the owner and the lawyer have reviewed its consent wording. */
 export const FR_FREE_VIDEO_REVIEWED = false
 const REASONS = {
-  es: { '/creator-showcase': 'no approved Spanish-language videos yet', '/risk-free-trial': 'Spanish free-video page awaiting owner/legal review' },
-  fr: { '/creator-showcase': 'no approved French-language videos yet', '/risk-free-trial': 'French free-video page awaiting owner/legal review' },
-  ar: { '/creator-showcase': 'no approved Arabic-language videos yet', '/risk-free-trial': 'Arabic free-video page awaiting owner/legal review', '/blog': 'no published Arabic blog articles yet' },
+  es: { '/privacy': LEGAL_REASON, '/terms': LEGAL_REASON, '/legal-notice': LEGAL_REASON, '/creator-showcase': 'no approved Spanish-language videos yet', '/risk-free-trial': 'Spanish free-video page awaiting owner/legal review' },
+  fr: { '/privacy': LEGAL_REASON, '/terms': LEGAL_REASON, '/legal-notice': LEGAL_REASON, '/creator-showcase': 'no approved French-language videos yet', '/risk-free-trial': 'French free-video page awaiting owner/legal review' },
+  ar: { '/privacy': LEGAL_REASON, '/terms': LEGAL_REASON, '/legal-notice': LEGAL_REASON, '/creator-showcase': 'no approved Arabic-language videos yet', '/risk-free-trial': 'Arabic free-video page awaiting owner/legal review', '/blog': 'no published Arabic blog articles yet' },
 }
 const PRICING_REASON = { es: 'Spanish EUR prices not approved yet', fr: 'EUR prices not approved yet', ar: 'Arabic USD pricing configuration invalid' }
 

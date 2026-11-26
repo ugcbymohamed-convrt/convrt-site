@@ -26,7 +26,9 @@ test('trust pages: four routes, all known, all routed to the one template, all w
   assert.deepEqual(TRUST, ['/about', '/contact', '/privacy', '/terms', '/legal-notice'])
   for (const p of TRUST) { assert.ok(KNOWN_PATHS.includes(p), p); assert.ok(SITE_SEO[p], p) }
   const app = read('src/App.jsx')
-  for (const k of ['about', 'contact', 'privacy', 'terms', 'legalNotice']) assert.match(app, new RegExp(`\\[PATHS\\.${k}\\]: TrustPage`))
+  // About (English text page / localized premium page) and Contact (redesign) have their own components; the three legal documents share the one reading template.
+  assert.match(app, /\[PATHS\.about\]: AboutPage/); assert.match(app, /\[PATHS\.contact\]: ContactPage/)
+  for (const k of ['privacy', 'terms', 'legalNotice']) assert.match(app, new RegExp(`\\[PATHS\\.${k}\\]: TrustPage`))
   assert.equal(PATHS.about, '/about')
 })
 
@@ -45,7 +47,7 @@ test('trust pages are PUBLISHED (owner approval, 21 Nov 2026): indexable, self-c
 test('privacy link on the forms and footer links follow the same single flag', () => {
   assert.equal(PRIVACY_POLICY_URL, TRUST_PAGES_PUBLISHED ? PRIVACY_PATH : '')
   const footer = read('src/components/Footer.jsx')
-  assert.ok((footer.match(/TRUST_PAGES_PUBLISHED &&/g) || []).length >= 4, 'About, Privacy, Terms and Legal Notice links are gated')
+  assert.ok((footer.match(/TRUST_PAGES_PUBLISHED &&/g) || []).length >= 1, 'the About, Privacy, Terms and Legal Notice links (one list, useTrustLinks) are gated by the flag')
   for (const f of ['src/components/roadmap/RoadmapApplication.jsx', 'src/components/referrals/ReferralForm.jsx', 'src/components/hooks/HooksSignupCard.jsx']) {
     assert.match(read(f), /PRIVACY_POLICY_URL &&/, `${f} already links the policy when the URL is set (form code untouched)`)
   }

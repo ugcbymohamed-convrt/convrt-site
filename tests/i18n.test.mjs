@@ -54,8 +54,8 @@ test('locales: English, Spanish, French and Arabic are registered; Arabic is rig
   assert.deepEqual(BUILT_LOCALES, ['en', 'es', 'fr', 'ar'])
   assert.ok(isLive('es') && isLive('fr') && isLive('ar'))
   assert.equal(LOCALES.fr.htmlLang, 'fr-FR')
-  assert.deepEqual(TRANSLATED_PATHS.fr, ['/', '/ugc-video-agency', '/spokesperson-video-production', '/social-media-video-production', '/saas-video-production', '/pricing', '/creator-showcase', '/case-studies', '/case-studies/graspo', '/case-studies/elyon', '/creative-growth-roadmap', '/risk-free-trial', '/referrals'])
-  assert.deepEqual(TRANSLATED_PATHS.ar, ['/', '/ugc-video-agency', '/spokesperson-video-production', '/social-media-video-production', '/saas-video-production', '/case-studies/graspo', '/pricing', '/creator-showcase', '/creative-growth-roadmap', '/risk-free-trial', '/referrals', '/blog'], 'the Arabic pages: the four service pages, the Graspo case study, pricing, the Showcase, the two flows, the referral page and the Arabic blog index')
+  assert.deepEqual(TRANSLATED_PATHS.fr, ['/', '/ugc-video-agency', '/spokesperson-video-production', '/social-media-video-production', '/saas-video-production', '/pricing', '/creator-showcase', '/case-studies', '/case-studies/graspo', '/case-studies/elyon', '/creative-growth-roadmap', '/risk-free-trial', '/referrals', '/about', '/contact', '/privacy', '/terms', '/legal-notice'])
+  assert.deepEqual(TRANSLATED_PATHS.ar, ['/', '/ugc-video-agency', '/spokesperson-video-production', '/social-media-video-production', '/saas-video-production', '/case-studies/graspo', '/pricing', '/creator-showcase', '/creative-growth-roadmap', '/risk-free-trial', '/referrals', '/about', '/contact', '/privacy', '/terms', '/legal-notice', '/blog'], 'the Arabic pages: the four service pages, the Graspo case study, pricing, the Showcase, the two flows, the referral page, About, Contact, the three legal documents (held) and the Arabic blog index')
 })
 
 test('paths: English URLs never change; other languages live under their prefix with the same slugs', () => {
@@ -71,7 +71,7 @@ test('paths: English URLs never change; other languages live under their prefix 
   assert.deepEqual(parsePath('/'), { locale: 'en', basePath: '/' })
   assert.deepEqual(parsePath('/blog/some-article'), { locale: 'en', basePath: '/blog/some-article' })
   assert.deepEqual(parsePath('/escape'), { locale: 'en', basePath: '/escape' }, 'only an exact language segment is a locale')
-  assert.deepEqual(allLocalizedPaths(['es']), ['/es', '/es/ugc-video-agency', '/es/spokesperson-video-production', '/es/social-media-video-production', '/es/saas-video-production', '/es/pricing', '/es/creator-showcase', '/es/about', '/es/contact', '/es/case-studies', '/es/case-studies/graspo', '/es/case-studies/elyon', '/es/creative-growth-roadmap', '/es/risk-free-trial', '/es/referrals'])
+  assert.deepEqual(allLocalizedPaths(['es']), ['/es', '/es/ugc-video-agency', '/es/spokesperson-video-production', '/es/social-media-video-production', '/es/saas-video-production', '/es/pricing', '/es/creator-showcase', '/es/about', '/es/contact', '/es/privacy', '/es/terms', '/es/legal-notice', '/es/case-studies', '/es/case-studies/graspo', '/es/case-studies/elyon', '/es/creative-growth-roadmap', '/es/risk-free-trial', '/es/referrals'])
 })
 
 test('every translated path is a real English page with SEO data and a Spanish title/description/OG copy', () => {
@@ -111,7 +111,9 @@ test('hreflang: one reciprocal set per translated page (en, es, x-default), only
 
 test('language selector: only live languages are offered, each link points at an equivalent page that exists, otherwise the language home', () => {
   const onAbout = languageOptions('en', '/about')
-  assert.deepEqual(onAbout.map((o) => [o.code, o.href, o.exact]), [['en', '/about', true], ['es', '/es/about', true], ['fr', '/fr/', false], ['ar', '/ar/', false]], 'French and Arabic have no About page: the selector falls back to each language home')
+  assert.deepEqual(onAbout.map((o) => [o.code, o.href, o.exact]), [['en', '/about', true], ['es', '/es/about', true], ['fr', '/fr/about', true], ['ar', '/ar/about', true]], 'About exists in all four languages')
+  // the held legal translations are not equivalents until approved: the selector falls back to each language home
+  assert.deepEqual(languageOptions('en', '/privacy').map((o) => [o.code, o.href, o.exact]), [['en', '/privacy', true], ['es', '/es/', false], ['fr', '/fr/', false], ['ar', '/ar/', false]])
   // while the Spanish EUR prices are not approved the Spanish pricing page is launch-blocked, so the selector falls back to the Spanish home
   const onPricing = languageOptions('en', '/pricing')
   assert.deepEqual(onPricing.map((o) => [o.code, o.href, o.exact]), isPricingApproved('es') ? [['en', '/pricing', true], ['es', '/es/pricing', true], ['fr', '/fr/pricing', true], ['ar', '/ar/pricing', true]] : [['en', '/pricing', true], ['es', '/es/', false], ['fr', '/fr/pricing', true], ['ar', '/ar/pricing', true]])
@@ -138,7 +140,7 @@ test('sitemap: English entries are unchanged; Spanish canonical URLs are added f
   assert.ok(all.filter((p) => p.startsWith('/fr')).every((p) => p === '/fr/' || p.startsWith('/fr/')), 'French canonicals are listed (tests/french.test.mjs checks them)')
   const INDEXABLE_AR = TRANSLATED_PATHS.ar.filter((bp) => isReleased('ar', bp) && SITE_SEO[bp]?.indexable !== false)
   assert.deepEqual(all.filter((p) => p.startsWith('/ar')), INDEXABLE_AR.map((bp) => localizedPath('ar', bp)))
-  assert.deepEqual(INDEXABLE_AR, ['/', '/ugc-video-agency', '/spokesperson-video-production', '/social-media-video-production', '/saas-video-production', '/case-studies/graspo', '/pricing', '/creator-showcase'], 'Arabic sitemap: home, the four services, the Graspo case study, pricing and the Showcase; the noindex application pages, the held free-video page and the empty blog index are out')
+  assert.deepEqual(INDEXABLE_AR, ['/', '/ugc-video-agency', '/spokesperson-video-production', '/social-media-video-production', '/saas-video-production', '/case-studies/graspo', '/pricing', '/creator-showcase', '/about', '/contact'], 'Arabic sitemap: home, the four services, the Graspo case study, pricing, the Showcase, About and Contact; the held legal documents, the noindex application pages, the held free-video page and the empty blog index are out')
   assert.ok(!es.includes('/es/creative-growth-roadmap'), 'the noindex Roadmap is never in the sitemap')
   assert.ok(!es.includes('/es/creator-showcase') || displayableFor('es').length > 0, 'the Spanish Showcase is listed only once Spanish-language videos exist')
   for (const p of es) assert.ok(xml.includes(`<loc>${SITE_URL}${p}</loc>`), p)
@@ -216,8 +218,8 @@ test('creator showcase: Spanish-spoken videos are shown first ONLY when the data
   assert.equal(captionEs('A hand-written caption'), null)
 })
 
-test('legal pages are not translated or built in Spanish (approved English wording is the only version)', () => {
-  for (const bp of ['/privacy', '/terms', '/legal-notice']) assert.ok(!hasTranslation('es', bp))
+test('the legal pages exist in Spanish for review but are HELD (noindex, no sitemap, no hreflang, not linked) until LEGAL_TRANSLATIONS_APPROVED (see tests/legal-translations.test.mjs)', () => {
+  for (const bp of ['/privacy', '/terms', '/legal-notice']) { assert.ok(hasTranslation('es', bp)); assert.ok(!isReleased('es', bp), `${bp} is held`) }
   assert.ok(fs.existsSync(path.join(ROOT, 'docs/multilingual-legal-translation-review.md')))
 })
 
@@ -298,7 +300,7 @@ test('English pages keep their canonical, robots and sitemap entries (the Spanis
 test('French exists in the build as its listed pages and Arabic as its own full site; no page links to a nonexistent one', () => {
   assert.ok(fs.existsSync(path.join(dist, 'fr')) && fs.existsSync(path.join(dist, 'ar')))
   const all = [...ES_PAGES, ...TRANSLATED_PATHS.es].map(page).join('\n')
-  assert.ok(!/href="\/(fr|ar)\/(about|contact|blog)/.test(all))
+  assert.ok(!/href="\/(fr|ar)\/blog/.test(all))
   assert.ok(fs.existsSync(path.join(dist, '404.html')))
 })
 
@@ -347,7 +349,7 @@ test('Spanish prices are the owner-approved EUR amounts: shown everywhere a pric
     if (p !== '/es/referrals') assert.ok(!/\$\s?\d/.test(t), `${p}: no "$N" amount`)
     // the only dollars on a Spanish page are a client's real reported result (UGC page) and the Roadmap's ad-spend answer brackets (qualification thresholds, unchanged)
     const usd = t.match(/[\d.,]+ ?\s?USD|dólar/g) ?? []
-    assert.ok(usd.every((u) => (p === '/es/ugc-video-agency' && /3\.421,25/.test(u)) || (/^\/es\/case-studies/.test(p) && /^(0|229,89|835|3\.421,25) ?\s?USD$/.test(u.trim())) || (['/es/creative-growth-roadmap', '/es/risk-free-trial'].includes(p) && /^(5|20)\.000/.test(u)) || (p === '/es/referrals' && /^(150|500|5\.000) ?\s?USD$/.test(u.trim()))), `${p}: USD left on a Spanish page: ${usd}`)
+    assert.ok(usd.every((u) => (p === '/es/ugc-video-agency' && /3\.421,25/.test(u)) || (/^\/es\/case-studies/.test(p) && /^(0|229,89|835|3\.421,25) ?\s?USD$/.test(u.trim())) || (['/es/creative-growth-roadmap', '/es/risk-free-trial'].includes(p) && /^(5|20)\.000/.test(u)) || (p === '/es/referrals' && /^(150|500|5\.000) ?\s?USD$/.test(u.trim())) || (['/es/legal-notice'].includes(p) && /dólar/.test(u))), `${p}: USD left on a Spanish page: ${usd}`) // /es/legal-notice: the English Legal Notice says "prices are in US dollars"; the translation keeps it and the contradiction with the EUR site is flagged for the owner (docs/contact-about-legal-localization.md)
     assert.ok(!/"priceCurrency":"USD"/.test(h), `${p}: no USD price in JSON-LD`)
   }
   // /es/pricing: every approved amount and the derived per-variation figures
@@ -375,7 +377,7 @@ test('Spanish prices are the owner-approved EUR amounts: shown everywhere a pric
     assert.ok(sm.includes(localizedPath('es', bp)) && /hreflang="es"/.test(page(bp)), `${bp}: sitemap + hreflang`)
   }
   assert.equal(releaseBlocker('es', '/creator-showcase'), null, 'the Spanish Showcase gate lifted because approved Spanish videos exist (see its own test)')
-  assert.deepEqual(blockedPages('es').map((b) => b.path), ['/risk-free-trial'], 'the only gate left is the Spanish free-video page, held for owner/legal review')
+  assert.deepEqual(blockedPages('es').map((b) => b.path), ['/privacy', '/terms', '/legal-notice', '/risk-free-trial'], 'the gates left: the three Spanish legal documents (held for the owner\'s and a lawyer\'s approval) and the Spanish free-video page (held for owner/legal review)')
   // English is untouched: USD notation from the business data, no euro sign
   const en = textOf(page('/pricing')).join('\n')
   assert.match(en, /\$3,000/); assert.ok(!/€/.test(en))
@@ -419,7 +421,7 @@ test('JSON-LD: one stable Organization @id across languages; Spanish WebPage/FAQ
 })
 
 test('Spanish pages never route into the English-only conversion flows (the Roadmap is the one translated flow); booking opens in a new tab with rel=noopener; the privacy link is kept', () => {
-  const FORM_PAGES = ['/es/creative-growth-roadmap', '/es/risk-free-trial', '/es/referrals']
+  const FORM_PAGES = ['/es/creative-growth-roadmap', '/es/risk-free-trial', '/es/referrals', '/es/contact'] // /es/contact: the general inquiry form (no booking, no MailerLite)
   for (const p of ES_PAGES) {
     // the language switcher's English alternate (hrefLang="en") is the only link allowed to point at an English page
     const h = bodyOf(page(p)).replace(/<a [^>]*hrefLang="en"[^>]*>/g, '')
@@ -431,9 +433,10 @@ test('Spanish pages never route into the English-only conversion flows (the Road
     assert.match(h, /href="\/terms"[^>]*lang="en"/)
     assert.match(h, /href="\/legal-notice"[^>]*lang="en"/)
   }
-  for (const p of ['/es/pricing', '/es/contact']) {
-    const h = bodyOf(page(p))
-    assert.match(h, new RegExp(`href="${BOOKING_URL.replace(/[.*+?^${}()|[\]\\/]/g, '\\$&')}"[^>]*target="_blank"[^>]*rel="noopener noreferrer"`), `${p}: booking link opens safely in a new tab`)
+  {
+    const h = bodyOf(page('/es/pricing'))
+    assert.match(h, new RegExp(`href="${BOOKING_URL.replace(/[.*+?^${}()|[\]\\/]/g, '\\$&')}"[^>]*target="_blank"[^>]*rel="noopener noreferrer"`), '/es/pricing: booking link opens safely in a new tab')
+    assert.ok(!bodyOf(page('/es/contact')).includes('calendly'), '/es/contact: no Calendly or booking link (owner, 26 Nov 2026)')
   }
 })
 

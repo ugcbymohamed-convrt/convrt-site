@@ -221,8 +221,8 @@ test('HTTP: translated pages answer 200 (with and without the trailing slash); u
       assert.match(body, /<html lang="ar" dir="rtl">/, `${url} declares Arabic, right-to-left`)
     }
   }
-  // French has only its listed pages and Arabic only its own (About, Contact, the Elyon case study and the blog index of an English-only article do not exist in Arabic): no other page exists, so the host answers 404 (never a fake English page under /fr or /ar).
-  for (const p of ['/fr/about', '/fr/blog', '/fr/contact', '/fr/case-studies/unknown', '/fr/pricing/extra', '/ar/about', '/ar/contact', '/ar/case-studies/elyon', '/ar/case-studies', '/ar/this-page-does-not-exist', '/de/', '/es/this-page-does-not-exist', '/es/blog', '/es/privacy', '/es/case-studies/other', '/es/pricing/extra']) {
+  // French has only its listed pages and Arabic only its own (the Elyon case study and the blog index of an English-only article do not exist in Arabic; About, Contact and the held legal documents do): no other page exists, so the host answers 404 (never a fake English page under /fr or /ar).
+  for (const p of ['/fr/about/extra', '/fr/blog', '/fr/contact/extra', '/fr/case-studies/unknown', '/fr/pricing/extra', '/ar/about/extra', '/ar/contact/extra', '/ar/case-studies/elyon', '/ar/case-studies', '/ar/this-page-does-not-exist', '/de/', '/es/this-page-does-not-exist', '/es/blog', '/es/privacy/extra', '/es/case-studies/other', '/es/pricing/extra']) {
     const r = await get(p)
     assert.equal(r.status, 404, p)
     assert.match(await r.text(), /name="robots" content="noindex, follow"/, p)

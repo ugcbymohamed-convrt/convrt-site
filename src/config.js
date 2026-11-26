@@ -63,6 +63,12 @@ export const TRUST_PAGES_PUBLISHED = true
 // printed from src/content/operator.js. tests/trust-pages.test.mjs refuses TRUST_PAGES_PUBLISHED = true while this is false.
 export const LEGAL_NOTICE_DETAILS_APPROVED = true
 
+// The Spanish, French and Arabic Privacy Policy, Terms and Conditions and Legal Notice (src/content/legal/es|fr|ar.js, translated from the English documents) are BUILT so the owner can review
+// them by URL, but they stay held while this is `false`: noindex, a visible "translation under review" notice, out of the sitemap and hreflang, and the footer/forms keep linking the English
+// documents (labelled "in English"). Flip to `true` ONLY after the owner (and a legal adviser) have approved the translations: the notice goes, the pages become indexable like the English ones,
+// join the sitemap and reciprocal hreflang, and every footer and form privacy link points to the visitor's own language. tests/legal-translations.test.mjs pins the held state.
+export const LEGAL_TRANSLATIONS_APPROVED = false
+
 // URL of CONVRT's privacy policy. Empty while the policy is a draft, so the application forms show their data-use notice without a link; it becomes
 // '/privacy' when TRUST_PAGES_PUBLISHED is flipped.
 export const PRIVACY_POLICY_URL = TRUST_PAGES_PUBLISHED ? PRIVACY_PATH : ''

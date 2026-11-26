@@ -41,6 +41,8 @@ const RiskFreePage = lazy(() => import('./RiskFreePage.jsx'))
 const ReferralsPage = lazy(() => import('./ReferralsPage.jsx'))
 const BlogPage = lazy(() => import('./BlogPage.jsx'))
 const TrustPage = lazy(() => import('./TrustPage.jsx'))
+const AboutPage = lazy(() => import('./AboutPage.jsx'))
+const ContactPage = lazy(() => import('./components/contact/ContactPage.jsx'))
 const BlogArticlePage = lazy(() => import('./BlogArticlePage.jsx'))
 const NotFoundPage = lazy(() => import('./NotFoundPage.jsx'))
 // Private, invitation-only creator pages (see PRIVATE_PATHS in src/routes.js). Standalone: no Nav, no Footer.
@@ -75,9 +77,10 @@ const ROUTES = {
   [REFERRALS_PATH]: ReferralsPage,
   // The Blog index. Individual articles live at /blog/<slug> (see resolvePage).
   [PATHS.blog]: BlogPage,
-  // About, Contact, Privacy Policy and Terms (drafts until TRUST_PAGES_PUBLISHED, see src/config.js): one template, content in src/content/trustPages.js.
-  [PATHS.about]: TrustPage,
-  [PATHS.contact]: TrustPage,
+  // About (English: the text page in src/content/trustPages.js; Spanish, French, Arabic: the premium page in src/AboutPage.jsx) and Contact (one redesigned page for all four languages, src/components/contact/ContactPage.jsx).
+  // Privacy Policy, Terms and Conditions and Legal Notice: one reading template (src/TrustPage.jsx), English text in src/content/trustPages.js and the Spanish/French/Arabic translations in src/content/legal/.
+  [PATHS.about]: AboutPage,
+  [PATHS.contact]: ContactPage,
   [PATHS.privacy]: TrustPage,
   [PATHS.terms]: TrustPage,
   [PATHS.legalNotice]: TrustPage,

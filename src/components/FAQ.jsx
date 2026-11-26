@@ -147,7 +147,9 @@ function FadeUp({ children, inView, delay = 0, className = '' }) {
   )
 }
 
-export default function FAQ() {
+/* Props (all optional; the homepage passes none and renders exactly as before): `heading` = { lead, accent } replaces the default two-part headline (the Contact page uses the owner's own heading per language);
+   `showSubline` / `showNudge` = the short line under the headline and the "Still have questions?" e-mail box at the foot. */
+export default function FAQ({ heading, showSubline = true, showNudge = true }) {
   const tr = useTr()
   const locale = currentLocale()
   const FAQS = homeFaqFor(locale)
@@ -210,16 +212,18 @@ export default function FAQ() {
               className={`font-display font-bold text-ink tracking-display leading-[1.05] mb-5 ${locale === 'en' ? 'whitespace-nowrap' : 'text-balance'}`}
               style={{ fontSize: 'clamp(1.75rem, 3.5vw, 2.75rem)' }}
             >
-              {tr('Things brands')}{' '}
-              <span className="text-lime">{tr('usually ask.')}</span>
+              {heading ? heading.lead : tr('Things brands')}{' '}
+              <span className="text-lime">{heading ? heading.accent : tr('usually ask.')}</span>
             </h2>
           </FadeUp>
 
-          <FadeUp inView={inView} delay={160}>
-            <p className="text-ink-muted text-base leading-relaxed">
-              {tr('We believe good creative partnerships start with clarity.')}
-            </p>
-          </FadeUp>
+          {showSubline && (
+            <FadeUp inView={inView} delay={160}>
+              <p className="text-ink-muted text-base leading-relaxed">
+                {tr('We believe good creative partnerships start with clarity.')}
+              </p>
+            </FadeUp>
+          )}
         </div>
 
         {/* ── Accordion list ── */}
@@ -238,7 +242,7 @@ export default function FAQ() {
         </FadeUp>
 
         {/* ── Bottom CTA nudge ── */}
-        <FadeUp inView={inView} delay={400}>
+        {showNudge && <FadeUp inView={inView} delay={400}>
           <div
             className="mt-16 rounded-2xl px-8 py-7 flex flex-col sm:flex-row sm:items-center gap-5 sm:gap-8"
             style={{
@@ -264,7 +268,7 @@ export default function FAQ() {
               </svg>
             </a>
           </div>
-        </FadeUp>
+        </FadeUp>}
 
       </div>
     </section>
