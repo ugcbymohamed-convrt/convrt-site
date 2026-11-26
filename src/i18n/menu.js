@@ -10,7 +10,7 @@ export const REFERRAL_LABELS = {
   en: ['Refer &', 'Earn'],
   es: ['Recomienda y', 'gana'],
   fr: ['Parrainez et', 'gagnez'],
-  ar: ['رشّحنا', 'واكسب'],
+  ar: ['رشّح عميلًا و', 'اربح'],
 }
 
 /* The Services dropdown, Spanish (owner, Nov 2026): short labels, keyed by the service page's English path. Used by the desktop dropdown AND the mobile menu, so they cannot drift. The page names

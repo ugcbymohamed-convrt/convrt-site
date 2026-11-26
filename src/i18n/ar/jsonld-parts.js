@@ -1,8 +1,8 @@
 /* Arabic building blocks for JSON-LD (offers and services). Amounts, quantities and terms come from the business data; the Arabic sentences either interpolate those values directly or
    look the English term up in the dictionary (so a changed term fails the build until it is re-translated). Same structure as src/i18n/es/jsonld-parts.js.
 
-   Prices are the approved English USD prices (src/i18n/ar/pricing.js). "valueAddedTaxIncluded: false" and "قبل ضريبة القيمة المضافة" repeat the existing English commercial term
-   ("All prices exclude VAT"); no UAE or Saudi tax registration or rate is stated. */
+   Prices are the approved English USD prices (src/i18n/ar/pricing.js). The machine-readable flag "valueAddedTaxIncluded: false" repeats the existing English commercial term; since 2026-11-26 the Arabic
+   descriptions no longer SAY "before VAT" (owner: no VAT wording on public Arabic marketing pages, matching the visible copy); no UAE or Saudi tax registration or rate is stated. */
 
 import { ORG_ID } from '../../seo/structuredData.js'
 import {
@@ -25,7 +25,7 @@ export const monthlyOfferAr = (name, money, packagesUrl, terms = t(COMMITMENT.su
   name: `${name} (شهري)`,
   url: packagesUrl,
   priceSpecification: { '@type': 'UnitPriceSpecification', ...priceSpec(money), unitCode: 'MON', referenceQuantity: { '@type': 'QuantitativeValue', value: 1, unitCode: 'MON' } },
-  description: `${text(money)} (USD) شهريًا، قبل ضريبة القيمة المضافة. ${terms}`,
+  description: `${text(money)} (USD) شهريًا. ${terms}`,
 })
 
 export const oneOffOfferAr = (name, money, packagesUrl) => ({
@@ -33,15 +33,15 @@ export const oneOffOfferAr = (name, money, packagesUrl) => ({
   name: `${name} (دفعة واحدة)`,
   url: packagesUrl,
   priceSpecification: { '@type': 'PriceSpecification', ...priceSpec(money) },
-  description: `${text(money)} (USD) دفعة واحدة، قبل ضريبة القيمة المضافة.`,
+  description: `${text(money)} (USD) دفعة واحدة.`,
 })
 
 export const perUnitOfferAr = (name, money, packagesUrl) => ({
   '@type': 'Offer',
-  name: `${name} (لكل مفهوم إبداعي)`,
+  name: `${name} (لكل كونسيبت)`,
   url: packagesUrl,
-  priceSpecification: { '@type': 'UnitPriceSpecification', ...priceSpec(money), referenceQuantity: { '@type': 'QuantitativeValue', value: 1, unitText: 'مفهوم إبداعي' } },
-  description: `${text(money)} (USD) لكل مفهوم إبداعي، قبل ضريبة القيمة المضافة.`,
+  priceSpecification: { '@type': 'UnitPriceSpecification', ...priceSpec(money), referenceQuantity: { '@type': 'QuantitativeValue', value: 1, unitText: 'كونسيبت' } },
+  description: `${text(money)} (USD) لكل كونسيبت.`,
 })
 
 export const coreServiceNodesAr = (pageUrl) =>
@@ -49,7 +49,7 @@ export const coreServiceNodesAr = (pageUrl) =>
 
 const orgProvider = { '@id': ORG_ID }
 const list = (items) => `${items.slice(0, -1).join('، ')} و${items.at(-1)}`
-const SERVICE_TYPE_PAID = 'إنتاج إعلانات فيديو UGC وفيديوهات بمقدّمين'
+const SERVICE_TYPE_PAID = 'إنتاج إعلانات فيديو UGC وفيديوهات Spokesperson'
 const SERVICE_TYPE_ORGANIC = 'إنتاج محتوى السوشيال ميديا وإدارته'
 
 /* The package Services of /ar/pricing (Sprint, Sprint Plus, Organic Light/Growth, raw footage, custom packages), with page-scoped @ids. */
@@ -61,7 +61,7 @@ export function packageNodesAr(pageUrl) {
     '@id': idOf(p.id),
     name: p.name,
     serviceType: SERVICE_TYPE_PAID,
-    description: `${p.concepts} مفاهيم إبداعية مختلفة، لكل مفهوم ${p.variationsPerConcept} نسخ (${p.variations} نسخة إعلانية نهائية)، وإنتاج متكامل خلال ${p.turnaroundBusinessDays} أيام عمل بعد اعتماد المفاهيم والنصوص، وجولتا مراجعة لكل مفهوم، و${USAGE_RIGHTS.includedMonths} أشهر من حقوق الاستخدام عالميًا، بمشاركة ما يصل إلى ${p.maxCreators} من صناع المحتوى أو المقدّمين.`,
+    description: `${p.concepts} كونسيبتات إعلانية مختلفة، لكل كونسيبت ${p.variationsPerConcept} نسخ (${p.variations} فيديو إعلانيًا)، وإنتاج متكامل خلال ${p.turnaroundBusinessDays} ${p.turnaroundBusinessDays <= 10 ? 'أيام' : 'يوم'} عمل بعد اعتماد الكونسيبتات والسكريبتات، وجولتا مراجعة لكل كونسيبت، و${USAGE_RIGHTS.includedMonths} أشهر من حقوق الاستخدام عالميًا، بمشاركة ما يصل إلى ${p.maxCreators} من صناع المحتوى أو مقدمي الفيديوهات.`,
     provider: orgProvider,
     isRelatedTo: [{ '@id': idOf('ugc') }, { '@id': idOf('spokesperson') }],
     ...offersOf([monthlyOfferAr(p.name, p.monthly, packagesUrl), oneOffOfferAr(p.name, p.oneOff, packagesUrl)]),
@@ -81,7 +81,7 @@ export function packageNodesAr(pageUrl) {
     '@id': idOf(RAW_FOOTAGE.id),
     name: 'إضافة اللقطات الخام',
     serviceType: 'إضافة اللقطات الخام إلى باقة إنتاج فيديو نهائية',
-    description: `${t(RAW_FOOTAGE.policy)} اللقطات الخام إضافة اختيارية بسعر ${text(RAW_FOOTAGE.price)} (USD) لكل مفهوم إبداعي.`,
+    description: `${t(RAW_FOOTAGE.policy)} اللقطات الخام إضافة اختيارية بسعر ${text(RAW_FOOTAGE.price)} (USD) لكل كونسيبت.`,
     provider: orgProvider,
     isRelatedTo: [{ '@id': idOf(SPRINT.id) }, { '@id': idOf(SPRINT_PLUS.id) }],
     ...offersOf([perUnitOfferAr('إضافة اللقطات الخام', RAW_FOOTAGE.price, packagesUrl)]),

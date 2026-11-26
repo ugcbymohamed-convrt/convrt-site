@@ -634,7 +634,7 @@ test('the navigation has one "Refer & Earn" link to /referrals (desktop and mobi
   assert.match(nav, /Refer &amp; <span className="font-semibold text-lime">Earn<\/span>/)
   assert.match(read('src/i18n/menu.js'), /es: \['Recomienda y', 'gana'\]/)
   assert.match(read('src/i18n/menu.js'), /fr: \['Parrainez et', 'gagnez'\]/)
-  assert.match(read('src/i18n/menu.js'), /ar: \['رشّحنا', 'واكسب'\]/)
+  assert.match(read('src/i18n/menu.js'), /ar: \['رشّح عميلًا و', 'اربح'\]/)
   assert.ok(!/Refer Us, Earn/.test(nav), 'the 10%-only label (misleading for $150 standard referrals) is not used')
   assert.equal((nav.match(/<ReferralNavLink/g) || []).length, 2, 'desktop nav + mobile menu')
   assert.match(nav, /focus-visible:outline/)

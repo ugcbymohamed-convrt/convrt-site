@@ -32,9 +32,13 @@ const FLOW_OF = { [OFFER_PATHS.roadmap]: 'roadmap', [OFFER_PATHS.hooks]: 'hooks'
 const linkAvailable = (l, locale) => !FLOW_OF[l.href.split('#')[0]] || flowAvailable(locale, FLOW_OF[l.href.split('#')[0]])
 
 /* One FAQ list (items shaped { q, a: string|string[], link?, moreLinks?, links? }) in a language. Order, count and links are the English ones. */
+/* Arabic (owner, 2026-11-26): no VAT wording on public Arabic marketing pages, so the pricing FAQ's VAT question is not shown in Arabic. The visible accordion and the FAQPage JSON-LD both read this list,
+   so the two stay identical. English, Spanish and French keep the item. */
+const OMITTED_FAQ = { ar: new Set(['vat']) }
+
 export function localizeFaq(items, locale) {
   if (locale === DEFAULT_LOCALE) return items
-  return items.map((item) => ({
+  return items.filter((item) => !OMITTED_FAQ[locale]?.has(item.id)).map((item) => ({
     ...item,
     q: translate(locale, item.q),
     a: Array.isArray(item.a) ? item.a.map((p) => translate(locale, p)) : translate(locale, item.a),

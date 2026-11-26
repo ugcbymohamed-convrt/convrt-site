@@ -59,7 +59,7 @@ function PaidPhilosophy() {
         </ol>
       </div>
       <p className="mt-5 font-display text-base font-bold tracking-snug text-lime md:text-lg">
-        {SPRINT.concepts} {tr('original concepts')} <span aria-hidden="true">&rarr;</span> {SPRINT.variations} {tr('finished ad versions')}
+        {SPRINT.concepts} {tr('original concepts')} {currentLocale() === 'ar' ? <span aria-hidden="true">=</span> : <span aria-hidden="true">&rarr;</span>} {SPRINT.variations} {tr('finished ad versions')}
       </p>
       <p className="mt-1.5 text-[13.5px] leading-relaxed text-ink-muted">
         <span className="font-semibold text-ink">{tr('A concept')}</span> {tr('is a unique ad idea.')}{' '}

@@ -268,7 +268,7 @@ function Panel({ panel, open, onToggle, service }) {
             <span className="block font-display text-[16px] font-semibold leading-snug text-ink md:text-[17px]">{tr(panel.title)}</span>
             <span className="mt-0.5 block text-[13px] leading-snug text-ink-muted">
               <span hidden={service !== 'paid'}>{tr(panel.summary.paid)}</span>
-              <span hidden={service !== 'organic'}>{tr(panel.summary.organic)}</span>
+              <span hidden={service !== 'organic'}>{tr(currentLocale() === 'ar' && panel.id === 'how' ? 'From strategy to publishing and optimization.' : panel.summary.organic)}</span>
             </span>
           </span>
           <span

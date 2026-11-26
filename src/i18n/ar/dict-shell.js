@@ -17,7 +17,7 @@ export default {
   "SaaS Video Production": "فيديوهات SaaS",
   "Spokesperson Videos": "فيديوهات Spokesperson",
   "Get in touch": "تواصل معنا",
-  "A performance creative studio building UGC ads, spokesperson videos, organic social content, and creative strategy for brands that want content with one purpose: conversion.": "استوديو إبداعي لإنتاج إعلانات UGC، وفيديوهات Spokesperson، ومحتوى السوشيال ميديا، مع استراتيجية إبداعية تناسب علامتك.",
+  "A performance creative studio building UGC ads, spokesperson videos, organic social content, and creative strategy for brands that want content with one purpose: conversion.": "استوديو إبداعي متخصص في إنتاج إعلانات UGC وفيديوهات Spokesperson ومحتوى منصات التواصل الاجتماعي، مدعوم باستراتيجيات إبداعية مصممة خصيصًا لكل علامة تجارية.",
   "Studio": "الاستوديو",
   "UGC Video Agency": "وكالة فيديوهات UGC",
   "About": "عن CONVRT",

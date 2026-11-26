@@ -45,7 +45,7 @@ export const AR_PAGE_GRAPH_EXTRAS = {
     about: { '@id': `${url}#service` },
     nodes: [pageServiceAr(url, {
       name: 'إنتاج فيديوهات Spokesperson',
-      serviceType: 'إنتاج فيديوهات بمقدّمين',
+      serviceType: 'إنتاج فيديوهات Spokesperson',
       description: `${AR_CORE_SERVICES.spokesperson.description}`,
     })],
   }),

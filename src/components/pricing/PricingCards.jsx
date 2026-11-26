@@ -262,7 +262,11 @@ export function OrganicCards() {
     `${ORGANIC_COMMITMENT.initialMonths}-month initial commitment`,
     `${ORGANIC.platforms.slice(0, -1).join(', ')} & ${ORGANIC.platforms.at(-1)} distribution`,
   ]
-  const custom = CUSTOM_PACKAGES.organic
+  const ar = currentLocale() === 'ar'
+  // Arabic: the organic custom card says "posts and videos" and names the platforms/languages (owner, 2026-11-26); the same English strings serve the Paid custom card, so these two lines have Arabic-only keys.
+  const custom = ar
+    ? { ...CUSTOM_PACKAGES.organic, features: CUSTOM_PACKAGES.organic.features.map((f) => (f === 'Flexible production volume' ? 'Flexible production volume (posts and videos)' : f)), note: 'Organic custom scope note' }
+    : CUSTOM_PACKAGES.organic
   const Cadence = ({ tone, text }) => <Supporting tone={tone}>{text}</Supporting>
   return (
     <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3 lg:gap-6">

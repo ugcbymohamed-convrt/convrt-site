@@ -57,6 +57,14 @@ export const PaidTerms = ({ billing = 'monthly' }) => {
   return (
     <>
       <Note>{tr(CARD_NOTES.paid)}</Note>
+      {currentLocale() === 'ar' ? (
+        /* Arabic (owner, 2026-11-26): each phrase is itself the link: «تحتاج صانع محتوى UGC؟» · «تحتاج مقدم؟ شاهد كيف ننتج فيديوهات Spokesperson» */
+        <p className="mx-auto mt-2 max-w-3xl text-center text-[13px] leading-relaxed text-ink-subtle">
+          <a href={hrefFor('/ugc-video-agency')} className="text-ink-muted underline underline-offset-2 transition-colors hover:text-lime">{tr('New to UGC?')}</a>
+          {' · '}
+          <a href={hrefFor('/spokesperson-video-production')} className="text-ink-muted underline underline-offset-2 transition-colors hover:text-lime">{tr('Need a presenter?')} {tr('See spokesperson video production')}</a>
+        </p>
+      ) : (
       <p className="mx-auto mt-2 max-w-3xl text-center text-[13px] leading-relaxed text-ink-subtle">
         {tr('New to UGC?')}{' '}
         <a href={hrefFor('/ugc-video-agency')} className="text-ink-muted underline underline-offset-2 transition-colors hover:text-lime">
@@ -68,6 +76,7 @@ export const PaidTerms = ({ billing = 'monthly' }) => {
           {tr('See spokesperson video production')}
         </a>
       </p>
+      )}
     </>
   )
 }

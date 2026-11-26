@@ -27,6 +27,7 @@ import { isReleased, releaseBlocker } from '../src/i18n/release.js'
 import { LOCALIZED_FLOWS } from '../src/i18n/cta.js'
 import { switchTarget, languageOptions } from '../src/i18n/switch.js'
 import { SITE_SEO } from '../src/seo/siteSeo.js'
+import { PRICING_FAQ } from '../src/seo/pricingFaq.js'
 import { SITE_URL } from '../src/config.js'
 import { SPRINT, SPRINT_PLUS, ORGANIC, COMMITMENT, ORGANIC_COMMITMENT, RAW_FOOTAGE } from '../src/seo/businessKnowledge.js'
 import { PORTFOLIO, portfolioProblems, displayableFor, selectDisplayable, selectHero, selectGallery, selectOurWork, selectSpokespersonGallery, selectSaasGallery, selectOrganicGallery, forPageLanguage, availableCategories, countIn, filterByCategory, AR_SHOWCASE_ORDER, creatorLabel, brandLabel } from '../src/content/portfolio.js'
@@ -84,7 +85,9 @@ test('contract terms are the English data: Sprint 3 months, Organic 6 months; on
 
 // Arabic writes "one X" with the number word (فيديو واحد), not a digit: the only figure the dictionary may spell out.
 /* Strings where the figure is spelled as a word or an Arabic grammatical form (dual «هوكان», singular «فيديو»), or where the owner's concise rewrite (2026-11-25) deliberately leaves a figure/abbreviation to the neighbouring text. The figures themselves stay in the figure cards, prices and tables. */
-const WORD_FOR_ONE = new Set(['1 video', 'Your next 5 ad concepts. Tailored to your brand.', 'Let’s Find Your Next 5 Ad Concepts.', '1 video produced by CONVRT', '2 bonus hook variations',
+// Pricing copy (owner, 2026-11-26): Arabic duals and number words («منشوران»، «جولتا»، «خمسة كونسيبتات و15 فيديو») and the split headline «5 أفكار إعلانية لعلامتك التجارية. | مجانًا.» deliberately differ from the English digits.
+const PRICING_WORD_FORMS = ['2 posts per week, approximately 9 original posts per month', '2 revision rounds per creative concept', 'Standard Sprint shown. Sprint Plus includes 10 concepts and 30 finished ad versions.', '5 winning ad concepts.', '2 rounds per creative concept.', 'Organic Light: 2 posts per week, approximately 9 original posts per month. Organic Growth: 3 posts per week, 13 original posts per month.']
+const WORD_FOR_ONE = new Set([...PRICING_WORD_FORMS, '1 video', 'Your next 5 ad concepts. Tailored to your brand.', 'Let’s Find Your Next 5 Ad Concepts.', '1 video produced by CONVRT', '2 bonus hook variations',
   '10.7M views. 75 inbound leads.', 'B2B cooperation', 'B2B cooperation / agency / samples', 'Printing is a complex, spec-driven B2B service. There is no obvious "content" in paper weight, binding methods or offset color matching, until someone makes it interesting.'])
 test('dictionary: complete for every literal tr() of the Arabic pages; figures and price tokens survive; no empty values; consistent duplicates', () => {
   assert.deepEqual(missingFor('ar'), [])
@@ -403,10 +406,43 @@ test('pricing page: USD amounts from the business data, Sprint / Sprint Plus / O
   const t = rootText(page('/ar/pricing')).join(' ')
   for (const v of ['$3,000', '$5,000', '$3,500', '$6,000', '$937.50', '$1,500', '$2,625', '$1,687.50', '$2,700', '$4,725', '$250']) assert.ok(t.includes(v), `price ${v}`)
   for (const name of [SPRINT.name, SPRINT_PLUS.name, ORGANIC.light.name, ORGANIC.growth.name]) assert.ok(t.includes(name), name)
-  assert.match(t, /ضريبة القيمة المضافة/); assert.match(t, /6 أشهر/)
+  assert.ok(!/ضريبة|VAT|القيمة المضافة/.test(t), 'owner 2026-11-26: no VAT wording on the public Arabic pricing page'); assert.match(t, /6 أشهر/)
   assert.ok(!/AED|SAR|درهم|ريال|د\.إ|ر\.س/.test(t), 'no local currency')
   assert.ok(!/UAE VAT|Saudi VAT|VAT registration|ضريبة القيمة المضافة (في|بالإمارات|السعودية)/.test(t), 'no local tax claim')
   for (const bad of ['3,000 AED', 'SAR 3,000']) assert.ok(!t.includes(bad))
+})
+
+test('Arabic pricing editorial pass (2026-11-26): MSA with the agreed marketing terms, no VAT wording on any Arabic page, FAQ and FAQPage JSON-LD in sync, English/Spanish/French untouched', () => {
+  const t = rootText(page('/ar/pricing')).join(' ')
+  // headline, description, goal question, billing labels, commitment wording (owner-supplied sentences)
+  for (const exact of ['باقات إنتاج فيديو', 'تناسب أهدافك.', 'ما هدفك من المحتوى؟', 'اشتراك شهري', 'لمرة واحدة', 'اختبارات إبداعية أوسع', 'باقة مخصصة', 'لنتحدث عن مشروعك', 'باقة مصممة خصيصًا لك', 'ناقش مشروعك معنا',
+    'الحد الأدنى للاشتراك في الباقات الشهرية هو 3 أشهر. بعد انتهاء هذه المدة، يتجدد الاشتراك شهريًا، مع إمكانية الإلغاء بإشعار مسبق مدته 30 يومًا. كما يمكنك طلب باقة دون اشتراك شهري.',
+    'الحد الأدنى للاشتراك في باقات المحتوى العضوي هو 6 أشهر', 'تحتاج صانع محتوى UGC؟', 'تحتاج مقدم؟', 'كونسيبتات مختلفة،', 'وليس مجرد هوكات مختلفة.', 'استراتيجيتك الإبداعية المجانية', 'مجانًا ودون أي التزام.',
+    'مشاهدات', 'فيديو تم إنتاجه', 'عميل', 'لغات للإنتاج', 'كل ما تحتاج إلى معرفته قبل البدء.', 'الأسئلة الشائعة حول الباقات والأسعار', 'هل أنت مستعد لإنتاج', 'إعلانات تستحق المشاهدة؟',
+    'منشوران أسبوعيًا، بمعدل 9 منشورات أصلية تقريبًا شهريًا.', '3 منشورات أسبوعيًا، بمعدل 13 منشورًا أصليًا شهريًا.', 'رشّح عميلًا و']) assert.ok(t.includes(exact), exact)
+  assert.ok(!/(^|\s)(وش|مو|تبغى|تبغي|خلنا|اللي|كيف نشتغل|قل لنا)(\s|$)/.test(t), 'no Gulf dialect words')
+  for (const bad of ['فكرة إعلانية فريدة', 'أفكار مختلفة', 'بمقدّمين', 'الفكرة 1', 'أحِل']) assert.ok(!t.includes(bad), `retired expression: ${bad}`)
+  // the package figures and deliverables did not move
+  for (const f of ['$3,000', '$3,500', '$5,000', '$6,000', '$1,500', '$2,500', '$200', '$233', '$167', '15 فيديو', '30 فيديو', 'مدة التنفيذ: 10 أيام عمل', 'مدة التنفيذ: 15 يوم عمل', 'حتى 3 من صناع المحتوى', 'حتى 5 من صناع المحتوى', 'حد أدنى للاشتراك لمدة 6 أشهر']) assert.ok(t.includes(f), f)
+  // the creative testing vocabulary: «كونسيبت» everywhere the packages talk about concepts
+  assert.ok((t.match(/كونسيبت/g) || []).length > 25)
+  assert.ok(!/ضريبة|VAT|القيمة المضافة/.test(t))
+  // no Arabic page (text or JSON-LD) says VAT; the machine-readable flag is the only tax field that stays
+  for (const p of AR_PAGES) {
+    const h = page(p)
+    assert.ok(!/ضريبة القيمة المضافة|قبل الضريبة/.test(rootText(h).join(' ')), `${p}: visible VAT wording`)
+    for (const block of jsonLd(h)) assert.ok(!/ضريبة|قبل الضريبة/.test(JSON.stringify(block)), `${p}: VAT wording in JSON-LD`)
+  }
+  // FAQ: the VAT question is gone from the Arabic list, and the FAQPage JSON-LD equals the visible questions
+  const faq = jsonLd(page('/ar/pricing'))[0]['@graph'].find((n) => n['@type'] === 'FAQPage').mainEntity
+  assert.ok(!faq.some((q) => /ضريبة/.test(q.name + q.acceptedAnswer.text)))
+  assert.equal(faq.length, PRICING_FAQ.length - 1, 'the Arabic FAQ is the English list minus the VAT item')
+  for (const q of faq) assert.ok(t.includes(q.name.replace(/\s+/g, ' ')), `FAQ question visible: ${q.name.slice(0, 40)}`)
+  for (const c of ['الباقات والأسعار', 'الإنتاج والتسليم', 'حقوق الاستخدام والإضافات', 'المحتوى العضوي']) assert.ok(t.includes(c), `FAQ category ${c}`)
+  // the other languages keep their VAT wording and their FAQ item
+  assert.ok(/Are prices inclusive of VAT\?/.test(rootText(page('/pricing')).join(' ')), 'English keeps the VAT FAQ')
+  assert.ok(PRICING_FAQ.some((q) => q.id === 'vat'))
+  assert.match(rootText(page('/es/pricing')).join(' '), /IVA/); assert.match(rootText(page('/fr/pricing')).join(' '), /TVA/)
 })
 
 test('UGC page: Arabic H1 with the search intent, Arabic gallery videos only, creators described as independent, no English or Spanish leftovers', () => {

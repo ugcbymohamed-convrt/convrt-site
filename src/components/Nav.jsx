@@ -57,7 +57,7 @@ function ReferralNavLink({ onClick, className = '', underline = false, locale = 
       }}
       className={`group relative whitespace-nowrap rounded text-ink-muted transition-colors hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-lime ${className}`}
     >
-      {locale === 'ar' ? <>أحِل و<span className="font-semibold text-lime">اربح</span></> : locale === 'en' ? <>Refer &amp; <span className="font-semibold text-lime">Earn</span></> : <>{plain} <span className="font-semibold text-lime">{accent}</span></>}
+      {locale === 'ar' ? <>رشّح عميلًا و<span className="font-semibold text-lime">اربح</span></> : locale === 'en' ? <>Refer &amp; <span className="font-semibold text-lime">Earn</span></> : <>{plain} <span className="font-semibold text-lime">{accent}</span></>}
       {underline && (
         <span
           aria-hidden="true"
