@@ -19,6 +19,9 @@ export const INSTAGRAM_URL = 'https://www.instagram.com/convrtcreativestudio/'
    The videos themselves come from src/content/portfolio.js. */
 export const CREATOR_SHOWCASE_PATH = '/creator-showcase'
 
+/* The project application: the purchase-intent funnel for visitors who picked a production package on /pricing (docs/project-application.md). A conversion utility, never indexed. */
+export const PROJECT_APPLICATION_PATH = '/project-application'
+
 export const OFFER_PATHS = {
   roadmap: '/creative-growth-roadmap',
   hooks: '/free-hooks',

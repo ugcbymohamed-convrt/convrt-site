@@ -59,8 +59,8 @@ test('canonical and hreflang: each study is self-canonical with en/es/x-default;
     assert.ok(head(es).includes(`<link rel="canonical" href="${SITE_URL}/es${bp}" />`), `${bp}: Spanish self-canonical`)
     const set = (h) => [...h.matchAll(/<link rel="alternate" hreflang="([^"]+)" href="([^"]+)"/g)].map((m) => `${m[1]} ${m[2]}`).join('|')
     assert.equal(set(es), set(en), `${bp}: reciprocal set`)
-    // Graspo also exists in Arabic (live), so its set carries the reciprocal ar alternate; Elyon stays en/es/fr
-    assert.equal(set(en), `en ${SITE_URL}${bp}|es ${SITE_URL}/es${bp}|fr-FR ${SITE_URL}/fr${bp}|${bp.endsWith('graspo') ? `ar ${SITE_URL}/ar${bp}|` : ''}x-default ${SITE_URL}${bp}`)
+    // Both studies exist in Arabic (live), so both sets carry the reciprocal ar alternate
+    assert.equal(set(en), `en ${SITE_URL}${bp}|es ${SITE_URL}/es${bp}|fr-FR ${SITE_URL}/fr${bp}|ar ${SITE_URL}/ar${bp}|x-default ${SITE_URL}${bp}`)
   }
   const dup = page('/es/case-studies')
   assert.ok(head(dup).includes(`<link rel="canonical" href="${SITE_URL}/es/case-studies/graspo" />`))

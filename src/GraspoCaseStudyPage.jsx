@@ -14,11 +14,9 @@ import GraspoFunnel from './components/graspo/GraspoFunnel.jsx'
 import GraspoLeadExamples from './components/graspo/GraspoLeadExamples.jsx'
 import GraspoLeadComposition from './components/graspo/GraspoLeadComposition.jsx'
 import GraspoResult from './components/graspo/GraspoResult.jsx'
-import { currentLocale } from './i18n/locale.js'
 
 export default function GraspoCaseStudyPage() {
   useDocumentHead(caseStudyHead('/case-studies/graspo'))
-  const ar = currentLocale() === 'ar'
 
   return (
     <>
@@ -42,7 +40,7 @@ export default function GraspoCaseStudyPage() {
       <GraspoLeadComposition />
       <SectionDivider />
       <GraspoResult />
-      {!ar && <NextCaseStudy currentId="graspo" />}
+      <NextCaseStudy currentId="graspo" />
       <SectionDivider />
       <FinalCTA />
     </>

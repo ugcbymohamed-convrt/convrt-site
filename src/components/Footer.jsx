@@ -49,7 +49,7 @@ export default function Footer() {
             <ul className="mt-4 space-y-2.5 text-sm text-ink-muted">
               <li><a className="hover:text-ink transition-colors" href={`${homePrefix}#services`}>{tr('Services')}</a></li>
               <li><a className="hover:text-ink transition-colors" href={h(CREATOR_SHOWCASE_PATH)}>{tr('Creator Showcase')}</a></li>
-              {(locale === 'ar' || menuHas(locale, '/case-studies')) && <li><a className="hover:text-ink transition-colors" href={locale === 'ar' ? h('/case-studies/graspo') : h('/case-studies')}>{tr('Case Studies')}</a></li>}
+              {menuHas(locale, '/case-studies') && <li><a className="hover:text-ink transition-colors" href={h('/case-studies')}>{tr('Case Studies')}</a></li>}
               <li><a className="hover:text-ink transition-colors" href={h('/pricing')}>{tr('Pricing')}</a></li>
               {(enLike || menuHas(locale, '/blog')) && <li>{en ? <a className="hover:text-ink transition-colors" href="/blog">Blog</a> : L('/blog', 'Blog')}</li>}
               <li>{TRUST_PAGES_PUBLISHED ? L(CONTACT_PATH, 'Contact') : <a className="hover:text-ink transition-colors" href={`${homePrefix}#contact`}>{tr('Contact')}</a>}</li>

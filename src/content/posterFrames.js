@@ -16,7 +16,7 @@ export const POSTER_FRAMES = {
   'a256f8f429c8e2d26256e894af970dbf': 18.8, // portfolio:ar-oneroyal-1 [ar]
   '871ea801a38e653cd48c036374966382': 5.1, // portfolio:ar-oneroyal-2 [ar] // owner-chosen frame 2026-11-25 (Videos Placement folder screenshot)
   '8bc61e80a5240cde3f16a90f63dbc4fa': 11.6, // portfolio:ar-oneroyal-3 [ar]
-  'afdb58ebb92354534b513dabca0d64f5': 8.0, // home-hero-ar:home-hero-ar-main [ar]: presenter smiling at the camera with open eyes, one Arabic caption word (every frame carries the burned-in «مدبلج إلى العربية» badge)
+  '3431182e01b2bfd16e7734c2f9e3e99f': 0.4, // home-hero-ar:home-hero-ar-main [ar] (ARABIC.mp4, 2026-11-26): presenter smiling at the camera, open eyes, coffee cup and the comment bubble, no caption word mid-frame
   '442dfb5fe6a49dffd032ecd920414512': 13.0, // portfolio:ar-ugc-hero-1 [ar]
   'e76683d744c46ecfe8e1fb53b273b926': 15.6, // portfolio:ar-ugc-hero-2 [ar]
   '6d550ed3188d606de1b28dfd389c3abd': 33.2, // portfolio:ar-ugc-1 [ar]
@@ -44,7 +44,7 @@ export const POSTER_FRAMES = {
   '5b1058e9c68ab7b05bd24858ceaadb9c': 20.9, // owner-placed thumbnail 2026-11-25 (matched to the owner's reference screenshots): portfolio:fr-ugc-hero-3 [fr]
   '7c681c012def2539e7c32c99889d8662': 18.6, // owner-placed thumbnail 2026-11-25 (matched to the owner's reference screenshots): portfolio:fr-ugc-1 [fr]
   'a273a9e766e0baf7eed8a6ad72c8892b': 6.3, // owner-placed thumbnail 2026-11-25 (matched to the owner's reference screenshots): portfolio:fr-ugc-2 [fr]
-  'ce7f495642b90a531e44f17b8e7454c5': 0.4, // home-hero-fr:home-hero-fr-main (French-dubbed CONVRT ad with dubbed on-screen text, FRENCH-with-Dubbed-Text.mp4; clear face, open eyes, coffee cup, the comment bubble, no caption word mid-frame)
+  'dc221b5a412f48ab937b60f5fbc7ade1': 0.4, // home-hero-fr:home-hero-fr-main (FRENCH.mp4, 2026-11-26; clear face, open eyes, coffee cup, the comment bubble, no caption word mid-frame)
   '8797ae3fba20c95e9d9d10eefda840c9': 3.4, // owner-placed thumbnail 2026-11-25 (matched to the owner's reference screenshots): portfolio:fr-mohamed-comma [fr]
   'a4a52503d855717880ed6dcbaca724b5': 1.9, // owner-placed thumbnail 2026-11-25 (matched to the owner's reference screenshots): portfolio:fr-mohamed-route-facile [fr]
   '5639f5ff6b02b7501b946aef4466ad4c': 1.4, // owner-placed thumbnail 2026-11-25 (matched to the owner's reference screenshots): portfolio:fr-mohamed-skycop [fr]
@@ -118,7 +118,7 @@ export const POSTER_FRAMES = {
   '3616606e3ca6d1a85c8a57d7cc2f656f': 3.6, // portfolio:showcase-graspo-2 (home panel graspo); graspo 1.2M
   'c1379ace38f2fa19ef2a45de1bb5d4b1': 4.6, // portfolio:showcase-graspo-3 (home panel graspo); graspo 7.5M
   '20c642c760e1937953fc33e98f3d859f': 1.6, // home-hero:home-hero-main
-  '2833c72764ffb5cc73f001565ca32954': 2.0, // home-hero-es:home-hero-es-main (Spanish CONVRT ad, dubbed version supplied 2026-11-24; clear face, open eyes, coffee cup)
+  '005317a3b3da8192c22b29cc2647046d': 0.4, // home-hero-es:home-hero-es-main (SPANISH.mp4, 2026-11-26; clear face, open eyes, coffee cup, the comment bubble)
   'a290d76bc0de09f3e404d16f3f40dda1': 3.3, // portfolio:en-josh-ugc-1 (smiling, holding the checklist, clean caption)
   '0d8c53adaf3db38b291077b3da441513': 6.4, // portfolio:en-josh-ugc-2 (face to camera, three fingers up, no caption in the way)
   'd0c08b8a1aaed35bfda22a201a2aebe4': 7.2, // portfolio:en-josh-saas-1 (the app scanning a plate: the product in use)

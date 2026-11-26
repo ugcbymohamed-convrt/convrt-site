@@ -38,6 +38,7 @@ const ScalePage = lazy(() => import('./ScalePage.jsx'))
 const RoadmapPage = lazy(() => import('./RoadmapPage.jsx'))
 const FreeHooksPage = lazy(() => import('./FreeHooksPage.jsx'))
 const RiskFreePage = lazy(() => import('./RiskFreePage.jsx'))
+const ProjectApplicationPage = lazy(() => import('./ProjectApplicationPage.jsx'))
 const ReferralsPage = lazy(() => import('./ReferralsPage.jsx'))
 const BlogPage = lazy(() => import('./BlogPage.jsx'))
 const TrustPage = lazy(() => import('./TrustPage.jsx'))
@@ -71,6 +72,8 @@ const ROUTES = {
   [PATHS.roadmap]: RoadmapPage,
   [PATHS.hooks]: FreeHooksPage,
   [PATHS.riskFree]: RiskFreePage,
+  // Purchase-intent package application (noindex, not in the sitemap): see ProjectApplicationPage.jsx.
+  [PATHS.projectApplication]: ProjectApplicationPage,
   // Referral Partner Program. Linked from the footer only (not the main nav).
   [REFERRALS_PATH]: ReferralsPage,
   // The Blog index. Individual articles live at /blog/<slug> (see resolvePage).

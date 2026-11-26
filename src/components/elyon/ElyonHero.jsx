@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useTr } from '../../i18n/tr.js'
 import { trackEvent } from '../../lib/analytics.js'
 import { isEnglish } from '../caseStudies/format.js'
+import { currentLocale } from '../../i18n/locale.js'
 import { heroCta } from '../caseStudies/cta.js'
 import FadeUp from '../caseStudies/shared/FadeUp.jsx'
 import ElyonHeroScene from './ElyonHeroScene.jsx'
@@ -29,6 +30,10 @@ function goToVideos(e) {
   const heading = el.querySelector('h2')
   if (heading) { heading.setAttribute('tabindex', '-1'); heading.focus({ preventScroll: true }) }
 }
+
+/* The bottle scene is positioned with physical pixels (inline `left`) against the text column and animated by scroll, like the Graspo paper scene: in Arabic it runs as a dir="ltr" island so it stays at the
+   right edge, clear of the (centred) text, and is never mirrored. `contents` keeps the wrapper out of the layout. */
+const Scene = (props) => (currentLocale() === 'ar' ? <div dir="ltr" className="contents"><ElyonHeroScene {...props} /></div> : <ElyonHeroScene {...props} />)
 
 const TAGS = ['Luxury Fragrance', 'DTC Ecommerce', 'Paid Social', 'UGC', 'Street Interviews', 'Creative Testing']
 
@@ -65,7 +70,7 @@ export default function ElyonHero() {
         }}
       />
 
-      <ElyonHeroScene />
+      <Scene />
 
       <div className="relative z-10 mx-auto max-w-5xl px-5 md:px-8 text-center">
         <FadeUp inView={inView} delay={0}>
@@ -130,7 +135,7 @@ export default function ElyonHero() {
           </div>
         </FadeUp>
 
-        <ElyonHeroScene mobile />
+        <Scene mobile />
 
         <FadeUp inView={inView} delay={340} className="mt-10">
           <div
@@ -145,7 +150,7 @@ export default function ElyonHero() {
                     {item.label === 'Engagement' ? (en ? item.label : tr('Engagement (client relationship)')) : tr(item.label)}
                   </dt>
                   <dd className="mt-2 text-[14px] leading-snug text-ink font-medium">
-                    {item.value === 'Elyon Dubai' ? item.value : tr(item.value)}
+                    {tr(item.value)}
                   </dd>
                 </div>
               ))}

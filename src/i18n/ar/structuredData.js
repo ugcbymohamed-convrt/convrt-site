@@ -30,14 +30,15 @@ const BREADCRUMB_NAMES = {
   '/spokesperson-video-production': 'فيديوهات Spokesperson',
   '/social-media-video-production': 'فيديوهات للسوشيال ميديا',
   '/saas-video-production': 'فيديوهات برامج SaaS أو التطبيقات',
-  '/case-studies/graspo': 'دراسة حالة Graspo',
+  '/case-studies/graspo': 'دراسة حالة غراسبو',
+  '/case-studies/elyon': 'دراسة حالة إيليون دبي',
 }
 
 const PAGE_TYPE = { '/creator-showcase': 'CollectionPage' }
 
 export function localizedJsonLd(locale, basePath, seo = {}) {
   if (locale !== LOCALE) return undefined
-  if (basePath === '/creative-growth-roadmap' || basePath === '/risk-free-trial') return undefined // like the English pages: noindex, no structured data
+  if (basePath === '/creative-growth-roadmap' || basePath === '/risk-free-trial' || basePath === '/project-application') return undefined // like the English pages: noindex, no structured data
   const url = absoluteUrl(LOCALE, basePath)
   const { title, description } = { ...seo, ...AR_SEO[basePath] }
   const isHome = basePath === '/'

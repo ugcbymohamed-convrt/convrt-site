@@ -27,6 +27,8 @@ export const TRANSLATED_PATHS = {
     '/creative-growth-roadmap',
     // The 1 FREE video application (noindex like the English page and, on top of that, held by a release gate until the owner and the lawyer have reviewed it: src/i18n/release.js).
     '/risk-free-trial',
+    // The purchase-intent package application (noindex like the other application pages, so never in the sitemap or hreflang): translated end to end, src/i18n/projectApplicationCopy.js.
+    '/project-application',
     '/referrals',
   ],
   // French (France-first, Nov 2026): the homepage, the four service pages (UGC, spokesperson, organic social, SaaS: native French, no video galleries, see
@@ -45,21 +47,28 @@ export const TRANSLATED_PATHS = {
     '/case-studies/elyon',
     '/creative-growth-roadmap',
     '/risk-free-trial',
+    // The purchase-intent package application (noindex like the other application pages, so never in the sitemap or hreflang): translated end to end, src/i18n/projectApplicationCopy.js.
+    '/project-application',
     '/referrals',
   ],
-  // Arabic (one shared website for the UAE and Saudi Arabia, USD): the homepage, the FOUR service pages (UGC, Spokesperson, Organic Social, SaaS), the Graspo case study, pricing, the Creator
-  // Showcase and the two application flows. About, Contact, the Elyon case study and the legal pages stay English-only: links to them keep their English URL (never a dead /ar/ URL).
+  // Arabic (one shared website for the UAE and Saudi Arabia, USD): the homepage, the FOUR service pages (UGC, Spokesperson, Organic Social, SaaS), the two case studies (Graspo, Elyon Dubai), pricing, the Creator
+  // Showcase and the two application flows. About, Contact and the legal pages stay English-only: links to them keep their English URL (never a dead /ar/ URL).
   ar: [
     '/',
     '/ugc-video-agency',
     '/spokesperson-video-production',
     '/social-media-video-production',
     '/saas-video-production',
+    // The case studies (Nov 2026): /case-studies renders the default study (Graspo) and canonicalises to it, like English, Spanish and French; Graspo is the organic proof, Elyon the paid-advertising proof.
+    '/case-studies',
     '/case-studies/graspo',
+    '/case-studies/elyon',
     '/pricing',
     '/creator-showcase',
     '/creative-growth-roadmap',
     '/risk-free-trial',
+    // The purchase-intent package application (noindex like the other application pages, so never in the sitemap or hreflang): translated end to end, src/i18n/projectApplicationCopy.js.
+    '/project-application',
     '/referrals',
     '/blog', // the Arabic blog index (src/BlogPageAr.jsx); Arabic articles are listed in src/content/blogAr.js
   ],

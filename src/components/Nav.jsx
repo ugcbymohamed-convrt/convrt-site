@@ -18,8 +18,8 @@ import { SERVICE_LABELS } from '../seo/businessKnowledge.js'
 const links = [
   { label: 'Services', href: '#services' },
   { label: 'Creator Showcase', href: CREATOR_SHOWCASE_PATH, path: CREATOR_SHOWCASE_PATH },
-  // Arabic (owner, 2026-11-25): the menu is the English menu. Case Studies opens the Arabic Graspo study (`arHref`); Blog opens /ar/blog (its own page). `arShow`: always listed in Arabic.
-  { label: 'Case Studies', href: '/case-studies', path: '/case-studies', arHref: '/case-studies/graspo' },
+  // Arabic (owner, 2026-11-25): the menu is the English menu. Case Studies opens /ar/case-studies (both studies, switchable: Graspo and Elyon Dubai, since Nov 2026); Blog opens /ar/blog (its own page). `arShow`: always listed in Arabic.
+  { label: 'Case Studies', href: '/case-studies', path: '/case-studies' },
   { label: 'Pricing', href: '/pricing', path: '/pricing' },
   { label: 'Blog', href: '/blog', path: '/blog', arShow: true },
   { label: 'Contact', href: '#contact', compactHide: true },
@@ -80,8 +80,8 @@ export default function Nav() {
   const homePrefix = onHome ? '' : localHref('/', locale)
   const resolveHref = (href) => (href.startsWith('#') ? `${homePrefix}${href}` : localHref(href, locale))
   // One menu model (src/i18n/menu.js): a language lists an entry only when its page exists there. Arabic lists the English menu (owner, 2026-11-25): Case Studies opens the Arabic Graspo study, Blog opens /ar/blog.
-  const visibleLinks = links.filter((l) => menuHas(locale, l.path) || (locale === 'ar' && (l.arHref || l.arShow)))
-  const hrefOf = (l) => resolveHref(locale === 'ar' && l.arHref ? l.arHref : l.href)
+  const visibleLinks = links.filter((l) => menuHas(locale, l.path) || (locale === 'ar' && l.arShow))
+  const hrefOf = (l) => resolveHref(l.href)
   // The Services dropdown: Arabic has the owner's own four labels in this order; Spanish its short labels (menu.js); other languages the English order with dictionary labels.
   const serviceItems = locale === 'ar' ? SERVICE_MENU_AR : serviceMenuFor(locale, SERVICE_MENU)
   const serviceLabel = (m) => (locale === 'ar' ? m.label : SERVICE_MENU_LABELS[locale]?.[m.href] ?? tr(m.label))

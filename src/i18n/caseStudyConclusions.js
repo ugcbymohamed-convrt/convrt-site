@@ -5,7 +5,8 @@
    headline: [{ text, accent? }] segments; the accent segment takes the theme colour (Graspo lime, Elyon champagne gold).
    English keeps its approved sentences (the long Graspo paragraph is only split: the figures it listed now sit in the summary tiles). Spanish follows the owner's wording of 2026-11-26. French and Arabic reuse
    the approved sentences of their own dictionaries (src/i18n/fr/dict-casestudies.js, src/i18n/ar/dict-graspo.js), split the same way; the Arabic wording keeps the Modern Standard editorial direction and "غراسبو".
-   The Elyon Arabic block is ready but unused: there is no Arabic Elyon page (src/i18n/registry.js), so nothing renders it. */
+   The Elyon Arabic block is rendered by /ar/case-studies/elyon (the Arabic study exists since Nov 2026); it writes the client «إيليون دبي», keeps the 5.28× scoped to ONE standout creative and states that it is
+   client-reported, not an average and not a guarantee, like the English, Spanish and French blocks. */
 
 /* French typography: a no-break space before : ; ! ? and after « so a line never starts with a colon. Applied to the French blocks only. */
 const nb = (s) => s.replace(/ ([:;!?»])/g, '\u00a0$1').replace(/« /g, '«\u00a0')
@@ -96,11 +97,11 @@ export const ELYON_CONCLUSION = {
   ar: {
     badge: 'الخلاصة',
     headline: [{ text: 'العلامة الفاخرة تحتاج إلى إعلانات ' }, { text: 'تليق بها.', accent: true }],
-    lead: 'مع إيليون دبي، جمعنا بين هوية علامة فاخرة ومقاطع يقدمها صنّاع المحتوى ولقاءات في الشارع ومنظومة إنتاج مستمرة لتطوير إعلانات جديدة.',
-    labels: ['أعلى عائد على الإنفاق الإعلاني', 'في إعلان واحد متميز خلال مرحلة التعلّم الأولى', 'إعلانات منتجة', 'مواقع الإنتاج'],
+    lead: 'مع إيليون دبي، جمعنا بين هوية علامة فاخرة وإعلانات يقدّمها صنّاع محتوى ولقاءات في الشارع ومنظومة إنتاج مستمرة، لتطوير إعلانات جديدة واختبارها.',
+    labels: ['أعلى عائد على الإنفاق الإعلاني (ROAS)', 'في إعلان واحد متميز، خلال مرحلة التعلّم الأولى', 'إعلانات منتجة', 'مواقع الإنتاج'],
     note: 'أرقام العائد على الإنفاق الإعلاني يقدّمها العميل وتخص إعلانات ولحظات محددة. وهي ليست متوسطًا لجميع الحملات ولا تمثل ضمانًا.',
-    strategy: 'حتى في مرحلة التعلّم الأولى، بلغ العائد على الإنفاق الإعلاني في بعض الإعلانات 5.28×. والإنجاز الأكبر هو بناء منظومة قادرة على إنتاج المزيد منها وتحسينه باستمرار.',
-    ctaLead: 'إيليون دبي مثال على خدمتنا في إنتاج فيديوهات المحتوى الذي ينشئه المستخدمون.',
+    strategy: 'حتى في مرحلة التعلّم الأولى، بلغ العائد في أحد الإعلانات 5.28×. لكن الإنجاز الأكبر هو بناء منظومة قادرة على إنتاج المزيد من الإعلانات وتحسينها باستمرار.',
+    ctaLead: 'إيليون دبي مثال على خدمتنا في إنتاج فيديوهات UGC للإعلانات المدفوعة.',
     service: 'اكتشف كيف يعمل إنتاج فيديوهات UGC لدينا',
     pricing: 'قارن بين باقات UGC',
   },

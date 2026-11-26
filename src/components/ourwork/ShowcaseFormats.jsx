@@ -26,7 +26,7 @@ const list = (items) => (items.length > 1 ? `${items.slice(0, -1).join(', ')} ${
 /* French and Arabic: the block reads exactly like the English one (heading, intro, the four service cards, the case-study line) with owner-written copy from editorial().showcaseGuide. The cards describe the
    services, so they are all shown (the French and Arabic libraries do not hold every format); the links go to the localized service pages and studies. */
 function LocalizedGuide({ guide }) {
-  const caseHref = { organic: hrefFor(PATHS.caseStudyGraspo), ugc: currentLocale() === 'ar' ? PATHS.caseStudyElyon : hrefFor(PATHS.caseStudyElyon) }
+  const caseHref = { organic: hrefFor(PATHS.caseStudyGraspo), ugc: hrefFor(PATHS.caseStudyElyon) }
   const caseEvent = { organic: 'case-study-organic', ugc: 'case-study-ugc' }
   return (
     <Section id="showcase-guide" label="showcase-guide-heading" className="!py-8 md:!py-10">
@@ -87,10 +87,10 @@ export default function ShowcaseFormats({ items }) {
         )}
         <p className="mt-6 max-w-3xl text-[14px] leading-relaxed text-ink-muted">
           {tr('For documented CONVRT projects, read our')}{' '}
-          <TextLink href={es || currentLocale() === 'ar' ? hrefFor(PATHS.caseStudyGraspo) : PATHS.caseStudyGraspo} onClick={() => trackEvent('showcase_service_link_click', { service: 'case-study-organic' })}>{tr('organic social media case study')}</TextLink>
-          {/* Arabic: the Elyon study has no Arabic page, so only the Arabic Graspo study is linked (owner, 2026-11-25). */}
-          {currentLocale() !== 'ar' && <> {tr('and our')}{' '}
-          <TextLink href={es ? hrefFor(PATHS.caseStudyElyon) : PATHS.caseStudyElyon} onClick={() => trackEvent('showcase_service_link_click', { service: 'case-study-ugc' })}>{tr('paid social UGC case study')}</TextLink></>}.
+          <TextLink href={hrefFor(PATHS.caseStudyGraspo)} onClick={() => trackEvent('showcase_service_link_click', { service: 'case-study-organic' })}>{tr('organic social media case study')}</TextLink>
+          {/* Both studies, each in the visitor's language (hrefFor leaves the English URLs unchanged). */}
+          <> {tr('and our')}{' '}
+          <TextLink href={hrefFor(PATHS.caseStudyElyon)} onClick={() => trackEvent('showcase_service_link_click', { service: 'case-study-ugc' })}>{tr('paid social UGC case study')}</TextLink></>.
         </p>
       </div>
     </Section>

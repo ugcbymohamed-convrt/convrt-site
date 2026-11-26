@@ -46,7 +46,7 @@ export const EDITORIAL = {
   // Arabic: its own components carry the Arabic vocabulary; only the intros are shared editorial data. No "originally written in English" line: the Arabic reviews are shown as approved Arabic text (owner, 2026-11-25).
   ar: {
     sectionIntros: AR_SECTION_INTROS, faqTitles: {}, stageTitles: {}, testimonialsNote: null, homeLabel: 'CONVRT — الرئيسية', quoteLang: 'en',
-    /* Arabic: same structure as English; owner-written Modern Standard Arabic (2026-11-26). There is no Arabic Elyon study, so the UGC phrase links the English one and says so (the site's « (en anglais) » convention). */
+    /* Arabic: same structure as English; owner-written Modern Standard Arabic (2026-11-26). Both case-study phrases link their Arabic study (Graspo = organic, Elyon Dubai = paid advertising). */
     showcaseGuide: {
       heading: 'ماذا ستجد في مكتبة صناع المحتوى؟',
       intro: 'تضم مكتبتنا نماذج من أعمال صناع محتوى مستقلين، لتتمكن من استكشاف أساليب التصوير وأنواع الفيديوهات والأفكار الإبداعية المختلفة قبل بدء مشروعك. تصفّح الفيديوهات حسب المجال: التجارة الإلكترونية، وبرامج SaaS والتطبيقات، والخدمات، والمحتوى العضوي.',
@@ -56,7 +56,7 @@ export const EDITORIAL = {
         saas: { title: 'فيديوهات البرامج والتطبيقات', text: 'فيديوهات يقدمها صناع المحتوى للتعريف بالبرامج والتطبيقات، إلى جانب فيديوهات الشرح وعرض خصائص المنتج، حسب متطلبات كل مشروع.', label: 'إنتاج فيديوهات برامج SaaS والتطبيقات' },
         organic: { title: 'المحتوى العضوي', text: 'فيديوهات قصيرة مصممة خصيصًا لحسابات علامتك التجارية على منصات التواصل الاجتماعي.', label: 'إنتاج المحتوى العضوي' },
       },
-      caseLine: ['اطّلع أيضًا على دراسات الحالة الخاصة بمشاريعنا في ', { link: 'organic', text: 'المحتوى العضوي' }, ' و', { link: 'ugc', text: 'الحملات الإعلانية باستخدام فيديوهات UGC', note: ' (بالإنجليزية)' }, '.'],
+      caseLine: ['اطّلع أيضًا على دراسات الحالة الخاصة بمشاريعنا في ', { link: 'organic', text: 'المحتوى العضوي' }, ' و', { link: 'ugc', text: 'الحملات الإعلانية باستخدام فيديوهات UGC' }, '.'],
     },
   },
 }

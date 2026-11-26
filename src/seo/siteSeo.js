@@ -18,7 +18,7 @@
      here exists so a test can prove the two never drift apart. */
 
 import {
-  SITE_URL, OG_IMAGE, OFFER_PATHS, REFERRALS_PATH,
+  SITE_URL, OG_IMAGE, OFFER_PATHS, PROJECT_APPLICATION_PATH, REFERRALS_PATH,
   ROADMAP_INDEXABLE, FREE_HOOKS_INDEXABLE, RISK_FREE_INDEXABLE, REFERRALS_INDEXABLE,
   ABOUT_PATH, CONTACT_PATH, PRIVACY_PATH, TERMS_PATH, LEGAL_NOTICE_PATH, TRUST_PAGES_PUBLISHED,
 } from '../config.js'
@@ -127,6 +127,14 @@ export const SITE_SEO = {
     description:
       'Apply for five personalized ad concepts tailored to your brand. Get creative angles, hooks, and testing recommendations from CONVRT.',
     indexable: ROADMAP_INDEXABLE,
+  },
+  // The purchase-intent package application: a conversion utility, not a search landing page. noindex (meta robots + X-Robots-Tag in vercel.json), never in the sitemap, never blocked in robots.txt
+  // (a crawler must be able to read the directive). Canonical = the clean URL, so ?package=…&billing=… never creates an indexable duplicate.
+  [PROJECT_APPLICATION_PATH]: {
+    title: 'Project Application | CONVRT',
+    description: 'Apply for a CONVRT production package. Tell us about your brand and your project and we will review your application and get back to you with the next steps.',
+    robots: 'noindex, follow',
+    indexable: false,
   },
   [OFFER_PATHS.hooks]: {
     title: '10 Free Ad Hooks for SaaS & E-commerce | CONVRT',

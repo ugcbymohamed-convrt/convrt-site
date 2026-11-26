@@ -50,7 +50,8 @@ export const SHOWCASE_CASE_STUDY_LINKS = [
 /* THE ARABIC HOMEPAGE'S CLIENT SHOWCASE (owner brief 2026-11-23): the SAME component and design as the English one, with exactly TWO clients: Graspo (printing) and One Royal (trading).
    The videos are the Arabic portfolio entries tagged `showcase: 'graspo'` / `showcase: 'oneroyal'` (src/content/portfolio.js; the Graspo ones are the same Stream videos as the English Graspo panel).
    Nothing is invented: no figure, headline or project outcome is attached to One Royal (none is on record). Graspo has a published case study (translated: /ar/case-studies/graspo); One Royal has no
-   case study, so its crawlable destination is the Spokesperson page, the service its videos belong to.
+   case study, so its crawlable destination is the Spokesperson page, the service its videos belong to. The Arabic Elyon Dubai study (paid-advertising proof, /ar/case-studies/elyon) is linked from the stage's crawlable
+   navigation as well (SHOWCASE_EXTRA_LINKS_AR): the Arabic stage shows two clients, but both published studies stay one click from the homepage; it is NOT a third visible panel.
    MISSING ASSET: a One Royal LOGO file is not in the repository or the owner's folders (searched CLIENT LOGOS, CONVRT-LOGO and the Arabic creator folders). Until `public/clients/oneroyal.png` (or .svg)
    is supplied and set as `logo` below, the selector shows the client's NAME as text, never a substitute or invented logo. */
 export const SHOWCASE_INDUSTRIES_AR = [
@@ -76,6 +77,11 @@ export const SHOWCASE_INDUSTRIES_AR = [
     link: { href: '/spokesperson-video-production', label: 'استكشف فيديوهات Spokesperson' },
     accent: '#f59e0b',
   },
+]
+
+/* Case studies linked from the Arabic stage's visually hidden navigation in addition to its clients' own destinations (no extra homepage section, no new claim). */
+export const SHOWCASE_EXTRA_LINKS_AR = [
+  { id: 'elyon-study', link: { href: '/case-studies/elyon', label: 'اقرأ دراسة حالة إيليون دبي' } },
 ]
 
 /* THE SPANISH HOMEPAGE'S TWO GROUPS (Nov 2026). Same stage as the English homepage, different content: each group's three videos are the portfolio entries tagged with its `clientId`

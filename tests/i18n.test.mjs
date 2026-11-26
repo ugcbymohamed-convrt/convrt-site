@@ -54,8 +54,8 @@ test('locales: English, Spanish, French and Arabic are registered; Arabic is rig
   assert.deepEqual(BUILT_LOCALES, ['en', 'es', 'fr', 'ar'])
   assert.ok(isLive('es') && isLive('fr') && isLive('ar'))
   assert.equal(LOCALES.fr.htmlLang, 'fr-FR')
-  assert.deepEqual(TRANSLATED_PATHS.fr, ['/', '/ugc-video-agency', '/spokesperson-video-production', '/social-media-video-production', '/saas-video-production', '/pricing', '/creator-showcase', '/case-studies', '/case-studies/graspo', '/case-studies/elyon', '/creative-growth-roadmap', '/risk-free-trial', '/referrals'])
-  assert.deepEqual(TRANSLATED_PATHS.ar, ['/', '/ugc-video-agency', '/spokesperson-video-production', '/social-media-video-production', '/saas-video-production', '/case-studies/graspo', '/pricing', '/creator-showcase', '/creative-growth-roadmap', '/risk-free-trial', '/referrals', '/blog'], 'the Arabic pages: the four service pages, the Graspo case study, pricing, the Showcase, the two flows, the referral page and the Arabic blog index')
+  assert.deepEqual(TRANSLATED_PATHS.fr, ['/', '/ugc-video-agency', '/spokesperson-video-production', '/social-media-video-production', '/saas-video-production', '/pricing', '/creator-showcase', '/case-studies', '/case-studies/graspo', '/case-studies/elyon', '/creative-growth-roadmap', '/risk-free-trial', '/project-application', '/referrals'])
+  assert.deepEqual(TRANSLATED_PATHS.ar, ['/', '/ugc-video-agency', '/spokesperson-video-production', '/social-media-video-production', '/saas-video-production', '/case-studies', '/case-studies/graspo', '/case-studies/elyon', '/pricing', '/creator-showcase', '/creative-growth-roadmap', '/risk-free-trial', '/project-application', '/referrals', '/blog'], 'the Arabic pages: the four service pages, the two case studies, pricing, the Showcase, the two flows, the referral page and the Arabic blog index')
 })
 
 test('paths: English URLs never change; other languages live under their prefix with the same slugs', () => {
@@ -71,7 +71,7 @@ test('paths: English URLs never change; other languages live under their prefix 
   assert.deepEqual(parsePath('/'), { locale: 'en', basePath: '/' })
   assert.deepEqual(parsePath('/blog/some-article'), { locale: 'en', basePath: '/blog/some-article' })
   assert.deepEqual(parsePath('/escape'), { locale: 'en', basePath: '/escape' }, 'only an exact language segment is a locale')
-  assert.deepEqual(allLocalizedPaths(['es']), ['/es', '/es/ugc-video-agency', '/es/spokesperson-video-production', '/es/social-media-video-production', '/es/saas-video-production', '/es/pricing', '/es/creator-showcase', '/es/about', '/es/contact', '/es/case-studies', '/es/case-studies/graspo', '/es/case-studies/elyon', '/es/creative-growth-roadmap', '/es/risk-free-trial', '/es/referrals'])
+  assert.deepEqual(allLocalizedPaths(['es']), ['/es', '/es/ugc-video-agency', '/es/spokesperson-video-production', '/es/social-media-video-production', '/es/saas-video-production', '/es/pricing', '/es/creator-showcase', '/es/about', '/es/contact', '/es/case-studies', '/es/case-studies/graspo', '/es/case-studies/elyon', '/es/creative-growth-roadmap', '/es/risk-free-trial', '/es/project-application', '/es/referrals'])
 })
 
 test('every translated path is a real English page with SEO data and a Spanish title/description/OG copy', () => {
@@ -136,9 +136,9 @@ test('sitemap: English entries are unchanged; Spanish canonical URLs are added f
   const es = all.filter((p) => p.startsWith('/es'))
   assert.deepEqual(es, INDEXABLE_ES.map((bp) => localizedPath('es', bp)))
   assert.ok(all.filter((p) => p.startsWith('/fr')).every((p) => p === '/fr/' || p.startsWith('/fr/')), 'French canonicals are listed (tests/french.test.mjs checks them)')
-  const INDEXABLE_AR = TRANSLATED_PATHS.ar.filter((bp) => isReleased('ar', bp) && SITE_SEO[bp]?.indexable !== false)
+  const INDEXABLE_AR = TRANSLATED_PATHS.ar.filter((bp) => isReleased('ar', bp) && SITE_SEO[bp]?.indexable !== false && !SITE_SEO[bp]?.canonicalPath) // a duplicate (/case-studies) is never in the sitemap
   assert.deepEqual(all.filter((p) => p.startsWith('/ar')), INDEXABLE_AR.map((bp) => localizedPath('ar', bp)))
-  assert.deepEqual(INDEXABLE_AR, ['/', '/ugc-video-agency', '/spokesperson-video-production', '/social-media-video-production', '/saas-video-production', '/case-studies/graspo', '/pricing', '/creator-showcase'], 'Arabic sitemap: home, the four services, the Graspo case study, pricing and the Showcase; the noindex application pages, the held free-video page and the empty blog index are out')
+  assert.deepEqual(INDEXABLE_AR, ['/', '/ugc-video-agency', '/spokesperson-video-production', '/social-media-video-production', '/saas-video-production', '/case-studies/graspo', '/case-studies/elyon', '/pricing', '/creator-showcase'], 'Arabic sitemap: home, the four services, the two case studies, pricing and the Showcase; the noindex application pages, the held free-video page and the empty blog index are out')
   assert.ok(!es.includes('/es/creative-growth-roadmap'), 'the noindex Roadmap is never in the sitemap')
   assert.ok(!es.includes('/es/creator-showcase') || displayableFor('es').length > 0, 'the Spanish Showcase is listed only once Spanish-language videos exist')
   for (const p of es) assert.ok(xml.includes(`<loc>${SITE_URL}${p}</loc>`), p)
@@ -392,7 +392,7 @@ test('commercial facts match the English source: the Spanish pricing page carrie
 test('JSON-LD: one stable Organization @id across languages; Spanish WebPage/FAQPage/Service in Spanish; FAQ markup equals the visible FAQ; no invented facts', () => {
   const orgEn = jsonLd(page('/'))[0]['@graph'].find((n) => n['@type'] === 'Organization')
   for (const p of ES_PAGES) {
-    if (!jsonLd(page(p)).length) { assert.ok(['/es/creative-growth-roadmap', '/es/risk-free-trial'].includes(p), `${p}: only the noindex Roadmap and free-video pages have no JSON-LD (as in English)`); continue }
+    if (!jsonLd(page(p)).length) { assert.ok(['/es/creative-growth-roadmap', '/es/risk-free-trial', '/es/project-application'].includes(p), `${p}: only the noindex Roadmap, free-video and project-application pages have no JSON-LD (as in English)`); continue }
     const g = jsonLd(page(p))[0]['@graph']
     const org = g.find((n) => n['@type'] === 'Organization')
     assert.deepEqual(org, orgEn, `${p}: the Organization node is identical in every language`)
@@ -584,7 +584,7 @@ test('Spanish videos: 18 approved entries, valid, Spanish-only, opaque creators,
 test('Spanish homepage hero: Front (the Spanish version of the CONVRT ad) in the centre, then the two Spanish videos; English homepage unchanged', () => {
   assert.equal(HOME_HERO_ES.length, 3)
   assert.notEqual(HOME_HERO_ES[0].source.cloudflareId, HOME_HERO[0].source.cloudflareId, 'Front is no longer the English ad')
-  assert.equal(HOME_HERO_ES[0].source.cloudflareId, '2833c72764ffb5cc73f001565ca32954', 'Front is the Spanish CONVRT ad (CONVRT_AD_SPANISH_FINAL.mp4)')
+  assert.equal(HOME_HERO_ES[0].source.cloudflareId, '005317a3b3da8192c22b29cc2647046d', 'Front is the Spanish CONVRT ad (CONVRT_AD_SPANISH_FINAL.mp4)')
   assert.deepEqual(HOME_HERO_ES.map((v) => v.languages), [['es'], ['es'], ['es']])
   const es = page('/es'), en = page('/')
   assert.deepEqual(posters(es).filter((p) => /home-hero|es-ugc/.test(p)).slice(0, 3), ['/portfolio/es-home-hero.webp', '/portfolio/es-ugc-2.webp', '/portfolio/es-ugc-1.webp'], 'the hero stage (the creator carousel further down follows)')

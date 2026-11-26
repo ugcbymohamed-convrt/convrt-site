@@ -49,11 +49,11 @@ test('Arabic is one shared language variant: ar, right-to-left, live, no country
   assert.ok(!Object.keys(LOCALES).some((c) => /ar-/.test(c)))
 })
 
-test('Arabic page map: homepage, the FOUR service pages, the Graspo case study, pricing, the Showcase and the two application flows', () => {
-  const ALL = ['/', '/ugc-video-agency', '/spokesperson-video-production', '/social-media-video-production', '/saas-video-production', '/case-studies/graspo', '/pricing', '/creator-showcase', '/creative-growth-roadmap', '/risk-free-trial', '/referrals', '/blog']
+test('Arabic page map: homepage, the FOUR service pages, the two case studies (Graspo, Elyon Dubai), pricing, the Showcase and the two application flows', () => {
+  const ALL = ['/', '/ugc-video-agency', '/spokesperson-video-production', '/social-media-video-production', '/saas-video-production', '/case-studies', '/case-studies/graspo', '/case-studies/elyon', '/pricing', '/creator-showcase', '/creative-growth-roadmap', '/risk-free-trial', '/project-application', '/referrals', '/blog']
   assert.deepEqual(TRANSLATED_PATHS.ar, ALL)
   assert.deepEqual(AR_PAGES, ALL.map((p) => (p === '/' ? '/ar' : `/ar${p}`)))
-  for (const p of ['/about', '/contact', '/case-studies/elyon', '/case-studies']) assert.ok(!hasTranslation('ar', p), `${p} has no Arabic page`)
+  for (const p of ['/about', '/contact']) assert.ok(!hasTranslation('ar', p), `${p} has no Arabic page`)
   // one Arabic route per service, mirroring the English route (no invented structure) and no country pages
   for (const p of ['/ugc-video-agency', '/spokesperson-video-production', '/social-media-video-production', '/saas-video-production']) assert.ok(AR_PAGES.includes(`/ar${p}`), p)
 })
@@ -148,7 +148,7 @@ test('language selector: Arabic is offered with lang="ar" dir="rtl"; an equivale
   const o = languageOptions('en', '/pricing').find((x) => x.code === 'ar')
   assert.deepEqual([o.label, o.htmlLang, o.dir, o.href, o.exact], ['العربية', 'ar', 'rtl', '/ar/pricing', true])
   assert.equal(switchTarget('ar', '/ugc-video-agency'), '/ar/ugc-video-agency')
-  assert.equal(switchTarget('ar', '/saas-video-production'), '/ar/saas-video-production'); assert.equal(switchTarget('ar', '/case-studies/graspo'), '/ar/case-studies/graspo'); assert.equal(switchTarget('ar', '/case-studies/elyon'), '/ar/'); assert.equal(switchTarget('ar', '/about'), '/ar/'); assert.equal(switchTarget('ar', '/blog'), '/ar/')
+  assert.equal(switchTarget('ar', '/saas-video-production'), '/ar/saas-video-production'); assert.equal(switchTarget('ar', '/case-studies/graspo'), '/ar/case-studies/graspo'); assert.equal(switchTarget('ar', '/case-studies/elyon'), '/ar/case-studies/elyon'); assert.equal(switchTarget('ar', '/about'), '/ar/'); assert.equal(switchTarget('ar', '/blog'), '/ar/')
   assert.equal(switchTarget('en', '/ugc-video-agency'), '/ugc-video-agency'); assert.equal(switchTarget('es', '/ugc-video-agency'), '/es/ugc-video-agency')
 })
 
@@ -179,7 +179,7 @@ test('Arabic creator videos: valid entries, real Stream ids, Arabic-only, approv
   const enIds = new Set(displayableFor('en').map((v) => v.id)); const esIds = new Set(displayableFor('es').map((v) => v.id))
   for (const v of AR_ONLY()) assert.ok(!enIds.has(v.id) && !esIds.has(v.id), v.id)
   assert.equal(HOME_HERO_AR.length, 3); assert.ok(HOME_HERO_AR.every((v) => v.languages.includes('ar')))
-  assert.deepEqual(HOME_HERO_AR.map((v) => v.source.cloudflareId), ['afdb58ebb92354534b513dabca0d64f5', '442dfb5fe6a49dffd032ecd920414512', '10c436de7f9b0c5bfbdee723aff56659'], 'home hero stage order: the dubbed video in the centre, then the right phone (digital-service creator), then the left phone (chocolate) (owner, 2026-11-25)')
+  assert.deepEqual(HOME_HERO_AR.map((v) => v.source.cloudflareId), ['3431182e01b2bfd16e7734c2f9e3e99f', '442dfb5fe6a49dffd032ecd920414512', '10c436de7f9b0c5bfbdee723aff56659'], 'home hero stage order: the dubbed video in the centre, then the right phone (digital-service creator), then the left phone (chocolate) (owner, 2026-11-25)')
   assert.ok(HOME_HERO.every((v) => !v.languages?.includes('ar')), 'the English hero is unchanged')
 })
 
@@ -322,7 +322,9 @@ test('every Arabic page: static HTML with lang="ar" dir="rtl", one H1, Arabic ti
     const title = tag(h, /<title>([^<]+)<\/title>/g)[0]
     assert.ok(/[؀-ۿ]/.test(title), `${p}: Arabic title`)
     assert.ok(/[؀-ۿ]/.test(tag(h, /<meta name="description" content="([^"]+)"/g)[0]), `${p}: Arabic description`)
-    assert.deepEqual(tag(h, /<link rel="canonical" href="([^"]+)"/g), [`${SITE_URL}${localizedPath('ar', p === '/ar' ? '/' : p.replace(/^\/ar/, ''))}`.replace(/\/ar\/?$/, '/ar/')], p)
+    // /ar/case-studies renders the default study and canonicalises to it (like English); every other page is self-canonical
+    const own = p === '/ar/case-studies' ? '/ar/case-studies/graspo' : p
+    assert.deepEqual(tag(h, /<link rel="canonical" href="([^"]+)"/g), [`${SITE_URL}${localizedPath('ar', own === '/ar' ? '/' : own.replace(/^\/ar/, ''))}`.replace(/\/ar\/?$/, '/ar/')], p)
     assert.deepEqual(tag(h, /<meta property="og:locale" content="([^"]+)"/g), ['ar_AR'], p)
     const arabicChars = (rootText(h).join(' ').match(/[؀-ۿ]/g) || []).length
     assert.ok(arabicChars > 400, `${p}: ${arabicChars} Arabic characters are in the static HTML (no client-side reveal needed)`)
@@ -330,7 +332,7 @@ test('every Arabic page: static HTML with lang="ar" dir="rtl", one H1, Arabic ti
 })
 
 test('titles: unique Arabic titles aimed at distinct intents (home = broad production, UGC = وكالة UGC / إنتاج فيديوهات UGC)', () => {
-  const titles = AR_PAGES.map((p) => tag(page(p), /<title>([^<]+)<\/title>/g)[0])
+  const titles = AR_PAGES.filter((p) => p !== '/ar/case-studies').map((p) => tag(page(p), /<title>([^<]+)<\/title>/g)[0])
   assert.equal(new Set(titles).size, titles.length)
   assert.match(titles[1], /وكالة UGC/); assert.match(titles[1], /إنتاج فيديوهات UGC/)
   assert.ok(!/وكالة UGC/.test(titles[0]), 'the homepage does not compete for the UGC page keyword')
@@ -352,7 +354,10 @@ test('hreflang: one reciprocal set (en, es, ar, x-default = English) on the Engl
   const gset = (h) => [...headOf(h).matchAll(/<link rel="alternate" hreflang="([^"]+)" href="([^"]+)"/g)].map((m) => `${m[1]} ${m[2]}`).join('|')
   assert.equal(gset(page('/ar/case-studies/graspo')), gset(page('/case-studies/graspo')))
   assert.match(gset(page('/ar/case-studies/graspo')), /^en [^|]+\|(es [^|]+\|)?(fr-FR [^|]+\|)?ar [^|]+\|x-default /)
-  for (const bp of ['/about', '/case-studies/elyon']) assert.ok(!/hreflang="ar"/.test(page(bp)), `${bp}: no hreflang to a page that does not exist`)
+  assert.ok(!/hreflang="ar"/.test(page('/about')), '/about: no hreflang to a page that does not exist')
+  assert.equal(gset(page('/ar/case-studies/elyon')), gset(page('/case-studies/elyon')), 'the Elyon study carries the identical reciprocal set')
+  assert.match(gset(page('/ar/case-studies/elyon')), /^en [^|]+\|es [^|]+\|fr-FR [^|]+\|ar [^|]+\|x-default /)
+  assert.ok(!/hreflang/.test(page('/ar/case-studies')), '/ar/case-studies is the Graspo duplicate: no hreflang of its own (as in English)')
   assert.deepEqual(alternatesFor('/ugc-video-agency', SITE_SEO['/ugc-video-agency']).map((a) => a.hreflang), ['en', 'es', 'fr-FR', 'ar', 'x-default'])
 })
 
@@ -375,17 +380,17 @@ test('Arabic Graspo case study (editorial pass, 2026-11-26): the client is «غ�
   assert.ok(!/8 ألف|1 ألف/.test(text), 'number agreement: 8 آلاف, ألف')
 })
 
-test('sitemap: the indexable Arabic URLs (home, four services, Graspo case study, pricing, Showcase), nothing else Arabic', () => {
+test('sitemap: the indexable Arabic URLs (home, four services, the two case studies, pricing, Showcase), nothing else Arabic', () => {
   const xml = fs.readFileSync(path.join(dist, 'sitemap.xml'), 'utf8')
   const ar = [...xml.matchAll(/<loc>([^<]+\/ar[^<]*)<\/loc>/g)].map((m) => m[1].replace(SITE_URL, ''))
-  assert.deepEqual(ar.slice().sort(), ['/ar/', '/ar/ugc-video-agency', '/ar/spokesperson-video-production', '/ar/social-media-video-production', '/ar/saas-video-production', '/ar/case-studies/graspo', '/ar/pricing', '/ar/creator-showcase'].sort())
+  assert.deepEqual(ar.slice().sort(), ['/ar/', '/ar/ugc-video-agency', '/ar/spokesperson-video-production', '/ar/social-media-video-production', '/ar/saas-video-production', '/ar/case-studies/graspo', '/ar/case-studies/elyon', '/ar/pricing', '/ar/creator-showcase'].sort())
   assert.deepEqual(localizedSitemapPaths().filter((p) => p.startsWith('/ar')).sort(), ar.slice().sort())
   assert.ok(buildSitemap().includes(`${SITE_URL}/ar/ugc-video-agency`))
 })
 
 test('structured data: one graph per Arabic page, inLanguage ar, the same Organization @id as English, Arabic text equal to the visible content, no invented facts', () => {
   const en = jsonLd(page('/'))[0]['@graph'].find((n) => n['@type'] === 'Organization')
-  for (const p of ['/ar', '/ar/ugc-video-agency', '/ar/spokesperson-video-production', '/ar/social-media-video-production', '/ar/saas-video-production', '/ar/case-studies/graspo', '/ar/pricing', '/ar/creator-showcase']) {
+  for (const p of ['/ar', '/ar/ugc-video-agency', '/ar/spokesperson-video-production', '/ar/social-media-video-production', '/ar/saas-video-production', '/ar/case-studies/graspo', '/ar/case-studies/elyon', '/ar/pricing', '/ar/creator-showcase']) {
     const g = jsonLd(page(p))
     assert.equal(g.length, 1, p)
     const nodes = g[0]['@graph']
@@ -419,7 +424,7 @@ test('pricing page: USD amounts from the business data, Sprint / Sprint Plus / O
 test('Arabic pricing editorial pass (2026-11-26): MSA with the agreed marketing terms, no VAT wording on any Arabic page, FAQ and FAQPage JSON-LD in sync, English/Spanish/French untouched', () => {
   const t = rootText(page('/ar/pricing')).join(' ')
   // headline, description, goal question, billing labels, commitment wording (owner-supplied sentences)
-  for (const exact of ['باقات إنتاج فيديو', 'تناسب أهدافك.', 'ما هدفك من المحتوى؟', 'اشتراك شهري', 'لمرة واحدة', 'اختبارات إبداعية أوسع', 'باقة مخصصة', 'لنتحدث عن مشروعك', 'باقة مصممة خصيصًا لك', 'ناقش مشروعك معنا',
+  for (const exact of ['باقات إنتاج فيديو', 'تناسب أهدافك.', 'ما هدفك من المحتوى؟', 'اشتراك شهري', 'لمرة واحدة', 'اختبارات إبداعية أوسع', 'باقة مخصصة', 'لنتحدث عن مشروعك', 'باقة مصممة خصيصًا لك', 'طلب عرض مخصص',
     'الحد الأدنى للاشتراك في الباقات الشهرية هو 3 أشهر. بعد انتهاء هذه المدة، يتجدد الاشتراك شهريًا، مع إمكانية الإلغاء بإشعار مسبق مدته 30 يومًا. كما يمكنك طلب باقة دون اشتراك شهري.',
     'الحد الأدنى للاشتراك في باقات المحتوى العضوي هو 6 أشهر', 'تحتاج صانع محتوى UGC؟', 'تحتاج مقدم؟', 'كونسيبتات مختلفة،', 'وليس مجرد هوكات مختلفة.', 'استراتيجيتك الإبداعية المجانية', 'مجانًا ودون أي التزام.',
     'مشاهدات', 'فيديو تم إنتاجه', 'عميل', 'لغات للإنتاج', 'كل ما تحتاج إلى معرفته قبل البدء.', 'الأسئلة الشائعة حول الباقات والأسعار', 'هل أنت مستعد لإنتاج', 'إعلانات تستحق المشاهدة؟',

@@ -335,7 +335,8 @@ test('USD everywhere: no € / EUR / euro in pricing data, components, FAQ or JS
   // Whole site: no € in any source file (the only "European" hits are a case-study description of Graspo).
   const walk = (d) => fs.readdirSync(d, { withFileTypes: true }).flatMap((e) => (e.isDirectory() ? walk(path.join(d, e.name)) : [path.join(d, e.name)]))
   // The Spanish site has its own EUR pricing (src/i18n/es/*): the USD rule is about the English business data, components, FAQ, JSON-LD and API.
-  for (const f of [...walk(path.join(ROOT, 'src')), ...walk(path.join(ROOT, 'api')), path.join(ROOT, 'index.html')].filter((x) => /\.(jsx?|html|md)$/.test(x) && !x.includes(`${path.sep}i18n${path.sep}`))) {
+  for (const f of [...walk(path.join(ROOT, 'src')), ...walk(path.join(ROOT, 'api')), path.join(ROOT, 'index.html')].filter((x) => /\.(jsx?|html|md)$/.test(x) && !x.includes(`${path.sep}i18n${path.sep}`) && !/projectApplication\.js$/.test(x))) {
+    // (the project-application model and its server twin look prices up in each language's own currency: they hold the EUR code and symbol by design; tests/project-application.test.mjs pins the amounts)
     const t = fs.readFileSync(f, 'utf8')
     assert.ok(!/€/.test(t), `${path.relative(ROOT, f)} contains €`)
     assert.ok(!/\bEUR\b|\beuros?\b/i.test(t.replace(/priceCurrency/g, '')), `${path.relative(ROOT, f)} mentions euros`)
@@ -562,11 +563,11 @@ test('organic JSON-LD offers carry the six-month commitment, never the paid term
   }
 })
 
-test('cards keep the approved design: three per group, tones, Custom has no price, Roadmap CTAs only', () => {
+test('cards keep the approved design: three per group, tones, Custom has no price; every card CTA opens the project application', () => {
   for (const t of ["tone=\"light\"", "tone=\"lime\"", "tone=\"dark\""]) assert.ok(cardsSrc.includes(t), t)
   assert.equal((cardsSrc.match(/<PricingCard\b/g) || []).length, 6)
   const cards = strip(cardsSrc)
-  assert.match(cards, /OFFER_PATHS\.roadmap/)
+  assert.match(cards, /applicationHref\(/)
   assert.ok(!/calendly|mailto:|<form|BOOKING_URL/i.test(cards), 'no new booking integration or contact funnel')
   assert.match(cards, /`\$\{ORGANIC_COMMITMENT\.initialMonths\}-month initial commitment`/)
   for (const pkg of Object.values(CUSTOM_PACKAGES)) {

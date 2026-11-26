@@ -2,7 +2,7 @@ import { useInView } from '../caseStudies/shared/useInView.js'
 import { ACCENT } from './theme.js'
 import { useTr } from '../../i18n/tr.js'
 import { ELYON_METRICS as METRICS } from '../../caseStudies/data.js'
-import { stat, isEnglish } from '../caseStudies/format.js'
+import { stat, isEnglish, ltrRun } from '../caseStudies/format.js'
 
 
 export default function ElyonMetrics() {
@@ -34,7 +34,7 @@ export default function ElyonMetrics() {
                 className="relative font-display font-bold tracking-display leading-none text-[clamp(1.9rem,4vw,2.6rem)] tabular-nums"
                 style={{ color: ACCENT }}
               >
-                {stat(m.value)}
+                {ltrRun(stat(m.value))}
               </p>
               <p className="relative mt-3 text-[13px] font-semibold text-ink">{tr(m.label)}</p>
               <p className="relative mt-1 text-[11.5px] text-ink-subtle">{tr(m.sub)}</p>
