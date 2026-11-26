@@ -619,7 +619,7 @@ const PORTFOLIO_ENTRIES = [
   },
   {
     id: 'fr-showcase-fixd-3',
-    caption: 'FIXD : variation d’accroche, du boîtier à l’application, dans la rue puis en voiture.',
+    caption: 'FIXD : variation de hook, du boîtier à l’application, dans la rue puis en voiture.',
     industry: 'unclassified',
     languages: ['fr'],
     onlyIn: ['fr'],

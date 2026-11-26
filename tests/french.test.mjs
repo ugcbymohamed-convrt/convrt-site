@@ -254,7 +254,7 @@ test('French pages: real static HTML, html lang="fr-FR", no dir, one self-refere
     assert.ok(h.includes(`data-ssr-path="${p}"`), p)
   }
   const h1 = (p) => page(p).match(/<h1[\s\S]*?<\/h1>/)[0].replace(/<[^>]+>/g, ' ').replace(/[\s\u00a0]+/g, ' ').trim()
-  assert.match(h1('/fr'), /^Des vidéos publicitaires pensées pour convertir$/)
+  assert.match(h1('/fr'), /^Des créas pensées pour convertir$/)
   assert.match(h1('/fr/ugc-video-agency'), /^Agence UGC : des vidéos qui captent l’attention\.?$/)
 })
 

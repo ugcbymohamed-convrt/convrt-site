@@ -15,8 +15,8 @@ const ROTATING_WORDS = ['convert', 'resonate', 'sell', 'connect']
 const ROTATING_WORDS_ES = ['conectar', 'convertir', 'vender', 'destacar']
 // Arabic rotating words complete «فيديوهات إعلانية مصمّمة كي ___» (a purpose, never a guaranteed result; see src/i18n/ar/dict-home.js).
 const ROTATING_WORDS_AR = ['تُقنع', 'تؤثّر', 'تبيع', 'تُلهم']
-// French rotating words complete « Des vidéos publicitaires pensées pour ___ » (see src/i18n/fr/dict-home.js). All four are intransitive, so each reads as a full sentence.
-const ROTATING_WORDS_FR = ['convertir', 'convaincre', 'marquer', 'vendre']
+// French rotating words complete « Des créas pensées pour ___ » (see src/i18n/fr/dict-home.js). All four are intransitive, so each reads as a full sentence; kept short so the line never wraps on a phone.
+const ROTATING_WORDS_FR = ['convertir', 'vendre', 'convaincre', 'captiver']
 const ROTATING_BY_LOCALE = { es: ROTATING_WORDS_ES, fr: ROTATING_WORDS_FR, ar: ROTATING_WORDS_AR }
 const HOME_HERO_BY_LOCALE = { es: HOME_HERO_ES, fr: HOME_HERO_FR, ar: HOME_HERO_AR }
 

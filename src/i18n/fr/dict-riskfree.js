@@ -19,7 +19,7 @@ export default {
   "1 video produced by CONVRT": "Une vidéo pour votre marque",
   "Built around your brand, offer and audience.": "Une création adaptée à votre produit et à votre audience.",
   "2 bonus hook variations": "Deux hooks supplémentaires",
-  "Extra openings to test against the original.": "Des variantes pour tester différentes accroches.",
+  "Extra openings to test against the original.": "Des variantes pour tester différents hooks.",
   "Zero risk, no obligation": "Sans engagement",
   "Use it, test it, then decide if we’re a fit.": "Découvrez notre façon de travailler avant de décider de la suite.",
   "Apply for your": "Demandez votre",
