@@ -29,7 +29,7 @@ const links = [
    UGC, Spokesperson and SaaS & App videos. "Organic Social" is a direct link. Both panels are ALWAYS in the page HTML (only hidden visually until hover or focus), so every service page stays linked from every
    page for search engines and keyboard users. In the mobile menu the same links are listed under Services (Paid Social as a heading with its three links, then Organic Social). Labels: src/i18n/menu.js. */
 const SERVICE_MENU = [
-  { label: 'UGC Video Agency', href: '/ugc-video-agency' },
+  { label: 'UGC Videos', href: '/ugc-video-agency' },
   { label: 'Spokesperson Videos', href: '/spokesperson-video-production' },
   { label: SERVICE_LABELS.organic, href: '/social-media-video-production' },
   { label: 'SaaS & App Videos', href: '/saas-video-production' },

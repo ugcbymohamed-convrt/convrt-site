@@ -434,7 +434,7 @@ test('Services menu: two entries only. "Paid Social" groups UGC, Spokesperson an
   assert.ok(/<button[^>]*aria-haspopup="true"[^>]*>Paid Social/.test(top), 'Paid Social is a group button, not a page link')
   const sub = top.match(/<div class="invisible absolute left-full[\s\S]*?<\/ul><\/div>/)[0]
   const hrefs = [...sub.matchAll(/href="([^"]+)"[^>]*>([^<]+)</g)].map((m) => [m[1], m[2]])
-  assert.deepEqual(hrefs, [['/ugc-video-agency', 'UGC Video Agency'], ['/spokesperson-video-production', 'Spokesperson Videos'], ['/saas-video-production', 'SaaS & App Videos']], 'the three paid-social services, in the owner order')
+  assert.deepEqual(hrefs, [['/ugc-video-agency', 'UGC Videos'], ['/spokesperson-video-production', 'Spokesperson Videos'], ['/saas-video-production', 'SaaS & App Videos']], 'the three paid-social services, in the owner order')
   const outside = top.replace(sub, '')
   assert.deepEqual([...outside.matchAll(/href="([^"]+)"[^>]*>([^<]+)</g)].map((m) => [m[1], m[2]]), [['/social-media-video-production', 'Organic Social']], 'Organic Social is the only other entry, and a link')
 })

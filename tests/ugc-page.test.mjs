@@ -486,7 +486,7 @@ test('internal links into the page: homepage Services line and UGC FAQ, Pricing,
   assert.match(home, /Learn about our UGC video production/)
   assert.ok(link(page('/pricing')) && /See how our UGC production works/.test(rootOf(page('/pricing'))), 'pricing')
   assert.ok(link(page('/case-studies/elyon')), 'Elyon case study')
-  for (const p of ['/', '/pricing', '/creative-growth-roadmap']) assert.match(rootOf(page(p)), /<a [^>]*href="\/ugc-video-agency"[^>]*>UGC Video Agency<\/a>/, `footer link on ${p}`)
+  for (const p of ['/', '/pricing', '/creative-growth-roadmap']) assert.match(rootOf(page(p)), /<a [^>]*href="\/ugc-video-agency"[^>]*>UGC Videos<\/a>/, `Services menu link on ${p}`)
   // the homepage FAQ JSON-LD is unchanged by the link (links are not part of the answer text)
   assert.ok(!JSON.stringify(jsonLdFor('/')['@graph'].find((n) => n['@type'] === 'FAQPage')).includes('ugc-video-agency'))
   assert.ok(JSON.stringify(jsonLdFor('/')).includes('ugc-video-agency#service'), 'the homepage Service node uses the UGC page\'s own id')
