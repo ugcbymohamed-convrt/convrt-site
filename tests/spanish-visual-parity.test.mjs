@@ -33,7 +33,7 @@ const h1 = (p) => text(page(p).match(/<h1[\s\S]*?<\/h1>/)[0]).replace(/\s+\./g, 
 test('homepage hero: approved headline, offer line, CTAs and the two secondary offer cards', () => {
   const html = page('')
   const t = text(html)
-  assert.match(t, /Creatividades diseñadas para conectar/)
+  assert.match(t, /Creativos diseñados para conectar/)
   assert.match(t, /5 conceptos publicitarios para tu marca\. Gratis\./)
   assert.match(t, /Consigue 5 conceptos gratis/)
   assert.match(t, /Explorar vídeos/)
@@ -108,8 +108,8 @@ test('reviews: three Spanish renderings in the English editorial component, no d
 test('pricing: headline, subtitle, renamed service, FAQ tabs on one row on desktop and scrollable on small screens, CTA', () => {
   const html = page('pricing')
   const t = text(html)
-  assert.match(h1('pricing'), /Producción de vídeo\. La opción que mejor encaja contigo\./)
-  assert.match(t, /Desde anuncios UGC hasta contenido orgánico\. Elige cómo quieres trabajar con CONVRT\./)
+  assert.match(h1('pricing'), /Tu aliado creativo\. A tu medida\./)
+  assert.match(t, /Desde vídeos publicitarios UGC hasta contenido orgánico para redes sociales\. Elige cómo quieres trabajar con CONVRT\./)
   assert.match(t, /Montaje de vídeos/)
   assert.ok(!/Edición de vídeo corto/.test(t))
   for (const tab of ['Planes y precios', 'Producción y entrega', 'Derechos y extras', 'Redes sociales']) assert.ok(t.includes(tab), tab)
@@ -223,7 +223,7 @@ test('pricing terms: the "learn more" row keeps the existing destinations and ad
 test('pricing selector and cards: short Spanish copy, package names never wrap, badges stay on the title row', () => {
   const t = text(page('pricing'))
   assert.deepEqual(GOALS.map((g) => g.id), ['paid', 'organic'], 'selector options unchanged')
-  assert.match(t, /Mejorar mis anuncios UGC, vídeos Spokesperson y nuevas ideas para tus campañas\./)
+  assert.match(t, /Escalar mis campañas UGC, vídeos Spokesperson y nuevas ideas para tus campañas\./)
   assert.match(t, /Crecer en redes sociales Contenido, publicación y gestión de comunidad\./)
   assert.match(t, /Prueba nuevas ideas publicitarias con vídeos preparados para tus campañas\./)
   assert.match(t, /Más conceptos, más creadores y más posibilidades de testeo\./)
@@ -238,7 +238,7 @@ test('pricing selector and cards: short Spanish copy, package names never wrap, 
 test('pricing amounts and deliverables are untouched by the copy refinement', () => {
   const t = text(page('pricing'))
   for (const a of ['2.750 €', '3.250 €', '4.600 €', '5.500 €', '1.400 €', '2.300 €']) assert.ok(t.includes(a), a)
-  for (const d of ['15 versiones finales', '30 versiones finales', '183 € por versión', '153 € por versión', '217 € por versión', '5 conceptos únicos, 3 versiones cada uno.', '10 conceptos únicos, 3 versiones cada uno.', '2 rondas de revisiones por concepto', 'Hasta 3 creadores o presentadores', 'Hasta 5 creadores o presentadores', 'Compromiso inicial de 6 meses']) assert.ok(t.includes(d), d)
+  for (const d of ['15 variantes finales', '30 variantes finales', '183 € por variante', '153 € por variante', '217 € por variante', '5 conceptos únicos, 3 variantes cada uno.', '10 conceptos únicos, 3 variantes cada uno.', '2 rondas de revisiones por concepto', 'Hasta 3 creadores o presentadores', 'Hasta 5 creadores o presentadores', 'Compromiso inicial de 6 meses']) assert.ok(t.includes(d), d)
   assert.ok(!/\$\s?\d/.test(t), 'no USD on the Spanish page')
 })
 
@@ -298,8 +298,8 @@ test('homepage copy (Spanish review 3): hero subtitle and offer line, services, 
     '5 conceptos publicitarios gratis', '¿Te gusta la propuesta? Sigamos adelante.', 'De las ideas a los vídeos', 'Revisa, perfecciona y publica', 'Sin compromiso', 'Producción de principio a fin', 'Vídeos listos para publicar',
     'Empecemos por tus próximos 5 conceptos', 'Te presentamos cinco ideas publicitarias creadas para tu marca en una sesión gratuita. Sin compromiso de contratación.',
     // final CTA, FAQ
-    'Las buenas marcas', 'merecen mejores', 'anuncios.', 'Desde vídeos UGC y anuncios para redes sociales hasta contenido Spokesperson y colaboraciones a largo plazo.', 'Escríbenos',
-    'Tus preguntas,', 'nuestras respuestas', 'Producción, plazos, precios y derechos de uso. Todo lo que necesitas saber antes de trabajar con nosotros.',
+    'Las buenas marcas', 'merecen mejores', 'anuncios.', 'Tanto si necesitas creativos para campañas en redes sociales, vídeos UGC, anuncios con spokesperson o un aliado creativo a largo plazo, creamos contenido diseñado para captar la atención del público actual.', 'Escríbenos',
+    'Lo que suelen preguntarnos', 'las marcas.', 'Producción, plazos, precios y derechos de uso. Todo lo que necesitas saber antes de trabajar con nosotros.',
     '¿Cómo trabajáis con las marcas?', '¿Producís vídeos en varios idiomas?', '¿Creáis contenido para anuncios y redes sociales?', '¿Hacéis vídeos explicativos y demos para SaaS y aplicaciones?', '¿Con qué tipo de marcas trabajáis?',
     '¿También os encargáis de las ideas y los guiones?', '¿Cuáles son vuestros plazos de entrega?', '¿Ofrecéis paquetes mensuales?', '¿Por qué trabajar con CONVRT?', '¿En qué se diferencia un influencer de un creador UGC?',
     '¿Te queda alguna duda?', 'Cuéntanos qué necesitas y te ayudamos a encontrar la mejor opción para tu marca.', 'Contacta con nosotros',

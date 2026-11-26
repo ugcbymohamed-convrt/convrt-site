@@ -1,4 +1,5 @@
 import { useTr } from '../../i18n/tr.js'
+import { isEnglish } from '../caseStudies/format.js'
 
 const ACCENT = '#d5ff40'
 
@@ -35,20 +36,23 @@ const PILLARS = [
 
 export default function GraspoStrategy() {
   const tr = useTr()
+  const en = isEnglish()
   return (
     <section className="relative py-16 md:py-24">
       <div className="mx-auto max-w-7xl px-5 md:px-8 text-center">
-        <div className="mb-12 md:mb-16 max-w-2xl mx-auto">
+        {/* The heading container is wider than the paragraph so a two-part headline sits on two balanced lines on desktop; the paragraph stays a short measure below it. */}
+        <div className="mb-12 md:mb-16 max-w-3xl mx-auto">
           <div className="inline-flex items-center gap-2 rounded-full border border-hairline bg-surface-1/60 px-4 py-1.5 mb-6 backdrop-blur">
             <span className="h-1.5 w-1.5 rounded-full animate-pulse" style={{ background: ACCENT }} />
             <span className="text-xs font-medium uppercase tracking-[0.18em] text-ink-muted">{tr('The Strategy')}</span>
           </div>
-          <h2 className="font-display font-bold text-ink tracking-display leading-[1.05] text-3xl md:text-[44px]">
+          <h2 className="font-display font-bold text-ink tracking-display leading-[1.08] text-balance text-3xl md:text-[44px]">
             {tr('From industrial expertise')}
-            <br />
+            {/* English forces its two-line break; other languages break there on desktop only and balance naturally below that, so no word is stranded on a phone. */}
+            {en ? <br /> : <>{' '}<br className="hidden md:block" /></>}
             {tr('to social content.')}
           </h2>
-          <p className="mt-6 text-[15px] md:text-base text-ink-muted leading-relaxed">
+          <p className="mx-auto mt-6 max-w-2xl text-balance text-[15px] md:text-base text-ink-muted leading-relaxed">
             {tr("CONVRT ran Graspo's content as a system, not a posting schedule, strategy, production, localization and inbound handling working together so that attention had somewhere to go.")}
           </p>
         </div>

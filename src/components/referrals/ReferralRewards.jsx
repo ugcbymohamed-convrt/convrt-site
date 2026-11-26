@@ -59,6 +59,14 @@ const CARDS = [
   },
 ]
 
+/* Spanish (owner, 2026-11-26): "Una presentación." stays white, "Dos ganadores." takes the brand lime. The two sentences come from the ONE dictionary entry, split at its sentence break, so no key is added;
+   every other language renders the title unchanged. */
+function rewardsTitle(full) {
+  if (currentLocale() !== 'es') return full
+  const m = full.match(/^(.+?\.)\s+(.+)$/)
+  return m ? <>{m[1]} <span className="whitespace-nowrap text-lime">{m[2]}</span></> : full
+}
+
 export default function ReferralRewards({ onSelect }) {
   const tr = useTr()
   const ar = currentLocale() === 'ar'
@@ -66,7 +74,7 @@ export default function ReferralRewards({ onSelect }) {
     <section id="rewards" aria-labelledby="rewards-heading" className="relative scroll-mt-20 py-16 md:scroll-mt-24 md:py-24">
       <div className="mx-auto max-w-7xl px-5 md:px-8">
         <Reveal>
-          <SectionHeader id="rewards-heading" eyebrow={tr('Everyone wins')} title={tr('One Introduction. Two Winners.')}>
+          <SectionHeader id="rewards-heading" eyebrow={tr('Everyone wins')} title={rewardsTitle(tr('One Introduction. Two Winners.'))}>
             {tr('Choose how you want to earn.')}
           </SectionHeader>
         </Reveal>

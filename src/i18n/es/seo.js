@@ -85,7 +85,7 @@ export const ES_SEO = {
   '/creative-growth-roadmap': {
     title: 'Hoja de ruta de crecimiento creativo gratuita | CONVRT',
     description:
-      'Solicita cinco conceptos publicitarios personalizados para tu marca. Ángulos creativos, ganchos y recomendaciones de testeo de CONVRT, presentados en una sesión estratégica gratuita.',
+      'Solicita cinco conceptos publicitarios personalizados para tu marca. Ángulos creativos, hooks y recomendaciones de testeo de CONVRT, presentados en una sesión estratégica gratuita.',
   },
   '/referrals': {
     title: 'Programa de recomendación | Recompensas con CONVRT',
@@ -94,7 +94,7 @@ export const ES_SEO = {
   '/risk-free-trial': {
     title: '1 vídeo gratis: prueba nuestra producción | CONVRT',
     description:
-      'Solicita un vídeo de prueba gratuito producido por CONVRT, con dos variaciones de gancho para testear. Cada solicitud se revisa y la oferta está sujeta a aprobación y a las condiciones del programa.',
+      'Solicita un vídeo de prueba gratuito producido por CONVRT, con dos variantes de hook para testear. Cada solicitud se revisa y la oferta está sujeta a aprobación y a las condiciones del programa.',
   },
   // The two case studies (/es/case-studies is their duplicate default and canonicalises to /es/case-studies/graspo, so it has no entry of its own).
   // Figures come from the data modules, never retyped; the Elyon 5.28x keeps its "reported by the client" and "one video" qualifiers.
