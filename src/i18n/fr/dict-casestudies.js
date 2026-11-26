@@ -109,7 +109,7 @@ export default {
   "Peak age group:": "Tranche d’âge principale :",
   "followers today": "abonnés aujourd’hui",
   "Attention → Demand": "De l’attention à la demande",
-  "The social funnel, start to finish.": "Des vues aux opportunités commerciales.",
+  "The social funnel, start to finish.": "Des vues aux\nopportunités commerciales.",
   "This is the funnel observed during the management period, not a claim that every view produced an inquiry. It's what happened between a content strategy and a sales team's inbox.": "Au cours de la période analysée, nous avons enregistré des millions de vues et de véritables demandes commerciales. Ces résultats illustrent l’évolution de la visibilité de Graspo et de l’intérêt pour ses services, sans attribuer chaque demande directement à une vue.",
   "Total views": "Vues totales",
   "Facebook + Instagram, Jan–Jun 2026": "Facebook + Instagram, janv.–juin 2026",

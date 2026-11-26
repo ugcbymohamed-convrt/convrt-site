@@ -32,7 +32,7 @@ export const EDITORIAL = {
        `caseLine` is [text | { link: 'organic' | 'ugc', text }] so each phrase links to its own localized study. */
     showcaseGuide: {
       heading: 'Ce que vous trouverez dans notre galerie de créateurs',
-      intro: 'Notre galerie rassemble des vidéos de créateurs indépendants, pour vous permettre de découvrir différents styles, formats et approches créatives avant de lancer votre projet. Explorez les vidéos par secteur : e-commerce, SaaS et applications, services et contenu organique.',
+      intro: 'Notre galerie rassemble des vidéos de créateurs indépendants, pour vous permettre de découvrir différents styles, formats et approches créatives avant de lancer votre projet. Explorez les vidéos par secteur : e‑commerce, SaaS et applications, services et contenu organique.',
       cards: {
         ugc: { title: 'Vidéos UGC', text: 'Des vidéos naturelles réalisées par de vrais créateurs, adaptées aux campagnes publicitaires sur les réseaux sociaux.', label: 'Production de vidéos UGC' },
         spokesperson: { title: 'Vidéos Spokesperson', text: 'Des présentateurs qui expliquent votre produit ou transmettent le message de votre marque directement face caméra.', label: 'Production de vidéos Spokesperson' },

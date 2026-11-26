@@ -49,7 +49,8 @@ export default function GraspoFunnel() {
             <span className="text-xs font-medium uppercase tracking-[0.18em] text-ink-muted">{tr('Attention → Demand')}</span>
           </div>
           <h2 className="font-display font-bold text-ink tracking-display leading-[1.08] text-balance text-3xl md:text-[44px]">
-            {mix(tr('The social funnel, start to finish.'))}
+            {/* A translation may mark its preferred desktop break with a newline (French: two balanced lines); below md the lines simply wrap and balance. */}
+            {tr('The social funnel, start to finish.').split('\n').map((line, i) => (i === 0 ? mix(line) : <span key={i}>{' '}<br className="hidden md:block" />{mix(line)}</span>))}
           </h2>
           <p className="mx-auto mt-6 max-w-2xl text-balance text-[15px] text-ink-muted leading-relaxed">
             {tr("This is the funnel observed during the management period, not a claim that every view produced an inquiry. It's what happened between a content strategy and a sales team's inbox.")}
