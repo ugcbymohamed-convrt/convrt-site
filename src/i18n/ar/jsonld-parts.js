@@ -61,7 +61,7 @@ export function packageNodesAr(pageUrl) {
     '@id': idOf(p.id),
     name: p.name,
     serviceType: SERVICE_TYPE_PAID,
-    description: `${p.concepts} كونسيبتات إعلانية مختلفة، لكل كونسيبت ${p.variationsPerConcept} نسخ (${p.variations} فيديو إعلانيًا)، وإنتاج متكامل خلال ${p.turnaroundBusinessDays} ${p.turnaroundBusinessDays <= 10 ? 'أيام' : 'يوم'} عمل بعد اعتماد الكونسيبتات والسكريبتات، وجولتا مراجعة لكل كونسيبت، و${USAGE_RIGHTS.includedMonths} أشهر من حقوق الاستخدام عالميًا، بمشاركة ما يصل إلى ${p.maxCreators} من صناع المحتوى أو مقدمي الفيديوهات.`,
+    description: `${{ 5: 'خمس', 10: 'عشر' }[p.concepts] ?? p.concepts} كونسيبتات إعلانية مختلفة، لكل كونسيبت ${p.variationsPerConcept} نسخ (${p.variations} فيديو إعلاني)، وإنتاج متكامل خلال ${p.turnaroundBusinessDays} ${p.turnaroundBusinessDays <= 10 ? 'أيام' : 'يوم'} عمل بعد اعتماد الكونسيبتات والسكريبتات، وجولتا مراجعة لكل كونسيبت، و${USAGE_RIGHTS.includedMonths} أشهر من حقوق الاستخدام عالميًا، بمشاركة ما يصل إلى ${p.maxCreators} من صناع المحتوى أو مقدمي الفيديوهات.`,
     provider: orgProvider,
     isRelatedTo: [{ '@id': idOf('ugc') }, { '@id': idOf('spokesperson') }],
     ...offersOf([monthlyOfferAr(p.name, p.monthly, packagesUrl), oneOffOfferAr(p.name, p.oneOff, packagesUrl)]),
