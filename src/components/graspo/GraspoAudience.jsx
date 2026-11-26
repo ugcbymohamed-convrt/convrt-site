@@ -68,14 +68,14 @@ export default function GraspoAudience() {
         {/* Age & gender */}
         <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-5">
           <DemoCard
-            platform="Instagram"
+            platform={ar ? tr('Instagram') : 'Instagram'}
             followers={GRASPO_FOLLOWING.instagram}
             genderSplit={tr(DEMO.instagram.genderSplit)}
             peakAge={DEMO.instagram.peakAge}
             color={ACCENT}
           />
           <DemoCard
-            platform="Facebook"
+            platform={ar ? tr('Facebook') : 'Facebook'}
             followers={GRASPO_FOLLOWING.facebook}
             genderSplit={tr(DEMO.facebook.genderSplit)}
             peakAge={DEMO.facebook.peakAge}
@@ -85,7 +85,7 @@ export default function GraspoAudience() {
 
         {ar ? (
         <p className="mt-6 text-[13px] text-ink-subtle leading-relaxed max-w-2xl mx-auto text-center">
-          {tr('Working-age adults, overwhelmingly male, concentrated in the 25–44 range, the demographic most likely to hold purchasing or procurement decisions for a printing project, not a passive consumer audience. Both followings have kept growing since the report window, now')} {fol('facebook')} {tr('on Facebook,')} {fol('instagram')} {tr('on Instagram and')} {fol('tiktok')} {tr('on TikTok')} ({fol('combined')} {tr('combined')}).
+          {tr('Working-age adults, overwhelmingly male, concentrated in the 25–44 range, the demographic most likely to hold purchasing or procurement decisions for a printing project, not a passive consumer audience. Both followings have kept growing since the report window, now')} {fol('facebook')} {tr('on Facebook,')} و{fol('instagram')} {tr('on Instagram and')} و{fol('tiktok')} {tr('on TikTok')} ({tr('more than')} {fol('combined').replace('+', '')} {tr('combined')}).
         </p>
         ) : en ? (
           <p className="mt-6 text-[13px] text-ink-subtle leading-relaxed max-w-2xl mx-auto text-center">

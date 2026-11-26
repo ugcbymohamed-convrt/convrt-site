@@ -8,7 +8,7 @@ const ACCENT = '#d5ff40'
    paragraph already states (10.7M organic views · 75 unique leads · 26 high priority · 10 advanced), then the story on one side and the "no paid amplification" statement as a highlighted card on the other.
    Same sentences, same figures (taken from the same strings the funnel uses): nothing is added. */
 const AR_FIGURES = [
-  { v: '10.7M', label: 'organic views', accent: true },
+  { v: '10.7M', label: 'Total Views', accent: true },
   { v: '75', label: 'Unique inbound leads' },
   { v: '26', label: 'High-priority opportunities' },
   { v: '10', label: 'Advanced / quotation-stage' },

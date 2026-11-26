@@ -11,7 +11,11 @@ export function localizeStat(locale, text) {
     const a = String(text).match(NUM)
     if (!a) return text
     const [, raw, unit, times, plus] = a
-    return `${raw}${unit === 'K' ? ' ألف' : unit === 'M' ? ' مليون' : ''}${times ? '×' : ''}${plus}`
+    // Arabic number agreement: a whole 3-10 takes the plural (8K → "8 آلاف", 6M → "6 ملايين"); a bare 1 is just the unit word ("1K" → "ألف"). Everything else keeps the singular (22 ألف, 10.7 مليون).
+    const whole = /^\d+$/.test(raw) ? Number(raw) : null
+    const word = unit === 'K' ? (whole >= 3 && whole <= 10 ? 'آلاف' : 'ألف') : unit === 'M' ? (whole >= 3 && whole <= 10 ? 'ملايين' : 'مليون') : ''
+    if (unit && whole === 1) return `${word}${times ? '×' : ''}${plus}`
+    return `${raw}${word ? ` ${word}` : ''}${times ? '×' : ''}${plus}`
   }
   if (locale === 'fr' && /^\d+%\+?$/.test(String(text))) return String(text).replace('%', '\u00a0%')
   if (locale !== 'es' && locale !== 'fr') return text

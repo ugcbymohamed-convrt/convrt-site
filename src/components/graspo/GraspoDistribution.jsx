@@ -145,7 +145,7 @@ export default function GraspoDistribution() {
               <div>
                 <div className="flex items-center gap-2">
                   <span className="h-2.5 w-2.5 rounded-full" style={{ background: IG_COLOR }} />
-                  <span className="text-xs font-semibold text-ink-muted">Instagram</span>
+                  <span className="text-xs font-semibold text-ink-muted">{ar ? tr('Instagram') : 'Instagram'}</span>
                 </div>
                 <p className="mt-1.5 font-display font-bold text-2xl text-ink tabular-nums">{stat(GRASPO_IG_SHORT)}</p>
                 <p className="text-[11px] text-ink-subtle">{pctL(IG_PCT.toFixed(0))} {tr('of total views')}</p>
@@ -153,7 +153,7 @@ export default function GraspoDistribution() {
               <div>
                 <div className="flex items-center gap-2">
                   <span className="h-2.5 w-2.5 rounded-full" style={{ background: FB_COLOR }} />
-                  <span className="text-xs font-semibold text-ink-muted">Facebook</span>
+                  <span className="text-xs font-semibold text-ink-muted">{ar ? tr('Facebook') : 'Facebook'}</span>
                 </div>
                 <p className="mt-1.5 font-display font-bold text-2xl text-ink tabular-nums">{stat(GRASPO_FB_SHORT)}</p>
                 <p className="text-[11px] text-ink-subtle">{pctL(FB_PCT.toFixed(0))} {tr('of total views')}</p>

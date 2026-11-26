@@ -87,7 +87,7 @@ export default function GraspoFunnel() {
                     </span>
                     <div className="min-w-0">
                       <p className={cx('text-[14px] font-semibold text-ink', (en || ar) && 'truncate')}>{tr(s.label)}</p>
-                      <p className={cx('text-[11.5px] text-ink-subtle', (en || ar) ? 'truncate' : 'leading-snug')}>{tr(s.desc)}</p>
+                      <p className={cx('text-[11.5px] text-ink-subtle', en ? 'truncate' : 'leading-snug')}>{tr(s.desc)}</p>
                     </div>
                   </div>
                 </div>

@@ -129,7 +129,7 @@ export default function GraspoHero() {
                     {tr(item.label)}
                   </dt>
                   <dd className="mt-2 text-[14px] leading-snug text-ink font-medium">
-                    {item.value === 'Graspo' ? item.value : tr(item.value)}
+                    {item.value === 'Graspo' ? (ar ? 'غراسبو' : item.value) : tr(item.value)}
                   </dd>
                 </div>
               ))}

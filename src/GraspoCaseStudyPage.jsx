@@ -26,7 +26,7 @@ function RelatedServiceAr() {
     <section aria-label="الخدمة المرتبطة" className="relative pt-10 md:pt-14">
       <div className="mx-auto max-w-2xl px-5 text-center md:px-8">
         <p className="text-[15px] leading-relaxed text-ink-muted">
-          Graspo مثال على خدمتنا في <TextLink href={hrefFor(PATHS.socialMediaVideoProduction)}>إنتاج فيديوهات للسوشيال ميديا وإدارتها</TextLink>.
+          تعكس تجربة غراسبو كيف نساعد الشركات على توسيع حضورها الرقمي وتوليد فرص تجارية من خلال <TextLink href={hrefFor(PATHS.socialMediaVideoProduction)}>إنتاج محتوى منصات التواصل الاجتماعي وإدارته</TextLink>.
         </p>
         <p className="mt-2 text-[15px]">
           <TextLink href={hrefFor('/pricing#organic')}>باقات المحتوى العضوي <span aria-hidden="true">←</span></TextLink>

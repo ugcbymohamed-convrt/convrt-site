@@ -124,6 +124,12 @@ test('number notation: Western digits, units in Arabic (22K → 22 ألف, 10.7M
   assert.equal(localizeStat('en', '40M+'), '40M+')
 })
 
+test('number agreement (Arabic): 3-10 take the plural, a bare 1 is the unit word, everything else keeps the singular', () => {
+  const t = (v) => localizeStat('ar', v)
+  assert.equal(t('8K'), '8 آلاف'); assert.equal(t('10K'), '10 آلاف'); assert.equal(t('3M'), '3 ملايين'); assert.equal(t('1K'), 'ألف')
+  assert.equal(t('11K'), '11 ألف'); assert.equal(t('22K'), '22 ألف'); assert.equal(t('30K+'), '30 ألف+'); assert.equal(t('7.5M'), '7.5 مليون'); assert.equal(t('84.2K'), '84.2 ألف'); assert.equal(t('3.4M'), '3.4 مليون')
+})
+
 test('conversion flows: the Roadmap and the free-video application work in Arabic; the hooks stay out and the referral program is translated; the free-video page is held for review', () => {
   assert.deepEqual(LOCALIZED_FLOWS.ar, { roadmap: true, riskFree: true, hooks: false, referrals: true })
   assert.ok(isReleased('ar', '/creative-growth-roadmap') || SITE_SEO['/creative-growth-roadmap'].indexable === false)
@@ -341,6 +347,25 @@ test('hreflang: one reciprocal set (en, es, ar, x-default = English) on the Engl
   assert.match(gset(page('/ar/case-studies/graspo')), /^en [^|]+\|(es [^|]+\|)?(fr-FR [^|]+\|)?ar [^|]+\|x-default /)
   for (const bp of ['/about', '/case-studies/elyon']) assert.ok(!/hreflang="ar"/.test(page(bp)), `${bp}: no hreflang to a page that does not exist`)
   assert.deepEqual(alternatesFor('/ugc-video-agency', SITE_SEO['/ugc-video-agency']).map((a) => a.hreflang), ['en', 'es', 'fr-FR', 'ar', 'x-default'])
+})
+
+test('Arabic Graspo case study (editorial pass, 2026-11-26): the client is «غراسبو» in visible text, MSA only, claims scoped, figures untouched', () => {
+  const html = page('/ar/case-studies/graspo')
+  const main = html.slice(html.indexOf('<main'), html.indexOf('</main>'))
+  const text = main.replace(/<script[\s\S]*?<\/script>|<style[\s\S]*?<\/style>/g, ' ').replace(/<[^>]+>/g, ' ').replace(/&[a-z#0-9]+;/g, ' ').replace(/\s+/g, ' ')
+  assert.ok(text.includes('غراسبو'))
+  assert.ok(!/Graspo/.test(text), 'no visitor-facing Latin «Graspo» in the page body (the logo is an image, the Instagram handle is in an href)')
+  assert.ok(!/(^|\s)(مو|وش|نبغى|نبغي|بس|اللي|هالتفاصيل|لحالها|مليانة)(\s|$)/.test(text), 'no Gulf dialect words')
+  for (const bad of ['تركيبة الاستفسارات', 'عملاء محتملون فريدون', 'يشترون الطباعة كمهنة', 'انتقال للمبيعات', 'ثلاثة جهود منفصلة', 'صندوق وارد', 'أرض المصنع']) assert.ok(!text.includes(bad), `retired expression: ${bad}`)
+  // the figures the owner pinned are all still there
+  for (const f of ['10.7 مليون', '3.4 مليون', '65 ألف', '75', '26', '10', '6.27 مليون', '4.39 مليون', '37', '14', '30']) assert.ok(text.includes(f), f)
+  // claim scoping: «no paid promotion» is stated for Instagram only (the Facebook claim is unverified)
+  const paid = text.split(/\.\s|،\s*\|/).filter((sentence) => /(?:ال)?ترويج(?: ال)?مدفوع/.test(sentence)) // sentences split at «. » so 6.27 stays whole
+  assert.ok(paid.length >= 2 && paid.every((sentence) => /إنستغرام/.test(sentence)), 'every «no paid promotion» sentence names Instagram')
+  assert.ok(!/عضوية/.test(text.slice(0, text.indexOf('التحدي'))), 'the hero and KPI cards do not call the combined 10.7M «organic»')
+  assert.ok(text.includes('خلال أقل من 6 أشهر'))
+  assert.ok(text.includes('إنستغرام') && text.includes('فيسبوك'))
+  assert.ok(!/8 ألف|1 ألف/.test(text), 'number agreement: 8 آلاف, ألف')
 })
 
 test('sitemap: the indexable Arabic URLs (home, four services, Graspo case study, pricing, Showcase), nothing else Arabic', () => {
