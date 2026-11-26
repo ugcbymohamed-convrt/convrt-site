@@ -31,6 +31,17 @@ export const SERVICE_MENU_LABELS = {
   },
 }
 
+/* The Services dropdown has TWO entries (owner, 2026-11-26): "Paid Social" (a group; hovering or focusing it opens UGC, Spokesperson, SaaS & App) and "Organic Social" (a direct link). The group
+   labels, per language. "Paid Social" opens no page of its own: it only groups the three paid-social services. */
+export const SERVICE_GROUP_LABELS = {
+  en: { paid: 'Paid Social', organic: 'Organic Social' },
+  es: { paid: 'Redes sociales de pago', organic: 'Redes sociales orgánicas' },
+  fr: { paid: 'Réseaux sociaux payants', organic: 'Réseaux sociaux organiques' },
+  ar: { paid: 'سوشيال ميديا مدفوعة', organic: 'سوشيال ميديا عضوية' },
+}
+export const PAID_SOCIAL_HREFS = ['/ugc-video-agency', '/spokesperson-video-production', '/saas-video-production']
+export const ORGANIC_SOCIAL_HREF = '/social-media-video-production'
+
 /* Spanish and French order of the dropdown (owner): UGC, Spokesperson, SaaS, Organic. The other languages keep the English order. */
 export const serviceMenuFor = (locale, items) => {
   const order = SERVICE_MENU_LABELS[locale] ? Object.keys(SERVICE_MENU_LABELS[locale]) : null
