@@ -8,7 +8,7 @@ import { usePressFeedback } from '../lib/usePressFeedback.js'
 import LanguageSelector from './LanguageSelector.jsx'
 import { parsePath, localizedPath } from '../i18n/paths.js'
 import { translate, localHref } from '../i18n/tr.js'
-import { REFERRAL_LABELS, SERVICE_MENU_LABELS, menuHas, serviceMenuFor, showReferralLink } from '../i18n/menu.js'
+import { REFERRAL_LABELS, SERVICE_MENU_LABELS, SERVICE_GROUP_LABELS, PAID_SOCIAL_HREFS, ORGANIC_SOCIAL_HREF, menuHas, serviceMenuFor, showReferralLink } from '../i18n/menu.js'
 import { primaryAction } from '../i18n/cta.js'
 import { SERVICE_LABELS } from '../seo/businessKnowledge.js'
 
@@ -25,10 +25,11 @@ const links = [
   { label: 'Contact', href: '#contact', compactHide: true },
 ]
 
-/* The "Services" menu: hovering (or keyboard-focusing) Services in the top bar opens a panel with the individual service pages. The panel is ALWAYS in the page HTML (only hidden visually until hover or focus),
-   so the service pages stay linked from every page for search engines and keyboard users. In the mobile menu the same links are listed under Services. Labels come from the same dictionary as the footer used. */
+/* The "Services" menu (owner, 2026-11-26): hovering (or keyboard-focusing) Services in the top bar opens a panel with TWO entries. "Paid Social" is a group: hovering or focusing it opens a second panel with
+   UGC, Spokesperson and SaaS & App videos. "Organic Social" is a direct link. Both panels are ALWAYS in the page HTML (only hidden visually until hover or focus), so every service page stays linked from every
+   page for search engines and keyboard users. In the mobile menu the same links are listed under Services (Paid Social as a heading with its three links, then Organic Social). Labels: src/i18n/menu.js. */
 const SERVICE_MENU = [
-  { label: 'UGC Video Agency', href: '/ugc-video-agency' },
+  { label: 'UGC Videos', href: '/ugc-video-agency' },
   { label: 'Spokesperson Videos', href: '/spokesperson-video-production' },
   { label: SERVICE_LABELS.organic, href: '/social-media-video-production' },
   { label: 'SaaS & App Videos', href: '/saas-video-production' },
@@ -84,6 +85,9 @@ export default function Nav() {
   // The Services dropdown: Arabic has the owner's own four labels in this order; Spanish its short labels (menu.js); other languages the English order with dictionary labels.
   const serviceItems = locale === 'ar' ? SERVICE_MENU_AR : serviceMenuFor(locale, SERVICE_MENU)
   const serviceLabel = (m) => (locale === 'ar' ? m.label : SERVICE_MENU_LABELS[locale]?.[m.href] ?? tr(m.label))
+  const groupLabels = SERVICE_GROUP_LABELS[locale] ?? SERVICE_GROUP_LABELS.en
+  const paidItems = PAID_SOCIAL_HREFS.map((h) => serviceItems.find((m) => m.href === h)).filter(Boolean)
+  const organicItem = serviceItems.find((m) => m.href === ORGANIC_SOCIAL_HREF)
   const action = primaryAction(locale)
 
   // /scale is a paid-acquisition page with its own in-page booking modal
@@ -142,12 +146,32 @@ export default function Nav() {
               </a>
               {/* the panel starts right under the link (its top padding bridges the gap, so the pointer never leaves the menu); visibility only, so the links are always in the HTML */}
               <div className="invisible absolute left-1/2 top-full z-50 -translate-x-1/2 pt-4 opacity-0 transition-[opacity,visibility] duration-200 group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100 motion-reduce:transition-none">
-                <ul className="min-w-[250px] rounded-2xl border border-white/10 bg-[rgba(12,12,14,0.96)] p-2 shadow-[0_24px_60px_-20px_rgba(0,0,0,0.9)] backdrop-blur-xl">
-                  {serviceItems.map((m) => (
-                    <li key={m.href}>
-                      <a href={localHref(m.href, locale)} className="block rounded-xl px-4 py-2.5 text-sm text-ink-muted transition-colors hover:bg-white/[0.06] hover:text-ink focus-visible:bg-white/[0.06] focus-visible:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-lime">{serviceLabel(m)}</a>
+                <ul className="min-w-[270px] rounded-2xl border border-white/10 bg-[rgba(12,12,14,0.96)] p-2 shadow-[0_24px_60px_-20px_rgba(0,0,0,0.9)] backdrop-blur-xl">
+                  <li className="group/sub relative">
+                    <button
+                      type="button"
+                      aria-haspopup="true"
+                      className="flex w-full items-center justify-between gap-6 whitespace-nowrap rounded-xl px-4 py-2.5 text-start text-sm text-ink-muted transition-colors hover:bg-white/[0.06] hover:text-ink group-focus-within/sub:bg-white/[0.06] group-focus-within/sub:text-ink group-hover/sub:bg-white/[0.06] group-hover/sub:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-lime"
+                    >
+                      {groupLabels.paid}
+                      <svg viewBox="0 0 10 10" className={`h-2.5 w-2.5 shrink-0 ${locale === 'ar' ? 'rotate-180' : ''}`} fill="none" aria-hidden="true"><path d="M3.5 2L6.5 5L3.5 8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                    </button>
+                    {/* the second panel opens beside the first (its side padding bridges the gap); visibility only, so its three links are always in the HTML */}
+                    <div className="invisible absolute left-full top-[-8px] z-50 pl-2 opacity-0 transition-[opacity,visibility] duration-200 group-focus-within/sub:visible group-focus-within/sub:opacity-100 group-hover/sub:visible group-hover/sub:opacity-100 motion-reduce:transition-none">
+                      <ul className="min-w-[230px] rounded-2xl border border-white/10 bg-[rgba(12,12,14,0.96)] p-2 shadow-[0_24px_60px_-20px_rgba(0,0,0,0.9)] backdrop-blur-xl">
+                        {paidItems.map((m) => (
+                          <li key={m.href}>
+                            <a href={localHref(m.href, locale)} className="block whitespace-nowrap rounded-xl px-4 py-2.5 text-sm text-ink-muted transition-colors hover:bg-white/[0.06] hover:text-ink focus-visible:bg-white/[0.06] focus-visible:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-lime">{serviceLabel(m)}</a>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </li>
+                  {organicItem && (
+                    <li>
+                      <a href={localHref(organicItem.href, locale)} className="block rounded-xl px-4 py-2.5 text-sm text-ink-muted transition-colors hover:bg-white/[0.06] hover:text-ink focus-visible:bg-white/[0.06] focus-visible:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-lime">{groupLabels.organic}</a>
                     </li>
-                  ))}
+                  )}
                 </ul>
               </div>
             </div>
@@ -213,11 +237,21 @@ export default function Nav() {
                 </a>
                 {l.href === '#services' && (
                   <ul className="mb-1 ml-5 border-l border-hairline pl-2">
-                    {serviceItems.map((m) => (
-                      <li key={m.href}>
-                        <a href={localHref(m.href, locale)} onClick={() => setOpen(false)} className="block rounded-lg px-3 py-2.5 text-[15px] text-ink-muted hover:text-ink hover:bg-surface-1">{serviceLabel(m)}</a>
+                    <li>
+                      <span className="block px-3 pb-1 pt-2.5 text-[15px] font-medium text-ink">{groupLabels.paid}</span>
+                      <ul className="ml-3 border-l border-hairline pl-2">
+                        {paidItems.map((m) => (
+                          <li key={m.href}>
+                            <a href={localHref(m.href, locale)} onClick={() => setOpen(false)} className="block rounded-lg px-3 py-2.5 text-[15px] text-ink-muted hover:text-ink hover:bg-surface-1">{serviceLabel(m)}</a>
+                          </li>
+                        ))}
+                      </ul>
+                    </li>
+                    {organicItem && (
+                      <li>
+                        <a href={localHref(organicItem.href, locale)} onClick={() => setOpen(false)} className="block rounded-lg px-3 py-2.5 text-[15px] font-medium text-ink hover:bg-surface-1">{groupLabels.organic}</a>
                       </li>
-                    ))}
+                    )}
                   </ul>
                 )}
               </div>
