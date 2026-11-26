@@ -129,9 +129,10 @@ export default function FinalCTA({ attributed = false }) {
 
         {/* ── Supporting text ── */}
         <FadeUp inView={inView} delay={220}>
+          {/* Other languages: a slightly wider measure and balanced lines, so a long sentence never leaves a short last line (English is unchanged). */}
           <p
-            className="text-ink-muted leading-relaxed mx-auto mb-12"
-            style={{ fontSize: 'clamp(1rem, 1.5vw, 1.125rem)', maxWidth: '36rem' }}
+            className={`text-ink-muted leading-relaxed mx-auto mb-12${locale === 'en' ? '' : ' text-balance'}`}
+            style={{ fontSize: 'clamp(1rem, 1.5vw, 1.125rem)', maxWidth: locale === 'en' ? '36rem' : '40rem' }}
           >
             {tr('Whether you need paid social creatives, UGC, spokesperson ads, or a long-term creative partner, we build content designed for modern attention.')}
           </p>

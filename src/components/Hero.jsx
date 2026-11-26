@@ -11,7 +11,7 @@ import { FR_HOME_HERO } from '../i18n/fr/hero.js'
 import { AR_HERO_OFFERS } from '../i18n/ar/heroOffers.js'
 
 const ROTATING_WORDS = ['convert', 'resonate', 'sell', 'connect']
-// Spanish rotating words complete "Creatividades diseñadas para ___" (owner-approved headline, Nov 2026; see src/i18n/es/dict-home.js). The first word is the one in the prerendered H1.
+// Spanish rotating words complete "Creativos diseñados para ___" (headline approved Nov 2026, "Creatividades" → "Creativos" by the owner on 2026-11-26; see src/i18n/es/dict-home.js). The first word is the one in the prerendered H1.
 const ROTATING_WORDS_ES = ['conectar', 'convertir', 'vender', 'destacar']
 // Arabic rotating words complete «فيديوهات إعلانية مصمّمة كي ___» (a purpose, never a guaranteed result; see src/i18n/ar/dict-home.js).
 const ROTATING_WORDS_AR = ['تُقنع', 'تؤثّر', 'تبيع', 'تُلهم']

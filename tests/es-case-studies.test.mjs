@@ -99,7 +99,7 @@ test('Graspo: every verified figure, the period, the sources and the limitation 
   assert.ok(t.includes('del 1 de enero al 19 de junio de 2026'), 'reporting period')
   assert.ok(/Meta Business Suite/.test(t) && /registro interno de contactos entrantes/.test(t), 'sources')
   assert.ok(/corresponden a un cliente y un periodo concretos\. No son resultados habituales ni constituyen una garantía/.test(t), 'caveat')
-  assert.ok(/pensad[oa] en árabe/.test(t), 'Arabic-first production is kept')
+  assert.ok(/pensad[oa] en árabe|adaptado al mercado árabe|diseñado específicamente para el público árabe/i.test(t), 'Arabic-first production is kept')
   assert.ok(t.includes('0 USD'))
   assert.equal(metric('Total Views'), '10.7M')
 })

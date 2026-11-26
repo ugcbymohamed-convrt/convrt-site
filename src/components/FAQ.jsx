@@ -207,7 +207,7 @@ export default function FAQ() {
 
           <FadeUp inView={inView} delay={80}>
             <h2
-              className={`font-display font-bold text-ink tracking-display leading-[1.05] mb-5 ${locale === 'en' ? 'whitespace-nowrap' : ''}`}
+              className={`font-display font-bold text-ink tracking-display leading-[1.05] mb-5 ${locale === 'en' ? 'whitespace-nowrap' : 'text-balance'}`}
               style={{ fontSize: 'clamp(1.75rem, 3.5vw, 2.75rem)' }}
             >
               {tr('Things brands')}{' '}

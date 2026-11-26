@@ -11,7 +11,7 @@ export default {
   'Captions': 'Subtítulos',
   'Export': 'Exportación',
   'Finishing': 'Acabado',
-  'Opening hook': 'Gancho inicial',
+  'Opening hook': 'Hook inicial',
   'Branded visuals': 'Imagen de marca',
   'Call to action': 'Llamada a la acción',
   'Tip': 'Consejo',

@@ -3,7 +3,6 @@ import { useDocumentHead } from './lib/useDocumentHead.js'
 import { caseStudyHead } from './caseStudies/head.js'
 import FinalCTA from './components/FinalCTA.jsx'
 import NextCaseStudy from './components/caseStudies/NextCaseStudy.jsx'
-import RelatedService from './components/caseStudies/RelatedService.jsx'
 import ElyonHero from './components/elyon/ElyonHero.jsx'
 import ElyonMetrics from './components/elyon/ElyonMetrics.jsx'
 import ElyonPositioning from './components/elyon/ElyonPositioning.jsx'
@@ -35,7 +34,6 @@ export default function ElyonCaseStudyPage() {
       <ElyonProof />
       <SectionDivider />
       <ElyonResult />
-      <RelatedService currentId="elyon" />
       <NextCaseStudy currentId="elyon" />
       <SectionDivider />
       <FinalCTA />
