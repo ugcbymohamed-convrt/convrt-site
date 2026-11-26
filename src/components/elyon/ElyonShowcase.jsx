@@ -14,7 +14,7 @@ import { isEnglish } from '../caseStudies/format.js'
 export default function ElyonShowcase() {
   const tr = useTr()
   return (
-    <section className="relative py-14 md:py-20 overflow-hidden">
+    <section id="elyon-videos" className="relative scroll-mt-20 py-14 md:scroll-mt-24 md:py-20 overflow-hidden">
       <div
         aria-hidden="true"
         className="pointer-events-none absolute top-1/3 left-1/2 -translate-x-1/2 h-[420px] w-[900px] rounded-full opacity-[0.06] blur-[120px]"

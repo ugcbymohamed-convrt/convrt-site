@@ -74,7 +74,7 @@ export const ES_FINAL_CTA = {
 
 /* One-sentence introductions under the heading of four interactive sections and the UGC FAQ (Spanish editorial copy). English has none, so they render in Spanish only. */
 export const ES_SECTION_INTROS = {
-  'ugc-testing': 'No hace falta cambiar todo el anuncio para saber qué funciona. Creamos variaciones de una misma idea para que puedas probar elementos concretos.',
+  'ugc-testing': 'No hace falta cambiar todo el anuncio para saber qué funciona. Creamos variantes de una misma idea para que puedas probar elementos concretos.',
   'spokesperson-formats': 'Adaptamos el guion y la presentación a tu producto y a tu objetivo.',
   'saas-formats': 'Elegimos el formato que mejor encaja con tu producto y tu público.',
   'organic-content-system': 'Cada vídeo empieza con una idea clara y un objetivo concreto.',

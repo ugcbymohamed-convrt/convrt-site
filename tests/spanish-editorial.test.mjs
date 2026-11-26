@@ -127,12 +127,12 @@ test('Roadmap: five questions, option values and USD brackets unchanged, neutral
   assert.ok(!fs.readFileSync(path.join(dist, 'sitemap.xml'), 'utf8').includes('/es/creative-growth-roadmap'))
 })
 
-test('Pricing: the thirteen approved EUR amounts are all on the Spanish page and "versiones finales de anuncio" replaced "creativos de testeo"', () => {
+test('Pricing: the thirteen approved EUR amounts are all on the Spanish page and "variantes finales de anuncio" replaced "creativos de testeo"', () => {
   const html = page('pricing')
   const t = text(html)
   for (const a of ['2.750 €', '3.250 €', '850 €', '1.375 €', '2.400 €', '4.600 €', '5.500 €', '1.550 €', '2.500 €', '4.350 €', '225 €', '1.400 €', '2.300 €']) assert.ok(t.includes(a), a)
-  assert.ok(t.includes('183 € por versión') && t.includes('217 € por versión') && t.includes('153 € por versión'))
-  assert.ok(!/creativos de testeo/.test(t) && t.includes('versiones finales de anuncio'))
+  assert.ok(t.includes('183 € por variante') && t.includes('217 € por variante') && t.includes('153 € por variante'))
+  assert.ok(!/creativos de testeo/.test(t) && t.includes('variantes finales de anuncio'))
   assert.match(t, /Compromiso inicial de 3 meses\. Después, mes a mes con 30 días de preaviso\./)
 })
 

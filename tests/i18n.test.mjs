@@ -655,7 +655,7 @@ test('Spanish structured data stays factual: no VideoObject (no upload dates exi
 // ── Spanish homepage copy, terminology, CTAs, free-video offer, hooks ──────────────────────────────────────────────────────────────────────────────
 test('Spanish homepage: approved copy, one-line short CTA (hero and navigation), 3-line final headline, terminology rules', () => {
   const h = page('/es'), t = textOf(h).join('\n'), body = bodyOf(h)
-  assert.match(t, /Creatividades\ndiseñadas para\nconectar/, 'owner-approved headline (Nov 2026)')
+  assert.match(t, /Creativos\ndiseñados para\nconectar/, 'approved headline (Nov 2026; "Creatividades" became "Creativos" on 2026-11-26)')
   assert.match(t, /Nos encargamos de todo: estrategia creativa, guiones, selección de creadores, grabación y edición\. Producimos anuncios UGC, vídeos Spokesperson, vídeos para SaaS y aplicaciones y contenido orgánico para redes sociales\./)
   assert.match(t, /5 conceptos publicitarios para tu marca\.\s*\nGratis\./)
   assert.ok((t.match(/^Consigue 5 conceptos gratis$/gm) ?? []).length >= 3, 'the owner-approved label is used in the navigation, the hero and the other 5-concepts CTAs')
@@ -667,14 +667,15 @@ test('Spanish homepage: approved copy, one-line short CTA (hero and navigation),
   assert.ok(t.includes('Experiencia acumulada del fundador en CONVRT y otros proyectos creativos.'), 'the founder attribution (owner wording)')
   assert.match(t, /Las buenas marcas\nmerecen mejores\nanuncios\./)
   assert.ok(/class="block text-ink sm:whitespace-nowrap">merecen mejores</.test(body), 'the middle line of the final headline never wraps from tablet up')
-  for (const s of ['Qué hacemos', 'Vídeos para tus', 'anuncios y redes sociales.', 'Vídeos UGC', 'Vídeos para SaaS', 'Vídeos Spokesperson', 'Vídeos para redes sociales', '¿No sabes qué servicio encaja contigo?', 'Reservar una llamada', 'Ver paquetes y precios', 'Tus preguntas,', '¿Qué hace exactamente CONVRT?', '¿Qué diferencia hay entre UGC y vídeos Spokesperson?', '¿Te queda alguna duda?', 'Contacta con nosotros']) assert.ok(t.includes(s), s)
+  for (const s of ['Qué hacemos', 'Vídeos para tus', 'anuncios y redes sociales.', 'Vídeos UGC', 'Vídeos para SaaS', 'Vídeos Spokesperson', 'Vídeos para redes sociales', '¿No sabes qué servicio encaja contigo?', 'Reservar una llamada', 'Ver paquetes y precios', 'Lo que suelen preguntarnos', '¿Qué hace exactamente CONVRT?', '¿Qué diferencia hay entre UGC y vídeos Spokesperson?', '¿Te queda alguna duda?', 'Contacta con nosotros']) assert.ok(t.includes(s), s)
   // the three reviews, in the owner-approved Spanish wording
   for (const q of ['Trabajar con Mohamad ha sido un auténtico placer.', 'Mohamed entendió perfectamente el concepto', 'Los vídeos han vuelto a quedar increíbles.']) assert.ok(t.includes(q), q)
   // terminology: no "creatividad(es)" for ad creative assets, no "listos para rendir", Spokesperson stays the service name
   for (const p of ES_PAGES) {
     const x = textOf(page(p)).join('\n')
     assert.ok(!/listos para rendir/i.test(x), `${p}: "listos para rendir"`)
-    assert.ok(!/\bcreatividades\b/i.test(x.replace('Creatividades\ndiseñadas para', '').replace('creatividades para tus campañas', '')), `${p}: "creatividades" (only the owner-approved homepage headline and the Pricing selector line may use it)`)
+    assert.ok(!/\bcreatividades\b/i.test(x), `${p}: "creatividades" (an ad asset is a "creativo"; owner rule 2026-11-26)`)
+    assert.ok(!/\bganchos?\b/i.test(x), `${p}: "gancho" (an advertising hook is a "hook"; owner rule 2026-11-26)`)
     assert.ok(!/vídeos? con presentador(?!es)/i.test(x.replace(/Vídeos con presentadores/g, '')), `${p}: the service is "Spokesperson", not "con presentador"`)
   }
   assert.match(headOf(page('/es/spokesperson-video-production')), /<title>Vídeos Spokesperson \| Vídeos con presentador/)
@@ -711,7 +712,7 @@ test('Spanish free offers: the hero shows the same two cards as English: 1 free 
     const x = page(p)
     assert.ok(!/href="[^"]*free-hooks/.test(x), `${p}: no hooks link`)
     // (the referral program's terms name the 10 free hooks only to say the Creative Upgrade is separate from them: a condition, not a promotion)
-    if (p !== '/es/referrals') assert.ok(!/ganchos (publicitarios )?gratis|10 FREE|Free Ad Hooks/i.test(textOf(x).join('\n')), `${p}: no English hooks promotion`)
+    if (p !== '/es/referrals') assert.ok(!/hooks (publicitarios )?gratis|10 FREE|Free Ad Hooks/i.test(textOf(x).join('\n')), `${p}: no English hooks promotion`)
   }
   assert.equal(LOCALIZED_FLOWS.es.hooks, false)
   // the English homepage hero still carries both free offers

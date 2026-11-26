@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { useTr } from '../../i18n/tr.js'
+import { trackEvent } from '../../lib/analytics.js'
 import { isEnglish } from '../caseStudies/format.js'
 import { heroCta } from '../caseStudies/cta.js'
 import FadeUp from '../caseStudies/shared/FadeUp.jsx'
@@ -12,6 +13,22 @@ const PROJECT_INFO = [
   { label: 'Market', value: 'Dubai, UAE' },
   { label: 'Engagement', value: 'Ongoing Creative Partner' },
 ]
+
+export const VIDEOS_ID = 'elyon-videos'
+
+/* Smooth scroll to the Elyon videos: the target carries scroll-margin-top for the fixed header, motion is skipped under prefers-reduced-motion, and focus moves to the section heading so keyboard and
+   screen-reader users land where the page does. The hash is added to the address (shareable); without JavaScript the plain #anchor does the same jump. */
+function goToVideos(e) {
+  const el = document.getElementById(VIDEOS_ID)
+  if (!el) return
+  e.preventDefault()
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  el.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' })
+  try { window.history.replaceState(null, '', `#${VIDEOS_ID}`) } catch { /* the hash is a courtesy */ }
+  trackEvent('case_study_hero_videos_click', { case_study: 'elyon' })
+  const heading = el.querySelector('h2')
+  if (heading) { heading.setAttribute('tabindex', '-1'); heading.focus({ preventScroll: true }) }
+}
 
 const TAGS = ['Luxury Fragrance', 'DTC Ecommerce', 'Paid Social', 'UGC', 'Street Interviews', 'Creative Testing']
 
@@ -102,12 +119,13 @@ export default function ElyonHero() {
                 <path d="M3 9L9 3M9 3H4M9 3V8" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </a>
+            {/* Secondary: scrolls to the Elyon videos further down THIS page (owner, 2026-11-26), never to another page or tab. A real in-page link, so it still works without JavaScript and by keyboard. */}
             <a
-              href="https://ugcbymohamed.com" target="_blank" rel="noopener noreferrer"
-              {...(en ? {} : { lang: 'en' })}
-              className="inline-flex items-center gap-2 rounded-full border border-hairline px-7 py-3.5 text-sm font-medium text-ink-muted hover:text-ink hover:border-hairline-strong transition-colors"
+              href={`#${VIDEOS_ID}`}
+              onClick={goToVideos}
+              className="inline-flex items-center gap-2 rounded-full border border-hairline px-7 py-3.5 text-sm font-medium text-ink-muted hover:text-ink hover:border-hairline-strong transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4"
             >
-              {tr('See the creative library')}
+              {tr('See the videos we made')}
             </a>
           </div>
         </FadeUp>

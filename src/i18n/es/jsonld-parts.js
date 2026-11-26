@@ -59,7 +59,7 @@ export function packageNodesEs(pageUrl) {
     '@id': idOf(p.id),
     name: p.name,
     serviceType: SERVICE_TYPE_PAID,
-    description: `${p.concepts} conceptos creativos distintos con ${p.variationsPerConcept} versiones cada uno (${p.variations} versiones de anuncio finalizadas), producción integral en ${p.turnaroundBusinessDays} días laborables tras la aprobación de conceptos y guiones, dos rondas de revisiones por concepto y ${USAGE_RIGHTS.includedMonths} meses de derechos de uso mundiales incluidos, con hasta ${p.maxCreators} creadores o presentadores.`,
+    description: `${p.concepts} conceptos creativos distintos con ${p.variationsPerConcept} variantes cada uno (${p.variations} variantes de anuncio finalizadas), producción integral en ${p.turnaroundBusinessDays} días laborables tras la aprobación de conceptos y guiones, dos rondas de revisiones por concepto y ${USAGE_RIGHTS.includedMonths} meses de derechos de uso mundiales incluidos, con hasta ${p.maxCreators} creadores o presentadores.`,
     provider: orgProvider,
     isRelatedTo: [{ '@id': idOf('ugc') }, { '@id': idOf('spokesperson') }],
     ...offersOf([monthlyOfferEs(p.name, p.monthly, packagesUrl), oneOffOfferEs(p.name, p.oneOff, packagesUrl)]),

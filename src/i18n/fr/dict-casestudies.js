@@ -181,6 +181,7 @@ export default {
   "Taking a luxury perfume brand from launch into profitable paid-social creative.": "Elyon Dubai : des créations publicitaires pensées pour vendre.",
   "Elyon needed creative that could do more than make luxury fragrance look good. It needed content capable of turning attention into purchases, so CONVRT built a repeatable mix of creator-led ads, street interviews and performance-focused concepts across multiple locations.": "Pour cette marque de parfums haut de gamme, nous avons développé des publicités avec créateurs, des interviews de rue et un système de production créative continue.",
   "See the creative library": "Voir la bibliothèque de créations",
+  "See the videos we made": "Voir les vidéos que nous avons réalisées",
   "Elyon Dubai": "Elyon Dubai",
   "Luxury Fragrance": "Parfumerie de luxe",
   "Dubai, UAE": "Dubaï, Émirats arabes unis",
