@@ -108,7 +108,11 @@ test('dictionary: complete for every literal tr() of the Arabic pages; figures a
     if (es !== undefined) assert.equal(tok(v), tok(es), `price tokens differ from the approved sentence: ${k.slice(0, 70)}`)
     if (/\d/.test(k) && !/^\[\[|https?:|mohamed@/.test(k) && !WORD_FOR_ONE.has(k)) {
       const priced = /\{\{[^}]+\}\}/.test(v)
-      assert.equal(digits(v), priced ? digits(k.replace(/\$[\d,.]+/g, '')) : digits(k), `figures differ between\n  ${k}\n  ${v}`)
+      // Arabic counts concepts with the number word (owner, 2026-11-26): «خمس كونسيبتات» for 5 and «عشر كونسيبتات» for 10, so those two digits are not expected in the translation
+      const wordForm = /(خمس|عشر) كونسيبتات/.test(v)
+      const expected = (priced ? digits(k.replace(/\$[\d,.]+/g, '')) : digits(k)).split('|').filter(Boolean)
+      if (wordForm) for (const n of ['5', '10']) { const i = expected.indexOf(n); if (i >= 0) expected.splice(i, 1) }
+      assert.equal(digits(v), expected.join('|'), `figures differ between\n  ${k}\n  ${v}`)
       checked++
     }
   }
