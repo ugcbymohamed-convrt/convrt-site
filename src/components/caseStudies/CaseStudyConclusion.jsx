@@ -43,7 +43,9 @@ function Reveal({ state, delay = 0, className = '', children }) {
   return <div className={className} style={style}>{children}</div>
 }
 
-const fig = (locale, v) => (locale === 'ar' ? statNode(locale, v) : stat(v))
+const fig = (locale, f) => (locale === 'ar' ? (f.raw ? <bdi dir="ltr">{f.value}</bdi> : statNode(locale, f.value)) : stat(f.value))
+/* `lead` / `strategy` are one sentence (a string) or a list of paragraphs (Arabic Elyon): a string renders exactly as before. */
+const paragraphs = (text, className) => (Array.isArray(text) ? text.map((t, i) => <p key={i} className={`${className}${i ? ' mt-4' : ''}`}>{t}</p>) : <p className={className}>{text}</p>)
 
 /* props
    id        heading id (aria-labelledby)
@@ -94,7 +96,7 @@ export default function CaseStudyConclusion({ id, theme = 'lime', copy, figures,
             </Reveal>
 
             <Reveal state={state} delay={160}>
-              <p className="mx-auto mt-6 max-w-2xl text-balance text-[15.5px] leading-[1.75] text-ink-muted md:text-[17px]">{copy.lead}</p>
+              {paragraphs(copy.lead, 'mx-auto mt-6 max-w-2xl text-balance text-[15.5px] leading-[1.75] text-ink-muted md:text-[17px]')}
             </Reveal>
           </div>
 
@@ -104,13 +106,13 @@ export default function CaseStudyConclusion({ id, theme = 'lime', copy, figures,
               <div className="grid grid-cols-2 gap-3 md:grid-cols-[1.5fr_1fr_1fr] md:gap-4">
                 <div className="relative col-span-2 flex flex-col justify-center overflow-hidden rounded-2xl border px-6 py-6 text-center md:col-span-1 md:py-7" style={{ borderColor: rgba(0.4), background: `linear-gradient(150deg, ${rgba(0.16)}, ${rgba(0.04)})` }}>
                   <div aria-hidden="true" className="pointer-events-none absolute -top-10 left-1/2 h-24 w-40 -translate-x-1/2 rounded-full opacity-30 blur-2xl" style={{ background: t.accent }} />
-                  <p className="relative font-display font-bold leading-none tabular-nums tracking-display text-[clamp(2.6rem,6.5vw,3.8rem)]" style={{ backgroundImage: `linear-gradient(120deg, #f4ead2, ${t.accent})`, WebkitBackgroundClip: 'text', backgroundClip: 'text', color: 'transparent' }}>{fig(locale, hero.value)}</p>
+                  <p className="relative font-display font-bold leading-none tabular-nums tracking-display text-[clamp(2.6rem,6.5vw,3.8rem)]" style={{ backgroundImage: `linear-gradient(120deg, #f4ead2, ${t.accent})`, WebkitBackgroundClip: 'text', backgroundClip: 'text', color: 'transparent' }}>{fig(locale, hero)}</p>
                   <p className="relative mt-3 text-[13px] font-semibold text-ink">{hero.label}</p>
                   {hero.sub && <p className="relative mt-1 text-[12px] leading-snug text-ink-subtle">{hero.sub}</p>}
                 </div>
                 {rest.map((f) => (
                   <div key={f.label} className="flex flex-col justify-center rounded-2xl border px-4 py-5 text-center md:py-7" style={{ borderColor: rgba(0.18), background: rgba(0.04) }}>
-                    <p className="font-display font-bold leading-none tabular-nums text-ink text-[clamp(1.7rem,3.6vw,2.3rem)]">{fig(locale, f.value)}</p>
+                    <p className="font-display font-bold leading-none tabular-nums text-ink text-[clamp(1.7rem,3.6vw,2.3rem)]">{fig(locale, f)}</p>
                     <p className="mt-3 text-[12.5px] font-semibold leading-snug text-ink">{f.label}</p>
                   </div>
                 ))}
@@ -119,7 +121,7 @@ export default function CaseStudyConclusion({ id, theme = 'lime', copy, figures,
               <ul className="grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-4">
                 {figures.map((f, i) => (
                   <li key={f.label} className="relative flex list-none flex-col justify-center overflow-hidden rounded-2xl border px-4 py-5 text-center md:py-6" style={{ borderColor: i === 0 ? rgba(0.4) : rgba(0.16), background: i === 0 ? `linear-gradient(150deg, ${rgba(0.14)}, ${rgba(0.03)})` : rgba(0.035) }}>
-                    <p className="font-display font-bold leading-none tabular-nums tracking-display text-[clamp(1.8rem,4vw,2.6rem)]" style={{ color: i === 0 ? t.accent : '#ffffff' }}>{fig(locale, f.value)}</p>
+                    <p className="font-display font-bold leading-none tabular-nums tracking-display text-[clamp(1.8rem,4vw,2.6rem)]" style={{ color: i === 0 ? t.accent : '#ffffff' }}>{fig(locale, f)}</p>
                     <p className="mt-3 text-[12.5px] font-semibold leading-snug text-ink">{f.label}</p>
                   </li>
                 ))}
@@ -130,7 +132,9 @@ export default function CaseStudyConclusion({ id, theme = 'lime', copy, figures,
 
           {/* the strategy that produced it */}
           <Reveal state={state} delay={320} className="relative mx-auto mt-8 max-w-2xl md:mt-10">
-            <p className="border-s-2 ps-5 text-start text-[15px] leading-[1.75] text-ink text-pretty md:text-base" style={{ borderColor: rgba(0.55) }}>{copy.strategy}</p>
+            {Array.isArray(copy.strategy)
+              ? <div className="border-s-2 ps-5 text-start text-[15px] leading-[1.75] text-ink text-pretty md:text-base" style={{ borderColor: rgba(0.55) }}>{copy.strategy.map((t, k) => <p key={k} className={k ? 'mt-4' : undefined}>{t}</p>)}</div>
+              : <p className="border-s-2 ps-5 text-start text-[15px] leading-[1.75] text-ink text-pretty md:text-base" style={{ borderColor: rgba(0.55) }}>{copy.strategy}</p>}
           </Reveal>
 
           {/* one conversion area */}

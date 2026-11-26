@@ -688,3 +688,6 @@ html:lang(ar) blockquote.font-editorial { font-family: var(--font-ar); font-weig
 :lang(ar) #services > div > div > div > p br { display: none; }
 /* Graspo case study (Arabic): the long English hero figure line may wrap instead of overflowing (Arabic is wider). */
 :lang(ar) h1.md\:whitespace-nowrap { white-space: normal; }
+
+/* Arabic Elyon Dubai study: headings wrap in balanced lines, so no heading ends on a single orphaned word on a phone (owner copy, 2026-11-26). English, Spanish and French are untouched. */
+[dir="rtl"] #case-panel-elyon :is(h1, h2, h3) { text-wrap: balance; }

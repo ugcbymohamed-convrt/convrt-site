@@ -14,6 +14,9 @@ export const isEnglish = () => currentLocale() === DEFAULT_LOCALE
 /* "10.7M" → "10,7 M", "5.28x" → "5,28x", "295K" → "295 mil". */
 export const stat = (text) => localizeStat(currentLocale(), text)
 
+/* Elyon ROAS figures ("5.28x", "3.63x"): Arabic keeps the Latin "x" exactly as the owner's copy writes it (wrapped left-to-right by ltrRun at the call site); every other language uses stat() as before. */
+export const roasStat = (text) => (currentLocale() === 'ar' ? text : localizeStat(currentLocale(), text))
+
 /* A percentage: "14.2%" → "14,2 %" (non-breaking space, as on the rest of the Spanish site). */
 export const pct = (n) => (isEnglish() ? `${n}%` : `${String(n).replace('.', ',')}${NB}%`)
 

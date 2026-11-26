@@ -2,6 +2,7 @@ import SectionDivider from './components/SectionDivider.jsx'
 import { useDocumentHead } from './lib/useDocumentHead.js'
 import { caseStudyHead } from './caseStudies/head.js'
 import FinalCTA from './components/FinalCTA.jsx'
+import { ELYON_FINAL_CTA_AR } from './i18n/ar/elyonScoped.js'
 import NextCaseStudy from './components/caseStudies/NextCaseStudy.jsx'
 import ElyonHero from './components/elyon/ElyonHero.jsx'
 import ElyonMetrics from './components/elyon/ElyonMetrics.jsx'
@@ -36,7 +37,7 @@ export default function ElyonCaseStudyPage() {
       <ElyonResult />
       <NextCaseStudy currentId="elyon" />
       <SectionDivider />
-      <FinalCTA />
+      <FinalCTA arCopy={ELYON_FINAL_CTA_AR} />
     </>
   )
 }

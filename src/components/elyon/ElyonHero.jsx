@@ -7,6 +7,7 @@ import { heroCta } from '../caseStudies/cta.js'
 import FadeUp from '../caseStudies/shared/FadeUp.jsx'
 import ElyonHeroScene from './ElyonHeroScene.jsx'
 import { ACCENT, ACCENT_LIGHT } from './theme.js'
+import { elyonAr } from '../../i18n/ar/elyonScoped.js'
 
 const PROJECT_INFO = [
   { label: 'Client', value: 'Elyon Dubai' },
@@ -105,7 +106,7 @@ export default function ElyonHero() {
                 className="rounded-full border px-3.5 py-1.5 text-[11.5px] font-medium text-ink-muted"
                 style={{ borderColor: 'rgba(255,255,255,0.10)', background: 'rgba(255,255,255,0.03)' }}
               >
-                {tr(tag)}
+                {elyonAr(`hero|${tag}`) ?? tr(tag)}
               </span>
             ))}
           </div>
@@ -147,7 +148,7 @@ export default function ElyonHero() {
                 <div key={item.label}>
                   <dt className="text-[10px] font-bold uppercase tracking-[0.18em] text-ink-subtle">
                     {/* "Engagement" is the client relationship here, not social engagement (the shared Spanish key means "Interacción"). */}
-                    {item.label === 'Engagement' ? (en ? item.label : tr('Engagement (client relationship)')) : tr(item.label)}
+                    {item.label === 'Engagement' ? (en ? item.label : tr('Engagement (client relationship)')) : (elyonAr(`hero|${item.label}`) ?? tr(item.label))}
                   </dt>
                   <dd className="mt-2 text-[14px] leading-snug text-ink font-medium">
                     {tr(item.value)}

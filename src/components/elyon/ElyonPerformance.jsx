@@ -3,7 +3,8 @@ import Eyebrow from '../caseStudies/shared/Eyebrow.jsx'
 import { ACCENT, ACCENT_LIGHT } from './theme.js'
 import { useTr } from '../../i18n/tr.js'
 import { ELYON_EARLY_TEST as EARLY, ELYON_STANDOUT as STANDOUT } from '../../caseStudies/data.js'
-import { stat, usd, isEnglish, cx, ltrRun } from '../caseStudies/format.js'
+import { roasStat, usd, isEnglish, cx, ltrRun } from '../caseStudies/format.js'
+import { elyonAr } from '../../i18n/ar/elyonScoped.js'
 import { isRtlPage } from '../../lib/rtl.js'
 
 /* ─────────────────────────────────────────────
@@ -55,7 +56,7 @@ export default function ElyonPerformance() {
             <Arrow />
             <Stat value={usd(EARLY.purchaseValue)} label={tr('Purchase Value')} visible={visible} delay={180} />
             <Arrow />
-            <Stat value={stat(EARLY.averageRoas)} label={tr('Average ROAS')} accent visible={visible} delay={280} big />
+            <Stat value={roasStat(EARLY.averageRoas)} label={elyonAr('performance|Average ROAS') ?? tr('Average ROAS')} accent visible={visible} delay={280} big />
           </div>
 
           <div className="mt-7 grid grid-cols-2 gap-4 max-w-md mx-auto">
@@ -100,8 +101,8 @@ export default function ElyonPerformance() {
 
           <div className="mt-7 flex flex-col sm:flex-row items-center justify-center gap-10 sm:gap-14">
             <BigStat value={usd(STANDOUT.revenue)} label={tr('Revenue')} visible={visible} delay={260} />
-            <BigStat value={STANDOUT.purchases} label={tr('Purchases')} visible={visible} delay={340} />
-            <BigStat value={stat(STANDOUT.roas)} label="ROAS" accent visible={visible} delay={420} />
+            <BigStat value={STANDOUT.purchases} label={elyonAr('performance|Purchases') ?? tr('Purchases')} visible={visible} delay={340} />
+            <BigStat value={roasStat(STANDOUT.roas)} label={elyonAr('performance|ROAS') ?? 'ROAS'} accent visible={visible} delay={420} />
           </div>
 
           <p className="mt-7 text-[13px] text-ink-muted leading-relaxed max-w-md mx-auto">

@@ -106,7 +106,8 @@ test('dictionary: complete for every literal tr() of the Arabic pages; figures a
     const es = ES_PARTS && Object.values(ES_PARTS).map((x) => x[k]).find((x) => x !== undefined)
     const tok = (s) => (s.match(/\{\{[^}]+\}\}/g) || []).sort().join('|')
     if (es !== undefined) assert.equal(tok(v), tok(es), `price tokens differ from the approved sentence: ${k.slice(0, 70)}`)
-    if (/\d/.test(k) && !/^\[\[|https?:|mohamed@/.test(k) && !WORD_FOR_ONE.has(k)) {
+    // the owner's Elyon copy (2026-11-26) writes the snapshot ordinals as words: «النتائج الأولى» / «النتائج الثانية»; the weekly cadence as «سبعة فيديوهات»
+    if (/\d/.test(k) && !/^\[\[|https?:|mohamed@/.test(k) && !WORD_FOR_ONE.has(k) && !/^Performance Snapshot [12]$/.test(k) && k !== '7-video weekly creative cadence.') { // (the owner writes «سبعة فيديوهات أسبوعيًا» with the number word)
       const priced = /\{\{[^}]+\}\}/.test(v)
       // Arabic counts concepts with the number word (owner, 2026-11-26): «خمس كونسيبتات» for 5 and «عشر كونسيبتات» for 10, so those two digits are not expected in the translation
       const wordForm = /(خمس|عشر) كونسيبتات/.test(v)

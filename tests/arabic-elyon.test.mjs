@@ -71,27 +71,59 @@ test('/ar/case-studies is the Graspo duplicate (canonical to Graspo, no hreflang
   }
 })
 
-test('Arabic copy: the client is «إيليون دبي», figures come from the data module, the two ROAS figures are never merged, MSA only', () => {
+test('Arabic copy: the client is «إيليون دبي», figures come from the data module (ROAS with a Latin x, as in the owner copy), the two ROAS figures are never merged, MSA only', () => {
   const t = text(page(ELYON))
-  const body = t.slice(t.indexOf('دراسة حالة: إيليون دبي'))
+  const body = t.slice(t.indexOf('إيليون دبي × CONVRT · دراسة حالة'))
   assert.ok(t.includes('إيليون دبي'))
   assert.ok(!/Elyon Dubai|Elyon(?! *·)/.test(body.replace(/Elyon Dubai · WhatsApp/g, '')), 'no visitor-facing Latin «Elyon» in the body (the logo, handle and screenshot file names are not text)')
-  for (const m of ELYON_METRICS) assert.ok(body.includes(m.value.replace('x', '×')), m.value)
-  assert.ok(body.includes(ELYON_EARLY_TEST.averageRoas.replace('x', '×')) && body.includes(ELYON_STANDOUT.roas.replace('x', '×')))
-  for (const f of ['$229.89', '$835', '$3,421.25', '5.10× ROAS', '3.17× ROAS']) assert.ok(body.includes(f), f)
+  for (const m of ELYON_METRICS) assert.ok(body.includes(m.value), m.value)
+  assert.ok(body.includes(ELYON_EARLY_TEST.averageRoas) && body.includes(ELYON_STANDOUT.roas))
+  for (const f of ['$229.89', '$835', '$3,421.25', '5.10x ROAS', '3.17x ROAS']) assert.ok(body.includes(f), f)
   assert.ok(!/USD|€/.test(body), 'amounts are written $…, never converted or relabelled')
-  // 3.63× is the AVERAGE of the early four-creative test; 5.28× is ONE standout creative: no sentence or card mixes them
+  // 3.63x is the AVERAGE of the early four-creative test; 5.28x is ONE standout creative: no sentence or card mixes them
   for (const part of blocks(page(ELYON))) assert.ok(!(part.includes('3.63') && part.includes('5.28')), `3.63 and 5.28 in one element: ${part.slice(0, 80)}`)
-  assert.match(body, /أربعة إعلانات على مدى يومين/); assert.match(body, /نتيجة منفصلة، بعد أسابيع/); assert.match(body, /ولم تُجمعا معًا/)
-  assert.match(body, /يقدّمها العميل/); assert.match(body, /ليست نتيجة معتادة ولا تمثل ضمانًا/)
+  assert.match(body, /أربعة إعلانات على مدار يومين/); assert.match(body, /نتيجة مستقلة بعد عدة أسابيع/); assert.match(body, /دون دمج الأرقام/)
+  assert.match(body, /ولا تمثل متوسط أداء جميع الحملات أو ضمانًا/)
   assert.ok(!/متوسط[^.]*5\.28/.test(body), 'the peak is never called an average')
   assert.ok(!/(^|\s)(مو|وش|نبغى|نبغي|بس|اللي|لحالها|مليانة)(\s|$)/.test(body), 'no Gulf dialect words')
   // approved terminology
-  for (const w of ['UGC', 'كونسيبت', 'لقاءات في الشارع', 'العائد على الإنفاق الإعلاني (ROAS)']) assert.ok(body.includes(w), w)
+  for (const w of ['UGC', 'Spokesperson', 'كونسيبت', 'مقابلات في الشارع', 'العائد على الإنفاق الإعلاني (ROAS)', 'غراسبو']) assert.ok(body.includes(w), w)
   assert.ok(!/(^|\s)قطعة محتوى/.test(body))
-  // the Arabic conclusion block says exactly what the others say: one standout creative, client-reported, not an average, not a guarantee
-  assert.match(ELYON_CONCLUSION.ar.note, /ليست متوسطًا لجميع الحملات ولا تمثل ضمانًا/)
-  assert.ok(ELYON_CONCLUSION.ar.labels[1].includes('إعلان واحد'))
+  // the Arabic conclusion block: the owner's wording; the qualification stays (client-reported, specific ads, not an average, not a guarantee)
+  assert.match(ELYON_CONCLUSION.ar.note, /ولا تمثل متوسط أداء جميع الحملات أو ضمانًا/)
+  assert.ok(ELYON_CONCLUSION.ar.labels[1].includes('واحد'))
+})
+
+test('owner copy (2026-11-26): headings, section labels, the three video ordinals, snapshot labels, ordinal stages and the conclusion read exactly as supplied', () => {
+  const flat = blocks(page(ELYON)).join(' ').replace(/[\u2066\u2069]/g, '').replace(/\s+/g, ' ')
+  for (const w of [
+    'من إطلاق علامة عطور فاخرة إلى إعلانات تحقق مبيعات.', 'التجارة الإلكترونية', 'اختبار الإعلانات', 'المجال', 'السوق', 'طبيعة التعاون', 'شراكة إبداعية مستمرة', 'فيديو ونسخة إعلانية', 'وما زال الإنتاج مستمرًا', 'مدن للتصوير',
+    'استراتيجية إنتاج مستمرة، وليس مجرد مجموعة فيديوهات.', 'التركيز على المبيعات، وليس المشاهدات فقط', 'من إنتاج المحتوى', 'إلى منظومة إعلانية متكاملة.', 'ردود فعل حقيقية تعزز الثقة بالمنتج.',
+    'الفيديو الأول', 'إعلان مع صانع محتوى', 'الفيديو الثاني', 'مقابلة في الشارع', 'الفيديو الثالث', 'كونسيبت إعلاني يركز على المبيعات',
+    'الأداء الإعلاني', 'إعلانات لم تكتفِ بجذب الانتباه.', 'بل حققت مبيعات.', 'النتائج الأولى', 'الاختبار الأولي', 'متوسط ROAS', 'ثاني أفضل إعلان', 'نتائج أكدها العميل عبر واتساب', 'نتيجة مستقلة بعد عدة أسابيع',
+    'النتائج الثانية', 'الإعلان الأفضل أداءً', 'إعلان واحد. 9 عمليات شراء.', 'إيرادات المبيعات', 'عمليات شراء', 'عندما ينجح الإعلان،', 'نطوّر المزيد من الأفكار انطلاقًا منه.', '01 · الدفعة الأولى', '02 · التوسع', '03 · الإنتاج المستمر',
+    'سبعة فيديوهات أسبوعيًا.', 'النتائج في الحساب الإعلاني.', 'والتأكيد من العميل.', 'إيليون دبي · واتساب', 'تأكيد العائد على الإنفاق الإعلاني للفيديو نفسه', 'العلامة الفاخرة تستحق إعلانات تليق بها.',
+    'حققنا ذلك من خلال استراتيجية إنتاج مستمرة', 'أعلى ROAS', 'لكن الإنجاز الأهم كان بناء منظومة إنتاج', 'هل تبحث عن إعلانات تجمع بين جودة الإنتاج والأداء؟', 'اكتشف خدماتنا في إنتاج فيديوهات UGC', 'اطّلع على باقات إنتاج فيديوهات UGC',
+    'دراسة الحالة التالية', 'شاهد دراسة الحالة', 'لنبدع معًا', 'البراندات الجيدة تستحق', 'إعلانات أفضل.', 'من العملاء يعودون للعمل معنا', 'ومشاريعه الأخرى في إنتاج المحتوى الإبداعي.',
+  ]) assert.ok(flat.includes(w), w)
+  // the screenshot disclosure was dropped from the header at the owner's wording, the logo image keeps its Latin alt
+  assert.ok(!flat.includes('لقطة الشاشة بالإنجليزية'))
+  // scoped wording does not leak: the Graspo study keeps «القطاع» / «الأسواق المستهدفة», the hero label of Elyon is «المجال» / «السوق»
+  const g = blocks(page('/ar/case-studies/graspo')).join(' ')
+  assert.ok(g.includes('القطاع') && g.includes('الأسواق المستهدفة'))
+  assert.ok(!flat.includes('القطاع '))
+})
+
+test('primary CTAs open the Arabic Free Creative Growth Roadmap; no calendar or booking link anywhere on the page; secondary CTA scrolls in page', () => {
+  const h = root(page(ELYON))
+  const hrefs = [...h.matchAll(/<a [^>]*href="([^"]+)"[^>]*>([\s\S]*?)<\/a>/g)].map((m) => [m[1], m[2].replace(/<[^>]+>/g, '').trim()])
+  const primary = hrefs.filter(([, label]) => label === 'احصل على 5 أفكار إعلانية مجانًا')
+  assert.ok(primary.length >= 3, 'nav, hero and final CTA')
+  for (const [href] of primary) assert.equal(href, '/ar/creative-growth-roadmap')
+  assert.ok(!/calendly|احجز مكالمة/i.test(h))
+  assert.ok(hrefs.some(([href, label]) => href === '#elyon-videos' && label === 'شاهد الفيديوهات التي أنتجناها'))
+  // internal links stay localized
+  for (const [href] of hrefs) assert.ok(!/^\/(ugc-video-agency|pricing|case-studies\/graspo)/.test(href), `English link on the Arabic page: ${href}`)
 })
 
 test('hero secondary CTA scrolls to the video section on the same page; the section exists with a scroll margin for the fixed header', () => {
