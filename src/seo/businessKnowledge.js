@@ -103,10 +103,10 @@ export const CORE_SERVICES = [
   },
   {
     id: 'saas',
-    name: 'SaaS video production',
-    serviceType: 'SaaS video production',
+    name: 'SaaS & app video production',
+    serviceType: 'SaaS and app video production',
     description:
-      'Video production for software and app companies: SaaS explainer videos, product demonstrations, app walkthroughs, animated product explainers, human-led software presentations and video advertising creatives, produced end to end by CONVRT.',
+      'Video production for SaaS, software and app companies: explainer videos, product demonstrations, app walkthroughs, animated product explainers, human-led software and app presentations and video advertising creatives, produced end to end by CONVRT.',
   },
   {
     id: 'spokesperson',
@@ -130,7 +130,7 @@ export const SERVICE_LABELS = {
 }
 
 export const ADDITIONAL_EXPERTISE = [
-  'SaaS explainers',
+  'SaaS and app explainers',
   'Product demonstrations',
   'Animated videos',
   'E-commerce advertising creatives',
@@ -338,7 +338,7 @@ export const CUSTOM_PACKAGES = {
       'Flexible production volume',
       'Tailored creator selection',
       'Multilingual campaigns',
-      'SaaS demos and explainers',
+      'SaaS and app demos and explainers',
       'Long-form video production',
       'Custom licensing options',
     ],
@@ -472,7 +472,7 @@ export const PRODUCTION_STAGES = [
 
 export const PRODUCT_REQUIREMENTS = {
   physical: 'For physical products produced remotely by a creator, you ship the product to the selected creator and cover the shipping costs.',
-  saas: 'For SaaS products, you provide a dedicated demo or dummy account with access to the relevant features, using test data rather than real customer information where possible.',
+  saas: 'For software and app products, you provide a dedicated demo or dummy account with access to the relevant features, using test data rather than real customer information where possible.',
 }
 
 export const TURNAROUND = {

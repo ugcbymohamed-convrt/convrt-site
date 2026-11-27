@@ -5,8 +5,10 @@
    new file to Stream, change ROADMAP_VIDEO_ID and re-export the two poster images from a frame of it
    (public/roadmap/roadmap-video-poster.webp 1280×720 and …-640.webp 640×360). Nothing else changes. */
 
+import { streamHls } from '../lib/streamHost.js'
+
 export const ROADMAP_VIDEO_ID = 'a37d5452f9c95a459c96f1a90a3a711d'
-export const ROADMAP_VIDEO_HLS = `https://videodelivery.net/${ROADMAP_VIDEO_ID}/manifest/video.m3u8`
+export const ROADMAP_VIDEO_HLS = streamHls(ROADMAP_VIDEO_ID)
 
 // Same-origin poster (a still from the video at 25.6 s, chosen for a warm, friendly expression): shows with the page, no third-party request.
 export const ROADMAP_VIDEO_POSTER = '/roadmap/roadmap-video-poster.webp'

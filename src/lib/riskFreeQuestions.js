@@ -37,7 +37,7 @@ export const QUESTIONS = [
   {
     field: 'videoType',
     legend: 'What type of video would you like to test?',
-    options: ['UGC / Creator-led ad', 'Spokesperson video', 'SaaS product demo / Explainer', 'Other'],
+    options: ['UGC / Creator-led ad', 'Spokesperson video', 'SaaS or app demo / Explainer', 'Other'],
     error: 'Select the type of video you’d like to test.',
     columns: 2,
   },

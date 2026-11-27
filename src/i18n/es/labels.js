@@ -15,7 +15,7 @@ export const ES_INDUSTRY_LABELS = {
 }
 
 export const ES_TYPE_LABELS = {
-  ugc: 'UGC', spokesperson: 'Spokesperson', organic: 'Social orgánico', saas: 'Vídeo para SaaS', demo: 'Demo de producto', testimonial: 'Testimonio',
+  ugc: 'UGC', spokesperson: 'Spokesperson', organic: 'Social orgánico', saas: 'Vídeo para SaaS y aplicaciones', demo: 'Demo de producto', testimonial: 'Testimonio',
   interview: 'Entrevista en la calle', social: 'Social orgánico', ad: 'Creativo publicitario',
 }
 
@@ -48,7 +48,7 @@ export function captionEs(caption) {
 export const ES_FAQ_TITLES = {
   ugc: ['Todo sobre', 'nuestros vídeos UGC.'],
   spokesperson: ['Tus preguntas sobre', 'vídeos Spokesperson.'],
-  saas: ['Todo sobre', 'nuestros vídeos para SaaS.'],
+  saas: ['Todo sobre', 'nuestros vídeos para SaaS y aplicaciones.'],
   organic: ['Todo sobre', 'el contenido orgánico.'],
   pricing: ['¿Tienes dudas', 'sobre precios y paquetes?'],
 }
@@ -74,7 +74,7 @@ export const ES_FINAL_CTA = {
 
 /* One-sentence introductions under the heading of four interactive sections and the UGC FAQ (Spanish editorial copy). English has none, so they render in Spanish only. */
 export const ES_SECTION_INTROS = {
-  'ugc-testing': 'No hace falta cambiar todo el anuncio para saber qué funciona. Creamos variaciones de una misma idea para que puedas probar elementos concretos.',
+  'ugc-testing': 'No hace falta cambiar todo el anuncio para saber qué funciona. Creamos variantes de una misma idea para que puedas probar elementos concretos.',
   'spokesperson-formats': 'Adaptamos el guion y la presentación a tu producto y a tu objetivo.',
   'saas-formats': 'Elegimos el formato que mejor encaja con tu producto y tu público.',
   'organic-content-system': 'Cada vídeo empieza con una idea clara y un objetivo concreto.',

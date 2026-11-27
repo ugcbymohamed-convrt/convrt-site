@@ -56,7 +56,7 @@ export default {
   "Flexible production volume": "عدد فيديوهات حسب احتياجاتك",
   "Tailored creator selection": "اختيار صناع المحتوى بما يناسب علامتك",
   "Multilingual campaigns": "حملات متعددة اللغات",
-  "SaaS demos and explainers": "فيديوهات شرح وعرض منتجات SaaS",
+  "SaaS and app demos and explainers": "فيديوهات شرح وعرض منتجات برامج SaaS والتطبيقات",
   "Long-form video production": "إنتاج فيديوهات طويلة",
   "Custom licensing options": "خيارات مرنة لحقوق الاستخدام",
   "Tailored content strategy": "استراتيجية محتوى مخصصة",

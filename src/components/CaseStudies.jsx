@@ -9,6 +9,7 @@ import { arCaseCopy } from '../i18n/ar/cases.js'
 import { frCaseCopy } from '../i18n/fr/cases.js'
 import { selectShowcase } from '../content/portfolio.js'
 import { streamPoster } from '../content/posterFrames.js'
+import { streamHls } from '../lib/streamHost.js'
 
 /* ─────────────────────────────────────────────
    SECTION 3 — CASE STUDIES / CREATIVE SHOWCASE
@@ -367,7 +368,7 @@ function PhoneUnit({ video, pos, phoneOffset, isHovered, onClick, onHover, onHov
     if (!near || mp4) return
     const el = internalRef.current
     if (!el) return
-    const src = `https://videodelivery.net/${videoId}/manifest/video.m3u8`
+    const src = streamHls(videoId)
     const stream = attachHls(el, src, {
       autoStartLoad: isCenterRef.current,
       onReady: () => { if (isCenterRef.current) el.play().catch(() => {}) },

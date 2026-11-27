@@ -1,6 +1,5 @@
 import { Reveal, SectionHeader } from '../roadmap/shared.jsx'
 import { useTr, hrefFor } from '../../i18n/tr.js'
-import { currentLocale } from '../../i18n/locale.js'
 import { forward } from '../../lib/rtl.js'
 
 /* ─────────────────────────────────────────────
@@ -23,7 +22,7 @@ const CAPABILITIES = [
     icon: <path d="M3.5 12h17M12 3.5c2.4 2.4 3.6 5.2 3.6 8.5s-1.2 6.1-3.6 8.5c-2.4-2.4-3.6-5.2-3.6-8.5S9.6 5.9 12 3.5ZM12 3.5a8.5 8.5 0 1 0 0 17 8.5 8.5 0 0 0 0-17Z" />,
   },
   {
-    title: 'SaaS explainers & product demos',
+    title: 'SaaS and app explainers & product demos',
     icon: <path d="M4 5.5h16v10H4v-10ZM9 19h6M12 15.5V19M10.5 8.8v3.4l3-1.7-3-1.7Z" />,
   },
   {
@@ -90,7 +89,7 @@ export default function ReferralWhyRefer() {
                 ))}
               </div>
               <a
-                href={hrefFor(currentLocale() === 'ar' ? '/case-studies/graspo' : '/case-studies')}
+                href={hrefFor('/case-studies')}
                 className="mt-4 inline-flex min-h-[44px] items-center gap-1.5 text-sm font-semibold text-ink transition-colors hover:text-lime focus-visible:rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-lime"
               >
                 {tr('See more of CONVRT’s work')} <span aria-hidden="true">{forward()}</span>

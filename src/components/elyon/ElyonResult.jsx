@@ -1,32 +1,29 @@
-import Eyebrow from '../caseStudies/shared/Eyebrow.jsx'
-import { ACCENT } from './theme.js'
-import { useTr, hrefFor } from '../../i18n/tr.js'
+import { currentLocale } from '../../i18n/locale.js'
+import { ELYON_METRICS } from '../../caseStudies/data.js'
+import { ELYON_CONCLUSION } from '../../i18n/caseStudyConclusions.js'
+import { PATHS } from '../../routes.js'
+import CaseStudyConclusion from '../caseStudies/CaseStudyConclusion.jsx'
+
+/* The closing section of the Elyon Dubai study, in every language, drawn by the shared CaseStudyConclusion in its champagne-gold theme (owner brief, 2026-11-26): the peak ROAS is the hero figure, with its
+   qualification written next to it (client-reported, one standout creative, early learning phase, not an average, not a guarantee). The figures are the page's own metrics (ELYON_METRICS), never retyped.
+   Replaces the old "related service" line under the study: its two links are the conversion area of this card (same destinations, same analytics event). */
+const [creatives, locations, peak] = [ELYON_METRICS[0], ELYON_METRICS[1], ELYON_METRICS[2]]
 
 export default function ElyonResult() {
-  const tr = useTr()
+  const copy = ELYON_CONCLUSION[currentLocale()] ?? ELYON_CONCLUSION.en
+  const figures = [
+    { value: peak.value, label: copy.labels[0], sub: copy.labels[1], hero: true, raw: true },
+    { value: creatives.value, label: copy.labels[2] },
+    { value: locations.value, label: copy.labels[3] },
+  ]
   return (
-    <section className="relative py-14 md:py-20">
-      <div className="mx-auto max-w-3xl px-5 md:px-8 text-center">
-        <Eyebrow label={tr('The Takeaway')} accent={ACCENT} className="mb-8" />
-
-        <h2 className="font-display font-bold text-ink tracking-display leading-[1.08] text-3xl md:text-[42px]">
-          {tr("A premium brand doesn't need")}
-          <br />
-          {tr('"UGC-looking UGC."')}
-        </h2>
-
-        <p className="mt-7 text-[15px] md:text-base text-ink-muted leading-relaxed">
-          {tr('It needs native creative that protects the brand while still performing like paid social. For Elyon, that became a repeatable system of street interviews, creator-led ads and performance concepts across multiple locations.')}
-        </p>
-        <p className="mt-5 text-[15px] md:text-base text-ink-muted leading-relaxed">
-          {tr('Even during an early learning phase, individual creatives reached as high as 5.28x ROAS. The bigger win was building a system capable of producing and iterating more of them.')}
-        </p>
-        <p className="mt-6 text-sm text-ink-subtle">
-          <a href={hrefFor('/ugc-video-agency')} className="text-ink-muted underline underline-offset-2 transition-colors hover:text-lime">
-            {tr('See how our UGC video production works')}
-          </a>
-        </p>
-      </div>
-    </section>
+    <CaseStudyConclusion
+      id="elyon-result-heading"
+      theme="gold"
+      copy={copy}
+      figures={figures}
+      links={{ service: { href: PATHS.ugcVideoAgency, label: copy.service }, pricing: { href: '/pricing#packages', label: copy.pricing } }}
+      caseStudy="elyon"
+    />
   )
 }

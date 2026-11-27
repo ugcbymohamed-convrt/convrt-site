@@ -33,7 +33,7 @@ const BREADCRUMB_NAMES = {
   '/ugc-video-agency': 'Vidéos UGC',
   '/spokesperson-video-production': 'Vidéos Spokesperson',
   '/social-media-video-production': 'Vidéos organiques pour les réseaux',
-  '/saas-video-production': 'Vidéos SaaS',
+  '/saas-video-production': 'Production vidéo pour SaaS et applications',
   '/creator-showcase': 'Créateurs',
 }
 
@@ -49,7 +49,7 @@ const seoFor = (basePath, seo) => ({ title: FR_SEO[basePath]?.title, description
 
 export function localizedJsonLd(locale, basePath, seo = {}) {
   if (locale !== LOCALE) return undefined
-  if (basePath === '/creative-growth-roadmap' || basePath === '/risk-free-trial') return undefined // like the English pages: noindex, no structured data
+  if (basePath === '/creative-growth-roadmap' || basePath === '/risk-free-trial' || basePath === '/project-application') return undefined // like the English pages: noindex, no structured data
   const url = absoluteUrl(LOCALE, basePath)
   const { title, description } = seoFor(basePath, seo)
   if (CASE_STUDY_FR[basePath]) {

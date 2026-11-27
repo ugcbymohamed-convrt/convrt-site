@@ -14,7 +14,7 @@ export const AR_INDUSTRY_LABELS = {
 }
 
 export const AR_TYPE_LABELS = {
-  ugc: 'UGC', spokesperson: 'فيديو بمقدّم', organic: 'محتوى عضوي', saas: 'فيديو SaaS', demo: 'عرض توضيحي للمنتج', testimonial: 'شهادة عميل',
+  ugc: 'UGC', spokesperson: 'فيديو بمقدّم', organic: 'محتوى عضوي', saas: 'فيديو برنامج SaaS أو تطبيق', demo: 'عرض توضيحي للمنتج', testimonial: 'شهادة عميل',
   interview: 'مقابلة في الشارع', social: 'محتوى عضوي', ad: 'مادة إعلانية',
 }
 

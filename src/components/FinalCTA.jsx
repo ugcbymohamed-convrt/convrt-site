@@ -35,8 +35,10 @@ function FadeUp({ children, inView, delay = 0, className = '' }) {
 
 /* attributed: the page has ALREADY stated, close to the founder figures, that they are the founder's combined experience (the homepage does, under its founder headline), so the strip does not repeat the
    asterisk and footnote (owner decision, Nov 2026: one clear attribution per page, not one per section). Pages that show the strip first (the case studies) keep it. */
-export default function FinalCTA({ attributed = false }) {
-  const tr = useTr()
+export default function FinalCTA({ attributed = false, arCopy }) {
+  const trBase = useTr()
+  // `arCopy` (Arabic only): the owner's own wording for ONE page (the Elyon study); a sentence not listed there uses the shared Arabic as always. Other languages ignore it.
+  const tr = (text) => (arCopy && currentLocale() === 'ar' && arCopy[text]) || trBase(text)
   const locale = currentLocale()
   const action = primaryAction(locale)
   const sectionRef = useRef(null)
@@ -129,9 +131,10 @@ export default function FinalCTA({ attributed = false }) {
 
         {/* ── Supporting text ── */}
         <FadeUp inView={inView} delay={220}>
+          {/* Other languages: a slightly wider measure and balanced lines, so a long sentence never leaves a short last line (English is unchanged). */}
           <p
-            className="text-ink-muted leading-relaxed mx-auto mb-12"
-            style={{ fontSize: 'clamp(1rem, 1.5vw, 1.125rem)', maxWidth: '36rem' }}
+            className={`text-ink-muted leading-relaxed mx-auto mb-12${locale === 'en' ? '' : ' text-balance'}`}
+            style={{ fontSize: 'clamp(1rem, 1.5vw, 1.125rem)', maxWidth: locale === 'en' ? '36rem' : '40rem' }}
           >
             {tr('Whether you need paid social creatives, UGC, spokesperson ads, or a long-term creative partner, we build content designed for modern attention.')}
           </p>

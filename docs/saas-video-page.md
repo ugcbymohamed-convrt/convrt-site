@@ -1,4 +1,6 @@
-# /saas-video-production: the SaaS Video Production service page
+# /saas-video-production: the SaaS & App Video Production service page
+
+> **Repositioned Nov 2026 (owner):** the service is now "SaaS & App Video Production" in every language; the URL, slug, canonical, hreflang and sitemap entry are unchanged. See `docs/saas-app-positioning.md`.
 
 Page: `src/SaasVideoPage.jsx`. Content: `src/content/saasPage.js` (hero, stages, formats, gallery, proof, final CTA). FAQ (visible accordion **and** FAQPage
 JSON-LD): `src/seo/saasFaq.js`. Head, canonical, sitemap: `src/seo/siteSeo.js`. JSON-LD (`saasGraph`): `src/seo/structuredData.js`. Visuals:
@@ -9,7 +11,7 @@ version can swap them later (no localised page, redirect or `hreflang` exists).
 ## It is the UGC / Spokesperson architecture, fed different content
 | Section | Component | SaaS config |
 |---|---|---|
-| Hero (headline reel, CTAs, two offer cards, three-phone stage) | `ugc/UgcHero.jsx` | `SAAS_HERO` |
+| Hero (fixed two-line headline with no rolling word, CTAs, two offer cards, three-phone stage) | `ugc/UgcHero.jsx` | `SAAS_HERO` |
 | How it works (four stages) | `ugc/UgcProcess.jsx` → `ProcessSection` | `SAAS_STAGES` + scenes in `saas/SaasScenes.jsx` |
 | "One product. Different ways to bring it to life." | `saas/SaasFormats.jsx` on the shared `FormatStage` shell (`spokesperson/DeliveryStyles.jsx`) | `SAAS_FORMAT_STEPS` |
 | Showcase gallery (optional format filter) | `ugc/UgcGallery.jsx` | `SAAS_GALLERY` |

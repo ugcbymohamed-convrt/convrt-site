@@ -3,7 +3,9 @@ import Eyebrow from '../caseStudies/shared/Eyebrow.jsx'
 import { ACCENT, ACCENT_LIGHT } from './theme.js'
 import { useTr } from '../../i18n/tr.js'
 import { ELYON_EARLY_TEST as EARLY, ELYON_STANDOUT as STANDOUT } from '../../caseStudies/data.js'
-import { stat, usd, isEnglish, cx } from '../caseStudies/format.js'
+import { roasStat, usd, isEnglish, cx, ltrRun } from '../caseStudies/format.js'
+import { elyonAr } from '../../i18n/ar/elyonScoped.js'
+import { isRtlPage } from '../../lib/rtl.js'
 
 /* ─────────────────────────────────────────────
    PERFORMANCE
@@ -54,7 +56,7 @@ export default function ElyonPerformance() {
             <Arrow />
             <Stat value={usd(EARLY.purchaseValue)} label={tr('Purchase Value')} visible={visible} delay={180} />
             <Arrow />
-            <Stat value={stat(EARLY.averageRoas)} label={tr('Average ROAS')} accent visible={visible} delay={280} big />
+            <Stat value={roasStat(EARLY.averageRoas)} label={elyonAr('performance|Average ROAS') ?? tr('Average ROAS')} accent visible={visible} delay={280} big />
           </div>
 
           <div className="mt-7 grid grid-cols-2 gap-4 max-w-md mx-auto">
@@ -99,8 +101,8 @@ export default function ElyonPerformance() {
 
           <div className="mt-7 flex flex-col sm:flex-row items-center justify-center gap-10 sm:gap-14">
             <BigStat value={usd(STANDOUT.revenue)} label={tr('Revenue')} visible={visible} delay={260} />
-            <BigStat value={STANDOUT.purchases} label={tr('Purchases')} visible={visible} delay={340} />
-            <BigStat value={stat(STANDOUT.roas)} label="ROAS" accent visible={visible} delay={420} />
+            <BigStat value={STANDOUT.purchases} label={elyonAr('performance|Purchases') ?? tr('Purchases')} visible={visible} delay={340} />
+            <BigStat value={roasStat(STANDOUT.roas)} label={elyonAr('performance|ROAS') ?? 'ROAS'} accent visible={visible} delay={420} />
           </div>
 
           <p className="mt-7 text-[13px] text-ink-muted leading-relaxed max-w-md mx-auto">
@@ -137,7 +139,7 @@ function ProofBadge({ src, label, center = false }) {
 /* "3.421,25 USD" (Spanish): the number is the figure, the currency code is a smaller suffix, so the longer Spanish notation never overflows a phone. English values have no suffix. */
 function Amount({ value }) {
   const m = /^(.*\S)\s(USD)$/.exec(value)
-  if (!m) return value
+  if (!m) return ltrRun(value)
   return (<>{m[1]}<span className="ml-[0.2em] text-[0.42em] font-semibold tracking-wide">{`\u00a0${m[2]}`}</span></>)
 }
 
@@ -200,14 +202,15 @@ function MiniStat({ label, value, visible, delay = 0 }) {
       }}
     >
       <p className="text-[11px] text-ink-subtle">{label}</p>
-      <p className="mt-1 font-display font-bold text-lg" style={{ color: ACCENT }}>{value}</p>
+      <p className="mt-1 font-display font-bold text-lg" style={{ color: ACCENT }}>{ltrRun(value)}</p>
     </div>
   )
 }
 
 function Arrow() {
   return (
-    <svg viewBox="0 0 24 12" className="h-3 w-6 shrink-0 rotate-90 md:rotate-0 text-ink-subtle" fill="none" aria-hidden="true">
+    /* Left to right the arrow points right ("spend → purchase value → ROAS"); in Arabic the row reads right to left, so on desktop it is turned to point left (on a phone the stack is vertical and both point down). */
+    <svg viewBox="0 0 24 12" className={`h-3 w-6 shrink-0 rotate-90 ${isRtlPage() ? 'md:rotate-180' : 'md:rotate-0'} text-ink-subtle`} fill="none" aria-hidden="true">
       <path d="M0 6h20M20 6l-5-5M20 6l-5 5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   )

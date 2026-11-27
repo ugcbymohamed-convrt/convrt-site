@@ -27,6 +27,14 @@
   ],
   "headers": [
     {
+      "source": "/project-application",
+      "headers": [{ "key": "X-Robots-Tag", "value": "noindex, follow" }]
+    },
+    {
+      "source": "/:lang(es|fr|ar)/project-application",
+      "headers": [{ "key": "X-Robots-Tag", "value": "noindex, follow" }]
+    },
+    {
       "source": "/blog",
       "headers": [
         {

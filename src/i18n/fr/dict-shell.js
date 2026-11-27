@@ -17,7 +17,7 @@ export default {
   "Referral Program": "Programme de parrainage",
   "Refer & Earn": "Parrainez et gagnez",
   "Book a Creative Call": "Réserver un appel créatif",
-  "SaaS Video Production": "Vidéos SaaS",
+  "SaaS & App Video Production": "Production vidéo pour SaaS et applications",
   "Spokesperson Videos": "Vidéos Spokesperson",
   "Get in touch": "Nous contacter",
   "A performance creative studio building UGC ads, spokesperson videos, organic social content, and creative strategy for brands that want content with one purpose: conversion.":
@@ -39,4 +39,5 @@ export default {
   "Logo of": "Logo de",
   "Videos of": "Vidéos de",
   "Read full program terms": "Lire les conditions complètes du programme",
+  "SaaS & App Videos": "Vidéos SaaS et applications",
 }

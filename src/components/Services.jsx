@@ -37,9 +37,9 @@ const SERVICES = [
   {
     id: 'saas',
     number: '02',
-    title: 'SaaS Video Production',
-    esTitle: 'Vídeos para SaaS',
-    description: 'Product demos, explainers and video ads that make software easier to understand.',
+    title: 'SaaS & App Videos',
+    esTitle: 'Vídeos para SaaS y aplicaciones',
+    description: 'Product demos, explainers and video ads that make your software or app easier to understand.',
     href: PATHS.saasVideoProduction,
     pills: ['Product Demos', 'Explainers', 'Video Ads'],
     pillsAr: ['فيديوهات توضيحية', 'فيديوهات تقديمية', 'شروحات'],

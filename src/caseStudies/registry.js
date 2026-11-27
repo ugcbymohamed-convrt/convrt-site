@@ -11,6 +11,7 @@ export const CASE_STUDIES = [
   {
     id: 'graspo',
     label: 'Graspo',
+    names: { ar: 'غراسبو' },
     category: 'Social Growth',
     descriptor: '10.7M Organic Views',
     accent: '#d5ff40',
@@ -25,6 +26,7 @@ export const CASE_STUDIES = [
   {
     id: 'elyon',
     label: 'Elyon Dubai',
+    names: { ar: 'إيليون دبي' },
     category: 'Performance Creative',
     descriptor: 'Up to 5.28x ROAS',
     accent: '#c9a668',
@@ -36,6 +38,9 @@ export const CASE_STUDIES = [
     },
   },
 ]
+
+/* The client's name as a reader of that language sees it (Arabic writes the clients in Arabic letters in running text; the logo, handle, URLs and JSON-LD keep the Latin name). */
+export const studyName = (study, locale) => study.names?.[locale] ?? study.label
 
 export const DEFAULT_CASE_STUDY_ID = CASE_STUDIES[0].id
 

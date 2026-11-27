@@ -222,7 +222,7 @@ test('HTTP: translated pages answer 200 (with and without the trailing slash); u
     }
   }
   // French has only its listed pages and Arabic only its own (About, Contact, the Elyon case study and the blog index of an English-only article do not exist in Arabic): no other page exists, so the host answers 404 (never a fake English page under /fr or /ar).
-  for (const p of ['/fr/about', '/fr/blog', '/fr/contact', '/fr/case-studies/unknown', '/fr/pricing/extra', '/ar/about', '/ar/contact', '/ar/case-studies/elyon', '/ar/case-studies', '/ar/this-page-does-not-exist', '/de/', '/es/this-page-does-not-exist', '/es/blog', '/es/privacy', '/es/case-studies/other', '/es/pricing/extra']) {
+  for (const p of ['/fr/about', '/fr/blog', '/fr/contact', '/fr/case-studies/unknown', '/fr/pricing/extra', '/ar/about', '/ar/contact', '/ar/case-studies/unknown', '/ar/case-studies/other', '/ar/this-page-does-not-exist', '/de/', '/es/this-page-does-not-exist', '/es/blog', '/es/privacy', '/es/case-studies/other', '/es/pricing/extra']) {
     const r = await get(p)
     assert.equal(r.status, 404, p)
     assert.match(await r.text(), /name="robots" content="noindex, follow"/, p)

@@ -1,6 +1,8 @@
-import { getAdjacentCaseStudy } from '../../caseStudies/registry.js'
+import { getAdjacentCaseStudy, studyName } from '../../caseStudies/registry.js'
 import { useCaseStudySwitcher } from './CaseStudyContext.jsx'
 import { useTr } from '../../i18n/tr.js'
+import { currentLocale } from '../../i18n/locale.js'
+import { elyonAr } from '../../i18n/ar/elyonScoped.js'
 
 /* Closing cross-link — surfaces the other project by name and result,
    so the reader doesn't have to scroll back up to the switcher to
@@ -26,7 +28,7 @@ export default function NextCaseStudy({ currentId }) {
           <span
             className="font-display font-bold leading-tight text-ink transition-colors duration-300 text-2xl md:text-[32px]"
           >
-            {next.label}
+            {studyName(next, currentLocale())}
           </span>
           <span className="mt-3 block text-[14px] text-ink-muted md:text-[15px]">
             {tr(next.blurb)}
@@ -35,7 +37,7 @@ export default function NextCaseStudy({ currentId }) {
             className="mt-6 inline-flex items-center gap-2 text-sm font-semibold transition-colors duration-300"
             style={{ color: next.accent }}
           >
-            {tr('View case study')}
+            {(currentId === 'elyon' && elyonAr('next|View case study')) || tr('View case study')}
             <svg
               viewBox="0 0 12 12"
               className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-1"

@@ -89,7 +89,7 @@ test('pure SEO data: French title, description and social copy for each page; on
     assert.doesNotMatch(s.title + s.description, /\$|USD|€|\d\s?%|garanti|meilleure|n°\s?1|leader/i, `${bp}: no amount, guarantee or superlative in the snippet`)
   }
   assert.match(FR_SEO[SPK].title, /Spokesperson/i)
-  assert.match(FR_SEO[SAAS].title, /vidéo explicative SaaS/i)
+  assert.match(FR_SEO[SAAS].title, /Production vidéo pour SaaS et applications/i)
   assert.match(FR_SEO[ORG].title, /réseaux sociaux/i)
 })
 
@@ -169,7 +169,7 @@ after(() => { if (tmp) fs.rmSync(tmp, { recursive: true, force: true }) })
 test('built pages: real static HTML in French, French <title>, description and H1, one H1, indexable, self-referencing canonical', () => {
   const H1 = {
     [SPK]: /^Vidéos Spokesperson : donnez un visage à votre message\.?$/,
-    [SAAS]: /^Vidéos SaaS : rendez votre produit facile à comprendre\.?$/,
+    [SAAS]: /^Des vidéos qui expliquent votre logiciel ou votre application\.?$/,
     [ORG]: /^Des vidéos pour les réseaux sociaux qui donnent envie de suivre votre marque\.?$/,
   }
   for (const bp of SERVICES) {
@@ -185,7 +185,7 @@ test('built pages: real static HTML in French, French <title>, description and H
     assert.ok(text(h).length > 4000, `${bp}: substantive crawlable French text`)
   }
   // each page's H1 carries its own primary keyword and none borrows another page's
-  assert.match(h1Of(page(fr(SPK))), /Spokesperson/i); assert.match(h1Of(page(fr(SAAS))), /Vidéos SaaS/i); assert.match(h1Of(page(fr(ORG))), /réseaux sociaux/i)
+  assert.match(h1Of(page(fr(SPK))), /Spokesperson/i); assert.match(h1Of(page(fr(SAAS))), /logiciel ou votre application/i); assert.match(h1Of(page(fr(ORG))), /réseaux sociaux/i)
   for (const bp of SERVICES) assert.doesNotMatch(h1Of(page(fr(bp))) + FR_SEO[bp].title, /agence UGC/i, bp)
 })
 
@@ -269,7 +269,7 @@ test('structured data: one stable Organization @id, a Service with a stable @id 
     const wp = g.find((n) => n['@type'] === 'WebPage')
     assert.equal(wp['@id'], `${SITE_URL}${fr(bp)}#webpage`); assert.equal(wp.inLanguage, 'fr-FR'); assert.equal(wp.about['@id'], services[0]['@id'])
     const bc = g.find((n) => n['@type'] === 'BreadcrumbList')
-    const crumb = { [SPK]: 'Vidéos Spokesperson', [ORG]: 'Vidéos organiques pour les réseaux', [SAAS]: 'Vidéos SaaS' }[bp]
+    const crumb = { [SPK]: 'Vidéos Spokesperson', [ORG]: 'Vidéos organiques pour les réseaux', [SAAS]: 'Production vidéo pour SaaS et applications' }[bp]
     assert.deepEqual(bc.itemListElement.map((i) => [i.position, i.name, i.item]), [[1, 'Accueil', `${SITE_URL}/fr/`], [2, crumb, `${SITE_URL}${fr(bp)}`]], `${bp}: BreadcrumbList`)
     assert.ok(text(h).includes(`Accueil / ${crumb}`), `${bp}: the visible breadcrumb says the same as the markup`)
     const json = JSON.stringify(g)

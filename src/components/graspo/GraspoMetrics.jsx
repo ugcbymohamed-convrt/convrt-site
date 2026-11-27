@@ -17,7 +17,8 @@ const ACCENT = '#d5ff40'
 export function statNode(locale, v) {
   const t = localizeStat(locale, v)
   const m = locale === 'ar' ? String(t).match(/^(\S+) (\S+)$/) : null
-  return m ? <>{m[1]} <span className="text-[0.5em] font-semibold">{m[2]}</span></> : t
+  if (m) return <>{m[1]} <span className="text-[0.5em] font-semibold">{m[2]}</span></>
+  return locale === 'ar' && /[×+]$/.test(String(t)) ? <bdi dir="ltr">{t}</bdi> : t // a trailing sign ("5.28×", "160+") keeps its place inside right-to-left text
 }
 
 function useInView(threshold = 0.15) {

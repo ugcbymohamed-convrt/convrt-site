@@ -58,7 +58,7 @@ export default {
   "Yes, we’re actively looking for a production partner": "Oui, nous cherchons activement un partenaire de production",
   "Possibly, depending on the creative strategy": "Peut-être, selon la stratégie créative",
   "Not yet, we’re only researching": "Pas encore, nous nous informons seulement",
-  "Questions, answered.": "Vos questions, nos réponses.",
+  "Questions, answered.": "Les questions que les marques nous posent souvent.",
   "Is the Creative Growth Roadmap really free?": "La stratégie créative est-elle vraiment offerte ?",
   "Yes. For qualifying brands, we develop five tailored advertising concepts and present them during a complimentary creative strategy session. There’s no obligation to hire CONVRT.": "Oui. Pour les marques éligibles, nous élaborons cinq concepts publicitaires sur mesure et les présentons lors d’une session de stratégie créative offerte. Rien ne vous oblige à faire appel à CONVRT.",
   "Will you produce the five ads for free?": "Produisez-vous les cinq publicités gratuitement ?",

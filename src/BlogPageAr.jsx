@@ -17,7 +17,7 @@ import { PATHS } from './routes.js'
 const SERVICES = [
   { label: 'فيديوهات UGC', text: 'إعلانات بصناع محتوى حقيقيين.', href: PATHS.ugcVideoAgency },
   { label: 'فيديوهات Spokesperson', text: 'مقدّمون يوصلون رسالتك بوضوح.', href: PATHS.spokespersonVideoProduction },
-  { label: 'فيديوهات SaaS', text: 'شرح المنتج بفيديو سهل الفهم.', href: PATHS.saasVideoProduction },
+  { label: 'فيديوهات برامج SaaS والتطبيقات', text: 'شرح البرنامج أو التطبيق بفيديو سهل الفهم.', href: PATHS.saasVideoProduction },
   { label: 'فيديوهات عضوية للسوشل ميديا', text: 'محتوى مستمر بخطة واضحة.', href: PATHS.socialMediaVideoProduction },
 ]
 

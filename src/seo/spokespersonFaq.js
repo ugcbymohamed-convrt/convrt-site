@@ -68,10 +68,10 @@ export const SPOKESPERSON_FAQ = [
     id: 'software-and-apps',
     q: 'Can spokesperson videos demonstrate software or apps?',
     a: [
-      'Yes. A presenter can walk viewers through a product, a software interface or a customer problem. We produce product demonstrations and SaaS explainers as part of our work, and scope each one with you.',
+      'Yes. A presenter can walk viewers through a product, a software interface or a customer problem. We produce product demonstrations and SaaS and app explainers as part of our work, and scope each one with you.',
       PRODUCT_REQUIREMENTS.saas,
     ],
-    links: [{ label: 'See our SaaS video production', href: '/saas-video-production' }],
+    links: [{ label: 'See our SaaS and app video production', href: '/saas-video-production' }],
   },
   {
     id: 'real-people-or-ai',
@@ -85,7 +85,7 @@ export const SPOKESPERSON_FAQ = [
     q: 'How much does professional spokesperson video production cost?',
     a: [
       `We do not publish a separate spokesperson price list. Spokesperson production for paid advertising is available within our Creative Testing packages, which start at ${formatMoney(SPRINT.monthly)} a month (${formatMoney(SPRINT.oneOff)} as a one-off) and include ${creatorsLine(SPRINT).toLowerCase()}. ${SPRINT_PLUS.name} is ${formatMoney(SPRINT_PLUS.monthly)} a month. Prices are in US dollars and exclude VAT.`,
-      `Projects that do not fit a standard package, such as SaaS demos, explainers or long-form video, are scoped as custom packages. ${CUSTOM_TERMS} ${SINGLE_VIDEOS.statement}`,
+      `Projects that do not fit a standard package, such as SaaS and app demos, explainers or long-form video, are scoped as custom packages. ${CUSTOM_TERMS} ${SINGLE_VIDEOS.statement}`,
     ],
     links: [{ label: 'Compare packages on the Pricing page', href: '/pricing#packages' }],
   },

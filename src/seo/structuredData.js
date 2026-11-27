@@ -24,6 +24,7 @@ import { SPOKESPERSON_FAQ } from './spokespersonFaq.js'
 import { ORGANIC_SOCIAL_FAQ } from './organicSocialFaq.js'
 import { SAAS_FAQ } from './saasFaq.js'
 import { PATHS } from '../routes.js'
+import { streamIframe } from '../lib/streamHost.js'
 import { selectOurWork, isDisplayable, posterUrl, hlsUrl, titleOf } from '../content/portfolio.js'
 
 const CONTEXT = 'https://schema.org'
@@ -93,7 +94,7 @@ export const BREADCRUMB_TRAILS = {
   [PATHS.ugcVideoAgency]: [{ name: 'Home', path: '/' }, { name: 'UGC Video Agency', path: PATHS.ugcVideoAgency }],
   [PATHS.spokespersonVideoProduction]: [{ name: 'Home', path: '/' }, { name: 'Spokesperson Video Production', path: PATHS.spokespersonVideoProduction }],
   [PATHS.socialMediaVideoProduction]: [{ name: 'Home', path: '/' }, { name: 'Organic Social Video Production', path: PATHS.socialMediaVideoProduction }],
-  [PATHS.saasVideoProduction]: [{ name: 'Home', path: '/' }, { name: 'SaaS Video Production', path: PATHS.saasVideoProduction }],
+  [PATHS.saasVideoProduction]: [{ name: 'Home', path: '/' }, { name: 'SaaS & App Video Production', path: PATHS.saasVideoProduction }],
   [PATHS.showcase]: [{ name: 'Home', path: '/' }, { name: 'Creator Showcase', path: PATHS.showcase }],
 }
 
@@ -371,8 +372,8 @@ export function spokespersonGraph({ title, description }) {
   ])
 }
 
-/* SaaS service page (/saas-video-production). Same shape as spokespersonGraph. CONVRT lists "SaaS video production" under its additional expertise, not as a priced core service, so
-   this Service has its own @id on the page and is related to the services and the custom package that already exist on /pricing (SaaS demos and explainers are scoped as custom
+/* SaaS service page (/saas-video-production). Same shape as spokespersonGraph. CONVRT lists "SaaS and app video production" under its additional expertise, not as a priced core service, so
+   this Service has its own @id on the page and is related to the services and the custom package that already exist on /pricing (SaaS and app demos and explainers are scoped as custom
    packages). It carries NO Offer: no SaaS-specific price is published. The FAQPage is generated from the exact Q&A the page renders. No ratings, reviews, addresses, awards,
    results, client names or VideoObject. */
 export function saasGraph({ title, description }) {
@@ -395,7 +396,7 @@ export function saasGraph({ title, description }) {
     breadcrumbNode(trail, `${url}#breadcrumb`),
     {
       ...coreServiceNode('saas'),
-      audience: { '@type': 'Audience', audienceType: 'SaaS, software and app companies' },
+      audience: { '@type': 'Audience', audienceType: 'SaaS, software, web app and mobile app companies' },
       isRelatedTo: [{ '@id': serviceId('ugc') }, { '@id': serviceId('spokesperson') }, { '@id': serviceId(CUSTOM_PACKAGES.paid.id) }],
     },
     faqNode(SAAS_FAQ, `${url}#faq`),
@@ -476,7 +477,7 @@ export function videoObjectNode(item) {
     thumbnailUrl: [thumb.startsWith('http') ? thumb : abs(thumb)],
     uploadDate: item.uploadDate,
     ...(item.languages?.length ? { inLanguage: item.languages[0] } : {}),
-    ...(cf ? { contentUrl: hlsUrl(item), embedUrl: `https://iframe.videodelivery.net/${cf}` } : { contentUrl: abs(item.source.mp4) }),
+    ...(cf ? { contentUrl: hlsUrl(item), embedUrl: streamIframe(cf) } : { contentUrl: abs(item.source.mp4) }),
     // CONVRT is named as the producer ONLY when the data says the video was produced through CONVRT. Independent creator examples are never
     // attributed to CONVRT, and a video with unknown production gets no producer at all.
     ...(item.production === 'convrt' ? { producer: { '@id': ORG_ID } } : {}),

@@ -28,10 +28,37 @@ export const EDITORIAL = {
     sameLabels: { Creator: 'Même créateur', Offer: 'Même offre', CTA: 'Même CTA' }, // the testing diagram's « same … » pills read « Même créateur » in French
     wholeSentenceLists: true, // lists inside a sentence are translated as one sentence (French articles and elision), see OrganicPackages.jsx
     quoteTranslations: FR_QUOTE_TRANSLATIONS, reviewExcerpts: FR_REVIEW_EXCERPTS, reviewsEyebrow: 'Des collaborations qui durent', reviewsHeading: 'Ce que nos clients disent de nous.',
+    /* The block under the Creator Showcase library (components/ourwork/ShowcaseFormats.jsx): the same structure as English (heading, intro, four service cards, case-study line), owner-written copy (2026-11-26).
+       `caseLine` is [text | { link: 'organic' | 'ugc', text }] so each phrase links to its own localized study. */
+    showcaseGuide: {
+      heading: 'Ce que vous trouverez dans notre galerie de créateurs',
+      intro: 'Notre galerie rassemble des vidéos de créateurs indépendants, pour vous permettre de découvrir différents styles, formats et approches créatives avant de lancer votre projet. Explorez les vidéos par secteur : e‑commerce, SaaS et applications, services et contenu organique.',
+      cards: {
+        ugc: { title: 'Vidéos UGC', text: 'Des vidéos naturelles réalisées par de vrais créateurs, adaptées aux campagnes publicitaires sur les réseaux sociaux.', label: 'Production de vidéos UGC' },
+        spokesperson: { title: 'Vidéos Spokesperson', text: 'Des présentateurs qui expliquent votre produit ou transmettent le message de votre marque directement face caméra.', label: 'Production de vidéos Spokesperson' },
+        saas: { title: 'Vidéos pour logiciels et applications', text: 'Des vidéos réalisées avec des créateurs pour présenter des logiciels et des applications. Nous produisons également des vidéos explicatives et des démonstrations produit adaptées à chaque projet.', label: 'Production vidéo pour SaaS et applications' },
+        organic: { title: 'Contenu organique', text: 'Des vidéos courtes pensées pour alimenter les réseaux sociaux de votre marque.', label: 'Production de contenu organique' },
+      },
+      caseLine: ['Découvrez également nos études de cas consacrées au ', { link: 'organic', text: 'contenu organique' }, ' et aux ', { link: 'ugc', text: 'campagnes publicitaires UGC' }, '.'],
+    },
     turnaround: (a, b) => `${a.days} jours ouvrés pour ${a.name} et ${b.days} pour ${b.name}, à compter de la validation des concepts et des scripts, et non du paiement.`,
   },
   // Arabic: its own components carry the Arabic vocabulary; only the intros are shared editorial data. No "originally written in English" line: the Arabic reviews are shown as approved Arabic text (owner, 2026-11-25).
-  ar: { sectionIntros: AR_SECTION_INTROS, faqTitles: {}, stageTitles: {}, testimonialsNote: null, homeLabel: 'CONVRT — الرئيسية', quoteLang: 'en' },
+  ar: {
+    sectionIntros: AR_SECTION_INTROS, faqTitles: {}, stageTitles: {}, testimonialsNote: null, homeLabel: 'CONVRT — الرئيسية', quoteLang: 'en',
+    /* Arabic: same structure as English; owner-written Modern Standard Arabic (2026-11-26). Both case-study phrases link their Arabic study (Graspo = organic, Elyon Dubai = paid advertising). */
+    showcaseGuide: {
+      heading: 'ماذا ستجد في مكتبة صناع المحتوى؟',
+      intro: 'تضم مكتبتنا نماذج من أعمال صناع محتوى مستقلين، لتتمكن من استكشاف أساليب التصوير وأنواع الفيديوهات والأفكار الإبداعية المختلفة قبل بدء مشروعك. تصفّح الفيديوهات حسب المجال: التجارة الإلكترونية، وبرامج SaaS والتطبيقات، والخدمات، والمحتوى العضوي.',
+      cards: {
+        ugc: { title: 'فيديوهات UGC', text: 'فيديوهات بأسلوب طبيعي يقدمها صناع محتوى حقيقيون، وتناسب الحملات الإعلانية على منصات التواصل الاجتماعي.', label: 'إنتاج فيديوهات UGC' },
+        spokesperson: { title: 'فيديوهات Spokesperson', text: 'فيديوهات يقدمها أشخاص محترفون لشرح منتجك أو إيصال رسالة علامتك التجارية مباشرة أمام الكاميرا.', label: 'إنتاج فيديوهات Spokesperson' },
+        saas: { title: 'فيديوهات البرامج والتطبيقات', text: 'فيديوهات يقدمها صناع المحتوى للتعريف بالبرامج والتطبيقات، إلى جانب فيديوهات الشرح وعرض خصائص المنتج، حسب متطلبات كل مشروع.', label: 'إنتاج فيديوهات برامج SaaS والتطبيقات' },
+        organic: { title: 'المحتوى العضوي', text: 'فيديوهات قصيرة مصممة خصيصًا لحسابات علامتك التجارية على منصات التواصل الاجتماعي.', label: 'إنتاج المحتوى العضوي' },
+      },
+      caseLine: ['اطّلع أيضًا على دراسات الحالة الخاصة بمشاريعنا في ', { link: 'organic', text: 'المحتوى العضوي' }, ' و', { link: 'ugc', text: 'الحملات الإعلانية باستخدام فيديوهات UGC' }, '.'],
+    },
+  },
 }
 
 /* The editorial data of a language, or null for English (and any language without data). */

@@ -100,7 +100,7 @@ test('static HTML: breadcrumb, ONE H1 reading "Human-led spokesperson videos. Bu
   assert.equal((html.match(/<h1[\s>]/g) || []).length, 1)
   const h1 = textOf(`<div id="root">${html.match(/<h1[\s\S]*?<\/h1>/)[0]}`)
   assert.equal(h1, 'Human-led spokesperson videos. Built to communicate. Made to convrt.')
-  assert.ok(t.includes('Professional, multilingual spokesperson videos featuring real people on camera. From SaaS demos and product presentations to website videos and paid ads, we handle scripting, talent selection, filming and editing.'))
+  assert.ok(t.includes('Professional, multilingual spokesperson videos featuring real people on camera. From SaaS and app demos and product presentations to website videos and paid ads, we handle scripting, talent selection, filming and editing.'))
   assert.match(html, new RegExp(`<a [^>]*href="${OFFER_PATHS.roadmap}"[^>]*>\\s*Get 5 Free Ad Concepts`), 'primary CTA → the Roadmap')
   assert.match(html, new RegExp(`<a [^>]*href="${CREATOR_SHOWCASE_PATH}"[^>]*>\\s*Explore Videos`), 'secondary CTA → /creator-showcase')
   assert.ok(/1 <span class="text-lime">FREE<\/span> Video/.test(html) && /10 <span class="text-\[#F472B6\]">FREE<\/span> Ad Hooks/.test(html), 'the two free-offer cards, reused from the homepage hero')

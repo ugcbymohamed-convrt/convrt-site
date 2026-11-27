@@ -52,13 +52,13 @@ export const TRUST_CONTENT = {
   about: {
     h1: 'About CONVRT Studio',
     intro:
-      'CONVRT Studio is a founder-led creative studio. We produce human-led UGC ads, SaaS videos, spokesperson videos and organic social content for businesses, with creative strategy, scripting, creator casting, filming and editing handled in one place, and a focus on performance-driven creative.',
+      'CONVRT Studio is a founder-led creative studio. We produce human-led UGC ads, SaaS and app videos, spokesperson videos and organic social content for businesses, with creative strategy, scripting, creator casting, filming and editing handled in one place, and a focus on performance-driven creative.',
     sections: [
       {
         heading: 'CONVRT Studio at a glance',
         body: [
           { list: [
-            'What we do: four services, each with its own page: [[UGC video ads|/ugc-video-agency]], [[SaaS video production|/saas-video-production]], [[spokesperson videos|/spokesperson-video-production]] and [[organic social video|/social-media-video-production]].',
+            'What we do: four services, each with its own page: [[UGC video ads|/ugc-video-agency]], [[SaaS and app video production|/saas-video-production]], [[spokesperson videos|/spokesperson-video-production]] and [[organic social video|/social-media-video-production]].',
             `Who we serve: businesses only, across industries including SaaS, e-commerce, apps, technology and consumer products. ${INTERNATIONAL_CLIENTS.text}`,
             'How we produce: creative strategy, scripts, creator casting, filming and editing in one studio. We work with both in-house talent and freelance creators. Our UGC and spokesperson videos feature real people on camera, not AI-generated avatars. You see relevant creator work before production and approve concepts and scripts before anything is filmed.',
             `Where we produce: ${PRODUCTION_MODEL.short}`,
@@ -76,7 +76,7 @@ export const TRUST_CONTENT = {
           'We make video for businesses that want content with one purpose: conversion. That covers four services, each with its own page:',
           { list: [
             '[[UGC video ads|/ugc-video-agency]]: creator-led ads for paid social, produced end to end.',
-            '[[SaaS video production|/saas-video-production]]: explainers, product demonstrations, animation and ads for software and app brands, scoped to your brief.',
+            '[[SaaS and app video production|/saas-video-production]]: explainers, product demonstrations, animation and ads for SaaS, software and app brands, scoped to your brief.',
             '[[Spokesperson videos|/spokesperson-video-production]]: presenter-led videos for websites, product demos, apps and paid advertising.',
             '[[Organic social video|/social-media-video-production]]: content strategy, production, publishing and community management for Facebook, Instagram and TikTok.',
           ] },
@@ -341,7 +341,7 @@ export const TRUST_CONTENT = {
         heading: 'Our services and how they are agreed',
         body: [
           `The packages and prices on this site describe how we typically work. A paid engagement starts only when we have agreed the scope, price and terms in writing. ${TAX.statement}`,
-          'Custom projects, including SaaS demos and explainers, are scoped individually.',
+          'Custom projects, including SaaS and app demos and explainers, are scoped individually.',
         ],
       },
       {
@@ -398,7 +398,7 @@ export const TRUST_CONTENT = {
       {
         heading: 'Activity and audience',
         body: [
-          'CONVRT Studio is a founder-led creative studio that produces UGC, SaaS, spokesperson and organic social video for businesses. Its services are offered to businesses only, not to consumers.',
+          'CONVRT Studio is a founder-led creative studio that produces UGC, SaaS and app, spokesperson and organic social video for businesses. Its services are offered to businesses only, not to consumers.',
         ],
       },
       {

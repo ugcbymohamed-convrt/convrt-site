@@ -41,7 +41,7 @@ test('hero: the four Spanish H1s are the approved editorial headlines and every 
   assert.match(h1('ugc-video-agency'), /Vídeos UGC con personas reales\. Hechos para destacar\./)
   assert.match(h1('spokesperson-video-production'), /Vídeos Spokesperson con personas reales\. Mensajes que conectan\./)
   assert.match(h1('social-media-video-production'), /Vídeos para redes sociales que merecen la pena guardar\./)
-  assert.match(h1('saas-video-production'), /Vídeos para SaaS que hacen tu producto fácil de entender\./)
+  assert.match(h1('saas-video-production'), /Vídeos que explican tu software o aplicación\./)
   // SaaS scrolls to the formats section, Organic to the process section: both anchors must exist on the page that links to them.
   assert.equal(ES_HERO['saas-h1'].secondary.href, '#saas-formats')
   assert.ok(page('saas-video-production').includes('id="saas-formats"'))
@@ -127,12 +127,12 @@ test('Roadmap: five questions, option values and USD brackets unchanged, neutral
   assert.ok(!fs.readFileSync(path.join(dist, 'sitemap.xml'), 'utf8').includes('/es/creative-growth-roadmap'))
 })
 
-test('Pricing: the thirteen approved EUR amounts are all on the Spanish page and "versiones finales de anuncio" replaced "creativos de testeo"', () => {
+test('Pricing: the thirteen approved EUR amounts are all on the Spanish page and "variantes finales de anuncio" replaced "creativos de testeo"', () => {
   const html = page('pricing')
   const t = text(html)
   for (const a of ['2.750 €', '3.250 €', '850 €', '1.375 €', '2.400 €', '4.600 €', '5.500 €', '1.550 €', '2.500 €', '4.350 €', '225 €', '1.400 €', '2.300 €']) assert.ok(t.includes(a), a)
-  assert.ok(t.includes('183 € por versión') && t.includes('217 € por versión') && t.includes('153 € por versión'))
-  assert.ok(!/creativos de testeo/.test(t) && t.includes('versiones finales de anuncio'))
+  assert.ok(t.includes('183 € por variante') && t.includes('217 € por variante') && t.includes('153 € por variante'))
+  assert.ok(!/creativos de testeo/.test(t) && t.includes('variantes finales de anuncio'))
   assert.match(t, /Compromiso inicial de 3 meses\. Después, mes a mes con 30 días de preaviso\./)
 })
 

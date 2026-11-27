@@ -388,7 +388,7 @@ test('internal links: homepage Services and FAQ, Pricing and the footer link to 
   assert.match(rootOf(page('/')), /Learn about our UGC video production/, 'the existing UGC link is kept')
   assert.match(rootOf(page('/')), /<a href="\/spokesperson-video-production" class="svc-card"/, 'the existing spokesperson link is kept')
   assert.ok(link(page('/pricing')) && /See organic social video production/.test(rootOf(page('/pricing'))), 'pricing')
-  for (const p of ['/', '/pricing', '/creative-growth-roadmap', PATH, PATHS.ugcVideoAgency]) assert.match(rootOf(page(p)), /<a [^>]*href="\/social-media-video-production"[^>]*>Organic Social Video<\/a>/, `footer link on ${p}`)
+  for (const p of ['/', '/pricing', '/creative-growth-roadmap', PATH, PATHS.ugcVideoAgency]) assert.match(rootOf(page(p)), /<a [^>]*href="\/social-media-video-production"[^>]*>Organic Social<\/a>/, `Services menu link on ${p}`)
   // the FAQ link is not in the homepage FAQ answer text; the homepage Service node (Batch 2) now carries the page URL as the service's url
   assert.ok(!JSON.stringify(jsonLdFor('/')['@graph'].find((n) => n['@type'] === 'FAQPage')).includes('social-media-video-production'))
   assert.ok(JSON.stringify(jsonLdFor('/')).includes('social-media-video-production#service'))

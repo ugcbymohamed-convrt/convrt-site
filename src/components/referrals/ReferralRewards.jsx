@@ -59,18 +59,16 @@ const CARDS = [
   },
 ]
 
-/* Spanish only: «Dos ganadores» is drawn in the brand lime, the rest of the heading keeps the normal heading colour. The wording stays in the dictionary; this only wraps the phrase when it is present. */
-const ES_LIME_PHRASE = 'Dos ganadores'
-function rewardsTitle(text, locale) {
-  const at = locale === 'es' ? text.indexOf(ES_LIME_PHRASE) : -1
-  if (at < 0) return text
-  return (
-    <>
-      {text.slice(0, at)}
-      <span className="text-lime">{ES_LIME_PHRASE}</span>
-      {text.slice(at + ES_LIME_PHRASE.length)}
-    </>
-  )
+/* Spanish and French (owner, 2026-11-26): the first sentence stays white, the second takes the brand lime. The two sentences come from the ONE dictionary entry, split at its sentence break, so no key is added;
+   every other language renders the title unchanged. */
+function rewardsTitle(full) {
+  const locale = currentLocale()
+  if (locale !== 'es' && locale !== 'fr') return full
+  const m = full.match(/^(.+?\.)\s+(.+)$/)
+  if (!m) return full
+  /* Spanish (owner, 2026-11-27): only «Dos ganadores» is lime; the closing full stop keeps the heading colour. */
+  const tail = locale === 'es' && m[2].endsWith('.') ? '.' : ''
+  return <>{m[1]} <span className="whitespace-nowrap text-lime">{tail ? m[2].slice(0, -1) : m[2]}</span>{tail}</>
 }
 
 export default function ReferralRewards({ onSelect }) {
@@ -80,7 +78,7 @@ export default function ReferralRewards({ onSelect }) {
     <section id="rewards" aria-labelledby="rewards-heading" className="relative scroll-mt-20 py-16 md:scroll-mt-24 md:py-24">
       <div className="mx-auto max-w-7xl px-5 md:px-8">
         <Reveal>
-          <SectionHeader id="rewards-heading" eyebrow={tr('Everyone wins')} title={rewardsTitle(tr('One Introduction. Two Winners.'), currentLocale())}>
+          <SectionHeader id="rewards-heading" eyebrow={tr('Everyone wins')} title={rewardsTitle(tr('One Introduction. Two Winners.'))}>
             {tr('Choose how you want to earn.')}
           </SectionHeader>
         </Reveal>

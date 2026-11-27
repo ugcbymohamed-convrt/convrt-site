@@ -6,7 +6,7 @@
      /es/ugc-video-agency                  vídeos UGC para anuncios / producción de vídeos UGC
      /es/spokesperson-video-production     vídeos Spokesperson / portavoz
      /es/social-media-video-production     agencia de contenidos en vídeo para redes sociales
-     /es/saas-video-production             vídeos explicativos y demos para SaaS
+     /es/saas-video-production             producción de vídeos para SaaS y aplicaciones (owner naming, 2026-11-26; keyword targeting is for the SEO phase)
      /es/pricing                           tarifas UGC / precios de producción de vídeo
    Keyword Planner volumes are rounded, directional estimates, never precise demand. */
 
@@ -25,7 +25,7 @@ const graspoFigure = (label) => es(GRASPO_METRICS.find((m) => m.label === label)
 export const ES_OG_IMAGE_READY = false
 export const ES_OG_IMAGE_PATH = '/og/convrt-og-es.png'
 
-export const ES_OG_IMAGE_ALT = 'CONVRT: creativos de alto rendimiento diseñados para convertir. Anuncios UGC, vídeos para SaaS, vídeos Spokesperson y contenido orgánico para redes sociales.'
+export const ES_OG_IMAGE_ALT = 'CONVRT: creativos de alto rendimiento diseñados para convertir. Anuncios UGC, vídeos para SaaS y aplicaciones, vídeos Spokesperson y contenido orgánico para redes sociales.'
 
 export const ES_SEO = {
   '/': {
@@ -59,11 +59,11 @@ export const ES_SEO = {
     ogDescription: 'Vídeos cortos con creadores reales para redes sociales orgánicas: estrategia, guion, grabación, edición, publicación y gestión de comunidad.',
   },
   '/saas-video-production': {
-    title: 'Vídeos explicativos y demos para SaaS | CONVRT',
+    title: 'Producción de vídeos para SaaS y aplicaciones | CONVRT',
     description:
-      'Producción de vídeo para software y apps: explicativos, demos de producto, vídeos animados y anuncios de rendimiento, del concepto a la entrega, con personas reales.',
-    ogTitle: 'CONVRT: producción de vídeo para marcas de software y apps',
-    ogDescription: 'Explicativos, demos de producto, vídeos animados y anuncios para empresas de software, con estrategia, guion, presentadores, motion graphics y edición en un solo lugar.',
+      'Producción de vídeos para SaaS, software y aplicaciones: explicativos, demos de producto, vídeos animados y anuncios de rendimiento, del concepto a la entrega, con personas reales.',
+    ogTitle: 'CONVRT: producción de vídeos para marcas de SaaS, software y aplicaciones',
+    ogDescription: 'Explicativos, demos de producto, vídeos animados y anuncios para empresas de SaaS, software y aplicaciones web y móviles, con estrategia, guion, presentadores, motion graphics y edición en un solo lugar.',
   },
   '/pricing': {
     title: 'Tarifas UGC y precios de producción de vídeo | CONVRT',
@@ -80,12 +80,16 @@ export const ES_SEO = {
   '/about': {
     title: 'Sobre CONVRT | Estudio de vídeo liderado por su fundador',
     description:
-      'Estudio creativo liderado por su fundador que produce anuncios UGC, vídeos para SaaS, vídeos Spokesperson y contenido orgánico para redes sociales en español, inglés, francés y árabe.',
+      'Estudio creativo liderado por su fundador que produce anuncios UGC, vídeos para SaaS y aplicaciones, vídeos Spokesperson y contenido orgánico para redes sociales en español, inglés, francés y árabe.',
   },
   '/creative-growth-roadmap': {
     title: 'Hoja de ruta de crecimiento creativo gratuita | CONVRT',
     description:
-      'Solicita cinco conceptos publicitarios personalizados para tu marca. Ángulos creativos, ganchos y recomendaciones de testeo de CONVRT, presentados en una sesión estratégica gratuita.',
+      'Solicita cinco conceptos publicitarios personalizados para tu marca. Ángulos creativos, hooks y recomendaciones de testeo de CONVRT, presentados en una sesión estratégica gratuita.',
+  },
+  '/project-application': {
+    title: 'Solicitud de proyecto | CONVRT',
+    description: 'Solicita un paquete de producción de CONVRT. Cuéntanos sobre tu marca y tu proyecto: revisaremos tu solicitud y nos pondremos en contacto contigo para definir los próximos pasos.',
   },
   '/referrals': {
     title: 'Programa de recomendación | Recompensas con CONVRT',
@@ -94,7 +98,7 @@ export const ES_SEO = {
   '/risk-free-trial': {
     title: '1 vídeo gratis: prueba nuestra producción | CONVRT',
     description:
-      'Solicita un vídeo de prueba gratuito producido por CONVRT, con dos variaciones de gancho para testear. Cada solicitud se revisa y la oferta está sujeta a aprobación y a las condiciones del programa.',
+      'Solicita un vídeo de prueba gratuito producido por CONVRT, con dos variantes de hook para testear. Cada solicitud se revisa y la oferta está sujeta a aprobación y a las condiciones del programa.',
   },
   // The two case studies (/es/case-studies is their duplicate default and canonicalises to /es/case-studies/graspo, so it has no entry of its own).
   // Figures come from the data modules, never retyped; the Elyon 5.28x keeps its "reported by the client" and "one video" qualifiers.

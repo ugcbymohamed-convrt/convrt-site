@@ -1,6 +1,8 @@
 import { Fragment, useLayoutEffect, useRef, useState } from 'react'
-import { CASE_STUDIES } from '../../caseStudies/registry.js'
+import { CASE_STUDIES, studyName } from '../../caseStudies/registry.js'
 import { useTr } from '../../i18n/tr.js'
+import { currentLocale } from '../../i18n/locale.js'
+import { stepOfArrow } from '../../lib/rtl.js'
 import { isEnglish, cx } from './format.js'
 
 /* ─────────────────────────────────────────────
@@ -39,8 +41,10 @@ export default function CaseStudySwitcher({ activeId, onSwitch, sticky = false }
   function onKeyDown(e) {
     const idx = CASE_STUDIES.findIndex((c) => c.id === activeId)
     let nextIdx = null
-    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') nextIdx = (idx + 1) % CASE_STUDIES.length
-    else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') nextIdx = (idx - 1 + CASE_STUDIES.length) % CASE_STUDIES.length
+    // ArrowRight / ArrowLeft follow the visual direction (in Arabic the first project is on the right, so ← means "next"); Up / Down are direction-neutral.
+    const step = e.key === 'ArrowDown' ? 1 : e.key === 'ArrowUp' ? -1 : stepOfArrow(e.key)
+    if (step === 1) nextIdx = (idx + 1) % CASE_STUDIES.length
+    else if (step === -1) nextIdx = (idx - 1 + CASE_STUDIES.length) % CASE_STUDIES.length
     else if (e.key === 'Home') nextIdx = 0
     else if (e.key === 'End') nextIdx = CASE_STUDIES.length - 1
     if (nextIdx === null) return
@@ -194,7 +198,7 @@ function NavItem({ study, index, isActive, onSwitch, btnRef, variant, mobile = f
             mobile ? 'text-lg' : 'mt-1 text-xl md:text-[22px] group-hover:-translate-y-0.5',
           ].join(' ')}
         >
-          {study.label}
+          {studyName(study, currentLocale())}
         </span>
 
         <span

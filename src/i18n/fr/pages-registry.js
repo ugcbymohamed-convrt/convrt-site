@@ -56,9 +56,9 @@ export const FR_PAGE_GRAPH_EXTRAS = {
     about: { '@id': `${url}#service` },
     nodes: [pageServiceFr(url, {
       name: FR_SAAS_SERVICE.name,
-      serviceType: 'Production vidéo SaaS',
+      serviceType: 'Production vidéo pour SaaS et applications',
       description: FR_SAAS_SERVICE.description,
-      audience: { '@type': 'Audience', audienceType: 'Éditeurs de logiciels, de SaaS et d’applications' },
+      audience: { '@type': 'Audience', audienceType: 'Éditeurs de SaaS, de logiciels, d’applications web et d’applications mobiles' },
     })],
   }),
   '/social-media-video-production': (url) => {

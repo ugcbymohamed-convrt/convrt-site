@@ -50,7 +50,7 @@ export default {
   "What type of video would you like to test?": "وش نوع الفيديو اللي ودك تجربه؟",
   "UGC / Creator-led ad": "إعلان UGC / بقيادة صانع محتوى",
   "Spokesperson video": "فيديو بمقدّم",
-  "SaaS product demo / Explainer": "عرض توضيحي لمنتج SaaS / فيديو شرح",
+  "SaaS or app demo / Explainer": "عرض توضيحي لبرنامج SaaS أو تطبيق / فيديو شرح",
   "When are you looking to produce new video ads?": "متى تحتاج فيديوهات جديدة؟",
   "If the trial performs well, would you consider ongoing video production with CONVRT?": "إذا نجحت التجربة، هل تفكر تتعاون معنا بشكل مستمر؟",
   "Possibly, depending on the results": "ربما، بحسب النتائج",

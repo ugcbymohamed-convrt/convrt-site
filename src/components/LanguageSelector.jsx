@@ -5,6 +5,7 @@ import { languageOptions } from '../i18n/switch.js'
 import { LOCALES } from '../i18n/locales.js'
 import { translate } from '../i18n/tr.js'
 import { rememberLanguage } from '../lib/languagePreference.js'
+import { PROJECT_APPLICATION_PATH } from '../config.js'
 
 /* Language selector. Every option is a plain link to a page that exists in that language (src/i18n/switch.js), so it works with JavaScript off, in the
    prerendered HTML and for crawlers. It never redirects by itself and never reads the browser language or the visitor's location. Clicking an option also records that language as the visitor's explicit choice (src/lib/languagePreference.js), only so the language suggestion is not shown again.
@@ -23,11 +24,23 @@ const GlobeIcon = ({ className = '' }) => (
 function useLanguageState() {
   const pathname = typeof window !== 'undefined' ? window.location.pathname : '/'
   const { locale, basePath } = parsePath(pathname)
-  return { locale, options: languageOptions(locale, basePath) }
+  return { locale, basePath, options: languageOptions(locale, basePath) }
+}
+
+/* The project application keeps the selected package across a language switch: the link goes to the same page in the other language WITH its ?package=…&billing=… (identifiers only; never a
+   price or anything typed). Plain links stay plain (they work with JavaScript off and in the prerendered HTML, and nothing is redirected): at click time the link's own href gets the query, then the
+   browser follows it as usual. */
+function keepApplicationQuery(e, basePath, href) {
+  if (basePath !== PROJECT_APPLICATION_PATH || typeof window === 'undefined') return
+  const q = new URLSearchParams(window.location.search)
+  const keep = new URLSearchParams()
+  for (const k of ['package', 'billing', 'from']) if (q.get(k)) keep.set(k, q.get(k))
+  if (![...keep].length) return
+  e.currentTarget.setAttribute('href', `${href}?${keep.toString()}`)
 }
 
 export default function LanguageSelector({ variant = 'dropdown', className = '', onNavigate }) {
-  const { locale, options } = useLanguageState()
+  const { locale, basePath, options } = useLanguageState()
   const [open, setOpen] = useState(false)
   const root = useRef(null)
   const button = useRef(null)
@@ -51,7 +64,7 @@ export default function LanguageSelector({ variant = 'dropdown', className = '',
         lang={o.htmlLang}
         hrefLang={o.htmlLang}
         aria-current={o.current ? 'true' : undefined}
-        onClick={() => { rememberLanguage(o.code); setOpen(false); onNavigate?.() }}
+        onClick={(e) => { rememberLanguage(o.code); setOpen(false); onNavigate?.(); keepApplicationQuery(e, basePath, o.href) }}
         className={`${itemClass} ${o.current ? 'text-ink font-semibold' : 'text-ink-muted hover:text-ink'}`}
       >
         {/* The direction sits on the label, not the row: the row keeps the page's direction, so «العربية» lines up with the other languages. */}
@@ -77,7 +90,7 @@ export default function LanguageSelector({ variant = 'dropdown', className = '',
                 hrefLang={o.htmlLang}
                 dir={o.dir}
                 aria-current={o.current ? 'true' : undefined}
-                onClick={() => rememberLanguage(o.code)}
+                onClick={(e) => { rememberLanguage(o.code); keepApplicationQuery(e, basePath, o.href) }}
                 className={`underline-offset-4 transition-colors hover:text-ink hover:underline ${o.current ? 'text-ink' : ''}`}
               >
                 {o.label}

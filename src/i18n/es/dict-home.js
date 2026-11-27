@@ -10,9 +10,9 @@ export default {
   "Ready for your brand.": 'Listos para tu marca.',
   "Explore All Creators": 'Descubre a todos los creadores',
   // Hero
-  'Performance creatives': "Creatividades",
-  'engineered to': "diseñadas para",
-  'From creative strategy and scripting to creator casting, filming and editing. We produce human-led UGC ads, SaaS videos, spokesperson videos and organic social content, ready to perform.': "Nos encargamos de todo: estrategia creativa, guiones, selección de creadores, grabación y edición. Producimos anuncios UGC, vídeos Spokesperson, vídeos para SaaS y contenido orgánico para redes sociales.",
+  'Performance creatives': "Creativos",
+  'engineered to': "diseñados para",
+  "From creative strategy and scripting to creator casting, filming and editing. We produce human-led UGC ads, SaaS and app videos, spokesperson videos and organic social content, ready to perform.": "Nos encargamos de todo: estrategia creativa, guiones, selección de creadores, grabación y edición. Producimos anuncios UGC, vídeos Spokesperson, vídeos para SaaS y aplicaciones y contenido orgánico para redes sociales.",
   'Book a free strategy call.': 'Reserva una llamada estratégica gratuita.',
   'We tell you exactly what you need.': 'Te decimos exactamente lo que necesitas.',
   // Founder experience + client work (Spanish homepage stage)
@@ -67,7 +67,7 @@ export default {
   'UGC Ads': "Anuncios UGC",
   'Creator-Led': "Creadores reales",
   'Creative Testing': "Testeo creativo",
-  'Product demos, explainers and video ads that make software easier to understand.': "Vídeos explicativos, demos y presentaciones de producto para que tu audiencia entienda qué hace tu software y por qué le interesa.",
+  "Product demos, explainers and video ads that make your software or app easier to understand.": "Vídeos explicativos, demos y presentaciones de producto para que tu audiencia entienda qué hace tu software o aplicación y por qué le interesa.",
   'Product Demos': 'Demos de producto',
   'Explainers': "Vídeos explicativos",
   'Video Ads': "Tutoriales",
@@ -128,7 +128,7 @@ export default {
   "Let's create together": 'Creemos juntos',
   'Good brands deserve': "Las buenas marcas",
   'better creatives.': "anuncios.",
-  'Whether you need paid social creatives, UGC, spokesperson ads, or a long-term creative partner, we build content designed for modern attention.': "Desde vídeos UGC y anuncios para redes sociales hasta contenido Spokesperson y colaboraciones a largo plazo. Creamos vídeos que captan la atención y transmiten el valor de tu marca.",
+  'Whether you need paid social creatives, UGC, spokesperson ads, or a long-term creative partner, we build content designed for modern attention.': "Tanto si necesitas creativos para campañas en redes sociales, vídeos UGC, anuncios con spokesperson o un aliado creativo a largo plazo, creamos contenido diseñado para captar la atención del público actual.",
   'Send us an email': "Escríbenos",
   'Videos produced': 'Vídeos producidos',
   'Views generated': 'Visualizaciones generadas',
@@ -136,8 +136,8 @@ export default {
 
   // FAQ chrome (the questions themselves: faq/home.js)
   'FAQ': 'Preguntas frecuentes',
-  'Things brands': "Tus preguntas,",
-  'usually ask.': "nuestras respuestas",
+  'Things brands': "Lo que suelen preguntarnos",
+  'usually ask.': "las marcas.",
   'We believe good creative partnerships start with clarity.': "Producción, plazos, precios y derechos de uso. Todo lo que necesitas saber antes de trabajar con nosotros.",
   'Still have questions?': "¿Te queda alguna duda?",
   "Reach us directly, we're happy to answer anything before you commit to anything.": "Cuéntanos qué necesitas y te ayudamos a encontrar la mejor opción para tu marca.",

@@ -33,7 +33,7 @@ import { money } from '../src/i18n/money.js'
 
 const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), '..')
 const read = (p) => fs.readFileSync(path.join(ROOT, p), 'utf8')
-const FR_PAGES = ['/', '/ugc-video-agency', '/spokesperson-video-production', '/social-media-video-production', '/saas-video-production', '/pricing', '/creator-showcase', '/case-studies', '/case-studies/graspo', '/case-studies/elyon', '/creative-growth-roadmap', '/risk-free-trial', '/referrals']
+const FR_PAGES = ['/', '/ugc-video-agency', '/spokesperson-video-production', '/social-media-video-production', '/saas-video-production', '/pricing', '/creator-showcase', '/case-studies', '/case-studies/graspo', '/case-studies/elyon', '/creative-growth-roadmap', '/risk-free-trial', '/project-application', '/referrals']
 const FR_INDEXABLE = FR_PAGES.filter((bp) => isReleased('fr', bp) && SITE_SEO[bp].indexable !== false)
 
 // ── pure checks ────────────────────────────────────────────────────────────────────────────────────────────────
@@ -42,7 +42,7 @@ test('French is live as fr-FR with exactly the approved pages; the four service 
   assert.equal(LOCALES.fr.htmlLang, 'fr-FR'); assert.equal(LOCALES.fr.ogLocale, 'fr_FR'); assert.equal(LOCALES.fr.dir, 'ltr'); assert.equal(LOCALES.fr.prefix, '/fr')
   assert.deepEqual(TRANSLATED_PATHS.fr, FR_PAGES)
   for (const bp of ['/about', '/contact', '/privacy', '/terms', '/blog']) assert.ok(!hasTranslation('fr', bp), `${bp} must not exist in French`)
-  assert.deepEqual(allLocalizedPaths(['fr']), ['/fr', '/fr/ugc-video-agency', '/fr/spokesperson-video-production', '/fr/social-media-video-production', '/fr/saas-video-production', '/fr/pricing', '/fr/creator-showcase', '/fr/case-studies', '/fr/case-studies/graspo', '/fr/case-studies/elyon', '/fr/creative-growth-roadmap', '/fr/risk-free-trial', '/fr/referrals'])
+  assert.deepEqual(allLocalizedPaths(['fr']), ['/fr', '/fr/ugc-video-agency', '/fr/spokesperson-video-production', '/fr/social-media-video-production', '/fr/saas-video-production', '/fr/pricing', '/fr/creator-showcase', '/fr/case-studies', '/fr/case-studies/graspo', '/fr/case-studies/elyon', '/fr/creative-growth-roadmap', '/fr/risk-free-trial', '/fr/project-application', '/fr/referrals'])
   assert.equal(localizedPath('fr', '/'), '/fr/')
 })
 
@@ -211,7 +211,7 @@ test('French homepage hero uses only French-spoken videos that are also in the p
   for (const h of HOME_HERO_FR) { assert.deepEqual(h.languages, ['fr']); assert.ok(isDisplayable(h)) }
   // centre = the French-dubbed CONVRT advertisement (its own Stream upload, not a creator video); left = the roofing-company video, right = the food-supplement video (owner placement 2026-11-25; the same Stream videos as the French Spokesperson and UGC heroes)
   const [main, right, left] = HOME_HERO_FR // the stage shows [centre, right, left]
-  assert.equal(main.source.cloudflareId, 'ce7f495642b90a531e44f17b8e7454c5'); assert.equal(main.creatorId, 'cv-home-hero')
+  assert.equal(main.source.cloudflareId, 'dc221b5a412f48ab937b60f5fbc7ade1'); assert.equal(main.creatorId, 'cv-home-hero')
   assert.ok(ids.has(left.source.cloudflareId) && ids.has(right.source.cloudflareId))
   assert.equal(left.creatorId, 'fr-c02'); assert.equal(right.creatorId, 'fr-c01')
   assert.equal(left.source.cloudflareId, '7c681c012def2539e7c32c99889d8662'); assert.equal(right.source.cloudflareId, 'c1dd083d5550608a139f656670bd77a5')
@@ -250,11 +250,11 @@ test('French pages: real static HTML, html lang="fr-FR", no dir, one self-refere
     assert.deepEqual(tag(h, /<meta property="og:locale" content="([^"]+)"/g), ['fr_FR'], p)
     assert.match(h, new RegExp(`<title>${FR_SEO[bp === '/case-studies' ? '/case-studies/graspo' : bp].title.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}</title>`), p)
     assert.equal([...h.matchAll(/<h1[\s>]/g)].length, 1, `${p}: one H1`)
-    assert.ok(textOf(h).join(' ').length > 1500, `${p}: crawlable text`)
+    assert.ok(textOf(h).join(' ').length > (/project-application/.test(p) ? 700 : 1500), `${p}: crawlable text`) // the application is a conversion utility: a headline, the package chooser, a link back
     assert.ok(h.includes(`data-ssr-path="${p}"`), p)
   }
   const h1 = (p) => page(p).match(/<h1[\s\S]*?<\/h1>/)[0].replace(/<[^>]+>/g, ' ').replace(/[\s\u00a0]+/g, ' ').trim()
-  assert.match(h1('/fr'), /^Des vidéos publicitaires pensées pour convertir$/)
+  assert.match(h1('/fr'), /^Des créas pensées pour convertir$/)
   assert.match(h1('/fr/ugc-video-agency'), /^Agence UGC : des vidéos qui captent l’attention\.?$/)
 })
 
@@ -268,7 +268,7 @@ test('French pages use the French share image with a French alt text', () => {
 
 test('robots: indexable French pages have none; the Roadmap and the held free-video page are noindex', () => {
   for (const bp of FR_INDEXABLE) assert.ok(!/name="robots"[^>]*noindex/.test(headOf(page(localizedPath('fr', bp)))), bp)
-  for (const bp of ['/creative-growth-roadmap', '/risk-free-trial']) assert.match(headOf(page(localizedPath('fr', bp))), /name="robots" content="noindex, follow"/, bp)
+  for (const bp of ['/creative-growth-roadmap', '/risk-free-trial', '/project-application']) assert.match(headOf(page(localizedPath('fr', bp))), /name="robots" content="noindex, follow"/, bp)
 })
 
 test('hreflang in the built HTML: each French page and its English and Spanish twins carry the identical set', () => {
@@ -293,7 +293,7 @@ test('sitemap.xml in the build lists the French URLs once, and every sitemap URL
 
 test('structured data: one stable Organization @id, French WebPage/FAQPage/Service, FAQ markup equals the visible FAQ, no invented facts', () => {
   const en = jsonLd(page('/'))[0]['@graph'].find((n) => n['@type'] === 'Organization')
-  for (const p of FR_URLS.filter((u) => !/roadmap|risk-free/.test(u))) {
+  for (const p of FR_URLS.filter((u) => !/roadmap|risk-free|project-application/.test(u))) {
     const h = page(p)
     const g = jsonLd(h)[0]['@graph']
     const org = g.find((n) => n['@type'] === 'Organization')
@@ -353,7 +353,7 @@ test('client reviews: French text only (no translation label, no English origina
 })
 
 test('internal links: translated targets stay in French, every other target is an existing English page and says so (« en anglais »)', () => {
-  const known = new Set(['/', '/pricing', '/ugc-video-agency', '/spokesperson-video-production', '/social-media-video-production', '/saas-video-production', '/creator-showcase', '/about', '/contact', '/privacy', '/terms', '/legal-notice', '/case-studies', '/case-studies/graspo', '/case-studies/elyon', '/creative-growth-roadmap', '/risk-free-trial', '/es', '/free-hooks', '/referrals', '/blog'])
+  const known = new Set(['/', '/pricing', '/ugc-video-agency', '/spokesperson-video-production', '/social-media-video-production', '/saas-video-production', '/creator-showcase', '/about', '/contact', '/privacy', '/terms', '/legal-notice', '/case-studies', '/case-studies/graspo', '/case-studies/elyon', '/creative-growth-roadmap', '/risk-free-trial', '/project-application', '/es', '/free-hooks', '/referrals', '/blog'])
   for (const p of FR_URLS) {
     const html = bodyOf(page(p))
     for (const m of html.matchAll(/<a ([^>]*)href="(\/[^"#?]*)(?:[#?][^"]*)?"([^>]*)>([\s\S]*?)<\/a>/g)) {

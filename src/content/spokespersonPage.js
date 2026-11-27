@@ -25,7 +25,7 @@ export const SPOKESPERSON_HERO = {
   words: ['convrt', 'explain', 'connect', 'persuade'],
   sizer: 'persuade.',
   description:
-    'Professional, multilingual spokesperson videos featuring real people on camera. From SaaS demos and product presentations to website videos and paid ads, we handle scripting, talent selection, filming and editing.',
+    'Professional, multilingual spokesperson videos featuring real people on camera. From SaaS and app demos and product presentations to website videos and paid ads, we handle scripting, talent selection, filming and editing.',
   primary: { label: 'Get 5 Free Ad Concepts', href: OFFER_PATHS.roadmap },
   
   secondary: { label: 'Explore Videos', href: CREATOR_SHOWCASE_PATH },

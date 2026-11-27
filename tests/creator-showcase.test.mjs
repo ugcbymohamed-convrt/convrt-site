@@ -132,8 +132,8 @@ test('structured data: VideoObject needs approval AND a real uploadDate; nothing
   assert.equal(v.description, 'Longer text.')
   assert.equal(v.uploadDate, '2026-02-03')
   assert.deepEqual(v.thumbnailUrl, [`${SITE_URL}/portfolio/x.webp`])
-  assert.equal(v.contentUrl, 'https://videodelivery.net/abc123/manifest/video.m3u8')
-  assert.equal(v.embedUrl, 'https://iframe.videodelivery.net/abc123')
+  assert.equal(v.contentUrl, 'https://customer-0hz43gyj10hvd956.cloudflarestream.com/abc123/manifest/video.m3u8')
+  assert.equal(v.embedUrl, 'https://customer-0hz43gyj10hvd956.cloudflarestream.com/abc123/iframe')
   assert.equal(Object.keys(v).filter((k) => /rating|review|interaction|duration|view/i.test(k)).length, 0, 'no ratings, reviews, view counts or durations')
   assert.equal(jsonLdFor(PATH, { title: 't', description: 'd' })['@graph'].find((n) => n['@type'] === 'CollectionPage').name, 't')
   assert.equal(typeof ourWorkGraph, 'function')
@@ -194,7 +194,7 @@ test('data: validation rejects bad entries; language is optional until confirmed
   assert.equal(titleOf(sample({ title: undefined })), 'A sample caption.', 'title falls back to the caption')
   assert.equal(typeLabel(sample({ type: 'spokesperson' })), 'Spokesperson')
   assert.equal(typeLabel(sample({ type: undefined })), '', 'an unset type is unknown, not UGC')
-  assert.equal(posterUrl(sample({ source: { cloudflareId: 'zz' }, poster: undefined })).includes('videodelivery.net/zz/thumbnails'), true)
+  assert.equal(posterUrl(sample({ source: { cloudflareId: 'zz' }, poster: undefined })).includes('cloudflarestream.com/zz/thumbnails'), true)
 })
 
 // ── categories ──────────────────────────────────────────────────────────────────────────

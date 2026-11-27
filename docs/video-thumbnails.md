@@ -48,7 +48,7 @@ Not changed: the Roadmap explainer keeps its deliberately chosen 25.6 s frame; t
 | `490a0502…` | 3s | portfolio:fr-showcase-fixd-2 (home panel fixd) [fr] |
 | `49313ecc…` | 30.9s | portfolio:ar-ugc-3 [ar] |
 | `4af34968…` | 27.3s | portfolio:es-spokesperson-6 [es] |
-| `2833c727…` | 2s | home-hero-es:home-hero-es-main (Spanish CONVRT ad, dubbed version, 2026-11-24) |
+| `005317a3…` | 0.4s | home-hero-es:home-hero-es-main (SPANISH.mp4, 2026-11-26) |
 | `5639f5ff…` | 19.6s | portfolio:fr-mohamed-skycop [fr] |
 | `583c9f51…` | 7s | portfolio:ar-ugc-9 [ar] |
 | `0cf5d213…` | 0.5s | portfolio:ar-ugc-10 [ar] |
@@ -100,7 +100,7 @@ Not changed: the Roadmap explainer keeps its deliberately chosen 25.6 s frame; t
 | `b4daf321…` | 7.6s | portfolio:es-showcase-mixed-3 (Spanish homepage stage, E-commerce / UGC) [es] |
 | `b5c4b833…` | 11.7s | portfolio:es-spokesperson-2 [es] |
 | `b73842a4…` | 14s | portfolio:ugc-gal-8 |
-| `afdb58eb…` | 8s | home-hero-ar:home-hero-ar-main [ar] |
+| `3431182e…` | 0.4s | home-hero-ar:home-hero-ar-main [ar] (ARABIC.mp4, 2026-11-26) |
 | `c0c30e58…` | 39.9s | portfolio:spokesperson-hero-2 |
 | `c118345b…` | 3.2s | portfolio:es-ugc-3 [es] |
 | `c1379ace…` | 4.6s | portfolio:ar-graspo-1 (home panel graspo) [ar]; portfolio:showcase-graspo-3 (home panel graspo); graspo case study 7.5M |
@@ -111,7 +111,7 @@ Not changed: the Roadmap explainer keeps its deliberately chosen 25.6 s frame; t
 | `c8ed4698…` | 1.4s | portfolio:organic-gal-4 |
 | `cc23b5a0…` | 11.7s | portfolio:organic-hero-1 |
 | `cd6654c2…` | 16.7s | portfolio:creator-04 |
-| `ce7f4956…` | 0.4s | home-hero-fr:home-hero-fr-main |
+| `dc221b5a…` | 0.4s | home-hero-fr:home-hero-fr-main (FRENCH.mp4, 2026-11-26) |
 | `d0c08b8a…` | 7.2s | portfolio:en-josh-saas-1 |
 | `d2edf70e…` | 2.8s | portfolio:en-mohamed-ugc-1 |
 | `d9613dac…` | 5.9s | portfolio:organic-hero-3 |

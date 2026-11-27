@@ -18,7 +18,7 @@
      here exists so a test can prove the two never drift apart. */
 
 import {
-  SITE_URL, OG_IMAGE, OFFER_PATHS, REFERRALS_PATH,
+  SITE_URL, OG_IMAGE, OFFER_PATHS, PROJECT_APPLICATION_PATH, REFERRALS_PATH,
   ROADMAP_INDEXABLE, FREE_HOOKS_INDEXABLE, RISK_FREE_INDEXABLE, REFERRALS_INDEXABLE,
   ABOUT_PATH, CONTACT_PATH, PRIVACY_PATH, TERMS_PATH, LEGAL_NOTICE_PATH, TRUST_PAGES_PUBLISHED,
 } from '../config.js'
@@ -76,11 +76,11 @@ export const SITE_SEO = {
     indexable: selectOrganicHero(ENGLISH_LIBRARY).length + selectOrganicGallery(ENGLISH_LIBRARY).length > 0,
   },
   [PATHS.saasVideoProduction]: {
-    title: 'SaaS Video Production Agency | Explainers, Demos & Ads | CONVRT',
+    title: 'SaaS & App Video Production Agency | Explainers, Demos & Ads | CONVRT',
     description:
-      'SaaS video production for software and app brands. Human-led explainers, product demos, animated videos and performance-driven ads, from concept to delivery.',
-    ogTitle: 'CONVRT: SaaS Video Production for Software and App Brands',
-    ogDescription: 'Explainers, product demos, animated videos and video ads for software companies, with strategy, scripting, presenters, motion graphics and editing in one place.',
+      'Video production for SaaS and app brands: human-led explainers, product demos, animated videos and performance-driven ads, from concept to delivery.',
+    ogTitle: 'CONVRT: SaaS & App Video Production for Software and App Brands',
+    ogDescription: 'Explainers, product demos, animated videos and video ads for SaaS, software and app companies, with strategy, scripting, presenters, motion graphics and editing in one place.',
     // Indexable (and in the sitemap) once at least one approved SaaS video exists for this page, so the page is not promoted to search while its showcase is still empty.
     // It flips by itself when the first approved SaaS video is added to src/content/portfolio.js (same rule as the Spokesperson and Organic Social pages and /our-work).
     indexable: selectSaasHero(ENGLISH_LIBRARY).length + selectSaasGallery(ENGLISH_LIBRARY).length > 0,
@@ -128,6 +128,14 @@ export const SITE_SEO = {
       'Apply for five personalized ad concepts tailored to your brand. Get creative angles, hooks, and testing recommendations from CONVRT.',
     indexable: ROADMAP_INDEXABLE,
   },
+  // The purchase-intent package application: a conversion utility, not a search landing page. noindex (meta robots + X-Robots-Tag in vercel.json), never in the sitemap, never blocked in robots.txt
+  // (a crawler must be able to read the directive). Canonical = the clean URL, so ?package=…&billing=… never creates an indexable duplicate.
+  [PROJECT_APPLICATION_PATH]: {
+    title: 'Project Application | CONVRT',
+    description: 'Apply for a CONVRT production package. Tell us about your brand and your project and we will review your application and get back to you with the next steps.',
+    robots: 'noindex, follow',
+    indexable: false,
+  },
   [OFFER_PATHS.hooks]: {
     title: '10 Free Ad Hooks for SaaS & E-commerce | CONVRT',
     description:
@@ -146,7 +154,7 @@ export const SITE_SEO = {
   [ABOUT_PATH]: {
     title: 'About CONVRT | Founder-Led Video Creative Studio',
     description:
-      'Founder-led creative studio producing human-led UGC ads, SaaS videos, spokesperson videos and organic social content in English, Spanish, French and Arabic.',
+      'Founder-led creative studio producing human-led UGC ads, SaaS and app videos, spokesperson videos and organic social content in English, Spanish, French and Arabic.',
     indexable: TRUST_PAGES_PUBLISHED,
   },
   [CONTACT_PATH]: {

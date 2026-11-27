@@ -90,6 +90,7 @@
 import { currentLocale } from '../i18n/locale.js'
 import { DEFAULT_LOCALE } from '../i18n/locales.js'
 import { streamPoster } from './posterFrames.js'
+import { streamHls } from '../lib/streamHost.js'
 import { AR_LANGUAGE_LABELS, AR_INDUSTRY_LABELS, AR_TYPE_LABELS, AR_PRODUCTION_LABELS, captionAr } from '../i18n/ar/labels.js'
 
 import { editorial } from '../i18n/editorial.js'
@@ -619,7 +620,7 @@ const PORTFOLIO_ENTRIES = [
   },
   {
     id: 'fr-showcase-fixd-3',
-    caption: 'FIXD : variation d’accroche, du boîtier à l’application, dans la rue puis en voiture.',
+    caption: 'FIXD : variation de hook, du boîtier à l’application, dans la rue puis en voiture.',
     industry: 'unclassified',
     languages: ['fr'],
     onlyIn: ['fr'],
@@ -2258,7 +2259,7 @@ export const INDUSTRY_LABELS = {
 
 /* What kind of video it is. Only videos explicitly typed 'ugc' reach the UGC page (an unset type is unknown, not UGC). */
 export const TYPE_LABELS = {
-  ugc: 'UGC', spokesperson: 'Spokesperson', organic: 'Organic social', saas: 'SaaS video', demo: 'Product demo', testimonial: 'Testimonial', interview: 'Street interview',
+  ugc: 'UGC', spokesperson: 'Spokesperson', organic: 'Organic social', saas: 'SaaS & app video', demo: 'Product demo', testimonial: 'Testimonial', interview: 'Street interview',
   social: 'Organic social', ad: 'Ad creative',
 }
 
@@ -2482,7 +2483,7 @@ export const selectShowcase = (id, items = PORTFOLIO) => {
 export const creatorLabel = (item) => (item.creator?.showName === true && item.creator?.displayName ? item.creator.displayName : null)
 
 export const posterUrl = (item) => item.poster ?? streamPoster(item.source.cloudflareId, { height: 720 })
-export const hlsUrl = (item) => `https://videodelivery.net/${item.source.cloudflareId}/manifest/video.m3u8`
+export const hlsUrl = (item) => streamHls(item.source.cloudflareId)
 
 /* ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
    CATEGORIES: the four industry groups of /creator-showcase, plus the Spokesperson type filter (All Work is the combined view, not a category).
@@ -2525,7 +2526,7 @@ export const inCategory = (item, categoryId) => {
 const AR_TYPE_CATEGORIES = [
   { id: 'ar-ugc', label: 'UGC videos', color: '#d5ff40', byType: 'ugc' },
   { id: 'ar-spokesperson', label: 'Spokesperson videos', color: '#ff6a4d', byType: 'spokesperson' },
-  { id: 'ar-saas', label: 'SaaS videos', color: '#9a7aff', byType: 'saas' },
+  { id: 'ar-saas', label: 'SaaS videos', color: '#9a7aff', byType: 'saas' }, // the owner-chosen Arabic type-tab label, kept on purpose: a video category that names SaaS
   { id: 'ar-organic', label: 'Organic videos', color: '#ffb547', byType: 'organic' },
 ]
 

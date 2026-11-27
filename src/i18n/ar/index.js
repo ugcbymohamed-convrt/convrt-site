@@ -12,7 +12,8 @@ import extras from './dict-extras.js'
 import pages from './dict-pages.js'
 import revision from './dict-revision.js'
 import graspo from './dict-graspo.js'
+import elyon from './dict-elyon.js'
 import referrals from './dict-referrals.js'
 
-export default { ...shell, ...home, ...services, ...pricing, ...showcase, ...roadmap, ...geo, ...riskfree, ...extras, ...pages, ...revision, ...graspo, ...referrals }
-export const PARTS = { shell, home, services, pricing, showcase, roadmap, geo, riskfree, extras, pages, revision, graspo, referrals }
+export default { ...shell, ...home, ...services, ...pricing, ...showcase, ...roadmap, ...geo, ...riskfree, ...extras, ...pages, ...revision, ...graspo, ...elyon, ...referrals }
+export const PARTS = { shell, home, services, pricing, showcase, roadmap, geo, riskfree, extras, pages, revision, graspo, elyon, referrals }

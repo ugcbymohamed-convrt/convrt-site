@@ -175,7 +175,7 @@ test('industry showcase data: Adscale is the verified SaaS client (no invented c
   assert.equal(SHOWCASE_INDUSTRIES[1].link.href, '/case-studies/elyon')
   for (const c of SHOWCASE_INDUSTRIES) assert.ok(selectShowcase(c.clientId).length >= 3, c.id)
   const src = read('src/components/home/IndustryShowcase.jsx')
-  assert.ok(!/cloudflareId|videodelivery/.test(src) && !/cloudflareId|videodelivery/.test(read('src/content/homeShowcase.js')), 'no video is copied into a component: they come from portfolio.js')
+  assert.ok(!/cloudflareId|videodelivery|cloudflarestream/.test(src) && !/cloudflareId|videodelivery/.test(read('src/content/homeShowcase.js')), 'no video is copied into a component: they come from portfolio.js')
 })
 
 // ── 3. the two closing CTAs ──────────────────────────────────────────────────────────────
@@ -424,4 +424,17 @@ test('motion and accessibility: the new animations are off for prefers-reduced-m
   for (const k of ['stepOfArrow(e.key)', 'stepOfSwipe(dx)', 'tabIndex={0}', 'aria-roledescription="carousel"', 'onPointerUp', 'motion-reduce:']) assert.ok(stage.includes(k), k)
   const reviews = read('src/components/home/ClientReviews.jsx')
   for (const k of ['role="tablist"', 'role="tab"', 'ArrowDown: 1', '<details', '<summary', 'motion-reduce:transition-none', 'duration-300']) assert.ok(reviews.includes(k), k)
+})
+
+// ── the Services dropdown: two entries (owner, 2026-11-26) ───────────────────────────────
+test('Services menu: two entries only. "Paid Social" groups UGC, Spokesperson and SaaS & App (second panel, always in the HTML); "Organic Social" is a direct link', () => {
+  const nav = bodyOf(page('/')).match(/<header[\s\S]*?<\/header>/)[0]
+  const panel = nav.slice(nav.indexOf('aria-haspopup="true"'))
+  const top = panel.match(/<ul class="min-w-\[270px\][\s\S]*?<\/ul><\/div><\/div>/)[0]
+  assert.ok(/<button[^>]*aria-haspopup="true"[^>]*>Paid Social/.test(top), 'Paid Social is a group button, not a page link')
+  const sub = top.match(/<div class="invisible absolute left-full[\s\S]*?<\/ul><\/div>/)[0]
+  const hrefs = [...sub.matchAll(/href="([^"]+)"[^>]*>([^<]+)</g)].map((m) => [m[1], m[2]])
+  assert.deepEqual(hrefs, [['/ugc-video-agency', 'UGC Videos'], ['/spokesperson-video-production', 'Spokesperson Videos'], ['/saas-video-production', 'SaaS & App Videos']], 'the three paid-social services, in the owner order')
+  const outside = top.replace(sub, '')
+  assert.deepEqual([...outside.matchAll(/href="([^"]+)"[^>]*>([^<]+)</g)].map((m) => [m[1], m[2]]), [['/social-media-video-production', 'Organic Social']], 'Organic Social is the only other entry, and a link')
 })

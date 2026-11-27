@@ -37,7 +37,7 @@ test('homepage FAQ: the approved questions and wording; no unverified claims; no
   assert.match(homeFaqText(faq('What is a video marketing agency')), /creative production and strategy partner/)
   assert.match(homeFaqText(faq('What is a video marketing agency')), /We don't buy media or manage your advertising accounts/)
   assert.match(homeFaqText(faq('UGC video and a spokesperson video')), /We don't present paid creators as genuine customers\./)
-  const saas = homeFaqText(faq('SaaS explainer'))
+  const saas = homeFaqText(faq('SaaS and app explainer'))
   assert.match(saas, /we work with you to obtain suitable product access, demonstrations or reference materials when needed/)
   assert.ok(!/(must|need to|require[sd]?|have to) (provide|supply)|dedicated demo account/i.test(saas), 'no implied mandatory demo account')
   const lang = homeFaqText(faq('other languages'))
@@ -72,10 +72,10 @@ test('FAQ component renders the shared data (and its links); services/hero/foote
   assert.match(read('src/components/FAQ.jsx'), /import \{ homeFaqFor \} from '\.\.\/i18n\/content\.js'/)
   assert.match(read('src/components/FAQ.jsx'), /const FAQS = homeFaqFor\(locale\)/)
   const svc = read('src/components/Services.jsx')
-  for (const t of ['Human-led UGC ads built to capture attention and test creative angles.', 'Product demos, explainers and video ads that make software easier to understand.', 'Professional, multilingual presenters for ads, demonstrations and brand messages.', 'Organic social videos, content planning, publishing and community management.', 'Video creative for<br />', 'paid and organic social.', 'Creative strategy and full video production, <br', 'from concept and creator casting to finished, platform-ready videos.', 'Explore packages and pricing']) assert.ok(svc.includes(t), t)
+  for (const t of ['Human-led UGC ads built to capture attention and test creative angles.', 'Product demos, explainers and video ads that make your software or app easier to understand.', 'Professional, multilingual presenters for ads, demonstrations and brand messages.', 'Organic social videos, content planning, publishing and community management.', 'Video creative for<br />', 'paid and organic social.', 'Creative strategy and full video production, <br', 'from concept and creator casting to finished, platform-ready videos.', 'Explore packages and pricing']) assert.ok(svc.includes(t), t)
   assert.ok(!/Built for modern|Explore the Creative Testing Sprint|Compare packages and pricing/.test(svc))
   assert.match(svc, /<a href=\{href\('\/pricing'\)\}[^>]*>\s*Explore packages and pricing\s*<\/a>/, 'link keeps its /pricing destination')
-  assert.ok(read('src/components/Hero.jsx').includes('From creative strategy and scripting to creator casting, filming and editing. We produce human-led UGC ads, SaaS videos, spokesperson videos and organic social content, ready to perform.'))
+  assert.ok(read('src/components/Hero.jsx').includes('From creative strategy and scripting to creator casting, filming and editing. We produce human-led UGC ads, SaaS and app videos, spokesperson videos and organic social content, ready to perform.'))
   assert.match(read('src/components/Footer.jsx'), /href=\{h\('\/pricing'\)\}>Pricing<\/a>/)
   const cs = read('src/components/CaseStudies.jsx')
   assert.ok(cs.includes("href={hrefFor('/case-studies/graspo')}") && cs.includes("href={hrefFor('/case-studies/elyon')}") && !cs.includes('case=elyon'), 'case-study links point at the canonical study pages')
@@ -84,7 +84,7 @@ test('FAQ component renders the shared data (and its links); services/hero/foote
 
 test('H1: the animated heading is unchanged visually; its text is clean (no duplicate sizing word, spaces between lines)', () => {
   const hero = read('src/components/Hero.jsx')
-  assert.match(hero, /<span className="block">Performance creatives<\/span>\{' '\}/)
+  assert.match(hero, /<span className="block">\{en \? 'Creatives designed' : [^}]*Performance creatives[^}]*\}<\/span>\{' '\}/)
   assert.match(hero, /data-word=\{widest\} className="invisible whitespace-pre after:content-\[attr\(data-word\)\]"/)
   assert.match(hero, /aria-hidden="true" data-word/)
   assert.ok(hero.includes("const ROTATING_WORDS = ['convert', 'resonate', 'sell', 'connect']"), 'same rotating words')
@@ -124,12 +124,12 @@ test('research stays private: research/ is git-ignored and nothing from it is in
 
 test('hero subtitle: general positioning only; industries and language lists live in the FAQ and case studies, not the hero', () => {
   const hero = read('src/components/Hero.jsx')
-  assert.ok(hero.includes('From creative strategy and scripting to creator casting, filming and editing. We produce human-led UGC ads, SaaS videos, spokesperson videos and organic social content, ready to perform.'))
+  assert.ok(hero.includes('From creative strategy and scripting to creator casting, filming and editing. We produce human-led UGC ads, SaaS and app videos, spokesperson videos and organic social content, ready to perform.'))
   const sub = hero.slice(hero.indexOf('From creative strategy'), hero.indexOf('</p>', hero.indexOf('From creative strategy')))
   // 'SaaS videos' names the fourth SERVICE (SEO/GEO Batch 1, owner decision); it must not become an industry restriction.
   assert.ok(!/e-commerce|ecommerce|app brands|English|Spanish|French|Arabic|languages?/i.test(sub.replace('SaaS videos', '')) && !/SaaS (brands|companies|founders|teams)|for SaaS/i.test(sub), 'no industry or language restriction in the hero')
   // end-to-end production message: the whole production chain, one paragraph, no media-buying claim, no stuffed target phrase
-  for (const w of ['creative strategy', 'scripting', 'creator casting', 'filming', 'editing', 'UGC ads', 'SaaS videos', 'spokesperson videos', 'organic social content']) assert.ok(sub.includes(w), w)
+  for (const w of ['creative strategy', 'scripting', 'creator casting', 'filming', 'editing', 'UGC ads', 'SaaS and app videos', 'spokesperson videos', 'organic social content']) assert.ok(sub.includes(w), w)
   assert.ok(!/media buying|ad accounts?|campaign optimi[sz]ation|video marketing agency/i.test(sub))
   assert.ok(!hero.includes('designed to capture attention'), 'the old subtitle is replaced, not kept as a second paragraph')
   // the specific capabilities are still published where they belong

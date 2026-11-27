@@ -156,7 +156,8 @@ test('every route contains real content in the raw HTML: headings, body text, in
     const h = page(p)
     assert.ok(count(rootOf(h), /<h1[\s>]/g) >= 1, `${p}: no <h1>`)
     // /creator-showcase is a video library by design (a short intro, then the cards): no padding text is added just for length.
-    const minText = p === PATHS.showcase ? 800 : 1200
+    // /project-application is a conversion utility (a headline, the package chooser, a link back to pricing): no padding text either.
+    const minText = p === PATHS.showcase || p === PATHS.projectApplication ? 800 : 1200
     assert.ok(visibleText(h).length > minText, `${p}: only ${visibleText(h).length} chars of text`)
     assert.ok(count(rootOf(h), /<a [^>]*href="\/[^"#]/g) >= 5, `${p}: too few internal links`)
     assert.ok(h.includes(`<div id="root" data-ssr-path="${p}">`), `${p}: ssr path stamp`)
@@ -167,7 +168,7 @@ test('every route contains real content in the raw HTML: headings, body text, in
 test('homepage: headline, services copy, CTAs and links are in the initial HTML', () => {
   const h = page('/')
   const text = visibleText(h)
-  assert.match(text, /Performance creatives engineered to/)
+  assert.match(text, /Creatives designed to/)
   assert.match(text, /Spokesperson Videos/, 'services copy')
   assert.match(text, /Things brands usually ask\./, 'FAQ copy')
   assert.match(text, /Get 5 Free Ad Concepts/)
@@ -316,7 +317,8 @@ test('/pricing HTML: one h1, a logical heading order, extension prices in a real
 
 test('/pricing HTML: conversion funnel intact: Roadmap CTAs, Free Video Production and the other offers still linked', () => {
   const root = rootOf(page('/pricing'))
-  assert.ok(count(root, new RegExp(`href="${OFFER_PATHS.roadmap}"`, 'g')) >= 5, 'package, hero, next-step and nav CTAs still go to the Roadmap')
+  assert.ok(count(root, new RegExp(`href="${OFFER_PATHS.roadmap}"`, 'g')) >= 3, 'hero, next-step and nav CTAs still go to the Roadmap (the six package cards now open the project application)')
+  assert.equal(count(root, /href="\/project-application\?package=/g), 6, 'every package card opens the project application')
   assert.ok(root.includes(`href="${OFFER_PATHS.riskFree}"`) || visibleText(page('/')).includes('Free'), 'the separate free-video promotion is untouched')
   for (const h of [`href="${PATHS.pricing}"`, 'href="/blog"', 'href="/referrals"']) assert.ok(root.includes(h), h)
   assert.ok(!/<form/.test(root.slice(root.indexOf('id="packages"'))), 'no form was added or moved into the pricing sections')
@@ -344,7 +346,7 @@ test('homepage Services: four equal-card links in the approved order, each ONE a
   const cards = [...sec.matchAll(/<a href="([^"]+)" class="svc-card"([^>]*)>([\s\S]*?)<\/a>/g)]
   const want = [
     ['01', 'UGC Video Ads', PATHS.ugcVideoAgency, '/ugc-video-agency', 'Human-led UGC ads built to capture attention and test creative angles.', ['UGC Ads', 'Creator-Led', 'Creative Testing']],
-    ['02', 'SaaS Video Production', PATHS.saasVideoProduction, '/saas-video-production', 'Product demos, explainers and video ads that make software easier to understand.', ['Product Demos', 'Explainers', 'Video Ads']],
+    ['02', 'SaaS &amp; App Videos', PATHS.saasVideoProduction, '/saas-video-production', 'Product demos, explainers and video ads that make your software or app easier to understand.', ['Product Demos', 'Explainers', 'Video Ads']],
     ['03', 'Spokesperson Videos', PATHS.spokespersonVideoProduction, '/spokesperson-video-production', 'Professional, multilingual presenters for ads, demonstrations and brand messages.', ['Human-Led', 'Multilingual', 'Product Demos']],
     ['04', 'Organic Social Video', PATHS.socialMediaVideoProduction, '/social-media-video-production', 'Organic social videos, content planning, publishing and community management.', ['Organic Video', 'Posting', 'Community']],
   ]
@@ -482,18 +484,18 @@ test('/pricing HTML: concise notes under the cards; commitments: Paid 3 months, 
   assert.ok(t.includes('All prices exclude VAT. Applicable taxes will be calculated based on your business location and tax status.'))
 })
 
-test('/pricing HTML: Custom cards say "Let\'s talk." with no number; every card CTA is the Roadmap flow', () => {
+test('/pricing HTML: Custom cards say "Let\'s talk." with no number; every card CTA is the project application', () => {
   const h = page('/pricing')
   const arts = [...group(h, 'paid').matchAll(/<article[\s\S]*?<\/article>/g), ...group(h, 'organic').matchAll(/<article[\s\S]*?<\/article>/g)].map((x) => x[0])
   assert.equal(arts.length, 6)
-  for (const a of arts) assert.match(a, new RegExp(`<a href="${OFFER_PATHS.roadmap}"`))
+  for (const a of arts) assert.match(a, /<a href="\/project-application\?package=[a-z-]+(&amp;billing=(monthly|one-time))?&amp;from=pricing"/)
   const customs = arts.filter((a) => /<h2 id="card-(organic-)?custom-label"/.test(a))
   assert.equal(customs.length, 2)
   for (const c of customs) {
     const t = unescape(c.replace(/<!-- -->/g, '').replace(/<[^>]+>/g, ' '))
-    assert.match(t, /Let(’|')s talk\./); assert.match(t, /Tailored to your needs/); assert.match(t, /Discuss your project/); assert.match(t, /Scope, pricing and terms are tailored to your project\./); assert.ok(!/\$\s?\d/.test(t))
+    assert.match(t, /Let(’|')s talk\./); assert.match(t, /Tailored to your needs/); assert.match(t, /Request a Custom Proposal/); assert.match(t, /Scope, pricing and terms are tailored to your project\./); assert.ok(!/\$\s?\d/.test(t))
   }
-  assert.equal(count(arts.join(''), /Get started/g), 4)
+  assert.equal(count(arts.join(''), /Request This Package/g), 4)
   const plus = flat(`<div id="root">${arts[1]}`)
   assert.ok(plus.includes('Includes expanded research and testing recommendations.'))
   const light = flat(`<div id="root">${arts[3]}`)
@@ -686,8 +688,8 @@ test('homepage HTML: the H1 reads cleanly (one word, spaces between lines) and t
   const root = rootOf(page('/')).replace(/<!-- -->/g, '')
   const h1 = root.match(/<h1[\s\S]*?<\/h1>/)[0]
   const text = unescape(h1.replace(/<[^>]+>/g, '|')).replace(/\|+/g, ' ').replace(/\s+/g, ' ').trim()
-  assert.equal(text, 'Performance creatives engineered to convert')
-  assert.match(h1, /<span class="block">Performance creatives<\/span> <span class="block">engineered to /)
+  assert.equal(text, 'Creatives designed to convert')
+  assert.match(h1, /<span class="block">Creatives designed<\/span> <span class="block">to /)
   assert.match(h1, /animate-word-in/); assert.match(h1, /data-word="resonate"/)
   assert.equal(count(root, /<h1[\s>]/g), 1)
 })
@@ -697,9 +699,9 @@ test('homepage HTML: services heading and cards, hero line, internal links', () 
   const t = unescape(visibleText(h))
   for (const n of [
     'Video creative for paid and organic social.', 'Creative strategy and full video production, from concept and creator casting to finished, platform-ready videos.',
-    'Human-led UGC ads built to capture attention and test creative angles.', 'Product demos, explainers and video ads that make software easier to understand.',
+    'Human-led UGC ads built to capture attention and test creative angles.', 'Product demos, explainers and video ads that make your software or app easier to understand.',
     'Professional, multilingual presenters for ads, demonstrations and brand messages.', 'Organic social videos, content planning, publishing and community management.',
-    'From creative strategy and scripting to creator casting, filming and editing. We produce human-led UGC ads, SaaS videos, spokesperson videos and organic social content, ready to perform.',
+    'From creative strategy and scripting to creator casting, filming and editing. We produce human-led UGC ads, SaaS and app videos, spokesperson videos and organic social content, ready to perform.',
     'Explore packages and pricing',
   ]) assert.ok(t.includes(n), n)
   assert.ok(!/Built for modern|Explore the Creative Testing Sprint|Compare packages and pricing|significantly better results|personally approved by the founder|prolific creator/.test(t))

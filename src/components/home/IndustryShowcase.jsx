@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { primaryAction } from '../../i18n/cta.js'
 import { CONVRT_STATS, FOUNDER_EXPERIENCE } from '../../lib/siteStats.js'
 import { selectShowcase } from '../../content/portfolio.js'
-import { showcaseIndustriesFor, SHOWCASE_COPY_ES } from '../../content/homeShowcase.js'
+import { showcaseIndustriesFor, SHOWCASE_COPY_ES, SHOWCASE_EXTRA_LINKS_AR } from '../../content/homeShowcase.js'
 import { currentLocale } from '../../i18n/locale.js'
 import { FR_SHOWCASE } from '../../i18n/fr/showcase.js'
 import { tr, hrefFor } from '../../i18n/tr.js'
@@ -204,6 +204,12 @@ export default function IndustryShowcase() {
             {SHOWCASE_INDUSTRIES.map((c) => (
               <li key={c.id}>
                 <a href={en ? c.link.href : hrefFor(c.link.href)} className="focus-visible:not-sr-only focus-visible:absolute focus-visible:bottom-2 focus-visible:left-2 focus-visible:z-30 focus-visible:rounded-full focus-visible:bg-black focus-visible:px-4 focus-visible:py-2 focus-visible:text-sm focus-visible:text-lime">{c.link.label}</a>
+              </li>
+            ))}
+            {/* Arabic: the Elyon Dubai study (paid-advertising proof) stays one crawlable click away although the Arabic stage shows two other clients. */}
+            {locale === 'ar' && SHOWCASE_EXTRA_LINKS_AR.map((c) => (
+              <li key={c.id}>
+                <a href={hrefFor(c.link.href)} className="focus-visible:not-sr-only focus-visible:absolute focus-visible:bottom-2 focus-visible:left-2 focus-visible:z-30 focus-visible:rounded-full focus-visible:bg-black focus-visible:px-4 focus-visible:py-2 focus-visible:text-sm focus-visible:text-lime">{c.link.label}</a>
               </li>
             ))}
           </ul>

@@ -52,10 +52,10 @@ export const AR_PAGE_GRAPH_EXTRAS = {
   '/saas-video-production': (url) => ({
     about: { '@id': `${url}#service` },
     nodes: [pageServiceAr(url, {
-      name: 'إنتاج فيديوهات شرح التطبيقات ومنتجات SaaS',
-      serviceType: 'إنتاج فيديو لشركات SaaS والتطبيقات',
+      name: 'فيديوهات برامج SaaS أو التطبيقات',
+      serviceType: 'إنتاج فيديوهات لبرامج SaaS والتطبيقات',
       description: AR_CORE_SERVICES.saas.description,
-      audience: { '@type': 'Audience', audienceType: 'شركات SaaS والبرمجيات والتطبيقات' },
+      audience: { '@type': 'Audience', audienceType: 'شركات SaaS والبرمجيات وتطبيقات الويب والجوال' },
     })],
   }),
   '/social-media-video-production': (url) => {
@@ -74,6 +74,12 @@ export const AR_PAGE_GRAPH_EXTRAS = {
   '/case-studies/graspo': (url) => ({
     about: { '@type': 'Organization', name: 'Graspo' },
     mentions: { '@id': `${url.replace('/case-studies/graspo', '/social-media-video-production')}#service` },
+    nodes: [],
+  }),
+  // The Elyon Dubai study (paid-advertising proof): the same shape, mentioning the UGC service it is an example of. No rating, review, date or result markup beyond the visible page.
+  '/case-studies/elyon': (url) => ({
+    about: { '@type': 'Organization', name: 'Elyon Dubai' },
+    mentions: { '@id': `${url.replace('/case-studies/elyon', '/ugc-video-agency')}#service` },
     nodes: [],
   }),
 }

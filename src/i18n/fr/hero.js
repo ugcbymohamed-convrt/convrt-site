@@ -23,10 +23,11 @@ export const FR_HERO = {
     secondary: { label: 'Découvrir notre méthode', href: '#how-it-works' },
   },
   'saas-h1': {
-    lines: [['Vidéos', 'SaaS :'], ['rendez', 'votre', 'produit']],
-    lead: ['facile', 'à'],
-    words: ['comprendre', 'expliquer', 'essayer'],
-    sizer: 'comprendre.',
+    // owner copy (2026-11-26): one fixed sentence, no rolling word (words: [] makes UgcHero skip the reel)
+    lines: [['Des', 'vidéos', 'qui', 'expliquent'], ['votre', 'logiciel', 'ou', 'votre', 'application.']],
+    lead: [],
+    words: [],
+    sizer: '',
     secondary: { label: 'Voir les formats', href: '#saas-formats' },
   },
   'organic-h1': {
@@ -46,6 +47,6 @@ export const FR_HOME_HERO = {
   offersLabel: 'Pas encore prêt ? Deux autres façons de commencer, gratuitement.',
   offers: {
     video: { title: ['1 vidéo', 'OFFERTE'], description: 'Testez notre production sans engagement.', cta: 'Vérifier mon éligibilité' },
-    hooks: { title: ['10 hooks', 'GRATUITS'], description: 'Des idées d’accroches pour vos prochaines publicités.', cta: 'Bientôt disponible' },
+    hooks: { title: ['10 hooks', 'GRATUITS'], description: 'Des idées de hooks pour vos prochaines publicités.', cta: 'Bientôt disponible' },
   },
 }

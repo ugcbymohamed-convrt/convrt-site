@@ -74,8 +74,8 @@ test('route: /saas-video-production is a public path (the approved keyword-to-pa
 
 test('head: approved title and description, unique, self-canonical (never the UGC or Spokesperson page), robots and sitemap follow the video gate', () => {
   const e = SITE_SEO[PATH]
-  assert.equal(e.title, 'SaaS Video Production Agency | Explainers, Demos & Ads | CONVRT')
-  assert.equal(e.description, 'SaaS video production for software and app brands. Human-led explainers, product demos, animated videos and performance-driven ads, from concept to delivery.')
+  assert.equal(e.title, 'SaaS & App Video Production Agency | Explainers, Demos & Ads | CONVRT')
+  assert.equal(e.description, 'Video production for SaaS and app brands: human-led explainers, product demos, animated videos and performance-driven ads, from concept to delivery.')
   assert.ok(e.description.length >= 120 && e.description.length <= 160, `description length ${e.description.length}`)
   assert.equal(e.canonicalPath, undefined, 'a canonical of its own, not a duplicate of another page')
   for (const [p, v] of Object.entries(SITE_SEO)) if (p !== PATH) { assert.notEqual(v.title, e.title); assert.notEqual(v.description, e.description) }
@@ -85,7 +85,7 @@ test('head: approved title and description, unique, self-canonical (never the UG
   assert.equal(sitemapRoutes().includes(PATH), e.indexable)
   const html = page(PATH)
   const head = headOf(html)
-  assert.ok(head.includes('<title>SaaS Video Production Agency | Explainers, Demos &amp; Ads | CONVRT</title>'))
+  assert.ok(head.includes('<title>SaaS &amp; App Video Production Agency | Explainers, Demos &amp; Ads | CONVRT</title>'))
   assert.ok(head.includes(`<link rel="canonical" href="${URL_}" />`))
   assert.equal((head.match(/rel="canonical"/g) || []).length, 1)
   assert.ok(!head.includes('href="https://www.convrt.studio/ugc-video-agency"') && !head.includes('href="https://www.convrt.studio/spokesperson-video-production"'), 'never canonicalised to another service page')
@@ -94,29 +94,25 @@ test('head: approved title and description, unique, self-canonical (never the UG
 })
 
 // ── prerendered HTML ─────────────────────────────────────────────────────────────────────
-test('static HTML: breadcrumb, ONE H1 reading "SaaS videos. Built to explain. Made to convrt.", the approved description and CTAs', () => {
+test('static HTML: breadcrumb, ONE H1 reading "Videos that explain your software or app.", the approved description and CTAs', () => {
   const html = rootOf(page(PATH))
   const t = textOf(page(PATH))
-  assert.match(html, /<nav aria-label="Breadcrumb"[\s\S]*?Home[\s\S]*?SaaS Video Production/)
+  assert.match(html, /<nav aria-label="Breadcrumb"[\s\S]*?Home[\s\S]*?SaaS &amp; App Video Production/)
   assert.equal((html.match(/<h1[\s>]/g) || []).length, 1)
   const h1 = textOf(`<div id="root">${html.match(/<h1[\s\S]*?<\/h1>/)[0]}`)
-  assert.equal(h1, 'SaaS videos. Built to explain. Made to convrt.')
-  assert.ok(t.includes('From product demos and animated explainers to human-led presentations and paid ads, we turn complex software into clear, engaging videos that communicate your product’s value.'))
+  assert.equal(h1, 'Videos that explain your software or app.')
+  assert.ok(t.includes('From product demos and animated explainers to creator-led ads, we turn complex features into clear, engaging videos that help your audience understand your product and take action.'))
   assert.match(html, new RegExp(`<a [^>]*href="${OFFER_PATHS.roadmap}"[^>]*>\\s*Get 5 Free Ad Concepts`), 'primary CTA → the Roadmap')
   assert.match(html, new RegExp(`<a [^>]*href="${CREATOR_SHOWCASE_PATH}"[^>]*>\\s*Explore Videos`), 'secondary CTA → /our-work')
   assert.ok(/1 <span class="text-lime">FREE<\/span> Video/.test(html) && /10 <span class="text-\[#F472B6\]">FREE<\/span> Ad Hooks/.test(html), 'the two free-offer cards, reused from the homepage hero')
 })
 
-test('headline reel: convrt, engage, connect; only "convrt." in the server HTML; the sizer reserves the longest word; every word completes "Made to ___."', () => {
-  assert.deepEqual(SAAS_HERO.words, ['convrt', 'engage', 'connect'])
-  assert.deepEqual(SAAS_HERO.lead, ['Made', 'to'])
-  assert.deepEqual(SAAS_HERO.lines, [['SaaS', 'videos.'], ['Built', 'to', 'explain.']], '"explain" is fixed on line two, so it is not repeated in the reel')
-  const longest = SAAS_HERO.words.reduce((a, b) => (b.length > a.length ? b : a))
-  assert.equal(SAAS_HERO.sizer, `${longest}.`)
+test('headline: one fixed sentence on two lines with no rolling word (owner copy, 2026-11-26); the words still reveal one by one', () => {
+  assert.deepEqual(SAAS_HERO.lines, [['Videos', 'that', 'explain'], ['your', 'software', 'or', 'app.']])
+  assert.deepEqual(SAAS_HERO.words, [], 'no reel on this page: UgcHero draws it only when `words` is non-empty')
   const h1 = rootOf(page(PATH)).match(/<h1[^>]*>([\s\S]*?)<\/h1>/)[1]
-  assert.ok(h1.includes(`data-sizer="${SAAS_HERO.sizer}"`))
-  assert.ok(!/>engage|>connect/.test(h1), 'the other words appear only while a roll is in progress')
-  assert.equal((h1.match(/ugc-reel-track/g) || []).length, 1)
+  assert.equal((h1.match(/ugc-reel/g) || []).length, 0, 'no rolling reel in the H1')
+  assert.equal((h1.match(/ugc-word/g) || []).length, 7, 'seven words, each with the entrance reveal')
 })
 
 test('empty hero: with no approved SaaS videos the three phones stay empty (no stand-in portraits, no video, no UGC imagery) and the live HTML starts no stream', () => {
@@ -175,7 +171,7 @@ test('portfolio: the SaaS selectors take ONLY approved type "saas" videos or exp
   assert.ok(shipped.filter((v) => v.type !== 'saas').every((v) => v.alsoOn?.saas), 'every non-SaaS-typed video on the page is there by an explicit alsoOn entry')
   assert.ok(selectSpokespersonHero().concat(selectSpokespersonGallery()).every((v) => !shipped.includes(v) || v.alsoOn?.saas), 'a shipped spokesperson video is on the SaaS page only through a deliberate alsoOn entry')
   assert.deepEqual(selectShowcase('elyon').map((v) => v.id), PORTFOLIO.filter((v) => v.showcase === 'elyon').map((v) => v.id), 'homepage client panels are unchanged')
-  assert.equal(typeLabel({ type: 'saas' }), 'SaaS video')
+  assert.equal(typeLabel({ type: 'saas' }), 'SaaS & app video')
 })
 
 test('portfolio validation: alsoOn and format are checked; an unknown page, placement or format is a problem; format is for SaaS-page videos only', () => {
@@ -196,12 +192,12 @@ test('gallery: SaaS heading, copy, badge, button and four-up horizontal scroller
   const g = renderToStaticMarkup(createElement(Gallery.default, { items, config: SAAS_GALLERY }))
   const t = decode(g.replace(/<[^>]+>/g, ' ')).replace(/\s+/g, ' ')
   assert.ok(g.includes('id="saas-videos"'))
-  assert.ok(t.includes('Creator-led videos for software brands.'))
+  assert.ok(t.includes('Creator-led videos for software and app brands.'))
   assert.ok(t.includes('Examples of how software and app products can be presented on camera. Explainers, demos and animation are scoped to your brief.'))
   assert.ok(!t.includes(CREATOR_EXAMPLES_NOTE), 'the repeated independent-creators line is not shown in the gallery')
-  assert.ok(/SaaS ·/.test(t) && !/UGC|Spokesperson/.test(t), 'cards are labelled SaaS')
-  assert.match(g, new RegExp(`href="${CREATOR_SHOWCASE_PATH}"[^>]*>[^<]*Explore SaaS Videos`))
-  assert.ok(/aria-label="SaaS video examples\. Scroll sideways to see more\."/.test(g))
+  assert.ok(/SaaS & App ·/.test(t) && !/UGC|Spokesperson/.test(t), 'cards are labelled SaaS & App')
+  assert.match(g, new RegExp(`href="${CREATOR_SHOWCASE_PATH}"[^>]*>[^<]*Explore SaaS &amp; App Videos`))
+  assert.ok(/aria-label="SaaS and app video examples\. Scroll sideways to see more\."/.test(g))
   assert.ok(/lg:w-\[calc\(\(100%-3rem\)\/4\)\]/.test(g), 'four cards across on a laptop')
   assert.ok(g.includes('Product demos') && g.includes('Product explainers') && !g.includes('>Animated<') && !g.includes('>Ads<'), 'only formats that approved videos carry get a chip')
   const one = renderToStaticMarkup(createElement(Gallery.default, { items: [sample({ format: 'demo' }), sample({ id: 'sa-b', format: 'demo' })], config: SAAS_GALLERY }))
@@ -236,8 +232,8 @@ test('"One product. Different ways to bring it to life.": three SaaS states, the
   const sec = section(html, 'id="saas-formats"', '</section>')
   const t = textOf(`<div id="root">${sec}`)
   assert.ok(t.includes('One product. Different ways to bring it to life.'))
-  for (const s of ['Product Explainer', 'Product Demonstration', 'SaaS Advertising Creative']) assert.ok(t.includes(s), s)
-  assert.ok(t.includes('Communicates what the software does, who it is for and why it matters'))
+  for (const s of ['Product Explainer', 'Product Demonstration', 'SaaS & App Advertising Creative']) assert.ok(t.includes(s), s)
+  assert.ok(t.includes('Communicates what the software or app does, who it is for and why it matters'))
   assert.ok(t.includes('depends on your approved brief'))
   assert.ok(!/every (saas )?package|all three|includes all|\bcomes with\b/i.test(t), 'never claims every package includes all three')
   assert.ok(!/\$\s?\d|\b\d+\s+(concepts|versions|videos)\b|business days/i.test(t), 'no prices, counts or turnaround')
@@ -256,8 +252,8 @@ test('proof: no UGC results, Elyon figure or unverified testimonial is reused; t
   assert.deepEqual(SAAS_PROOF, { results: [], testimonials: [] }, 'no SaaS-specific result or testimonial has been verified yet')
   assert.ok(!/5\.28|Elyon|Adscale|Talk360|ROAS|3421|Graspo|10\.7M/.test(t), 'none of the other pages\' proof is on this page')
   assert.ok(t.includes('What to expect') && t.includes('Built on your real product') && t.includes('Scoped to your brief'))
-  assert.ok(t.includes('SaaS demos and explainers are scoped as custom packages. Custom project terms are agreed individually.'))
-  assert.ok(CUSTOM_PACKAGES.paid.features.includes('SaaS demos and explainers'), 'the custom-package wording is the business data\'s')
+  assert.ok(t.includes('SaaS and app demos and explainers are scoped as custom packages. Custom project terms are agreed individually.'))
+  assert.ok(CUSTOM_PACKAGES.paid.features.includes('SaaS and app demos and explainers'), 'the custom-package wording is the business data\'s')
   assert.ok(t.includes(PRODUCTION_LANGUAGES.core.at(-1)))
   assert.ok(!/stars?\b|rating|\d+\+? (clients|brands|customers)/i.test(t))
   const empty = renderToStaticMarkup(createElement(Proof.default, { config: { proof: SAAS_PROOF, expectations: null, headingId: 'x', heading: { eyebrow: 'e', title: 't' }, track: { cta: 'c', pricing: 'p' } } }))
@@ -282,7 +278,7 @@ test('FAQ: twelve SaaS-specific questions, all (and their links) in the static H
   }
   const other = new Set([...UGC_FAQ, ...SPOKESPERSON_FAQ].map((f) => f.q))
   assert.ok(SAAS_FAQ.every((f) => !other.has(f.q)), 'no question is shared with another service page')
-  for (const topic of [/What is SaaS video production/, /types of SaaS videos/, /SaaS explainer and a product demo/, /actual software interface/, /animated SaaS explainer/, /real human presenter with product demonstrations/, /paid advertising/, /concepts, scripts, filming and editing/, /multiple languages/, /How much does SaaS video production cost/, /How long does it take/, /usage rights and revisions/]) assert.ok(SAAS_FAQ.some((f) => topic.test(f.q)), String(topic))
+  for (const topic of [/What is SaaS and app video production/, /types of SaaS and app videos/, /software or app explainer and a product demo/, /actual software or app interface/, /animated explainer videos for software and apps/, /real human presenter with product demonstrations/, /paid advertising/, /concepts, scripts, filming and editing/, /multiple languages/, /How much does SaaS and app video production cost/, /How long does it take/, /usage rights and revisions/]) assert.ok(SAAS_FAQ.some((f) => topic.test(f.q)), String(topic))
   assert.ok(new Set(SAAS_FAQ.map((f) => f.id)).size === 12, 'unique ids')
   assert.ok(html.includes('href="/pricing#packages"') && html.includes('href="/spokesperson-video-production"') && html.includes('href="/ugc-video-agency"'))
 })
@@ -291,7 +287,7 @@ test('FAQ facts come from the business data and make no invented commitments: no
   const t = SAAS_FAQ.map(saasFaqText).join(' ')
   assert.ok(t.includes(PRODUCT_REQUIREMENTS.saas), 'the dummy-account requirement is quoted from the data')
   assert.ok(t.includes(`${REVISIONS.roundsPerConcept} rounds of revisions`) && t.includes(`${USAGE_RIGHTS.includedMonths} months`))
-  assert.ok(/do not publish a SaaS price list/.test(t) && /scoped as custom packages/.test(t) && /agreed individually/.test(t))
+  assert.ok(/do not publish a SaaS or app price list/.test(t) && /scoped as custom packages/.test(t) && /agreed individually/.test(t))
   assert.ok(/do not quote a fixed timeline/.test(t), 'no invented turnaround')
   assert.ok(!/\$\s?\d|\b\d[\d,]*\s?(USD|EUR)\b/.test(t) && !/business days/.test(t), 'no price and no day count in any answer')
   assert.ok(!/guarantee|unlimited revisions|within \d+ (days|weeks)/i.test(t), 'no guarantees or timelines')
@@ -305,11 +301,11 @@ test('FAQ facts come from the business data and make no invented commitments: no
 
 test('positioning and SEO copy: SaaS terms appear naturally, not an animation-only studio, no rankings or search-volume claims, no keyword stuffing', () => {
   const t = textOf(page(PATH))
-  for (const kw of [/SaaS video production/i, /explainer/i, /product demo(nstration)?s?/i, /app walkthroughs?/i, /animated/i, /software/i, /human-led/i, /motion graphics/i, /paid advertising|video ads?/i, /multilingual|languages/i]) assert.ok(kw.test(t), String(kw))
+  for (const kw of [/SaaS and app video production/i, /web application|mobile app/i, /explainer/i, /product demo(nstration)?s?/i, /app walkthroughs?/i, /animated/i, /software/i, /human-led/i, /motion graphics/i, /paid advertising|video ads?/i, /multilingual|languages/i]) assert.ok(kw.test(t), String(kw))
   assert.ok(!/\b(the best|#1|number one|top-rated|leading|award|ranked)\b/i.test(t), 'no superlatives or rankings')
   assert.ok(!/monthly searches|search volume|searches per month/i.test(t + read('src/content/saasPage.js').replace(/\/\*[\s\S]*?\*\//g, '')), 'no keyword volume claims')
   assert.ok(!/animation[- ]only|only (animated|animation)/i.test(t))
-  assert.ok((t.match(/SaaS video production/gi) || []).length <= 8, 'the primary phrase is used naturally, not repeated')
+  assert.ok((t.match(/SaaS (and|&) app video production/gi) || []).length <= 8, 'the primary phrase is used naturally, not repeated')
   assert.ok(!/(guaranteed|guarantees?) (results|conversions|signups|sign-ups|sales)|increase(s|d)? (your )?(conversions|signups|sales)/i.test(t), 'no invented outcomes')
 })
 
@@ -321,12 +317,12 @@ test('JSON-LD: Organization, WebPage, BreadcrumbList, a Service with NO price, a
   const [, web, crumb, svc, faq] = g
   assert.equal(web.url, URL_)
   assert.equal(web.about['@id'], svc['@id'])
-  assert.deepEqual(crumb.itemListElement.map((i) => [i.position, i.name, i.item]), [[1, 'Home', `${SITE_URL}/`], [2, 'SaaS Video Production', URL_]])
+  assert.deepEqual(crumb.itemListElement.map((i) => [i.position, i.name, i.item]), [[1, 'Home', `${SITE_URL}/`], [2, 'SaaS & App Video Production', URL_]])
   assert.equal(BREADCRUMB_TRAILS[PATH].length, 2)
   assert.equal(svc.provider['@id'], ORG_ID)
   assert.equal(svc.offers, undefined, 'no SaaS-specific price is published, so no Offer')
   assert.ok(svc.isRelatedTo.some((r) => r['@id'] === serviceId(CUSTOM_PACKAGES.paid.id)), 'related to the custom package that scopes SaaS demos and explainers')
-  assert.equal(svc.serviceType, 'SaaS video production')
+  assert.equal(svc.serviceType, 'SaaS and app video production')
   assert.equal(faq.mainEntity.length, SAAS_FAQ.length)
   faq.mainEntity.forEach((q, i) => { assert.equal(q.name, SAAS_FAQ[i].q); assert.equal(q.acceptedAnswer.text, saasFaqText(SAAS_FAQ[i])) })
   assert.ok(!/aggregateRating|"review"|"address"|"award"|areaServed|VideoObject|"Product"|"Person"|"price"/.test(JSON.stringify(g.filter((n) => n['@type'] !== 'Organization'))))
@@ -346,9 +342,9 @@ test('internal links: the footer on every page, the homepage Services line and F
   const link = (h) => rootOf(h).includes(`href="${PATH}"`)
   assert.ok(link(page('/')))
   assert.match(rootOf(page('/')), /<a href="\/saas-video-production" class="svc-card"/, 'homepage Services card')
-  assert.match(rootOf(page('/')), /Learn about our SaaS video production/)
-  for (const p of ['/', '/pricing', '/creative-growth-roadmap', PATHS.ugcVideoAgency, PATHS.spokespersonVideoProduction, PATH]) assert.match(rootOf(page(p)), /<a [^>]*href="\/saas-video-production"[^>]*>SaaS Video Production<\/a>/, `footer link on ${p}`)
-  assert.match(rootOf(page(PATHS.spokespersonVideoProduction)), /See our SaaS video production/)
+  assert.match(rootOf(page('/')), /Learn about our SaaS and app video production/)
+  for (const p of ['/', '/pricing', '/creative-growth-roadmap', PATHS.ugcVideoAgency, PATHS.spokespersonVideoProduction, PATH]) assert.match(rootOf(page(p)), /<a [^>]*href="\/saas-video-production"[^>]*>SaaS &amp; App Videos<\/a>/, `footer link on ${p}`)
+  assert.match(rootOf(page(PATHS.spokespersonVideoProduction)), /See our SaaS and app video production/)
   assert.ok(!JSON.stringify(jsonLdFor('/')['@graph'].find((n) => n['@type'] === 'FAQPage')).includes('saas-video-production'), 'the FAQ link is not part of the homepage FAQ answer text')
   assert.ok(JSON.stringify(jsonLdFor('/')).includes('saas-video-production#service'), 'Batch 2: SaaS is a core Service on the homepage, with the SaaS page\'s own id')
   const html = rootOf(page(PATH))
@@ -359,10 +355,10 @@ test('final CTA: the same system as the other service pages, with the SaaS headl
   const html = rootOf(page(PATH))
   const t = textOf(page(PATH))
   const cta = html.split('id="get-started"')[1]
-  assert.ok(t.includes('Ready to show the world what your software can do?'))
+  assert.ok(t.includes('Ready to show the world what your software or app can do?'))
   assert.match(cta, new RegExp(`href="${OFFER_PATHS.roadmap}"[^>]*>Get 5 Free Ad Concepts`))
   assert.match(cta, /href="\/pricing#packages"[^>]*>See Pricing/)
-  assert.match(cta, /href="mailto:[^"]+\?subject=SaaS%20video%20production"[^>]*>[\s\S]*Email the Founder/)
+  assert.match(cta, /href="mailto:[^"]+\?subject=SaaS%20%26%20app%20video%20production"[^>]*>[\s\S]*Email the Founder/)
   assert.ok(!/free (saas )?(explainer|demo)/i.test(t.replace(/does not include a free explainer or demo video/g, '')), 'the free roadmap is not presented as including a free explainer')
 })
 
