@@ -193,7 +193,9 @@ test('Privacy: no unverified agreements, safeguards or storage locations are cla
   assert.ok(!/(MailerLite|Vercel|Google)[^.]*(stores?|stored|located|hosted) (in|within) (the )?(EU|European|Germany|Ireland|United States)/i.test(p), 'no location claimed for MailerLite, Vercel or Google')
   // safeguards are attributed to the providers' own documents, and the unconfirmed providers are named as unconfirmed
   assert.match(p, /According to their own published documentation, Resend stores customer data in the United States/)
-  assert.match(p, /For MailerLite, Vercel and Google we have not independently confirmed/)
+  // Vercel and Google safeguards may be stated, attributed to their own documentation (audit 27 Nov 2026); MailerLite stays unconfirmed until the owner checks the contracting entity
+  assert.match(p, /According to their own published documentation, Vercel and Google rely on the EU-US Data Privacy Framework and on the Standard Contractual Clauses/)
+  assert.match(p, /For MailerLite we have not yet confirmed/)
   assert.ok(!/MailerLite[^.]*(Data Privacy Framework|Standard Contractual)/.test(p))
   assert.ok(!/legal review|reviewed by (a )?(lawyer|solicitor|legal adviser)|legally (approved|validated)|GDPR[- ]compliant/i.test(Object.values(TRUST_CONTENT).map(plainText).join('\n')), 'no fake legal-review claims on the pages')
 })
