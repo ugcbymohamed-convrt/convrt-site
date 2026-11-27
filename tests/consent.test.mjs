@@ -166,7 +166,7 @@ test('analytics only: ad signals stay denied and the pixel hook is not called', 
   trackEvent('primary_cta_click', { page: 'scale' })
   assert.equal(calls.length, 0, 'fbq only with marketing consent')
   setConsent(GRANTED_CHOICE)
-  trackEvent('booking_completed', { page: 'scale' })
+  trackEvent('calendar_newtab_click', { page: 'roadmap' })
   assert.equal(calls.length, 1)
 })
 
@@ -217,7 +217,7 @@ test('every conversion event the owner listed still exists exactly where it was 
     roadmap_form_started: 'src/components/roadmap/RoadmapApplication.jsx',
     roadmap_application_submitted: 'src/components/roadmap/RoadmapApplication.jsx',
     roadmap_qualified: 'src/components/roadmap/RoadmapApplication.jsx',
-    roadmap_booking_confirmed: 'src/components/roadmap/RoadmapBooking.jsx',
+    calendar_newtab_click: 'src/components/roadmap/RoadmapBooking.jsx', // the link-out click (a completed booking is no longer observable: roadmap_booking_confirmed was retired 27 Nov 2026)
     risk_free_application_success: 'src/components/riskfree/RiskFreeApplication.jsx',
     hooks_signup_success: 'src/components/hooks/HooksSignupCard.jsx',
     referral_application_success: 'src/components/referrals/ReferralForm.jsx',

@@ -1,5 +1,13 @@
 # Booking calendar (Calendly): cookies and consent
 
+## CURRENT STATE (27 Nov 2026): the Roadmap booking is LINK-OUT ONLY. The embed was removed.
+The privacy audit of 27 Nov 2026 (`CONVRT/Claude/contact-legal-review/privacy-verification-2026-11-27.md`) re-confirmed that once Calendly's page loads, `__stripe_mid`, `__stripe_sid` and `_dd_s` are already set before the visitor uses Calendly's own cookie notice, while Calendly's own consent record shows only "strictly necessary" granted. The owner chose **option A**: qualified visitors now see a button, **Open Calendly in a new tab** (`target="_blank" rel="noopener noreferrer"`, the existing UTM pass-through `withUtm`), and the email address. Nothing from calendly.com is ever loaded on our pages (no iframe, script or preconnect; `tests/booking-gate.test.mjs`, `tests/no-public-calendly.test.mjs`). Calendly's own page and notice govern what Calendly sets there.
+* Component: `src/components/roadmap/RoadmapBooking.jsx` (shown only to qualified visitors, inside `RoadmapApplication`). `CalendlyGate.jsx`, the iframe, the slow-load frame, the `postMessage` listener and the session key `convrt_calendly_requested` were **removed** (the Privacy Policy's storage list must drop that key).
+* Event kept: `calendar_newtab_click` (`page: roadmap`). Events retired: `roadmap_calendar_viewed`, `roadmap_booking_confirmed`, `calendar_load_click`. **A completed booking can no longer be observed by this site** (it came only from the embed's message); count bookings in Calendly itself.
+* Strings changed (en/es/fr/ar): the booking paragraph now says "Pick a time on Calendly…" instead of "…below…"; one note was added under the button ("Calendly opens in a new tab. It is run by Calendly, a separate company, under its own privacy and cookie notices."). Dictionary entries only used by the embed were deleted.
+
+Everything below is the HISTORY that led here.
+
 ## What was found (2026-11-20, observed, not assumed)
 - Both embeds (`/creative-growth-roadmap` after qualification, and the `/scale` booking modal) loaded Calendly with `hide_gdpr_banner=1`, which suppresses Calendly's own cookie notice.
 - Loading Calendly's page makes the browser contact Calendly and its providers: `assets.calendly.com`, `cdn.cookielaw.org` and `geolocation.onetrust.com` (OneTrust, Calendly's consent tool), `js.stripe.com`, `www.recaptcha.net`, `accounts.google.com` / `gstatic.com`, Datadog and Airbrake endpoints.

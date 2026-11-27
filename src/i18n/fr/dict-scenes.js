@@ -29,20 +29,12 @@ export default {
   "for more.": "pour en savoir plus.",
 
   // Calendar gate and Roadmap booking
-  "Show the booking calendar": "Afficher le calendrier de réservation",
-  "Show the calendar": "Afficher le calendrier",
   "Open Calendly in a new tab": "Ouvrir Calendly dans un nouvel onglet",
   "← Change my answers": "← Modifier mes réponses",
   "You’re a good fit": "Votre profil nous correspond",
-  "You’re booked. See you on the call!": "C’est réservé. À très vite lors de l’appel !",
   "Choose a time for your strategy session.": "Choisissez un créneau pour votre session stratégique.",
-  "Calendly will email your confirmation and meeting details. We’ll prepare your roadmap concepts ahead of the session.": "Calendly vous enverra la confirmation et les détails du rendez-vous par e-mail. Nous préparerons les concepts de votre stratégie créative avant la session.",
-  "Pick a time below to book your free Creative Growth Roadmap session. You’ll enter your details on the next screen and Calendly will confirm your booking. Your concepts are prepared for confirmed bookings, so please choose a time that works.": "Choisissez ci-dessous un créneau pour votre session de stratégie créative offerte. Vous saisirez vos coordonnées à l’écran suivant et Calendly confirmera votre réservation. Les concepts sont préparés pour les réservations confirmées : choisissez donc un horaire qui vous convient.",
-  "Loading calendar…": "Chargement du calendrier…",
-  "Book your Free Creative Growth Roadmap session with CONVRT": "Réservez votre session de stratégie créative offerte avec CONVRT",
-  "The calendar is taking a while to load.": "Le calendrier met du temps à se charger.",
-  "Calendar not loading?": "Le calendrier ne s’affiche pas ?",
-  "Open it in a new tab": "Ouvrez-le dans un nouvel onglet",
+  "Pick a time on Calendly to book your free Creative Growth Roadmap session. You’ll enter your details there and Calendly will confirm your booking. Your concepts are prepared for confirmed bookings, so please choose a time that works.": "Choisissez un créneau sur Calendly pour votre session de stratégie créative offerte. Vous y saisirez vos coordonnées et Calendly confirmera votre réservation. Les concepts sont préparés pour les réservations confirmées : choisissez donc un horaire qui vous convient.",
+  "Calendly opens in a new tab. It is run by Calendly, a separate company, under its own privacy and cookie notices.": "Calendly s’ouvre dans un nouvel onglet. Il est géré par Calendly, une société distincte, selon ses propres avis de confidentialité et de cookies.",
   "or email": "ou écrivez à",
   "Prefer email? Write to": "Vous préférez l’e-mail ? Écrivez à",
 

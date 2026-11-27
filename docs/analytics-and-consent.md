@@ -30,9 +30,9 @@ If anything looks wrong, remove `VITE_GTM_ID` and redeploy: the site returns to 
 | Roadmap form started | `roadmap_form_started` | first interaction with the Roadmap form |
 | Roadmap application submitted | `roadmap_application_submitted` | form completed |
 | Roadmap outcome (qualified enquiry) | `roadmap_qualified`, `roadmap_not_ready`, `roadmap_different_business` | after the qualification rules run; **`roadmap_qualified` is the "qualified lead"** |
-| Calendar shown / booking made | `roadmap_calendar_viewed`, `roadmap_booking_confirmed` | Calendly embed on /creative-growth-roadmap (`confirmed` only on Calendly's own scheduled message) |
+| ~~Calendar shown / booking made~~ | ~~`roadmap_calendar_viewed`, `roadmap_booking_confirmed`~~ | retired 27 Nov 2026: the Roadmap booking is link-out only (new tab), so the site can no longer see a booking; count bookings in Calendly |
 | ~~Calendly booking on /scale~~ | ~~`booking_flow_opened`, `booking_completed`~~ | removed 27 Nov 2026 (no public booking modal; /scale CTAs open the Roadmap and keep `primary_cta_click`, `page: scale`) |
-| Calendar requested / Calendly opened in a new tab | `calendar_load_click`, `calendar_newtab_click` (`page` = roadmap; `scale` before 27 Nov 2026) | the booking calendar gate (see docs/booking-embed-and-cookies.md) |
+| Calendly opened in a new tab | `calendar_newtab_click` (`page` = roadmap; `scale` before 27 Nov 2026); `calendar_load_click` retired 27 Nov 2026 | the Roadmap booking link (see docs/booking-embed-and-cookies.md) |
 | Free video application | `risk_free_application_submitted`, `risk_free_application_success` | /risk-free-trial (success = saved) |
 | Free hooks signup | `hooks_signup_submitted`, `hooks_signup_success` | /free-hooks (success = saved) |
 | Referral application | `referral_application_submit`, `referral_application_success` | /referrals |
