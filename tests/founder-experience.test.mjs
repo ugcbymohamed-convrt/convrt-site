@@ -77,18 +77,19 @@ test('About: one concise founder-experience section, all four figures with their
   assert.ok(sec, 'section exists')
   assert.equal(sec.body.length, 1)
   const t = sec.body[0]
-  for (const v of [CONVRT_STATS.videos, CONVRT_STATS.clients, CONVRT_STATS.views, CONVRT_STATS.returningClients]) assert.ok(t.includes(v), v)
-  assert.match(t, /founder's combined professional experience, including CONVRT Studio and other professional creative production work/)
-  assert.match(t, /not statistics for projects delivered under the CONVRT Studio brand alone/)
-  assert.ok(t.includes('[[Graspo|/case-studies/graspo]]') && t.includes('[[Elyon Dubai|/case-studies/elyon]]'))
-  assert.ok(t.length < 700, 'concise')
+  // Owner decision, 27 Nov 2026: the disclosure is exactly this one sentence; the four figures are the cards above it (rendered from siteStats.js), the case studies are linked from the at-a-glance block and the closing section.
+  assert.equal(t, 'These figures reflect our founder’s combined professional experience, including work through CONVRT Studio and previous creative production projects.')
+  assert.match(t, /founder’s combined professional experience, including work through CONVRT Studio and previous creative production projects/)
+  const everything = JSON.stringify(about)
+  assert.ok(everything.includes('[[Graspo|/case-studies/graspo]]') && everything.includes('[[Elyon Dubai|/case-studies/elyon]]'), 'both case studies stay linked from the About page')
+  assert.ok(t.length < 200, 'concise')
   const glance = JSON.stringify(about.sections.find((s) => s.heading === 'CONVRT Studio at a glance'))
   assert.ok(!/1,200|500\+|40M|50%/.test(glance), 'not repeated in the at-a-glance block')
   const order = about.sections.map((s) => s.heading)
   assert.ok(order.indexOf("The founder's experience") === order.indexOf('A founder-led studio') + 1)
   if (TRUST_PAGES_PUBLISHED) {
     const h = unesc(page('/about')).replace(/<!-- -->/g, '')
-    assert.ok(h.includes("The founder's experience") && h.includes('1,200+ videos produced, 500+ clients served, 40M+ views generated and 50%+ returning clients'))
+    assert.ok(h.includes("The founder's experience") && h.includes(CONVRT_STATS.videos) && h.includes(CONVRT_STATS.clients) && h.includes(CONVRT_STATS.views) && h.includes(CONVRT_STATS.returningClients) && h.includes('videos produced') && h.includes('returning clients'), 'the four figures are rendered on /about')
   }
 })
 

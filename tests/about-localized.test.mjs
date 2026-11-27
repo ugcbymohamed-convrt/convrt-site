@@ -55,8 +55,10 @@ test('the four figures come from the single source (siteStats.js) and read exact
     assert.equal((h.match(/<span aria-hidden="true">\*<\/span>/g) ?? []).length, 4, `${p}: four asterisks`)
   }
   assert.equal(CONVRT_STATS.videos, '1,200+'); assert.equal(CONVRT_STATS.views, '40M+'); assert.equal(CONVRT_STATS.clients, '500+'); assert.equal(CONVRT_STATS.returningClients, '50%+')
-  // the English About page (unchanged) still states the same four figures with the same scope
-  assert.ok(plainText(TRUST_CONTENT.about).includes('1,200+ videos produced, 500+ clients served, 40M+ views generated and 50%+ returning clients'))
+  // the English About page shows the same four figures (cards, from the same stats file) under the owner's shortened disclosure (27 Nov 2026)
+  const en = text(page('/about'))
+  for (const v of ['1,200+', '40M+', '500+', '50%+']) assert.ok(en.includes(v), `English About: ${v}`)
+  assert.ok(en.includes('These figures reflect our founder’s combined professional experience, including work through CONVRT Studio and previous creative production projects.'), 'English About: the shortened founder-experience disclosure is visible')
 })
 
 test('no invented claim: no office, address, award, certification, rating, team member or client relationship; markets are served markets, not offices', () => {

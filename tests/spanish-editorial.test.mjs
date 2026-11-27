@@ -106,7 +106,7 @@ test('About (owner-approved copy, 26 Nov 2026): the four statistics are the foun
   const t = text(html)
   assert.equal(CONVRT_STATS.videos, '1,200+')
   for (const s of ['1.200+', '40 M+', '500+', '50%+', 'vídeos producidos', 'clientes recurrentes']) assert.ok(t.includes(s), s)
-  assert.ok(flat.includes('Estas cifras reflejan la trayectoria profesional de nuestro fundador, incluyendo CONVRT Studio y otros proyectos de producción creativa.') && t.includes('trayectoria profesional de nuestro fundador'))
+  assert.ok(flat.includes('Estas cifras reflejan la experiencia profesional combinada de nuestro fundador, incluido el trabajo realizado a través de CONVRT Studio y en proyectos anteriores de producción creativa.') && t.includes('experiencia profesional combinada de nuestro fundador'))
   assert.ok(!/oficina|sucursal|premio|valoraci|reseñas|equipo de \d+|fundad[oa] en \d{4}|calle |avenida /i.test(flat.replace(/valoración/g, '')), 'no offices, branches, awards, reviews, ratings, team size, founding date or street address')
   assert.equal((html.match(/<h1[ >]/g) ?? []).length, 1)
   assert.ok(!html.includes('LocalBusiness'), 'no LocalBusiness schema')

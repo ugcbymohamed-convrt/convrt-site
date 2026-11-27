@@ -1,4 +1,4 @@
-/* ABOUT PAGE COPY in Spanish, French and Arabic (src/AboutPage.jsx): the owner-supplied, approved text (26 Nov 2026), character for character. Headlines are split into a plain part and an
+/* ABOUT PAGE COPY in Spanish, French and Arabic (src/AboutPage.jsx): the owner-supplied, approved text (26 Nov 2026), character for character, except the owner's 27 Nov 2026 refinements (hero first sentence, founder-figures disclaimer, closing headline), whose Spanish, French and Arabic wording is a translation of the owner's English sentences and awaits the owner's approval. Headlines are split into a plain part and an
    emphasised (lime) part only where the sentence ends naturally; joined, they are the supplied wording. The English About page is unchanged (src/content/trustPages.js, rendered by src/TrustPage.jsx).
 
    FIGURES: the four numbers are NOT typed here. They come from CONVRT_STATS (src/lib/siteStats.js, the single source: the founder's combined professional experience, never CONVRT-Studio-only)
@@ -13,7 +13,7 @@ export const ABOUT_COPY = {
       badge: 'SOBRE CONVRT',
       h1: ['Creatividad con estrategia.', 'Contenido con propósito.'],
       body: [
-        'Somos un estudio creativo especializado en producir vídeos que captan la atención, transmiten el valor de una marca y contribuyen a mejorar sus resultados.',
+        'Creamos contenido en vídeo diseñado para captar la atención, generar confianza e impulsar la acción.',
         'Combinamos estrategia, creadores de contenido y producción audiovisual para desarrollar creativos que conectan con el público actual.',
       ],
     },
@@ -46,7 +46,7 @@ export const ABOUT_COPY = {
     figures: {
       badge: 'NUESTRA EXPERIENCIA EN CIFRAS',
       labels: { videos: 'vídeos producidos', views: 'visualizaciones', clients: 'clientes', returningClients: 'de clientes recurrentes' },
-      footnote: 'Estas cifras reflejan la trayectoria profesional de nuestro fundador, incluyendo CONVRT Studio y otros proyectos de producción creativa.',
+      footnote: 'Estas cifras reflejan la experiencia profesional combinada de nuestro fundador, incluido el trabajo realizado a través de CONVRT Studio y en proyectos anteriores de producción creativa.',
     },
     borderless: {
       badge: 'SIN FRONTERAS',
@@ -58,7 +58,7 @@ export const ABOUT_COPY = {
     },
     cta: {
       badge: 'TRABAJEMOS JUNTOS',
-      h2: ['Tu próximo gran creativo', 'empieza con una idea.'],
+      h2: ['Construyamos tu próximo', 'gran creativo.'],
       body: 'Cuéntanos qué quieres conseguir. Nosotros te ayudamos a encontrar la dirección creativa adecuada.',
       primary: 'Consigue 5 conceptos gratis',
       secondary: 'Descubre nuestros servicios',
@@ -71,7 +71,7 @@ export const ABOUT_COPY = {
       badge: 'À PROPOS DE CONVRT',
       h1: ['De la créativité. De la stratégie.', 'Un objectif.'],
       body: [
-        'CONVRT est un studio créatif spécialisé dans la production de vidéos pensées pour capter l’attention, mettre en valeur les marques et contribuer à leurs performances.',
+        'Nous créons des contenus vidéo conçus pour capter l’attention, créer la confiance et inciter à l’action.',
         'Nous associons stratégie créative, créateurs de contenu et production vidéo pour développer des créas adaptées aux usages et aux attentes du public actuel.',
       ],
     },
@@ -104,7 +104,7 @@ export const ABOUT_COPY = {
     figures: {
       badge: 'NOTRE EXPÉRIENCE EN CHIFFRES',
       labels: { videos: 'vidéos produites', views: 'de vues', clients: 'clients', returningClients: 'de clients récurrents' },
-      footnote: 'Ces chiffres reflètent l’ensemble du parcours professionnel de notre fondateur, incluant CONVRT Studio et d’autres projets de production créative.',
+      footnote: 'Ces chiffres reflètent l’expérience professionnelle cumulée de notre fondateur, y compris le travail réalisé via CONVRT Studio et lors de précédents projets de production créative.',
     },
     borderless: {
       badge: 'SANS FRONTIÈRES',
@@ -116,7 +116,7 @@ export const ABOUT_COPY = {
     },
     cta: {
       badge: 'TRAVAILLONS ENSEMBLE',
-      h2: ['Votre prochaine créa', 'commence par une idée.'],
+      h2: ['Construisons votre prochaine', 'grande créa.'],
       body: 'Parlez-nous de vos objectifs. Nous vous aiderons à trouver la bonne direction créative.',
       primary: 'Obtenez 5 concepts gratuits',
       secondary: 'Découvrez nos services',
@@ -129,7 +129,7 @@ export const ABOUT_COPY = {
       badge: 'عن CONVRT',
       h1: ['إبداع مدروس.', 'محتوى له هدف.'],
       body: [
-        'CONVRT استوديو إبداعي متخصص في إنتاج فيديوهات تجذب الانتباه، وتبرز قيمة العلامات التجارية، وتساهم في تحسين نتائجها التسويقية.',
+        'نصنع محتوى فيديو مصممًا لجذب الانتباه وبناء الثقة ودفع الجمهور إلى اتخاذ إجراء.',
         'نجمع بين الاستراتيجية الإبداعية وصناع المحتوى والإنتاج الاحترافي لنقدم فيديوهات تتناسب مع اهتمامات الجمهور وطريقة استهلاكه للمحتوى اليوم.',
       ],
     },
@@ -162,7 +162,7 @@ export const ABOUT_COPY = {
     figures: {
       badge: 'خبرتنا بالأرقام',
       labels: { videos: 'فيديو تم إنتاجه', views: 'مشاهدات', clients: 'عميل', returningClients: 'عملاء يعودون للعمل معنا' },
-      footnote: 'تعكس هذه الأرقام إجمالي الخبرة المهنية لمؤسس الاستوديو، بما يشمل أعماله في CONVRT Studio ومشاريعه الأخرى في إنتاج المحتوى الإبداعي.',
+      footnote: 'تعكس هذه الأرقام الخبرة المهنية المتراكمة لمؤسسنا، بما في ذلك العمل الذي تم عبر CONVRT Studio وفي مشاريع إنتاج إبداعي سابقة.',
     },
     borderless: {
       badge: 'إبداع بلا حدود',
@@ -174,7 +174,7 @@ export const ABOUT_COPY = {
     },
     cta: {
       badge: 'لنعمل معًا',
-      h2: ['إعلانك القادم', 'يبدأ بفكرة.'],
+      h2: ['لنصنع معًا', 'إبداعك المميز القادم.'],
       body: 'أخبرنا عن أهدافك، وسنساعدك في تحديد التوجه الإبداعي المناسب لعلامتك التجارية.',
       primary: 'احصل على 5 أفكار إعلانية مجانًا',
       secondary: 'اكتشف خدماتنا',
