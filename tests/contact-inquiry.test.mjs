@@ -70,7 +70,7 @@ test('the owner-approved copy is implemented exactly (badge, headline, supportin
   const ES = CONTACT_COPY.es, FR = CONTACT_COPY.fr, AR = CONTACT_COPY.ar
   assert.deepEqual([ES.badge, `${ES.h1.lead} ${ES.h1.accent}`, ES.submit, ES.emailHeading, ES.successHeading], ['CONTACTO', 'Hablemos de tu proyecto.', 'Enviar consulta', '¿Prefieres escribirnos por email?', 'Consulta recibida.'])
   assert.deepEqual([FR.badge, `${FR.h1.lead} ${FR.h1.accent}`, FR.submit, FR.emailHeading, FR.successHeading], ['CONTACT', 'Parlons de votre projet.', 'Envoyer ma demande', 'Vous préférez nous écrire ?', 'Demande reçue.'])
-  assert.deepEqual([AR.badge, `${AR.h1.lead} ${AR.h1.accent}${AR.h1.tail}`, AR.submit, AR.emailHeading, AR.successHeading], ['تواصل معنا', 'لنتحدث عن مشروعك.', 'إرسال الطلب', 'تفضل التواصل عبر البريد الإلكتروني؟', 'تم استلام طلبك.'])
+  assert.deepEqual([AR.badge, `${AR.h1.lead} ${AR.h1.accent}${AR.h1.tail}`, AR.submit, AR.emailHeading, AR.successHeading], ['تواصل معنا', 'خلنا نتحدث حول مشروعك', 'إرسال الطلب', 'تفضل التواصل عبر البريد الإلكتروني؟', 'تم استلام طلبك.'])
   assert.equal(`${ES.faq.lead} ${ES.faq.accent}`, 'Lo que suelen preguntarnos las marcas.'); assert.equal(`${FR.faq.lead} ${FR.faq.accent}`, 'Les questions que les marques nous posent souvent.'); assert.equal(`${AR.faq.lead} ${AR.faq.accent}`, 'الأسئلة التي تطرحها العلامات التجارية عادةً.')
   assert.deepEqual(Object.values(ES.services), ['Vídeos UGC', 'Vídeos Spokesperson', 'Contenido orgánico para redes sociales', 'Vídeos para SaaS y aplicaciones', 'Proyecto a medida', 'Todavía no lo tengo claro'])
   assert.deepEqual(Object.values(FR.services), ['Vidéos UGC', 'Vidéos Spokesperson', 'Contenu organique pour les réseaux sociaux', 'Vidéos SaaS et applications', 'Projet sur mesure', 'Je ne sais pas encore'])
@@ -188,7 +188,7 @@ test('Arabic Contact page: right-to-left, the email and website fields stay left
   const h = page('/ar/contact')
   assert.match(h, /<html lang="ar" dir="rtl">/)
   assert.match(h, /type="email"[^>]*dir="ltr"/); assert.match(h, /name="website"[^>]*|dir="ltr"[^>]*name="website"/)
-  assert.ok(/<span class="text-lime">مشروعك<\/span>\./.test(h), 'the lime part is «مشروعك», the full stop is plain')
+  assert.ok(/<span class="block whitespace-nowrap">خلنا نتحدث حول(<!-- -->)? <span class="text-lime">مشروعك<\/span><\/span>/.test(h), 'the whole Arabic headline is on one line; the lime part is «مشروعك»')
 })
 
 test('English Contact page: the headline is two lines with "your project." in lime', () => {

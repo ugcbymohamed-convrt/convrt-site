@@ -92,10 +92,17 @@ export default function ContactPage() {
             <h1
               id="contact-h1"
               className={`mt-7 font-display font-bold text-ink ${rtl ? 'leading-[1.3]' : 'leading-[1.04] tracking-display-xl'}`}
-              style={{ fontSize: rtl ? 'clamp(2.3rem, 6.4vw, 4.6rem)' : 'clamp(2.7rem, 7.2vw, 5.4rem)' }}
+              style={{ fontSize: rtl ? 'clamp(1.7rem, 8vw, 4.4rem)' : 'clamp(2.7rem, 7.2vw, 5.4rem)' }}
             >
-              <span className="block">{copy.h1.lead}</span>
-              <span className="block"><span className="whitespace-nowrap"><span className="text-lime">{copy.h1.accent}</span>{copy.h1.tail}</span></span>
+              {rtl ? (
+                /* Arabic: the whole headline on ONE line (owner request); the size above is chosen so it fits from 375px up */
+                <span className="block whitespace-nowrap">{copy.h1.lead} <span className="text-lime">{copy.h1.accent}</span>{copy.h1.tail}</span>
+              ) : (
+                <>
+                  <span className="block">{copy.h1.lead}</span>
+                  <span className="block"><span className="whitespace-nowrap"><span className="text-lime">{copy.h1.accent}</span>{copy.h1.tail}</span></span>
+                </>
+              )}
             </h1>
             <p className={`mx-auto mt-7 max-w-2xl text-balance text-base text-ink-muted md:text-lg ${rtl ? 'leading-[1.9]' : 'leading-relaxed'}`}>{copy.intro}</p>
           </Reveal>

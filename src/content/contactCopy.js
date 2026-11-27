@@ -114,7 +114,7 @@ export const CONTACT_COPY = {
 
   ar: {
     badge: 'تواصل معنا',
-    h1: { lead: 'لنتحدث عن', accent: 'مشروعك', tail: '.' },
+    h1: { lead: 'خلنا نتحدث حول', accent: 'مشروعك', tail: '' },
     intro: 'سواء كنت تبحث عن فيديوهات لحملاتك الإعلانية، أو فيديوهات UGC وSpokesperson، أو شريك إبداعي على المدى الطويل، نصنع محتوى يجذب انتباه جمهورك ويبرز قيمة علامتك التجارية.',
     formHeading: 'أخبرنا عن مشروعك.',
     labels: { fullName: 'الاسم الكامل', email: 'البريد الإلكتروني', company: 'العلامة التجارية أو الشركة', website: 'الموقع الإلكتروني أو حسابات التواصل الاجتماعي', service: 'الخدمة المطلوبة', budget: 'الميزانية التقديرية', message: 'أخبرنا عن تفاصيل مشروعك' },
@@ -124,7 +124,7 @@ export const CONTACT_COPY = {
     submitNote: 'سنراجع طلبك ونتواصل معك لتحديد الخطوات التالية.',
     emailHeading: 'تفضل التواصل عبر البريد الإلكتروني؟',
     connectHeading: 'طرق أخرى للتواصل',
-    cards: { linkedin: 'تابعنا على LinkedIn', instagram: 'تابعنا على Instagram', creators: 'انضم إلى شبكة صناع المحتوى', referrals: 'رشّح عميلًا واربح' },
+    cards: { linkedin: 'تابعنا على LinkedIn', instagram: 'تابعنا على Instagram', creators: 'انضم إلى شبكة صناع المحتوى', referrals: 'أحل عميلًا واربح' },
     founderLinkedin: 'المؤسس: Mohamed Doukkali Azizi على LinkedIn',
     faq: { lead: 'الأسئلة التي تطرحها', accent: 'العلامات التجارية عادةً.' },
     successHeading: 'تم استلام طلبك.',

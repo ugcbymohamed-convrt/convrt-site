@@ -56,7 +56,7 @@ export default function Footer() {
               {(enLike || menuHas(locale, '/blog')) && <li>{en ? <a className="hover:text-ink transition-colors" href="/blog">Blog</a> : L('/blog', 'Blog')}</li>}
               <li>{TRUST_PAGES_PUBLISHED ? L(CONTACT_PATH, 'Contact') : <a className="hover:text-ink transition-colors" href={`${homePrefix}#contact`}>{tr('Contact')}</a>}</li>
               {en && <li><a className="hover:text-ink transition-colors" href={REFERRALS_PATH}>Refer &amp; Earn</a></li>}
-              {locale === 'ar' && <li><a className="hover:text-ink transition-colors" href={h(REFERRALS_PATH)}>رشّح عميلًا واربح</a></li>}
+              {locale === 'ar' && <li><a className="hover:text-ink transition-colors" href={h(REFERRALS_PATH)}>أحل عميلًا واربح</a></li>}
               {!en && locale !== 'ar' && showReferralLink(locale) && <li><a className="hover:text-ink transition-colors" href={h(REFERRALS_PATH)}>{REFERRAL_LABELS[locale][0]} <span className="font-semibold text-lime">{REFERRAL_LABELS[locale][1]}</span></a></li>}
             </ul>
           </div>
