@@ -270,7 +270,7 @@ function RotatingWord({ words, padX = false }) {
   const widest = words.reduce((a, b) => (a.length >= b.length ? a : b), '')
 
   return (
-    <span className={`relative inline-block align-baseline overflow-hidden pb-[0.12em]${padX ? ' px-[0.06em]' : ''}`}>
+    <span className={`relative inline-block align-baseline overflow-clip pb-[0.12em]${padX ? ' px-[0.06em]' : ''}`}>
       {/* Invisible sizing element — reserves space for the widest word + underline padding */}
       {/* The widest word is drawn by CSS (::after reads data-word), not as text, so the heading's text is
           "Creatives designed to <current word>" for search engines and screen readers, and nothing else changes. */}

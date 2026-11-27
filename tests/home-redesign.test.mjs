@@ -383,7 +383,7 @@ test('the UGC page and the shared file order are untouched by the ordering helpe
   assert.deepEqual(orderedBy([{ id: 'a' }, { id: 'b' }, { id: 'c' }], ['c']).map((x) => x.id), ['c', 'a', 'b'])
   assert.deepEqual(orderedBy([{ id: 'a' }, { id: 'b' }], ['zz', 'b']).map((x) => x.id), ['b', 'a'])
   assert.deepEqual(orderedBy([{ id: 'a' }, { id: 'b' }]).map((x) => x.id), ['a', 'b'])
-  assert.deepEqual(selectHero().map((x) => x.id), ['ugc-hero-1', 'ugc-hero-2', 'ugc-hero-3'])
+  assert.deepEqual(selectHero().map((x) => x.id), ['ugc-hero-front', 'ugc-hero-2', 'ugc-hero-3'])
   assert.ok(!selectGallery().some((x) => x.id === 'saas-creator-1' || x.id === 'spokesperson-gal-1'), 'the SaaS reorder never leaks into the UGC page')
   assert.ok(servesPage(PORTFOLIO.find((x) => x.id === 'spokesperson-gal-1'), 'spokesperson'))
   assert.ok(portfolioProblems({ ...PORTFOLIO[0], homeCreator: 0 }).length && portfolioProblems({ ...PORTFOLIO[0], homeCreator: 'a' }).length)

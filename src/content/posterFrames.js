@@ -91,6 +91,7 @@ export const POSTER_FRAMES = {
   '0d98f3a55ebd26c9b400e348d02972d9': 6.8, // portfolio:creator-15
   '93584825751798b27840b85a2ad43a6a': 3.9, // portfolio:creator-10
   '2bb321f0b45175d4b4a0b6e3f79206c9': 2.25, // portfolio:organic-gal-1; owner-chosen frame 2026-11-24 (pointing at camera, banknotes falling)
+  'd9bbca50d128dd5fe0c605b8e59d873b': 1.0, // portfolio:ugc-hero-front (UGC page centre phone, 2026-11-27)
   '33a4063ee0e8dafe3379f0a97817036e': 5.6, // portfolio:ugc-hero-1; home-hero:home-hero-ugc-1
   '3058e60f87200babb0b6c60606923e1b': 4.8, // portfolio:creator-05
   'c8914f7a0db3ac9f5ffd0721115dbe20': 14.9, // portfolio:ugc-gal-1

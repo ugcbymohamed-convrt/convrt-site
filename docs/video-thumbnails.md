@@ -111,6 +111,7 @@ Not changed: the Roadmap explainer keeps its deliberately chosen 25.6 s frame; t
 | `c8ed4698…` | 1.4s | portfolio:organic-gal-4 |
 | `cc23b5a0…` | 11.7s | portfolio:organic-hero-1 |
 | `cd6654c2…` | 16.7s | portfolio:creator-04 |
+| `d9bbca50…` | 1.0s | portfolio:ugc-hero-front (UGC page centre phone, 2026-11-27) |
 | `dc221b5a…` | 0.4s | home-hero-fr:home-hero-fr-main (FRENCH.mp4, 2026-11-26) |
 | `d0c08b8a…` | 7.2s | portfolio:en-josh-saas-1 |
 | `d2edf70e…` | 2.8s | portfolio:en-mohamed-ugc-1 |

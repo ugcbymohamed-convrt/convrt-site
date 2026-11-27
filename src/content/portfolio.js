@@ -1540,6 +1540,29 @@ const PORTFOLIO_ENTRIES = [
       approvedOn: '2026-11-20',
     },
   },
+  /* UGC PAGE FRONT VIDEO (owner, chat 2026-11-27): replaces the male creator's video (ugc-hero-1) in the large centre phone of the /ugc-video-agency hero. File: ~/Desktop/UGC-SERVICE-PAGEHERO.mp4 (4K HEVC, 264 MB,
+     over Stream's 200 MB direct-upload limit), re-encoded to 1080x1920 H.264 (60 fps, CRF 19) and uploaded to Cloudflare Stream the same day as UGC-SERVICE-PAGEHERO-2026-11-27. It is listed BEFORE ugc-hero-1, so it is
+     the first hero item = the centre phone. ugc-hero-1 stays in the Creator Showcase (`showcaseOnly`) and the homepage hero (homeHero.js has its own entry); it is just no longer on the UGC page. */
+  {
+    id: 'ugc-hero-front',
+    title: 'UGC Explainer — Presenter With Captions',
+    caption: 'UGC Explainer — Presenter With Captions.',
+    type: 'ugc',
+    industry: 'unclassified',
+    languages: ['en'],
+    source: { cloudflareId: 'd9bbca50d128dd5fe0c605b8e59d873b' },
+    poster: '/portfolio/ugc-hero-front.webp',
+    creatorId: 'cv-hero-front',
+    category: 'UGC · Paid social',
+    placement: 'hero',
+    approval: {
+      status: 'approved',
+      portfolioUse: true,
+      creatorConsent: true,
+      approvedBy: 'CONVRT owner (supplied the video for the UGC page hero in chat; creator consent to be confirmed)',
+      approvedOn: '2026-11-27',
+    },
+  },
   {
     id: 'ugc-hero-1',
     title: 'Moving-Planner App Ad — Presenter With Captions',
@@ -1551,7 +1574,7 @@ const PORTFOLIO_ENTRIES = [
     poster: '/portfolio/ugc-hero-1.webp',
     creatorId: 'cv-hero-1',
     category: 'UGC · Paid social',
-    placement: 'hero',
+    showcaseOnly: true, // no longer on the UGC page (2026-11-27: replaced by ugc-hero-front); still in the Creator Showcase
     approval: {
       status: 'approved',
       portfolioUse: true,
