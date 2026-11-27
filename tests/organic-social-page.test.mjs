@@ -75,7 +75,7 @@ test('route: /social-media-video-production (the approved service-page map URL) 
 
 test('head: title and description, unique, self-canonical, robots follows the video gate, sitemap follows the same gate', () => {
   const e = SITE_SEO[PATH]
-  assert.equal(e.title, 'Organic Social Media Video Production & Management | CONVRT')
+  assert.equal(e.title, 'Social Media Video Production | Short-Form Video | CONVRT')
   assert.ok(e.title.length <= 60, `title length ${e.title.length}`)
   assert.equal(e.description, 'Organic social media video production: human-led short-form video, from strategy to publishing and community management on Instagram, TikTok and Facebook.')
   assert.ok(e.description.length >= 120 && e.description.length <= 160, `description length ${e.description.length}`)

@@ -140,7 +140,7 @@ test('every public route: its own title, ONE canonical equal to the manifest, de
     assert.equal(count(head, /name="robots"/g), want.robots || want.noindex ? 1 : 0, `${p}: robots count`)
     const robots = (head.match(/name="robots" content="([^"]*)"/) || [])[1]
     assert.equal(robots, want.robots ?? (want.noindex ? 'noindex' : undefined), `${p}: robots value`)
-    assert.ok(!head.includes('Video Marketing Agency | UGC,') || p === '/', `${p}: homepage title leaked into another route`)
+    assert.ok(!head.includes('<title>Performance Creative Agency | CONVRT</title>') || p === '/', `${p}: homepage title leaked into another route`)
   }
 })
 
@@ -674,9 +674,9 @@ import { HOME_FAQ } from '../src/seo/homeFaq.js'
 test('homepage HTML: approved title, description, ONE canonical, indexable, social tags intact', () => {
   const h = page('/')
   const head = headOf(h)
-  assert.ok(head.includes('<title>Video Marketing Agency | UGC, SaaS &amp; Social Video | CONVRT</title>'))
+  assert.ok(head.includes('<title>Performance Creative Agency | CONVRT</title>'))
   assert.equal(count(head, /<title>/g), 1)
-  assert.ok(head.includes('<meta name="description" content="Human-led UGC ads, spokesperson videos and organic social video for SaaS, e-commerce and app brands, produced in English, Spanish, French and Arabic." />'))
+  assert.ok(head.includes('<meta name="description" content="CONVRT is a performance creative agency producing human-led UGC ads, spokesperson videos, SaaS videos and social content for brands ready to scale." />'))
   assert.equal(count(head, /name="description"/g), 1)
   assert.ok(head.includes(`<link rel="canonical" href="${SITE_URL}/" />`)); assert.equal(count(head, /rel="canonical"/g), 1)
   assert.ok(!/name="robots"/.test(head), 'homepage stays indexable')

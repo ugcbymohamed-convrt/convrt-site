@@ -91,7 +91,7 @@ test('pure SEO data: French title, description and social copy for each page; on
     assert.doesNotMatch(s.title + s.description, /\$|USD|€|\d\s?%|garanti|meilleure|n°\s?1|leader/i, `${bp}: no amount, guarantee or superlative in the snippet`)
   }
   assert.match(FR_SEO[SPK].title, /Spokesperson/i)
-  assert.match(FR_SEO[SAAS].title, /Production vidéo pour SaaS et applications/i)
+  assert.match(FR_SEO[SAAS].title, /Vidéos explicatives SaaS et démos produit/i)
   assert.match(FR_SEO[ORG].title, /réseaux sociaux/i)
 })
 

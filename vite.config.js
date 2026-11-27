@@ -1,5 +1,6 @@
 import { defineConfig, loadEnv } from 'vite'
 import react from '@vitejs/plugin-react'
+import path from 'node:path'
 import blogContent from './vite-plugin-blog.js'
 import sitemap from './vite-plugin-sitemap.js'
 import staticRoutes from './vite-plugin-static-routes.js'
@@ -44,6 +45,33 @@ function devApi() {
   }
 }
 
+/* Browser bundle only: swap src/i18n/dictionaries.js (all three translated dictionaries) for dictionaries.lazy.js (one language's dictionary, loaded on demand).
+   The static-routes SSR build and the tests use the real file, so server HTML and every test keep seeing the full dictionaries. */
+function lazyDictionaries() {
+  const real = path.resolve('src/i18n/dictionaries.js')
+  const lazy = path.resolve('src/i18n/dictionaries.lazy.js')
+  return {
+    name: 'convrt-lazy-dictionaries',
+    enforce: 'pre',
+    async resolveId(source, importer, options) {
+      if (options?.ssr || !importer || !/(^|\/)dictionaries(\.js)?$/.test(source)) return null
+      const resolved = await this.resolve(source, importer, { ...options, skipSelf: true })
+      return resolved && path.resolve(resolved.id) === real ? lazy : null
+    },
+  }
+}
+
 export default defineConfig({
-  plugins: [react(), devApi(), blogContent(), sitemap(), staticRoutes()],
+  plugins: [react(), devApi(), blogContent(), sitemap(), lazyDictionaries(), staticRoutes()],
+  build: {
+    rollupOptions: {
+      output: {
+        // One predictably named chunk per translated language, so the static HTML of a translated page can preload exactly its own dictionary.
+        chunkFileNames: (chunk) => {
+          const m = chunk.facadeModuleId?.match(/src\/i18n\/(es|fr|ar)\/index\.js$/)
+          return m ? `assets/dict-${m[1]}-[hash].js` : 'assets/[name]-[hash].js'
+        },
+      },
+    },
+  },
 })

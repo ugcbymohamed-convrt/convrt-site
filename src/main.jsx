@@ -6,6 +6,7 @@ import { preloadForPath } from './lib/routes/preload.js'
 import { initConsent } from './lib/consent.js'
 import { readLanguageChoice } from './lib/languagePreference.js'
 import { currentLocale } from './i18n/locale.js'
+import { ensureDictionary } from './i18n/dictionaries.js'
 import { LOCALES } from './i18n/locales.js'
 import './index.css'
 
@@ -45,10 +46,11 @@ if (hydrate) {
         console.error(error)
       },
     })
-  const ready = preloadForPath(normalizePathname(window.location.pathname))
+  // The language's dictionary (a separate chunk, translated pages only) and any route data are ready BEFORE React attaches, so the first client render equals the prerendered markup.
+  const ready = Promise.all([ensureDictionary(currentLocale()), preloadForPath(normalizePathname(window.location.pathname))])
   ready.then(attach, attach)
 } else {
-  createRoot(container).render(app)
+  ensureDictionary(currentLocale()).then(() => createRoot(container).render(app), () => createRoot(container).render(app))
 }
 
 /* Analytics consent (Google Consent Mode v2). Entirely inactive unless a GTM container ID is configured (VITE_GTM_ID): then the denied defaults are set, a saved

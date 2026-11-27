@@ -8,7 +8,7 @@
      /fr/creator-showcase       exemples de vidéos UGC de créateurs francophones
    /fr/spokesperson-video-production   vidéo Spokesperson (seed "vidéo porte parole", "vidéo avec présentateur": no measured volume; adjacent "vidéo présentation entreprise" 500). Own page: the
                                        presenter-led, scripted video for site, demos, apps and ads, never "agence UGC"
-   /fr/saas-video-production           production vidéo pour SaaS et applications (owner naming, 2026-11-26; the seeds below are the earlier ones: keyword targeting is for the SEO phase) (seeds "vidéo explicative saas", "vidéo démonstration logiciel", "agence vidéo saas": no measured volume): explainers, product demos, animated videos
+   /fr/saas-video-production           vidéos explicatives SaaS et démos produit (Phase 5 title; earlier owner naming, 2026-11-26; the seeds below are the earlier ones: keyword targeting is for the SEO phase) (seeds "vidéo explicative saas", "vidéo démonstration logiciel", "agence vidéo saas": no measured volume): explainers, product demos, animated videos
    /fr/social-media-video-production   vidéos pour les réseaux sociaux, contenu organique ("agence vidéo réseaux sociaux" 50, "agence production vidéo réseaux sociaux" seed): short-form organic video, never paid UGC
    Distinct primary keyword per page: FR_PRIMARY_KEYWORDS below (tests/french-services.test.mjs checks each one is in its page's title and H1 and that no page borrows another's).
    The homepage deliberately does NOT target "agence UGC" as its primary phrase, so the two pages do not compete; it introduces UGC and links to the dedicated page. */
@@ -29,7 +29,7 @@ export const FR_OG_IMAGE_ALT = 'CONVRT : des vidéos publicitaires pensées pour
 export const FR_PRIMARY_KEYWORDS = {
   '/ugc-video-agency': 'agence UGC',
   '/spokesperson-video-production': 'Spokesperson', // the owner's service term (2026-11-24); « porte-parole » stays in the description for the search term
-  '/saas-video-production': 'SaaS et applications', // owner's service name (2026-11-26); the keyword research is the SEO phase's job
+  '/saas-video-production': 'vidéos explicatives SaaS', // Phase 5 keyword plan (27 Nov 2026): « vidéo explicative SaaS »; the service name « SaaS et applications » stays in the H1 and the page
   '/social-media-video-production': 'réseaux sociaux',
 }
 
@@ -62,7 +62,7 @@ export const FR_SEO = {
   '/': {
     title: 'Agence vidéo publicitaire et création de contenus | CONVRT',
     description:
-      'Production vidéo publicitaire pour les marques : publicités UGC, vidéos Spokesperson et contenus pour les réseaux sociaux, de la stratégie créative au montage.',
+      'CONVRT crée des publicités vidéo, des contenus UGC et des vidéos SaaS. Une stratégie créative et une production pensées pour la performance.',
     ogTitle: 'CONVRT : des vidéos publicitaires pensées pour capter l’attention',
     ogDescription: 'Publicités UGC, vidéos Spokesperson, contenus pour les réseaux sociaux et stratégie créative, pour des campagnes qui se démarquent.',
   },
@@ -76,21 +76,21 @@ export const FR_SEO = {
     ogDescription: 'Des publicités UGC portées par de vrais créateurs, produites de A à Z, avec des tarifs et des droits d’utilisation transparents.',
   },
   '/spokesperson-video-production': {
-    title: 'Vidéo Spokesperson : de vrais présentateurs | CONVRT',
+    title: 'Vidéos avec présentateur – Spokesperson | CONVRT',
     description:
       'Production de vidéos Spokesperson : de vrais porte-parole face caméra, en plusieurs langues, pour votre site, vos démos produit, vos applications et vos publicités. Du script au montage.',
     ogTitle: 'CONVRT : production de vidéos Spokesperson',
     ogDescription: 'Des vidéos Spokesperson portées par de vrais présentateurs, en plusieurs langues, pour votre site, vos démos produit, vos applications et vos publicités.',
   },
   '/saas-video-production': {
-    title: 'Production vidéo pour SaaS et applications | CONVRT',
+    title: 'Vidéos explicatives SaaS et démos produit | CONVRT',
     description:
       'Production vidéo pour SaaS, logiciels et applications web ou mobiles : vidéos explicatives, démonstrations produit, vidéos animées et publicités, du concept à la livraison.',
     ogTitle: 'CONVRT : production vidéo pour les éditeurs de SaaS, de logiciels et d’applications',
     ogDescription: 'Vidéos explicatives, démonstrations produit, vidéos animées et publicités pour les logiciels et les applications : stratégie, script, présentateurs, motion design et montage au même endroit.',
   },
   '/social-media-video-production': {
-    title: 'Vidéos pour les réseaux sociaux : contenu organique | CONVRT',
+    title: 'Agence vidéo pour les réseaux sociaux | CONVRT',
     description:
       'Production de vidéos organiques pour les réseaux sociaux : contenu court porté par des humains, de la stratégie à la publication et à l’animation de communauté sur Facebook, Instagram et TikTok.',
     ogTitle: 'CONVRT : production et gestion de vidéos organiques pour les réseaux sociaux',

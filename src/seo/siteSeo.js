@@ -33,9 +33,9 @@ import { selectOurWork, selectSpokespersonHero, selectSpokespersonGallery, selec
 
 export const SITE_SEO = {
   '/': {
-    title: 'Video Marketing Agency | UGC, SaaS & Social Video | CONVRT',
+    title: 'Performance Creative Agency | CONVRT',
     description:
-      'Human-led UGC ads, spokesperson videos and organic social video for SaaS, e-commerce and app brands, produced in English, Spanish, French and Arabic.',
+      'CONVRT is a performance creative agency producing human-led UGC ads, spokesperson videos, SaaS videos and social content for brands ready to scale.',
     ogTitle: 'CONVRT — Performance creatives that convert.',
     ogDescription:
       'UGC ads, spokesperson videos, organic social content, and creative strategy — built to stop the scroll and drive action.',
@@ -50,13 +50,13 @@ export const SITE_SEO = {
   [PATHS.ugcVideoAgency]: {
     title: 'UGC Agency | Human-Led UGC Ads for Paid Social | CONVRT',
     // The price and usage period come from the business data, so the description can never disagree with the page.
-    description: `Human-led, multilingual UGC ads for paid social, from concept to edit. Packages from ${formatMoney(SPRINT.monthly)}/month, with ${USAGE_RIGHTS.includedMonths} months of worldwide usage rights included.`,
+    description: `UGC agency for paid social: human-led, multilingual UGC ads from concept to edit. Packages from ${formatMoney(SPRINT.monthly)}/month, with ${USAGE_RIGHTS.includedMonths} months of worldwide usage rights included.`,
     ogTitle: 'CONVRT: UGC Ads Built for Paid Social',
     ogDescription: 'Creator-led UGC video ads, produced end to end, with transparent pricing and usage rights.',
     indexable: true,
   },
   [PATHS.spokespersonVideoProduction]: {
-    title: 'Spokesperson Video Production | Professional Video Presenters | CONVRT',
+    title: 'Spokesperson Video Production Services | CONVRT',
     description:
       'Professional spokesperson videos featuring real human presenters. Multilingual video production for websites, product demos, apps and paid advertising.',
     ogTitle: 'CONVRT: Professional Spokesperson Video Production',
@@ -66,7 +66,7 @@ export const SITE_SEO = {
     indexable: selectSpokespersonHero(ENGLISH_LIBRARY).length + selectSpokespersonGallery(ENGLISH_LIBRARY).length > 0,
   },
   [PATHS.socialMediaVideoProduction]: {
-    title: 'Organic Social Media Video Production & Management | CONVRT',
+    title: 'Social Media Video Production | Short-Form Video | CONVRT',
     description:
       'Organic social media video production: human-led short-form video, from strategy to publishing and community management on Instagram, TikTok and Facebook.',
     ogTitle: 'CONVRT: Organic Social Video Production & Management',

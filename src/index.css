@@ -595,6 +595,13 @@ body {
 
 
 
+/* Scroll-reveal entrance (Reveal, src/components/roadmap/shared.jsx). A CSS keyframe so the text is visible in the prerendered HTML and animates at first paint without
+   waiting for JavaScript. Below-the-fold blocks are re-hidden after hydration and revealed on scroll by a transition (see Reveal). Off for prefers-reduced-motion. */
+@keyframes reveal-enter { from { opacity: 0; transform: translateY(1.25rem); } to { opacity: 1; transform: none; } }
+.reveal-enter { animation: reveal-enter 700ms ease-out both; }
+.reveal-enter-early { animation-duration: 300ms; }
+@media (prefers-reduced-motion: reduce) { .reveal-enter { animation: none; } }
+
 /* ── Right-to-left and Arabic (the Arabic site, /ar/; docs/multilingual-arabic.md) ──────────────────────────────────────────────────────────────────────────────
    Every rule below is scoped to :lang(ar) / dir="rtl", so English and Spanish pages are untouched (tests/arabic.test.mjs).
    • Layout: <html lang="ar" dir="rtl"> is written into the static HTML. The physical left/right utilities of the shared components are mirrored at build time by scripts/postcss-rtl-flip.js

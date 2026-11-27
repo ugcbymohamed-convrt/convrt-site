@@ -471,7 +471,8 @@ test('selector in the built HTML: visible, crawlable, current language marked; S
 })
 
 test('keyword map: the Spanish titles carry their one primary intent', () => {
-  assert.match(ES_SEO['/'].title, /agencia UGC/i)
+  assert.match(ES_SEO['/'].title, /agencia de vídeos publicitarios/i)
+  assert.doesNotMatch(ES_SEO['/'].title, /UGC/, 'the homepage no longer borrows the UGC page keyword')
   assert.match(ES_SEO['/ugc-video-agency'].title, /vídeos UGC/i)
   assert.match(ES_SEO['/spokesperson-video-production'].title, /presentador/i)
   assert.match(ES_SEO['/social-media-video-production'].title, /agencia de contenidos/i)

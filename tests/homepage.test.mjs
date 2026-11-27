@@ -19,14 +19,14 @@ const graph = () => homeGraph(SITE_SEO['/'])['@graph']
 
 test('homepage title and description: approved wording, within search-result lengths, unique among pages', () => {
   const e = SITE_SEO['/']
-  assert.equal(e.title, 'Video Marketing Agency | UGC, SaaS & Social Video | CONVRT')
-  assert.equal(e.description, 'Human-led UGC ads, spokesperson videos and organic social video for SaaS, e-commerce and app brands, produced in English, Spanish, French and Arabic.')
+  assert.equal(e.title, 'Performance Creative Agency | CONVRT')
+  assert.equal(e.description, 'CONVRT is a performance creative agency producing human-led UGC ads, spokesperson videos, SaaS videos and social content for brands ready to scale.')
   assert.ok(e.title.length <= 60 && e.description.length <= 160)
   for (const [p, o] of Object.entries(SITE_SEO)) if (p !== '/' && o.title) assert.ok(o.title !== e.title && o.description !== e.description, p)
   assert.equal(pageHead('/').url, `${SITE_URL}/`)
   assert.equal(pageHead('/').noindex, false)
   const html = read('index.html')
-  assert.ok(html.includes('<title>Video Marketing Agency | UGC, SaaS &amp; Social Video | CONVRT</title>'))
+  assert.ok(html.includes('<title>Performance Creative Agency | CONVRT</title>'))
   assert.ok(!/Performance Creative Studio for Paid Social/.test(html + read('src/seo/siteSeo.js')))
 })
 
@@ -135,7 +135,7 @@ test('hero subtitle: general positioning only; industries and language lists liv
   // the specific capabilities are still published where they belong
   assert.match(homeFaqText(HOME_FAQ.find((f) => f.q.includes('other languages'))), /English, Spanish, French and Arabic/)
   // metadata is a separate decision and is unchanged
-  assert.equal(SITE_SEO['/'].description, 'Human-led UGC ads, spokesperson videos and organic social video for SaaS, e-commerce and app brands, produced in English, Spanish, French and Arabic.')
+  assert.equal(SITE_SEO['/'].description, 'CONVRT is a performance creative agency producing human-led UGC ads, spokesperson videos, SaaS videos and social content for brands ready to scale.')
 })
 
 test('How It Works timeline: free-roadmap journey, approved copy, accurate claims, one CTA to the roadmap', () => {

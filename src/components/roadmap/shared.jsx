@@ -1,24 +1,47 @@
+import { useEffect, useRef, useState } from 'react'
 import { forward } from '../../lib/rtl.js'
 import { trackEvent } from '../../lib/analytics.js'
 import { scrollToApply } from '../../lib/roadmapForm.js'
-import { useInView } from '../caseStudies/shared/useInView.js'
 import { tr } from '../../i18n/tr.js'
 
-/* Scroll-reveal wrapper. Pure CSS transitions; reduced-motion users get the
-   final state immediately. Only used below the fold. */
-/* `early`: for the application form's intro — begins fading in while the block is still
-   ~30% of a screen below the fold and fades faster, so it is already visible when a CTA's
-   scroll lands (it used to start at opacity 0 and finish ~0.8 s after the click). */
+/* Scroll-reveal wrapper. Reduced-motion users get the final state immediately.
+
+   Content is NEVER hidden until JavaScript runs (technical audit F5-1: the prerendered above-the-fold text used to start at opacity 0 and only appeared after the
+   1.2 MB entry script had been downloaded and executed, which set mobile FCP/LCP):
+   • server HTML and the first client render ('initial'): visible, entering with the CSS keyframe `reveal-enter` that starts at first paint, so the same fade-and-rise
+     plays with no JavaScript and the text is in the document, readable and paintable immediately;
+   • after hydration the block is measured: already on screen (or within `early`'s margin) → left as it is; below the fold → hidden ('hidden') and revealed with the
+     original transition when it scrolls into view. A block that is off screen cannot flash, because nobody can see it while its state changes.
+   `early`: for the application form's intro — begins fading in while the block is still ~30% of a screen below the fold and fades faster, so it is already visible
+   when a CTA's scroll lands. */
 export function Reveal({ children, delay = 0, className = '', early = false }) {
-  const [ref, visible] = useInView(early ? 0 : 0.08, early ? '0px 0px 30% 0px' : '0px')
+  const ref = useRef(null)
+  const [state, setState] = useState('initial') // 'initial' (server + first paint) | 'hidden' (below the fold, waiting) | 'shown'
+  useEffect(() => {
+    const el = ref.current
+    if (!el || typeof IntersectionObserver === 'undefined' || !window.innerHeight) return undefined // no viewport to measure (hidden frame): leave the content visible
+    const margin = early ? window.innerHeight * 0.3 : 0
+    const { top, bottom } = el.getBoundingClientRect()
+    if (bottom > 0 && top < window.innerHeight + margin) return undefined // on screen now: keep the first-paint entrance, never re-hide
+    setState('hidden')
+    const obs = new IntersectionObserver(
+      ([e]) => { if (e.isIntersecting) { setState('shown'); obs.disconnect() } },
+      { threshold: early ? 0 : 0.08, rootMargin: early ? '0px 0px 30% 0px' : '0px' }
+    )
+    obs.observe(el)
+    return () => obs.disconnect()
+  }, [early])
+  const shown = state === 'shown'
   return (
     <div
       ref={ref}
       data-reveal=""
-      style={{ transitionDelay: visible ? `${delay}ms` : '0ms' }}
-      className={`transition-[opacity,transform] ${early ? 'duration-300' : 'duration-700'} ease-out motion-reduce:transition-none motion-reduce:opacity-100 motion-reduce:translate-y-0 ${
-        visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'
-      } ${className}`}
+      style={state === 'initial' ? { animationDelay: `${delay}ms` } : { transitionDelay: shown ? `${delay}ms` : '0ms' }}
+      className={`${
+        state === 'initial'
+          ? `reveal-enter${early ? ' reveal-enter-early' : ''}`
+          : `transition-[opacity,transform] ${early ? 'duration-300' : 'duration-700'} ease-out ${shown ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'}`
+      } motion-reduce:transition-none motion-reduce:opacity-100 motion-reduce:translate-y-0 ${className}`}
     >
       {children}
     </div>

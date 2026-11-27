@@ -69,6 +69,14 @@ export default function staticRoutes() {
       const publishedMetas = selectPublished(analyzed.map((a) => a.meta).filter(Boolean))
       const paths = allRoutePaths(publishedMetas.map((m) => m.slug))
 
+      // A translated page loads its language's dictionary chunk before hydrating (src/i18n/dictionaries.lazy.js): preload exactly that chunk from the HTML, so the
+      // request starts with the document and does not wait for the entry script to run.
+      const assetsDir = path.join(outDir, 'assets')
+      const dictionaryChunk = (locale) => {
+        const file = fs.existsSync(assetsDir) ? fs.readdirSync(assetsDir).find((f) => f.startsWith(`dict-${locale}-`) && f.endsWith('.js')) : undefined
+        return file ? `<link rel="modulepreload" crossorigin href="/assets/${file}">` : ''
+      }
+
       const ssr = await buildServerEntry(root)
       try {
         const { render } = await import(pathToFileURL(ssr.entry).href)
@@ -79,8 +87,8 @@ export default function staticRoutes() {
           const spec = buildHeadSpec(headParamsFor(p, publishedMetas))
           // A translated page may never ship with an untranslated string: every tr(...) the body render AND the head/JSON-LD build touched must have a dictionary entry.
           for (const m of globalThis.__i18nMisses ?? []) allMisses.add(`${p}  ${m}`)
-          const headHtml = headSpecToHtml(spec)
           const { locale } = parsePath(p)
+          const headHtml = headSpecToHtml(spec) + (locale === 'en' ? '' : dictionaryChunk(locale))
           const page = injectPage(shell, { headHtml, bodyHtml, ssrPath: p, lang: locale === 'en' ? undefined : LOCALES[locale].htmlLang, dir: locale === 'en' ? undefined : LOCALES[locale].dir })
           const file = path.join(outDir, routeFile(p))
           fs.mkdirSync(path.dirname(file), { recursive: true })

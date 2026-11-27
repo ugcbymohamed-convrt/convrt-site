@@ -73,7 +73,7 @@ test('route: /spokesperson-video-production is a public path with its own static
 
 test('head: approved title and description, unique, self-canonical (never the UGC page), robots follows the video gate, sitemap follows the same gate', () => {
   const e = SITE_SEO[PATH]
-  assert.equal(e.title, 'Spokesperson Video Production | Professional Video Presenters | CONVRT')
+  assert.equal(e.title, 'Spokesperson Video Production Services | CONVRT')
   assert.equal(e.description, 'Professional spokesperson videos featuring real human presenters. Multilingual video production for websites, product demos, apps and paid advertising.')
   assert.ok(e.description.length >= 120 && e.description.length <= 160, `description length ${e.description.length}`)
   assert.equal(e.canonicalPath, undefined, 'a canonical of its own, not a duplicate of another page')
@@ -84,7 +84,7 @@ test('head: approved title and description, unique, self-canonical (never the UG
   assert.equal(sitemapRoutes().includes(PATH), e.indexable)
   const html = page(PATH)
   const head = headOf(html)
-  assert.ok(head.includes('<title>Spokesperson Video Production | Professional Video Presenters | CONVRT</title>'))
+  assert.ok(head.includes('<title>Spokesperson Video Production Services | CONVRT</title>'))
   assert.ok(head.includes(`<link rel="canonical" href="${URL_}" />`))
   assert.equal((head.match(/rel="canonical"/g) || []).length, 1)
   assert.ok(!head.includes('href="https://www.convrt.studio/ugc-video-agency"'), 'never canonicalised to the UGC page')

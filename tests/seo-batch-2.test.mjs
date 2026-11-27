@@ -118,7 +118,7 @@ test('service label: one short label for service #4 on the homepage card and the
   assert.equal(SERVICE_LABELS.organic, 'Organic Social Video')
   assert.match(rootOf(page('/')), /<h3[^>]*>Organic Social Video<\/h3>/)
   for (const p of INDEXABLE) assert.match(rootOf(page(p)), /href="\/social-media-video-production"[^>]*>Organic Social<\/a>/, `Services menu on ${p}`)
-  assert.ok(SITE_SEO[PATHS.socialMediaVideoProduction].title.includes('Organic Social Media Video Production'))
+  assert.ok(SITE_SEO[PATHS.socialMediaVideoProduction].title.includes('Social Media Video Production'))
   assert.ok(!/Social Media Management<\/h3>/.test(rootOf(page('/'))))
 })
 

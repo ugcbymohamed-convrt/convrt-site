@@ -54,18 +54,18 @@ export const ES_SEO = {
       'Quién gestiona convrt.studio: el titular, el NIF, la dirección postal y los datos de contacto que exige la ley española, y cómo puede utilizarse el sitio web.',
   },
   '/': {
-    title: 'Agencia UGC y de vídeos publicitarios para marcas | CONVRT',
+    title: 'Agencia de vídeos publicitarios para marcas | CONVRT',
     description:
-      'Agencia de vídeo con creadores reales: anuncios UGC, vídeos Spokesperson y contenido para redes sociales, para marcas SaaS, e-commerce y apps. En español, inglés, francés y árabe.',
+      'Creamos vídeos publicitarios, anuncios UGC y contenido para redes sociales. Estrategia creativa y producción de vídeo para marcas que quieren crecer.',
     ogTitle: 'CONVRT: creativos de alto rendimiento que convierten',
     ogDescription: 'Anuncios UGC, vídeos Spokesperson, contenido orgánico y estrategia creativa, pensados para frenar el scroll y generar acción.',
   },
   '/ugc-video-agency': {
-    title: 'Vídeos UGC para anuncios | Producción con creadores | CONVRT',
+    title: 'Agencia UGC | Vídeos UGC para anuncios | CONVRT',
     // The "desde X/mes" price appears only once the owner has approved the EUR amount; until then the description makes no price claim.
     description: isPricingApproved('es')
-      ? `Producción de vídeos UGC para anuncios en redes sociales, de principio a fin. Paquetes desde ${formatPrice('es', priceOf('es', SPRINT.monthly))}/mes, con ${USAGE_RIGHTS.includedMonths} meses de derechos de uso mundiales incluidos.`
-      : `Producción de vídeos UGC para anuncios en redes sociales, de principio a fin. Paquetes mensuales y puntuales, con ${USAGE_RIGHTS.includedMonths} meses de derechos de uso mundiales incluidos.`,
+      ? `Agencia UGC: producción de vídeos UGC para anuncios en redes sociales, de principio a fin. Paquetes desde ${formatPrice('es', priceOf('es', SPRINT.monthly))}/mes, con ${USAGE_RIGHTS.includedMonths} meses de derechos de uso mundiales incluidos.`
+      : `Agencia UGC: producción de vídeos UGC para anuncios en redes sociales, de principio a fin. Paquetes mensuales y puntuales, con ${USAGE_RIGHTS.includedMonths} meses de derechos de uso mundiales incluidos.`,
     ogTitle: 'CONVRT: anuncios UGC pensados para redes sociales de pago',
     ogDescription: 'Anuncios UGC con creadores reales, producidos de principio a fin, con precios y derechos de uso transparentes.',
   },
