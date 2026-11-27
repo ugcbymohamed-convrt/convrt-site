@@ -59,6 +59,20 @@ const CARDS = [
   },
 ]
 
+/* Spanish only: «Dos ganadores» is drawn in the brand lime, the rest of the heading keeps the normal heading colour. The wording stays in the dictionary; this only wraps the phrase when it is present. */
+const ES_LIME_PHRASE = 'Dos ganadores'
+function rewardsTitle(text, locale) {
+  const at = locale === 'es' ? text.indexOf(ES_LIME_PHRASE) : -1
+  if (at < 0) return text
+  return (
+    <>
+      {text.slice(0, at)}
+      <span className="text-lime">{ES_LIME_PHRASE}</span>
+      {text.slice(at + ES_LIME_PHRASE.length)}
+    </>
+  )
+}
+
 export default function ReferralRewards({ onSelect }) {
   const tr = useTr()
   const ar = currentLocale() === 'ar'
@@ -66,7 +80,7 @@ export default function ReferralRewards({ onSelect }) {
     <section id="rewards" aria-labelledby="rewards-heading" className="relative scroll-mt-20 py-16 md:scroll-mt-24 md:py-24">
       <div className="mx-auto max-w-7xl px-5 md:px-8">
         <Reveal>
-          <SectionHeader id="rewards-heading" eyebrow={tr('Everyone wins')} title={tr('One Introduction. Two Winners.')}>
+          <SectionHeader id="rewards-heading" eyebrow={tr('Everyone wins')} title={rewardsTitle(tr('One Introduction. Two Winners.'), currentLocale())}>
             {tr('Choose how you want to earn.')}
           </SectionHeader>
         </Reveal>

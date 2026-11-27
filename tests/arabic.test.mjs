@@ -419,13 +419,13 @@ test('pricing page: USD amounts from the business data, Sprint / Sprint Plus / O
 test('Arabic pricing editorial pass (2026-11-26): MSA with the agreed marketing terms, no VAT wording on any Arabic page, FAQ and FAQPage JSON-LD in sync, English/Spanish/French untouched', () => {
   const t = rootText(page('/ar/pricing')).join(' ')
   // headline, description, goal question, billing labels, commitment wording (owner-supplied sentences)
-  for (const exact of ['باقات إنتاج فيديو', 'تناسب أهدافك.', 'ما هدفك من المحتوى؟', 'اشتراك شهري', 'لمرة واحدة', 'اختبارات إبداعية أوسع', 'باقة مخصصة', 'لنتحدث عن مشروعك', 'باقة مصممة خصيصًا لك', 'ناقش مشروعك معنا',
+  for (const exact of ['شريكك الإبداعي.', 'على كيفك.', 'ما هدفك من المحتوى؟', 'اشتراك شهري', 'لمرة واحدة', 'اختبارات إبداعية أوسع', 'باقة مخصصة', 'لنتحدث عن مشروعك', 'باقة مصممة خصيصًا لك', 'ناقش مشروعك معنا',
     'الحد الأدنى للاشتراك في الباقات الشهرية هو 3 أشهر. بعد انتهاء هذه المدة، يتجدد الاشتراك شهريًا، مع إمكانية الإلغاء بإشعار مسبق مدته 30 يومًا. كما يمكنك طلب باقة دون اشتراك شهري.',
     'الحد الأدنى للاشتراك في باقات المحتوى العضوي هو 6 أشهر', 'تحتاج صانع محتوى UGC؟', 'تحتاج مقدم؟', 'كونسيبتات مختلفة،', 'وليس مجرد هوكات مختلفة.', 'استراتيجيتك الإبداعية المجانية', 'مجانًا ودون أي التزام.',
     'مشاهدات', 'فيديو تم إنتاجه', 'عميل', 'لغات للإنتاج', 'كل ما تحتاج إلى معرفته قبل البدء.', 'الأسئلة الشائعة حول الباقات والأسعار', 'هل أنت مستعد لإنتاج', 'إعلانات تستحق المشاهدة؟',
     'منشوران أسبوعيًا، بمعدل 9 منشورات أصلية تقريبًا شهريًا.', '3 منشورات أسبوعيًا، بمعدل 13 منشورًا أصليًا شهريًا.', 'رشّح عميلًا و']) assert.ok(t.includes(exact), exact)
   assert.ok(!/(^|\s)(وش|مو|تبغى|تبغي|خلنا|اللي|كيف نشتغل|قل لنا)(\s|$)/.test(t), 'no Gulf dialect words')
-  for (const bad of ['فكرة إعلانية فريدة', 'أفكار مختلفة', 'بمقدّمين', 'الفكرة 1', 'أحِل']) assert.ok(!t.includes(bad), `retired expression: ${bad}`)
+  for (const bad of ['باقات إنتاج فيديو تناسب أهدافك', 'فكرة إعلانية فريدة', 'أفكار مختلفة', 'بمقدّمين', 'الفكرة 1', 'أحِل']) assert.ok(!t.includes(bad), `retired expression: ${bad}`)
   // the package figures and deliverables did not move
   for (const f of ['$3,000', '$3,500', '$5,000', '$6,000', '$1,500', '$2,500', '$200', '$233', '$167', '15 فيديو', '30 فيديو', 'مدة التنفيذ: 10 أيام عمل', 'مدة التنفيذ: 15 يوم عمل', 'حتى 3 من صناع المحتوى', 'حتى 5 من صناع المحتوى', 'حد أدنى للاشتراك لمدة 6 أشهر']) assert.ok(t.includes(f), f)
   // the creative testing vocabulary: «كونسيبت» everywhere the packages talk about concepts

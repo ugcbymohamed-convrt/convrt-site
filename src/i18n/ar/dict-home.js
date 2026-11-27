@@ -79,7 +79,7 @@ export default {
   "Good brands deserve": "البراندات الجيدة تستحق",
   "deserve better": "تستحق",
   "better creatives.": "إعلانات أفضل",
-  "Whether you need paid social creatives, UGC, spokesperson ads, or a long-term creative partner, we build content designed for modern attention.": "سواء احتجت إلى إعلانات مدفوعة للسوشيال ميديا، أو فيديوهات UGC، أو فيديوهات Spokesperson، أو شريك إبداعي طويل الأمد، نصنع محتوى يجذب اهتمام جمهورك.",
+  "Whether you need paid social creatives, UGC, spokesperson ads, or a long-term creative partner, we build content designed for modern attention.": "سواء كنت تحتاج إلى محتوى إبداعي لإعلاناتك المدفوعة على منصات التواصل، أو فيديوهات UGC، أو إعلانات بمتحدث أمام الكاميرا، أو شريك إبداعي على المدى الطويل، نصنع لك محتوى يلفت الانتباه وسط زحمة المحتوى.",
   "Send us an email": "راسلنا عبر البريد الإلكتروني",
   "Videos produced": "فيديو تم إنتاجه",
   "Views generated": "مشاهدات",
