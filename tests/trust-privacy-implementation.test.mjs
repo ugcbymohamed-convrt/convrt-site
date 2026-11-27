@@ -51,7 +51,7 @@ test('the legally required operator details (LSSI art. 10) are in the Legal Noti
   assert.match(lines, /Trading name: CONVRT Studio/)
   assert.match(lines, /Operator: Mohamed Doukkali Azizi, a self-employed professional/)
   assert.ok(lines.includes(CONTACT_EMAIL))
-  assert.ok(lines.includes(BOOKING_URL) && lines.includes(COMPANY_LINKEDIN_URL), 'a second means of direct contact')
+  assert.ok(lines.includes('[[contact form|/contact]]') && lines.includes(COMPANY_LINKEDIN_URL), 'a second means of direct contact (the contact form; no public Calendly link)')
   assert.equal(LEGAL_NOTICE_DETAILS_APPROVED, true, 'the owner approved showing the tax ID and address (21 Nov 2026)')
   assert.ok(lines.includes(OPERATOR.taxId) && lines.includes(OPERATOR.address))
   assert.ok(!/\[OWNER TO CONFIRM/.test(lines))

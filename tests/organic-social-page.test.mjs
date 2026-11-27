@@ -106,7 +106,7 @@ test('static HTML: breadcrumb, ONE H1 reading "Organic social videos. Built to e
   assert.ok(!t.includes('Keep your brand visible with human-led'), 'the long description is gone')
   const hero = html.split('<section aria-labelledby="organic-h1"')[1].split('</section>')[0]
   assert.equal((hero.match(/<p class="cs-fade-up mx-auto mt-6/g) || []).length, 1, 'one description paragraph only')
-  assert.match(hero, new RegExp(`<a href="${BOOKING_URL.replace(/[.?]/g, '\\$&')}" target="_blank" rel="noopener noreferrer"[^>]*>\\s*Discuss Your Content Strategy`), 'primary CTA → the existing discovery-call booking link, in a new tab')
+  assert.match(hero, /<a href="\/contact\?service=organic"[^>]*>\s*Discuss Your Content Strategy/, 'primary CTA → the Contact inquiry with Organic Social Video chosen (no public Calendly link)')
   assert.ok(!/Get 5 Free Ad Concepts|Your next 5 ad concepts/.test(hero), 'the paid-ads Roadmap promise is not in the organic hero')
   assert.match(html, new RegExp(`<a [^>]*href="${CREATOR_SHOWCASE_PATH}"[^>]*>\\s*Explore Videos`), 'secondary CTA → /our-work')
   assert.ok(html.includes(`href="${OFFER_PATHS.roadmap}"`) && /Get 5 Free Ad Concepts/.test(html), 'the Free Creative Growth Roadmap stays reachable (header and proof section)')
@@ -409,14 +409,14 @@ test('final CTA: the same system as the other service pages, with the organic he
   const t = textOf(page(PATH))
   const cta = html.split('id="get-started"')[1]
   assert.ok(t.includes('Ready to turn your ideas into content worth watching?'))
-  assert.match(cta, new RegExp(`href="${BOOKING_URL.replace(/[.?]/g, '\\$&')}"[^>]*>Discuss Your Content Strategy`))
-  assert.ok(/target="_blank" rel="noopener noreferrer"/.test(cta.match(/<a [^>]*Discuss Your Content Strategy/)?.[0] ?? '') || /target="_blank" rel="noopener noreferrer"[^>]*>Discuss Your Content Strategy/.test(cta), 'opens in a new tab')
+  assert.match(cta, /href="\/contact\?service=organic"[^>]*>Discuss Your Content Strategy/)
+  assert.ok(!/calendly\.com/.test(cta), 'no public Calendly link')
   assert.ok(!/Get 5 Free Ad Concepts|Free strategy session|fit check/.test(cta), 'the Roadmap wording is not under the booking button')
   assert.match(cta, /href="\/pricing#packages"[^>]*>See Pricing/)
   assert.match(cta, /href="mailto:[^"]+\?subject=Organic%20social%20video%20production"[^>]*>[\s\S]*Email the Founder/)
-  assert.deepEqual(ORGANIC_HERO.primary, { label: 'Discuss Your Content Strategy', href: BOOKING_URL, external: true })
+  assert.deepEqual(ORGANIC_HERO.primary, { label: 'Discuss Your Content Strategy', href: '/contact?service=organic', external: false })
   assert.equal(ORGANIC_PAGE_CTA.primary.href, ORGANIC_HERO.primary.href, 'the hero and the final CTA share one verified destination')
-  assert.equal(BOOKING_URL, 'https://calendly.com/mohamed-convrt/30min', 'the existing site-wide booking link, not a new one')
+  assert.equal(BOOKING_URL, 'https://calendly.com/mohamed-convrt/30min', 'the booking link of the qualified flows is unchanged')
   assert.match(read('src/i18n/cta.js'), /label: 'Get 5 Free Ad Concepts', href: hrefFor\(OFFER_PATHS\.roadmap, locale\)/, 'the global header CTA is untouched (English keeps the Roadmap)')
   // the roadmap application itself is untouched by this page
   assert.match(read('src/lib/roadmapQualification.js'), /QUALIFYING_TIMELINES = \['Immediately \/ This month', 'Within 1–3 months'\]/)

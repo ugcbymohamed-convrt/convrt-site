@@ -76,7 +76,7 @@ test('Call to action: the free Roadmap in the page language and the services sec
   }
 })
 
-test('About SEO: the approved preliminary titles, self-canonical, reciprocal hreflang in four languages, in the sitemap; the English page is unchanged', () => {
+test('About SEO: the approved preliminary titles, self-canonical, reciprocal hreflang in four languages, in the sitemap; the English page keeps its words in the premium layout', () => {
   assert.equal(SITE_SEO['/about'].title, 'About CONVRT | Creative Video Production Studio')
   assert.equal(SEO_BY_LOCALE.es['/about'].title, 'Sobre CONVRT | Estudio creativo de producción de vídeo')
   assert.equal(SEO_BY_LOCALE.fr['/about'].title, 'À propos de CONVRT | Studio de production vidéo créative')
@@ -85,7 +85,8 @@ test('About SEO: the approved preliminary titles, self-canonical, reciprocal hre
   for (const p of ['/about', ...Object.values(PAGES)]) { assert.ok(sm.includes(`https://www.convrt.studio${p}</loc>`), p); assert.match(page(p), new RegExp(`<link rel="canonical" href="https://www.convrt.studio${p}"`)) }
   const sets = ['/about', ...Object.values(PAGES)].map((p) => [...page(p).matchAll(/<link rel="alternate" hreflang="([^"]+)" href="([^"]+)"/g)].map((m) => `${m[1]} ${m[2]}`).join('|'))
   assert.ok(sets.every((s) => s === sets[0]) && sets[0].split('|').length === 5)
-  assert.match(page('/about'), /About CONVRT Studio/)
+  // English: the premium layout (src/components/about/EnglishAbout.jsx) with the same words; the h1 is split across two styled lines, so the text is read with the tags removed
+  assert.match(page('/about').replace(/<[^>]+>/g, '').replace(/<!-- -->/g, '').replace(/\s+/g, ' '), /About CONVRT Studio/)
   assert.match(page('/ar/about'), /<html lang="ar" dir="rtl">/)
   // structured data: the same Organization entity in every language, an AboutPage, no founder-as-person invention beyond the existing Organization.founder node
   for (const p of ['/about', ...Object.values(PAGES)]) {

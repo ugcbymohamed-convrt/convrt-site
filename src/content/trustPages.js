@@ -10,7 +10,7 @@
 
    Inline links: write [[label|/path]] and the template turns it into an anchor. Marker text must not contain a closing square bracket. */
 
-import { CONTACT_EMAIL, BOOKING_URL, OFFER_PATHS, CREATOR_SHOWCASE_PATH, PRIVACY_PATH, TERMS_PATH, LEGAL_NOTICE_PATH, COMPANY_LINKEDIN_URL, INSTAGRAM_URL, LEGAL_NOTICE_DETAILS_APPROVED } from '../config.js'
+import { CONTACT_EMAIL, CONTACT_PATH, OFFER_PATHS, CREATOR_SHOWCASE_PATH, PRIVACY_PATH, TERMS_PATH, LEGAL_NOTICE_PATH, COMPANY_LINKEDIN_URL, INSTAGRAM_URL, LEGAL_NOTICE_DETAILS_APPROVED } from '../config.js'
 import { BRAND, CREATOR_ALLOCATION, PRODUCTION_LANGUAGES, PRODUCTION_MODEL, INTERNATIONAL_CLIENTS, TALENT, USAGE_RIGHTS, TAX } from '../seo/businessKnowledge.js'
 import { ELYON_PROOF } from './ugcProof.js'
 import { CONVRT_STATS } from '../lib/siteStats.js'
@@ -22,7 +22,7 @@ import { consentConfigured } from '../lib/consent.js'
 export const OWNER_MARKER = '[OWNER TO CONFIRM'
 export const LEGAL_MARKER = '[LEGAL REVIEW'
 export const MARKER_RE = /\[(?:OWNER TO CONFIRM|LEGAL REVIEW)[^\]]*\]/g
-export const DRAFT_DATE = '21 November 2026'
+export const DRAFT_DATE = '27 November 2026'
 const UPDATED = DRAFT_DATE
 /* Whether Google Analytics is switched on in THIS build (VITE_GTM_ID set). The Privacy Policy describes the real state of the build it ships in. */
 const ANALYTICS_ACTIVE = consentConfigured()
@@ -45,7 +45,7 @@ export const operatorDetails = () => [
     ? `Postal address: ${OPERATOR.address}`
     : '[OWNER TO CONFIRM: show the operator’s postal address here. Spanish law requires a domicile or the address of an establishment in Spain (Ley 34/2002, art. 10); it is on file but not published until you approve it]',
   `Email: ${mail}`,
-  `Other ways to reach us directly: [[book a call|${BOOKING_URL}]] and [[CONVRT Studio on LinkedIn|${COMPANY_LINKEDIN_URL}]]`,
+  `Other ways to reach us directly: [[contact form|${CONTACT_PATH}]] and [[CONVRT Studio on LinkedIn|${COMPANY_LINKEDIN_URL}]]`,
 ]
 
 export const TRUST_CONTENT = {
@@ -158,6 +158,8 @@ export const TRUST_CONTENT = {
             'Free ad hooks. We collect your email address and the industry you choose, and use them to send you the hooks you asked for. Basis: your request. We may ask you to confirm your email first. Receiving the hooks does not add you to our marketing list.',
             'Free video application. We collect your name, work email, company website, your answers about your business (business type, monthly ad spend range, videos per month, type of video, timing, interest in ongoing production) and an optional description, to review the application and contact you about it. Basis: steps you ask us to take before an agreement, and our legitimate interest in running the offer. We receive an email alert for each application through our email sender, Resend.',
             'Referral Partner Program. We collect your name, email, partner type, program choice, and optionally your company or agency name and website or LinkedIn profile, to review your application and contact you about it. Basis: as for the free video application. The form has a required box confirming that we may use these details for that purpose.',
+            'General enquiry form. On the Contact page we collect your name, email, brand or company name, the service you are interested in, your message and your confirmation that you have read this policy, and optionally your website or social profile and an estimated budget range. We email these details to ourselves and use them to reply to you, to decide whether and how we can help, and to prepare a proposal if you ask for one. They are not added to our marketing list. Basis: steps you ask us to take before an agreement, and our legitimate interest in answering business enquiries.',
+            'Project application. When you apply for a package we collect your name, email, brand or company name, your website or social profile, the package you selected, your answers about your project (a description and objective, your advertising spend or current social media activity, for custom projects the type of production and an estimated budget, how soon you are ready, your desired start date and production languages) and your acknowledgement of the package terms. We also record the language of the page, the page you came from and, if you arrived through a campaign link, its campaign details (utm_source, utm_medium, utm_campaign, utm_content and utm_term) and, only if you accepted analytics, the first page of your visit. We email these details to ourselves to review your application and decide the next step personally. The price shown comes from our own pricing, never from your browser. The application is not a purchase and does not authorise a payment. They are not added to our marketing list. Basis: as for the general enquiry form.',
             'Email and calls. If you email us or book a call, we use what you send to reply and to work with you. Basis: your request, and our legitimate interest in answering business enquiries.',
             'Technical data. Our hosting provider, Vercel, processes your IP address and request details to serve the website and keep it secure. Videos on the site are delivered through Cloudflare Stream. Basis: our legitimate interest in a secure, working website.',
             'Creator form. The link for freelance creators opens a Google Form; what you enter there is handled through Google Forms.',
@@ -168,7 +170,7 @@ export const TRUST_CONTENT = {
       {
         heading: 'Marketing emails (optional, separate from everything else)',
         body: [
-          'We send promotional emails (creative tips and offers) only if you tick the optional box that appears next to our forms. The box is never ticked for you, and you can submit every form without ticking it. Not ticking it never affects your application, the resource you asked for, or any reply from us.',
+          'We send promotional emails (creative tips and offers) only if you tick the optional box that appears next to some of our forms (not the general enquiry form or the project application). The box is never ticked for you, and you can submit every form without ticking it. Not ticking it never affects your application, the resource you asked for, or any reply from us.',
           `The wording you agree to is: "${marketingConsentText()}" We keep applications and requests separate from our marketing list. When you tick the box we record that you agreed, the date and time, which form you used and the version of the wording you saw (currently ${CURRENT_MARKETING_CONSENT_VERSION}), and add your address to the marketing list. Basis: your consent.`,
           'Emails about your application, the resource you requested, a booking or a project you have with us are service messages, not marketing, and are not covered by this choice.',
           'You can withdraw your consent at any time, free of charge: use the unsubscribe link in any marketing email (every marketing email includes one and says who we are), or email us. Unsubscribing stops promotional emails; we keep a minimal record that you unsubscribed so that we do not email you again. It does not affect any application you made.',
@@ -198,7 +200,7 @@ export const TRUST_CONTENT = {
           { list: [
             'convrt_consent_v1 (kept until you change it or clear your browser data; used only once the cookie banner is switched on): your cookie choice.',
             'convrt_language (kept until you clear your browser data): the language you chose on purpose (English, Spanish, French or Arabic), or that you closed the language suggestion, so we do not ask again. It is never sent to us and never changes what a page shows. The suggestion itself appears only to visitors whose request comes from Spain (Spanish), from France or another French-speaking country (French), or from an Arabic-speaking country (Arabic): our hosting provider (Vercel) tells our server the country of the request, our server answers only yes or no and stores nothing, and your browser location is never requested.',
-            'convrt_scale_attribution (this browser tab only): the campaign details in the link you arrived through (utm_source, utm_medium, utm_campaign, utm_content and utm_term), so they can be passed on to our booking link. We do not store advertising click identifiers (such as gclid or fbclid).',
+            'convrt_scale_attribution (this browser tab only): the campaign details in the link you arrived through (utm_source, utm_medium, utm_campaign, utm_content and utm_term), so they can be passed on to our booking link or included in an application you send us. We do not store advertising click identifiers (such as gclid or fbclid).',
             'convrt_calendly_requested (this browser session only): that you asked to see the booking calendar.',
             'convrt_landing_page (this browser session only, and only if you accept analytics): the first page of your visit, used to see which pages lead to enquiries.',
             'Google Analytics cookies _ga and _ga_<container ID>, only if you accept analytics: Google documents a lifetime of up to two years for them.',
@@ -218,7 +220,7 @@ export const TRUST_CONTENT = {
       {
         heading: 'Who we share information with',
         body: [
-          'Only with service providers that handle it on our behalf, under their own standard terms and privacy notices: MailerLite (application, request and email-list records, and sending our emails), Resend (email alerts to us when someone applies), Calendly (bookings), Vercel (hosting), Cloudflare (video delivery) and, once analytics is switched on and only if you accept it, Google (analytics). We have no other customer database or CRM. We do not sell personal information.',
+          'Only with service providers that handle it on our behalf, under their own standard terms and privacy notices: MailerLite (application, request and email-list records, and sending our emails), Resend (email alerts to us when someone applies or sends an enquiry), Calendly (bookings), Vercel (hosting), Cloudflare (video delivery) and, once analytics is switched on and only if you accept it, Google (analytics). We have no other customer database or CRM. We do not sell personal information.',
         ],
       },
       {

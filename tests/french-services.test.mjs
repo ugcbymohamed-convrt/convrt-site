@@ -310,7 +310,7 @@ test('conversion: the Roadmap is the French flow; no 10 free hooks, no referral 
     assert.ok(!hrefs.some((u) => u === '/creative-growth-roadmap' || u === '/risk-free-trial'), `${bp}: no link into the English flows`)
   }
   for (const bp of [SPK, SAAS]) assert.ok(page(fr(bp)).includes('href="/fr/creative-growth-roadmap"'), `${bp}: French Roadmap`)
-  assert.ok(/href="https:\/\/calendly\.com\//.test(page(fr(ORG))), 'organic: the strategy call (Calendly), as on the English page')
+  assert.ok(page(fr(ORG)).includes('href="/fr/contact?service=organic"') && !/calendly\.com/.test(page(fr(ORG))), 'organic: the French Contact inquiry with Organic Social Video chosen, no public Calendly link')
 })
 
 test('no leftover English: the French service pages render only French sentences (brand, package and tool names aside)', () => {

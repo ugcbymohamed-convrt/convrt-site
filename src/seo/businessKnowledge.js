@@ -15,7 +15,7 @@
    • `status: 'pending-owner-confirmation'` would mark a value the owner has NOT confirmed; pages must not build new
      claims on it (see OWNER_REVIEW_FLAGS at the bottom). */
 
-import { SITE_URL, CONTACT_EMAIL, BOOKING_URL, INSTAGRAM_URL, COMPANY_LINKEDIN_URL, FOUNDER_LINKEDIN_URL } from '../config.js'
+import { SITE_URL, CONTACT_EMAIL, INSTAGRAM_URL, COMPANY_LINKEDIN_URL, FOUNDER_LINKEDIN_URL } from '../config.js'
 import { OPERATOR } from '../content/operator.js'
 import { CONVRT_STATS, FOUNDER_EXPERIENCE } from '../lib/siteStats.js'
 
@@ -289,13 +289,15 @@ export const ORGANIC_COMMITMENT = {
     'Building a meaningful social media presence takes consistency. Our organic partnerships begin with a six-month commitment, giving us time to develop your content strategy, publish consistently, learn what resonates with your audience and assess performance before making longer-term decisions.',
 }
 
-/* Organic Social visitors get ONE organic-specific route: the direct strategy call (a 20-minute Calendly event: its public title is "20-minute strategy call"; the URL slug "30min" is legacy) (the same Calendly event as BOOKING_URL, opened in a new tab). The Free Creative Growth
-   Roadmap is a paid-ads offer whose form asks about monthly paid-ad spend, so it is not used for organic leads. The Organic page hero, its proof and final CTA, its FAQ link and the
-   Organic promo on /pricing all read this one object (Batch 2, 2026-11-21: the Pricing promo used a mailto before; owner may switch it back here in one line). */
+/* Organic Social visitors get ONE organic-specific route: the Contact inquiry with "Organic Social Video" already chosen (/contact?service=organic, read by src/components/contact/ContactForm.jsx).
+   It used to be the public 20-minute Calendly strategy call (BOOKING_URL, a new tab); the owner asked on 2026-11-27 to remove every unrestricted public Calendly link, so the conversation now starts with
+   a short inquiry (existing Contact form, owner e-mail through Resend) and the calendar stays inside the qualified flows (Creative Growth Roadmap booking, private invitations). The Free Creative Growth
+   Roadmap is a paid-ads offer whose form asks about monthly paid-ad spend, so it is not used for organic leads. The Organic page hero, its proof and final CTA, its FAQ link and the Organic promo on
+   /pricing all read this one object. The href is an English path; every place that renders it localizes it with hrefFor(). */
 export const ORGANIC_CTA = {
   label: 'Discuss Your Content Strategy',
-  href: BOOKING_URL,
-  external: true,
+  href: '/contact?service=organic',
+  external: false,
   promo: {
     eyebrow: 'Your organic content partnership',
     headline: "Let's build your brand's organic presence.",

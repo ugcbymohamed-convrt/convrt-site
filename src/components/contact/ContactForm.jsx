@@ -80,6 +80,13 @@ export default function ContactForm({ copy, locale, successRef }) {
   }
   const msg = (field) => (errors[field] ? errorText(copy, field, errors[field]) : undefined)
 
+  /* A link from another page can name the service ("/contact?service=organic": the Organic Social page and the pricing promo). Applied once after mount, only for a known service key; it sets the
+     choice without counting as the visitor starting the form (no contact_form_start). */
+  useEffect(() => {
+    const wanted = new URLSearchParams(window.location.search).get('service')
+    if (wanted && SERVICE_KEYS.includes(wanted)) setValues((v) => (v.service ? v : { ...v, service: wanted }))
+  }, [])
+
   useEffect(() => {
     if (status !== 'success') return
     successRef.current?.focus({ preventScroll: true })

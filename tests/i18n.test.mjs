@@ -435,7 +435,7 @@ test('Spanish pages never route into the English-only conversion flows (the Road
   }
   {
     const h = bodyOf(page('/es/pricing'))
-    assert.match(h, new RegExp(`href="${BOOKING_URL.replace(/[.*+?^${}()|[\]\\/]/g, '\\$&')}"[^>]*target="_blank"[^>]*rel="noopener noreferrer"`), '/es/pricing: booking link opens safely in a new tab')
+    assert.ok(h.includes('href="/es/contact?service=organic"') && !/calendly\.com/.test(h), '/es/pricing: the organic route is the Spanish Contact inquiry; no public Calendly link (owner, 27 Nov 2026)')
     assert.ok(!bodyOf(page('/es/contact')).includes('calendly'), '/es/contact: no Calendly or booking link (owner, 26 Nov 2026)')
   }
 })
