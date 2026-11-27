@@ -1,11 +1,9 @@
 import { useInView } from '../caseStudies/shared/useInView.js'
 import { CONTACT_EMAIL } from '../../config.js'
-import DiscoveryCallButton from './DiscoveryCallButton.jsx'
+import ScaleCtaButton from './ScaleCtaButton.jsx'
 
-/* The old permanently-visible white Calendly iframe broke the dark,
-   premium feel while people were just scrolling through the story.
-   This is now a strong CTA panel — the actual calendar only appears
-   in BookingModal.jsx once someone clicks. */
+/* A strong CTA panel. There is no public booking calendar on /scale any more (owner decision, 27 Nov 2026): the button opens the Free Creative Growth Roadmap,
+   where booking is shown only to qualified visitors. */
 export default function ScaleBooking() {
   const [ref, visible] = useInView(0.15)
 
@@ -33,7 +31,7 @@ export default function ScaleBooking() {
 
         <FadeUp show={visible} delay={180}>
           <div className="mt-9">
-            <DiscoveryCallButton location="booking_section" size="lg" />
+            <ScaleCtaButton location="booking_section" size="lg" />
           </div>
           <p className="mt-4 text-[13px] text-ink-subtle">
             No hard sell. We'll first determine whether there's actually a fit.

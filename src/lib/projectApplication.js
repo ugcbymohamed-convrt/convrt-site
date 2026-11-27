@@ -94,7 +94,7 @@ export function selectionFromSearch(locale, search) {
   const q = new URLSearchParams(search || '')
   return selectionFor(locale, q.get('package') ?? '', q.get('billing') ?? '', { defaultBilling: true })
 }
-export const SOURCE_PAGES = ['pricing']
+export const SOURCE_PAGES = ['pricing', 'organic-social']
 export const sourceFromSearch = (search) => {
   const v = new URLSearchParams(search || '').get('from')
   return SOURCE_PAGES.includes(v) ? v : 'direct'

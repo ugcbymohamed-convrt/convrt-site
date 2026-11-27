@@ -25,7 +25,7 @@ import { captionEs, ES_LANGUAGE_LABELS } from '../src/i18n/es/labels.js'
 import { LOCALIZED_FLOWS, flowAvailable, resolveCta } from '../src/i18n/cta.js'
 import { prioritizeLanguage, PORTFOLIO, selectDisplayable } from '../src/content/portfolio.js'
 import { SITE_SEO } from '../src/seo/siteSeo.js'
-import { SITE_URL, OFFER_PATHS, BOOKING_URL } from '../src/config.js'
+import { SITE_URL, OFFER_PATHS } from '../src/config.js'
 import { SPRINT, SPRINT_PLUS, ORGANIC, USAGE_RIGHTS } from '../src/seo/businessKnowledge.js'
 import { buildSitemap, localizedSitemapPaths } from '../src/lib/seo/sitemap.js'
 import { isReleased, releaseBlocker, blockedPages } from '../src/i18n/release.js'
@@ -435,7 +435,8 @@ test('Spanish pages never route into the English-only conversion flows (the Road
   }
   {
     const h = bodyOf(page('/es/pricing'))
-    assert.match(h, new RegExp(`href="${BOOKING_URL.replace(/[.*+?^${}()|[\]\\/]/g, '\\$&')}"[^>]*target="_blank"[^>]*rel="noopener noreferrer"`), '/es/pricing: booking link opens safely in a new tab')
+    assert.ok(h.includes('href="/es/project-application?package=custom-organic&amp;from=pricing"'), '/es/pricing: the organic CTAs open the Spanish project application (no public booking link)')
+    assert.ok(!h.includes('calendly'), '/es/pricing: no Calendly link (owner decision, 27 Nov 2026)')
     assert.ok(!bodyOf(page('/es/contact')).includes('calendly'), '/es/contact: no Calendly or booking link (owner, 26 Nov 2026)')
   }
 })
@@ -629,7 +630,7 @@ test('Spanish SaaS and Organic pages launch without videos: a text-led hero, no 
     assert.equal([...body.matchAll(/<h1[\s>]/g)].length, 1)
     assert.ok(!/name="robots"/.test(headOf(h)), `${p}: indexable`)
     assert.ok(jsonLd(h).length >= 1 && /"FAQPage"/.test(JSON.stringify(jsonLd(h))), `${p}: JSON-LD with the FAQ`)
-    assert.ok(body.includes('href="/es/creative-growth-roadmap"') || body.includes('calendly.com'), `${p}: a conversion CTA`)
+    assert.ok(body.includes('href="/es/creative-growth-roadmap"') || body.includes('href="/es/project-application'), `${p}: a conversion CTA`)
   }
   // English keeps its (empty-frame) fallback hero: unchanged
   assert.match(bodyOf(page('/saas-video-production')), /aspect-\[9\/19\.5\]/)

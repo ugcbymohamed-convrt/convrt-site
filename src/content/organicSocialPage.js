@@ -30,9 +30,9 @@ export const ORGANIC_HERO = {
   sizer: 'resonate.',
   description:
     'Turn your brand into content worth following. We handle short-form social media video production end to end: creative strategy, creator-led filming, editing, publishing and community management, so your brand shows up consistently.',
-  /* The primary CTA is the organic strategy call (ORGANIC_CTA in src/seo/businessKnowledge.js: the site's existing discovery-call booking link, the Calendly event the /scale page and the
-     Roadmap booking already use), opened in a new tab. The proof section's button and the Pricing page's organic promo use the same route. The Free Creative Growth Roadmap is a paid-ads offer, so it is not an action on this page; it stays only in the global header. The "Your next 5 ad
-     concepts" line above the CTAs is a Roadmap promise, so it is removed on this page (leadIn: null). */
+  /* The primary CTA is the organic project application (ORGANIC_CTA in src/seo/businessKnowledge.js: /project-application?package=custom-organic, localized by hrefFor), in the same tab. It replaced the public strategy-call
+     booking link on 27 Nov 2026 (owner decision). The proof section's button, the FAQ link and the Pricing page's organic promo use the same route. The Free Creative Growth Roadmap is a paid-ads offer, so it is not an action on
+     this page; it stays only in the global header. The "Your next 5 ad concepts" line above the CTAs is a Roadmap promise, so it is removed on this page (leadIn: null). */
   primary: { label: ORGANIC_CTA.label, href: ORGANIC_CTA.href, external: ORGANIC_CTA.external },
   leadIn: null,
   /* No scrollTo: this button always goes to /our-work. */

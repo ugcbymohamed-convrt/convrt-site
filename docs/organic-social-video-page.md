@@ -48,7 +48,7 @@ organic video flips both with no other change. Do not flip anything else without
 - **Proof:** the only organic proof is the published Graspo case study (10.7M views, 3.4M accounts reached, 75 unique inbound leads; Meta Business Suite and Graspo's inbound tracker, 1 Jan to 19 Jun 2026), with its
   qualifiers. A test ties the figures to the case-study source. The UGC page's Elyon 5.28x (a paid result) and its testimonials are not used. There is no organic testimonial yet, so none is shown; add one to
   `ORGANIC_PROOF.testimonials` only when verified and permitted.
-- **CTAs (revision 2):** the hero's and final CTA's primary button is "Discuss Your Content Strategy" → `BOOKING_URL` (the existing site-wide Calendly discovery call that `/scale` and the Roadmap booking use),
+- **CTAs (revision 2):** the hero's and final CTA's primary button is "Discuss Your Content Strategy" → **the organic project application** (`/project-application?package=custom-organic&from=organic-social`, since 27 Nov 2026; before that the public Calendly strategy call `BOOKING_URL`),
   opened in a new tab with the visitor's stored UTM parameters (`external: true` in `ORGANIC_HERO.primary` / `ORGANIC_PAGE_CTA.primary`; the markup is a plain link). The Roadmap ("Get 5 Free Ad Concepts") is a
   paid-ads offer, so it is not the organic hero action; it stays in the global header and the proof section. Because "Your next 5 ad concepts. Tailored to your brand. On us." and "Free strategy session ... fit check"
   describe the Roadmap, they are removed on this page (`leadIn: null`, `note: null`); the other pages keep them. The header CTA is unchanged.

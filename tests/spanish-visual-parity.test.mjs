@@ -121,10 +121,11 @@ test('pricing: headline, subtitle, renamed service, FAQ tabs on one row on deskt
   assert.match(faq, /flex-wrap justify-center/, 'English tablist is unchanged')
 })
 
-test('pricing: paid prospects still go to the Roadmap, organic to the strategy call; commitments and EUR unchanged', () => {
+test('pricing: paid prospects still go to the Roadmap, organic to the organic project application; commitments and EUR unchanged', () => {
   const html = page('pricing')
   assert.ok(html.includes('href="/es/creative-growth-roadmap"'))
-  assert.ok(/href="https:\/\/calendly\.com\/[^"]+"/.test(html))
+  assert.ok(html.includes('href="/es/project-application?package=custom-organic&amp;from=pricing"'))
+  assert.ok(!/calendly/i.test(html), 'no public booking link on /es/pricing')
   const t = text(html)
   assert.match(t, /3 meses/)
   assert.match(t, /6 meses/)

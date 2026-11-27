@@ -13,7 +13,7 @@
 - **Booking never depends on analytics consent.** A visitor who rejects every cookie on this site can still book: show the calendar, open Calendly in a new tab, or email.
 - The request is remembered for the browser session only (`sessionStorage`, key `convrt_calendly_requested`) so reopening the calendar does not ask again.
 - Events (consent-gated like all others): `calendar_load_click`, `calendar_newtab_click` (parameter `page` = `roadmap` or `scale`). The existing booking events are unchanged.
-- Other places: the Organic Social page, the Contact draft and the `/scale` fallback link open Calendly's own page in a **new tab** (Calendly then shows its own notice); nothing changes there.
+- Other places: **none since 27 Nov 2026.** The Organic Social page, `/pricing`, `/scale` and the Contact page no longer link Calendly (owner decision; see docs/calendly-removal.md). The gate remains only inside the Roadmap booking, for qualified visitors.
 
 ## Is the embed essential?
 Booking itself does not need the embed: a plain link to Calendly works and Calendly then controls its own consent in its own page. The embed is a convenience (the visitor stays on the page) and is what lets the site see Calendly's "scheduled" message for conversion tracking. Without the embed, `roadmap_booking_confirmed` and `booking_completed` could not be measured.

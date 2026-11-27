@@ -13,7 +13,6 @@ import ScaleBooking from './components/scale/ScaleBooking.jsx'
 import ScaleFAQ from './components/scale/ScaleFAQ.jsx'
 import ScaleFinalCTA from './components/scale/ScaleFinalCTA.jsx'
 import ScaleStickyCTA from './components/scale/ScaleStickyCTA.jsx'
-import BookingModal from './components/scale/BookingModal.jsx'
 import { captureAttribution } from './lib/analytics.js'
 import { useDocumentHead } from './lib/useDocumentHead.js'
 import { pageHead } from './seo/siteSeo.js'
@@ -55,13 +54,12 @@ export default function ScalePage() {
       <ScaleFit />
       <SectionDivider />
 
-      {/* 9–11. Book the call, objections, final decision point */}
+      {/* 9–11. Start the Roadmap, objections, final decision point */}
       <ScaleBooking />
       <ScaleFAQ />
       <ScaleFinalCTA />
 
       <ScaleStickyCTA />
-      <BookingModal />
     </>
   )
 }

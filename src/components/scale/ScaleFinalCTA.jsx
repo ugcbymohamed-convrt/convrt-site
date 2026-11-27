@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import DiscoveryCallButton from './DiscoveryCallButton.jsx'
+import ScaleCtaButton from './ScaleCtaButton.jsx'
 
 export default function ScaleFinalCTA() {
   const sectionRef = useRef(null)
@@ -29,14 +29,14 @@ export default function ScaleFinalCTA() {
 
         <FadeUp inView={inView} delay={120}>
           <p className="mt-6 text-base md:text-lg text-ink-muted leading-relaxed max-w-xl mx-auto">
-            Book a discovery call and let's see whether CONVRT can help build the creative system
+            Start your free Creative Growth Roadmap and let's see whether CONVRT can help build the creative system
             behind your next stage of growth.
           </p>
         </FadeUp>
 
         <FadeUp inView={inView} delay={220}>
           <div className="mt-9">
-            <DiscoveryCallButton location="final_cta" size="lg" />
+            <ScaleCtaButton location="final_cta" size="lg" />
           </div>
         </FadeUp>
       </div>

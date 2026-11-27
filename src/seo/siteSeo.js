@@ -116,9 +116,9 @@ export const SITE_SEO = {
   '/case-studies': { canonicalPath: '/case-studies/graspo', indexable: true },
   // Paid-acquisition landing page, intentionally outside organic search (see ScalePage.jsx).
   '/scale': {
-    title: 'Book a Discovery Call | CONVRT Performance Creative Studio',
+    title: 'Free Creative Growth Roadmap | CONVRT Performance Creative Studio',
     description:
-      'CONVRT is a performance creative partner for growth teams running paid social. Founder-led, agency-grade, built around testing. Book a discovery call.',
+      'CONVRT is a performance creative partner for growth teams running paid social. Founder-led, agency-grade, built around testing. Start with a free Creative Growth Roadmap.',
     robots: 'noindex, follow',
     indexable: false,
   },

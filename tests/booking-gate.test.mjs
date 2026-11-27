@@ -37,8 +37,8 @@ test('CalendlyGate (server render): shows the notice and two ways to book, and r
   assert.ok(!/analytics|accept|consent banner/i.test(html), 'booking never depends on the site analytics choice')
 })
 
-test('both embeds sit inside the gate; Calendly cookie notice is no longer hidden anywhere', () => {
-  for (const f of ['src/components/roadmap/RoadmapBooking.jsx', 'src/components/scale/BookingModal.jsx']) {
+test('the one embed (the Roadmap booking, qualified visitors only) sits inside the gate; Calendly cookie notice is no longer hidden anywhere', () => {
+  for (const f of ['src/components/roadmap/RoadmapBooking.jsx']) {
     const s = read(f)
     assert.match(s, /<CalendlyGate /, `${f} uses the gate`)
     assert.ok(s.indexOf('<CalendlyGate') < s.indexOf('<iframe'), `${f}: the iframe is a child of the gate, never above it`)
@@ -51,11 +51,15 @@ test('both embeds sit inside the gate; Calendly cookie notice is no longer hidde
     assert.ok(!/assets\.calendly\.com\/assets\/external\/widget/.test(s), `${f}: no Calendly widget script`)
   }
   assert.ok(!/<link[^>]+calendly|preconnect[^>]+calendly/i.test(read('index.html')), 'no early connection to Calendly')
+  // Owner decision (27 Nov 2026): no unrestricted public booking. The /scale booking modal and its helper are gone; the gate is used only by the Roadmap booking.
+  for (const f of ['src/components/scale/BookingModal.jsx', 'src/lib/bookingModal.js']) assert.ok(!fs.existsSync(path.join(ROOT, f)), `${f} was removed`)
+  const gateUsers = walk(path.join(ROOT, 'src')).filter((f) => /\.jsx?$/.test(f) && /<CalendlyGate\b/.test(fs.readFileSync(f, 'utf8'))).map((f) => path.relative(ROOT, f))
+  assert.deepEqual(gateUsers, ['src/components/roadmap/RoadmapBooking.jsx'], 'CalendlyGate is rendered only inside the Roadmap booking')
 })
 function walk(d) { return fs.readdirSync(d, { withFileTypes: true }).flatMap((e) => (e.isDirectory() ? walk(path.join(d, e.name)) : [path.join(d, e.name)])) }
 
-test('a booking is reported only from Calendly itself: both handlers check the message origin, and only calendly.event_scheduled counts', () => {
-  for (const f of ['src/components/roadmap/RoadmapBooking.jsx', 'src/components/scale/BookingModal.jsx']) {
+test('a booking is reported only from Calendly itself: the handler checks the message origin, and only calendly.event_scheduled counts', () => {
+  for (const f of ['src/components/roadmap/RoadmapBooking.jsx']) {
     const s = read(f)
     assert.match(s, /e\.origin !== 'https:\/\/calendly\.com'/, `${f} ignores other origins`)
     assert.equal((s.match(/'calendly\.event_scheduled'/g) || []).length, 1, `${f}: exactly one event name (as a string literal) counts as a booking`)
@@ -67,8 +71,9 @@ test('a booking is reported only from Calendly itself: both handlers check the m
 test('the booking conversion events and flows are intact', () => {
   const rb = read('src/components/roadmap/RoadmapBooking.jsx')
   for (const ev of ['roadmap_calendar_viewed', 'roadmap_booking_confirmed', "'calendly.event_scheduled'", "'https://calendly.com'"]) assert.ok(rb.includes(ev), ev)
-  const bm = read('src/components/scale/BookingModal.jsx')
-  for (const ev of ['booking_flow_opened', 'booking_completed', 'modal_fallback', 'withUtm(BOOKING_URL)']) assert.ok(bm.includes(ev), ev)
+  // /scale no longer books anything: its CTAs open the Roadmap (qualification first), keeping the existing primary_cta_click event.
+  const cta = read('src/components/scale/ScaleCtaButton.jsx')
+  assert.ok(cta.includes("trackEvent('primary_cta_click', { page: 'scale', location })") && cta.includes('OFFER_PATHS.roadmap') && !/calendly|BOOKING_URL/i.test(cta))
   const gate = read('src/components/booking/CalendlyGate.jsx')
   for (const ev of ['calendar_load_click', 'calendar_newtab_click']) assert.ok(gate.includes(ev), ev)
   assert.ok(gate.includes('sessionStorage'), 'the request is remembered for the session only')

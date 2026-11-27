@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import Hls from 'hls.js'
 import { usePrefersReducedMotion } from '../caseStudies/shared/usePrefersReducedMotion.js'
 import { trackEvent } from '../../lib/analytics.js'
-import DiscoveryCallButton from './DiscoveryCallButton.jsx'
+import ScaleCtaButton from './ScaleCtaButton.jsx'
 import VslControls from './VslControls.jsx'
 import { streamPoster } from '../../content/posterFrames.js'
 import { streamHls } from '../../lib/streamHost.js'
@@ -356,7 +356,7 @@ export default function ScaleHero() {
                   <p className="flex-1 text-[13px] text-ink-muted leading-snug">
                     The video couldn't load. Happy to walk you through it live instead.
                   </p>
-                  <DiscoveryCallButton location="vsl_error" size="sm" variant="inverse" className="shrink-0" />
+                  <ScaleCtaButton location="vsl_error" size="sm" variant="inverse" className="shrink-0" />
                 </div>
               )}
 
@@ -382,7 +382,7 @@ export default function ScaleHero() {
                   <p className="flex-1 text-[13px] text-ink-muted leading-snug">
                     This video is being finalized. In the meantime, happy to walk you through it live.
                   </p>
-                  <DiscoveryCallButton location="vsl_coming_soon" size="sm" variant="inverse" className="shrink-0" />
+                  <ScaleCtaButton location="vsl_coming_soon" size="sm" variant="inverse" className="shrink-0" />
                 </div>
               )}
             </div>

@@ -396,9 +396,7 @@ export default function HowItWorks() {
               {tr('Start with five free ad concepts.')}
             </p>
             <p className="mt-1.5 text-sm text-ink-muted">
-              {locale !== 'en' && action.kind === 'booking'
-                ? tr('The online Roadmap application is not available in this language yet. Book a free 20-minute strategy call (subject to a short fit check, no obligation) and we explain how to get your five ad concepts.')
-                : tr('For qualifying brands. We present five tailored ad concepts in a complimentary strategy session, with no obligation to hire CONVRT.')}
+              {tr('For qualifying brands. We present five tailored ad concepts in a complimentary strategy session, with no obligation to hire CONVRT.')}
             </p>
           </div>
           <a

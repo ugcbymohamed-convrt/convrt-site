@@ -47,7 +47,7 @@ const PROOF_CONFIG = {
   headingId: ORGANIC_PROOF_COPY.headingId,
   heading: { eyebrow: ORGANIC_PROOF_COPY.eyebrow, title: ORGANIC_PROOF_COPY.title, esIntro: 'Here is how we helped Graspo reach new audiences and generate commercial opportunities.' },
   track: ORGANIC_PROOF_COPY.track,
-  // The Roadmap is a paid-ads offer, so the button under the Graspo result is the organic strategy call (same route as the hero and the final CTA).
+  // The Roadmap is a paid-ads offer, so the button under the Graspo result is the organic project application (same route as the hero and the final CTA).
   cta: { label: ORGANIC_CTA.label, href: ORGANIC_CTA.href, external: ORGANIC_CTA.external },
 }
 

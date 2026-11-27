@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { BOOKING_URL } from './config.js'
+import { OFFER_PATHS } from './config.js'
 
 /* ─────────────────────────────────────────────
    PLACEHOLDER destinations for the homepage offers.
@@ -45,10 +45,10 @@ function OfferPlaceholderPage({ copy }) {
 
         <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-5">
           <a
-            href={BOOKING_URL} target="_blank" rel="noopener noreferrer"
+            href={OFFER_PATHS.roadmap}
             className="cta-gradient inline-flex w-full sm:w-auto items-center justify-center rounded-full px-6 py-3.5 text-sm font-semibold text-canvas"
           >
-            Book a Creative Call
+            Get 5 Free Ad Concepts
           </a>
           <a href="/" className="inline-flex min-h-[44px] items-center text-sm font-medium text-ink hover:text-lime transition-colors">
             ← Back to home

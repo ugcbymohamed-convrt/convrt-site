@@ -1,6 +1,7 @@
 // Swap this for your real booking link (e.g. https://cal.com/convrt/discovery).
 // The Nav, Hero, and Final CTA buttons all read from this constant.
-// The Calendly event is the "20-minute strategy call" (its public page title); the "30min" in the URL is a legacy slug, not the duration. Site copy says 20-minute.
+// The Calendly event is the "20-minute strategy call" (its public page title); the "30min" in the URL is a legacy slug, not the duration. It is used ONLY by the Roadmap's qualification-first booking
+// (CalendlyGate, shown to qualified visitors) and the owner's private invitations: there is no unrestricted public booking link on the site (owner decision, 27 Nov 2026).
 export const BOOKING_URL = 'https://calendly.com/mohamed-convrt/30min'
 
 export const CONTACT_EMAIL = 'mohamed@convrt.studio'

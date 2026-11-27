@@ -11,7 +11,9 @@ import { build } from 'vite'
 import { allLocalizedPaths } from '../src/i18n/paths.js'
 import { localizedSitemapPaths } from '../src/lib/seo/sitemap.js'
 import { PATHS, KNOWN_PATHS } from '../src/routes.js'
-import { SITE_URL, BOOKING_URL, OFFER_PATHS } from '../src/config.js'
+import { SITE_URL, OFFER_PATHS } from '../src/config.js'
+
+const ORGANIC_APPLICATION_HREF = '/project-application?package=custom-organic&from=organic-social'
 import { SITE_SEO, sitemapRoutes } from '../src/seo/siteSeo.js'
 import { jsonLdFor, ORG_ID, WEBSITE_ID, serviceId, SERVICE_PATHS } from '../src/seo/structuredData.js'
 import { UGC_FAQ, ugcFaqText } from '../src/seo/ugcFaq.js'
@@ -95,22 +97,23 @@ test('UGC page: contextual links to Spokesperson, SaaS, Elyon and Pricing sit in
 })
 
 // ── Organic page ─────────────────────────────────────────────────────────────────────────
-test('Organic page: one route for every organic CTA (the strategy call), the Roadmap stays only in the global header, scope boundaries are visible', () => {
-  assert.equal(ORGANIC_CTA.href, BOOKING_URL)
-  assert.equal(ORGANIC_HERO.primary.href, BOOKING_URL)
-  assert.equal(ORGANIC_PAGE_CTA.primary.href, BOOKING_URL)
+test('Organic page: one route for every organic CTA (the organic project application), the Roadmap stays only in the global header, scope boundaries are visible', () => {
+  assert.equal(ORGANIC_CTA.href, ORGANIC_APPLICATION_HREF)
+  assert.equal(ORGANIC_HERO.primary.href, ORGANIC_APPLICATION_HREF)
+  assert.equal(ORGANIC_PAGE_CTA.primary.href, ORGANIC_APPLICATION_HREF)
   assert.equal(ORGANIC_HERO.primary.label, ORGANIC_CTA.label)
   const h = rootOf(page(PATHS.socialMediaVideoProduction))
   const main = h.slice(h.indexOf('<main'), h.indexOf('</main>'))
   assert.equal(main.includes(`href="${OFFER_PATHS.roadmap}"`), false, 'no Roadmap link inside the organic page content (it was under the proof result)')
   assert.ok(h.includes(`href="${OFFER_PATHS.roadmap}"`), 'the global header still offers the Roadmap')
-  assert.ok((main.match(new RegExp(BOOKING_URL.replace(/[.?]/g, '\\$&'), 'g')) || []).length >= 3, 'hero, proof and final CTA share the strategy call')
+  assert.ok((main.match(new RegExp(ORGANIC_APPLICATION_HREF.replace(/&/g, '&amp;').replace(/[.?]/g, '\\$&'), 'g')) || []).length >= 3, 'hero, proof and final CTA share the organic project application')
+  assert.ok(!/calendly/i.test(h), 'no public booking link on the Organic page')
   const t = textOf(page(PATHS.socialMediaVideoProduction))
   assert.ok(t.includes('Customer support is not part of the service.') && t.includes('Paid advertising management is outside the organic service scope.'), 'organic management stays distinct from support and paid media')
   assert.ok(/short-form social media video production/.test(t))
   assert.ok(!/content creation agency|social media marketing agency/i.test(t), 'no keyword stuffing of the terms the SERP check rejected')
   const faqLinks = ORGANIC_SOCIAL_FAQ.flatMap((f) => f.links ?? []).map((l) => l.href)
-  assert.ok(faqLinks.includes(PATHS.caseStudyGraspo) && faqLinks.includes(BOOKING_URL))
+  assert.ok(faqLinks.includes(PATHS.caseStudyGraspo) && faqLinks.includes(ORGANIC_APPLICATION_HREF))
 })
 
 test('service label: one short label for service #4 on the homepage card and the footer; the descriptive name stays in the title, H1 and schema', () => {
@@ -307,7 +310,7 @@ test('every internal link on every prerendered page resolves to a real page, sec
 // ── what Batch 2 must not touch ──────────────────────────────────────────────────────────
 test('exclusions: no change to forms, lead APIs, analytics config, legal pages, package prices or the trust-page gate', () => {
   const cfg = read('src/config.js')
-  assert.match(cfg, /export const BOOKING_URL = 'https:\/\/calendly\.com\/mohamed-convrt\/30min'/)
+  assert.match(cfg, /export const BOOKING_URL = 'https:\/\/calendly\.com\/mohamed-convrt\/30min'/, 'the Roadmap booking still uses the same Calendly event (private invitations)')
   for (const f of ['api/_lib/subscribe.js', 'api/_lib/notify.js', 'src/lib/analytics.js', 'src/content/trustPages.js']) assert.ok(fs.existsSync(path.join(ROOT, f)), f)
   assert.ok(!/VITE_GTM_ID\s*=\s*\S/.test(read('.env.example') || ''), 'no analytics ID is set by this batch')
 })

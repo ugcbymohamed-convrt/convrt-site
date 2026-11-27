@@ -3,7 +3,7 @@ import { currentLocale } from '../../i18n/locale.js'
 import { resolveCta } from '../../i18n/cta.js'
 import { ORGANIC_CTA } from '../../seo/businessKnowledge.js'
 import { withUtm } from '../../lib/analytics.js'
-import { tr, ctaText } from '../../i18n/tr.js'
+import { tr, ctaText, hrefFor } from '../../i18n/tr.js'
 
 function CtaLink({ href, external = false, children }) {
   return (
@@ -35,7 +35,7 @@ export default function PricingFinalCTA({ service = 'paid' }) {
           <CtaLink href={rcta.href} external={rcta.external}>{ctaText(rcta.label)}</CtaLink>
         </div>
         <div hidden={service !== 'organic'}>
-          <CtaLink href={ORGANIC_CTA.href} external={ORGANIC_CTA.external}>{currentLocale() === 'en' ? tr(ORGANIC_CTA.label) : tr('Discuss your strategy')}</CtaLink>
+          <CtaLink href={hrefFor(ORGANIC_CTA.hrefFromPricing)} external={ORGANIC_CTA.external}>{currentLocale() === 'en' ? tr(ORGANIC_CTA.label) : tr('Discuss your strategy')}</CtaLink>
         </div>
       </div>
     </section>
