@@ -684,9 +684,12 @@ test('Spanish homepage: approved copy, one-line short CTA (hero and navigation),
   for (const p of ES_PAGES) {
     const x = textOf(page(p)).join('\n')
     assert.ok(!/listos para rendir/i.test(x), `${p}: "listos para rendir"`)
-    assert.ok(!/\bcreatividades\b/i.test(x), `${p}: "creatividades" (an ad asset is a "creativo"; owner rule 2026-11-26)`)
+    // /es/about: the owner's professionally localized About copy (supplied 27 Nov 2026, copied verbatim) says "creatividades" and "vídeos con presentador"; it conflicts with the 26 Nov terminology rule and is
+    // FLAGGED for the owner in the About report (the rule stays enforced on every other Spanish page)
+    const suppliedAbout = p === '/es/about'
+    assert.ok(suppliedAbout || !/\bcreatividades\b/i.test(x), `${p}: "creatividades" (an ad asset is a "creativo"; owner rule 2026-11-26)`)
     assert.ok(!/\bganchos?\b/i.test(x), `${p}: "gancho" (an advertising hook is a "hook"; owner rule 2026-11-26)`)
-    assert.ok(!/vídeos? con presentador(?!es)/i.test(x.replace(/Vídeos con presentadores/g, '')), `${p}: the service is "Spokesperson", not "con presentador"`)
+    assert.ok(suppliedAbout || !/vídeos? con presentador(?!es)/i.test(x.replace(/Vídeos con presentadores/g, '')), `${p}: the service is "Spokesperson", not "con presentador"`)
   }
   assert.match(headOf(page('/es/spokesperson-video-production')), /<title>Vídeos Spokesperson \| Vídeos con presentador/)
 })

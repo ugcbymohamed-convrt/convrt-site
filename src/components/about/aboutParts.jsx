@@ -1,4 +1,4 @@
-/* Small visual parts shared by the premium About page in every language (src/AboutPage.jsx for Spanish, French and Arabic, src/components/about/EnglishAbout.jsx for English). */
+/* Small visual parts shared by the premium About page in every language (src/components/about/AboutLayout.jsx, used by src/AboutPage.jsx and src/components/about/EnglishAbout.jsx). */
 
 export const Badge = ({ children }) => (
   <div className="inline-flex items-center gap-2.5">

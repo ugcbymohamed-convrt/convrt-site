@@ -124,8 +124,8 @@ test('About: services, founder-led model, in-house and freelance creators, how c
   assert.match(a, /performance-driven/)
   // The one place numbers may appear is the owner-confirmed founder-experience sentence (2026-11-22), read from the stats file; everything else must carry none.
   // (27 Nov 2026: the figures are cards from the stats file under the owner's one-sentence disclosure; "previous creative production projects" is the owner's own wording.)
-  const aboutView = read('src/components/about/EnglishAbout.jsx')
-  for (const key of ['videos', 'views', 'clients', 'returningClients']) assert.ok(aboutView.includes(`['${key}'`) && aboutView.includes('CONVRT_STATS[key]'), `the founder-experience figure ${key} is rendered on /about from the stats file (not retyped)`)
+  const aboutView = read('src/components/about/AboutLayout.jsx') // the one layout of /about in every language (28 Nov 2026 refactor): the figures are read from the stats file by key
+  for (const key of ['videos', 'views', 'clients', 'returningClients']) assert.ok(aboutView.includes(`'${key}'`) && aboutView.includes('CONVRT_STATS[key]'), `the founder-experience figure ${key} is rendered on /about from the stats file (not retyped)`)
   assert.ok(a.includes('founder’s combined professional experience, including work through CONVRT Studio and previous creative production projects'))
   assert.ok(!/\b(team of \d+|\d+\+? (employees|creators|brands)|offices?|headquarter|award|certified|former|graduat|degree|years of experience)\b/i.test(a), 'no invented people, offices, credentials or numbers')
   assert.ok(!/\b(he|she|his|her|him)\b/i.test(a))
