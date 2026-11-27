@@ -149,7 +149,7 @@ test('language selector: Arabic is offered with lang="ar" dir="rtl"; an equivale
   const o = languageOptions('en', '/pricing').find((x) => x.code === 'ar')
   assert.deepEqual([o.label, o.htmlLang, o.dir, o.href, o.exact], ['العربية', 'ar', 'rtl', '/ar/pricing', true])
   assert.equal(switchTarget('ar', '/ugc-video-agency'), '/ar/ugc-video-agency')
-  assert.equal(switchTarget('ar', '/saas-video-production'), '/ar/saas-video-production'); assert.equal(switchTarget('ar', '/case-studies/graspo'), '/ar/case-studies/graspo'); assert.equal(switchTarget('ar', '/case-studies/elyon'), '/ar/case-studies/elyon'); assert.equal(switchTarget('ar', '/about'), '/ar/about'); assert.equal(switchTarget('ar', '/privacy'), '/ar/', 'a held legal translation is not an equivalent'); assert.equal(switchTarget('ar', '/blog'), '/ar/')
+  assert.equal(switchTarget('ar', '/saas-video-production'), '/ar/saas-video-production'); assert.equal(switchTarget('ar', '/case-studies/graspo'), '/ar/case-studies/graspo'); assert.equal(switchTarget('ar', '/case-studies/elyon'), '/ar/case-studies/elyon'); assert.equal(switchTarget('ar', '/about'), '/ar/about'); assert.equal(switchTarget('ar', '/privacy'), '/ar/privacy', 'the published legal translation is the equivalent page'); assert.equal(switchTarget('ar', '/blog'), '/ar/')
   assert.equal(switchTarget('en', '/ugc-video-agency'), '/ugc-video-agency'); assert.equal(switchTarget('es', '/ugc-video-agency'), '/es/ugc-video-agency')
 })
 
@@ -355,7 +355,7 @@ test('hreflang: one reciprocal set (en, es, ar, x-default = English) on the Engl
   const gset = (h) => [...headOf(h).matchAll(/<link rel="alternate" hreflang="([^"]+)" href="([^"]+)"/g)].map((m) => `${m[1]} ${m[2]}`).join('|')
   assert.equal(gset(page('/ar/case-studies/graspo')), gset(page('/case-studies/graspo')))
   assert.match(gset(page('/ar/case-studies/graspo')), /^en [^|]+\|(es [^|]+\|)?(fr-FR [^|]+\|)?ar [^|]+\|x-default /)
-  for (const bp of ['/privacy', '/terms', '/legal-notice']) assert.ok(!/hreflang="ar"/.test(page(bp)), `${bp}: no hreflang to a held page`)
+  for (const bp of ['/privacy', '/terms', '/legal-notice']) assert.match(page(bp), /hreflang="ar" href="[^"]+\/ar\/(privacy|terms|legal-notice)"/, `${bp}: reciprocal Arabic annotation (the legal translations are published)`)
   for (const bp of ['/about', '/contact']) assert.match(page(bp), /hreflang="ar"/, `${bp}: reciprocal Arabic annotation`)
   assert.equal(gset(page('/ar/case-studies/elyon')), gset(page('/case-studies/elyon')), 'the Elyon study carries the identical reciprocal set')
   assert.match(gset(page('/ar/case-studies/elyon')), /^en [^|]+\|es [^|]+\|fr-FR [^|]+\|ar [^|]+\|x-default /)
@@ -382,10 +382,10 @@ test('Arabic Graspo case study (editorial pass, 2026-11-26): the client is «غ�
   assert.ok(!/8 ألف|1 ألف/.test(text), 'number agreement: 8 آلاف, ألف')
 })
 
-test('sitemap: the indexable Arabic URLs (home, four services, the two case studies, pricing, Showcase), nothing else Arabic', () => {
+test('sitemap: the indexable Arabic URLs (home, four services, the two case studies, pricing, Showcase, About, Contact, the three legal documents), nothing else Arabic', () => {
   const xml = fs.readFileSync(path.join(dist, 'sitemap.xml'), 'utf8')
   const ar = [...xml.matchAll(/<loc>([^<]+\/ar[^<]*)<\/loc>/g)].map((m) => m[1].replace(SITE_URL, ''))
-  assert.deepEqual(ar.slice().sort(), ['/ar/', '/ar/ugc-video-agency', '/ar/spokesperson-video-production', '/ar/social-media-video-production', '/ar/saas-video-production', '/ar/case-studies/graspo', '/ar/case-studies/elyon', '/ar/pricing', '/ar/creator-showcase', '/ar/about', '/ar/contact'].sort())
+  assert.deepEqual(ar.slice().sort(), ['/ar/', '/ar/ugc-video-agency', '/ar/spokesperson-video-production', '/ar/social-media-video-production', '/ar/saas-video-production', '/ar/case-studies/graspo', '/ar/case-studies/elyon', '/ar/pricing', '/ar/creator-showcase', '/ar/about', '/ar/contact', '/ar/privacy', '/ar/terms', '/ar/legal-notice'].sort())
   assert.deepEqual(localizedSitemapPaths().filter((p) => p.startsWith('/ar')).sort(), ar.slice().sort())
   assert.ok(buildSitemap().includes(`${SITE_URL}/ar/ugc-video-agency`))
 })

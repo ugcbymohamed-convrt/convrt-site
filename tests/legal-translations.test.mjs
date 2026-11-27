@@ -1,6 +1,6 @@
 // Run with: node --test tests/legal-translations.test.mjs  (the page checks read dist/: run `npm run build` first)
 // Spanish, French and Arabic Privacy Policy, Terms and Conditions and Legal Notice (src/content/legal/*.js), translated from the English documents (src/content/trustPages.js).
-// These tests prove STRUCTURAL fidelity (same sections, clauses, links, numbers and identifiers) and the HELD state; they cannot prove legal equivalence of meaning: that is the reviewer's job
+// These tests prove STRUCTURAL fidelity (same sections, clauses, links, numbers and identifiers) and the PUBLISHED state (with a simulated hold); they cannot prove legal equivalence of meaning: that is the reviewer's job
 // (clause-level comparison in the review folder). Nothing here touches the network.
 import test from 'node:test'
 import assert from 'node:assert/strict'
@@ -89,50 +89,60 @@ test('Spanish and French keep the site terminology; no unapproved wording appear
   assert.ok(!/gancho|creatividades/i.test(es)); assert.ok(!/accroche/i.test(fr))
 })
 
-// ── held state ─────────────────────────────────────────────────────────────────────────────────────────────
-test('HELD until approved (LEGAL_TRANSLATIONS_APPROVED): built and reachable for review, but noindex, self-canonical, no hreflang, not in the sitemap, with a visible review notice', () => {
-  assert.equal(LEGAL_TRANSLATIONS_APPROVED, false, 'the owner has not approved the legal translations: flip only after their (and a lawyer\'s) approval, then update this test')
+// ── published state (the owner approved the translations on 27 Nov 2026) ─────────────────────────────────────
+test('PUBLISHED (LEGAL_TRANSLATIONS_APPROVED): indexable, self-canonical, reciprocal hreflang, in the sitemap, no review notice, one h1, unique heading ids', () => {
+  assert.equal(LEGAL_TRANSLATIONS_APPROVED, true, 'the owner approved publishing the es/fr/ar legal translations (27 Nov 2026)')
   const sm = fs.readFileSync(path.join(dist, 'sitemap.xml'), 'utf8')
   for (const l of ['es', 'fr', 'ar']) for (const bp of ['/privacy', '/terms', '/legal-notice']) {
     const p = `/${l}${bp}`, h = page(p)
-    assert.ok(!isReleased(l, bp) && releaseBlocker(l, bp)?.reason, p)
-    assert.match(h, /name="robots" content="noindex, follow"/, `${p} noindex`)
+    assert.ok(isReleased(l, bp) && !releaseBlocker(l, bp), p)
+    assert.ok(!/name="robots"/.test(h), `${p}: indexable (no robots meta)`)
     assert.match(h, new RegExp(`<link rel="canonical" href="${SITE_URL}${p}"`), `${p} self-canonical`)
-    assert.ok(!/hreflang=/.test(h), `${p}: no hreflang`)
-    assert.ok(!sm.includes(`${SITE_URL}${p}</loc>`), `${p}: not in the sitemap`)
-    assert.match(h, /role="note"/, `${p}: visible review notice`)
+    assert.ok(sm.includes(`${SITE_URL}${p}</loc>`), `${p}: in the sitemap`)
+    assert.ok(!/role="note"/.test(h), `${p}: no review notice`)
+    assert.ok(!/Traducción en revisión|Traduction en cours de relecture|الترجمة قيد المراجعة/.test(h), `${p}: the review wording is gone`)
     assert.match(h, new RegExp(`<html lang="${l === 'fr' ? 'fr-FR' : l}"`))
     assert.equal((h.match(/<h1[ >]/g) ?? []).length, 1)
+    // reciprocal hreflang: the identical five-entry set on the English document and on all three translations
+    const set = (x) => [...x.slice(0, x.indexOf('<body')).matchAll(/<link rel="alternate" hreflang="([^"]+)" href="([^"]+)"/g)].map((m) => `${m[1]} ${m[2]}`).join('|')
+    assert.equal(set(h), set(page(bp)), `${p}: reciprocal hreflang set equals the English document's`)
+    assert.equal(set(h), ['en', 'es', 'fr-FR', 'ar'].map((c) => `${c} ${SITE_URL}${c === 'en' ? '' : `/${c === 'fr-FR' ? 'fr' : c}`}${bp}`).concat(`x-default ${SITE_URL}${bp}`).join('|'), `${p}: en, es, fr-FR, ar, x-default (English)`)
     // unique, working section ids (Arabic headings contain no Latin letters)
     const ids = [...h.matchAll(/<h2 id="(trust-s\d+)"/g)].map((m) => m[1])
     assert.ok(ids.length >= 7 && new Set(ids).size === ids.length, `${p}: unique heading ids`)
   }
-  // the English documents carry no hreflang to a held translation, and the selector falls back to each language home
-  for (const bp of ['/privacy', '/terms', '/legal-notice']) { assert.deepEqual(alternatesFor(bp, SITE_SEO[bp]), []); assert.equal(switchTarget('es', bp), '/es/'); assert.ok(sm.includes(`${SITE_URL}${bp}</loc>`), `English ${bp} stays in the sitemap`) }
+  for (const bp of ['/privacy', '/terms', '/legal-notice']) {
+    assert.equal(alternatesFor(bp, SITE_SEO[bp]).length, 5, `English ${bp} carries the reciprocal set`)
+    assert.equal(switchTarget('es', bp), `/es${bp}`); assert.equal(switchTarget('fr', bp), `/fr${bp}`); assert.equal(switchTarget('ar', bp), `/ar${bp}`)
+    assert.ok(sm.includes(`${SITE_URL}${bp}</loc>`), `English ${bp} stays in the sitemap`)
+  }
 })
 
-test('links while held: the footer and the form privacy link go to the English document, labelled and marked lang="en"; preview deployments show the final localized state', () => {
+test('links when published: footer and forms point to the visitor\'s own language, never labelled as English', () => {
   for (const l of ['es', 'fr', 'ar']) {
-    const held = trustLink('privacy', l)
-    assert.equal(held.href, '/privacy'); assert.equal(held.lang, 'en'); assert.match(held.label, /\(en inglés\)|\(en anglais\)|\(بالإنجليزية\)/)
-    const review = trustLink('privacy', l, true)
-    assert.equal(review.href, `/${l}/privacy`); assert.equal(review.lang, undefined); assert.equal(review.label, TRUST_NAMES[l].privacy)
-    assert.equal(trustLink('about', l).href, `/${l}/about`, 'About and Contact are always localized')
-    assert.equal(trustLink('contact', l).href, `/${l}/contact`)
+    for (const k of ['privacy', 'terms', 'legalNotice']) {
+      const t = trustLink(k, l)
+      assert.equal(t.href, `/${l}/${{ privacy: 'privacy', terms: 'terms', legalNotice: 'legal-notice' }[k]}`); assert.equal(t.lang, undefined); assert.equal(t.label, TRUST_NAMES[l][k])
+      assert.ok(!/\(en inglés\)|\(en anglais\)|\(بالإنجليزية\)/.test(t.label), `${l} ${k}: no "in English" label`)
+    }
+    assert.equal(trustLink('about', l).href, `/${l}/about`); assert.equal(trustLink('contact', l).href, `/${l}/contact`)
   }
   assert.deepEqual(trustLink('terms', 'en'), { href: '/terms', label: 'Terms and Conditions', lang: undefined })
-  const h = page('/es/pricing')
-  assert.match(h, /href="\/privacy"[^>]*lang="en"[^>]*>Política de privacidad \(en inglés\)/)
-  assert.ok(!/(en inglés|en anglais|بالإنجليزية)/.test((page('/es/about').match(/<a[^>]*href="\/es\/about"[^>]*>[^<]*<\/a>/) ?? [''])[0]), 'About is never labelled as English')
+  assert.match(page('/es/pricing'), /href="\/es\/privacy"[^>]*>Política de privacidad<\/a>/)
+  assert.match(page('/fr'), /href="\/fr\/privacy"[^>]*>Politique de confidentialité<\/a>/)
+  assert.match(page('/ar/pricing'), /href="\/ar\/privacy"[^>]*>سياسة الخصوصية<\/a>/)
+  assert.ok(!/href="\/privacy"[^>]*lang="en"/.test(page('/es/pricing')), 'no English-labelled privacy link left on a Spanish page')
 })
 
-// ── the approved state (simulated; the real files are never touched) ─────────────────────────────────────────
-test('SIMULATED approval: flipping the single flag releases the three documents in all three languages (indexable, reciprocal hreflang, sitemap, localized footer and form links, no notice)', async () => {
-  const sim = path.join(ROOT, 'node_modules', '.convrt-legal-approved-sim')
+// ── the held state, still provable by simulation (flip the one flag back; the real files are never touched) ──
+test('SIMULATED hold: flipping the single flag back to false holds the nine documents again (blocked, noindex, no hreflang, not in the sitemap, English links labelled, selector falls back to the language home)', async () => {
+  const sim = path.join(ROOT, 'node_modules', '.convrt-legal-held-sim')
   fs.rmSync(sim, { recursive: true, force: true })
   fs.cpSync(path.join(ROOT, 'src'), path.join(sim, 'src'), { recursive: true })
   const cfgPath = path.join(sim, 'src/config.js')
-  fs.writeFileSync(cfgPath, fs.readFileSync(cfgPath, 'utf8').replace('LEGAL_TRANSLATIONS_APPROVED = false', 'LEGAL_TRANSLATIONS_APPROVED = true'))
+  const cfg = fs.readFileSync(cfgPath, 'utf8')
+  assert.ok(cfg.includes('LEGAL_TRANSLATIONS_APPROVED = true'))
+  fs.writeFileSync(cfgPath, cfg.replace('LEGAL_TRANSLATIONS_APPROVED = true', 'LEGAL_TRANSLATIONS_APPROVED = false'))
   try {
     const url = (f) => pathToFileURL(path.join(sim, f)).href
     const rel = await import(url('src/i18n/release.js'))
@@ -141,14 +151,15 @@ test('SIMULATED approval: flipping the single flag releases the three documents 
     const sw = await import(url('src/i18n/switch.js'))
     const sitemap = await import(url('src/lib/seo/sitemap.js'))
     for (const l of ['es', 'fr', 'ar']) for (const bp of ['/privacy', '/terms', '/legal-notice']) {
-      assert.ok(rel.isReleased(l, bp), `${l}${bp}`)
-      assert.equal(seo.pageHead(bp, l).noindex ?? false, false); assert.equal(seo.pageHead(bp, l).robots, undefined, `${l}${bp} indexable`)
-      assert.equal(seo.pageHead(bp, l).alternates.length, 5, `${l}${bp} reciprocal hreflang (en, es, fr-FR, ar, x-default)`)
-      assert.ok(sitemap.localizedSitemapPaths().includes(`/${l}${bp}`), `${l}${bp} in the sitemap`)
-      assert.equal(sw.switchTarget(l, bp), `/${l}${bp}`)
-      assert.deepEqual(links.trustLink('privacy', l), { href: `/${l}/privacy`, label: links.TRUST_NAMES[l].privacy, lang: undefined })
+      assert.ok(!rel.isReleased(l, bp) && rel.releaseBlocker(l, bp)?.reason, `${l}${bp} held`)
+      assert.ok(!sitemap.localizedSitemapPaths().includes(`/${l}${bp}`), `${l}${bp} not in the sitemap`)
+      assert.equal(sw.switchTarget(l, bp), `/${l}/`)
     }
-    assert.equal(seo.pageHead('/privacy', 'en').alternates.length, 5, 'the English document now carries the reciprocal set')
+    for (const l of ['es', 'fr', 'ar']) {
+      const held = links.trustLink('privacy', l)
+      assert.equal(held.href, '/privacy'); assert.equal(held.lang, 'en'); assert.match(held.label, /\(en inglés\)|\(en anglais\)|\(بالإنجليزية\)/)
+    }
+    assert.deepEqual(seo.pageHead('/privacy', 'en').alternates ?? [], [], 'the English document carries no hreflang to a held translation')
   } finally {
     fs.rmSync(sim, { recursive: true, force: true })
   }
