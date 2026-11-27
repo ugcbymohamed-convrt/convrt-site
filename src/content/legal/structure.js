@@ -19,7 +19,7 @@ const stripLinks = (text) => text.replace(LINK_RE, '$1')
 export const identifiers = (text) => {
   const plain = text
   const out = []
-  for (const re of [/\d+(?:[.,]\d+)?/g, /(?:https?:\/\/|www\.)[^\s"”)\]|,;]+/g, /[\w.+-]+@[\w-]+\.[\w.-]+/g, /\b_?(?:convrt_|ga_)[\w<>]*|_ga\b|_ga_<[^>]*>/g]) out.push(...(plain.match(re) ?? []))
+  for (const re of [/\d+(?:[.,]\d+)?/g, /(?:https?:\/\/|www\.)[^\s"”)\]|,;،؛]+/g, /[\w.+-]+@[\w-]+\.[\w.-]+/g, /\b_?(?:convrt_|ga_)[\w<>]*|_ga\b|_ga_<[^>]*>/g]) out.push(...(plain.match(re) ?? []))
   return out.map((s) => s.replace(/[.,]$/, '')).sort()
 }
 
@@ -37,7 +37,10 @@ export function compareStructure(en, tr, label = '') {
     const lb = linkTargets(b[i].text).join(' ')
     if (la !== lb) problems.push(`${label} item ${i} (“${stripLinks(a[i].text).slice(0, 50)}…”): link targets differ: [${lb}] vs English [${la}]`)
     const ia = identifiers(a[i].text).join(' ')
-    const ib = identifiers(b[i].text).join(' ')
+    let idsB = identifiers(b[i].text)
+    /* Documented exception (owner's professional Arabic copy, 27 Nov 2026): the Arabic Legal Notice intro cites the law twice, in Arabic and with its Spanish title in brackets, so '34' and '2002' appear twice. The meaning is unchanged; nothing else may differ. */
+    if (label.startsWith('ar/legalNotice') && i === 1) for (const extra of ['2002', '34']) { const k = idsB.lastIndexOf(extra); if (idsB.filter((x) => x === extra).length === 2 && k >= 0) idsB.splice(k, 1) }
+    const ib = idsB.join(' ')
     if (ia !== ib) problems.push(`${label} item ${i} (“${stripLinks(a[i].text).slice(0, 50)}…”): numbers/identifiers differ: [${ib}] vs English [${ia}]`)
     if (!b[i].text.trim()) problems.push(`${label} item ${i}: empty`)
   }

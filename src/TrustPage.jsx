@@ -25,7 +25,7 @@ const KEY_BY_PATH = { [PATHS.about]: 'about', [PATHS.privacy]: 'privacy', [PATHS
 const LEGAL_BUILDERS = { es: LEGAL_ES, fr: LEGAL_FR, ar: LEGAL_AR }
 const TOKEN = /(\[\[[^\]|]+\|[^\]]+\]\]|\[(?:OWNER TO CONFIRM|LEGAL REVIEW)[^\]]*\])/g
 /* Arabic: a run of Latin text (a name, an e-mail, a URL, a storage key) is isolated so its punctuation and neighbouring Arabic words never reorder it. */
-const LATIN_WORD = "[\\p{Script=Latin}\\p{N}][\\p{Script=Latin}\\p{N}@._:/#+&'’<>-]*"
+const LATIN_WORD = "_?[\\p{Script=Latin}\\p{N}][\\p{Script=Latin}\\p{N}@._:/#+&'’<>-]*"
 const LATIN_RUN = new RegExp(`(${LATIN_WORD}(?:,? ${LATIN_WORD})*)`, 'gu')
 const HAS_LETTER = /[\p{Script=Latin}@]/u
 
