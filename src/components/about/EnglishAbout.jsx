@@ -36,7 +36,7 @@ const EXPERIENCE = section("The founder's experience")
 const CREATORS = section('How we work with creators')
 const MARKETS = section('Markets, production and languages')
 const SCOPE = section('What we provide, and what we do not')
-const CLOSING = section('See the work and talk to us')
+const CLOSING = section("Let's build your next great creative.")
 
 const lh = 'leading-relaxed'
 const h2Class = 'font-display font-bold leading-[1.06] tracking-display text-ink'
@@ -241,7 +241,7 @@ export default function EnglishAbout() {
         </div>
       </section>
 
-      {/* ── See the work and talk to us ── */}
+      {/* ── Closing call to action ── */}
       <section aria-labelledby="about-cta" className="relative py-14 md:py-24">
         <div className="mx-auto max-w-5xl px-5 md:px-8">
           <Reveal>

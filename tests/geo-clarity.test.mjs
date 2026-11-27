@@ -65,7 +65,8 @@ test('About production wording: the approved sentence appears ONCE in full (mark
 test('About markets and languages: English, Spanish, French and Arabic; other languages subject to creator availability; international clients; registered in Spain; no samples or native-speaker claims', () => {
   const m = sectionText('Markets, production and languages')
   assert.match(m, /We produce in English, Spanish, French and Arabic\. Other languages are available on request, subject to creator availability\./)
-  assert.ok(m.includes(INTERNATIONAL_CLIENTS.text) && m.includes('registered in Spain'))
+  assert.ok(m.includes('registered in Spain') && !m.includes(INTERNATIONAL_CLIENTS.text), 'the international-clients sentence is said once, in the at-a-glance block (27 Nov 2026: repetition removed)')
+  assert.ok(sectionText('CONVRT Studio at a glance').includes(INTERNATIONAL_CLIENTS.text), 'international clients stay in the at-a-glance block')
   assert.equal(INTERNATIONAL_CLIENTS.text, 'We work with international clients, including in Europe, the UK, the Middle East and the United States.')
   assert.ok(sectionText('CONVRT Studio at a glance').includes('the Middle East and the United States'), 'the glance names the same markets')
   assert.ok(!/offices? in|local (offices?|teams?|entit)/i.test(aboutText), 'markets served, never offices or local entities')
@@ -80,7 +81,7 @@ test('About scope section: the four distinctions, the existing sentences kept ve
   assert.match(s, /Community management, not customer support\.[\s\S]*Customer support is not part of the service\./)
   assert.match(s, /Finished videos, with optional raw footage\.[\s\S]*never instead of them\./)
   assert.match(s, /Licensed usage rights\.[\s\S]*not a transfer of copyright ownership\./)
-  assert.ok(JSON.stringify(section('What we provide, and what we do not')).includes('|/pricing]]'))
+  assert.ok(JSON.stringify(TRUST_CONTENT.about).includes('|/pricing]]'), 'the About page links to Pricing (at-a-glance and What we do; not repeated in this section)')
   assert.ok(!/\$\s?\d|business days|rounds/i.test(s), 'package figures stay on Pricing')
   assert.ok(!/\b(he|she|his|her|him)\b/i.test(aboutText), 'no pronouns assumed for the founder')
 })

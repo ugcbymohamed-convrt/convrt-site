@@ -59,7 +59,7 @@ export const TRUST_CONTENT = {
         heading: 'CONVRT Studio at a glance',
         body: [
           { list: [
-            'What we do: four services, each with its own page: [[UGC video ads|/ugc-video-agency]], [[SaaS and app video production|/saas-video-production]], [[spokesperson videos|/spokesperson-video-production]] and [[organic social video|/social-media-video-production]].',
+            'What we do: [[UGC video ads|/ugc-video-agency]], [[SaaS and app video production|/saas-video-production]], [[spokesperson videos|/spokesperson-video-production]] and [[organic social video|/social-media-video-production]].',
             `Who we serve: businesses only, across industries including SaaS, e-commerce, apps, technology and consumer products. ${INTERNATIONAL_CLIENTS.text}`,
             'How we produce: creative strategy, scripts, creator casting, filming and editing in one studio. We work with both in-house talent and freelance creators. Our UGC and spokesperson videos feature real people on camera, not AI-generated avatars. You see relevant creator work before production and approve concepts and scripts before anything is filmed.',
             `Where we produce: ${PRODUCTION_MODEL.short}`,
@@ -74,7 +74,7 @@ export const TRUST_CONTENT = {
       {
         heading: 'What we do',
         body: [
-          'We make video for businesses that want content with one purpose: conversion. That covers four services, each with its own page:',
+          'We create video content designed to capture attention, build trust and drive action.',
           { list: [
             '[[UGC video ads|/ugc-video-agency]]: creator-led ads for paid social, produced end to end.',
             '[[SaaS and app video production|/saas-video-production]]: explainers, product demonstrations, animation and ads for SaaS, software and app brands, scoped to your brief.',
@@ -87,14 +87,14 @@ export const TRUST_CONTENT = {
       {
         heading: 'A founder-led studio',
         body: [
-          `CONVRT Studio is run by its founder, ${founder.name}, ${founder.jobTitle}. The studio is operated as ${OPERATOR.structure}. You can follow the studio on [[LinkedIn|${COMPANY_LINKEDIN_URL}]] and [[Instagram|${INSTAGRAM_URL}]]; the founder also has a personal [[LinkedIn profile|${founder.linkedin}]].`,
-          'Creative strategy, scripts, creator casting, filming and editing are handled in one place, so you deal with one studio instead of coordinating several suppliers.',
+          `CONVRT Studio is run by its founder, ${founder.name}.`,
+          'You deal with one studio instead of coordinating several suppliers.',
         ],
       },
       {
         heading: "The founder's experience",
         body: [
-          `The figures quoted on this site (${CONVRT_STATS.videos} videos produced, ${CONVRT_STATS.clients} clients served, ${CONVRT_STATS.views} views generated and ${CONVRT_STATS.returningClients} returning clients) are the founder's combined professional experience, including CONVRT Studio and other professional creative production work. They are not statistics for projects delivered under the CONVRT Studio brand alone. Results specific to individual clients are described in our case studies, [[Graspo|/case-studies/graspo]] and [[Elyon Dubai|/case-studies/elyon]], each with its own period and qualifiers.`,
+          'These figures reflect our founder’s combined professional experience, including work through CONVRT Studio and previous creative production projects.',
         ],
       },
       {
@@ -103,14 +103,14 @@ export const TRUST_CONTENT = {
           `${TALENT.model} We recommend the creator or presenter who best fits your brand and share relevant work samples before production, and you can take part in the selection when you want to.`,
           `${CREATOR_ALLOCATION.answer[0]} Specific creators are subject to availability.`,
           `Freelance creators who would like to work with CONVRT can apply through the [[creator form|${CREATOR_FORM}]]. CONVRT decides which creators it works with. A creator’s video appears in our Creator Showcase only when that creator has agreed and CONVRT has approved it.`,
-          'Our UGC and spokesperson videos feature real people on camera, with human creative direction and quality control. They are not AI-generated avatars.',
+          'Our UGC and spokesperson videos are made with human creative direction and quality control.',
           `The videos in our [[Creator Showcase|${CREATOR_SHOWCASE_PATH}]] are examples from independent creators. They illustrate styles and approaches and are not necessarily productions by CONVRT.`,
         ],
       },
       {
         heading: 'Markets, production and languages',
         body: [
-          `We produce in ${LANGS}. ${PRODUCTION_LANGUAGES.other} ${INTERNATIONAL_CLIENTS.text} CONVRT Studio is registered in Spain.`,
+          `We produce in ${LANGS}. ${PRODUCTION_LANGUAGES.other} CONVRT Studio is registered in Spain.`,
           `${PRODUCTION_MODEL.text} ${PRODUCTION_MODEL.scope}`,
         ],
       },
@@ -120,11 +120,11 @@ export const TRUST_CONTENT = {
           'Creative production, not media buying. We provide creative strategy, scripts, creator casting, filming, editing and finished, platform-ready videos. We do not buy media or manage your advertising accounts, so you keep control of distribution and spend. We never guarantee specific results: performance depends on your offer, audience and budget.',
           'Community management, not customer support. Organic packages include publishing on your accounts and community management, which covers engagement and brand relationships. Customer support is not part of the service.',
           'Finished videos, with optional raw footage. Every video is delivered finished and professionally edited. Raw footage is available only as an optional add-on alongside finished videos, never instead of them.',
-          'Licensed usage rights. Usage rights license how you may use the videos for the period in your package. They are not a transfer of copyright ownership. Package details, prices and terms are on the [[Pricing page|/pricing]].',
+          'Licensed usage rights. Usage rights license how you may use the videos for the period in your package. They are not a transfer of copyright ownership.',
         ],
       },
       {
-        heading: 'See the work and talk to us',
+        heading: "Let's build your next great creative.",
         body: [
           'Read how we approached [[Graspo|/case-studies/graspo]] and [[Elyon Dubai|/case-studies/elyon]], then [[get in touch|/contact]] or apply for the [[free Creative Growth Roadmap|' + OFFER_PATHS.roadmap + ']].',
         ],
