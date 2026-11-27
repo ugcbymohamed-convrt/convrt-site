@@ -4,7 +4,7 @@
    project payment, capped at $500 per referred client (docs/referral-program-setup.md, src/components/referrals/*).
 
    EUR markets (Spanish, French): the owner asked in chat (2026-11-24) for the Standard reward to read 150 € instead of $150 and CONFIRMED it as approved for these markets. The 10 % commission, its cap and the eligibility terms are NOT
-   changed (the cap stays 500 USD, the example stays 5,000 USD). This is a locale-specific commercial offer: the central policy documents (docs/referral-program-setup.md, docs/partner-kit.md,
+   changed, except that the owner then asked (2026-11-27) for EVERYTHING in EUR on es/fr: the cap is 500 € and the example 5,000 € there (English and Arabic keep USD). This is a locale-specific commercial offer: the central policy documents (docs/referral-program-setup.md, docs/partner-kit.md,
    the tracker template) still say $150 only, so the euro payout setup (kit, tracker) is an operations to-do recorded in docs/multilingual-referrals-fr-ar.md.
    English and Arabic keep the US-dollar amounts exactly as approved.
 
@@ -12,8 +12,8 @@
 
 const NB = ' '
 export const REFERRAL_REWARDS = {
-  es: { standard: `150${NB}€`, cap: `500${NB}USD`, example: `5.000${NB}USD` },
-  fr: { standard: `150${NB}€`, cap: `500${NB}USD`, example: `5${NB}000${NB}USD` },
+  es: { standard: `150${NB}€`, cap: `500${NB}€`, example: `5.000${NB}€` },
+  fr: { standard: `150${NB}€`, cap: `500${NB}€`, example: `5${NB}000${NB}€` },
   // Arabic: the original US-dollar amounts, written in Arabic ("150 دولارًا"); the big figure on the reward card stays "$150" (standardRewardCard).
   ar: { standard: `150${NB}دولارًا`, cap: `500${NB}دولار`, example: `5,000${NB}دولار` },
 }

@@ -254,7 +254,7 @@ export default function LEGAL_FR(c) {
       },
       {
         heading: 'Prix et taxes',
-        body: [`Les prix affichés sur le site sont en dollars américains. ${TAX_STATEMENT} Voir la [[page des tarifs|${L.pricing}]].`],
+        body: [`Les prix affichés sur le site sont en euros. ${TAX_STATEMENT} Voir la [[page des tarifs|${L.pricing}]].`],
       },
       {
         heading: 'Propriété intellectuelle',

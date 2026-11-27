@@ -112,11 +112,11 @@ test('About (owner-approved copy, 26 Nov 2026): the four statistics are the foun
   assert.ok(!html.includes('LocalBusiness'), 'no LocalBusiness schema')
 })
 
-test('Roadmap: five questions, option values and USD brackets unchanged, neutral privacy wording, still noindex and out of the sitemap', () => {
+test('Roadmap: five questions, option values unchanged (English), brackets shown in EUR, neutral privacy wording, still noindex and out of the sitemap', () => {
   const html = page('creative-growth-roadmap')
   const t = text(html)
   assert.match(t, /0 de 5 preguntas respondidas/)
-  for (const s of ['Menos de 5.000 USD', 'Entre 5.000 y 20.000 USD', 'Más de 20.000 USD']) assert.ok(t.includes(s), s)
+  for (const s of ['Menos de 5.000 €', 'Entre 5.000 € y 20.000 €', 'Más de 20.000 €']) assert.ok(t.includes(s), s)
   for (const v of ['Under $5,000', '$5,000–$20,000', '$20,000+', 'SaaS / Software', 'E-commerce / DTC', 'Marketing agency']) assert.ok(html.includes(`value="${v}"`), `option value ${v} stays English`)
   assert.ok(!/permanecen en tu navegador|solo se usan para comprobar/i.test(t), 'the "answers stay in your browser" claim is not repeated')
   assert.match(t, /Nota de privacidad: consulta cómo tratamos los datos de tu solicitud en nuestra Política de privacidad \(en inglés\)/)
