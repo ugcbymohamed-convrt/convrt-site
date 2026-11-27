@@ -12,9 +12,9 @@ const read = (f) => fs.readFileSync(path.join(ROOT, f), 'utf8')
 const strip = (s) => s.replace(/\/\*[\s\S]*?\*\//g, '').replace(/^\s*\/\/.*$/gm, '')
 const player = strip(read('src/components/roadmap/RoadmapVideo.jsx'))
 
-test('video data: Stream id, HLS manifest on videodelivery.net, same-origin posters that exist', () => {
+test('video data: Stream id, HLS manifest on the Stream customer host, same-origin posters that exist', () => {
   assert.match(ROADMAP_VIDEO_ID, /^[0-9a-f]{32}$/)
-  assert.equal(ROADMAP_VIDEO_HLS, `https://videodelivery.net/${ROADMAP_VIDEO_ID}/manifest/video.m3u8`)
+  assert.equal(ROADMAP_VIDEO_HLS, `https://customer-0hz43gyj10hvd956.cloudflarestream.com/${ROADMAP_VIDEO_ID}/manifest/video.m3u8`)
   for (const p of [ROADMAP_VIDEO_POSTER, ROADMAP_VIDEO_POSTER_SMALL]) assert.ok(fs.existsSync(path.join(ROOT, 'public', p)), p)
 })
 

@@ -9,6 +9,8 @@
    To change a frame: edit the number here, run `python3 scripts/poster-frames.py`, and commit the regenerated images. Nothing is uploaded or re-encoded on Cloudflare, and no account setting changes.
    A video that is not listed keeps its current poster (the Roadmap explainer keeps its deliberately chosen 25.6 s frame). Inventory and contact sheet: docs/video-thumbnails.md. */
 
+import { streamThumbnail } from '../lib/streamHost.js'
+
 export const POSTER_FRAMES = {
   'a32cb282a9ef41333b79f86da02a46ad': 22.2, // portfolio:ar-mohamed-zory [ar]
   '9e7fca5cfa5146f40a26d0e2d066ed14': 13.6, // portfolio:ar-mohamed-clothing [ar] // owner-chosen frame 2026-11-25 (Videos Placement folder screenshot)
@@ -138,4 +140,4 @@ export const POSTER_FRAME_OVERRIDES = {
 }
 
 /* A Stream thumbnail for a video id at its chosen frame (the first frame when none is listed). height = pixel height of the returned image. */
-export const streamPoster = (id, { height = 720 } = {}) => `https://videodelivery.net/${id}/thumbnails/thumbnail.jpg?time=${POSTER_FRAMES[id] ?? 0}s&height=${height}`
+export const streamPoster = (id, { height = 720 } = {}) => streamThumbnail(id, { time: POSTER_FRAMES[id] ?? 0, height })

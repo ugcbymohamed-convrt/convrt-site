@@ -102,7 +102,8 @@ test('built HTML: noindex, no personal data / tokens / media URLs, not in sitema
     assert.match(html, /<meta name="robots" content="noindex, nofollow, noarchive" \/>/, p)
     assert.ok(!/application\/ld\+json/.test(html), `${p}: no JSON-LD`)
     assert.ok(!/rel="canonical"/.test(html), `${p}: no canonical`)
-    assert.ok(!/manifest\/video\.m3u8|cloudflarestream|CRX-|invite=|fiverr\.com\/[a-z]/i.test(html), `${p}: no media, reference, token or profile data`)
+    const body = html.replace(/<link rel="preconnect"[^>]*>/g, '') // the shell's generic preconnect to the Stream host is not media data
+    assert.ok(!/manifest\/video\.m3u8|cloudflarestream|CRX-|invite=|fiverr\.com\/[a-z]/i.test(body), `${p}: no media, reference, token or profile data`)
   }
   for (const f of ['sitemap.xml', 'sitemap-blog.xml']) assert.ok(!/creator-(onboarding|admin)/.test(fs.readFileSync(path.join(DIST, f), 'utf8')), f) // the private pages only: the public /creator-showcase is rightly listed
 })

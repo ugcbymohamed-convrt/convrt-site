@@ -613,7 +613,7 @@ test('Spanish UGC and Spokesperson pages: hero stage (and, for UGC, the gallery)
 test('Spanish SaaS and Organic pages launch without videos: a text-led hero, no phones, no stage, no empty gallery, no placeholder; still indexable with JSON-LD, FAQ and CTAs', () => {
   for (const [p, galleryId] of [['/es/saas-video-production', 'saas-videos'], ['/es/social-media-video-production', 'organic-videos']]) {
     const h = page(p), body = bodyOf(h)
-    assert.ok(!/<video/.test(body) && !/videodelivery\.net/.test(body) && !/\.mp4/.test(body), `${p}: no video`)
+    assert.ok(!/<video/.test(body) && !/videodelivery\.net|cloudflarestream/.test(body) && !/\.mp4/.test(body), `${p}: no video`)
     assert.ok(!/aria-roledescription="carousel"/.test(body), `${p}: no phone stage`)
     assert.ok(!/aspect-\[9\/19\.5\]/.test(body), `${p}: no empty phone frames`)
     assert.ok(!/\/portfolio\//.test(body), `${p}: no portfolio image of any language`)

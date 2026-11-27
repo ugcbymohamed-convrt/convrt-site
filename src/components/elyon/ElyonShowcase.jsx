@@ -3,6 +3,7 @@ import Hls from 'hls.js'
 import Eyebrow from '../caseStudies/shared/Eyebrow.jsx'
 import { ACCENT } from './theme.js'
 import { streamPoster } from '../../content/posterFrames.js'
+import { streamHls } from '../../lib/streamHost.js'
 import { useTr } from '../../i18n/tr.js'
 import { ELYON_VIDEOS as VIDEOS } from '../../caseStudies/data.js'
 import { isEnglish } from '../caseStudies/format.js'
@@ -69,7 +70,7 @@ function VideoPhone({ video, ordinal }) {
     if (!shouldLoad) return
     const el = videoRef.current
     if (!el) return
-    const src = `https://videodelivery.net/${video.id}/manifest/video.m3u8`
+    const src = streamHls(video.id)
     let hls
     // Prefer hls.js's JS demuxer whenever MSE is available — it's what actually
     // gets exercised and error-tested across Chrome/Firefox/Edge. Some Chromium

@@ -304,7 +304,7 @@ test('portfolio gate: renders only with status "approved" AND portfolio permissi
   assert.equal(isDisplayable(sample({ source: {} })), false)
   assert.equal(isDisplayable(sample({ source: { mp4: '/a.mp4' }, poster: undefined })), false, 'an mp4 needs a poster')
   assert.equal(isDisplayable(sample({ source: { cloudflareId: 'abc123' }, poster: undefined })), true, 'Cloudflare derives a thumbnail')
-  assert.match(posterUrl(sample({ source: { cloudflareId: 'abc123' }, poster: undefined })), /videodelivery\.net\/abc123\/thumbnails/)
+  assert.match(posterUrl(sample({ source: { cloudflareId: 'abc123' }, poster: undefined })), /cloudflarestream\.com\/abc123\/thumbnails/)
   assert.deepEqual(selectDisplayable([sample(), sample({ id: 'b', approval: { status: 'draft' } })]).map((i) => i.id), ['sample-a'])
 })
 
@@ -364,7 +364,7 @@ test('portfolio absent: no section, no placeholder, no illustration and no video
   const html = page(PATH)
   const t = textOf(html)
   assert.ok(!/being updated|coming soon|portfolio is/i.test(t), 'no placeholder message')
-  assert.ok(!/<video/.test(rootOf(html)) && !/videodelivery\.net/.test(rootOf(html)) && !/\.mp4/.test(rootOf(html)), 'no video or stream request in the HTML')
+  assert.ok(!/<video/.test(rootOf(html)) && !/videodelivery\.net|cloudflarestream/.test(rootOf(html)) && !/\.mp4/.test(rootOf(html)), 'no video or stream request in the HTML')
   assert.ok(!/<figure/.test(rootOf(html).split('id="how-it-works"')[0]), 'no illustration or stand-in visual in the hero')
   for (const s of ['Elyon Dubai', 'Get 5 Free Ad Concepts']) assert.ok(t.includes(s), s)
 })
