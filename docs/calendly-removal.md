@@ -10,7 +10,7 @@ Owner decision: no unrestricted public booking links on the website, in any lang
 | `OfferPlaceholderPage` (free-hooks placeholder) | "Book a Creative Call" → Calendly | "Get 5 Free Ad Concepts" → Roadmap |
 | `src/i18n/cta.js` fallbacks (a language whose Roadmap flow is switched off; unused today: all flows are on) | Calendly, new tab | The Contact page (`CONTACT_PATH`), label "Contact" |
 | Contact pages | none | none |
-| Roadmap booking (`CalendlyGate` in `RoadmapBooking`) | qualified visitors | **unchanged** |
+| Roadmap booking (`RoadmapBooking`) | qualified visitors, click-to-load embed (`CalendlyGate`) | **link-out only since 27 Nov 2026** (privacy audit: Stripe/Datadog cookies were set on Calendly page load before its notice): a new-tab button + email, nothing from Calendly loads on our pages; `CalendlyGate`, the iframe, the booking message listener and `convrt_calendly_requested` removed; see docs/booking-embed-and-cookies.md |
 | Privacy Policy and Legal Notice (operator list "book a call") | linked | revised on the `legal-revision-calendly` branch, not here |
 
 Other changes: `hrefFor` now keeps a query string when it localizes a path (`/project-application?package=…` → `/es/project-application?package=…`); the Arabic "(in English)" label logic ignores the query.

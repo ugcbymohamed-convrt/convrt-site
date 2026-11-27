@@ -1,6 +1,7 @@
 // Run with: npm run build && node --test tests/no-public-calendly.test.mjs
 // Owner decision, 27 Nov 2026: no unrestricted PUBLIC Calendly link on the website in any language. The calendar stays inside the qualification-first Creative Growth Roadmap booking (shown
 // only after a visitor qualifies, so it is not in the static HTML), and private invitations. The paid-traffic landing page /scale opens the Roadmap too.
+// Since 27 Nov 2026 the Roadmap booking is LINK-OUT ONLY (a new-tab link): Calendly is never embedded or loaded by any page or script of ours (see the second test).
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import fs from 'node:fs'
@@ -20,6 +21,17 @@ test('built HTML: no page in any language links to calendly.com (the /scale paid
   assert.ok(pages.length > 60)
   const offenders = pages.map((f) => path.relative(DIST, f)).filter((rel) => !ALLOWED.some((re) => re.test(rel)) && /href="[^"]*calendly\.com/i.test(fs.readFileSync(path.join(DIST, rel), 'utf8')))
   assert.deepEqual(offenders, [])
+})
+
+test('nothing from Calendly is ever loaded: no iframe, script, link, preconnect or embed parameter in any built page or JavaScript bundle', { skip: !fs.existsSync(DIST) && 'dist/ not built' }, () => {
+  const files = walk(DIST).filter((f) => /\.(html|js|css)$/.test(f))
+  assert.ok(files.length > 60)
+  for (const f of files) {
+    const t = fs.readFileSync(f, 'utf8')
+    const rel = path.relative(DIST, f)
+    assert.ok(!/assets\.calendly\.com|embed_type=|embed_domain|calendly\.event_scheduled/.test(t), `${rel}: no Calendly widget, embed parameter or booking message listener`)
+    if (rel.endsWith('.html')) assert.ok(!/<(iframe|script|link)[^>]+calendly/i.test(t), `${rel}: no Calendly iframe, script or link tag`)
+  }
 })
 
 test('the organic route is the Contact inquiry with the service chosen; no CTA helper falls back to Calendly', () => {
