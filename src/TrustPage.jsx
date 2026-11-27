@@ -26,7 +26,7 @@ const LEGAL_BUILDERS = { es: LEGAL_ES, fr: LEGAL_FR, ar: LEGAL_AR }
 const TOKEN = /(\[\[[^\]|]+\|[^\]]+\]\]|\[(?:OWNER TO CONFIRM|LEGAL REVIEW)[^\]]*\])/g
 /* Arabic: a run of Latin text (a name, an e-mail, a URL, a storage key) is isolated so its punctuation and neighbouring Arabic words never reorder it. */
 const LATIN_WORD = "_?[\\p{Script=Latin}\\p{N}][\\p{Script=Latin}\\p{N}@._:/#+&'’<>-]*"
-const LATIN_RUN = new RegExp(`(${LATIN_WORD}(?:,? ${LATIN_WORD})*)`, 'gu')
+const LATIN_RUN = new RegExp(`(${LATIN_WORD}(?:,?[ \\u00a0]${LATIN_WORD})*)`, 'gu') // a no-break space joins words into one run too ("Elyon Dubai" stays one isolate: two would swap places in right-to-left text)
 const HAS_LETTER = /[\p{Script=Latin}@]/u
 
 /* The notice shown on a translated legal document until the owner approves it (LEGAL_TRANSLATIONS_APPROVED). Not part of the legal text. */

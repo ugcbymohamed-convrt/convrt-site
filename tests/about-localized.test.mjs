@@ -53,12 +53,14 @@ test('the modules hold the supplied copy: structure (9 fact cards, 4 services, 5
   for (const l of ['es', 'fr', 'ar']) {
     const c = CONTENT[l]
     assert.equal(c.glance.items.length, 9, l); assert.equal(c.what.services.length, 4, l); assert.equal(c.creators.paragraphs.length, 5, l); assert.equal(c.scope.items.length, 4, l)
-    assert.equal(c.founder.paragraphs.length, 2, l); assert.equal(c.markets.paragraphs.length, 2, l)
+    assert.equal(c.founder.paragraphs.length, l === 'ar' ? 1 : 2, l) // Arabic: the owner's own one-paragraph founder copy (27 Nov 2026)
+    assert.equal(c.markets.paragraphs.length, 2, l)
     assert.deepEqual(c.what.services.map((s) => s.href), ['/ugc-video-agency', '/saas-video-production', '/spokesperson-video-production', '/social-media-video-production'], l)
   }
   assert.equal(ABOUT_ES.badge, 'Sobre CONVRT'); assert.deepEqual(ABOUT_ES.h1, { lead: 'Sobre', accent: 'CONVRT Studio' })
   assert.equal(ABOUT_ES.what.lead, 'Creamos contenido en vídeo diseñado para captar la atención, generar confianza e impulsar la acción.')
-  assert.equal(ABOUT_ES.closing.heading, 'Demos forma a tu próxima gran creatividad'); assert.equal(ABOUT_ES.closing.primary, 'Consigue 5 conceptos publicitarios gratis'); assert.equal(ABOUT_ES.closing.secondary, 'Explora nuestros servicios')
+  // the Spanish closing section is the owner's own copy (27 Nov 2026), not the supplied professional text
+  assert.equal(ABOUT_ES.closing.badge, 'TRABAJEMOS JUNTOS'); assert.equal(ABOUT_ES.closing.heading, 'Hablemos de tu próxima campaña'); assert.equal(ABOUT_ES.closing.primary, 'Pide tus 5 ideas gratis'); assert.equal(ABOUT_ES.closing.secondary, 'Ver servicios')
   assert.equal(ABOUT_ES.experience.disclaimer, 'Estas cifras reflejan la trayectoria profesional de nuestro fundador, incluidos los trabajos realizados a través de CONVRT Studio y sus proyectos anteriores de producción creativa.')
   assert.equal(ABOUT_FR.badge, 'À propos de CONVRT'); assert.deepEqual(ABOUT_FR.h1, { lead: 'À propos de', accent: 'CONVRT Studio' })
   assert.equal(ABOUT_FR.what.lead, "Nous créons des vidéos conçues pour capter l'attention, inspirer confiance et inciter à l'action.")
@@ -66,7 +68,10 @@ test('the modules hold the supplied copy: structure (9 fact cards, 4 services, 5
   assert.equal(ABOUT_FR.experience.disclaimer, "Ces chiffres reflètent l'ensemble de l'expérience professionnelle de notre fondateur, y compris les projets réalisés au sein de CONVRT Studio et ses précédents projets de production créative.")
   assert.equal(ABOUT_AR.badge, 'عن CONVRT'); assert.deepEqual(ABOUT_AR.h1, { lead: 'تعرّف على', accent: 'CONVRT Studio' })
   assert.equal(ABOUT_AR.what.lead, 'نصنع محتوى فيديو مصمّمًا لجذب الانتباه، وبناء الثقة، وتحفيز الجمهور على اتخاذ إجراء.')
-  assert.equal(ABOUT_AR.closing.heading, 'لنصنع إعلانك الإبداعي القادم'); assert.equal(ABOUT_AR.closing.primary, 'احصل على 5 أفكار إعلانية مجانًا'); assert.equal(ABOUT_AR.closing.secondary, 'استكشف خدماتنا')
+  // the Arabic founder and closing sections are the owner's own copy (27 Nov 2026), not the supplied professional text
+  assert.equal(ABOUT_AR.closing.badge, ''); assert.equal(ABOUT_AR.closing.heading, 'خلّنا نشتغل على إعلانك الجاي'); assert.equal(ABOUT_AR.closing.primary, 'احصل على 5 أفكار إعلانية مجانًا'); assert.equal(ABOUT_AR.closing.secondary, 'شوف خدماتنا')
+  assert.equal(ABOUT_AR.founder.badge, 'من وراء CONVRT'); assert.equal(ABOUT_AR.founder.heading, 'تتعامل مباشرة مع مؤسّس الاستوديو')
+  assert.deepEqual(ABOUT_AR.founder.paragraphs, ['مع CONVRT، تتعامل مباشرة مع محمد الدكالي عزيزي، مؤسّس الاستوديو. ومن أول فكرة إلى تسليم الفيديو، كل الشغل مع فريق واحد.'])
   assert.equal(ABOUT_AR.experience.disclaimer, 'تعكس هذه الأرقام مجمل الخبرة المهنية لمؤسسنا، بما في ذلك الأعمال المنفّذة من خلال CONVRT Studio ومشاريعه السابقة في الإنتاج الإبداعي.')
   // the founder is named in full, in Latin script, in every language (legal name; the Arabic copy keeps it in Latin)
   for (const l of ['es', 'fr', 'ar']) assert.ok(plain(JSON.stringify(CONTENT[l])).includes('Mohamed Doukkali Azizi'), l)
@@ -173,4 +178,46 @@ test('About SEO and structured data are untouched: the approved titles, self-can
     assert.ok(!/1,200|1\.200|40M|500\+|aggregateRating/.test(JSON.stringify(g)), `${p}: no founder-experience figure in structured data`)
   }
   assert.match(page('/about').replace(/<[^>]+>/g, '').replace(/<!-- -->/g, '').replace(/\s+/g, ' '), /About CONVRT Studio/)
+})
+
+test('Arabic closing section: no eyebrow or its lines; headline, body and buttons as the owner wrote them; every link goes to its existing destination', () => {
+  const h = page('/ar/about')
+  const i = h.indexOf('<h2 id="about-cta"'); assert.ok(i > 0)
+  const block = h.slice(h.lastIndexOf('<div class="relative">', i), h.indexOf('</section>', i)).replace(/<!-- -->/g, '')
+  assert.ok(!block.includes('لنعمل معًا'), 'the eyebrow is gone')
+  assert.ok(!/<span class="h-px w-8 bg-lime"/.test(block), 'and its decorative lines')
+  assert.ok(!/mt-6 text-\[2rem\]/.test(block.slice(0, block.indexOf('</h2>'))), 'the headline carries no top margin meant for the eyebrow')
+  const body = block.replace(/<[^>]+>/g, '')
+  assert.ok(body.includes('خلّنا نشتغل على إعلانك الجاي') && body.includes('شوف كيف اشتغلنا مع') && body.includes('وإذا ودّك تبدأ،'))
+  assert.ok(/<a [^>]*href="\/ar\/case-studies\/graspo"[^>]*>(?:<bdi[^>]*>)?Graspo/.test(block), 'Graspo keeps its case study')
+  assert.ok(/<a [^>]*href="\/ar\/case-studies\/elyon"[^>]*>(?:<bdi[^>]*>)?Elyon[\s\u00a0]Dubai/.test(block), 'Elyon Dubai keeps its case study')
+  assert.ok(/<a [^>]*href="\/ar\/contact"[^>]*>تواصل معنا<\/a>/.test(block), '«تواصل معنا» keeps the Contact page')
+  assert.ok(/<a [^>]*href="\/ar\/creative-growth-roadmap"[^>]*>اطلب 5 أفكار إعلانية لعلامتك التجارية مجانًا<\/a>/.test(block), 'the whole phrase links to the Roadmap')
+  assert.ok(block.includes('احصل على 5 أفكار إعلانية مجانًا') && block.includes('شوف خدماتنا'), 'primary and secondary buttons')
+  assert.ok(/href="\/ar\/creative-growth-roadmap"[^>]*>\s*احصل على 5/.test(block) || block.includes('about_roadmap_cta_click') || /creative-growth-roadmap/.test(block), 'the primary button still opens the Roadmap')
+})
+
+test('Arabic founder section: owner\'s eyebrow, headline and one-paragraph body naming the founder in Arabic', () => {
+  const h = page('/ar/about')
+  const i = h.indexOf('<h2 id="about-founder"'); assert.ok(i > 0)
+  const block = h.slice(h.lastIndexOf('<section', i), h.indexOf('</section>', i)).replace(/<!-- -->/g, '').replace(/<[^>]+>/g, '').replace(/\s+/g, ' ')
+  assert.ok(block.includes('من وراء CONVRT') && block.includes('تتعامل مباشرة مع مؤسّس الاستوديو'))
+  assert.ok(block.includes('مع CONVRT، تتعامل مباشرة مع محمد الدكالي عزيزي، مؤسّس الاستوديو. ومن أول فكرة إلى تسليم الفيديو، كل الشغل مع فريق واحد.'))
+  assert.ok(!block.includes('يدير CONVRT Studio مؤسسه'), 'the previous founder paragraphs are gone')
+})
+
+test('Spanish closing section: the owner\'s eyebrow, headline, body and buttons; each link goes to its existing destination; the eyebrow decoration is kept', () => {
+  const h = page('/es/about')
+  const i = h.indexOf('<h2 id="about-cta"'); assert.ok(i > 0)
+  const block = h.slice(h.lastIndexOf('<div class="relative">', i), h.indexOf('</section>', i)).replace(/<!-- -->/g, '')
+  assert.ok(/<span class="h-px w-8 bg-lime"/.test(block), 'the eyebrow decoration (lines) is still there')
+  assert.ok(block.includes('TRABAJEMOS JUNTOS') && block.includes('Hablemos de tu próxima campaña'))
+  const body = block.replace(/<[^>]+>/g, '').replace(/\u00a0/g, ' ')
+  assert.ok(body.includes('Mira lo que hicimos para Graspo y Elyon Dubai. Si tienes un proyecto en mente, cuéntanos qué necesitas. Y si buscas ideas para empezar, pídenos 5 ideas de anuncios para tu marca, gratis.'))
+  assert.ok(/<a [^>]*href="\/es\/case-studies\/graspo"[^>]*>Graspo<\/a>/.test(block), 'Graspo keeps its case study')
+  assert.ok(/<a [^>]*href="\/es\/case-studies\/elyon"[^>]*>Elyon[\s\u00a0]Dubai<\/a>/.test(block), 'Elyon Dubai keeps its case study')
+  assert.ok(/<a [^>]*href="\/es\/contact"[^>]*>cuéntanos qué necesitas<\/a>/.test(block), '«cuéntanos qué necesitas» opens the Contact page')
+  assert.ok(/<a [^>]*href="\/es\/creative-growth-roadmap"[^>]*>pídenos 5 ideas de anuncios para tu marca, gratis<\/a>/.test(block), 'the whole phrase opens the Roadmap')
+  assert.ok(/<a href="\/es\/creative-growth-roadmap"[^>]*>Pide tus 5 ideas gratis /.test(block), 'the primary button opens the Roadmap')
+  assert.ok(/<a href="\/es\/#services"[^>]*>Ver servicios<\/a>/.test(block), 'the secondary button keeps its services destination')
 })

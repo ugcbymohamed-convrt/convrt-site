@@ -235,8 +235,8 @@ export default function AboutLayout({ content: c, locale }) {
               <Glow className="-top-24 left-1/2 h-[320px] w-[700px] -translate-x-1/2 bg-lime/10 blur-[120px]" />
               <Glow className="-bottom-28 right-[-8%] h-[260px] w-[420px] bg-violet/[0.12] blur-[110px]" />
               <div className="relative">
-                <Badge>{t(c.closing.badge)}</Badge>
-                <h2 id="about-cta" className={`mt-6 text-[2rem] sm:text-[2.6rem] md:text-5xl ${h2Class}`}>{t(c.closing.heading)}</h2>
+                {c.closing.badge ? <Badge>{t(c.closing.badge)}</Badge> : null}
+                <h2 id="about-cta" className={`${c.closing.badge ? 'mt-6 ' : ''}text-[2rem] sm:text-[2.6rem] md:text-5xl ${h2Class}`}>{t(c.closing.heading)}</h2>
                 <p className={`mx-auto mt-5 max-w-xl text-balance text-base text-ink-muted md:text-lg ${lh}`}>{text(c.closing.text)}</p>
                 <div className="mt-8 flex flex-col items-stretch justify-center gap-3 sm:flex-row sm:items-center">
                   <a

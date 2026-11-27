@@ -33,9 +33,9 @@ export default {
     ],
     outro: "تجد أسعار الباقات وشروطها في [[صفحة الأسعار|/pricing]]. نعمل حصريًا مع الشركات.",
   },
-  founder: { badge: "خلف CONVRT", heading: "استوديو يديره مؤسسه", paragraphs: [
-    "يدير CONVRT Studio مؤسسه Mohamed Doukkali Azizi.",
-    "تتعامل مع استوديو واحد بدلًا من التنسيق مع عدة مزوّدي خدمات.",
+  /* Owner's replacement copy for this section (27 Nov 2026), written in his own words, not the supplied professional text: one paragraph, the founder named in Arabic. */
+  founder: { badge: "من وراء CONVRT", heading: "تتعامل مباشرة مع مؤسّس الاستوديو", paragraphs: [
+    "مع CONVRT، تتعامل مباشرة مع محمد الدكالي عزيزي، مؤسّس الاستوديو. ومن أول فكرة إلى تسليم الفيديو، كل الشغل مع فريق واحد.",
   ] },
   experience: {
     heading: "خبرة المؤسس",
@@ -60,5 +60,6 @@ export default {
     { title: "فيديوهات مكتملة، مع إمكانية طلب اللقطات الخام", text: "نسلّم كل فيديو مكتملًا بعد مونتاج احترافي. وتتوفر اللقطات الخام كإضافة اختيارية إلى الفيديوهات المكتملة فقط، وليس بديلًا عنها." },
     { title: "ترخيص حقوق الاستخدام", text: "تحدد حقوق الاستخدام كيفية استخدامك للفيديوهات طوال المدة المشمولة في باقتك، ولا تعني نقل ملكية حقوق المؤلف إليك." },
   ] },
-  closing: { badge: "لنعمل معًا", heading: "لنصنع إعلانك الإبداعي القادم", text: "تعرّف على أسلوب عملنا في مشروعي [[Graspo|/case-studies/graspo]] و[[Elyon Dubai|/case-studies/elyon]]، ثم [[تواصل معنا|/contact]] أو قدّم طلبًا للحصول على [[استراتيجيتك الإبداعية المجانية للنمو (Creative Growth Roadmap)|/creative-growth-roadmap]].", primary: "احصل على 5 أفكار إعلانية مجانًا", secondary: "استكشف خدماتنا" },
+  /* Owner's replacement copy (27 Nov 2026): no eyebrow (badge is empty: the layout skips the badge and its lines), colloquial headline and body; the Roadmap link is the whole phrase. */
+  closing: { badge: "", heading: "خلّنا نشتغل على إعلانك الجاي", text: "شوف كيف اشتغلنا مع [[Graspo|/case-studies/graspo]] و[[Elyon Dubai|/case-studies/elyon]]. وإذا ودّك تبدأ، [[تواصل معنا|/contact]] أو [[اطلب 5 أفكار إعلانية لعلامتك التجارية مجانًا|/creative-growth-roadmap]].", primary: "احصل على 5 أفكار إعلانية مجانًا", secondary: "شوف خدماتنا" },
 }
