@@ -4,7 +4,7 @@
    Each locale module (src/content/legal/es.js, fr.js, ar.js) exports  (c) => ({ privacy, terms, legalNotice })  with exactly the shape and the section/body/list
    structure of TRUST_CONTENT.privacy / .terms / .legalNotice. scripts/legal-structure-check.mjs and tests/legal-translations.test.mjs prove the structure matches. */
 
-import { CONTACT_EMAIL, BOOKING_URL, COMPANY_LINKEDIN_URL, PRIVACY_PATH, TERMS_PATH, LEGAL_NOTICE_PATH } from '../../config.js'
+import { CONTACT_EMAIL, COMPANY_LINKEDIN_URL, PRIVACY_PATH, TERMS_PATH, LEGAL_NOTICE_PATH } from '../../config.js'
 import { OPERATOR } from '../operator.js'
 import { USAGE_RIGHTS } from '../../seo/businessKnowledge.js'
 import { CURRENT_MARKETING_CONSENT_VERSION, marketingConsentText } from '../marketingConsent.js'
@@ -21,7 +21,7 @@ export function legalContext() {
     /* The operator's identity. `structure` is the English phrase "a self-employed professional (autónomo) registered in Spain": translate it, keep "autónomo". */
     operator: { tradingName: OPERATOR.tradingName, name: OPERATOR.name, structure: OPERATOR.structure, taxId: OPERATOR.taxId, address: OPERATOR.address },
     /* Link targets used inside the documents (write links as [[label|target]]). */
-    links: { booking: BOOKING_URL, companyLinkedin: COMPANY_LINKEDIN_URL, privacy: PRIVACY_PATH, terms: TERMS_PATH, legalNotice: LEGAL_NOTICE_PATH, pricing: '/pricing' },
+    links: { companyLinkedin: COMPANY_LINKEDIN_URL, privacy: PRIVACY_PATH, terms: TERMS_PATH, legalNotice: LEGAL_NOTICE_PATH, pricing: '/pricing' },
     /* The Privacy Policy describes the build it ships in: true when Google Analytics is switched on (VITE_GTM_ID set). Provide BOTH branches, like the English text. */
     analyticsActive: consentConfigured(),
     /* The marketing-email wording (a versioned legal text shown in English only). Quote it VERBATIM, in English, inside the translation. */

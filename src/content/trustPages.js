@@ -10,7 +10,7 @@
 
    Inline links: write [[label|/path]] and the template turns it into an anchor. Marker text must not contain a closing square bracket. */
 
-import { CONTACT_EMAIL, BOOKING_URL, OFFER_PATHS, CREATOR_SHOWCASE_PATH, PRIVACY_PATH, TERMS_PATH, LEGAL_NOTICE_PATH, COMPANY_LINKEDIN_URL, INSTAGRAM_URL, LEGAL_NOTICE_DETAILS_APPROVED } from '../config.js'
+import { CONTACT_EMAIL, OFFER_PATHS, CREATOR_SHOWCASE_PATH, PRIVACY_PATH, TERMS_PATH, LEGAL_NOTICE_PATH, COMPANY_LINKEDIN_URL, INSTAGRAM_URL, LEGAL_NOTICE_DETAILS_APPROVED } from '../config.js'
 import { BRAND, CREATOR_ALLOCATION, PRODUCTION_LANGUAGES, PRODUCTION_MODEL, INTERNATIONAL_CLIENTS, TALENT, USAGE_RIGHTS, TAX } from '../seo/businessKnowledge.js'
 import { ELYON_PROOF } from './ugcProof.js'
 import { CONVRT_STATS } from '../lib/siteStats.js'
@@ -45,7 +45,7 @@ export const operatorDetails = () => [
     ? `Postal address: ${OPERATOR.address}`
     : '[OWNER TO CONFIRM: show the operator’s postal address here. Spanish law requires a domicile or the address of an establishment in Spain (Ley 34/2002, art. 10); it is on file but not published until you approve it]',
   `Email: ${mail}`,
-  `Other ways to reach us directly: [[book a call|${BOOKING_URL}]] and [[CONVRT Studio on LinkedIn|${COMPANY_LINKEDIN_URL}]]`,
+  `Other ways to reach us directly: [[CONVRT Studio on LinkedIn|${COMPANY_LINKEDIN_URL}]]`,
 ]
 
 export const TRUST_CONTENT = {
@@ -158,6 +158,8 @@ export const TRUST_CONTENT = {
             'Free ad hooks. We collect your email address and the industry you choose, and use them to send you the hooks you asked for. Basis: your request. We may ask you to confirm your email first. Receiving the hooks does not add you to our marketing list.',
             'Free video application. We collect your name, work email, company website, your answers about your business (business type, monthly ad spend range, videos per month, type of video, timing, interest in ongoing production) and an optional description, to review the application and contact you about it. Basis: steps you ask us to take before an agreement, and our legitimate interest in running the offer. We receive an email alert for each application through our email sender, Resend.',
             'Referral Partner Program. We collect your name, email, partner type, program choice, and optionally your company or agency name and website or LinkedIn profile, to review your application and contact you about it. Basis: as for the free video application. The form has a required box confirming that we may use these details for that purpose.',
+            'General enquiry form. On the Contact page we collect your name, email, brand or company name, the service you are interested in, your message and your confirmation that you have read this policy, and optionally your website or social profile and an estimated budget range. We email these details to ourselves and use them to reply to you, to decide whether and how we can help, and to prepare a proposal if you ask for one. They are not added to our marketing list. Basis: steps you ask us to take before an agreement, and our legitimate interest in answering business enquiries.',
+            'Project application. When you apply for a package we collect your name, email, brand or company name, your website or social profile, the package you selected, your answers about your project (a description and objective, your advertising spend or current social media activity, for custom projects the type of production and an estimated budget, how soon you are ready, your desired start date and production languages) and your acknowledgement of the package terms. We also record the language of the page, the page you came from and, if you arrived through a campaign link, its campaign details (utm_source, utm_medium, utm_campaign, utm_content and utm_term) and, only if you accepted analytics, the first page of your visit. We email these details to ourselves to review your application and decide the next step personally. The price shown comes from our own pricing, never from your browser. The application is not a purchase and does not authorise a payment. It is not added to our marketing list. Basis: as for the general enquiry form.',
             'Email and calls. If you email us or book a call, we use what you send to reply and to work with you. Basis: your request, and our legitimate interest in answering business enquiries.',
             'Technical data. Our hosting provider, Vercel, processes your IP address and request details to serve the website and keep it secure. Videos on the site are delivered through Cloudflare Stream. Basis: our legitimate interest in a secure, working website.',
             'Creator form. The link for freelance creators opens a Google Form; what you enter there is handled through Google Forms.',
@@ -168,7 +170,7 @@ export const TRUST_CONTENT = {
       {
         heading: 'Marketing emails (optional, separate from everything else)',
         body: [
-          'We send promotional emails (creative tips and offers) only if you tick the optional box that appears next to our forms. The box is never ticked for you, and you can submit every form without ticking it. Not ticking it never affects your application, the resource you asked for, or any reply from us.',
+          'We send promotional emails (creative tips and offers) only if you tick the optional box that appears next to some of our forms (not the general enquiry form or the project application). The box is never ticked for you, and you can submit every form without ticking it. Not ticking it never affects your application, the resource you asked for, or any reply from us.',
           `The wording you agree to is: "${marketingConsentText()}" We keep applications and requests separate from our marketing list. When you tick the box we record that you agreed, the date and time, which form you used and the version of the wording you saw (currently ${CURRENT_MARKETING_CONSENT_VERSION}), and add your address to the marketing list. Basis: your consent.`,
           'Emails about your application, the resource you requested, a booking or a project you have with us are service messages, not marketing, and are not covered by this choice.',
           'You can withdraw your consent at any time, free of charge: use the unsubscribe link in any marketing email (every marketing email includes one and says who we are), or email us. Unsubscribing stops promotional emails; we keep a minimal record that you unsubscribed so that we do not email you again. It does not affect any application you made.',
@@ -177,7 +179,7 @@ export const TRUST_CONTENT = {
       {
         heading: 'Booking a call',
         body: [
-          'The booking calendar is provided by Calendly, a separate company. It is shown only after you ask for it, or you can open Calendly in a new tab or email us instead. Calendly collects the details you enter there (such as name, email and your answers) under its own privacy notice, and we receive the booking details and use them to hold the call and follow up on it.',
+          'We do not offer an open booking calendar. If we invite you to book a call (for example after you complete our Free Creative Growth Roadmap and are a good fit, or after we reply to your enquiry), the booking calendar is provided by Calendly, a separate company. It is shown only after you ask for it, or you can open Calendly in a new tab or email us instead. Calendly collects the details you enter there (such as name, email and your answers) under its own privacy notice, and we receive the booking details and use them to hold the call and follow up on it.',
           'When the calendar loads, Calendly and the services it uses (including its payment and monitoring providers) may set cookies of their own, and Calendly shows its own cookie notice. Some of these can be set before you have used Calendly’s notice. We do not control them and have not independently assessed which are strictly necessary. If you prefer not to load the calendar, use the new-tab link or email us.',
         ],
       },
@@ -198,7 +200,7 @@ export const TRUST_CONTENT = {
           { list: [
             'convrt_consent_v1 (kept until you change it or clear your browser data; used only once the cookie banner is switched on): your cookie choice.',
             'convrt_language (kept until you clear your browser data): the language you chose on purpose (English, Spanish, French or Arabic), or that you closed the language suggestion, so we do not ask again. It is never sent to us and never changes what a page shows. The suggestion itself appears only to visitors whose request comes from Spain (Spanish), from France or another French-speaking country (French), or from an Arabic-speaking country (Arabic): our hosting provider (Vercel) tells our server the country of the request, our server answers only yes or no and stores nothing, and your browser location is never requested.',
-            'convrt_scale_attribution (this browser tab only): the campaign details in the link you arrived through (utm_source, utm_medium, utm_campaign, utm_content and utm_term), so they can be passed on to our booking link. We do not store advertising click identifiers (such as gclid or fbclid).',
+            'convrt_scale_attribution (this browser tab only): the campaign details in the link you arrived through (utm_source, utm_medium, utm_campaign, utm_content and utm_term), so they can be passed on to our booking link or included in an application you send us. We do not store advertising click identifiers (such as gclid or fbclid).',
             'convrt_calendly_requested (this browser session only): that you asked to see the booking calendar.',
             'convrt_landing_page (this browser session only, and only if you accept analytics): the first page of your visit, used to see which pages lead to enquiries.',
             'Google Analytics cookies _ga and _ga_<container ID>, only if you accept analytics: Google documents a lifetime of up to two years for them.',
@@ -218,7 +220,7 @@ export const TRUST_CONTENT = {
       {
         heading: 'Who we share information with',
         body: [
-          'Only with service providers that handle it on our behalf, under their own standard terms and privacy notices: MailerLite (application, request and email-list records, and sending our emails), Resend (email alerts to us when someone applies), Calendly (bookings), Vercel (hosting), Cloudflare (video delivery) and, once analytics is switched on and only if you accept it, Google (analytics). We have no other customer database or CRM. We do not sell personal information.',
+          'Only with service providers that handle it on our behalf, under their own standard terms and privacy notices: MailerLite (application, request and email-list records, and sending our emails), Resend (email alerts to us when someone applies or sends an enquiry), Calendly (bookings), Vercel (hosting), Cloudflare (video delivery) and, once analytics is switched on and only if you accept it, Google (analytics). We have no other customer database or CRM. We do not sell personal information.',
         ],
       },
       {
@@ -233,7 +235,7 @@ export const TRUST_CONTENT = {
         body: [
           'These are our retention periods. We apply them by reviewing our records periodically:',
           { list: [
-            'Applications and enquiries that do not lead to a project: 12 months after our last meaningful contact with you.',
+            'Applications, enquiries and project applications (including the copies held in our email inbox) that do not lead to a project: 12 months after our last meaningful contact with you.',
             'Booking records: 12 months, unless an ongoing business relationship justifies keeping them longer.',
             'Marketing email list: until you withdraw your consent or unsubscribe, with a periodic review of inactive addresses.',
             'Contracts, invoices and accounting records: as long as Spanish law requires.',
@@ -262,7 +264,7 @@ export const TRUST_CONTENT = {
 
   terms: {
     h1: 'Terms and Conditions',
-    intro: `The terms for using the CONVRT Studio website and its free offers. Last updated ${UPDATED}.`,
+    intro: `The terms for using the CONVRT Studio website and its free offers, and our general commercial terms for paid packages. Last updated ${UPDATED}.`,
     sections: [
       {
         heading: 'About these terms',
@@ -279,7 +281,7 @@ export const TRUST_CONTENT = {
       {
         heading: 'Enquiries and applications',
         body: [
-          `Sending an enquiry or application does not create a contract and does not oblige either side. We review applications ourselves, we may decline or not respond to any of them, and we do not promise a reply time. Please give accurate information. How we use it is described in the [[Privacy Policy|${PRIVACY_PATH}]].`,
+          `Sending an enquiry or application does not create a contract and does not oblige either side. We review applications ourselves, we may decline or not respond to any of them, and we do not promise a reply time. Please give accurate information. Submitting an application, or confirming that you have read the information about a package, is not a binding purchase agreement and does not authorise a payment. How we use it is described in the [[Privacy Policy|${PRIVACY_PATH}]].`,
         ],
       },
       {
@@ -303,6 +305,45 @@ export const TRUST_CONTENT = {
         body: [
           `The packages and prices on this site describe how we typically work. A paid engagement starts only when we have agreed the scope, price and terms in writing. ${TAX.statement}`,
           'Custom projects, including SaaS and app demos and explainers, are scoped individually.',
+        ],
+      },
+      {
+        heading: 'Payment',
+        body: [
+          'One-time production packages are payable in full upfront, unless otherwise agreed in writing. Monthly packages are invoiced monthly in advance. Invoices are payable within seven calendar days of the invoice date, unless otherwise agreed in writing.',
+          'Production does not start until the required initial payment has been received. If a payment is overdue, we may pause production and adjust delivery timelines. Nothing in these terms limits any rights we have under applicable law in respect of late payment.',
+        ],
+      },
+      {
+        heading: 'Commitments, cancellation and refunds',
+        body: [
+          'Creative Testing Sprint and Sprint Plus monthly packages have an initial three-month commitment. Organic Light and Organic Growth packages have an initial six-month commitment. After the initial commitment, monthly packages continue on a month-to-month basis unless otherwise agreed in writing.',
+          'Cancelling a monthly package requires at least 30 calendar days\' written notice before the applicable renewal date. Cancellation cannot take effect before the initial commitment has been fulfilled, unless otherwise agreed in writing, and does not remove any payment obligation that is already outstanding.',
+          'One-time production packages do not renew automatically. If you cancel before work begins, the payment may be refunded, less any agreed non-recoverable costs already incurred. If you cancel after work has begun, we are entitled to payment for the work already completed and for agreed non-recoverable production costs, including creator bookings and other committed expenses, and any remaining eligible balance will be refunded.',
+          'Completed and delivered work is not refundable merely because you change your mind or because the content does not achieve the marketing results you wanted. These provisions do not limit any mandatory legal rights or remedies.',
+        ],
+      },
+      {
+        heading: 'Your responsibilities, timelines and delays',
+        body: [
+          'You are responsible for providing the information, materials and approvals reasonably required to complete your project. Depending on the project, this may include:',
+          { list: [
+            'product samples and timely product shipping;',
+            'brand guidelines and assets;',
+            'accurate product or service information;',
+            'relevant access, permissions and supporting materials;',
+            'feedback and approvals;',
+            'confirmation that the materials you supply and your advertising claims may lawfully be used.',
+          ] },
+          'Production timelines for Creative Testing packages begin once the required payment has been received, the necessary materials and products are available, and the relevant concepts and scripts have been approved. Delays in receiving products, information, feedback or approvals may extend production and delivery timelines, and CONVRT is not responsible for delivery delays caused by a failure to provide necessary materials or approvals on time.',
+          'Any additional costs resulting from significant client-requested changes or delays will be communicated to you and agreed before they are incurred.',
+        ],
+      },
+      {
+        heading: 'Revisions',
+        body: [
+          'Each Creative Testing package includes two revision rounds per concept, as stated on the pricing page. Included revisions cover reasonable adjustments within the originally agreed brief. Additional revisions are available at an extra cost, agreed with you before the additional work begins.',
+          'Changes to approved concepts, scripts, creative direction or project scope that require substantial additional production or reshooting may be quoted separately. Corrections needed because CONVRT did not follow the agreed brief do not count towards your included revisions.',
         ],
       },
       {
@@ -338,7 +379,7 @@ export const TRUST_CONTENT = {
       {
         heading: 'Website terms and signed client agreements',
         body: [
-          'These terms cover the use of the website and our free offers. They do not govern a paid project. A paid project is governed by the written agreement, order or proposal that both sides accept for it. If a signed agreement conflicts with these terms, the signed agreement prevails for that project.',
+          'These terms cover the use of the website and our free offers, and set out our general commercial framework for paid packages. They do not prevent individually negotiated arrangements: a paid project is governed by the written agreement, order or proposal that both sides accept for it. If an individually agreed written agreement conflicts with these terms, it prevails for that project, subject to applicable mandatory law.',
         ],
       },
       {
@@ -364,7 +405,7 @@ export const TRUST_CONTENT = {
       },
       {
         heading: 'Prices and taxes',
-        body: [`Prices shown on the website are in US dollars. ${TAX.statement} See the [[pricing page|/pricing]].`],
+        body: [`Prices displayed on this website are shown in US dollars (USD) or euros (EUR), as indicated on the relevant page. The applicable currency, pricing and payment terms will be confirmed in the written project agreement. ${TAX.statement} See the [[pricing page|/pricing]].`],
       },
       {
         heading: 'Intellectual property',
