@@ -18,7 +18,7 @@ const localizeHref = (href, locale) => hrefFor(href, locale)
 /* Arabic: a link to a page that exists only in English says so in its label (a clearly labelled language fallback), unless the translation already does. */
 const arabicLabel = (l, locale) => {
   const label = translate(locale, l.label)
-  return locale === 'ar' && l.href.startsWith('/') && englishOnly(l.href.split('#')[0], locale) && !label.includes('بالإنجليزية') ? `${label} ${translate(locale, '(in English)')}` : label
+  return locale === 'ar' && l.href.startsWith('/') && englishOnly(l.href.split('#')[0].split('?')[0], locale) && !label.includes('بالإنجليزية') ? `${label} ${translate(locale, '(in English)')}` : label
 }
 /* A link whose target exists only in English says so in languages that declare a fallback note (French: « (en anglais) »); languages whose every target is translated are unchanged. */
 const withNote = (label, href, locale) => {

@@ -1,0 +1,224 @@
+[
+ {
+  "level": "WARN",
+  "area": "live-duplicates",
+  "url": "/about/",
+  "msg": "trailing-slash URL answers 200 (duplicate of the canonical URL)"
+ },
+ {
+  "level": "WARN",
+  "area": "live-duplicates",
+  "url": "/pricing/",
+  "msg": "trailing-slash URL answers 200 (duplicate of the canonical URL)"
+ },
+ {
+  "level": "WARN",
+  "area": "live-duplicates",
+  "url": "/es/pricing/",
+  "msg": "trailing-slash URL answers 200 (duplicate of the canonical URL)"
+ },
+ {
+  "level": "INFO",
+  "area": "canonical",
+  "url": "/ar/case-studies",
+  "msg": "declared duplicate of /ar/case-studies/graspo (canonical elsewhere)"
+ },
+ {
+  "level": "INFO",
+  "area": "canonical",
+  "url": "/case-studies",
+  "msg": "declared duplicate of /case-studies/graspo (canonical elsewhere)"
+ },
+ {
+  "level": "INFO",
+  "area": "canonical",
+  "url": "/es/case-studies",
+  "msg": "declared duplicate of /es/case-studies/graspo (canonical elsewhere)"
+ },
+ {
+  "level": "INFO",
+  "area": "canonical",
+  "url": "/fr/case-studies",
+  "msg": "declared duplicate of /fr/case-studies/graspo (canonical elsewhere)"
+ },
+ {
+  "level": "INFO",
+  "area": "live-ai",
+  "url": "/llms.txt",
+  "msg": "HTTP 404 (an optional convention; not required by any crawler)"
+ },
+ {
+  "level": "INFO",
+  "area": "live-redirects",
+  "url": "http://convrt.studio/about",
+  "msg": "apex http: 2 hops (308 -> https://convrt.studio/about | 308 -> https://www.convrt.studio/about | 200): the first is the platform's https upgrade"
+ },
+ {
+  "level": "INFO",
+  "area": "sitemap",
+  "url": "/ar/case-studies",
+  "msg": "not in a sitemap (canonical points to https://www.convrt.studio/ar/case-studies/graspo)"
+ },
+ {
+  "level": "INFO",
+  "area": "sitemap",
+  "url": "/ar",
+  "msg": "not in a sitemap (canonical points to https://www.convrt.studio/ar/)"
+ },
+ {
+  "level": "INFO",
+  "area": "sitemap",
+  "url": "/case-studies",
+  "msg": "not in a sitemap (canonical points to https://www.convrt.studio/case-studies/graspo)"
+ },
+ {
+  "level": "INFO",
+  "area": "sitemap",
+  "url": "/es/case-studies",
+  "msg": "not in a sitemap (canonical points to https://www.convrt.studio/es/case-studies/graspo)"
+ },
+ {
+  "level": "INFO",
+  "area": "sitemap",
+  "url": "/es",
+  "msg": "not in a sitemap (canonical points to https://www.convrt.studio/es/)"
+ },
+ {
+  "level": "INFO",
+  "area": "sitemap",
+  "url": "/fr/case-studies",
+  "msg": "not in a sitemap (canonical points to https://www.convrt.studio/fr/case-studies/graspo)"
+ },
+ {
+  "level": "INFO",
+  "area": "sitemap",
+  "url": "/fr",
+  "msg": "not in a sitemap (canonical points to https://www.convrt.studio/fr/)"
+ },
+ {
+  "level": "INFO",
+  "area": "structured-data",
+  "url": "/ar/case-studies/elyon",
+  "msg": "@id reference https://www.convrt.studio/ar/ugc-video-agency#service is defined on another page"
+ },
+ {
+  "level": "INFO",
+  "area": "structured-data",
+  "url": "/ar/case-studies/graspo",
+  "msg": "@id reference https://www.convrt.studio/ar/social-media-video-production#service is defined on another page"
+ },
+ {
+  "level": "INFO",
+  "area": "structured-data",
+  "url": "/ar/case-studies",
+  "msg": "@id reference https://www.convrt.studio/ar/social-media-video-production#service is defined on another page"
+ },
+ {
+  "level": "INFO",
+  "area": "structured-data",
+  "url": "/ar/referrals",
+  "msg": "noindex page carries JSON-LD"
+ },
+ {
+  "level": "INFO",
+  "area": "structured-data",
+  "url": "/blog",
+  "msg": "noindex page carries JSON-LD"
+ },
+ {
+  "level": "INFO",
+  "area": "structured-data",
+  "url": "/es/referrals",
+  "msg": "noindex page carries JSON-LD"
+ },
+ {
+  "level": "INFO",
+  "area": "structured-data",
+  "url": "/fr/case-studies/elyon",
+  "msg": "@id reference https://www.convrt.studio/fr/ugc-video-agency#service is defined on another page"
+ },
+ {
+  "level": "INFO",
+  "area": "structured-data",
+  "url": "/fr/case-studies/graspo",
+  "msg": "@id reference https://www.convrt.studio/fr/social-media-video-production#service is defined on another page"
+ },
+ {
+  "level": "INFO",
+  "area": "structured-data",
+  "url": "/fr/case-studies",
+  "msg": "@id reference https://www.convrt.studio/fr/social-media-video-production#service is defined on another page"
+ },
+ {
+  "level": "INFO",
+  "area": "structured-data",
+  "url": "/fr/referrals",
+  "msg": "noindex page carries JSON-LD"
+ },
+ {
+  "level": "INFO",
+  "area": "structured-data",
+  "url": "/saas-video-production",
+  "msg": "@id reference https://www.convrt.studio/ugc-video-agency#service is defined on another page"
+ },
+ {
+  "level": "INFO",
+  "area": "structured-data",
+  "url": "/saas-video-production",
+  "msg": "@id reference https://www.convrt.studio/spokesperson-video-production#service is defined on another page"
+ },
+ {
+  "level": "INFO",
+  "area": "structured-data",
+  "url": "/saas-video-production",
+  "msg": "@id reference https://www.convrt.studio/pricing#service-custom-creative-package is defined on another page"
+ },
+ {
+  "level": "INFO",
+  "area": "structured-data",
+  "url": "/social-media-video-production",
+  "msg": "@id reference https://www.convrt.studio/pricing#service-organic-light is defined on another page"
+ },
+ {
+  "level": "INFO",
+  "area": "structured-data",
+  "url": "/social-media-video-production",
+  "msg": "@id reference https://www.convrt.studio/pricing#service-organic-growth is defined on another page"
+ },
+ {
+  "level": "INFO",
+  "area": "structured-data",
+  "url": "/social-media-video-production",
+  "msg": "@id reference https://www.convrt.studio/pricing#service-custom-organic-package is defined on another page"
+ },
+ {
+  "level": "INFO",
+  "area": "structured-data",
+  "url": "/spokesperson-video-production",
+  "msg": "@id reference https://www.convrt.studio/pricing#service-creative-testing-sprint is defined on another page"
+ },
+ {
+  "level": "INFO",
+  "area": "structured-data",
+  "url": "/spokesperson-video-production",
+  "msg": "@id reference https://www.convrt.studio/pricing#service-creative-testing-sprint-plus is defined on another page"
+ },
+ {
+  "level": "INFO",
+  "area": "structured-data",
+  "url": "/spokesperson-video-production",
+  "msg": "@id reference https://www.convrt.studio/pricing#service-custom-creative-package is defined on another page"
+ },
+ {
+  "level": "INFO",
+  "area": "structured-data",
+  "url": "/ugc-video-agency",
+  "msg": "@id reference https://www.convrt.studio/pricing#service-creative-testing-sprint is defined on another page"
+ },
+ {
+  "level": "INFO",
+  "area": "structured-data",
+  "url": "/ugc-video-agency",
+  "msg": "@id reference https://www.convrt.studio/pricing#service-creative-testing-sprint-plus is defined on another page"
+ }
+]

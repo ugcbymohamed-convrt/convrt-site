@@ -528,3 +528,9 @@ test('the Arabic CSS is shipped: mirrored rules exist and every one is scoped to
   assert.ok(/\[dir=rtl\][^{]*:not\(\[dir=ltr\] \*\)/.test(css), 'mirrored rules leave dir=ltr islands alone')
   assert.ok(/IBM Plex Sans Arabic/.test(css))
 })
+
+test('Arabic organic page: the CTA to the Arabic Contact page (with ?service=organic) is not labelled as English', () => {
+  const h = fs.readFileSync(path.join(dist, 'ar/social-media-video-production/index.html'), 'utf8')
+  assert.ok(h.includes('href="/ar/contact?service=organic"'), 'the organic CTAs open the Arabic Contact page')
+  assert.ok(!/ناقش استراتيجية المحتوى[^<]{0,3}(?:<[^>]+>)*\s*\(بالإنجليزية\)/.test(h), 'no «(بالإنجليزية)» label on a link to an Arabic page')
+})
