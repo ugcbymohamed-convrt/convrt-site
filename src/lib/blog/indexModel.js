@@ -29,7 +29,7 @@ export const articleToItem = (a) => ({
   kind: 'published',
   key: `article:${a.slug}`,
   slug: a.slug,
-  href: articlePath(a.slug),
+  href: articlePath(a.slug, a.locale),
   category: a.category,
   categoryLabel: a.categoryLabel || labelOf(a.category),
   title: a.title,

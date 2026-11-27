@@ -153,7 +153,9 @@ export default function App() {
   // /es/pricing → locale 'es', path '/pricing' (the English base path every route above is keyed by). A page that does not exist in the requested
   // language (or a language that is not built yet, like /fr/…) is never faked from English: it renders the not-found page (the host sends a real 404).
   const { locale, basePath } = parsePath(rawPath)
-  const translated = locale === 'en' || (BUILT_LOCALES.includes(locale) && hasTranslation(locale, basePath))
+  // The blog exists per language only where articles are published in it: the pages decide that themselves (a language without articles answers 404 and the page shows not-found).
+  const isBlogPath = basePath === BLOG_PATH || basePath.startsWith(`${BLOG_PATH}/`)
+  const translated = locale === 'en' || (BUILT_LOCALES.includes(locale) && (hasTranslation(locale, basePath) || isBlogPath))
   const path = translated ? basePath : '/__not-found__'
   const Page = resolvePage(path)
 

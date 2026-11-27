@@ -1,8 +1,10 @@
 import { useEffect, useRef } from 'react'
 import BlogHero from './components/blog/BlogHero.jsx'
 import { ArrowUpRight } from './components/blog/shared.jsx'
-import { AR_ARTICLES } from './content/blogAr.js'
-import { arabicBlogHead } from './lib/blog/seo.js'
+import ArticleCard from './components/blog/ArticleCard.jsx'
+import { getPublishedArticles } from './lib/blog/posts.js'
+import { articleToItem } from './lib/blog/indexModel.js'
+import { localizedBlogIndexHead } from './lib/blog/seo.js'
 import { useDocumentHead } from './lib/useDocumentHead.js'
 import { captureAttribution, trackEvent } from './lib/analytics.js'
 import { hrefFor } from './i18n/tr.js'
@@ -22,7 +24,8 @@ const SERVICES = [
 ]
 
 export default function BlogPageAr() {
-  useDocumentHead(arabicBlogHead(AR_ARTICLES))
+  const AR_ARTICLES = getPublishedArticles(undefined, 'ar') // the published Arabic articles (src/content/blog/ar/*.md); none yet: the masthead-only state below
+  useDocumentHead(localizedBlogIndexHead('ar', AR_ARTICLES))
   const viewed = useRef(false)
   useEffect(() => {
     captureAttribution()
@@ -40,10 +43,7 @@ export default function BlogPageAr() {
           <ul className="grid grid-cols-1 gap-5 md:grid-cols-2 md:gap-6 lg:grid-cols-3">
             {AR_ARTICLES.map((a) => (
               <li key={a.slug} className="min-w-0">
-                <a href={`/ar/blog/${a.slug}`} className="block h-full rounded-3xl border border-hairline bg-surface-1/60 p-5 transition-colors hover:border-lime/50">
-                  <h2 className="font-display text-lg font-bold leading-snug text-ink">{a.title}</h2>
-                  <p className="mt-2 text-sm leading-relaxed text-ink-muted">{a.description}</p>
-                </a>
+                <ArticleCard item={articleToItem(a)} />
               </li>
             ))}
           </ul>

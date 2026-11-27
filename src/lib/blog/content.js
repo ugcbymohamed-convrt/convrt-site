@@ -33,7 +33,7 @@ export function collectReferences(blocks) {
   return { links, media }
 }
 
-export function analyzeArticle(source, filename) {
+export function analyzeArticle(source, filename, locale = 'en') {
   const errors = []
   let parsed
   try {
@@ -42,7 +42,7 @@ export function analyzeArticle(source, filename) {
     if (e instanceof FrontmatterError) return { errors: [e.message], meta: null, body: '', blocks: [] }
     throw e
   }
-  const { errors: fmErrors, meta } = validateFrontmatter(parsed.data, filename)
+  const { errors: fmErrors, meta } = validateFrontmatter(parsed.data, filename, locale)
   errors.push(...fmErrors)
 
   let blocks = []
@@ -58,30 +58,33 @@ export function analyzeArticle(source, filename) {
   return { errors, meta, body: parsed.body, blocks }
 }
 
-/* files: [{ filename: 'my-article', source: '---\n…' }]
+/* files: [{ filename: 'my-article', locale: 'es' (default 'en'), source: '---\n…' }]
    fileExists(publicPath): optional, checks local media under /public. */
 export function analyzeCollection(files, { fileExists } = {}) {
-  const analyzed = files.map((f) => ({ ...f, ...analyzeArticle(f.source, f.filename) }))
+  const analyzed = files.map((f) => ({ locale: 'en', ...f, ...analyzeArticle(f.source, f.filename, f.locale ?? 'en') }))
+  const label = (a) => (a.locale === 'en' ? `${a.filename}.md` : `${a.locale}/${a.filename}.md`)
   const problems = []
-  for (const a of analyzed) for (const e of a.errors) problems.push(`${a.filename}.md: ${e}`)
+  for (const a of analyzed) for (const e of a.errors) problems.push(`${label(a)}: ${e}`)
 
   const metas = analyzed.map((a) => a.meta).filter(Boolean)
   for (const e of validateCollection(metas)) problems.push(e)
 
-  const slugs = new Set(metas.map((m) => m.slug))
+  const slugs = new Set(metas.map((m) => `${m.locale ?? 'en'}/${m.slug}`))
   for (const a of analyzed) {
     if (!a.meta) continue
     const { links, media } = collectReferences(a.blocks)
     for (const href of links) {
-      if (href === null) problems.push(`${a.filename}.md: a link has an unsupported URL (use /path, #anchor, https:// or mailto:)`)
-      else if (/^\/blog\/[^/#?]+/.test(href) && !slugs.has(href.split(/[/#?]/)[2])) {
-        problems.push(`${a.filename}.md: internal link ${href} points to an article that does not exist`)
+      if (href === null) problems.push(`${label(a)}: a link has an unsupported URL (use /path, #anchor, https:// or mailto:)`)
+      else {
+        // /blog/<slug> (English) or /<locale>/blog/<slug>: the target article must exist in THAT language.
+        const m = href.match(/^(?:\/(es|fr|ar))?\/blog\/([^/#?]+)/)
+        if (m && !slugs.has(`${m[1] ?? 'en'}/${m[2]}`)) problems.push(`${label(a)}: internal link ${href} points to an article that does not exist`)
       }
     }
     if (fileExists) {
       const local = [a.meta.image, a.meta.ogImage, ...media].filter((p) => p && p.startsWith('/'))
       for (const p of local) {
-        if (!fileExists(p)) problems.push(`${a.filename}.md: file ${p} was not found in /public`)
+        if (!fileExists(p)) problems.push(`${label(a)}: file ${p} was not found in /public`)
       }
     }
   }

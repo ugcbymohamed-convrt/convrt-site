@@ -1,3 +1,4 @@
+import { blogUi } from '../../content/blogUi.js'
 import { CategoryLabel, ComingSoonPill, Thumb, ArrowUpRight, formatDate } from './shared.jsx'
 import { trackEvent } from '../../lib/analytics.js'
 
@@ -45,7 +46,7 @@ export default function ArticleCard({ item }) {
         <p className="mt-auto flex items-center justify-between gap-3 pt-5 text-[13px] text-ink-muted">
           <time dateTime={item.publishedAt}>{formatDate(item.publishedAt)}</time>
           <span className="inline-flex items-center gap-1 font-semibold text-lime" aria-hidden="true">
-            Read <ArrowUpRight className="h-3 w-3" />
+            {`${blogUi().read} `}<ArrowUpRight className="h-3 w-3" />
           </span>
         </p>
       </div>

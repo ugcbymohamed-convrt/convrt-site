@@ -91,3 +91,23 @@ to tidy up). Until then they never link, never appear in the sitemap and never p
 - `src/BlogPage.jsx`, `src/BlogArticlePage.jsx`, `src/components/blog/*` — index and article template
 - `src/lib/blog/*` — parsing, validation, publish rules, SEO helpers (unit-tested in `tests/blog.test.mjs`)
 - `vite-plugin-blog.js` — turns Markdown into modules, validates at build, strips drafts, writes the sitemap
+
+## Articles in other languages (Spanish, French, Arabic)
+
+The same system publishes articles in every site language. Nothing is created automatically and **no placeholder article, date or author may ever be added**; an article exists in a language only when someone has written and approved it in that language.
+
+| | English | Spanish / French / Arabic |
+|---|---|---|
+| File | `src/content/blog/<slug>.md` | `src/content/blog/<es\|fr\|ar>/<slug>.md` |
+| URL | `/blog/<slug>` | `/es/blog/<slug>`, `/fr/blog/<slug>`, `/ar/blog/<slug>` |
+| Slug | ASCII, lowercase, hyphens | its own slug in that language (the same ASCII rule); a slug is unique within its language only |
+| Index | `/blog` (always) | `/<locale>/blog`, **built only once that language has a published article** (`/ar/blog` is the existing noindex masthead until then) |
+
+- **Metadata** is the article's own: `title`, `excerpt`, `seoTitle`, `metaDescription`, `category` (the label is shown in the article's language), `author` (real name), `publishedAt`, optional `updatedAt`. `dateModified` in structured data equals `updatedAt` or, if none, `publishedAt`; no date is invented.
+- **Canonical** is the article's own URL; `<html lang dir>`, `og:locale` and `inLanguage` follow its language (Arabic is right-to-left).
+- **Translation relationship.** Give the genuine versions of one article the same `translationGroup: some-key` (lowercase, numbers, hyphens), one article per language. hreflang (in the page and in `sitemap-blog.xml`) is emitted only between **published, indexable** members, reciprocally, with `x-default` on the English version when there is one. An article with no group, a draft, a future-dated or a `noindex` article never gets hreflang, and a language version is never presented as a translation unless you declared it.
+- **Internal links** inside an article must point at an article of the same language (`/es/blog/<slug>`); the build checks it. Link to the service, pricing and case-study pages with their localized paths (`/es/pricing`).
+- **Draft / published** work as for English: `status: draft` is visible only locally; drafts are stripped from production builds; a future `publishedAt` stays hidden.
+- **Sitemap:** `sitemap-blog.xml` lists every published, non-`noindex` article of every language (plus each language index when `BLOG_INDEXABLE` is on and it has an article). `/blog` stays `noindex, follow` until you approve `BLOG_INDEXABLE`.
+- **Interface words** (breadcrumb, "By", "Updated", table of contents, FAQ heading, related articles, closing call to action, not-found text) are in `src/content/blogUi.js` (en, es, fr, ar).
+- **Navigation:** the Blog menu entries are unchanged (English only, French links to the English blog). Add the Blog to the Spanish or Arabic menu only after the first article in that language is approved (`src/i18n/menu.js`).

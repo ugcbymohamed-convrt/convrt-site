@@ -90,7 +90,6 @@ export function webSiteNode() {
    (/case-studies/* is not here: its parent /case-studies is a duplicate of /case-studies/graspo, so the case-study pages use a two-level trail, Home > the study, built by
    caseStudyGraph. Blog articles build their own trail in src/lib/blog/seo.js.) */
 export const BREADCRUMB_TRAILS = {
-  '/pricing': [{ name: 'Home', path: '/' }, { name: 'Pricing', path: '/pricing' }],
   [PATHS.ugcVideoAgency]: [{ name: 'Home', path: '/' }, { name: 'UGC Video Agency', path: PATHS.ugcVideoAgency }],
   [PATHS.spokespersonVideoProduction]: [{ name: 'Home', path: '/' }, { name: 'Spokesperson Video Production', path: PATHS.spokespersonVideoProduction }],
   [PATHS.socialMediaVideoProduction]: [{ name: 'Home', path: '/' }, { name: 'Organic Social Video Production', path: PATHS.socialMediaVideoProduction }],
@@ -285,7 +284,7 @@ export function homeGraph({ title, description } = {}) {
 
 export function pricingGraph({ title, description }) {
   const url = abs('/pricing')
-  const trail = BREADCRUMB_TRAILS['/pricing']
+  // No BreadcrumbList: the pricing page shows no breadcrumb trail, and structured data must describe what the visitor can see (Phase 5 revision).
   return graph([
     organizationNode(),
     {
@@ -296,10 +295,8 @@ export function pricingGraph({ title, description }) {
       description,
       isPartOf: { '@id': WEBSITE_ID },
       about: { '@id': ORG_ID },
-      breadcrumb: { '@id': `${url}#breadcrumb` },
       inLanguage: 'en',
     },
-    breadcrumbNode(trail, `${url}#breadcrumb`),
     ...coreServiceNodes(),
     ...packageNodes(),
     faqNode(PRICING_FAQ, `${url}#faq`),
@@ -520,8 +517,11 @@ const TRUST_TRAILS = {
   [PATHS.legalNotice]: [{ name: 'Home', path: '/' }, { name: 'Legal Notice', path: PATHS.legalNotice }],
 }
 const TRUST_PAGE_TYPE = { [PATHS.about]: 'AboutPage', [PATHS.contact]: 'ContactPage' }
+/* About and Contact show no visible breadcrumb trail, so they carry no BreadcrumbList (Phase 5 revision); the legal pages keep theirs because the trail is on the page. */
+const TRUST_PAGES_WITH_TRAIL = new Set([PATHS.privacy, PATHS.terms, PATHS.legalNotice])
 export function trustGraph(path, { title, description }) {
   const url = abs(path)
+  const hasTrail = TRUST_PAGES_WITH_TRAIL.has(path)
   return graph([
     organizationNode(),
     {
@@ -532,10 +532,10 @@ export function trustGraph(path, { title, description }) {
       description,
       isPartOf: { '@id': WEBSITE_ID },
       ...(path === PATHS.about ? { about: { '@id': ORG_ID } } : {}),
-      breadcrumb: { '@id': `${url}#breadcrumb` },
+      ...(hasTrail ? { breadcrumb: { '@id': `${url}#breadcrumb` } } : {}),
       inLanguage: 'en',
     },
-    breadcrumbNode(TRUST_TRAILS[path], `${url}#breadcrumb`),
+    ...(hasTrail ? [breadcrumbNode(TRUST_TRAILS[path], `${url}#breadcrumb`)] : []),
   ])
 }
 

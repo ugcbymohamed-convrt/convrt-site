@@ -44,6 +44,8 @@ const BREADCRUMB_NAMES = {
   '/referrals': 'Programa de recomendación',
 }
 
+/* No BreadcrumbList on pages that show no breadcrumb trail (Phase 5 revision): structured data must describe what the visitor can see. */
+const NO_VISIBLE_TRAIL = new Set(['/about', '/contact', '/pricing', '/referrals'])
 const PAGE_TYPE = { '/about': 'AboutPage', '/contact': 'ContactPage', '/creator-showcase': 'CollectionPage' }
 
 /* The Spanish twin of caseStudyGraph (src/seo/structuredData.js): the same facts (a WebPage about the client work, its two-level breadcrumb and the CONVRT service the study is an
@@ -82,7 +84,7 @@ export function localizedJsonLd(locale, basePath, seo = {}) {
   const url = absoluteUrl(LOCALE, basePath)
   const { title, description } = seoFor(basePath, seo)
   const isHome = basePath === '/'
-  const trail = isHome ? null : [{ name: 'Inicio', path: '/es/' }, { name: BREADCRUMB_NAMES[basePath], path: `/es${basePath}` }]
+  const trail = isHome || NO_VISIBLE_TRAIL.has(basePath) ? null : [{ name: 'Inicio', path: '/es/' }, { name: BREADCRUMB_NAMES[basePath], path: `/es${basePath}` }]
   const extras = ES_PAGE_GRAPH_EXTRAS[basePath]?.(url) ?? { nodes: [] }
   const faq = isHome ? homeFaqFor(LOCALE) : ES_PAGE_FAQ[basePath]
   return graph([

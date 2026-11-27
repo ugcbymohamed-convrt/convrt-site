@@ -1,7 +1,7 @@
 /* Vite plugin for the CONVRT Insights blog.
 
-   Articles are Markdown files in src/content/blog/<slug>.md (files starting with `_` are
-   ignored). This plugin turns each into JS modules on demand:
+   Articles are Markdown files in src/content/blog/<slug>.md (English) and src/content/blog/<es|fr|ar>/<slug>.md
+   (other languages; files starting with `_` are ignored). This plugin turns each into JS modules on demand:
 
      x.md?meta  → validated metadata only  (the blog index imports these; stays tiny)
      x.md?body  → the Markdown body string (only the article page loads this)
@@ -16,20 +16,26 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { analyzeCollection } from './src/lib/blog/content.js'
-import { selectPublished } from './src/lib/blog/schema.js'
+import { selectPublished, BLOG_LOCALES, BLOG_DEFAULT_LOCALE } from './src/lib/blog/schema.js'
 import { buildBlogSitemap } from './src/lib/blog/seo.js'
 
 const ROOT = path.dirname(fileURLToPath(import.meta.url))
 export const CONTENT_DIR = path.join(ROOT, 'src/content/blog')
 const PUBLIC_DIR = path.join(ROOT, 'public')
 
+const LOCALE_DIRS = BLOG_LOCALES.filter((l) => l !== BLOG_DEFAULT_LOCALE)
+
+/* English articles are src/content/blog/<slug>.md; another language's are src/content/blog/<locale>/<slug>.md (es, fr, ar). */
 export function readBlogFiles(dir = CONTENT_DIR) {
-  if (!fs.existsSync(dir)) return []
-  return fs
-    .readdirSync(dir)
-    .filter((f) => f.endsWith('.md') && !f.startsWith('_'))
-    .sort()
-    .map((f) => ({ filename: f.slice(0, -3), source: fs.readFileSync(path.join(dir, f), 'utf8') }))
+  const read = (folder, locale) => {
+    if (!fs.existsSync(folder)) return []
+    return fs
+      .readdirSync(folder)
+      .filter((f) => f.endsWith('.md') && !f.startsWith('_'))
+      .sort()
+      .map((f) => ({ filename: f.slice(0, -3), locale, source: fs.readFileSync(path.join(folder, f), 'utf8') }))
+  }
+  return [...read(dir, BLOG_DEFAULT_LOCALE), ...LOCALE_DIRS.flatMap((l) => read(path.join(dir, l), l))]
 }
 
 export const publicFileExists = (p) => fs.existsSync(path.join(PUBLIC_DIR, p.split(/[?#]/)[0]))
@@ -44,8 +50,9 @@ export default function blogContent() {
 
   /* Re-analyse only when some article file changed (cheap mtime check). */
   const current = () => {
-    const files = fs.existsSync(CONTENT_DIR) ? fs.readdirSync(CONTENT_DIR) : []
-    const stamp = files.reduce((n, f) => n + fs.statSync(path.join(CONTENT_DIR, f)).mtimeMs, files.length)
+    const folders = [CONTENT_DIR, ...LOCALE_DIRS.map((l) => path.join(CONTENT_DIR, l))].filter((d) => fs.existsSync(d))
+    const files = folders.flatMap((d) => fs.readdirSync(d).map((f) => path.join(d, f)))
+    const stamp = files.reduce((n, f) => n + fs.statSync(f).mtimeMs, files.length)
     if (cache.result && cache.stamp === stamp) return cache.result
     cache.stamp = stamp
     cache.result = loadBlogContent()
@@ -70,11 +77,14 @@ export default function blogContent() {
       this.addWatchFile(file)
 
       const filename = path.basename(file, '.md')
+      const parent = path.basename(path.dirname(file))
+      const locale = LOCALE_DIRS.includes(parent) && path.dirname(file) === path.join(CONTENT_DIR, parent) ? parent : BLOG_DEFAULT_LOCALE
+      const shown = locale === BLOG_DEFAULT_LOCALE ? filename : `${locale}/${filename}`
       const { analyzed, problems } = current()
-      const mine = analyzed.find((a) => a.filename === filename)
-      const own = problems.filter((p) => p.startsWith(`${filename}.md:`) || p.startsWith(`${filename}:`))
-      if (!mine || !mine.meta) this.error(`${filename}.md: ${own.join('; ') || 'could not be read'}`)
-      if (own.length) this.error(`${filename}.md is invalid:\n  - ${own.join('\n  - ')}`)
+      const mine = analyzed.find((a) => a.filename === filename && a.locale === locale)
+      const own = problems.filter((p) => p.startsWith(`${shown}.md:`) || p.startsWith(`${shown}:`))
+      if (!mine || !mine.meta) this.error(`${shown}.md: ${own.join('; ') || 'could not be read'}`)
+      if (own.length) this.error(`${shown}.md is invalid:\n  - ${own.join('\n  - ')}`)
 
       const stripDraft = isBuild && mine.meta.status !== 'published'
       if (query.includes('meta')) {
@@ -87,8 +97,8 @@ export default function blogContent() {
     },
     generateBundle() {
       const { analyzed } = current()
-      const published = selectPublished(analyzed.map((a) => a.meta).filter(Boolean))
-      this.emitFile({ type: 'asset', fileName: 'sitemap-blog.xml', source: buildBlogSitemap(published) })
+      const metas = analyzed.map((a) => a.meta).filter(Boolean)
+      this.emitFile({ type: 'asset', fileName: 'sitemap-blog.xml', source: buildBlogSitemap(selectPublished(metas), { allMetas: metas }) })
     },
   }
 }

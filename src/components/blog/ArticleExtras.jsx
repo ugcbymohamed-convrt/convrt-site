@@ -1,3 +1,4 @@
+import { blogUi } from '../../content/blogUi.js'
 import { useId } from 'react'
 import ArticleCard from './ArticleCard.jsx'
 import { articleToItem } from '../../lib/blog/indexModel.js'
@@ -30,7 +31,7 @@ export function TocMobile({ toc }) {
           id={id}
           className="flex min-h-[28px] cursor-pointer list-none items-center justify-between text-sm font-semibold text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-lime [&::-webkit-details-marker]:hidden"
         >
-          In this article
+          {blogUi().inThisArticle}
           <span aria-hidden="true" className="text-lime transition-transform group-open:rotate-45 motion-reduce:transition-none">+</span>
         </summary>
         <div className="mt-4"><TocList toc={toc} /></div>
@@ -43,7 +44,7 @@ export function TocSticky({ toc }) {
   const id = useId()
   return (
     <nav aria-labelledby={id} className="sticky top-28 hidden lg:block">
-      <p id={id} className="mb-4 text-xs font-semibold uppercase tracking-[0.16em] text-ink-muted">In this article</p>
+      <p id={id} className="mb-4 text-xs font-semibold uppercase tracking-[0.16em] text-ink-muted">{blogUi().inThisArticle}</p>
       <TocList toc={toc} />
     </nav>
   )
@@ -56,7 +57,7 @@ export function ArticleFaq({ items }) {
   return (
     <section aria-labelledby="article-faq" className="mt-16 max-w-[44rem]">
       <h2 id="article-faq" className="font-display text-[1.65rem] font-bold leading-[1.15] tracking-display text-ink md:text-[2rem]">
-        Frequently asked questions
+        {blogUi().faqTitle}
       </h2>
       <div className="mt-6 divide-y divide-hairline rounded-2xl border border-hairline bg-surface-1">
         {items.map((f, i) => (
@@ -78,7 +79,7 @@ export function RelatedArticles({ articles }) {
   return (
     <section aria-labelledby="related-articles" className="mx-auto mt-16 max-w-7xl px-5 md:px-8">
       <h2 id="related-articles" className="font-display text-xl font-bold tracking-snug text-ink md:text-2xl">
-        Keep reading
+        {blogUi().keepReading}
       </h2>
       <ul className="mt-6 grid grid-cols-1 gap-5 md:grid-cols-2 md:gap-6 lg:grid-cols-3">
         {articles.map((a) => (

@@ -7,44 +7,50 @@
      previewed by its direct URL. In production builds drafts are stripped by
      vite-plugin-blog.js, so their content is not in the bundle at all. */
 
-import { selectPublished } from './schema.js'
+import { selectPublished, publishedIn, translationsOf, BLOG_DEFAULT_LOCALE } from './schema.js'
 
-/* import.meta.glob arguments must be literals, so the pattern is written out twice.
-   Files starting with `_` (the template) are excluded. */
-const metaModules = import.meta.glob(['/src/content/blog/*.md', '!/src/content/blog/_*.md'], {
+/* import.meta.glob arguments must be literals, so the patterns are written out twice. English articles are src/content/blog/<slug>.md, the other languages
+   src/content/blog/<es|fr|ar>/<slug>.md. Files starting with `_` (the template) are excluded. */
+const metaModules = import.meta.glob(['/src/content/blog/*.md', '/src/content/blog/es/*.md', '/src/content/blog/fr/*.md', '/src/content/blog/ar/*.md', '!/src/content/blog/**/_*.md'], {
   query: '?meta',
   import: 'default',
   eager: true,
 })
-const bodyModules = import.meta.glob(['/src/content/blog/*.md', '!/src/content/blog/_*.md'], {
+const bodyModules = import.meta.glob(['/src/content/blog/*.md', '/src/content/blog/es/*.md', '/src/content/blog/fr/*.md', '/src/content/blog/ar/*.md', '!/src/content/blog/**/_*.md'], {
   query: '?body',
   import: 'default',
 })
 
 const allMeta = Object.values(metaModules).filter((m) => m && m.slug)
 
-export function getPublishedArticles(today) {
-  return selectPublished(allMeta, today)
+/* Published articles of one language (English by default), newest first. */
+export function getPublishedArticles(today, locale = BLOG_DEFAULT_LOCALE) {
+  return publishedIn(allMeta, locale, today)
 }
 
-/* Published article by slug; in dev also drafts (for previewing before publishing). */
-export function getArticleMeta(slug, today) {
-  const published = getPublishedArticles(today).find((a) => a.slug === slug)
+/* Published article by slug in a language; in dev also drafts (for previewing before publishing). */
+export function getArticleMeta(slug, today, locale = BLOG_DEFAULT_LOCALE) {
+  const published = getPublishedArticles(today, locale).find((a) => a.slug === slug)
   if (published) return { meta: published, draft: false }
   if (import.meta.env.DEV) {
-    const draft = allMeta.find((a) => a.slug === slug)
+    const draft = allMeta.find((a) => a.slug === slug && (a.locale ?? BLOG_DEFAULT_LOCALE) === locale)
     if (draft) return { meta: draft, draft: true }
   }
   return null
 }
 
+/* The genuine published translations of an article (itself included), for hreflang and the language links. Empty when there are fewer than two. */
+export const getTranslations = (meta, today) => translationsOf(meta, allMeta, today)
+
 const bodyCache = new Map()
+const keyOf = (slug, locale) => `${locale}/${slug}`
 
 /* Already-loaded Markdown body, or null. Lets the article page's FIRST render include the body when it
    was preloaded (prerender and hydration both do this), so server and client markup match. */
-export const getLoadedBody = (slug) => bodyCache.get(slug) ?? null
+export const getLoadedBody = (slug, locale = BLOG_DEFAULT_LOCALE) => bodyCache.get(keyOf(slug, locale)) ?? null
 
-export function loadArticleBody(slug) {
-  const key = Object.keys(bodyModules).find((k) => k.endsWith(`/${slug}.md`))
-  return key ? bodyModules[key]().then((md) => { bodyCache.set(slug, md); return md }) : Promise.resolve(null)
+export function loadArticleBody(slug, locale = BLOG_DEFAULT_LOCALE) {
+  const suffix = locale === BLOG_DEFAULT_LOCALE ? `/src/content/blog/${slug}.md` : `/src/content/blog/${locale}/${slug}.md`
+  const key = Object.keys(bodyModules).find((k) => k === suffix)
+  return key ? bodyModules[key]().then((md) => { bodyCache.set(keyOf(slug, locale), md); return md }) : Promise.resolve(null)
 }

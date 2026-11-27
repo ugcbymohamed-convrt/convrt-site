@@ -13,6 +13,7 @@ import { useDocumentHead } from './lib/useDocumentHead.js'
 import { captureAttribution, trackEvent } from './lib/analytics.js'
 import { currentLocale } from './i18n/locale.js'
 import BlogPageAr from './BlogPageAr.jsx'
+import BlogPageLocalized from './BlogPageLocalized.jsx'
 
 /* ─────────────────────────────────────────────
    /blog — CONVRT Insights.
@@ -98,9 +99,12 @@ function BlogPageEn() {
   )
 }
 
-/* /ar/blog is its own page (an Arabic index: no English article is shown as Arabic); English keeps this one. */
+/* Each language has its own index (no English article is shown as another language): English here, Arabic in BlogPageAr (masthead until its first article), Spanish and French in BlogPageLocalized
+   (they exist only once they have a published article). */
 export default function BlogPage() {
-  return currentLocale() === 'ar' ? <BlogPageAr /> : <BlogPageEn />
+  const locale = currentLocale()
+  if (locale === 'ar') return <BlogPageAr />
+  return locale === 'en' ? <BlogPageEn /> : <BlogPageLocalized />
 }
 
 function Group({ title, items }) {

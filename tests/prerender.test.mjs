@@ -91,7 +91,7 @@ test('which head a route gets: manifest for pages, blog helpers for the blog, de
   const art = headParamsFor('/blog/hello', [meta])
   assert.equal(art.url, `${SITE_URL}/blog/hello`)
   assert.ok(Array.isArray(art.jsonLd) && art.jsonLd.some((j) => j['@type'] === 'BlogPosting'), 'articles carry BlogPosting data')
-  assert.throws(() => headParamsFor('/blog/missing', [meta]), /no published article/)
+  assert.throws(() => headParamsFor('/blog/missing', [meta]), /no published en article/)
 })
 
 test('hydration rule: only hydrate markup rendered for this exact URL; ?case= / #study URLs render fresh', () => {
@@ -255,7 +255,8 @@ test('/pricing HTML: title, description, ONE canonical, indexable, and the prici
   const scripts = ldScripts(h)
   assert.equal(scripts.length, 1, 'exactly one JSON-LD block (the client hook replaces, never adds)')
   const types = scripts[0]['@graph'].map((n) => n['@type'])
-  for (const t of ['Organization', 'WebPage', 'BreadcrumbList', 'Service', 'FAQPage']) assert.ok(types.includes(t), t)
+  for (const t of ['Organization', 'WebPage', 'Service', 'FAQPage']) assert.ok(types.includes(t), t)
+  assert.ok(!types.includes('BreadcrumbList'), 'the pricing page shows no breadcrumb trail, so it carries no BreadcrumbList (Phase 5)')
   // Same data as the manifest hands to the client hook, so hydration cannot change it.
   assert.deepEqual(scripts[0], JSON.parse(JSON.stringify(pageHead('/pricing').jsonLd)))
 })

@@ -137,7 +137,7 @@ test('safety net: with a PENDING configuration a real build shows placeholders, 
   // A throw-away COPY of the project whose Spanish pricing is pending: head metadata is built by Node-side build code, so a resolver swap cannot reach it.
   const proj = path.join(tmp, 'proj'), dist = path.join(proj, 'dist')
   fs.mkdirSync(path.join(proj, 'public'), { recursive: true })
-  for (const f of ['src', 'scripts', 'index.html', 'package.json', 'vite.config.js', 'vite-plugin-blog.js', 'vite-plugin-sitemap.js', 'vite-plugin-static-routes.js', 'tailwind.config.js', 'postcss.config.js']) fs.cpSync(path.join(ROOT, f), path.join(proj, f), { recursive: true })
+  for (const f of ['src', 'scripts', 'index.html', 'package.json', 'vite.config.js', 'vite-plugin-blog.js', 'vite-plugin-sitemap.js', 'vite-plugin-static-routes.js', 'vite-plugin-withheld-videos.js', 'tailwind.config.js', 'postcss.config.js']) fs.cpSync(path.join(ROOT, f), path.join(proj, f), { recursive: true })
   fs.cpSync(path.join(ROOT, 'public', 'fonts'), path.join(proj, 'public', 'fonts'), { recursive: true })
   fs.symlinkSync(path.join(ROOT, 'node_modules'), path.join(proj, 'node_modules'), 'dir')
   const pending = pendingFixture()

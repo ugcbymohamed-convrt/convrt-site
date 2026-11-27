@@ -295,7 +295,8 @@ test('pricing JSON-LD: serialises to valid JSON; one @graph; expected node types
   assert.doesNotThrow(() => JSON.parse(JSON.stringify(doc)))
   assert.equal(doc['@context'], 'https://schema.org')
   const types = graph().map((n) => n['@type'])
-  for (const t of ['Organization', 'WebPage', 'BreadcrumbList', 'Service', 'FAQPage']) assert.ok(types.includes(t), t)
+  for (const t of ['Organization', 'WebPage', 'Service', 'FAQPage']) assert.ok(types.includes(t), t)
+  assert.ok(!types.includes('BreadcrumbList'), 'the pricing page shows no breadcrumb trail, so no BreadcrumbList (Phase 5 revision)')
   assert.equal(types.filter((t) => t === 'Service').length, 11, '4 core (UGC, SaaS, Spokesperson, Organic) + 2 creative testing + 2 organic + raw footage add-on + 2 custom (no price)')
   assert.ok(!types.includes('Product'), 'services must not be marked up as Product')
   assert.ok(!/aggregateRating|"review"|"address"|"award"|areaServed/.test(JSON.stringify(graph()).replace('"address":{"@type":"PostalAddress","addressCountry":"ES"}', '')), 'nothing invented (the Organization carries only the country of registration)')
@@ -406,10 +407,10 @@ test('FAQPage JSON-LD is generated from exactly the visible Q&A', () => {
   assert.match(read('src/components/pricing/PricingFAQ.jsx'), /PRICING_FAQ/)
 })
 
-test('BreadcrumbList: real hierarchy with canonical absolute URLs', () => {
-  const bc = graph().find((n) => n['@type'] === 'BreadcrumbList')
-  assert.deepEqual(bc.itemListElement.map((i) => [i.position, i.name, i.item]), [[1, 'Home', `${SITE_URL}/`], [2, 'Pricing', `${SITE_URL}/pricing`]])
-  assert.deepEqual(Object.keys(BREADCRUMB_TRAILS), ['/pricing', '/ugc-video-agency', '/spokesperson-video-production', '/social-media-video-production', '/saas-video-production', '/creator-showcase'])
+test('BreadcrumbList: only pages that show a breadcrumb trail carry one (not pricing, About or Contact), with canonical absolute URLs', () => {
+  assert.equal(graph().find((n) => n['@type'] === 'BreadcrumbList'), undefined, 'pricing shows no trail, so no markup')
+  assert.deepEqual(BREADCRUMB_TRAILS['/ugc-video-agency'].map((t) => t.path), ['/', '/ugc-video-agency'])
+  assert.deepEqual(Object.keys(BREADCRUMB_TRAILS), ['/ugc-video-agency', '/spokesperson-video-production', '/social-media-video-production', '/saas-video-production', '/creator-showcase'])
 })
 
 test('JSON-LD is attached only to the homepage, /pricing and /ugc-video-agency; the manifest supplies it with the head', () => {
@@ -430,7 +431,7 @@ test('blog JSON-LD references the shared Organization; drafts/placeholders produ
   const meta = { slug: 'x', title: 'X', excerpt: 'E', category: 'creative-strategy', categoryLabel: 'Creative Strategy', status: 'published', author: 'A', publishedAt: '2026-01-10', related: [], faq: [], toc: 'auto', noindex: false }
   const ld = articleJsonLd(meta)
   assert.equal(ld.find((n) => n['@type'] === 'BlogPosting').publisher['@id'], ORG_ID)
-  assert.match(read('src/lib/routes/headFor.js'), /articleHead\(meta\)/)
+  assert.match(read('src/lib/routes/headFor.js'), /articleHead\(meta,/)
 })
 
 // ── metadata ────────────────────────────────────────────────────────────────────────────

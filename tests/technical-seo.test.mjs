@@ -35,3 +35,30 @@ test('vercel.json: /case-studies?case=elyon (and /es|/fr|/ar) redirects permanen
   assert.ok(rules.some((r) => r.source === '/:lang(es|fr|ar)/case-studies' && r.destination === '/:lang/case-studies/elyon'))
   assert.ok(!cfg.redirects.some((r) => r.source === '/case-studies' && !r.has), 'the bare /case-studies page itself is never redirected')
 })
+
+// Phase 5 revision (audit F1-1): every *.vercel.app hostname (the default production alias and deployment URLs) answers X-Robots-Tag: noindex, so none can become a competing indexed copy of
+// www.convrt.studio. The rule is host-conditional: the official domains never match it, and there is no global noindex.
+test('vercel.json: *.vercel.app hosts get noindex; the official hostnames never do; no unconditional noindex rule', () => {
+  const cfg = JSON.parse(fs.readFileSync(new URL('../vercel.json', import.meta.url), 'utf8'))
+  const rule = cfg.headers.find((h) => h.has?.some((c) => c.type === 'host' && /vercel/.test(c.value)))
+  assert.ok(rule, 'a host-conditional header rule exists')
+  assert.equal(rule.source, '/(.*)')
+  assert.deepEqual(rule.headers, [{ key: 'X-Robots-Tag', value: 'noindex' }])
+  const re = new RegExp(rule.has[0].value)
+  for (const host of ['convrt-site.vercel.app', 'convrt-site-git-phase5-multilingual-seo-geo-convrt-s-projects.vercel.app', 'convrt-site-abc123-convrt-s-projects.vercel.app']) assert.ok(re.test(host), host)
+  for (const host of ['www.convrt.studio', 'convrt.studio', 'vercel.app.convrt.studio', 'localhost']) assert.ok(!re.test(host), host)
+  const unconditional = cfg.headers.filter((h) => !h.has && /noindex/i.test(JSON.stringify(h.headers)))
+  for (const h of unconditional) assert.ok(h.source !== '/(.*)' && h.source !== '/:path*', `no global noindex: ${h.source}`)
+})
+
+// Phase 5 revision (audit F2-1): structured data describes what the visitor can see. About, Contact and Pricing show no breadcrumb trail in any language, so none of them carries a BreadcrumbList
+// (the service pages, the Creator Showcase, the case studies and the legal pages show a trail and keep theirs).
+test('BreadcrumbList: absent on About, Contact and Pricing in all four languages; kept on the pages that show a trail', async () => {
+  const { pageHead } = await import('../src/seo/siteSeo.js')
+  const has = (head) => JSON.stringify(head.jsonLd ?? {}).includes('BreadcrumbList')
+  for (const locale of ['en', 'es', 'fr', 'ar']) {
+    for (const p of ['/about', '/contact', '/pricing']) assert.equal(has(pageHead(p, locale)), false, `${locale} ${p}: no trail on the page, no markup`)
+    for (const p of ['/ugc-video-agency', '/spokesperson-video-production', '/social-media-video-production', '/saas-video-production', '/creator-showcase']) assert.equal(has(pageHead(p, locale)), true, `${locale} ${p}: trail shown, markup kept`)
+    for (const p of ['/privacy', '/terms', '/legal-notice']) assert.equal(has(pageHead(p, locale)), true, `${locale} ${p}`)
+  }
+})

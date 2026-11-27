@@ -67,7 +67,7 @@ export default function staticRoutes() {
 
       const { analyzed } = loadBlogContent()
       const publishedMetas = selectPublished(analyzed.map((a) => a.meta).filter(Boolean))
-      const paths = allRoutePaths(publishedMetas.map((m) => m.slug))
+      const paths = allRoutePaths(publishedMetas)
 
       // A translated page loads its language's dictionary chunk before hydrating (src/i18n/dictionaries.lazy.js): preload exactly that chunk from the HTML, so the
       // request starts with the document and does not wait for the entry script to run.

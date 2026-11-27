@@ -249,7 +249,7 @@ test('JSON-LD: Organization, WebPage, BreadcrumbList, Service (+ Offers from the
   assert.equal(web.url, URL_)
   assert.equal(web.about['@id'], svc['@id'])
   assert.deepEqual(crumb.itemListElement.map((i) => [i.position, i.name, i.item]), [[1, 'Home', `${SITE_URL}/`], [2, 'UGC Video Agency', URL_]])
-  assert.deepEqual(Object.keys(BREADCRUMB_TRAILS), ['/pricing', PATH, PATHS.spokespersonVideoProduction, PATHS.socialMediaVideoProduction, PATHS.saasVideoProduction, PATHS.showcase])
+  assert.deepEqual(Object.keys(BREADCRUMB_TRAILS), [PATH, PATHS.spokespersonVideoProduction, PATHS.socialMediaVideoProduction, PATHS.saasVideoProduction, PATHS.showcase])
   assert.equal(svc.provider['@id'], ORG_ID)
   assert.equal(svc['@id'], serviceId('ugc'), 'the stable service id the homepage and /pricing also use (Batch 2)')
   assert.ok(!svc.isRelatedTo.some((r) => r['@id'] === svc['@id']), 'never related to itself')

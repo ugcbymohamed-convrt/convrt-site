@@ -49,6 +49,8 @@ const CASE_STUDY_FR = {
   '/case-studies/graspo': { client: 'Graspo', service: '/social-media-video-production', trail: 'Étude de cas Graspo' },
   '/case-studies/elyon': { client: 'Elyon Dubai', service: '/ugc-video-agency', trail: 'Étude de cas Elyon Dubai' },
 }
+/* No BreadcrumbList on pages that show no breadcrumb trail (Phase 5 revision): structured data must describe what the visitor can see. */
+const NO_VISIBLE_TRAIL = new Set(['/about', '/contact', '/pricing', '/referrals'])
 const PAGE_TYPE = { '/about': 'AboutPage', '/contact': 'ContactPage', '/creator-showcase': 'CollectionPage' }
 
 const seoFor = (basePath, seo) => ({ title: FR_SEO[basePath]?.title, description: FR_SEO[basePath]?.description, ...seo, ...FR_SEO[basePath] })
@@ -67,7 +69,7 @@ export function localizedJsonLd(locale, basePath, seo = {}) {
     ])
   }
   const isHome = basePath === '/'
-  const trail = isHome ? null : [{ name: 'Accueil', path: '/fr/' }, { name: BREADCRUMB_NAMES[basePath], path: `/fr${basePath}` }]
+  const trail = isHome || NO_VISIBLE_TRAIL.has(basePath) ? null : [{ name: 'Accueil', path: '/fr/' }, { name: BREADCRUMB_NAMES[basePath], path: `/fr${basePath}` }]
   const extras = FR_PAGE_GRAPH_EXTRAS[basePath]?.(url) ?? { nodes: [] }
   const faq = isHome ? homeFaqFor(LOCALE) : FR_PAGE_FAQ[basePath]
   return graph([

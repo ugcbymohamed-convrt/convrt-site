@@ -40,6 +40,8 @@ const BREADCRUMB_NAMES = {
   '/referrals': 'برنامج شركاء الإحالة',
 }
 
+/* No BreadcrumbList on pages that show no breadcrumb trail (Phase 5 revision): structured data must describe what the visitor can see. */
+const NO_VISIBLE_TRAIL = new Set(['/about', '/contact', '/pricing', '/referrals'])
 const PAGE_TYPE = { '/about': 'AboutPage', '/contact': 'ContactPage', '/creator-showcase': 'CollectionPage' }
 
 export function localizedJsonLd(locale, basePath, seo = {}) {
@@ -48,7 +50,7 @@ export function localizedJsonLd(locale, basePath, seo = {}) {
   const url = absoluteUrl(LOCALE, basePath)
   const { title, description } = { ...seo, ...AR_SEO[basePath] }
   const isHome = basePath === '/'
-  const trail = isHome ? null : [{ name: 'الرئيسية', path: '/ar/' }, { name: BREADCRUMB_NAMES[basePath], path: `/ar${basePath}` }]
+  const trail = isHome || NO_VISIBLE_TRAIL.has(basePath) ? null : [{ name: 'الرئيسية', path: '/ar/' }, { name: BREADCRUMB_NAMES[basePath], path: `/ar${basePath}` }]
   // (the case study's breadcrumb, like the English one, is a two-level trail: Home > the study)
   const extras = AR_PAGE_GRAPH_EXTRAS[basePath]?.(url) ?? { nodes: [] }
   const faq = isHome ? homeFaqFor(LOCALE) : AR_PAGE_FAQ[basePath]

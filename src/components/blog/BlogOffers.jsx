@@ -1,3 +1,5 @@
+import { hrefFor } from '../../i18n/tr.js'
+import { blogUi } from '../../content/blogUi.js'
 import { OFFER_PATHS } from '../../config.js'
 import { PrimaryCta } from './shared.jsx'
 
@@ -69,8 +71,8 @@ export function RoadmapPromo({ id = 'blog-roadmap-heading', location = 'blog_ind
             {copy ?? 'Get five personalized video ad concepts worth testing for your brand.'}
           </p>
           <div className="mt-8 flex flex-col items-stretch sm:items-center">
-            <PrimaryCta href={OFFER_PATHS.roadmap} event="blog_roadmap_click" params={{ location }}>
-              Get My Free Creative Roadmap
+            <PrimaryCta href={hrefFor(OFFER_PATHS.roadmap)} event="blog_roadmap_click" params={{ location }}>
+              {blogUi().roadmapCta}
             </PrimaryCta>
           </div>
         </div>

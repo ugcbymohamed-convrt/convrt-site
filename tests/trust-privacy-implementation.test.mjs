@@ -356,7 +356,8 @@ test('published build: all five pages indexable with self-canonicals and sitemap
     assert.equal(head.robots, undefined, `${p} no robots override`)
     assert.equal(head.url, `https://www.convrt.studio${p}`, `${p} self-referencing canonical`)
     assert.ok(sitemapRoutes().includes(p), `${p} in the sitemap`)
-    assert.ok(head.jsonLd && JSON.stringify(head.jsonLd).includes('BreadcrumbList'), `${p} has breadcrumbs`)
+    // The legal pages show their breadcrumb trail and keep the markup; About and Contact show none, so they carry none (Phase 5 revision).
+    assert.equal(Boolean(head.jsonLd && JSON.stringify(head.jsonLd).includes('BreadcrumbList')), [PRIVACY_PATH, TERMS_PATH, LEGAL_NOTICE_PATH].includes(p), `${p} breadcrumb markup matches the visible trail`)
   }
   const org = organizationNode()
   assert.equal(org.founder.name, 'Mohamed Doukkali Azizi')

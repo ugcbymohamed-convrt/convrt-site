@@ -1,3 +1,5 @@
+import { currentLocale } from '../../i18n/locale.js'
+import { blogUi } from '../../content/blogUi.js'
 import { useState } from 'react'
 import { trackEvent } from '../../lib/analytics.js'
 import { usePressFeedback } from '../../lib/usePressFeedback.js'
@@ -7,10 +9,13 @@ import CoverArt from './CoverArt.jsx'
 
 export const PINK = '#F472B6'
 
-const dateFmt = new Intl.DateTimeFormat('en-US', { dateStyle: 'long', timeZone: 'UTC' })
-export const formatDate = (ymd) => {
+const dateFormats = {}
+/* A date in the language of the page it appears on (English: "March 3, 2026"). */
+export const formatDate = (ymd, locale = currentLocale()) => {
   const d = new Date(`${ymd}T00:00:00Z`)
-  return Number.isNaN(d.getTime()) ? '' : dateFmt.format(d)
+  if (Number.isNaN(d.getTime())) return ''
+  const tag = blogUi(locale).dateLocale
+  return (dateFormats[tag] ||= new Intl.DateTimeFormat(tag, { dateStyle: 'long', timeZone: 'UTC' })).format(d)
 }
 
 export function ArrowUpRight({ className = '' }) {

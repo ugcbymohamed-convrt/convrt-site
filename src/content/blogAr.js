@@ -1,3 +1,5 @@
+/* SUPERSEDED (Phase 5): Arabic articles are Markdown files in src/content/blog/ar/<slug>.md, like every other language (docs/blog-publishing.md). This empty list is kept only because the Arabic
+   release gate (src/i18n/release.js) and an older test import it; do not add articles here. */
 /* THE ARABIC BLOG (/ar/blog). Arabic articles are NOT the English ones translated on the fly: an article exists in Arabic only when someone has written and approved an Arabic version.
    Add one object per approved Arabic article to AR_ARTICLES (newest first). Nothing is listed, dated or credited until it is here: the index shows its "coming soon" state while the list is empty.
 

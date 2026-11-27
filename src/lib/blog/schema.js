@@ -2,11 +2,15 @@
    categories exist, and what counts as "published". Pure functions, no Vite or React,
    so it runs in the build plugin (vite-plugin-blog.js), the browser and `node --test`. */
 
+/* The languages an article can be written in. English lives in src/content/blog/<slug>.md; every other language in src/content/blog/<locale>/<slug>.md (docs/blog-publishing.md). */
+export const BLOG_LOCALES = ['en', 'es', 'fr', 'ar']
+export const BLOG_DEFAULT_LOCALE = 'en'
+
 export const BLOG_CATEGORIES = [
-  { slug: 'ugc-video-ads', label: 'UGC & Video Ads' },
-  { slug: 'saas-video-marketing', label: 'SaaS Video Marketing' },
-  { slug: 'ecommerce-creative', label: 'E-commerce Creative' },
-  { slug: 'creative-strategy', label: 'Creative Strategy' },
+  { slug: 'ugc-video-ads', label: 'UGC & Video Ads', labels: { es: 'Vídeos UGC y anuncios en vídeo', fr: 'Vidéos UGC et publicités vidéo', ar: 'فيديوهات UGC والإعلانات المصوّرة' } },
+  { slug: 'saas-video-marketing', label: 'SaaS Video Marketing', labels: { es: 'Marketing en vídeo para SaaS', fr: 'Marketing vidéo pour SaaS', ar: 'التسويق بالفيديو لبرامج SaaS' } },
+  { slug: 'ecommerce-creative', label: 'E-commerce Creative', labels: { es: 'Creatividad para e-commerce', fr: 'Créations pour l’e-commerce', ar: 'محتوى إبداعي للمتاجر الإلكترونية' } },
+  { slug: 'creative-strategy', label: 'Creative Strategy', labels: { es: 'Estrategia creativa', fr: 'Stratégie créative', ar: 'الاستراتيجية الإبداعية' } },
 ]
 
 export const SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
@@ -15,7 +19,7 @@ const DATE_RE = /^\d{4}-\d{2}-\d{2}$/
 const KNOWN_KEYS = new Set([
   'title', 'slug', 'excerpt', 'category', 'status', 'featured', 'image', 'imageAlt', 'author',
   'publishedAt', 'updatedAt', 'seoTitle', 'metaDescription', 'canonicalUrl', 'ogImage',
-  'related', 'faq', 'toc', 'noindex',
+  'related', 'faq', 'toc', 'noindex', 'translationGroup',
 ])
 
 /* Accepts the category label ("Creative Strategy") or slug ("creative-strategy"). */
@@ -37,7 +41,7 @@ const isUrlOrPath = (s, { allowPath = true } = {}) =>
 /* Validate one article's frontmatter. `filename` is the file's base name without
    `.md`; the slug must equal it so a URL can always be traced back to its file.
    Returns { errors: string[], meta }. `meta` is the normalized public shape. */
-export function validateFrontmatter(data, filename) {
+export function validateFrontmatter(data, filename, locale = BLOG_DEFAULT_LOCALE) {
   const errors = []
   const err = (m) => errors.push(m)
 
@@ -119,12 +123,18 @@ export function validateFrontmatter(data, filename) {
     else toc = data.toc
   }
 
+  // A translation group links the genuine versions of ONE article in different languages (same key in each file, at most one article per language). hreflang is emitted only between published members.
+  const translationGroup = str('translationGroup', { max: 80 })
+  if (translationGroup && !SLUG_RE.test(translationGroup)) err('"translationGroup" must be lowercase letters, numbers and hyphens')
+
   const meta = {
     slug,
+    locale,
+    translationGroup,
     title,
     excerpt,
     category: category?.slug,
-    categoryLabel: category?.label,
+    categoryLabel: category ? (locale !== BLOG_DEFAULT_LOCALE && category.labels?.[locale]) || category.label : undefined,
     status: published ? 'published' : 'draft',
     featured: bool('featured'),
     image,
@@ -148,17 +158,38 @@ export function validateFrontmatter(data, filename) {
 export function validateCollection(metas) {
   const errors = []
   const seen = new Map()
+  const where = (m) => (m.locale && m.locale !== BLOG_DEFAULT_LOCALE ? `${m.locale}/${m.slug}` : m.slug)
   for (const m of metas) {
     if (!m.slug) continue
-    if (seen.has(m.slug)) errors.push(`duplicate slug "${m.slug}"`)
-    seen.set(m.slug, m)
+    const key = `${m.locale ?? BLOG_DEFAULT_LOCALE}/${m.slug}` // a slug is unique within its language
+    if (seen.has(key)) errors.push(`duplicate slug "${where(m)}"`)
+    seen.set(key, m)
   }
   for (const m of metas) {
     for (const r of m.related ?? []) {
-      if (!seen.has(r)) errors.push(`${m.slug}: related article "${r}" does not exist`)
+      if (!seen.has(`${m.locale ?? BLOG_DEFAULT_LOCALE}/${r}`)) errors.push(`${where(m)}: related article "${r}" does not exist in ${m.locale ?? BLOG_DEFAULT_LOCALE}`)
     }
   }
+  // Translation groups: one article per language per group.
+  const groups = new Map()
+  for (const m of metas) if (m.translationGroup) groups.set(m.translationGroup, [...(groups.get(m.translationGroup) ?? []), m])
+  for (const [g, members] of groups) {
+    const langs = members.map((m) => m.locale ?? BLOG_DEFAULT_LOCALE)
+    for (const l of new Set(langs)) if (langs.filter((x) => x === l).length > 1) errors.push(`translationGroup "${g}" has more than one ${l} article`)
+  }
   return errors
+}
+
+/* The published articles written in one language, newest first. */
+export const publishedIn = (metas, locale, today = todayUtc()) => selectPublished(metas.filter((m) => (m.locale ?? BLOG_DEFAULT_LOCALE) === locale), today)
+
+/* The published, indexable members of an article's translation group (itself included), English first: the genuine translations hreflang may link.
+   Empty unless there are at least two, so a lone article never gets hreflang and a draft, a future-dated or a noindex article is never part of a relationship. */
+export function translationsOf(meta, allMetas, today = todayUtc()) {
+  if (!meta?.translationGroup) return []
+  const members = allMetas.filter((m) => m.translationGroup === meta.translationGroup && isPublished(m, today) && !m.noindex)
+  if (members.length < 2 || !members.some((m) => m.slug === meta.slug && (m.locale ?? BLOG_DEFAULT_LOCALE) === (meta.locale ?? BLOG_DEFAULT_LOCALE))) return []
+  return members.sort((a, b) => BLOG_LOCALES.indexOf(a.locale ?? BLOG_DEFAULT_LOCALE) - BLOG_LOCALES.indexOf(b.locale ?? BLOG_DEFAULT_LOCALE))
 }
 
 /* Today as YYYY-MM-DD in UTC. */
@@ -182,7 +213,7 @@ export function pickFeatured(published) {
 
 /* Explicit `related` slugs first, then same-category articles, then newest — never the article itself. */
 export function relatedFor(article, published, limit = 3) {
-  const others = published.filter((a) => a.slug !== article.slug)
+  const others = published.filter((a) => a.slug !== article.slug && (a.locale ?? BLOG_DEFAULT_LOCALE) === (article.locale ?? BLOG_DEFAULT_LOCALE)) // never an article in another language
   const picked = []
   const add = (a) => { if (a && !picked.includes(a) && picked.length < limit) picked.push(a) }
   for (const slug of article.related ?? []) add(others.find((a) => a.slug === slug))
@@ -198,4 +229,5 @@ export function remainingPlanned(planned, published) {
   return planned.filter((t) => !taken.has(t.slug))
 }
 
-export const articlePath = (slug) => `/blog/${slug}`
+/* The URL path of an article: English /blog/<slug>; other languages /<locale>/blog/<slug> (each language has its own slug). */
+export const articlePath = (slug, locale = BLOG_DEFAULT_LOCALE) => (locale === BLOG_DEFAULT_LOCALE ? `/blog/${slug}` : `/${locale}/blog/${slug}`)

@@ -118,7 +118,8 @@ test('structured data: Organization gains a contact point; the founder Person ap
   assert.match(org.description, /SaaS video production/)
   assert.ok(!/address|telephone|foundingDate|aggregateRating|award|numberOfEmployees/i.test(JSON.stringify(org).replace('"address":{"@type":"PostalAddress","addressCountry":"ES"}', '')), 'no invented organisation facts (only the country of registration is an address)')
   const g = trustGraph(ABOUT_PATH, SITE_SEO[ABOUT_PATH])['@graph']
-  assert.deepEqual(g.map((n) => n['@type']), ['Organization', 'AboutPage', 'BreadcrumbList'])
+  assert.deepEqual(g.map((n) => n['@type']), ['Organization', 'AboutPage'], 'About shows no breadcrumb trail, so no BreadcrumbList (Phase 5 revision)')
+  assert.deepEqual(trustGraph(CONTACT_PATH, SITE_SEO[CONTACT_PATH])['@graph'].map((n) => n['@type']), ['Organization', 'ContactPage'])
   assert.equal(trustGraph(CONTACT_PATH, SITE_SEO[CONTACT_PATH])['@graph'][1]['@type'], 'ContactPage')
   assert.equal(trustGraph(PRIVACY_PATH, SITE_SEO[PRIVACY_PATH])['@graph'][1]['@type'], 'WebPage')
   assert.equal(jsonLdFor(TERMS_PATH, SITE_SEO[TERMS_PATH])['@graph'].length, 3)
