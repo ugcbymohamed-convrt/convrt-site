@@ -403,7 +403,9 @@ test('JSON-LD: one stable Organization @id across languages; Spanish WebPage/FAQ
     if (!jsonLd(page(p)).length) { assert.ok(['/es/creative-growth-roadmap', '/es/risk-free-trial', '/es/project-application'].includes(p), `${p}: only the noindex Roadmap, free-video and project-application pages have no JSON-LD (as in English)`); continue }
     const g = jsonLd(page(p))[0]['@graph']
     const org = g.find((n) => n['@type'] === 'Organization')
-    assert.deepEqual(org, orgEn, `${p}: the Organization node is identical in every language`)
+    const { description: dEs, ...orgRest } = org, { description: dEn, ...orgEnRest } = orgEn
+    assert.deepEqual(orgRest, orgEnRest, `${p}: the Organization node is identical in every language except its description`)
+    assert.notEqual(dEs, dEn, `${p}: the Organization description is in Spanish`)
     const web = g.find((n) => /Page$/.test(n['@type']))
     assert.equal(web.inLanguage, 'es', p)
     assert.equal(web.url, `${SITE_URL}${p === '/es' ? '/es/' : p === '/es/case-studies' ? '/es/case-studies/graspo' : p}`)

@@ -77,7 +77,8 @@ test('JSON-LD: Spanish WebPage + two-level breadcrumb + Service, same Organizati
   const org = (h) => ld(h)[0]['@graph'].find((n) => n['@type'] === 'Organization')
   for (const bp of ['/case-studies/graspo', '/case-studies/elyon']) {
     const h = page('/es' + bp), g = ld(h)[0]['@graph']
-    assert.deepEqual(org(h), org(page(bp)), `${bp}: Organization identical to English`)
+    const strip = ({ description, ...rest }) => rest
+    assert.deepEqual(strip(org(h)), strip(org(page(bp))), `${bp}: Organization identical to English (the description is in Spanish)`)
     const web = g.find((n) => n['@type'] === 'WebPage')
     assert.equal(web.inLanguage, 'es')
     assert.equal(web.url, `${SITE_URL}/es${bp}`)

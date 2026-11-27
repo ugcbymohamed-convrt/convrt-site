@@ -1,0 +1,21 @@
+/* The cookie banner and preferences dialog (ar), owner-approved wording (27 Nov 2026). Keyed by the exact English text of src/components/ConsentManager.jsx; no consent logic lives here. */
+export default {
+  "Cookie consent": "الموافقة على ملفات تعريف الارتباط",
+  "Cookies on CONVRT.": "ملفات تعريف الارتباط على CONVRT.",
+  "We would like to use analytics cookies to see which pages lead to enquiries. They stay off unless you accept.": "نودّ استخدام ملفات تعريف الارتباط التحليلية لمعرفة الصفحات التي تدفع الزوار إلى التواصل معنا. تبقى معطّلة ما لم توافق عليها.",
+  "Privacy policy": "سياسة الخصوصية",
+  "Accept all": "قبول الكل",
+  "Reject all": "رفض الكل",
+  "Preferences": "التفضيلات",
+  "Cookie preferences": "تفضيلات ملفات تعريف الارتباط",
+  "Choose which optional cookies CONVRT may use. You can change this at any time from “Cookie settings” in the footer.": "اختر ملفات تعريف الارتباط الاختيارية التي يجوز لـ CONVRT استخدامها. يمكنك تغيير ذلك في أي وقت من خلال «إعدادات ملفات تعريف الارتباط» في أسفل الصفحة.",
+  "Necessary": "الضرورية",
+  "Remembers your choice here and keeps the site and forms working. Always on.": "تحفظ تفضيلاتك وتضمن عمل الموقع والنماذج بشكل صحيح. مفعّلة دائمًا.",
+  "Analytics": "التحليلية",
+  "Helps us understand which pages are visited and which lead to enquiries (Google Analytics through Google Tag Manager).": "تساعدنا على فهم الصفحات التي تُزار وأيّها يدفع الزوار إلى التواصل معنا (Google Analytics عبر Google Tag Manager).",
+  "Marketing": "التسويقية",
+  "Allows advertising and measurement cookies if we ever run ads. Off unless you turn it on; the site does not set advertising cookies today. This is about cookies only: marketing emails are a separate choice on our forms.": "تتيح ملفات تعريف الارتباط الإعلانية وملفات القياس إذا أطلقنا حملات إعلانية يومًا ما. معطّلة ما لم تفعّلها؛ ولا يضع الموقع حاليًا أي ملفات تعريف ارتباط إعلانية. هذا يخص ملفات تعريف الارتباط فقط: الرسائل التسويقية عبر البريد الإلكتروني خيار منفصل في نماذجنا.",
+  "Save preferences": "حفظ التفضيلات",
+  "On": "مفعّل",
+  "Off": "معطّل",
+}

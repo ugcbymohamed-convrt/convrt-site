@@ -68,24 +68,6 @@
  {
   "level": "INFO",
   "area": "structured-data",
-  "url": "/ar/case-studies/elyon",
-  "msg": "@id reference https://www.convrt.studio/ar/ugc-video-agency#service is defined on another page"
- },
- {
-  "level": "INFO",
-  "area": "structured-data",
-  "url": "/ar/case-studies/graspo",
-  "msg": "@id reference https://www.convrt.studio/ar/social-media-video-production#service is defined on another page"
- },
- {
-  "level": "INFO",
-  "area": "structured-data",
-  "url": "/ar/case-studies",
-  "msg": "@id reference https://www.convrt.studio/ar/social-media-video-production#service is defined on another page"
- },
- {
-  "level": "INFO",
-  "area": "structured-data",
   "url": "/ar/referrals",
   "msg": "noindex page carries JSON-LD"
  },
@@ -100,24 +82,6 @@
   "area": "structured-data",
   "url": "/es/referrals",
   "msg": "noindex page carries JSON-LD"
- },
- {
-  "level": "INFO",
-  "area": "structured-data",
-  "url": "/fr/case-studies/elyon",
-  "msg": "@id reference https://www.convrt.studio/fr/ugc-video-agency#service is defined on another page"
- },
- {
-  "level": "INFO",
-  "area": "structured-data",
-  "url": "/fr/case-studies/graspo",
-  "msg": "@id reference https://www.convrt.studio/fr/social-media-video-production#service is defined on another page"
- },
- {
-  "level": "INFO",
-  "area": "structured-data",
-  "url": "/fr/case-studies",
-  "msg": "@id reference https://www.convrt.studio/fr/social-media-video-production#service is defined on another page"
  },
  {
   "level": "INFO",

@@ -43,7 +43,19 @@ export function useDocumentHead({ title, description, url, noindex = false, robo
 
     // Static HTML (see the prerenderer) already carries these tags; upsert finds and re-sets them,
     // so there is never a second copy.
-    spec.metas.forEach(({ attr, key, content }) => upsert('meta', { [attr]: key }, 'content')(content))
+    spec.metas.filter((m) => m.key !== 'og:locale:alternate').forEach(({ attr, key, content }) => upsert('meta', { [attr]: key }, 'content')(content))
+    // og:locale:alternate repeats (one tag per other language): replace the prerendered set with the same set, never a second copy.
+    const ogAlternates = spec.metas.filter((m) => m.key === 'og:locale:alternate')
+    if (ogAlternates.length) {
+      document.head.querySelectorAll('meta[property="og:locale:alternate"]').forEach((n) => n.remove())
+      ogAlternates.forEach(({ content }) => {
+        const el = document.createElement('meta')
+        el.setAttribute('property', 'og:locale:alternate')
+        el.setAttribute('content', content)
+        document.head.appendChild(el)
+        restores.push(() => el.remove())
+      })
+    }
     if (spec.canonical) upsert('link', { rel: 'canonical' }, 'href')(spec.canonical)
 
     // Language of the document (matters in `npm run dev` and for client-only renders; the static HTML already carries it).

@@ -57,7 +57,8 @@ if (hydrate) {
    choice is applied, and the banner mounts in its OWN root, so the prerendered markup and hydration above are untouched. See src/lib/consent.js. */
 const consent = initConsent({ win: window, doc: document })
 if (consent.enabled) {
-  import('./components/ConsentManager.jsx').then(({ default: ConsentManager }) => {
+  // The banner is translated (src/i18n/<locale>/dict-consent.js): its language's dictionary must be loaded before it renders.
+  Promise.all([import('./components/ConsentManager.jsx'), ensureDictionary(currentLocale()).catch(() => {})]).then(([{ default: ConsentManager }]) => {
     const host = document.createElement('div')
     host.id = 'consent-root'
     document.body.appendChild(host)

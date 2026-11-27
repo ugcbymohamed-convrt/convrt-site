@@ -1,8 +1,8 @@
 /* Arabic building blocks for JSON-LD (offers and services). Amounts, quantities and terms come from the business data; the Arabic sentences either interpolate those values directly or
    look the English term up in the dictionary (so a changed term fails the build until it is re-translated). Same structure as src/i18n/es/jsonld-parts.js.
 
-   Prices are the approved English USD prices (src/i18n/ar/pricing.js). The machine-readable flag "valueAddedTaxIncluded: false" repeats the existing English commercial term; since 2026-11-26 the Arabic
-   descriptions no longer SAY "before VAT" (owner: no VAT wording on public Arabic marketing pages, matching the visible copy); no UAE or Saudi tax registration or rate is stated. */
+   Prices are the approved English USD prices (src/i18n/ar/pricing.js). Since 2026-11-26 the Arabic pages carry no VAT wording (owner decision), so neither the descriptions nor the Offers state a tax status
+   (the "valueAddedTaxIncluded" property was removed, Phase 5 audit F2-4); the commercial terms themselves are unchanged and the tax disclosure stays in the Terms and the Legal Notice. No UAE or Saudi tax registration or rate is stated. */
 
 import { ORG_ID } from '../../seo/structuredData.js'
 import {
@@ -17,7 +17,7 @@ const t = (s) => translate(L, s)
 
 const usd = (money) => priceOf(L, money)
 const text = (money) => formatPrice(L, usd(money))
-const priceSpec = (money, extra = {}) => ({ price: usd(money).amount, priceCurrency: usd(money).currency, valueAddedTaxIncluded: false, ...extra })
+const priceSpec = (money, extra = {}) => ({ price: usd(money).amount, priceCurrency: usd(money).currency, ...extra }) // no valueAddedTaxIncluded: the Arabic pages show no VAT wording (owner, 26 Nov 2026), so structured data states no tax status either (audit F2-4)
 export const offersOf = (list) => { const o = list.filter(Boolean); return o.length ? { offers: o } : {} }
 
 export const monthlyOfferAr = (name, money, packagesUrl, terms = t(COMMITMENT.summary)) => ({

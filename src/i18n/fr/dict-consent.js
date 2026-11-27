@@ -1,0 +1,21 @@
+/* The cookie banner and preferences dialog (fr), owner-approved wording (27 Nov 2026). Keyed by the exact English text of src/components/ConsentManager.jsx; no consent logic lives here. */
+export default {
+  "Cookie consent": "Consentement aux cookies",
+  "Cookies on CONVRT.": "Cookies sur CONVRT.",
+  "We would like to use analytics cookies to see which pages lead to enquiries. They stay off unless you accept.": "Nous aimerions utiliser des cookies d’analyse pour savoir quelles pages génèrent des demandes de contact. Ils restent désactivés tant que vous ne les acceptez pas.",
+  "Privacy policy": "Politique de confidentialité",
+  "Accept all": "Tout accepter",
+  "Reject all": "Tout refuser",
+  "Preferences": "Préférences",
+  "Cookie preferences": "Préférences de cookies",
+  "Choose which optional cookies CONVRT may use. You can change this at any time from “Cookie settings” in the footer.": "Choisissez les cookies facultatifs que CONVRT peut utiliser. Vous pouvez modifier ce choix à tout moment via « Paramètres des cookies » en bas de page.",
+  "Necessary": "Nécessaires",
+  "Remembers your choice here and keeps the site and forms working. Always on.": "Mémorise votre choix ici et assure le bon fonctionnement du site et des formulaires. Toujours activés.",
+  "Analytics": "Mesure d’audience",
+  "Helps us understand which pages are visited and which lead to enquiries (Google Analytics through Google Tag Manager).": "Nous aide à comprendre quelles pages sont consultées et lesquelles génèrent des demandes de contact (Google Analytics via Google Tag Manager).",
+  "Marketing": "Marketing",
+  "Allows advertising and measurement cookies if we ever run ads. Off unless you turn it on; the site does not set advertising cookies today. This is about cookies only: marketing emails are a separate choice on our forms.": "Autorise les cookies publicitaires et de mesure si nous diffusons un jour des publicités. Désactivés sauf si vous les activez ; le site ne dépose actuellement aucun cookie publicitaire. Cela ne concerne que les cookies : les e-mails marketing font l’objet d’un choix distinct dans nos formulaires.",
+  "Save preferences": "Enregistrer les préférences",
+  "On": "Activé",
+  "Off": "Désactivé",
+}

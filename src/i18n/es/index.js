@@ -11,6 +11,7 @@ import geo from './dict-geo.js'
 import riskfree from './dict-riskfree.js'
 import casestudies from './dict-casestudies.js'
 import referrals from './dict-referrals.js'
+import consent from './dict-consent.js'
 
-export default { ...shell, ...home, ...services, ...pricing, ...showcase, ...trust, ...scenes, ...roadmap, ...geo, ...riskfree, ...casestudies, ...referrals }
-export const PARTS = { shell, home, services, pricing, showcase, trust, scenes, roadmap, geo, riskfree, casestudies, referrals }
+export default { ...shell, ...home, ...services, ...pricing, ...showcase, ...trust, ...scenes, ...roadmap, ...geo, ...riskfree, ...casestudies, ...referrals, ...consent }
+export const PARTS = { shell, home, services, pricing, showcase, trust, scenes, roadmap, geo, riskfree, casestudies, referrals, consent }

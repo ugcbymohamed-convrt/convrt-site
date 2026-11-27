@@ -70,17 +70,5 @@ export const AR_PAGE_GRAPH_EXTRAS = {
       })],
     }
   },
-  // The case study: like the English one, a WebPage about the client work that mentions the organic service. No Article, rating, review or result markup beyond the visible page.
-  '/case-studies/graspo': (url) => ({
-    about: { '@type': 'Organization', name: 'Graspo' },
-    mentions: { '@id': `${url.replace('/case-studies/graspo', '/social-media-video-production')}#service` },
-    nodes: [],
-  }),
-  // The Elyon Dubai study (paid-advertising proof): the same shape, mentioning the UGC service it is an example of. No rating, review, date or result markup beyond the visible page.
-  '/case-studies/elyon': (url) => ({
-    about: { '@type': 'Organization', name: 'Elyon Dubai' },
-    mentions: { '@id': `${url.replace('/case-studies/elyon', '/ugc-video-agency')}#service` },
-    nodes: [],
-  }),
 }
 void ORG_ID

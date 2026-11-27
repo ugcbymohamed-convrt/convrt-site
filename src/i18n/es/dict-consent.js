@@ -1,0 +1,21 @@
+/* The cookie banner and preferences dialog (es), owner-approved wording (27 Nov 2026). Keyed by the exact English text of src/components/ConsentManager.jsx; no consent logic lives here. */
+export default {
+  "Cookie consent": "Consentimiento para el uso de cookies",
+  "Cookies on CONVRT.": "Cookies en CONVRT.",
+  "We would like to use analytics cookies to see which pages lead to enquiries. They stay off unless you accept.": "Nos gustaría usar cookies analíticas para ver qué páginas generan consultas. Permanecen desactivadas a menos que las aceptes.",
+  "Privacy policy": "Política de privacidad",
+  "Accept all": "Aceptar todas",
+  "Reject all": "Rechazar todas",
+  "Preferences": "Preferencias",
+  "Cookie preferences": "Preferencias de cookies",
+  "Choose which optional cookies CONVRT may use. You can change this at any time from “Cookie settings” in the footer.": "Elige qué cookies opcionales puede usar CONVRT. Puedes cambiarlo en cualquier momento desde «Configuración de cookies» en el pie de página.",
+  "Necessary": "Necesarias",
+  "Remembers your choice here and keeps the site and forms working. Always on.": "Guardan tus preferencias y permiten que el sitio web y los formularios funcionen correctamente. Siempre activas.",
+  "Analytics": "Analíticas",
+  "Helps us understand which pages are visited and which lead to enquiries (Google Analytics through Google Tag Manager).": "Nos ayuda a entender qué páginas se visitan y cuáles generan consultas (Google Analytics a través de Google Tag Manager).",
+  "Marketing": "Marketing",
+  "Allows advertising and measurement cookies if we ever run ads. Off unless you turn it on; the site does not set advertising cookies today. This is about cookies only: marketing emails are a separate choice on our forms.": "Permite cookies publicitarias y de medición si algún día hacemos publicidad. Desactivadas salvo que las actives; el sitio no instala cookies publicitarias actualmente. Esto solo afecta a las cookies: los correos de marketing son una elección aparte en nuestros formularios.",
+  "Save preferences": "Guardar preferencias",
+  "On": "Activado",
+  "Off": "Desactivado",
+}

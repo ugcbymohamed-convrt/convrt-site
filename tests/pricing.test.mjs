@@ -347,7 +347,7 @@ test('USD everywhere: no € / EUR / euro in pricing data, components, FAQ or JS
 test('Organization: verified facts only (name, url, description, logo, Instagram, company LinkedIn, email, languages)', () => {
   const org = graph().find((n) => n['@type'] === 'Organization')
   assert.equal(org.name, 'CONVRT Studio')
-  assert.equal(org.url, SITE_URL)
+  assert.equal(org.url, `${SITE_URL}/`, 'the url carries the trailing slash of the home canonical')
   assert.equal(org['@id'], ORG_ID)
   assert.equal(org.slogan, BRAND.motto)
   assert.equal(org.logo.url, `${SITE_URL}/convrt-logo.svg`)

@@ -53,9 +53,9 @@ export const ES_PAGE_GRAPH_EXTRAS = {
   '/saas-video-production': (url) => ({
     about: { '@id': `${url}#service` },
     nodes: [pageServiceEs(url, {
-      name: 'Producción de vídeos para SaaS y aplicaciones',
-      serviceType: 'Producción de vídeos para SaaS y aplicaciones',
-      description: 'Producción de vídeos para empresas de SaaS, software y aplicaciones: vídeos explicativos, demostraciones de producto, recorridos por apps, vídeos explicativos animados de producto, presentaciones de software y de apps con personas reales y creativos publicitarios en vídeo, producidos de principio a fin por CONVRT.',
+      name: ES_CORE_SERVICES.saas.name,
+      serviceType: ES_CORE_SERVICES.saas.name,
+      description: ES_CORE_SERVICES.saas.description,
       audience: { '@type': 'Audience', audienceType: 'Empresas de SaaS, software, aplicaciones web y apps móviles' },
     })],
   }),

@@ -12,6 +12,7 @@
    • Services are marked up as Service + Offer. Product markup is deliberately not used.
    • Blog articles keep their own helpers (src/lib/blog/seo.js), which reference the Organization defined here. */
 
+import { ORG_DESCRIPTION } from '../i18n/orgDescription.js'
 import { SITE_URL, TRUST_PAGES_PUBLISHED } from '../config.js'
 import {
   adVersions, BRAND, CORE_SERVICES, PRODUCTION_LANGUAGES, SPRINT, SPRINT_PLUS, ORGANIC, COMMITMENT, ORGANIC_COMMITMENT,
@@ -51,14 +52,16 @@ export const organizationRef = () => ({ '@type': 'Organization', '@id': ORG_ID, 
 export const websiteRef = () => ({ '@type': 'WebSite', '@id': WEBSITE_ID, name: BRAND.name, url: SITE_URL })
 
 /* ── site-wide entities ───────────────────────────────────────────────────────────────── */
-export function organizationNode() {
+/* ONE Organization entity in every language: the same @id, name, url, logo, email and profiles; only the description is in the page's language (src/i18n/orgDescription.js, the same business
+   description translated). The url carries the trailing slash of the home canonical (https://www.convrt.studio/), like WebSite.url. */
+export function organizationNode(locale = 'en') {
   return {
     '@type': 'Organization',
     '@id': ORG_ID,
     name: BRAND.name,
     alternateName: BRAND.shortName,
-    url: SITE_URL,
-    description: BRAND.description,
+    url: `${SITE_URL}/`,
+    description: ORG_DESCRIPTION[locale] ?? BRAND.description,
     slogan: BRAND.motto,
     logo: { '@type': 'ImageObject', url: `${SITE_URL}${BRAND.logoPath}` },
     email: BRAND.contactEmail,
@@ -77,7 +80,7 @@ export function webSiteNode() {
   return {
     '@type': 'WebSite',
     '@id': WEBSITE_ID,
-    url: SITE_URL,
+    url: `${SITE_URL}/`,
     name: BRAND.name,
     description: BRAND.description,
     publisher: { '@id': ORG_ID },
