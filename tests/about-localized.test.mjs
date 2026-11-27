@@ -35,7 +35,7 @@ test('spot checks against the supplied wording (headlines, philosophy question, 
   assert.deepEqual(es.hero.h1, ['Creatividad con estrategia.', 'Contenido con propósito.']); assert.equal(es.cta.primary, 'Consigue 5 conceptos gratis'); assert.equal(es.cta.secondary, 'Descubre nuestros servicios')
   assert.deepEqual(fr.hero.h1, ['De la créativité. De la stratégie.', 'Un objectif.']); assert.equal(fr.cta.primary, 'Obtenez 5 concepts gratuits'); assert.equal(fr.cta.secondary, 'Découvrez nos services')
   assert.deepEqual(ar.hero.h1, ['إبداع مدروس.', 'محتوى له هدف.']); assert.equal(ar.cta.primary, 'احصل على 5 أفكار إعلانية مجانًا'); assert.equal(ar.cta.secondary, 'اكتشف خدماتنا')
-  assert.ok(es.behind.body[0].includes('Mohamed Doukkali,') && fr.behind.body[0].includes('Mohamed Doukkali,') && ar.behind.body[0].includes('محمد الدكالي'), 'the founder name exactly as supplied (flagged for confirmation: legal name is Mohamed Doukkali Azizi; the Arabic spelling is unverified)')
+  assert.ok(es.behind.body[0].includes('Mohamed Doukkali Azizi,') && fr.behind.body[0].includes('Mohamed Doukkali Azizi,') && ar.behind.body[0].includes('محمد الدكالي العزيزي'), 'the founder full name as confirmed by the owner (Latin: Mohamed Doukkali Azizi; Arabic: محمد الدكالي العزيزي)')
   assert.ok(es.hero.body[1].includes('creativos') && !/creatividades|gancho/i.test(JSON.stringify(es)) && es.approach.items[2].text.includes('hooks'))
   assert.ok(fr.hero.body[1].includes('créas') && !/accroche/i.test(JSON.stringify(fr)) && fr.approach.items[2].text.includes('hooks'))
   assert.ok(!/ضريبة|القيمة المضافة|VAT/.test(JSON.stringify(ar)))

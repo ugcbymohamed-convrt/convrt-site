@@ -5,8 +5,7 @@
    through localizeStat(); this file holds only their labels and the supplied disclosure. tests/about-localized.test.mjs proves the rendered figures equal the ones in the supplied copy
    (Spanish, French and Arabic notation).
 
-   FOUNDER NAME: the supplied copy names the founder "Mohamed Doukkali" (Spanish, French) and «محمد الدكالي» (Arabic). The legal name is "Mohamed Doukkali Azizi" (src/content/operator.js) and no established Arabic
-   spelling exists in the repository: both are flagged for the owner's confirmation in docs/contact-about-legal-localization.md. */
+   FOUNDER NAME: the owner confirmed (Nov 2026) the full name on the About pages: "Mohamed Doukkali Azizi" (Spanish, French) and «محمد الدكالي العزيزي» (Arabic); the supplied copy had the shorter forms. */
 
 export const ABOUT_COPY = {
   es: {
@@ -39,7 +38,7 @@ export const ABOUT_COPY = {
       badge: 'DETRÁS DE CONVRT',
       h2: ['La experiencia de un creador.', 'La visión de un estudio creativo.'],
       body: [
-        'CONVRT nace de la experiencia de su fundador, Mohamed Doukkali, tras años trabajando directamente con marcas y produciendo contenido para empresas de distintos sectores y mercados.',
+        'CONVRT nace de la experiencia de su fundador, Mohamed Doukkali Azizi, tras años trabajando directamente con marcas y produciendo contenido para empresas de distintos sectores y mercados.',
         'Esa experiencia nos ha permitido construir un modelo de producción que combina estrategia creativa, selección de talento, producción audiovisual y aprendizaje continuo.',
         'Nuestro objetivo es convertirnos en el aliado creativo de las marcas que buscan algo más que un proveedor de vídeos.',
       ],
@@ -97,7 +96,7 @@ export const ABOUT_COPY = {
       badge: 'DERRIÈRE CONVRT',
       h2: ['L’expérience d’un créateur.', 'La vision d’un studio.'],
       body: [
-        'CONVRT est né de l’expérience de son fondateur, Mohamed Doukkali, après plusieurs années passées à collaborer directement avec des marques et à produire du contenu pour des entreprises de différents secteurs et marchés.',
+        'CONVRT est né de l’expérience de son fondateur, Mohamed Doukkali Azizi, après plusieurs années passées à collaborer directement avec des marques et à produire du contenu pour des entreprises de différents secteurs et marchés.',
         'Cette expérience nous a permis de développer une approche qui associe stratégie créative, sélection des talents, production vidéo et amélioration continue.',
         'Notre ambition est de devenir le partenaire créatif des marques qui recherchent bien plus qu’un simple prestataire vidéo.',
       ],
@@ -155,7 +154,7 @@ export const ABOUT_COPY = {
       badge: 'خلف CONVRT',
       h2: ['خبرة صانع محتوى.', 'ورؤية استوديو إبداعي.'],
       body: [
-        'تأسس CONVRT انطلاقًا من خبرة مؤسسه، محمد الدكالي، بعد سنوات من العمل المباشر مع العلامات التجارية وإنتاج المحتوى لشركات في مجالات وأسواق مختلفة.',
+        'تأسس CONVRT انطلاقًا من خبرة مؤسسه، محمد الدكالي العزيزي، بعد سنوات من العمل المباشر مع العلامات التجارية وإنتاج المحتوى لشركات في مجالات وأسواق مختلفة.',
         'ومن خلال هذه الخبرة، طورنا أسلوب عمل يجمع بين الاستراتيجية الإبداعية واختيار المواهب والإنتاج الاحترافي والتحسين المستمر.',
         'هدفنا أن نكون شريكًا إبداعيًا للعلامات التجارية التي تبحث عن أكثر من مجرد إنتاج الفيديوهات.',
       ],
