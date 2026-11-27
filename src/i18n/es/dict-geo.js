@@ -26,4 +26,8 @@ export default {
   "Our founder's combined professional experience, including CONVRT Studio and other professional creative production work.": "Experiencia profesional combinada de nuestro fundador, tanto en CONVRT Studio como en otros proyectos de producción creativa.",
   "The founder's experience": "La experiencia del fundador",
   "The figures quoted on this site (1,200+ videos produced, 500+ clients served, 40M+ views generated and 50%+ returning clients) are the founder's combined professional experience, including CONVRT Studio and other professional creative production work. They are not statistics for projects delivered under the CONVRT Studio brand alone. Results specific to individual clients are described in our case studies, [[Graspo|/case-studies/graspo]] and [[Elyon Dubai|/case-studies/elyon]], each with its own period and qualifiers.": "Las cifras que aparecen en este sitio (más de 1.200 vídeos producidos, más de 500 clientes atendidos, más de 40 M de visualizaciones generadas y más del 50 % de clientes recurrentes) corresponden a la experiencia profesional combinada del fundador, incluido CONVRT Studio y otros trabajos profesionales de producción creativa. No son estadísticas de proyectos entregados solo bajo la marca CONVRT Studio. Los resultados específicos de cada cliente se describen en nuestros casos prácticos (en inglés), [[Graspo|/case-studies/graspo]] y [[Elyon Dubai|/case-studies/elyon]], cada uno con su propio periodo y sus condiciones.",
+  "About CONVRT and its founder": "Sobre CONVRT y su fundador",
+  "Related pages": "Páginas relacionadas",
+  "Creator Showcase examples": "Ejemplos de vídeos de creadores",
+  "Pricing and packages": "Tarifas y paquetes",
 }

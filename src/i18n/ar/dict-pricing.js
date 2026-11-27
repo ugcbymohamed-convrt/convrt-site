@@ -258,5 +258,6 @@ export default {
   "Usage rights & add-ons": "حقوق الاستخدام والإضافات",
   "Ready to create something": "هل أنت مستعد لإنتاج",
   "that converts?": "إعلانات تستحق المشاهدة؟",
-  "Let’s find the right creative approach for your brand.": "أخبرنا عن أهدافك، وسنساعدك في اختيار الباقة المناسبة ونوع المحتوى الذي تحتاجه علامتك التجارية."
+  "Let’s find the right creative approach for your brand.": "أخبرنا عن أهدافك، وسنساعدك في اختيار الباقة المناسبة ونوع المحتوى الذي تحتاجه علامتك التجارية.",
+  "A package is managed production, not a single creator’s video: one team plans the concepts, writes the scripts, selects and briefs the creators, and handles filming, editing and revisions, so you do not coordinate several freelancers. Because the scope is different, a package price is not comparable with an individual creator’s per-video fee.": "الباقة إنتاج مُدار وليست فيديو من صانع محتوى واحد: فريق واحد يخطّط للكونسيبتات ويكتب النصوص ويختار صنّاع المحتوى ويوجّههم ويتولى التصوير والمونتاج والمراجعات، فلا تحتاج إلى التنسيق مع عدة مستقلين. ولأن النطاق مختلف، لا يمكن مقارنة سعر الباقة برسوم الفيديو الواحد لدى صانع محتوى مستقل.",
 }

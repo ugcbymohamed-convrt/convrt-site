@@ -256,4 +256,5 @@ export default {
   "Ready to create something": "Prêt à créer des vidéos",
   "that converts?": "qui font la différence ?",
   "Let’s find the right creative approach for your brand.": "Parlons de votre projet et trouvons la formule adaptée à votre marque.",
+  "A package is managed production, not a single creator’s video: one team plans the concepts, writes the scripts, selects and briefs the creators, and handles filming, editing and revisions, so you do not coordinate several freelancers. Because the scope is different, a package price is not comparable with an individual creator’s per-video fee.": "Une offre, c’est de la production gérée, pas la vidéo d’un seul créateur : une seule équipe prépare les concepts, écrit les scripts, sélectionne et briefe les créateurs, puis s’occupe du tournage, du montage et des révisions, pour que vous n’ayez pas à coordonner plusieurs freelances. Le périmètre étant différent, le prix d’une offre n’est pas comparable au tarif par vidéo d’un créateur indépendant.",
 }

@@ -39,6 +39,7 @@ export const PRICING_FAQ = [
     a: [
       `Full-service creative production: research, concept and script development, creator selection, filming, editing and delivery. ${SPRINT.name} is ${formatMoney(SPRINT.monthly)}/month for ${SPRINT.concepts} concepts and ${adVersions(SPRINT.variations)}. ${SPRINT_PLUS.name} is ${formatMoney(SPRINT_PLUS.monthly)}/month for ${SPRINT_PLUS.concepts} concepts and ${adVersions(SPRINT_PLUS.variations)}. At the monthly price that works out to about ${pricePerVariation(SPRINT).text} per variation for the ${SPRINT.name} and ${pricePerVariation(SPRINT_PLUS).text} per variation for ${SPRINT_PLUS.name}. These are rounded figures derived from the package price, not prices for buying individual videos.`,
       `Both include ${REVISIONS.roundsPerConcept} rounds of revisions per creative concept and ${USAGE_RIGHTS.includedMonths} months of worldwide usage rights. Production includes ${andList(FORMATS.fullProductionIncludes.map((x) => (x === 'B-roll' ? x : x.toLowerCase())))}, ${FORMATS.scopeQualifier}.`,
+      "A package is managed production, not a single creator’s video: one team plans the concepts, writes the scripts, selects and briefs the creators, and handles filming, editing and revisions, so you do not coordinate several freelancers. Because the scope is different, a package price is not comparable with an individual creator’s per-video fee.",
     ],
   },
   {

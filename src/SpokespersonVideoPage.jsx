@@ -6,6 +6,7 @@ import UgcGallery from './components/ugc/UgcGallery.jsx'
 import { ProcessSection } from './components/ugc/UgcProcess.jsx'
 import UgcFAQ from './components/ugc/UgcFAQ.jsx'
 import UgcFinalCTA from './components/ugc/UgcFinalCTA.jsx'
+import RelatedLinks from './components/ugc/RelatedLinks.jsx'
 import { SPOKESPERSON_VISUALS } from './components/spokesperson/SpokespersonScenes.jsx'
 import DeliveryStyles from './components/spokesperson/DeliveryStyles.jsx'
 import SpokespersonProof from './components/spokesperson/SpokespersonProof.jsx'
@@ -83,6 +84,7 @@ export default function SpokespersonVideoPage() {
       <SpokespersonProof />
       <SectionDivider />
       <UgcFAQ config={FAQ_CONFIG} />
+      <RelatedLinks />
       <SectionDivider />
       <UgcFinalCTA config={SPOKESPERSON_CTA} />
     </>

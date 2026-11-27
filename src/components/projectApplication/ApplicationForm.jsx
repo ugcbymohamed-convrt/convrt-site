@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { currentLocale } from '../../i18n/locale.js'
 import { paCopy } from '../../i18n/projectApplicationCopy.js'
 import { CONTACT_EMAIL, PRIVACY_POLICY_URL } from '../../config.js'
+import { useTrustLinks } from '../../i18n/trustLinks.js'
 import { forward } from '../../lib/rtl.js'
 import { scrollToElement } from '../../lib/scroll.js'
 import { trackEvent, utmAttribution } from '../../lib/analytics.js'
@@ -40,6 +41,7 @@ const todayLocal = () => {
 export default function ApplicationForm({ selection, eventParams, sourcePage, onSubmitted }) {
   const locale = currentLocale()
   const c = paCopy(locale)
+  const privacy = useTrustLinks()('privacy') // the visitor's own-language policy once it is published; otherwise the English one, labelled as such
   const ar = locale === 'ar'
   const q = questionsFor(selection)
   const [step, setStep] = useState(1)
@@ -227,7 +229,7 @@ export default function ApplicationForm({ selection, eventParams, sourcePage, on
 
         <p className="text-xs leading-relaxed text-ink-subtle">
           {c.privacy}
-          {PRIVACY_POLICY_URL && (<>{' '}{c.seeOur}{' '}<a href={PRIVACY_POLICY_URL} {...(locale === 'en' ? {} : { lang: 'en' })} className="text-ink-muted underline underline-offset-2 hover:text-lime">{c.privacyLink}</a>{c.inEnglish}.</>)}
+          {PRIVACY_POLICY_URL && (<>{' '}{c.seeOur}{' '}<a href={privacy.href} {...(privacy.lang ? { lang: privacy.lang } : {})} className="text-ink-muted underline underline-offset-2 hover:text-lime">{c.privacyLink}</a>{privacy.lang ? c.inEnglish : ''}.</>)}
         </p>
       </div>
     </form>

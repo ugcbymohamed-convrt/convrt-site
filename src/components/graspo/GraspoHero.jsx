@@ -86,7 +86,7 @@ export default function GraspoHero() {
           </p>
           {/* The English headline stays on one line from md up (so does the Arabic one); the Spanish one is longer, so its two sentences stack instead of overflowing. */}
           <h1 className={`mt-2 font-display font-bold text-ink tracking-display-xl leading-[1.05] text-[clamp(1.9rem,5vw,3.6rem)] ${en || ar ? 'md:whitespace-nowrap' : ''}`}>
-            {en ? '10.7M views. 75 inbound leads.' : ar ? tr('10.7M views. 75 inbound leads.') : <><span className="block">{tr('10.7M views.')}</span><span className="block">{tr('75 inbound leads.')}</span></>}
+            {en ? '10.7M views. 75 inbound leads.' : ar ? tr('10.7M views. 75 inbound leads.') : <><span className="block">{tr('10.7M views.')}</span>{' '}<span className="block">{tr('75 inbound leads.')}</span></>}
           </h1>
         </FadeUp>
 

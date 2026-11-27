@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import { trackEvent, withUtm } from '../../lib/analytics.js'
 import { usePressFeedback } from '../../lib/usePressFeedback.js'
 import { usePreviewHost } from '../../lib/previewHost.js'
@@ -116,12 +116,15 @@ function Headline({ config, textLed = false }) {
       id={id}
       className={`font-display font-semibold text-ink tracking-display-xl leading-[1.05] ${textLed ? `text-[2.15rem] min-[400px]:text-[2.6rem] sm:text-[3rem] md:text-[3.2rem] lg:text-[3.4rem] xl:text-[4rem]${['en', 'ar'].includes(currentLocale()) ? '' : ' [text-wrap:balance]'}` : ['en', 'ar'].includes(currentLocale()) ? 'text-[2rem] min-[400px]:text-[2.5rem] sm:text-[3rem] md:text-[3.4rem] lg:text-[2.4rem] xl:text-[3.35rem]' : 'text-[1.85rem] min-[400px]:text-[2.3rem] sm:text-[2.7rem] md:text-[3.1rem] lg:text-[2.2rem] xl:text-[3.05rem] [text-wrap:balance]'}`}
     >
+      {/* A plain space after every line (display:block ignores it visually) so the heading's text reads with spaces in raw HTML, textContent and text-only extractors (technical audit F2-7). */}
       {LINES.map((words) => (
-        <span key={words[0]} className="block">
-          {words.map((w, wi) => (
-            <span key={w}>{word(w, w)}{wi < words.length - 1 ? ' ' : null}</span>
-          ))}
-        </span>
+        <Fragment key={words[0]}>
+          <span className="block">
+            {words.map((w, wi) => (
+              <span key={w}>{word(w, w)}{wi < words.length - 1 ? ' ' : null}</span>
+            ))}
+          </span>{' '}
+        </Fragment>
       ))}
       {words?.length > 0 && <span className="block">
         {/* Other languages: the last lead word and the rolling word stay together on one line (never "pena / guardar."), and in the centred text-led layout the rolling word is centred in its fixed slot,

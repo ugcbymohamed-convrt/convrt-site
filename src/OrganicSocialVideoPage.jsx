@@ -6,6 +6,7 @@ import UgcGallery from './components/ugc/UgcGallery.jsx'
 import { ProcessSection } from './components/ugc/UgcProcess.jsx'
 import UgcFAQ from './components/ugc/UgcFAQ.jsx'
 import UgcFinalCTA from './components/ugc/UgcFinalCTA.jsx'
+import RelatedLinks from './components/ugc/RelatedLinks.jsx'
 import SpokespersonProof from './components/spokesperson/SpokespersonProof.jsx'
 import { ORGANIC_VISUALS } from './components/organic/OrganicScenes.jsx'
 import ContentSystem from './components/organic/ContentSystem.jsx'
@@ -100,6 +101,7 @@ export default function OrganicSocialVideoPage() {
       <OrganicPackages />
       <SectionDivider />
       <UgcFAQ config={FAQ_CONFIG} />
+      <RelatedLinks />
       <SectionDivider />
       <UgcFinalCTA config={ORGANIC_PAGE_CTA} />
     </>

@@ -194,7 +194,7 @@ test('Arabic Contact page: right-to-left, the email and website fields stay left
 })
 
 test('English Contact page: the headline is two lines with "your project." in lime', () => {
-  assert.ok(/<span class="block">Let(&#x27;|')s talk about<\/span><span class="block"><span class="whitespace-nowrap"><span class="text-lime">your project\.<\/span><\/span><\/span>/.test(page('/contact')))
+  assert.ok(/<span class="block">Let(&#x27;|')s talk about<\/span> <span class="block"><span class="whitespace-nowrap"><span class="text-lime">your project\.<\/span><\/span><\/span>/.test(page('/contact')))
 })
 
 test('a successful submission is the ONE conversion event, fired only after the server confirmed; no personal data in any event; no click or view counts as an inquiry', () => {

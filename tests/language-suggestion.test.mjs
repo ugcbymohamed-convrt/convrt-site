@@ -269,7 +269,7 @@ test('never a redirect: no code path navigates on detection, and the redirect/he
   const fn = langSrc.slice(langSrc.indexOf('export function preferredSuggestible'), langSrc.indexOf('/* Called once from src/main.jsx'))
   assert.equal((langSrc.match(/navigator\??\.(language|languages)/g) ?? []).length, (fn.match(/navigator\??\.(language|languages)/g) ?? []).length, 'only preferredSuggestible reads the browser language')
   const vercel = JSON.parse(read('vercel.json'))
-  assert.deepEqual(vercel.redirects.map((r) => r.source), ['/(.*)', '/creative-testing-sprint', '/our-work'], 'redirect rules unchanged: the apex→www rule and two old URLs only')
+  assert.deepEqual(vercel.redirects.map((r) => r.source), ['/(.*)', '/creative-testing-sprint', '/our-work', '/case-studies', '/:lang(es|fr|ar)/case-studies'], 'redirect rules: the apex→www rule, two old URLs and the query-conditional Elyon study redirects only; no geo or language redirect')
   assert.ok(!JSON.stringify(vercel).match(/x-vercel-ip-country|geo|\/es/i), 'no geo rule, no Spanish rule in vercel.json')
   assert.ok(!/User-agent[^\n]*\n\s*Disallow:\s*\/(es)?\s*$/m.test(read('public/robots.txt')), 'no crawler is blocked from / or /es/')
   const main = stripComments(read('src/main.jsx'))

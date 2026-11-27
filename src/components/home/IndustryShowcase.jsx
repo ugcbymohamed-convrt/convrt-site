@@ -6,7 +6,7 @@ import { showcaseIndustriesFor, SHOWCASE_COPY_ES, SHOWCASE_EXTRA_LINKS_AR } from
 import { currentLocale } from '../../i18n/locale.js'
 import { FR_SHOWCASE } from '../../i18n/fr/showcase.js'
 import { tr, hrefFor } from '../../i18n/tr.js'
-import { stepOfArrow } from '../../lib/rtl.js'
+import { stepOfArrow, forward } from '../../lib/rtl.js'
 import RotaryStage from './RotaryStage.jsx'
 import StudioEnvironment from './StudioEnvironment.jsx'
 
@@ -124,6 +124,9 @@ export default function IndustryShowcase() {
             </h2>
           )}
           <p className="mx-auto mt-4 max-w-md text-balance text-[15px] leading-relaxed text-ink-muted md:max-w-xl md:text-base">{fr ? fr.text : en ? FOUNDER_EXPERIENCE.captionShort : tr(FOUNDER_EXPERIENCE.captionShort)}</p>
+          <p className="mt-3 text-sm md:text-[15px]">
+            <a href={hrefFor('/about')} className="font-medium text-ink underline decoration-lime/60 underline-offset-4 transition-colors hover:text-lime focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-lime">{tr('About CONVRT and its founder')} <span aria-hidden="true">{forward()}</span></a>
+          </p>
         </div>
 
         {/* 4: the scene (environment + the rotary videos). Below 640 px it is wider than the screen and centred on the featured video. The wrapper's top padding is headroom so the featured card's halo is never cut off at the top. */}

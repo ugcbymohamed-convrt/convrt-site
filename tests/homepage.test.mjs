@@ -34,7 +34,7 @@ test('homepage FAQ: the approved questions and wording; no unverified claims; no
   assert.equal(HOME_FAQ.length, 12)
   assert.equal(new Set(HOME_FAQ.map((f) => f.q)).size, HOME_FAQ.length)
   for (const f of HOME_FAQ) assert.ok(f.q.endsWith('?') && homeFaqText(f).length > 40, f.q)
-  assert.match(homeFaqText(faq('What is a video marketing agency')), /creative production and strategy partner/)
+  assert.match(homeFaqText(faq('What is a video marketing agency')), /performance creative agency: a creative strategy and production partner/)
   assert.match(homeFaqText(faq('What is a video marketing agency')), /We don't buy media or manage your advertising accounts/)
   assert.match(homeFaqText(faq('UGC video and a spokesperson video')), /We don't present paid creators as genuine customers\./)
   const saas = homeFaqText(faq('SaaS and app explainer'))

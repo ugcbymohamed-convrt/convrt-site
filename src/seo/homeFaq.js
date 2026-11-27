@@ -17,7 +17,7 @@ export const HOME_FAQ = [
   {
     q: 'What is a video marketing agency, and what does CONVRT do?',
     a: [
-      'A video marketing agency plans and produces video content that supports business goals. CONVRT is a creative production and strategy partner: we develop the concepts, scripts and creator casting, and produce the finished videos, from human-led UGC ads and spokesperson ads to organic social video.',
+      'A video marketing agency plans and produces video content that supports business goals. CONVRT is a performance creative agency: a creative strategy and production partner that develops the concepts, scripts and creator casting and produces the finished videos, from human-led UGC ads and spokesperson ads to SaaS and app videos and organic social video.',
       "We don't buy media or manage your advertising accounts, so you keep control of distribution and spend.",
     ],
   },

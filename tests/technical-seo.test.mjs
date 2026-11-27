@@ -23,3 +23,15 @@ test('the /scale showcase plays Stream MP4s, never the git-ignored /videos folde
   assert.ok(!/['"]\/videos\//.test(src.replace(/\/\*[\s\S]*?\*\//g, '')))
   assert.equal((src.match(/streamMp4\('[0-9a-f]{32}'\)/g) || []).length, 4)
 })
+
+// Phase 5 (audit F3-2): the legacy query-string URL of the Elyon study redirects (permanently) to its own canonical URL in every language; the in-app study switcher is unaffected
+// because it changes the address with history.replaceState and never requests the URL from the server.
+test('vercel.json: /case-studies?case=elyon (and /es|/fr|/ar) redirects permanently to the Elyon case study', () => {
+  const cfg = JSON.parse(fs.readFileSync(new URL('../vercel.json', import.meta.url), 'utf8'))
+  const rules = cfg.redirects.filter((r) => r.has?.some((h) => h.type === 'query' && h.key === 'case' && h.value === 'elyon'))
+  assert.equal(rules.length, 2)
+  assert.ok(rules.every((r) => r.permanent === true))
+  assert.ok(rules.some((r) => r.source === '/case-studies' && r.destination === '/case-studies/elyon'))
+  assert.ok(rules.some((r) => r.source === '/:lang(es|fr|ar)/case-studies' && r.destination === '/:lang/case-studies/elyon'))
+  assert.ok(!cfg.redirects.some((r) => r.source === '/case-studies' && !r.has), 'the bare /case-studies page itself is never redirected')
+})

@@ -23,6 +23,18 @@
       "source": "/our-work",
       "destination": "/creator-showcase",
       "permanent": true
+    },
+    {
+      "source": "/case-studies",
+      "has": [{ "type": "query", "key": "case", "value": "elyon" }],
+      "destination": "/case-studies/elyon",
+      "permanent": true
+    },
+    {
+      "source": "/:lang(es|fr|ar)/case-studies",
+      "has": [{ "type": "query", "key": "case", "value": "elyon" }],
+      "destination": "/:lang/case-studies/elyon",
+      "permanent": true
     }
   ],
   "headers": [

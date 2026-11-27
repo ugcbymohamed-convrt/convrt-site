@@ -89,6 +89,9 @@ test('vercel.json: no catch-all rewrite; creative-testing-sprint redirect, the /
     { source: '/(.*)', has: [{ type: 'host', value: 'convrt.studio' }], destination: 'https://www.convrt.studio/$1', permanent: true },
     { source: '/creative-testing-sprint', destination: '/pricing', permanent: true },
     { source: '/our-work', destination: '/creator-showcase', permanent: true },
+    // Phase 5 (audit F3-2): the legacy query-string URL of the Elyon study redirects to its canonical URL (tests/technical-seo.test.mjs).
+    { source: '/case-studies', has: [{ type: 'query', key: 'case', value: 'elyon' }], destination: '/case-studies/elyon', permanent: true },
+    { source: '/:lang(es|fr|ar)/case-studies', has: [{ type: 'query', key: 'case', value: 'elyon' }], destination: '/:lang/case-studies/elyon', permanent: true },
   ])
   const blog = VERCEL.headers.find((h) => h.source === '/blog')
   assert.deepEqual(blog.headers, [{ key: 'X-Robots-Tag', value: 'noindex, follow' }])
@@ -115,6 +118,7 @@ let server, base, tmp, dist
 /* How Vercel answers a request (the part of its behaviour this project relies on). */
 function resolveRequest(pathname) {
   for (const r of VERCEL.redirects ?? []) {
+    if (r.has?.some((h) => h.type === 'query')) continue // query-conditional rules cannot match a bare path; they are pinned in tests/technical-seo.test.mjs
     if (r.source === pathname) return { status: r.permanent ? 308 : 307, headers: { location: r.destination } }
   }
   if (pathname.startsWith('/api/')) {

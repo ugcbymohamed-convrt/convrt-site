@@ -5,6 +5,7 @@ import UgcGallery from './components/ugc/UgcGallery.jsx'
 import { ProcessSection } from './components/ugc/UgcProcess.jsx'
 import UgcFAQ from './components/ugc/UgcFAQ.jsx'
 import UgcFinalCTA from './components/ugc/UgcFinalCTA.jsx'
+import RelatedLinks from './components/ugc/RelatedLinks.jsx'
 import SpokespersonProof from './components/spokesperson/SpokespersonProof.jsx'
 import { SAAS_VISUALS } from './components/saas/SaasScenes.jsx'
 import SaasFormats from './components/saas/SaasFormats.jsx'
@@ -91,6 +92,7 @@ export default function SaasVideoPage() {
       <SpokespersonProof config={PROOF_CONFIG} />
       <SectionDivider />
       <UgcFAQ config={FAQ_CONFIG} />
+      <RelatedLinks />
       <SectionDivider />
       <UgcFinalCTA config={SAAS_CTA} />
     </>

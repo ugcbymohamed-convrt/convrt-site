@@ -99,7 +99,7 @@ export default function ContactPage() {
                 <span className="block whitespace-nowrap">{copy.h1.lead} <span className="text-lime">{copy.h1.accent}</span>{copy.h1.tail}</span>
               ) : (
                 <>
-                  <span className="block">{copy.h1.lead}</span>
+                  <span className="block">{copy.h1.lead}</span>{' '}
                   <span className="block"><span className="whitespace-nowrap"><span className="text-lime">{copy.h1.accent}</span>{copy.h1.tail}</span></span>
                 </>
               )}
