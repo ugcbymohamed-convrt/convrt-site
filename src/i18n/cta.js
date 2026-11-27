@@ -4,12 +4,12 @@
    10 FREE Ad Hooks signup, and the Referral Partner application. Their forms, validation messages, qualification answers, confirmation screens and
    (for the Roadmap) the explainer video are English, and their API contracts (the option labels the server matches) must not change. A visitor on a Spanish
    page must never be routed into a half-translated form, so for Spanish these flows are BLOCKED: no Spanish page links to them. Spanish CTAs use the flow
-   that is language-neutral and complete: the Contact page (the general inquiry form). There is no public booking link on the site any more (owner decision, 27 Nov 2026).
+   that is language-neutral and complete: the discovery-call booking (the same Calendly event the English /scale and Organic pages use) and the contact email.
 
    To release a flow in Spanish: translate it end to end, then set its flag to true here. Every Spanish CTA that depends on it switches by itself.
    See docs/multilingual-spanish-release.md for what each flow needs. */
 
-import { OFFER_PATHS, CONTACT_PATH } from '../config.js'
+import { CONTACT_PATH, OFFER_PATHS } from '../config.js'
 import { DEFAULT_LOCALE } from './locales.js'
 import { hrefFor } from './tr.js'
 
@@ -19,20 +19,20 @@ export const LOCALIZED_FLOWS = {
   ar: { roadmap: true, riskFree: true, hooks: false, referrals: true },
 }
 
-/* A CTA as authored in English, resolved for a language: a CTA that points at a flow which is not translated yet becomes the Contact page (the general inquiry form; label = a dictionary
-   key). There is no public booking link anywhere (owner decision, 27 Nov 2026). Everything else is returned unchanged. */
+/* A CTA as authored in English, resolved for a language: a CTA that points at a flow which is not translated yet becomes the Contact inquiry (label = a dictionary
+   key; every live language has the Roadmap today, so this is a safety net, never a public calendar link). Everything else is returned unchanged. */
 export function resolveCta(locale, { href, external = false, label }) {
-  if (locale !== DEFAULT_LOCALE && href === OFFER_PATHS.roadmap && !flowAvailable(locale, 'roadmap')) return { href: hrefFor(CONTACT_PATH, locale), external: false, label: 'Contact', redirected: true }
+  if (locale !== DEFAULT_LOCALE && href === OFFER_PATHS.roadmap && !flowAvailable(locale, 'roadmap')) return { href: CONTACT_PATH, external: false, label: 'Contact us', redirected: true }
   return { href: hrefFor(href, locale), external, label, redirected: false }
 }
 
 export const flowAvailable = (locale, flow) => locale === DEFAULT_LOCALE || LOCALIZED_FLOWS[locale]?.[flow] === true
 
 /* The primary "start here" action of a page, per language. English keeps the Roadmap. Other languages: the roadmap when its flow is localized,
-   otherwise the Contact page. `label` is a dictionary key (see src/i18n/es/dict-shell.js). */
+   otherwise the Contact inquiry. `label` is a dictionary key (see src/i18n/es/dict-shell.js). */
 export function primaryAction(locale) {
   if (flowAvailable(locale, 'roadmap')) return { kind: 'roadmap', label: 'Get 5 Free Ad Concepts', href: hrefFor(OFFER_PATHS.roadmap, locale), external: false, event: 'hero_creative_roadmap_click' }
-  return { kind: 'contact', label: 'Contact', href: hrefFor(CONTACT_PATH, locale), external: false, event: 'primary_cta_click' }
+  return { kind: 'contact', label: 'Contact us', href: hrefFor(CONTACT_PATH, locale), external: false, event: 'primary_cta_click' }
 }
 
 

@@ -35,7 +35,7 @@ export default function PricingFinalCTA({ service = 'paid' }) {
           <CtaLink href={rcta.href} external={rcta.external}>{ctaText(rcta.label)}</CtaLink>
         </div>
         <div hidden={service !== 'organic'}>
-          <CtaLink href={hrefFor(ORGANIC_CTA.hrefFromPricing)} external={ORGANIC_CTA.external}>{currentLocale() === 'en' ? tr(ORGANIC_CTA.label) : tr('Discuss your strategy')}</CtaLink>
+          <CtaLink href={hrefFor(ORGANIC_CTA.href)} external={ORGANIC_CTA.external}>{currentLocale() === 'en' ? tr(ORGANIC_CTA.label) : tr('Discuss your strategy')}</CtaLink>
         </div>
       </div>
     </section>

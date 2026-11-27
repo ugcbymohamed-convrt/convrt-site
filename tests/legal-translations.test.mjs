@@ -60,7 +60,7 @@ test('identity and legal facts are preserved verbatim: operator name, NIF, posta
     for (const t of [notice, privacy]) assert.ok(t.includes(OPERATOR.name) && t.includes(OPERATOR.taxId) && t.includes('Calle Gibraltar Español 9, 04007 Almería'), `${l}: operator identity, NIF and street address`)
     assert.ok(notice.includes('Ley 34/2002'), `${l}: the legal reference is kept`)
     assert.ok(privacy.includes('www.aepd.es') && privacy.includes('AEPD'), `${l}: complaint authority`)
-    const date = { es: '21 de noviembre de 2026', fr: '21 novembre 2026', ar: '21 نوفمبر 2026' }[l]
+    const date = { es: '27 de noviembre de 2026', fr: '27 novembre 2026', ar: '27 نوفمبر 2026' }[l]
     for (const d of [out.privacy, out.terms, out.legalNotice]) assert.ok(d.intro.includes(date), `${l}: effective date ${date}`)
     // the legally required tax disclosure stays in the legal documents (also in Arabic, where marketing pages carry no VAT wording)
     assert.match(`${terms} ${notice}`, { es: /IVA/, fr: /TVA/, ar: /القيمة المضافة/ }[l], `${l}: tax disclosure kept`)

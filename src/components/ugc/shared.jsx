@@ -61,16 +61,16 @@ export function Tick({ className = 'text-lime' }) {
   )
 }
 
-/* Primary lime CTA → the Free Creative Growth Roadmap by default. `href` points it elsewhere (the Organic Social page sends it to the organic project application);
+/* Primary lime CTA → the Free Creative Growth Roadmap by default. `href` points it elsewhere (the Organic Social page sends it to the existing discovery-call booking link);
    an `external` destination opens in a new tab and carries the visitor's stored UTM parameters at click time (the markup stays the plain link for crawlers). */
 export function RoadmapCta({ location, className = '', hero = false, children = 'Get 5 Free Ad Concepts', track = 'ugc_page_cta_click', href: hrefProp = OFFER_PATHS.roadmap, external: externalProp = false }) {
   const press = usePressFeedback()
-  // Other languages: a CTA into a Roadmap flow that is switched off for the language becomes the Contact page (src/i18n/cta.js); a label is translated through the dictionary.
+  // Other languages: a CTA into the English-only Roadmap flow becomes the booking call (src/i18n/cta.js); a label is translated through the dictionary.
   const locale = currentLocale()
   const resolved = resolveCta(locale, { href: hrefProp, external: externalProp, label: children })
   const href = hrefFor(resolved.href, locale)
   const external = resolved.external
-  // A redirected CTA gets the Contact label; the default label is translated here; a label a caller already localized (page config) is shown as given.
+  // A redirected CTA gets the booking label; the default label is translated here; a label a caller already localized (page config) is shown as given.
   const label = resolved.redirected ? tr(resolved.label) : resolved.label === 'Get 5 Free Ad Concepts' ? ctaText(resolved.label) : resolved.label
   return (
     <a

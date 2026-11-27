@@ -5,6 +5,7 @@ import { resolveCta } from '../../i18n/cta.js'
 import { money } from '../../i18n/money.js'
 import { localizeStat } from '../../i18n/format.js'
 import { CONVRT_STATS, FOUNDER_EXPERIENCE } from '../../lib/siteStats.js'
+import { withUtm } from '../../lib/analytics.js'
 import { SPRINT, SPRINT_PLUS, ORGANIC_STAGES, ORGANIC, ORGANIC_CTA, PRODUCTION_LANGUAGES } from '../../seo/businessKnowledge.js'
 import { tr, ctaText, hrefFor } from '../../i18n/tr.js'
 
@@ -186,6 +187,7 @@ function RoadmapCard() {
         <svg viewBox="0 0 16 16" className="h-4 w-4 shrink-0 text-lime" fill="none" aria-hidden="true">
           <circle cx="8" cy="8" r="6.5" stroke="currentColor" strokeWidth="1.4" /><path d="M5 8.2l2 2L11 6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
         </svg>{tr('Completely free. No obligation.')}</p>
+      {rcta.redirected && <p className="mt-2 text-[12.5px] leading-relaxed text-ink-subtle">{tr('The online Roadmap application is not available in this language yet. Book a free 20-minute strategy call (subject to a short fit check, no obligation) and we explain how to get your five ad concepts.')}</p>}
       <a
         href={rcta.href}
         {...(rcta.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
@@ -199,7 +201,7 @@ function RoadmapCard() {
 }
 
 /* Shown instead of the Roadmap card when Organic Social is selected: the Roadmap offers FREE AD concepts (a paid-ads offer), so it
-   is not presented as an organic deliverable. Route: the project application for a custom organic project, the same destination as the Organic Social page (see ORGANIC_CTA in businessKnowledge.js). */
+   is not presented as an organic deliverable. Route: the organic inquiry (Contact form, Organic Social Video preselected), the same destination as the Organic Social page (see ORGANIC_CTA in businessKnowledge.js). */
 function OrganicOfferCard() {
   const o = ORGANIC_CTA.promo
   return (
@@ -213,7 +215,7 @@ function OrganicOfferCard() {
       </ul>
       <p className="mt-4 text-[14.5px] leading-relaxed text-ink-muted">{tr(o.text)}</p>
       <a
-        href={hrefFor(ORGANIC_CTA.hrefFromPricing)}
+        href={hrefFor(ORGANIC_CTA.href)}
         className="cta-gradient group mt-5 flex items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-semibold text-canvas"
       >
         {tr(ORGANIC_CTA.label)}

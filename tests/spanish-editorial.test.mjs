@@ -51,11 +51,10 @@ test('hero: the four Spanish H1s are the approved editorial headlines and every 
   assert.match(page('social-media-video-production'), /href="#how-it-works"[^>]*>[^<]*Cómo trabajamos/)
 })
 
-test('CTAs: Organic uses "Hablemos de tus redes" into the organic project application; the others use "5 conceptos gratis" into the Spanish Roadmap', () => {
+test('CTAs: Organic uses "Hablemos de tus redes" into the booking flow; the others use "5 conceptos gratis" into the Spanish Roadmap', () => {
   const org = page('social-media-video-production')
   assert.match(text(org), /Hablemos de tus redes/)
-  assert.ok(org.includes('href="/es/project-application?package=custom-organic&amp;from=organic-social"'), 'the Organic CTA opens the Spanish project application')
-  assert.ok(!/calendly/i.test(org), 'no public booking link on the Organic page')
+  assert.ok(org.includes('href="/es/contact?service=organic"') && !/calendly\.com/.test(org), 'the Organic CTA is the Spanish Contact inquiry, no public Calendly link')
   for (const p of ['ugc-video-agency', 'spokesperson-video-production', 'saas-video-production', 'pricing', 'creator-showcase']) {
     const html = page(p)
     assert.match(text(html), /5 conceptos gratis/, p)

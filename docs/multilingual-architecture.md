@@ -48,7 +48,7 @@ language's home; no redirect and no detection. Since the language suggestion for
 ## Conversion flows
 `src/i18n/cta.js` says, per language, which conversion flows exist (`LOCALIZED_FLOWS`). English has all of them. **Spanish has the Roadmap** (`/es/creative-growth-roadmap`): labels, descriptions, validation errors,
 outcomes and the Calendly gate are translated, while option *values* stay English (the qualification logic compares them exactly) and no backend, analytics or Calendly behaviour changed (the Roadmap is client-side
-only; there is no consent box). Risk-free trial, Free Hooks and Referral remain English-only: for Spanish their CTAs are omitted or become the Contact page (the public booking call was removed on 27 Nov 2026), and FAQ
+only; there is no consent box). Risk-free trial, Free Hooks and Referral remain English-only: for Spanish their CTAs are omitted or become the booking call (same Calendly link, new tab, `rel=noopener`), and FAQ
 links into them are dropped. French and Arabic have no flows. To localize another flow: translate its components with `tr()`, build the page into `TRANSLATED_PATHS`, then flip its flag (CTAs switch by themselves).
 
 ## Pricing per language

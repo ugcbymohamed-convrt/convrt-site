@@ -17,7 +17,7 @@ import {
 } from '../src/seo/structuredData.js'
 import { SITE_SEO, pageHead } from '../src/seo/siteSeo.js'
 import { articleJsonLd, blogIndexJsonLd } from '../src/lib/blog/seo.js'
-import { SITE_URL } from '../src/config.js'
+import { SITE_URL, BOOKING_URL } from '../src/config.js'
 
 const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), '..')
 const read = (p) => readSource(path.join(ROOT, p))
@@ -714,26 +714,25 @@ test('Roadmap card: approved copy and destination; right = three-mockup PITCH-BO
   assert.ok(!fs.readFileSync(path.join(ROOT, 'src/index.css'), 'utf8').includes('roadmap-float'))
 })
 
-test('service-aware CTAs: Paid keeps the Roadmap offer; Organic uses the organic conversation starter via the organic project application', () => {
+test('service-aware CTAs: Paid keeps the Roadmap offer; Organic uses the organic conversation starter via the strategy call', () => {
   assert.equal(ORGANIC_CTA.label, 'Discuss Your Content Strategy', 'one organic label, the same as the Organic Social page')
   assert.equal(ORGANIC_CTA.promo.eyebrow.toUpperCase(), 'YOUR ORGANIC CONTENT PARTNERSHIP')
   assert.equal(ORGANIC_CTA.promo.headline, "Let's build your brand's organic presence.")
   assert.equal(ORGANIC_CTA.promo.text, 'Strategy, consistent video production, publishing and engagement — managed together.')
-  assert.equal(ORGANIC_CTA.href, '/project-application?package=custom-organic&from=organic-social', 'one organic route: the organic project application (27 Nov 2026; it replaced the public strategy-call link)')
-  assert.equal(ORGANIC_CTA.hrefFromPricing, '/project-application?package=custom-organic&from=pricing')
+  assert.equal(ORGANIC_CTA.href, '/contact?service=organic', 'one organic route: the Contact inquiry with Organic Social Video chosen (27 Nov 2026; it was the public Calendly call)')
   assert.equal(ORGANIC_CTA.external, false)
   const s = strip(philo)
   assert.match(s, /<div hidden=\{service !== 'paid'\}><RoadmapCard \/><\/div>/)
   assert.match(s, /<div hidden=\{service !== 'organic'\}><OrganicOfferCard \/><\/div>/)
   const organicCard = s.slice(s.indexOf('function OrganicOfferCard'), s.indexOf('const STATS'))
   assert.ok(!/Free Ad Concepts|ad concepts|OFFER_PATHS/.test(organicCard), 'the five free ad concepts are not presented as an organic deliverable')
-  assert.match(organicCard, /ORGANIC_CTA\.hrefFromPricing/)
+  assert.match(organicCard, /ORGANIC_CTA\.href/)
   const fin = strip(read('src/components/pricing/PricingFinalCTA.jsx'))
   assert.match(fin, /<div hidden=\{service !== 'paid'\}>\s*<CtaLink href=\{rcta\.href\} external=\{rcta\.external\}>\{(?:ctaText|tr)\(rcta\.label\)\}<\/CtaLink>/)
-  assert.match(fin, /<div hidden=\{service !== 'organic'\}>\s*<CtaLink href=\{hrefFor\(ORGANIC_CTA\.hrefFromPricing\)\} external=\{ORGANIC_CTA\.external\}>\{currentLocale\(\) === 'en' \? tr\(ORGANIC_CTA\.label\) : 'Discuss your strategy'\}<\/CtaLink>/)
+  assert.match(fin, /<div hidden=\{service !== 'organic'\}>\s*<CtaLink href=\{hrefFor\(ORGANIC_CTA\.href\)\} external=\{ORGANIC_CTA\.external\}>\{currentLocale\(\) === 'en' \? tr\(ORGANIC_CTA\.label\) : 'Discuss your strategy'\}<\/CtaLink>/)
   assert.match(read('src/CreativeTestingSprintPage.jsx'), /<PricingFinalCTA service=\{service\} \/>/)
   // The global navigation CTA is untouched.
-  assert.match(read('src/components/Nav.jsx'), /const ctaHref = onRoadmapPage \? '#apply' : action\.href/)
+  assert.match(read('src/components/Nav.jsx'), /const ctaHref = onRoadmapPage \? '#apply' : action\.href/) // no public booking link on /scale any more (owner decision, 27 Nov 2026)
   assert.ok(!/mailto/.test(read('src/lib/routes/headFor.js')))
 })
 

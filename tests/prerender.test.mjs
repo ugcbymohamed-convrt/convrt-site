@@ -318,7 +318,7 @@ test('/pricing HTML: one h1, a logical heading order, extension prices in a real
 test('/pricing HTML: conversion funnel intact: Roadmap CTAs, Free Video Production and the other offers still linked', () => {
   const root = rootOf(page('/pricing'))
   assert.ok(count(root, new RegExp(`href="${OFFER_PATHS.roadmap}"`, 'g')) >= 3, 'hero, next-step and nav CTAs still go to the Roadmap (the six package cards now open the project application)')
-  assert.equal(count(root, /href="\/project-application\?package=/g), 8, 'every package card opens the project application (six cards) plus the two organic CTAs (promo and closing CTA) that replaced the public strategy-call link')
+  assert.equal(count(root, /href="\/project-application\?package=/g), 6, 'every package card opens the project application')
   assert.ok(root.includes(`href="${OFFER_PATHS.riskFree}"`) || visibleText(page('/')).includes('Free'), 'the separate free-video promotion is untouched')
   for (const h of [`href="${PATHS.pricing}"`, 'href="/blog"', 'href="/referrals"']) assert.ok(root.includes(h), h)
   assert.ok(!/<form/.test(root.slice(root.indexOf('id="packages"'))), 'no form was added or moved into the pricing sections')
@@ -634,12 +634,12 @@ test('/pricing HTML: Sprint Plus card shows 10 concepts / 10 scripts / 3 variati
   assert.match(ld, /5 distinct creative concepts with 3 versions each \(15 finished ad versions\)/)
 })
 
-test('/pricing HTML: service-aware CTAs: Paid = Roadmap, Organic = "Discuss Your Content Strategy" (the organic project application; hidden until Organic is selected)', () => {
+test('/pricing HTML: service-aware CTAs: Paid = Roadmap, Organic = "Discuss Your Content Strategy" (the organic strategy call; hidden until Organic is selected)', () => {
   const h = page('/pricing')
   const m = main(h)
   const phil = m.slice(m.indexOf('id="philosophy"'), m.indexOf('id="package-info"'))
   const fin = m.slice(m.indexOf('id="contact"'))
-  const call = '/project-application?package=custom-organic&amp;from=pricing' // 27 Nov 2026: one organic route, the organic project application (it replaced the public strategy-call link)
+  const call = '/contact?service=organic' // one organic route: the Contact inquiry with Organic Social Video chosen (27 Nov 2026; it was the public Calendly strategy call, before that a mailto)
   const orgAt = phil.indexOf('Your organic content partnership'); const paidAt = phil.indexOf('Your free Creative Growth Roadmap')
   assert.ok(orgAt > 0 && paidAt > 0)
   // the card wrapper right before each eyebrow: hidden="" for Organic, plain for Paid
@@ -648,8 +648,7 @@ test('/pricing HTML: service-aware CTAs: Paid = Roadmap, Organic = "Discuss Your
   assert.match(flat(`<div id="root">${phil}`), /Let's build your brand's organic presence\. Facebook Instagram TikTok Strategy, consistent video production, publishing and engagement — managed together\. Discuss Your Content Strategy/)
   assert.equal(count(phil, new RegExp(call.replace(/[?.]/g, '\\$&'), 'g')), 1)
   assert.equal(count(fin, new RegExp(call.replace(/[?.]/g, '\\$&'), 'g')), 1)
-  assert.ok(fin.includes(`<div hidden=""><a href="${call}" class=`) && fin.includes('Discuss Your Content Strategy'), 'the organic CTA opens the application in the same tab')
-  assert.ok(!/calendly/i.test(phil + fin), 'no public booking link in the Pricing CTAs')
+  assert.ok(fin.includes(`<div hidden=""><a href="${call}"`) && fin.includes('Discuss Your Content Strategy') && !/calendly\.com/.test(m))
   assert.ok(fin.includes(`<div><a href="${OFFER_PATHS.roadmap}"`) && fin.includes('Get 5 Free Ad Concepts'), 'Paid CTA visible by default')
   assert.ok(phil.includes(`href="${OFFER_PATHS.roadmap}"`))
   assert.ok(rootOf(h).includes(`<a href="${OFFER_PATHS.roadmap}"`), 'the navigation CTA still goes to the Roadmap')

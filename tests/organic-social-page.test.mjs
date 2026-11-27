@@ -15,16 +15,13 @@ import react from '@vitejs/plugin-react'
 import { createElement } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { PATHS, KNOWN_PATHS } from '../src/routes.js'
-import { SITE_URL, OFFER_PATHS, CREATOR_SHOWCASE_PATH } from '../src/config.js'
-
-const ORGANIC_APPLICATION_HREF = '/project-application?package=custom-organic&from=organic-social'
-const ORGANIC_APPLICATION_HTML = ORGANIC_APPLICATION_HREF.replace(/&/g, '&amp;')
+import { SITE_URL, OFFER_PATHS, CREATOR_SHOWCASE_PATH, BOOKING_URL } from '../src/config.js'
 import { SITE_SEO, pageHead, sitemapRoutes } from '../src/seo/siteSeo.js'
 import { organicSocialGraph, jsonLdFor, ORG_ID, serviceId, BREADCRUMB_TRAILS } from '../src/seo/structuredData.js'
 import { ORGANIC_SOCIAL_FAQ, organicSocialFaqText } from '../src/seo/organicSocialFaq.js'
 import { UGC_FAQ } from '../src/seo/ugcFaq.js'
 import { SPOKESPERSON_FAQ } from '../src/seo/spokespersonFaq.js'
-import { ORGANIC, ORGANIC_COMMITMENT, ORGANIC_CTA, CARD_NOTES, formatMoney } from '../src/seo/businessKnowledge.js'
+import { ORGANIC, ORGANIC_COMMITMENT, CARD_NOTES, formatMoney } from '../src/seo/businessKnowledge.js'
 import {
   PORTFOLIO, ORGANIC_STYLES, selectHero, selectGallery, selectSpokespersonHero, selectSpokespersonGallery, selectOrganicHero, selectOrganicGallery,
   selectOurWork, isDisplayable, portfolioProblems,
@@ -109,8 +106,7 @@ test('static HTML: breadcrumb, ONE H1 reading "Organic social videos. Built to e
   assert.ok(!t.includes('Keep your brand visible with human-led'), 'the long description is gone')
   const hero = html.split('<section aria-labelledby="organic-h1"')[1].split('</section>')[0]
   assert.equal((hero.match(/<p class="cs-fade-up mx-auto mt-6/g) || []).length, 1, 'one description paragraph only')
-  assert.match(hero, new RegExp(`<a href="${ORGANIC_APPLICATION_HTML.replace(/[.?]/g, '\\$&')}"[^>]*>\\s*Discuss Your Content Strategy`), 'primary CTA → the organic project application (no public booking link)')
-  assert.ok(!/calendly/i.test(html), 'no Calendly link anywhere on the Organic page')
+  assert.match(hero, /<a href="\/contact\?service=organic"[^>]*>\s*Discuss Your Content Strategy/, 'primary CTA → the Contact inquiry with Organic Social Video chosen (no public Calendly link)')
   assert.ok(!/Get 5 Free Ad Concepts|Your next 5 ad concepts/.test(hero), 'the paid-ads Roadmap promise is not in the organic hero')
   assert.match(html, new RegExp(`<a [^>]*href="${CREATOR_SHOWCASE_PATH}"[^>]*>\\s*Explore Videos`), 'secondary CTA → /our-work')
   assert.ok(html.includes(`href="${OFFER_PATHS.roadmap}"`) && /Get 5 Free Ad Concepts/.test(html), 'the Free Creative Growth Roadmap stays reachable (header and proof section)')
@@ -413,14 +409,14 @@ test('final CTA: the same system as the other service pages, with the organic he
   const t = textOf(page(PATH))
   const cta = html.split('id="get-started"')[1]
   assert.ok(t.includes('Ready to turn your ideas into content worth watching?'))
-  assert.match(cta, new RegExp(`href="${ORGANIC_APPLICATION_HTML.replace(/[.?]/g, '\\$&')}"[^>]*>Discuss Your Content Strategy`))
-  assert.ok(!/target="_blank"/.test(cta.match(/<a [^>]*Discuss Your Content Strategy/)?.[0] ?? ''), 'the application opens in the same tab')
+  assert.match(cta, /href="\/contact\?service=organic"[^>]*>Discuss Your Content Strategy/)
+  assert.ok(!/calendly\.com/.test(cta), 'no public Calendly link')
   assert.ok(!/Get 5 Free Ad Concepts|Free strategy session|fit check/.test(cta), 'the Roadmap wording is not under the booking button')
   assert.match(cta, /href="\/pricing#packages"[^>]*>See Pricing/)
   assert.match(cta, /href="mailto:[^"]+\?subject=Organic%20social%20video%20production"[^>]*>[\s\S]*Email the Founder/)
-  assert.deepEqual(ORGANIC_HERO.primary, { label: 'Discuss Your Content Strategy', href: ORGANIC_APPLICATION_HREF, external: false })
+  assert.deepEqual(ORGANIC_HERO.primary, { label: 'Discuss Your Content Strategy', href: '/contact?service=organic', external: false })
   assert.equal(ORGANIC_PAGE_CTA.primary.href, ORGANIC_HERO.primary.href, 'the hero and the final CTA share one verified destination')
-  assert.equal(ORGANIC_CTA.hrefFromPricing, '/project-application?package=custom-organic&from=pricing', 'the same application from the Pricing page is attributed to pricing')
+  assert.equal(BOOKING_URL, 'https://calendly.com/mohamed-convrt/30min', 'the booking link of the qualified flows is unchanged')
   assert.match(read('src/i18n/cta.js'), /label: 'Get 5 Free Ad Concepts', href: hrefFor\(OFFER_PATHS\.roadmap, locale\)/, 'the global header CTA is untouched (English keeps the Roadmap)')
   // the roadmap application itself is untouched by this page
   assert.match(read('src/lib/roadmapQualification.js'), /QUALIFYING_TIMELINES = \['Immediately \/ This month', 'Within 1–3 months'\]/)

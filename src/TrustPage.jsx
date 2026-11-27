@@ -43,7 +43,7 @@ function Latin({ text, rtl }) {
   return text.split(LATIN_RUN).map((part, i) => (i % 2 === 1 && HAS_LETTER.test(part) ? <bdi key={i} dir="ltr">{part}</bdi> : part))
 }
 
-function Inline({ text, rtl }) {
+export function Inline({ text, rtl = false }) {
   return text.split(TOKEN).map((part, i) => {
     const link = part.match(/^\[\[([^\]|]+)\|([^\]]+)\]\]$/)
     if (link) {

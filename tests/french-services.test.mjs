@@ -301,7 +301,7 @@ test('prices: only on the pages whose English twin shows one, always the approve
   assert.match(t(ORG), /Nous ne garantissons jamais/, 'the English hedge is kept: no guaranteed virality, growth or sales')
 })
 
-test('conversion: the Roadmap is the French flow; no 10 free hooks, no referral program and no English-only Google Form is linked; there is no public booking link (the organic CTA opens the project application)', () => {
+test('conversion: the Roadmap is the French flow; no 10 free hooks, no referral program and no English-only Google Form is linked; booking links are the language-neutral Calendly one', () => {
   for (const bp of SERVICES) {
     const h = page(fr(bp))
     const hrefs = [...h.matchAll(/href="([^"]+)"/g)].map((m) => m[1].replace(/&amp;/g, '&'))
@@ -310,8 +310,7 @@ test('conversion: the Roadmap is the French flow; no 10 free hooks, no referral 
     assert.ok(!hrefs.some((u) => u === '/creative-growth-roadmap' || u === '/risk-free-trial'), `${bp}: no link into the English flows`)
   }
   for (const bp of [SPK, SAAS]) assert.ok(page(fr(bp)).includes('href="/fr/creative-growth-roadmap"'), `${bp}: French Roadmap`)
-  assert.ok(/href="\/fr\/project-application\?package=custom-organic&amp;from=organic-social"/.test(page(fr(ORG))), 'organic: the project application for a custom organic project, as on the English page')
-  for (const bp of [...SERVICES, '/pricing']) assert.ok(!/calendly/i.test(page(fr(bp))), `${bp}: no public Calendly link (owner decision, 27 Nov 2026)`)
+  assert.ok(page(fr(ORG)).includes('href="/fr/contact?service=organic"') && !/calendly\.com/.test(page(fr(ORG))), 'organic: the French Contact inquiry with Organic Social Video chosen, no public Calendly link')
 })
 
 test('no leftover English: the French service pages render only French sentences (brand, package and tool names aside)', () => {

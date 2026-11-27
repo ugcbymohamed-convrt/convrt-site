@@ -45,14 +45,11 @@ export function localHref(basePath, locale = currentLocale()) {
   if (locale === DEFAULT_LOCALE || !hasTranslation(locale, basePath)) return basePath
   return localizedPath(locale, basePath)
 }
-/* Localize an internal href that may carry a hash or query ('/pricing#packages' → '/es/pricing#packages', '/project-application?package=custom-organic' → '/es/project-application?package=custom-organic'). External URLs, mailto: and anchors are untouched. */
+/* Localize an internal href that may carry a hash or query ('/pricing#packages' → '/es/pricing#packages'). External URLs, mailto: and anchors are untouched. */
 export function hrefFor(href, locale = currentLocale()) {
   if (!href || !href.startsWith('/')) return href
-  const [pathAndQuery, ...rest] = href.split('#')
-  const q = pathAndQuery.indexOf('?')
-  const path = q === -1 ? pathAndQuery : pathAndQuery.slice(0, q)
-  const query = q === -1 ? '' : pathAndQuery.slice(q)
-  return `${localHref(path, locale)}${query}${rest.length ? `#${rest.join('#')}` : ''}`
+  const [, path, tail] = href.match(/^([^?#]*)(.*)$/) // the path is localized; a query string and/or hash is kept as written
+  return `${localHref(path, locale)}${tail}`
 }
 /* A page that exists only in English, seen from a translated page: its link is labelled "(in English)" and marked hrefLang="en" (a clearly labelled language fallback, never a silent switch of language). */
 export const englishOnly = (basePath, locale = currentLocale()) => locale !== DEFAULT_LOCALE && !hasTranslation(locale, basePath)
