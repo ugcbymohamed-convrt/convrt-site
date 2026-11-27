@@ -8,7 +8,7 @@ Branch `contact-about-legal-localization`, Preview only. Nothing is deployed to 
 |---|---|
 | **Contact** (`/contact`, `/es/contact`, `/fr/contact`, `/ar/contact`) | One redesigned, reusable page (`src/components/contact/ContactPage.jsx`, copy in `src/content/contactCopy.js`): hero, general inquiry form, "Prefer email?", compact cards, the site's FAQ accordion, the existing Free Creative Growth Roadmap CTA. **No Calendly, booking link, widget or scheduling prompt.** The "Who runs this website" section is gone (operator details stay in the Legal Notice, linked from the footer). |
 | **About** | English unchanged (text page). Spanish, French, Arabic: one premium page (`src/AboutPage.jsx`, copy in `src/content/aboutCopy.js`) from the owner-approved copy. The old Spanish About (`src/i18n/es/about.js`) is replaced. |
-| **Privacy Policy, Terms and Conditions, Legal Notice** | Spanish, French and Arabic translations of the English documents (`src/content/legal/es|fr|ar.js`), rendered by the existing reading template. **Published 27 Nov 2026** (owner approval; `LEGAL_TRANSLATIONS_APPROVED = true` in `src/config.js`; not lawyer-certified; set it back to `false` to hold them again). |
+| **Privacy Policy, Terms and Conditions, Legal Notice** | Spanish, French and Arabic translations of the English documents (`src/content/legal/es|fr|ar.js`), rendered by the existing reading template. **Held** until `LEGAL_TRANSLATIONS_APPROVED` (`src/config.js`) is `true`. |
 | Navigation / footer | Approved names in four languages (`src/i18n/trustLinks.js`); the header "Contact" link now opens `/contact`; footer links go to the visitor's language (legal documents: once approved). |
 | SEO | Titles as supplied; self-canonicals; reciprocal hreflang for About and Contact; sitemap; localized structured data (`AboutPage` / `ContactPage`, one Organization). |
 | Server | `POST /api/contact` (`api/contact.js`, `api/_lib/contact.js`): Resend only (the shared `sendOwnerAlert`), labelled "General inquiry". `notify.js`, MailerLite code, and every other form are untouched. |
@@ -77,7 +77,3 @@ Not in the sitemap: the nine held legal translations, success states (there is n
 ## Currency on the Spanish and French sites (owner, 2026-11-27: EVERYTHING in EUR)
 
 Done: Contact budget bands, Roadmap and free-trial budget bands, referral commission cap (500 €) and example (5.000 €), and the Legal Notice sentence on prices (es/fr now say euros: a deliberate departure from the English source, flagged for the lawyer). **Still USD on es/fr, left on purpose:** the client-reported results on the Elyon and Graspo case studies and the Elyon figure on the UGC page (3.421,25 USD revenue, 0 USD ad spend, etc.): they were earned in dollars and converting them would invent a figure. Owner decision (2026-11-27): they stay in USD, because the clients are outside Spain.
-
-## Status 27 Nov 2026
-
-The owner approved publishing everything, including the es/fr/ar legal translations. Still open (English documents): Privacy Policy sections for the Contact form and the project application; Terms on commitments, refunds, timelines; the public Calendly links.

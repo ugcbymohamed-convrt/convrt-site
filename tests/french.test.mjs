@@ -104,9 +104,8 @@ test('French prices ARE the owner-approved Spanish EUR amounts (imported, not re
 })
 
 test('release gates: every French page is released (showcase has approved French videos, EUR approved) except the free-video application held for review', () => {
-  // The free-video application waits for owner/legal review; the French legal documents are released (LEGAL_TRANSLATIONS_APPROVED is true, owner approval 27 Nov 2026).
-  assert.deepEqual(blockedPages('fr').map((b) => b.path), ['/risk-free-trial'])
-  for (const bp of LEGAL) assert.ok(isReleased('fr', bp) && FR_INDEXABLE.includes(bp), `${bp} is released and indexable`)
+  // The free-video application waits for owner/legal review; the French legal documents wait for LEGAL_TRANSLATIONS_APPROVED (src/config.js).
+  assert.deepEqual(blockedPages('fr').map((b) => b.path), [...LEGAL, '/risk-free-trial'])
   for (const bp of FR_PAGES.filter((p) => p !== '/risk-free-trial' && !LEGAL.includes(p))) assert.ok(isReleased('fr', bp), bp)
 })
 
@@ -123,7 +122,7 @@ test('hreflang: reciprocal sets use fr-FR, x-default is English, only for indexa
   assert.deepEqual(ugc.map((a) => a.href), [`${SITE_URL}/ugc-video-agency`, `${SITE_URL}/es/ugc-video-agency`, `${SITE_URL}/fr/ugc-video-agency`, `${SITE_URL}/ar/ugc-video-agency`, `${SITE_URL}/ugc-video-agency`])
   assert.deepEqual(alternatesFor('/spokesperson-video-production', SITE_SEO['/spokesperson-video-production']).map((a) => a.hreflang), ['en', 'es', 'fr-FR', 'ar', 'x-default'], 'the French spokesperson page exists: reciprocal fr-FR (and the Arabic one)')
   assert.ok(alternatesFor('/about', SITE_SEO['/about']).some((a) => a.hreflang === 'fr-FR'), 'About has a French page: reciprocal fr-FR')
-  for (const bp of LEGAL) assert.deepEqual(alternatesFor(bp, SITE_SEO[bp]).map((a) => a.hreflang), ['en', 'es', 'fr-FR', 'ar', 'x-default'], `${bp}: the published legal document is reciprocal in en/es/fr-FR/ar`)
+  assert.deepEqual(alternatesFor('/privacy', SITE_SEO['/privacy']), [], 'the French legal documents are held: no hreflang from the English one until they are approved')
   assert.deepEqual(alternatesFor('/creative-growth-roadmap', SITE_SEO['/creative-growth-roadmap']), [], 'noindex Roadmap: no hreflang')
 })
 
@@ -131,7 +130,7 @@ test('language selector: French offered, equivalent page when it exists, otherwi
   assert.deepEqual(languageOptions('en', '/pricing').map((o) => [o.code, o.href, o.exact]), [['en', '/pricing', true], ['es', '/es/pricing', true], ['fr', '/fr/pricing', true], ['ar', '/ar/pricing', true]])
   assert.deepEqual(languageOptions('es', '/ugc-video-agency').map((o) => o.href), ['/ugc-video-agency', '/es/ugc-video-agency', '/fr/ugc-video-agency', '/ar/ugc-video-agency'], 'ES → FR equivalent')
   assert.deepEqual(languageOptions('fr', '/ugc-video-agency').map((o) => o.href), ['/ugc-video-agency', '/es/ugc-video-agency', '/fr/ugc-video-agency', '/ar/ugc-video-agency'], 'FR → EN / ES equivalents')
-  assert.equal(switchTarget('fr', '/about'), '/fr/about'); assert.equal(switchTarget('fr', '/privacy'), '/fr/privacy', 'the published French legal document is the equivalent'); assert.equal(switchTarget('en', '/terms'), '/terms'); assert.equal(switchTarget('fr', '/blog'), '/fr/'); assert.equal(switchTarget('es', '/spokesperson-video-production'), '/es/spokesperson-video-production')
+  assert.equal(switchTarget('fr', '/about'), '/fr/about'); assert.equal(switchTarget('fr', '/privacy'), '/fr/', 'a held legal translation is never an equivalent'); assert.equal(switchTarget('fr', '/blog'), '/fr/'); assert.equal(switchTarget('es', '/spokesperson-video-production'), '/es/spokesperson-video-production')
   assert.equal(switchTarget('en', '/risk-free-trial'), '/risk-free-trial')
   assert.deepEqual(languageOptions('fr', '/').map((o) => o.label), ['English', 'Español', 'Français', 'العربية'])
   assert.ok(languageOptions('fr', '/').find((o) => o.current).code === 'fr')
@@ -139,7 +138,7 @@ test('language selector: French offered, equivalent page when it exists, otherwi
 
 test('sitemap: the released, indexable French pages are listed with their own canonical URLs; the noindex Roadmap and held free-video page are not', () => {
   const fr = localizedSitemapPaths().filter((p) => p.startsWith('/fr'))
-  assert.deepEqual(fr, ['/fr/', '/fr/ugc-video-agency', '/fr/spokesperson-video-production', '/fr/social-media-video-production', '/fr/saas-video-production', '/fr/pricing', '/fr/creator-showcase', '/fr/case-studies/graspo', '/fr/case-studies/elyon', '/fr/about', '/fr/contact', '/fr/privacy', '/fr/terms', '/fr/legal-notice'])
+  assert.deepEqual(fr, ['/fr/', '/fr/ugc-video-agency', '/fr/spokesperson-video-production', '/fr/social-media-video-production', '/fr/saas-video-production', '/fr/pricing', '/fr/creator-showcase', '/fr/case-studies/graspo', '/fr/case-studies/elyon', '/fr/about', '/fr/contact'])
   const xml = buildSitemap()
   for (const p of fr) assert.ok(xml.includes(`<loc>${SITE_URL}${p}</loc>`), p)
   assert.ok(!xml.includes('/fr/creative-growth-roadmap') && !xml.includes('/fr/risk-free-trial'))
@@ -287,8 +286,7 @@ test('hreflang in the built HTML: each French page and its English and Spanish t
     const hasAr = TRANSLATED_PATHS.ar.includes(bp) && !['/risk-free-trial', '/creative-growth-roadmap'].includes(bp)
     assert.match(en.split('|')[0], new RegExp(`^en,${hasEs ? 'es,' : ''}fr-FR,${hasAr ? 'ar,' : ''}x-default$`), bp)
   }
-  for (const p of ['/fr/creative-growth-roadmap', '/fr/risk-free-trial']) assert.ok(!/hreflang="fr/.test(page(p)), `${p} has no French hreflang`)
-  for (const p of ['/privacy', '/terms', '/legal-notice', '/fr/privacy', '/fr/terms', '/fr/legal-notice']) assert.ok(/hreflang="fr-FR" href="https:\/\/www\.convrt\.studio\/fr\/(privacy|terms|legal-notice)"/.test(page(p)), `${p} carries the French hreflang (published)`)
+  for (const p of ['/fr/creative-growth-roadmap', '/fr/risk-free-trial', '/privacy', '/terms', '/legal-notice']) assert.ok(!/hreflang="fr/.test(page(p)), `${p} has no French hreflang`)
 })
 
 test('sitemap.xml in the build lists the French URLs once, and every sitemap URL has a built page', () => {
@@ -397,7 +395,7 @@ test('the standing « independent creators » paragraph is gone from the French 
   }
 })
 
-test('conversion journey: French pages route into the French Roadmap, never into English-only forms; privacy link is the French document', () => {
+test('conversion journey: French pages route into the French Roadmap, never into English-only forms; privacy link says it is in English', () => {
   for (const p of FR_URLS) {
     const html = bodyOf(page(p))
     assert.ok(!/href="\/creative-growth-roadmap"/.test(html) || /fr\/creative-growth-roadmap/.test(html), p)
@@ -405,9 +403,7 @@ test('conversion journey: French pages route into the French Roadmap, never into
   }
   assert.match(bodyOf(page('/fr')), /href="\/fr\/creative-growth-roadmap"/)
   assert.match(bodyOf(page('/fr')), /href="\/fr\/risk-free-trial"/)
-  const rf = page('/fr/risk-free-trial')
-  assert.match(rf, /href="\/fr\/privacy"[^>]*>politique de confidentialité/i, 'the form links the French Privacy Policy')
-  assert.ok(!/politique de confidentialité \(en anglais\)/i.test(textOf(rf).join(' ').replace(/[\u00a0\u202f]/g, ' ')), 'and does not call it English')
+  assert.match(textOf(page('/fr/risk-free-trial')).join(' ').replace(/[\u00a0\u202f]/g, ' '), /politique de confidentialité \(en anglais\)/i)
   assert.ok(!/type="checkbox"/.test(bodyOf(page('/fr/risk-free-trial'))), 'no marketing checkbox in the held French free-video form')
 })
 
