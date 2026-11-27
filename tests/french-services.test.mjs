@@ -58,11 +58,11 @@ test('no English fallback: localHref / hrefFor send French visitors to the Frenc
   assert.equal(isFallbackPath(SPK, 'en'), false)
 })
 
-test('release gates: the three pages are released (EUR pricing approved); the two priced ones are gated on it; only the held free-video page is blocked', () => {
+test('release gates: the three pages are released (EUR pricing approved); the two priced ones are gated on it; only the held free-video page is blocked (the legal documents are published: owner approved, 27 Nov 2026)', () => {
   for (const bp of SERVICES) assert.ok(isReleased('fr', bp), bp)
   assert.ok(FR_PRICED_PAGES.includes(SPK) && FR_PRICED_PAGES.includes(ORG), 'the pages that show a price wait for approved EUR pricing')
   assert.ok(!FR_PRICED_PAGES.includes(SAAS), 'SaaS is custom-scoped: it shows no price, so it is not price-gated')
-  assert.deepEqual(blockedPages('fr').map((b) => b.path), ['/privacy', '/terms', '/legal-notice', '/risk-free-trial'])
+  assert.deepEqual(blockedPages('fr').map((b) => b.path), ['/risk-free-trial'])
 })
 
 test('language selector: the equivalent French page exists for each service, from English and Spanish', () => {
@@ -207,7 +207,8 @@ test('sitemap: the three French URLs are listed once each, in the built sitemap 
   for (const bp of SERVICES) assert.equal(built.split(`<loc>${SITE_URL}${fr(bp)}</loc>`).length - 1, 1, bp)
   assert.equal(built, buildSitemap())
   for (const m of built.matchAll(/<loc>([^<]+)<\/loc>/g)) assert.ok(exists(m[1].replace(SITE_URL, '') || '/'), `sitemap entry without a page: ${m[1]}`)
-  assert.ok(!/\/fr\/(blog|privacy|terms|legal-notice|referrals)/.test(built) && !built.includes('/fr/case-studies</loc>'), 'the duplicate /fr/case-studies and the noindex referral page are not in the sitemap')
+  assert.ok(!/\/fr\/(blog|referrals)/.test(built) && !built.includes('/fr/case-studies</loc>'), 'the duplicate /fr/case-studies and the noindex referral page are not in the sitemap')
+  for (const p of ['/fr/privacy', '/fr/terms', '/fr/legal-notice']) assert.equal(built.split(`<loc>${SITE_URL}${p}</loc>`).length - 1, 1, `${p}: the published French legal document is listed once`)
 })
 
 test('404: only the registered French routes exist as files; look-alike French URLs have no page, so the host answers its genuine 404', () => {
@@ -232,8 +233,8 @@ test('no « (en anglais) » on links to the three pages (home cards, footer, pri
   // the home service cards and the footer link to the French pages
   const home = page('/fr'), footer = page(fr(SPK))
   for (const bp of SERVICES) { assert.ok(home.includes(`href="${fr(bp)}"`), `home card ${bp}`); assert.ok(footer.includes(`href="${fr(bp)}"`), `footer ${bp}`) }
-  // About is French now; the legal documents are linked in English (labelled « en anglais ») only until LEGAL_TRANSLATIONS_APPROVED (src/config.js).
-  assert.ok(footer.includes('href="/fr/about"')); assert.ok(!/À propos \(en anglais\)/.test(text(footer))); assert.match(text(footer), /Mentions légales \(en anglais\)/)
+  // About is French now; the legal documents are published in French (LEGAL_TRANSLATIONS_APPROVED, src/config.js) and linked in French, with no « en anglais » note.
+  assert.ok(footer.includes('href="/fr/about"')); assert.ok(!/À propos \(en anglais\)/.test(text(footer))); assert.ok(footer.includes('href="/fr/legal-notice"') && footer.includes('href="/fr/privacy"') && footer.includes('href="/fr/terms"'), 'the footer links the French legal documents'); assert.match(text(footer), /Mentions légales(?! \(en anglais\))/)
   // the pricing page's two cross-links no longer say « en anglais »
   const pricing = text(page('/fr/pricing'))
   assert.match(pricing, /Vidéos Spokesperson(?! \(en anglais\))/); assert.match(pricing, /Comment fonctionne le contenu organique(?! \(en anglais\))/)
