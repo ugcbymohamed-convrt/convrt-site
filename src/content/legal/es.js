@@ -101,11 +101,10 @@ export default function LEGAL_ES(c) {
             'convrt_consent_v1 (se conserva hasta que lo cambies o borres los datos de tu navegador): tu elección sobre las cookies.',
             'convrt_language (se conserva hasta que borres los datos de tu navegador): el idioma que has elegido a propósito (inglés, español, francés o árabe), o que has cerrado la sugerencia de idioma, para que no volvamos a preguntarte. Nunca se nos envía y nunca cambia lo que muestra una página. La propia sugerencia aparece solo a los visitantes cuya petición procede de España (español), de Francia o de otro país francófono (francés), o de un país de habla árabe (árabe): nuestro proveedor de alojamiento (Vercel) comunica a nuestro servidor el país de la petición, nuestro servidor responde únicamente sí o no y no almacena nada, y nunca se solicita la ubicación de tu navegador.',
             'convrt_scale_attribution (solo esta pestaña del navegador): los datos de campaña del enlace por el que has llegado (utm_source, utm_medium, utm_campaign, utm_content y utm_term), para poder transmitirlos a nuestro enlace de reservas o incluirlos en una solicitud que nos envíes. No almacenamos identificadores de clics publicitarios (como gclid o fbclid).',
-            'convrt_calendly_requested (solo esta sesión del navegador): que has pedido ver el calendario de reservas.',
             'convrt_landing_page (solo esta sesión del navegador, y solo si aceptas la analítica): la primera página de tu visita, que se usa para ver qué páginas dan lugar a consultas.',
             'Cookies de Google Analytics _ga y _ga_<container ID>, solo si aceptas la analítica: Google documenta para ellas una duración de hasta dos años.',
           ] },
-          'El calendario de reservas y cualquier otro servicio de terceros incorporado instalan cookies propias, conforme a sus propios avisos.',
+          'Los servicios de terceros incorporados, como el reproductor de vídeo, pueden instalar cookies propias, conforme a sus propios avisos.',
         ],
       },
       {

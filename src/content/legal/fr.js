@@ -93,11 +93,10 @@ export default function LEGAL_FR(c) {
             'convrt_consent_v1 (conservé jusqu’à ce que vous le modifiiez ou que vous effaciez les données de votre navigateur) : votre choix en matière de cookies.',
             'convrt_language (conservé jusqu’à ce que vous effaciez les données de votre navigateur) : la langue que vous avez choisie volontairement (anglais, espagnol, français ou arabe), ou le fait que vous avez fermé la suggestion de langue, afin que nous ne vous la proposions plus. Cette valeur ne nous est jamais transmise et ne modifie jamais ce qu’affiche une page. La suggestion elle-même n’apparaît qu’aux visiteurs dont la requête provient d’Espagne (espagnol), de France ou d’un autre pays francophone (français), ou d’un pays arabophone (arabe) : notre hébergeur (Vercel) indique à notre serveur le pays de la requête, notre serveur répond uniquement par oui ou par non et ne stocke rien, et la localisation de votre navigateur n’est jamais demandée.',
             'convrt_scale_attribution (cet onglet du navigateur uniquement) : les informations de campagne contenues dans le lien par lequel vous êtes arrivé (utm_source, utm_medium, utm_campaign, utm_content et utm_term), afin de pouvoir les transmettre à notre lien de réservation ou de les inclure dans une candidature que vous nous envoyez. Nous ne stockons pas les identifiants de clic publicitaire (tels que gclid ou fbclid).',
-            'convrt_calendly_requested (cette session de navigation uniquement) : le fait que vous avez demandé à voir le calendrier de réservation.',
             'convrt_landing_page (cette session de navigation uniquement, et seulement si vous acceptez l’analyse d’audience) : la première page de votre visite, utilisée pour voir quelles pages mènent à des demandes.',
             'Cookies Google Analytics _ga et _ga_<container ID>, seulement si vous acceptez l’analyse d’audience : Google indique une durée de vie pouvant aller jusqu’à deux ans pour ces cookies.',
           ] },
-          'Le calendrier de réservation et tout autre service tiers intégré déposent leurs propres cookies, conformément à leurs propres notices.',
+          'Les services tiers intégrés, tels que le lecteur vidéo, peuvent déposer leurs propres cookies, conformément à leurs propres notices.',
         ],
       },
       {

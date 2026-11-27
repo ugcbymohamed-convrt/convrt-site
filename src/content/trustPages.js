@@ -202,11 +202,10 @@ export const TRUST_CONTENT = {
             'convrt_consent_v1 (kept until you change it or clear your browser data): your cookie choice.',
             'convrt_language (kept until you clear your browser data): the language you chose on purpose (English, Spanish, French or Arabic), or that you closed the language suggestion, so we do not ask again. It is never sent to us and never changes what a page shows. The suggestion itself appears only to visitors whose request comes from Spain (Spanish), from France or another French-speaking country (French), or from an Arabic-speaking country (Arabic): our hosting provider (Vercel) tells our server the country of the request, our server answers only yes or no and stores nothing, and your browser location is never requested.',
             'convrt_scale_attribution (this browser tab only): the campaign details in the link you arrived through (utm_source, utm_medium, utm_campaign, utm_content and utm_term), so they can be passed on to our booking link or included in an application you send us. We do not store advertising click identifiers (such as gclid or fbclid).',
-            'convrt_calendly_requested (this browser session only): that you asked to see the booking calendar.',
             'convrt_landing_page (this browser session only, and only if you accept analytics): the first page of your visit, used to see which pages lead to enquiries.',
             'Google Analytics cookies _ga and _ga_<container ID>, only if you accept analytics: Google documents a lifetime of up to two years for them.',
           ] },
-          'The booking calendar and any other embedded third-party service set cookies of their own, under their own notices.',
+          'Embedded third-party services, such as the video player, may set cookies of their own, under their own notices.',
         ],
       },
       {
