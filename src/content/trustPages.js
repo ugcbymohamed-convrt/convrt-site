@@ -180,8 +180,8 @@ export const TRUST_CONTENT = {
       {
         heading: 'Booking a call',
         body: [
-          'We do not offer an open booking calendar. If we invite you to book a call (for example after you complete our Free Creative Growth Roadmap and are a good fit, or after we reply to your enquiry), the booking calendar is provided by Calendly, a separate company. It is shown only after you ask for it, or you can open Calendly in a new tab or email us instead. Calendly collects the details you enter there (such as name, email and your answers) under its own privacy notice, and we receive the booking details and use them to hold the call and follow up on it.',
-          'When the calendar loads, Calendly and the services it uses (including its payment and monitoring providers) may set cookies of their own, and Calendly shows its own cookie notice. Some of these can be set before you have used Calendly’s notice. We do not control them and have not independently assessed which are strictly necessary. If you prefer not to load the calendar, use the new-tab link or email us.',
+          'We do not offer an open booking calendar. If we invite you to book a call (for example after you complete our Free Creative Growth Roadmap and are a good fit, or after we reply to your enquiry), the booking calendar is provided by Calendly, a separate company. The booking link opens Calendly in a new tab, or you can email us instead. Calendly collects the details you enter there (such as name, email and your answers) under its own privacy notice, and we receive the booking details and use them to hold the call and follow up on it.',
+          'We do not load Calendly on this website: nothing from Calendly is loaded on our pages. When you open the booking link, you are on Calendly’s own website, where Calendly and the services it uses (including its payment and monitoring providers) may set cookies of their own under Calendly’s own cookie notice. We do not control them. If you prefer, you can email us instead.',
         ],
       },
       {
@@ -199,7 +199,7 @@ export const TRUST_CONTENT = {
         body: [
           'Your browser\'s storage on this site stays on your device:',
           { list: [
-            'convrt_consent_v1 (kept until you change it or clear your browser data; used only once the cookie banner is switched on): your cookie choice.',
+            'convrt_consent_v1 (kept until you change it or clear your browser data): your cookie choice.',
             'convrt_language (kept until you clear your browser data): the language you chose on purpose (English, Spanish, French or Arabic), or that you closed the language suggestion, so we do not ask again. It is never sent to us and never changes what a page shows. The suggestion itself appears only to visitors whose request comes from Spain (Spanish), from France or another French-speaking country (French), or from an Arabic-speaking country (Arabic): our hosting provider (Vercel) tells our server the country of the request, our server answers only yes or no and stores nothing, and your browser location is never requested.',
             'convrt_scale_attribution (this browser tab only): the campaign details in the link you arrived through (utm_source, utm_medium, utm_campaign, utm_content and utm_term), so they can be passed on to our booking link or included in an application you send us. We do not store advertising click identifiers (such as gclid or fbclid).',
             'convrt_calendly_requested (this browser session only): that you asked to see the booking calendar.',
@@ -221,14 +221,14 @@ export const TRUST_CONTENT = {
       {
         heading: 'Who we share information with',
         body: [
-          'Only with service providers that handle it on our behalf, under their own standard terms and privacy notices: MailerLite (application, request and email-list records, and sending our emails), Resend (email alerts to us when someone applies or sends an enquiry), Calendly (bookings), Vercel (hosting), Cloudflare (video delivery) and, once analytics is switched on and only if you accept it, Google (analytics). We have no other customer database or CRM. We do not sell personal information.',
+          'Only with service providers that handle it on our behalf, under their own standard terms and privacy notices: MailerLite (application, request and email-list records, and sending our emails), Resend (email alerts to us when someone applies or sends an enquiry), Calendly (bookings, only if we invite you to book), Vercel (hosting), Cloudflare (video delivery) and Google (our business email, the Google Form for freelance creators and, once analytics is switched on and only if you accept it, analytics). We have no other customer database or CRM. We do not sell personal information.',
         ],
       },
       {
         heading: 'Transfers outside the European Economic Area',
         body: [
-          'Some of these providers are US companies or process information in the United States. According to their own published documentation, Resend stores customer data in the United States and is certified under the EU-US Data Privacy Framework; Calendly is located in the United States and relies on the EU-US Data Privacy Framework, with the EU Standard Contractual Clauses as a fallback; and Cloudflare’s data-processing terms rely on the EU-US Data Privacy Framework with the Standard Contractual Clauses as a fallback.',
-          'Our website functions run in Frankfurt, Germany, on Vercel, a US company. For MailerLite, Vercel and Google we have not independently confirmed every place where information is stored or the transfer safeguard that applies. You can ask us at the address above for what we know.',
+          'Some of these providers are US companies or process information in the United States. According to their own published documentation, Resend stores customer data in the United States, whichever sending region is selected, and is certified under the EU-US Data Privacy Framework; Calendly is located in the United States and relies on the EU-US Data Privacy Framework, with the EU Standard Contractual Clauses as a fallback; and Cloudflare’s data-processing terms rely on the EU-US Data Privacy Framework with the Standard Contractual Clauses as a fallback.',
+          'Our website functions run in Frankfurt, Germany, on Vercel, a US company; the pages and files of the website are delivered through Vercel’s global network. According to their own published documentation, Vercel and Google rely on the EU-US Data Privacy Framework and on the Standard Contractual Clauses. For MailerLite we have not yet confirmed every place where information is stored or the transfer safeguard that applies. You can ask us at the address above for what we know.',
         ],
       },
       {
