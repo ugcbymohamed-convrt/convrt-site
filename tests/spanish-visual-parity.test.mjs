@@ -124,7 +124,7 @@ test('pricing: headline, subtitle, renamed service, FAQ tabs on one row on deskt
 test('pricing: paid prospects still go to the Roadmap, organic to the strategy call; commitments and EUR unchanged', () => {
   const html = page('pricing')
   assert.ok(html.includes('href="/es/creative-growth-roadmap"'))
-  assert.ok(/href="https:\/\/calendly\.com\/[^"]+"/.test(html))
+  assert.ok(html.includes('href="/es/contact?service=organic"') && !/calendly\.com/.test(html), 'organic prospects go to the Spanish Contact inquiry; no public Calendly link')
   const t = text(html)
   assert.match(t, /3 meses/)
   assert.match(t, /6 meses/)

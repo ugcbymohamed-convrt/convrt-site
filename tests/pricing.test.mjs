@@ -719,8 +719,8 @@ test('service-aware CTAs: Paid keeps the Roadmap offer; Organic uses the organic
   assert.equal(ORGANIC_CTA.promo.eyebrow.toUpperCase(), 'YOUR ORGANIC CONTENT PARTNERSHIP')
   assert.equal(ORGANIC_CTA.promo.headline, "Let's build your brand's organic presence.")
   assert.equal(ORGANIC_CTA.promo.text, 'Strategy, consistent video production, publishing and engagement — managed together.')
-  assert.equal(ORGANIC_CTA.href, BOOKING_URL, 'one organic route: the strategy call (Batch 2; the Pricing promo used a mailto before)')
-  assert.equal(ORGANIC_CTA.external, true)
+  assert.equal(ORGANIC_CTA.href, '/contact?service=organic', 'one organic route: the Contact inquiry with Organic Social Video chosen (27 Nov 2026; it was the public Calendly call)')
+  assert.equal(ORGANIC_CTA.external, false)
   const s = strip(philo)
   assert.match(s, /<div hidden=\{service !== 'paid'\}><RoadmapCard \/><\/div>/)
   assert.match(s, /<div hidden=\{service !== 'organic'\}><OrganicOfferCard \/><\/div>/)
@@ -729,10 +729,10 @@ test('service-aware CTAs: Paid keeps the Roadmap offer; Organic uses the organic
   assert.match(organicCard, /ORGANIC_CTA\.href/)
   const fin = strip(read('src/components/pricing/PricingFinalCTA.jsx'))
   assert.match(fin, /<div hidden=\{service !== 'paid'\}>\s*<CtaLink href=\{rcta\.href\} external=\{rcta\.external\}>\{(?:ctaText|tr)\(rcta\.label\)\}<\/CtaLink>/)
-  assert.match(fin, /<div hidden=\{service !== 'organic'\}>\s*<CtaLink href=\{ORGANIC_CTA\.href\} external=\{ORGANIC_CTA\.external\}>\{currentLocale\(\) === 'en' \? tr\(ORGANIC_CTA\.label\) : 'Discuss your strategy'\}<\/CtaLink>/)
+  assert.match(fin, /<div hidden=\{service !== 'organic'\}>\s*<CtaLink href=\{hrefFor\(ORGANIC_CTA\.href\)\} external=\{ORGANIC_CTA\.external\}>\{currentLocale\(\) === 'en' \? tr\(ORGANIC_CTA\.label\) : 'Discuss your strategy'\}<\/CtaLink>/)
   assert.match(read('src/CreativeTestingSprintPage.jsx'), /<PricingFinalCTA service=\{service\} \/>/)
   // The global navigation CTA is untouched.
-  assert.match(read('src/components/Nav.jsx'), /const ctaHref = onScalePage \? BOOKING_URL : onRoadmapPage \? '#apply' : action\.href/)
+  assert.match(read('src/components/Nav.jsx'), /const ctaHref = onRoadmapPage \? '#apply' : action\.href/) // no public booking link on /scale any more (owner decision, 27 Nov 2026)
   assert.ok(!/mailto/.test(read('src/lib/routes/headFor.js')))
 })
 

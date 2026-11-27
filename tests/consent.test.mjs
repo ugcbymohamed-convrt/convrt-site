@@ -221,10 +221,9 @@ test('every conversion event the owner listed still exists exactly where it was 
     risk_free_application_success: 'src/components/riskfree/RiskFreeApplication.jsx',
     hooks_signup_success: 'src/components/hooks/HooksSignupCard.jsx',
     referral_application_success: 'src/components/referrals/ReferralForm.jsx',
-    booking_completed: 'src/components/scale/BookingModal.jsx',
     vsl_play: 'src/components/roadmap/RoadmapVideo.jsx',
     vsl_complete: 'src/components/scale/ScaleHero.jsx',
-    primary_cta_click: 'src/components/scale/DiscoveryCallButton.jsx',
+    primary_cta_click: 'src/components/scale/ScaleCtaButton.jsx',
   }
   for (const [ev, file] of Object.entries(where)) assert.ok(read(file).includes(ev), `${ev} in ${file}`)
 })

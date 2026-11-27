@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import Logo from './Logo.jsx'
-import { BOOKING_URL, OFFER_PATHS, REFERRALS_PATH, CREATOR_SHOWCASE_PATH } from '../config.js'
-import { openBookingModal } from '../lib/bookingModal.js'
+import { OFFER_PATHS, REFERRALS_PATH, CREATOR_SHOWCASE_PATH } from '../config.js'
 import { trackEvent } from '../lib/analytics.js'
 import { scrollToApply } from '../lib/roadmapForm.js'
 import { usePressFeedback } from '../lib/usePressFeedback.js'
@@ -90,23 +89,16 @@ export default function Nav() {
   const organicItem = serviceItems.find((m) => m.href === ORGANIC_SOCIAL_HREF)
   const action = primaryAction(locale)
 
-  // /scale is a paid-acquisition page with its own in-page booking modal
-  // and consistent "Book a Discovery Call" CTA copy. Everywhere else the
-  // header promotes the primary offer (Creative Growth Roadmap); direct
-  // booking stays available in the page-level CTAs.
-  const onScalePage = locale === 'en' && typeof window !== 'undefined' ? window.location.pathname === '/scale' : false
   // On the roadmap landing page itself, the CTA scrolls to the application form
   // instead of reloading the page it's already on.
   const onRoadmapPage =
     typeof window !== 'undefined' ? basePath === OFFER_PATHS.roadmap : false
-  // Translated pages: the primary action is the language's own flow (src/i18n/cta.js). Spanish: the discovery-call booking, in a new tab, until the Roadmap is translated.
-  const localizedBooking = locale !== 'en' && action.kind === 'booking'
-  const ctaLabel = onScalePage ? 'Book a Discovery Call' : tr(action.label)
-  const ctaHref = onScalePage ? BOOKING_URL : onRoadmapPage ? '#apply' : action.href
-  const handleCtaClick = onScalePage
-    ? (e) => { e.preventDefault(); setOpen(false); openBookingModal({ location: 'nav' }) }
-    : localizedBooking
-      ? () => { setOpen(false); trackEvent(action.event, { page: locale, location: 'nav' }) }
+  // Translated pages: the primary action is the language's own flow (src/i18n/cta.js); the Contact page if a language's Roadmap flow is ever switched off.
+  const localizedContact = locale !== 'en' && action.kind === 'contact'
+  const ctaLabel = tr(action.label)
+  const ctaHref = onRoadmapPage ? '#apply' : action.href
+  const handleCtaClick = localizedContact
+    ? () => { setOpen(false); trackEvent(action.event, { page: locale, location: 'nav' }) }
     : onRoadmapPage
       ? (e) => { e.preventDefault(); setOpen(false); trackEvent('roadmap_apply_click', { location: 'nav' }); scrollToApply() }
       : () => { setOpen(false); trackEvent('hero_creative_roadmap_click', { location: 'nav' }) }
@@ -194,7 +186,6 @@ export default function Nav() {
           <a
             href={ctaHref}
             onClick={handleCtaClick}
-            {...(localizedBooking ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
             {...pressDesktop}
             className="nav-cta hidden md:inline-flex items-center gap-1.5 whitespace-nowrap rounded-full bg-lime px-4 py-2.5 text-sm font-medium text-canvas"
           >
@@ -261,7 +252,6 @@ export default function Nav() {
             <a
               href={ctaHref}
               onClick={handleCtaClick}
-              {...(localizedBooking ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
               {...pressMobile}
               className="nav-cta mt-2 inline-flex items-center justify-center gap-1.5 rounded-full bg-lime px-4 py-3 text-sm font-medium text-canvas"
             >

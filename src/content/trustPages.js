@@ -10,7 +10,7 @@
 
    Inline links: write [[label|/path]] and the template turns it into an anchor. Marker text must not contain a closing square bracket. */
 
-import { CONTACT_EMAIL, OFFER_PATHS, CREATOR_SHOWCASE_PATH, PRIVACY_PATH, TERMS_PATH, LEGAL_NOTICE_PATH, COMPANY_LINKEDIN_URL, INSTAGRAM_URL, LEGAL_NOTICE_DETAILS_APPROVED } from '../config.js'
+import { CONTACT_EMAIL, CONTACT_PATH, OFFER_PATHS, CREATOR_SHOWCASE_PATH, PRIVACY_PATH, TERMS_PATH, LEGAL_NOTICE_PATH, COMPANY_LINKEDIN_URL, INSTAGRAM_URL, LEGAL_NOTICE_DETAILS_APPROVED } from '../config.js'
 import { BRAND, CREATOR_ALLOCATION, PRODUCTION_LANGUAGES, PRODUCTION_MODEL, INTERNATIONAL_CLIENTS, TALENT, USAGE_RIGHTS, TAX } from '../seo/businessKnowledge.js'
 import { ELYON_PROOF } from './ugcProof.js'
 import { CONVRT_STATS } from '../lib/siteStats.js'
@@ -22,7 +22,7 @@ import { consentConfigured } from '../lib/consent.js'
 export const OWNER_MARKER = '[OWNER TO CONFIRM'
 export const LEGAL_MARKER = '[LEGAL REVIEW'
 export const MARKER_RE = /\[(?:OWNER TO CONFIRM|LEGAL REVIEW)[^\]]*\]/g
-export const DRAFT_DATE = '21 November 2026'
+export const DRAFT_DATE = '27 November 2026'
 const UPDATED = DRAFT_DATE
 /* Whether Google Analytics is switched on in THIS build (VITE_GTM_ID set). The Privacy Policy describes the real state of the build it ships in. */
 const ANALYTICS_ACTIVE = consentConfigured()
@@ -45,7 +45,7 @@ export const operatorDetails = () => [
     ? `Postal address: ${OPERATOR.address}`
     : '[OWNER TO CONFIRM: show the operator’s postal address here. Spanish law requires a domicile or the address of an establishment in Spain (Ley 34/2002, art. 10); it is on file but not published until you approve it]',
   `Email: ${mail}`,
-  `Other ways to reach us directly: [[CONVRT Studio on LinkedIn|${COMPANY_LINKEDIN_URL}]]`,
+  `Other ways to reach us directly: [[contact form|${CONTACT_PATH}]] and [[CONVRT Studio on LinkedIn|${COMPANY_LINKEDIN_URL}]]`,
 ]
 
 export const TRUST_CONTENT = {
@@ -159,7 +159,7 @@ export const TRUST_CONTENT = {
             'Free video application. We collect your name, work email, company website, your answers about your business (business type, monthly ad spend range, videos per month, type of video, timing, interest in ongoing production) and an optional description, to review the application and contact you about it. Basis: steps you ask us to take before an agreement, and our legitimate interest in running the offer. We receive an email alert for each application through our email sender, Resend.',
             'Referral Partner Program. We collect your name, email, partner type, program choice, and optionally your company or agency name and website or LinkedIn profile, to review your application and contact you about it. Basis: as for the free video application. The form has a required box confirming that we may use these details for that purpose.',
             'General enquiry form. On the Contact page we collect your name, email, brand or company name, the service you are interested in, your message and your confirmation that you have read this policy, and optionally your website or social profile and an estimated budget range. We email these details to ourselves and use them to reply to you, to decide whether and how we can help, and to prepare a proposal if you ask for one. They are not added to our marketing list. Basis: steps you ask us to take before an agreement, and our legitimate interest in answering business enquiries.',
-            'Project application. When you apply for a package we collect your name, email, brand or company name, your website or social profile, the package you selected, your answers about your project (a description and objective, your advertising spend or current social media activity, for custom projects the type of production and an estimated budget, how soon you are ready, your desired start date and production languages) and your acknowledgement of the package terms. We also record the language of the page, the page you came from and, if you arrived through a campaign link, its campaign details (utm_source, utm_medium, utm_campaign, utm_content and utm_term) and, only if you accepted analytics, the first page of your visit. We email these details to ourselves to review your application and decide the next step personally. The price shown comes from our own pricing, never from your browser. The application is not a purchase and does not authorise a payment. It is not added to our marketing list. Basis: as for the general enquiry form.',
+            'Project application. When you apply for a package we collect your name, email, brand or company name, your website or social profile, the package you selected, your answers about your project (a description and objective, your advertising spend or current social media activity, for custom projects the type of production and an estimated budget, how soon you are ready, your desired start date and production languages) and your acknowledgement of the package terms. We also record the language of the page, the page you came from and, if you arrived through a campaign link, its campaign details (utm_source, utm_medium, utm_campaign, utm_content and utm_term) and, only if you accepted analytics, the first page of your visit. We email these details to ourselves to review your application and decide the next step personally. The price shown comes from our own pricing, never from your browser. The application is not a purchase and does not authorise a payment. They are not added to our marketing list. Basis: as for the general enquiry form.',
             'Email and calls. If you email us or book a call, we use what you send to reply and to work with you. Basis: your request, and our legitimate interest in answering business enquiries.',
             'Technical data. Our hosting provider, Vercel, processes your IP address and request details to serve the website and keep it secure. Videos on the site are delivered through Cloudflare Stream. Basis: our legitimate interest in a secure, working website.',
             'Creator form. The link for freelance creators opens a Google Form; what you enter there is handled through Google Forms.',

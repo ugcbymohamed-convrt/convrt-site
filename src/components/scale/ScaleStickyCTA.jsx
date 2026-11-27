@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
-import { openBookingModal } from '../../lib/bookingModal.js'
+import { OFFER_PATHS } from '../../config.js'
+import { SCALE_CTA_LABEL } from './ScaleCtaButton.jsx'
 import { trackEvent } from '../../lib/analytics.js'
 
 /* Mobile-only sticky bottom CTA. Appears once the visitor has scrolled
@@ -34,10 +35,7 @@ export default function ScaleStickyCTA() {
 
   const show = pastHero && !bookingVisible && !nearBottom
 
-  const handleClick = () => {
-    trackEvent('primary_cta_click', { page: 'scale', location: 'sticky_mobile' })
-    openBookingModal({ location: 'sticky_mobile' })
-  }
+  const handleClick = () => trackEvent('primary_cta_click', { page: 'scale', location: 'sticky_mobile' })
 
   return (
     <div
@@ -49,17 +47,17 @@ export default function ScaleStickyCTA() {
       }}
       aria-hidden={!show}
     >
-      <button
-        type="button"
+      <a
+        href={OFFER_PATHS.roadmap}
         tabIndex={show ? 0 : -1}
         onClick={handleClick}
         className="cta-gradient flex w-full items-center justify-center gap-2 rounded-full px-6 py-3.5 text-sm font-semibold text-canvas shadow-[0_20px_50px_-15px_rgba(213,255,64,0.5)]"
       >
-        Book a Discovery Call
+        {SCALE_CTA_LABEL}
         <svg viewBox="0 0 12 12" className="h-3.5 w-3.5" fill="none">
           <path d="M3 9L9 3M9 3H4M9 3V8" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
-      </button>
+      </a>
     </div>
   )
 }

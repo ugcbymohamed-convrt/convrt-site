@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import DiscoveryCallButton from './DiscoveryCallButton.jsx'
+import ScaleCtaButton from './ScaleCtaButton.jsx'
 
 /* ─────────────────────────────────────────────
    Replaces the two earlier sections (CONVRT Approach + "From first
@@ -17,7 +17,7 @@ const STEPS = [
   {
     number: '01',
     title: 'Understand',
-    description: 'Your business, audience, current creative and what’s already working, covered on the discovery call.',
+    description: 'Your business, audience, current creative and what’s already working, covered in the Roadmap strategy session.',
   },
   {
     number: '02',
@@ -146,7 +146,7 @@ export default function ScaleSystem() {
             transition: 'opacity 0.6s 0.1s ease, transform 0.6s 0.1s cubic-bezier(0.22,1,0.36,1)',
           }}
         >
-          <DiscoveryCallButton location="system" />
+          <ScaleCtaButton location="system" />
         </div>
       </div>
     </section>

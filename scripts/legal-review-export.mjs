@@ -89,7 +89,7 @@ table{width:100%;border-collapse:collapse;table-layout:fixed}td{vertical-align:t
 
 /* The revised ENGLISH documents (the source the translations follow), readable, for the owner's final review before anything is activated. */
 {
-  let en = `# English legal documents: REVISED (REVIEW DRAFT, not live)\n\nThe revised English Privacy Policy, Terms and Conditions and Legal Notice (src/content/trustPages.js). **Not live until you approve.** The effective date shown is unchanged ("${ctx.englishDate}") and must be set when the revision actually takes effect. Links are shown as \`label <target>\`.\n`
+  let en = `# English legal documents: REVISED (REVIEW DRAFT, not live)\n\nThe revised English Privacy Policy, Terms and Conditions and Legal Notice (src/content/trustPages.js). **Not live until you approve.** The effective date shown ("${ctx.englishDate}") is the shared date constant; confirm it on the day the revision is activated. Links are shown as \`label <target>\`.\n`
   for (const d of DOCS) {
     const page = TRUST_CONTENT[d]
     en += `\n---\n\n## ${page.h1}\n\n${plain(page.intro)}\n`
@@ -124,7 +124,7 @@ Spanish, French and Arabic Privacy Policy, Terms and Conditions and Legal Notice
 
 ## What the revision (27 Nov 2026) contains
 Only the owner's decisions of that date: payment terms (upfront / monthly in advance / seven calendar days / production paused if overdue, no late-payment penalty); commitments, cancellation and refunds (3-month Sprint and Sprint Plus, 6-month Organic Light and Growth, 30 calendar days' written notice, one-time packages, no automatic renewal, completed work not refundable for a change of mind); client responsibilities, timelines and delays; revisions (two per concept, extra at an agreed extra cost, no fixed price); individually agreed written agreements prevail subject to mandatory law; an application is not a binding purchase agreement or a payment authorisation; Privacy Policy: the general enquiry form, the project application, "some of our forms" for the marketing box, Resend for enquiries, retention including inbox copies, no open public booking calendar; Legal Notice: the general USD/EUR statement and no public booking link. Usage rights are unchanged.
-**The effective date is NOT updated** (still "21 November 2026"): set it when the revision takes effect.
+**Effective date:** all three documents currently share one date constant ("27 November 2026", set when the Privacy Policy additions went live). The Terms and Legal Notice changes are NOT live yet: confirm or change that date on the day they are activated.
 **Still for a lawyer or for you:** the Resend sending region is set to Ireland, which does not by itself mean all processing and storage is in the EU: the transfers section is unchanged; the 12-month retention needs an operational routine for the email inbox; "may be refunded" versus "will be refunded", "eligible balance" and "agreed non-recoverable costs" are not defined.
 
 ## Counts

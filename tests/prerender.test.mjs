@@ -640,7 +640,7 @@ test('/pricing HTML: service-aware CTAs: Paid = Roadmap, Organic = "Discuss Your
   const m = main(h)
   const phil = m.slice(m.indexOf('id="philosophy"'), m.indexOf('id="package-info"'))
   const fin = m.slice(m.indexOf('id="contact"'))
-  const call = 'https://calendly.com/mohamed-convrt/30min' // Batch 2: one organic route, the strategy call (was a mailto)
+  const call = '/contact?service=organic' // one organic route: the Contact inquiry with Organic Social Video chosen (27 Nov 2026; it was the public Calendly strategy call, before that a mailto)
   const orgAt = phil.indexOf('Your organic content partnership'); const paidAt = phil.indexOf('Your free Creative Growth Roadmap')
   assert.ok(orgAt > 0 && paidAt > 0)
   // the card wrapper right before each eyebrow: hidden="" for Organic, plain for Paid
@@ -649,7 +649,7 @@ test('/pricing HTML: service-aware CTAs: Paid = Roadmap, Organic = "Discuss Your
   assert.match(flat(`<div id="root">${phil}`), /Let's build your brand's organic presence\. Facebook Instagram TikTok Strategy, consistent video production, publishing and engagement — managed together\. Discuss Your Content Strategy/)
   assert.equal(count(phil, new RegExp(call.replace(/[?.]/g, '\\$&'), 'g')), 1)
   assert.equal(count(fin, new RegExp(call.replace(/[?.]/g, '\\$&'), 'g')), 1)
-  assert.ok(fin.includes(`<div hidden=""><a href="${call}" target="_blank" rel="noopener noreferrer"`) && fin.includes('Discuss Your Content Strategy'))
+  assert.ok(fin.includes(`<div hidden=""><a href="${call}"`) && fin.includes('Discuss Your Content Strategy') && !/calendly\.com/.test(m))
   assert.ok(fin.includes(`<div><a href="${OFFER_PATHS.roadmap}"`) && fin.includes('Get 5 Free Ad Concepts'), 'Paid CTA visible by default')
   assert.ok(phil.includes(`href="${OFFER_PATHS.roadmap}"`))
   assert.ok(rootOf(h).includes(`<a href="${OFFER_PATHS.roadmap}"`), 'the navigation CTA still goes to the Roadmap')

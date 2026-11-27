@@ -172,7 +172,8 @@ test('NO Calendly, booking widget, booking button or scheduling prompt on any Co
   const src = ['src/components/contact/ContactPage.jsx', 'src/components/contact/ContactForm.jsx', 'src/content/contactCopy.js', 'src/lib/contactSubmit.js', 'src/lib/contactInquiry.js', 'api/_lib/contact.js'].map(read).join('\n')
   assert.ok(!/calendly|BOOKING_URL|CalendlyGate|BookingModal|bookingModal/i.test(src.replace(/NO Calendly|not a booking/gi, '')))
   // private scheduling infrastructure and the other funnels are untouched
-  for (const f of ['src/components/booking/CalendlyGate.jsx', 'src/components/scale/BookingModal.jsx', 'src/lib/bookingModal.js']) assert.ok(fs.existsSync(path.join(ROOT, f)), `${f} kept`)
+  for (const f of ['src/components/booking/CalendlyGate.jsx']) assert.ok(fs.existsSync(path.join(ROOT, f)), `${f} kept (the Roadmap's qualification-first booking)`)
+  for (const f of ['src/components/scale/BookingModal.jsx', 'src/lib/bookingModal.js']) assert.ok(!fs.existsSync(path.join(ROOT, f)), `${f} removed (no public booking modal; owner decision 27 Nov 2026)`)
 })
 
 test('the bottom of every Contact page is the existing Free Creative Growth Roadmap CTA (translated), and the footer links reach the Legal Notice and Privacy Policy', () => {

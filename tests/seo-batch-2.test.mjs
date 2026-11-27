@@ -96,21 +96,22 @@ test('UGC page: contextual links to Spokesperson, SaaS, Elyon and Pricing sit in
 
 // ── Organic page ─────────────────────────────────────────────────────────────────────────
 test('Organic page: one route for every organic CTA (the strategy call), the Roadmap stays only in the global header, scope boundaries are visible', () => {
-  assert.equal(ORGANIC_CTA.href, BOOKING_URL)
-  assert.equal(ORGANIC_HERO.primary.href, BOOKING_URL)
-  assert.equal(ORGANIC_PAGE_CTA.primary.href, BOOKING_URL)
+  assert.equal(ORGANIC_CTA.href, '/contact?service=organic')
+  assert.equal(ORGANIC_HERO.primary.href, '/contact?service=organic')
+  assert.equal(ORGANIC_PAGE_CTA.primary.href, '/contact?service=organic')
   assert.equal(ORGANIC_HERO.primary.label, ORGANIC_CTA.label)
   const h = rootOf(page(PATHS.socialMediaVideoProduction))
   const main = h.slice(h.indexOf('<main'), h.indexOf('</main>'))
   assert.equal(main.includes(`href="${OFFER_PATHS.roadmap}"`), false, 'no Roadmap link inside the organic page content (it was under the proof result)')
   assert.ok(h.includes(`href="${OFFER_PATHS.roadmap}"`), 'the global header still offers the Roadmap')
-  assert.ok((main.match(new RegExp(BOOKING_URL.replace(/[.?]/g, '\\$&'), 'g')) || []).length >= 3, 'hero, proof and final CTA share the strategy call')
+  assert.ok((main.match(/href="\/contact\?service=organic"/g) || []).length >= 3, 'hero, proof and final CTA share the organic inquiry (Contact, Organic Social Video chosen)')
+  assert.ok(!/calendly\.com/.test(main), 'no public Calendly link on the organic page')
   const t = textOf(page(PATHS.socialMediaVideoProduction))
   assert.ok(t.includes('Customer support is not part of the service.') && t.includes('Paid advertising management is outside the organic service scope.'), 'organic management stays distinct from support and paid media')
   assert.ok(/short-form social media video production/.test(t))
   assert.ok(!/content creation agency|social media marketing agency/i.test(t), 'no keyword stuffing of the terms the SERP check rejected')
   const faqLinks = ORGANIC_SOCIAL_FAQ.flatMap((f) => f.links ?? []).map((l) => l.href)
-  assert.ok(faqLinks.includes(PATHS.caseStudyGraspo) && faqLinks.includes(BOOKING_URL))
+  assert.ok(faqLinks.includes(PATHS.caseStudyGraspo) && faqLinks.includes('/contact?service=organic') && !faqLinks.includes(BOOKING_URL), 'the organic FAQ links the inquiry, not a public Calendly link')
 })
 
 test('service label: one short label for service #4 on the homepage card and the footer; the descriptive name stays in the title, H1 and schema', () => {

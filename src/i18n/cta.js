@@ -9,7 +9,7 @@
    To release a flow in Spanish: translate it end to end, then set its flag to true here. Every Spanish CTA that depends on it switches by itself.
    See docs/multilingual-spanish-release.md for what each flow needs. */
 
-import { BOOKING_URL, OFFER_PATHS } from '../config.js'
+import { CONTACT_PATH, OFFER_PATHS } from '../config.js'
 import { DEFAULT_LOCALE } from './locales.js'
 import { hrefFor } from './tr.js'
 
@@ -19,20 +19,20 @@ export const LOCALIZED_FLOWS = {
   ar: { roadmap: true, riskFree: true, hooks: false, referrals: true },
 }
 
-/* A CTA as authored in English, resolved for a language: a CTA that points at a flow which is not translated yet becomes the booking call (label = a dictionary
-   key). Everything else is returned unchanged. */
+/* A CTA as authored in English, resolved for a language: a CTA that points at a flow which is not translated yet becomes the Contact inquiry (label = a dictionary
+   key; every live language has the Roadmap today, so this is a safety net, never a public calendar link). Everything else is returned unchanged. */
 export function resolveCta(locale, { href, external = false, label }) {
-  if (locale !== DEFAULT_LOCALE && href === OFFER_PATHS.roadmap && !flowAvailable(locale, 'roadmap')) return { href: BOOKING_URL, external: true, label: 'Book a Creative Call', redirected: true }
+  if (locale !== DEFAULT_LOCALE && href === OFFER_PATHS.roadmap && !flowAvailable(locale, 'roadmap')) return { href: CONTACT_PATH, external: false, label: 'Contact us', redirected: true }
   return { href: hrefFor(href, locale), external, label, redirected: false }
 }
 
 export const flowAvailable = (locale, flow) => locale === DEFAULT_LOCALE || LOCALIZED_FLOWS[locale]?.[flow] === true
 
 /* The primary "start here" action of a page, per language. English keeps the Roadmap. Other languages: the roadmap when its flow is localized,
-   otherwise the booking call. `label` is a dictionary key (see src/i18n/es/dict-shell.js). */
+   otherwise the Contact inquiry. `label` is a dictionary key (see src/i18n/es/dict-shell.js). */
 export function primaryAction(locale) {
   if (flowAvailable(locale, 'roadmap')) return { kind: 'roadmap', label: 'Get 5 Free Ad Concepts', href: hrefFor(OFFER_PATHS.roadmap, locale), external: false, event: 'hero_creative_roadmap_click' }
-  return { kind: 'booking', label: 'Book a Creative Call', href: BOOKING_URL, external: true, event: 'primary_cta_click' }
+  return { kind: 'contact', label: 'Contact us', href: hrefFor(CONTACT_PATH, locale), external: false, event: 'primary_cta_click' }
 }
 
 

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import DiscoveryCallButton from './DiscoveryCallButton.jsx'
+import ScaleCtaButton from './ScaleCtaButton.jsx'
 
 /* Reduced from 12 to the 8 objections a serious growth buyer actually
    needs resolved. Procurement-style questions ("who actually creates
@@ -21,7 +21,7 @@ const FAQS = [
   },
   {
     q: 'How is pricing structured?',
-    a: 'It depends on creative volume, scope and production requirements, so we won’t quote a flat number here. Our general package structure is on the pricing page; the discovery call is where we figure out what actually fits.',
+    a: 'It depends on creative volume, scope and production requirements, so we won’t quote a flat number here. Our general package structure is on the pricing page; the Roadmap strategy session is where we figure out what actually fits.',
   },
   {
     q: 'Do you guarantee ROAS?',
@@ -33,10 +33,10 @@ const FAQS = [
   },
   {
     q: 'How quickly can we get started?',
-    a: 'It depends on scope, but once concepts are approved, production for a first batch usually takes around 10 business days. The discovery call is the fastest way to get a timeline specific to your project.',
+    a: 'It depends on scope, but once concepts are approved, production for a first batch usually takes around 10 business days. The Roadmap strategy session is the fastest way to get a timeline specific to your project.',
   },
   {
-    q: 'What happens on the discovery call?',
+    q: 'What happens in the Roadmap strategy session?',
     a: 'We look at your business, current paid acquisition and where creative is, or isn’t, holding you back, then figure out honestly whether CONVRT can help. If there’s a fit, we’ll talk next steps.',
   },
 ]
@@ -140,10 +140,10 @@ export default function ScaleFAQ() {
             <div className="flex-1">
               <p className="text-[15px] font-semibold text-ink leading-snug mb-1">Still not sure?</p>
               <p className="text-[13px] text-ink-muted leading-relaxed">
-                The discovery call costs nothing and answers this faster than any FAQ can.
+                The Roadmap strategy session costs nothing and answers this faster than any FAQ can.
               </p>
             </div>
-            <DiscoveryCallButton location="faq" className="shrink-0 whitespace-nowrap" />
+            <ScaleCtaButton location="faq" className="shrink-0 whitespace-nowrap" />
           </div>
         </FadeUp>
       </div>

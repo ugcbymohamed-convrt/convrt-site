@@ -12,32 +12,21 @@ import { localizeStat } from './i18n/format.js'
 import { frTypography } from './i18n/fr/typography.js'
 import { forward } from './lib/rtl.js'
 import { Reveal } from './components/roadmap/shared.jsx'
-import TrustPage from './TrustPage.jsx'
+import EnglishAbout from './components/about/EnglishAbout.jsx'
+import { Badge, Glow } from './components/about/aboutParts.jsx'
 
 /* ABOUT (/about, /es/about, /fr/about, /ar/about).
 
-   English: the existing About page, unchanged (TrustPage + src/content/trustPages.js).
+   English: the SAME premium layout (src/components/about/EnglishAbout.jsx), built from the unchanged English text in src/content/trustPages.js.
    Spanish, French and Arabic: ONE premium page built from the owner-approved copy (src/content/aboutCopy.js): hero, philosophy, approach cards, "behind CONVRT", the founder-experience figures with their
    visible disclosure, markets, and a closing call to action. The same dark canvas, lime accents and entrance animations as the rest of the site; Arabic is right-to-left through the site's automatic mirroring.
 
    Rules kept (CLAUDE.md, GEO Work Packages 1-2): the four figures are the FOUNDER's combined professional experience and the disclosure is always printed under them; no offices, awards, ratings, team members,
    certifications or client claims are added; multilingual production is a capability, not a promise that every creator speaks every language. */
 
-const Badge = ({ children }) => (
-  <div className="inline-flex items-center gap-2.5">
-    <span className="h-px w-8 bg-lime" aria-hidden="true" />
-    <span className="text-xs font-semibold uppercase tracking-[0.22em] text-lime">{children}</span>
-    <span className="h-px w-8 bg-lime" aria-hidden="true" />
-  </div>
-)
-
-function Glow({ className }) {
-  return <div aria-hidden="true" className={`pointer-events-none absolute rounded-full ${className}`} />
-}
-
 export default function AboutPage() {
   const locale = currentLocale()
-  if (locale === 'en') return <TrustPage />
+  if (locale === 'en') return <EnglishAbout />
   return <LocalizedAbout locale={locale} />
 }
 

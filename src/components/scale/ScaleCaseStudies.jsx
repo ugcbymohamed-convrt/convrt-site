@@ -1,5 +1,5 @@
 import { useInView } from '../caseStudies/shared/useInView.js'
-import DiscoveryCallButton from './DiscoveryCallButton.jsx'
+import ScaleCtaButton from './ScaleCtaButton.jsx'
 import { trackEvent } from '../../lib/analytics.js'
 
 /* ─────────────────────────────────────────────
@@ -120,7 +120,7 @@ export default function ScaleCaseStudies() {
         </div>
 
         <FadeUp show={visible} delay={300} className="mt-9 text-center">
-          <DiscoveryCallButton location="case_studies" />
+          <ScaleCtaButton location="case_studies" />
         </FadeUp>
       </div>
     </section>
