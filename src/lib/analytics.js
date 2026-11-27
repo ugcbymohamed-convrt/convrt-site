@@ -95,6 +95,12 @@ function getStoredAttribution() {
   }
 }
 
+/* The utm_* campaign parameters captured on landing (this tab's session only), as a plain object. Read by the project application so the owner's e-mail can show which campaign a purchase-intent
+   application came from. Only the five utm_* keys: never a click identifier, never anything personal. */
+export function utmAttribution() {
+  return Object.fromEntries(Object.entries(getStoredAttribution()).filter(([k, v]) => UTM_KEYS.includes(k) && typeof v === 'string'))
+}
+
 /* Append captured UTM params onto a booking URL: the utm_* keys, which Calendly natively records against the booking. */
 export function withUtm(url) {
   const stored = getStoredAttribution()

@@ -54,7 +54,7 @@ test('Spanish pricing, contact, FAQ and referral wording is exactly the requeste
   assert.ok(home.includes('Lo que suelen preguntarnos las marcas.'), 'FAQ heading')
   assert.ok(!home.includes('Tus preguntas'))
   const ref = html('/es/referrals')
-  assert.match(ref, /Una presentación\.(<!-- -->)? <span class="whitespace-nowrap text-lime">Dos ganadores\.<\/span>/, '"Dos ganadores." in the brand lime, the first half untouched')
+  assert.match(ref, /Una presentación\.(<!-- -->)? <span class="whitespace-nowrap text-lime">Dos ganadores<\/span>(<!-- -->)?\./, '"Dos ganadores" in the brand lime (owner, 2026-11-27: not the full stop), the first half untouched')
 })
 
 test('Spanish Creator Showcase guide: the English section (heading, intro, four cards, case-study line), Spanish copy, Spanish links', () => {

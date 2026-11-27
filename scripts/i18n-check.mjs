@@ -30,8 +30,8 @@ const SCOPE_EXCLUDED = {
   // Spanish has no case-study pages yet (the French ones were built first, Nov 2026): their components are not Spanish's business until /es/case-studies exists.
   es: [/^components[\\/]blog[\\/]/, /^components[\\/](graspo|elyon|caseStudies)[\\/]/, /^(CaseStudiesPage|GraspoCaseStudyPage|ElyonCaseStudyPage)\.jsx$/],  // The blog masthead is drawn in English and Arabic only.
   fr: [/^components[\\/]blog[\\/]/],
-  // Arabic has no Hooks, Blog-article, /scale, creator or Elyon pages (links to them keep their English URL, labelled «بالإنجليزية»).
-  ar: [/^components[\\/](hooks|blog|scale|creator|elyon)[\\/]/, /^components[\\/]ugc[\\/]UgcHeroRoadmap/, /^(TrustPage|FreeHooksPage|BlogPage|BlogArticlePage|ElyonCaseStudyPage|ScalePage|CreatorAdminPage|CreatorOnboardingPage|CreatorLegalPage|OfferPlaceholderPage)\.jsx$/],
+  // Arabic has no Hooks, Blog-article, /scale or creator pages (links to them keep their English URL, labelled «بالإنجليزية»). The Elyon study is Arabic since Nov 2026, so it is checked like the rest.
+  ar: [/^components[\\/](hooks|blog|scale|creator)[\\/]/, /^components[\\/]ugc[\\/]UgcHeroRoadmap/, /^(TrustPage|FreeHooksPage|BlogPage|BlogArticlePage|ScalePage|CreatorAdminPage|CreatorOnboardingPage|CreatorLegalPage|OfferPlaceholderPage)\.jsx$/],
 }
 export function missingFor(locale) {
   const dict = DICTIONARIES[locale] ?? {}

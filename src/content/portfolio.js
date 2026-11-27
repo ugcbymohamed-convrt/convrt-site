@@ -90,6 +90,7 @@
 import { currentLocale } from '../i18n/locale.js'
 import { DEFAULT_LOCALE } from '../i18n/locales.js'
 import { streamPoster } from './posterFrames.js'
+import { streamHls } from '../lib/streamHost.js'
 import { AR_LANGUAGE_LABELS, AR_INDUSTRY_LABELS, AR_TYPE_LABELS, AR_PRODUCTION_LABELS, captionAr } from '../i18n/ar/labels.js'
 
 import { editorial } from '../i18n/editorial.js'
@@ -2482,7 +2483,7 @@ export const selectShowcase = (id, items = PORTFOLIO) => {
 export const creatorLabel = (item) => (item.creator?.showName === true && item.creator?.displayName ? item.creator.displayName : null)
 
 export const posterUrl = (item) => item.poster ?? streamPoster(item.source.cloudflareId, { height: 720 })
-export const hlsUrl = (item) => `https://videodelivery.net/${item.source.cloudflareId}/manifest/video.m3u8`
+export const hlsUrl = (item) => streamHls(item.source.cloudflareId)
 
 /* ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
    CATEGORIES: the four industry groups of /creator-showcase, plus the Spokesperson type filter (All Work is the combined view, not a category).

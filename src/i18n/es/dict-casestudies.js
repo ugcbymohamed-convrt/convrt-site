@@ -175,6 +175,7 @@ const OWN = {
   "View case study": "Ver el caso de éxito",
   "Elyon Dubai case study": "Caso de éxito de Elyon Dubai",
   "Elyon Dubai × CONVRT · Case Study": "Elyon Dubai × CONVRT · Caso de éxito",
+  "Elyon Dubai": "Elyon Dubai",
   "Taking a luxury perfume brand from launch into profitable paid-social creative.": "De una marca de lujo a una estrategia creativa que vende.",
   "Elyon needed creative that could do more than make luxury fragrance look good. It needed content capable of turning attention into purchases, so CONVRT built a repeatable mix of creator-led ads, street interviews and performance-focused concepts across multiple locations.": "Para Elyon Dubai, desarrollamos anuncios con creadores, entrevistas en la calle y un sistema de producción continua orientado a mejorar las campañas.",
   "Luxury Fragrance": "Fragancias de lujo",

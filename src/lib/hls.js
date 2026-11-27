@@ -1,5 +1,5 @@
 /* ─────────────────────────────────────────────
-   HLS helper for the homepage videos (Cloudflare Stream, videodelivery.net).
+   HLS helper for the homepage videos (Cloudflare Stream, the account's own customer hostname: src/lib/streamHost.js).
 
    • hls.js is ~540 kB (164 kB gzip). It is imported on demand — never in the
      initial bundle — and not at all on Safari / iOS, which play HLS natively.

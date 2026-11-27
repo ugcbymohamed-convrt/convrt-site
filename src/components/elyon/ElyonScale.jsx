@@ -3,7 +3,8 @@ import Eyebrow from '../caseStudies/shared/Eyebrow.jsx'
 import { ACCENT } from './theme.js'
 import { useTr } from '../../i18n/tr.js'
 import { ELYON_SCALE_STAGES as STAGES } from '../../caseStudies/data.js'
-import { stat } from '../caseStudies/format.js'
+import { stat, ltrRun } from '../caseStudies/format.js'
+import { isRtlPage } from '../../lib/rtl.js'
 
 
 export default function ElyonScale() {
@@ -40,7 +41,7 @@ export default function ElyonScale() {
                   {s.step} &middot; {tr(s.tag)}
                 </p>
                 <p className="mt-3 font-display font-bold tabular-nums leading-none text-[clamp(1.9rem,4vw,2.6rem)] text-ink">
-                  {stat(s.value)}
+                  {ltrRun(stat(s.value))}
                 </p>
                 <p className="mt-2 text-[13px] text-ink-muted">{tr(s.label)}</p>
               </div>
@@ -54,7 +55,7 @@ export default function ElyonScale() {
                   }}
                   aria-hidden="true"
                 >
-                  <svg viewBox="0 0 16 16" width="16" height="16" fill="none">
+                  <svg viewBox="0 0 16 16" width="16" height="16" fill="none" style={isRtlPage() ? { transform: 'scaleX(-1)' } : undefined}>
                     <path d="M2 8h10M9 4l4 4-4 4" stroke={ACCENT} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
                 </div>

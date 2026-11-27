@@ -3,9 +3,11 @@ import Hls from 'hls.js'
 import Eyebrow from '../caseStudies/shared/Eyebrow.jsx'
 import { ACCENT } from './theme.js'
 import { streamPoster } from '../../content/posterFrames.js'
+import { streamHls } from '../../lib/streamHost.js'
 import { useTr } from '../../i18n/tr.js'
 import { ELYON_VIDEOS as VIDEOS } from '../../caseStudies/data.js'
 import { isEnglish } from '../caseStudies/format.js'
+import { elyonAr } from '../../i18n/ar/elyonScoped.js'
 
 /* Real Elyon creative — the same three Cloudflare Stream assets featured
    in the homepage Case Studies carousel, reused here so the case study
@@ -32,8 +34,8 @@ export default function ElyonShowcase() {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 md:gap-8 max-w-4xl mx-auto">
-          {VIDEOS.map((v) => (
-            <VideoPhone key={v.id} video={v} />
+          {VIDEOS.map((v, i) => (
+            <VideoPhone key={v.id} video={v} ordinal={elyonAr(`showcase|Video ${i + 1}`)} />
           ))}
         </div>
       </div>
@@ -41,7 +43,7 @@ export default function ElyonShowcase() {
   )
 }
 
-function VideoPhone({ video }) {
+function VideoPhone({ video, ordinal }) {
   const tr = useTr()
   const wrapperRef = useRef(null)
   const videoRef = useRef(null)
@@ -68,7 +70,7 @@ function VideoPhone({ video }) {
     if (!shouldLoad) return
     const el = videoRef.current
     if (!el) return
-    const src = `https://videodelivery.net/${video.id}/manifest/video.m3u8`
+    const src = streamHls(video.id)
     let hls
     // Prefer hls.js's JS demuxer whenever MSE is available — it's what actually
     // gets exercised and error-tested across Chrome/Firefox/Edge. Some Chromium
@@ -155,6 +157,8 @@ function VideoPhone({ video }) {
         </div>
       </div>
       <p className="mt-4 text-center">
+        {/* Arabic only (owner copy): "الفيديو الأول / الثاني / الثالث" above the label; the other languages show the label alone, as before. */}
+        {ordinal && <span className="mb-1 block text-[11px] font-medium text-ink-subtle">{ordinal}</span>}
         <span className="block text-[10.5px] font-semibold uppercase tracking-[0.16em]" style={{ color: ACCENT }}>
           {tr(video.label)}
         </span>

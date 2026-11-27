@@ -41,6 +41,11 @@ export const HOME_HERO = [
   },
 ]
 
+/* HERO FRONT VIDEOS, 2026-11-26 (owner, chat): the centre phone of the Spanish, French and Arabic homepage heroes is now SPANISH.mp4, FRENCH.mp4 and ARABIC.mp4 from ~/Desktop/CONVRT/MAIN-PAGE-AD (the CONVRT ad
+   dubbed in each language, no burned-in language badge), uploaded to Cloudflare Stream the same day as HERO-2026-11-26-<LANGUAGE>. The Arabic file was 4K HEVC (305 MB, over Stream's 200 MB direct-upload limit), so it was
+   re-encoded to 1080x1920 H.264 (60 fps, CRF 19) first, like the other hero videos. The earlier centre videos are no longer referenced anywhere. The two side phones of each hero are unchanged. English keeps HOME_HERO.
+   The comments below describe the earlier arrangement and are kept for the side phones. */
+
 /* The Spanish homepage hero (owner folder ~/Desktop/SPANISH/Main Page, Front / Left / Right; owner confirmed in chat on 2026-11-22 that these are approved and consented).
    - Front (the large centre phone) is now the Spanish version of the CONVRT ad (see the entry below); it used to be the English ad, which the English homepage still shows.
    - Left and Right are byte-identical to the Spanish UGC videos es-ugc-2 and es-ugc-1 in src/content/portfolio.js (the same Stream videos, uploaded once), so they carry the same Spanish captions.
@@ -55,8 +60,8 @@ export const HOME_HERO_ES = [
     languages: ['es'],
     caption: 'CONVRT UGC ad example.',
     poster: '/portfolio/es-home-hero.webp',
-    source: { cloudflareId: '2833c72764ffb5cc73f001565ca32954' },
-    approval: { ...approval, approvedOn: '2026-11-22' },
+    source: { cloudflareId: '005317a3b3da8192c22b29cc2647046d' },
+    approval: { ...approval, approvedBy: 'CONVRT owner (2026-11-26: supplied SPANISH.mp4 as the Spanish hero video)', approvedOn: '2026-11-26' },
   },
   {
     id: 'home-hero-es-left',
@@ -94,8 +99,8 @@ export const HOME_HERO_AR = [
     languages: ['ar'],
     caption: 'مقدّم يتحدث أمام الكاميرا في أماكن مختلفة، مع عناوين عربية مكتوبة على الشاشة.',
     poster: '/portfolio/ar-hero-gulf.webp',
-    source: { cloudflareId: 'afdb58ebb92354534b513dabca0d64f5' },
-    approval: { ...approval, approvedBy: 'CONVRT owner (2026-11-24: supplied ARABIC-with-Dubbed-Text.mp4 as the Arabic hero video)', approvedOn: '2026-11-24' },
+    source: { cloudflareId: '3431182e01b2bfd16e7734c2f9e3e99f' },
+    approval: { ...approval, approvedBy: 'CONVRT owner (2026-11-26: supplied ARABIC.mp4 as the Arabic hero video)', approvedOn: '2026-11-26' },
   },
   {
     id: 'home-hero-ar-right',
@@ -127,7 +132,7 @@ export const HOME_HERO_AR = [
    English and Spanish keep their own heroes. */
 const frApproval = { ...approval, approvedOn: '2026-11-23' }
 export const HOME_HERO_FR = [
-  { id: 'home-hero-fr-main', creatorId: 'cv-home-hero', industry: 'unclassified', languages: ['fr'], caption: 'Publicité CONVRT, version française.', poster: '/portfolio/fr-home-hero.webp', source: { cloudflareId: 'ce7f495642b90a531e44f17b8e7454c5' }, approval: frApproval },
+  { id: 'home-hero-fr-main', creatorId: 'cv-home-hero', industry: 'unclassified', languages: ['fr'], caption: 'Publicité CONVRT, version française.', poster: '/portfolio/fr-home-hero.webp', source: { cloudflareId: 'dc221b5a412f48ab937b60f5fbc7ade1' }, approval: { ...approval, approvedBy: 'CONVRT owner (2026-11-26: supplied FRENCH.mp4 as the French hero video)', approvedOn: '2026-11-26' } },
   { id: 'home-hero-fr-right', creatorId: 'fr-c01', industry: 'unclassified', languages: ['fr'], caption: 'Présentation d’un complément alimentaire.', poster: '/portfolio/fr-ugc-hero-1.webp', source: { cloudflareId: 'c1dd083d5550608a139f656670bd77a5' }, approval: frApproval },
   { id: 'home-hero-fr-left', creatorId: 'fr-c02', industry: 'unclassified', languages: ['fr'], caption: 'Présentation d’une entreprise de toiture.', poster: '/portfolio/fr-ugc-1.webp', source: { cloudflareId: '7c681c012def2539e7c32c99889d8662' }, approval: frApproval },
 ]

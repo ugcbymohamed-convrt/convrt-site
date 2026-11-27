@@ -65,7 +65,10 @@ function rewardsTitle(full) {
   const locale = currentLocale()
   if (locale !== 'es' && locale !== 'fr') return full
   const m = full.match(/^(.+?\.)\s+(.+)$/)
-  return m ? <>{m[1]} <span className="whitespace-nowrap text-lime">{m[2]}</span></> : full
+  if (!m) return full
+  /* Spanish (owner, 2026-11-27): only «Dos ganadores» is lime; the closing full stop keeps the heading colour. */
+  const tail = locale === 'es' && m[2].endsWith('.') ? '.' : ''
+  return <>{m[1]} <span className="whitespace-nowrap text-lime">{tail ? m[2].slice(0, -1) : m[2]}</span>{tail}</>
 }
 
 export default function ReferralRewards({ onSelect }) {

@@ -35,8 +35,10 @@ function FadeUp({ children, inView, delay = 0, className = '' }) {
 
 /* attributed: the page has ALREADY stated, close to the founder figures, that they are the founder's combined experience (the homepage does, under its founder headline), so the strip does not repeat the
    asterisk and footnote (owner decision, Nov 2026: one clear attribution per page, not one per section). Pages that show the strip first (the case studies) keep it. */
-export default function FinalCTA({ attributed = false }) {
-  const tr = useTr()
+export default function FinalCTA({ attributed = false, arCopy }) {
+  const trBase = useTr()
+  // `arCopy` (Arabic only): the owner's own wording for ONE page (the Elyon study); a sentence not listed there uses the shared Arabic as always. Other languages ignore it.
+  const tr = (text) => (arCopy && currentLocale() === 'ar' && arCopy[text]) || trBase(text)
   const locale = currentLocale()
   const action = primaryAction(locale)
   const sectionRef = useRef(null)

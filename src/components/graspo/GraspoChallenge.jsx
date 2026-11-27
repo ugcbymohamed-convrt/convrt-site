@@ -1,5 +1,6 @@
 import { useTr } from '../../i18n/tr.js'
 import { mix } from '../../i18n/ar/mix.jsx'
+import { currentLocale } from '../../i18n/locale.js'
 
 const POINTS = [
   {
@@ -23,6 +24,7 @@ const POINTS = [
 
 export default function GraspoChallenge() {
   const tr = useTr()
+  const ar = currentLocale() === 'ar'
   return (
     <section className="relative py-16 md:py-24">
       <div className="mx-auto max-w-6xl px-5 md:px-8 text-center">
@@ -31,7 +33,7 @@ export default function GraspoChallenge() {
             <span className="h-1.5 w-1.5 rounded-full bg-lime animate-pulse" />
             <span className="text-xs font-medium uppercase tracking-[0.18em] text-ink-muted">{tr('The Challenge')}</span>
           </div>
-          <h2 className="font-display font-bold text-ink tracking-display leading-[1.05] text-3xl md:text-[44px]">
+          <h2 className={`font-display font-bold text-ink tracking-display leading-[1.05] text-3xl md:text-[44px]${ar ? ' text-balance' : ''}`}>
             {mix(tr('"Post more on Instagram" was never going to be the strategy.'))}
           </h2>
           <p className="mt-6 text-[15px] md:text-base text-ink-muted leading-relaxed">

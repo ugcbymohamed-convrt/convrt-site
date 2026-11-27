@@ -15,7 +15,7 @@ function devApi() {
     configureServer(server) {
       const env = loadEnv(server.config.mode, process.cwd(), '')
       for (const [k, v] of Object.entries(env)) {
-        if (/^(MAILERLITE_|CREATOR_|CLOUDFLARE_|UPSTASH_|KV_|RESEND_|NOTIFY_EMAIL_)/.test(k) && process.env[k] === undefined) process.env[k] = v
+        if (/^(MAILERLITE_|CREATOR_|CLOUDFLARE_|UPSTASH_|KV_|RESEND_|NOTIFY_EMAIL_|PROJECT_APPLICATION_)/.test(k) && process.env[k] === undefined) process.env[k] = v
       }
       // Creator onboarding (private, invitation-only): /api/creator/<op> and /api/creator-admin/<op>.
       for (const [prefix, file] of [['/api/creator-admin', '/api/creator-admin/[op].js'], ['/api/creator', '/api/creator/[op].js']]) {
@@ -30,7 +30,7 @@ function devApi() {
           }
         })
       }
-      for (const route of ['free-hooks-subscribe', 'risk-free-apply', 'referral-apply', 'contact', 'visitor-country']) {
+      for (const route of ['free-hooks-subscribe', 'risk-free-apply', 'referral-apply', 'project-apply', 'contact', 'visitor-country']) {
         server.middlewares.use(`/api/${route}`, async (req, res, next) => {
           try {
             const { default: handler } = await server.ssrLoadModule(`/api/${route}.js`)

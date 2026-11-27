@@ -12,7 +12,7 @@ const [creatives, locations, peak] = [ELYON_METRICS[0], ELYON_METRICS[1], ELYON_
 export default function ElyonResult() {
   const copy = ELYON_CONCLUSION[currentLocale()] ?? ELYON_CONCLUSION.en
   const figures = [
-    { value: peak.value, label: copy.labels[0], sub: copy.labels[1], hero: true },
+    { value: peak.value, label: copy.labels[0], sub: copy.labels[1], hero: true, raw: true },
     { value: creatives.value, label: copy.labels[2] },
     { value: locations.value, label: copy.labels[3] },
   ]

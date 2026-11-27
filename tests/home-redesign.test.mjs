@@ -175,7 +175,7 @@ test('industry showcase data: Adscale is the verified SaaS client (no invented c
   assert.equal(SHOWCASE_INDUSTRIES[1].link.href, '/case-studies/elyon')
   for (const c of SHOWCASE_INDUSTRIES) assert.ok(selectShowcase(c.clientId).length >= 3, c.id)
   const src = read('src/components/home/IndustryShowcase.jsx')
-  assert.ok(!/cloudflareId|videodelivery/.test(src) && !/cloudflareId|videodelivery/.test(read('src/content/homeShowcase.js')), 'no video is copied into a component: they come from portfolio.js')
+  assert.ok(!/cloudflareId|videodelivery|cloudflarestream/.test(src) && !/cloudflareId|videodelivery/.test(read('src/content/homeShowcase.js')), 'no video is copied into a component: they come from portfolio.js')
 })
 
 // ── 3. the two closing CTAs ──────────────────────────────────────────────────────────────

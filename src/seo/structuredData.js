@@ -24,6 +24,7 @@ import { SPOKESPERSON_FAQ } from './spokespersonFaq.js'
 import { ORGANIC_SOCIAL_FAQ } from './organicSocialFaq.js'
 import { SAAS_FAQ } from './saasFaq.js'
 import { PATHS } from '../routes.js'
+import { streamIframe } from '../lib/streamHost.js'
 import { selectOurWork, isDisplayable, posterUrl, hlsUrl, titleOf } from '../content/portfolio.js'
 
 const CONTEXT = 'https://schema.org'
@@ -476,7 +477,7 @@ export function videoObjectNode(item) {
     thumbnailUrl: [thumb.startsWith('http') ? thumb : abs(thumb)],
     uploadDate: item.uploadDate,
     ...(item.languages?.length ? { inLanguage: item.languages[0] } : {}),
-    ...(cf ? { contentUrl: hlsUrl(item), embedUrl: `https://iframe.videodelivery.net/${cf}` } : { contentUrl: abs(item.source.mp4) }),
+    ...(cf ? { contentUrl: hlsUrl(item), embedUrl: streamIframe(cf) } : { contentUrl: abs(item.source.mp4) }),
     // CONVRT is named as the producer ONLY when the data says the video was produced through CONVRT. Independent creator examples are never
     // attributed to CONVRT, and a video with unknown production gets no producer at all.
     ...(item.production === 'convrt' ? { producer: { '@id': ORG_ID } } : {}),

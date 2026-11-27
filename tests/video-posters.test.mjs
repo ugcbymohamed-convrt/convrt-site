@@ -39,8 +39,8 @@ test('every Stream video with a same-origin poster has a chosen frame and a real
 
 test('Stream thumbnails read the chosen time; the homepage client panels, both case studies and /scale no longer use the first frame', () => {
   const id = Object.keys(POSTER_FRAMES)[0]
-  assert.equal(streamPoster(id, { height: 600 }), `https://videodelivery.net/${id}/thumbnails/thumbnail.jpg?time=${POSTER_FRAMES[id]}s&height=600`)
-  assert.equal(streamPoster('f'.repeat(32)), `https://videodelivery.net/${'f'.repeat(32)}/thumbnails/thumbnail.jpg?time=0s&height=720`, 'an unlisted video keeps its first frame')
+  assert.equal(streamPoster(id, { height: 600 }), `https://customer-0hz43gyj10hvd956.cloudflarestream.com/${id}/thumbnails/thumbnail.jpg?time=${POSTER_FRAMES[id]}s&height=600`)
+  assert.equal(streamPoster('f'.repeat(32)), `https://customer-0hz43gyj10hvd956.cloudflarestream.com/${'f'.repeat(32)}/thumbnails/thumbnail.jpg?time=0s&height=720`, 'an unlisted video keeps its first frame')
   assert.ok(posterUrl({ source: { cloudflareId: id } }).includes(`time=${POSTER_FRAMES[id]}s`))
   for (const f of ['src/components/CaseStudies.jsx', 'src/components/elyon/ElyonShowcase.jsx', 'src/components/graspo/GraspoShowcase.jsx', 'src/components/scale/ScaleHero.jsx']) {
     const t = read(f)
@@ -56,4 +56,10 @@ test('the inventory and contact sheet exist and list every chosen frame', () => 
   for (const id of Object.keys(POSTER_FRAMES)) assert.ok(md.includes(`${id.slice(0, 8)}…`), id)
   assert.ok(fs.existsSync(path.join(ROOT, 'docs/video-thumbnail-contact-sheet.jpg')))
   assert.ok(fs.existsSync(path.join(ROOT, 'scripts/poster-frames.py')))
+})
+
+test('video playback uses the Stream account hostname only (videodelivery.net does not resolve on some networks)', () => {
+  const walk = (d) => fs.readdirSync(path.join(ROOT, d), { withFileTypes: true }).flatMap((e) => (e.isDirectory() ? walk(path.join(d, e.name)) : [path.join(d, e.name)]))
+  const offenders = [...walk('src'), 'index.html'].filter((f) => /\.(jsx?|html)$/.test(f) && f !== 'src/lib/streamHost.js').filter((f) => /videodelivery\.net/.test(read(f)))
+  assert.deepEqual(offenders, [], 'only src/lib/streamHost.js may mention the shared host (in its explanatory comment); everything else imports streamHls/streamThumbnail/streamIframe')
 })

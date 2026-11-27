@@ -84,7 +84,7 @@ test('FAQ component renders the shared data (and its links); services/hero/foote
 
 test('H1: the animated heading is unchanged visually; its text is clean (no duplicate sizing word, spaces between lines)', () => {
   const hero = read('src/components/Hero.jsx')
-  assert.match(hero, /<span className="block">Performance creatives<\/span>\{' '\}/)
+  assert.match(hero, /<span className="block">\{en \? 'Creatives designed' : [^}]*Performance creatives[^}]*\}<\/span>\{' '\}/)
   assert.match(hero, /data-word=\{widest\} className="invisible whitespace-pre after:content-\[attr\(data-word\)\]"/)
   assert.match(hero, /aria-hidden="true" data-word/)
   assert.ok(hero.includes("const ROTATING_WORDS = ['convert', 'resonate', 'sell', 'connect']"), 'same rotating words')

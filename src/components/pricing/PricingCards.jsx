@@ -1,19 +1,21 @@
 import { stepOfArrow } from '../../lib/rtl.js'
-import { OFFER_PATHS } from '../../config.js'
 import { currentLocale } from '../../i18n/locale.js'
-import { resolveCta } from '../../i18n/cta.js'
+import { trackEvent } from '../../lib/analytics.js'
+import { paCopy } from '../../i18n/projectApplicationCopy.js'
+import { PROJECT_APPLICATION_PATH, selectionFor, applicationHref } from '../../lib/projectApplication.js'
 import { money } from '../../i18n/money.js'
 import { perVariationText } from '../../i18n/pricing.js'
 import {
   SPRINT, SPRINT_PLUS, ORGANIC, ORGANIC_COMMITMENT, CUSTOM_PACKAGES, BILLING_OPTIONS, formatMoney, pricePerVariation, creatorsLine,
   END_TO_END,
 } from '../../seo/businessKnowledge.js'
-import { tr, ctaText } from '../../i18n/tr.js'
+import { tr, localHref } from '../../i18n/tr.js'
 
 /* The three-column pricing cards (Paid Social: Sprint / Sprint Plus / Custom; Organic: Light / Growth / Custom).
    Every number comes from src/seo/businessKnowledge.js. Both billing options are always in the DOM (the inactive
-   price carries `hidden`), so the prerendered HTML contains the monthly AND the one-off prices. Every CTA goes to the
-   approved Creative Growth Roadmap flow. */
+   price carries `hidden`), so the prerendered HTML contains the monthly AND the one-off prices. Every package CTA (owner, 2026-11-26)
+   opens the project application with that package and billing option already selected (src/ProjectApplicationPage.jsx); the free
+   Creative Growth Roadmap stays the offer for visitors who are still exploring (hero, navigation, the Roadmap block on this page). */
 
 const TONES = {
   light: {
@@ -84,11 +86,17 @@ function EndToEnd({ tone }) {
   )
 }
 
-function PricingCard({ tone, id, label, badge, description, price, sub, features, note, ctaLabel, tallSub = false, descMin = 'lg:min-h-[69px]', subMin, className = '', endToEnd = false, endToEndSpace = false }) {
+function PricingCard({ tone, id, label, badge, description, price, sub, features, note, application, tallSub = false, descMin = 'lg:min-h-[69px]', subMin, className = '', endToEnd = false, endToEndSpace = false }) {
   const t = TONES[tone]
   const en = currentLocale() === 'en'
-  // Other languages: a CTA into the English-only Roadmap becomes the booking call (src/i18n/cta.js).
-  const cta = resolveCta(currentLocale(), { href: OFFER_PATHS.roadmap, label: 'Book a Creative Call' })
+  // The package CTA: the project application with the package (and billing option) already selected. Only identifiers travel in the URL: never a price.
+  const locale = currentLocale()
+  const c = paCopy(locale)
+  const sel = selectionFor(locale, application.packageId, application.billing)
+  const href = applicationHref(localHref(PROJECT_APPLICATION_PATH, locale), application.packageId, application.billing)
+  const onCtaClick = () => trackEvent('package_cta_click', {
+    package_id: application.packageId, billing: sel?.billing ?? 'custom', locale, currency: sel?.currency ?? 'none', source_page: 'pricing', service_category: sel ? (sel.custom ? `custom_${sel.category}` : sel.category) : 'none',
+  })
   return (
     <article
       aria-labelledby={`${id}-label`}
@@ -129,11 +137,11 @@ function PricingCard({ tone, id, label, badge, description, price, sub, features
       <div className={`mt-6 h-px ${t.divider}`} />
 
       <a
-        href={cta.href}
-        {...(cta.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+        href={href}
+        onClick={onCtaClick}
         className={`mt-6 inline-flex items-center justify-center gap-2 rounded-full px-6 py-3.5 text-sm font-semibold transition-transform duration-150 active:scale-[0.98] ${t.cta}`}
       >
-        {cta.redirected && ctaLabel === 'Get 5 Free Ad Concepts' ? tr(cta.label) : ctaText(ctaLabel)}
+        {application.custom ? c.cta.custom : c.cta.standard}
         <svg viewBox="0 0 12 12" className="h-3.5 w-3.5" fill="none" aria-hidden="true">
           <path d="M3 9L9 3M9 3H4M9 3V8" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
@@ -197,6 +205,7 @@ const usage = (m) => `${m} months of worldwide usage rights`
 const revisions = (n) => `${n} revision rounds per creative concept`
 
 export function PaidCards({ billing }) {
+  const appBilling = billing === 'oneOff' ? 'one-time' : 'monthly' // the URL's name for the one-off price
   const sprintFeatures = [
     `${SPRINT.concepts} distinct creative concepts`,
     `${SPRINT.concepts} complete scripts`,
@@ -229,18 +238,18 @@ export function PaidCards({ billing }) {
         tone="light" id="card-sprint" label="Sprint" description={SPRINT.cardDescription}
         price={<BillingPrice pkg={SPRINT} billing={billing} />}
         sub={<Variations tone="light" count={SPRINT.variations} line={conceptLine(SPRINT)} per={<PerVariation tone="light" pkg={SPRINT} billing={billing} />} />}
-        features={sprintFeatures} note={SPRINT.extraDetail} ctaLabel="Get started" descMin={PAID_DESC} subMin={PAID_SUB} endToEnd
+        features={sprintFeatures} note={SPRINT.extraDetail} application={{ packageId: 'sprint', billing: appBilling }} descMin={PAID_DESC} subMin={PAID_SUB} endToEnd
       />
       <PricingCard
         tone="lime" id="card-sprint-plus" label="Sprint Plus" badge="Deeper testing" description={SPRINT_PLUS.cardDescription}
         price={<BillingPrice pkg={SPRINT_PLUS} billing={billing} />}
         sub={<Variations tone="lime" count={SPRINT_PLUS.variations} line={conceptLine(SPRINT_PLUS)} per={<PerVariation tone="lime" pkg={SPRINT_PLUS} billing={billing} />} />}
-        features={plusFeatures} note={SPRINT_PLUS.extraDetail} ctaLabel="Get started" descMin={PAID_DESC} subMin={PAID_SUB} endToEnd
+        features={plusFeatures} note={SPRINT_PLUS.extraDetail} application={{ packageId: 'sprint-plus', billing: appBilling }} descMin={PAID_DESC} subMin={PAID_SUB} endToEnd
       />
       <PricingCard
         tone="dark" id="card-custom" label={custom.name} description={custom.description}
         price={<LetsTalk />} sub={<Supporting tone="dark">{custom.supportingLabel}</Supporting>}
-        features={custom.features} note={custom.note} ctaLabel={custom.cta} descMin={PAID_DESC} subMin={PAID_SUB} endToEndSpace
+        features={custom.features} note={custom.note} application={{ packageId: 'custom-paid', custom: true }} descMin={PAID_DESC} subMin={PAID_SUB} endToEndSpace
         className="md:col-span-2 lg:col-span-1"
       />
     </div>
@@ -275,19 +284,19 @@ export function OrganicCards() {
         description="Full-service organic content, from strategy and production to editing and publishing."
         price={<span className="text-[44px] md:text-[52px]">{money(ORGANIC.light.monthly)}<span className="ml-1.5 text-base font-medium tracking-normal opacity-60 md:text-lg">{tr('/month')}</span></span>}
         sub={<Cadence tone="light" text={ORGANIC.light.cadence} />}
-        features={shared([])} ctaLabel="Get started" tallSub
+        features={shared([])} application={{ packageId: 'organic-light', billing: 'monthly' }} tallSub
       />
       <PricingCard
         tone="lime" id="card-organic-growth" label={ORGANIC.growth.name} badge="Recommended"
         description="Higher-cadence organic content production, with more room to test formats, hooks, and creative directions."
         price={<span className="text-[44px] md:text-[52px]">{money(ORGANIC.growth.monthly)}<span className="ml-1.5 text-base font-medium tracking-normal opacity-60 md:text-lg">{tr('/month')}</span></span>}
         sub={<Cadence tone="lime" text={ORGANIC.growth.cadence} />}
-        features={shared(['Higher creative testing cadence', 'More formats, hooks & creative angles tested'])} ctaLabel="Get started" tallSub
+        features={shared(['Higher creative testing cadence', 'More formats, hooks & creative angles tested'])} application={{ packageId: 'organic-growth', billing: 'monthly' }} tallSub
       />
       <PricingCard
         tone="dark" id="card-organic-custom" label={custom.name} description={custom.description}
         price={<LetsTalk />} sub={<Supporting tone="dark">{custom.supportingLabel}</Supporting>}
-        features={custom.features} note={custom.note} ctaLabel={custom.cta} tallSub
+        features={custom.features} note={custom.note} application={{ packageId: 'custom-organic', custom: true }} tallSub
         className="md:col-span-2 lg:col-span-1"
       />
     </div>

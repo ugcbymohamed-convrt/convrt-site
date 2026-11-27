@@ -131,6 +131,10 @@ export const FR_SEO = {
     title: 'Programme de parrainage CONVRT | Récompenses pour vos recommandations',
     description: 'Recommandez des marques SaaS et e-commerce à CONVRT et soyez récompensé lorsqu’elles deviennent clientes. Les marques que vous recommandez bénéficient d’une amélioration créative offerte.',
   },
+  '/project-application': {
+    title: 'Demande de projet | CONVRT',
+    description: 'Demandez une formule de production CONVRT. Parlez-nous de votre marque et de votre projet : nous étudierons votre demande avant de revenir vers vous pour définir la suite.',
+  },
   '/creative-growth-roadmap': {
     title: 'Stratégie créative offerte : 5 concepts publicitaires | CONVRT',
     description:

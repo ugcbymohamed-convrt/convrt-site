@@ -2,10 +2,12 @@ import { useEffect, useRef, useState } from 'react'
 import { useTr } from '../../i18n/tr.js'
 import { trackEvent } from '../../lib/analytics.js'
 import { isEnglish } from '../caseStudies/format.js'
+import { currentLocale } from '../../i18n/locale.js'
 import { heroCta } from '../caseStudies/cta.js'
 import FadeUp from '../caseStudies/shared/FadeUp.jsx'
 import ElyonHeroScene from './ElyonHeroScene.jsx'
 import { ACCENT, ACCENT_LIGHT } from './theme.js'
+import { elyonAr } from '../../i18n/ar/elyonScoped.js'
 
 const PROJECT_INFO = [
   { label: 'Client', value: 'Elyon Dubai' },
@@ -29,6 +31,10 @@ function goToVideos(e) {
   const heading = el.querySelector('h2')
   if (heading) { heading.setAttribute('tabindex', '-1'); heading.focus({ preventScroll: true }) }
 }
+
+/* The bottle scene is positioned with physical pixels (inline `left`) against the text column and animated by scroll, like the Graspo paper scene: in Arabic it runs as a dir="ltr" island so it stays at the
+   right edge, clear of the (centred) text, and is never mirrored. `contents` keeps the wrapper out of the layout. */
+const Scene = (props) => (currentLocale() === 'ar' ? <div dir="ltr" className="contents"><ElyonHeroScene {...props} /></div> : <ElyonHeroScene {...props} />)
 
 const TAGS = ['Luxury Fragrance', 'DTC Ecommerce', 'Paid Social', 'UGC', 'Street Interviews', 'Creative Testing']
 
@@ -65,7 +71,7 @@ export default function ElyonHero() {
         }}
       />
 
-      <ElyonHeroScene />
+      <Scene />
 
       <div className="relative z-10 mx-auto max-w-5xl px-5 md:px-8 text-center">
         <FadeUp inView={inView} delay={0}>
@@ -100,7 +106,7 @@ export default function ElyonHero() {
                 className="rounded-full border px-3.5 py-1.5 text-[11.5px] font-medium text-ink-muted"
                 style={{ borderColor: 'rgba(255,255,255,0.10)', background: 'rgba(255,255,255,0.03)' }}
               >
-                {tr(tag)}
+                {elyonAr(`hero|${tag}`) ?? tr(tag)}
               </span>
             ))}
           </div>
@@ -130,7 +136,7 @@ export default function ElyonHero() {
           </div>
         </FadeUp>
 
-        <ElyonHeroScene mobile />
+        <Scene mobile />
 
         <FadeUp inView={inView} delay={340} className="mt-10">
           <div
@@ -142,10 +148,10 @@ export default function ElyonHero() {
                 <div key={item.label}>
                   <dt className="text-[10px] font-bold uppercase tracking-[0.18em] text-ink-subtle">
                     {/* "Engagement" is the client relationship here, not social engagement (the shared Spanish key means "Interacción"). */}
-                    {item.label === 'Engagement' ? (en ? item.label : tr('Engagement (client relationship)')) : tr(item.label)}
+                    {item.label === 'Engagement' ? (en ? item.label : tr('Engagement (client relationship)')) : (elyonAr(`hero|${item.label}`) ?? tr(item.label))}
                   </dt>
                   <dd className="mt-2 text-[14px] leading-snug text-ink font-medium">
-                    {item.value === 'Elyon Dubai' ? item.value : tr(item.value)}
+                    {tr(item.value)}
                   </dd>
                 </div>
               ))}

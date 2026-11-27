@@ -32,3 +32,7 @@ Do **not** mark as key events: `roadmap_qualified` (a qualified visitor, nothing
 2. In GTM Preview / GA4 DebugView on the Preview URL: accept analytics, submit one real test application per form with **your own test address**, once with and once without the marketing box, and book one real test slot in the embed; then cancel the booking and delete the test contacts.
 3. Confirm each of the five events appears once; then mark the five key events; then withdraw consent and confirm nothing more arrives.
 4. Only then publish the GTM container.
+
+
+## Addendum (26 Nov 2026): the project application funnel
+New events (identifiers only, consent-gated like the rest): `package_cta_click`, `project_application_view`, `project_application_start`, `project_application_submit` (the conversion: fires once, only after the server confirmed delivery) and `project_application_error`. Add `project_application_submit` as a **sixth** GA4 key event and, later, as its own Google Ads conversion action, separate from the Roadmap conversions. Details, parameters and the Ads preparation: `docs/project-application.md`. Not yet verified: a real submission on the Preview with `RESEND_API_KEY` set, and the event arriving in GA4 DebugView.

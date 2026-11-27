@@ -107,6 +107,10 @@ export const ES_SEO = {
     description:
       'Solicita cinco conceptos publicitarios personalizados para tu marca. Ángulos creativos, hooks y recomendaciones de testeo de CONVRT, presentados en una sesión estratégica gratuita.',
   },
+  '/project-application': {
+    title: 'Solicitud de proyecto | CONVRT',
+    description: 'Solicita un paquete de producción de CONVRT. Cuéntanos sobre tu marca y tu proyecto: revisaremos tu solicitud y nos pondremos en contacto contigo para definir los próximos pasos.',
+  },
   '/referrals': {
     title: 'Programa de recomendación | Recompensas con CONVRT',
     description: 'Presenta marcas SaaS y e-commerce a CONVRT y recibe una recompensa cuando se conviertan en clientes. Las marcas que recomiendas reciben una mejora creativa gratuita.',

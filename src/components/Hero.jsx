@@ -82,10 +82,12 @@ export default function Hero() {
               and offers. From lg up it is a normal left column and the order classes do nothing. */}
           <div className="contents lg:block lg:col-span-6 text-center lg:text-left">
             <div className="order-1 lg:order-none">
-            <h1 className="font-display font-semibold text-ink tracking-display-xl leading-[1.02] text-[48px] sm:text-[50px] md:text-[54px] lg:text-[60px] xl:text-[70px]">
-              <span className="block">{tr('Performance creatives')}</span>{' '}
+            {/* English: the new two-line headline ("Creatives designed" / "to …") is shorter than the old one, so it is set a little smaller on phones and in the narrow desktop column so that "Creatives designed" stays on ONE line at every width (measured: 561 px at 60 px in the 588 px column). The other languages keep their sizes. */}
+            <h1 className={`font-display font-semibold text-ink tracking-display-xl leading-[1.02] ${en ? 'text-[clamp(30px,9vw,48px)] sm:text-[50px] md:text-[54px] lg:text-[clamp(46px,4.6vw,60px)]' : 'text-[48px] sm:text-[50px] md:text-[54px] lg:text-[60px] xl:text-[70px]'}`}>
+              {/* English (owner, 2026-11-26): "Creatives designed / to [convert|resonate|sell|connect]". The other languages keep their own approved wording through the dictionaries. */}
+              <span className="block">{en ? 'Creatives designed' : tr('Performance creatives')}</span>{' '}
               <span className="block">
-                {tr('engineered to')} <RotatingWord words={en ? ROTATING_WORDS : ROTATING_BY_LOCALE[locale]} padX={locale === 'fr'} />
+                {en ? 'to' : tr('engineered to')} <RotatingWord words={en ? ROTATING_WORDS : ROTATING_BY_LOCALE[locale]} padX={locale === 'fr'} />
               </span>
             </h1>
 
@@ -271,7 +273,7 @@ function RotatingWord({ words, padX = false }) {
     <span className={`relative inline-block align-baseline overflow-hidden pb-[0.12em]${padX ? ' px-[0.06em]' : ''}`}>
       {/* Invisible sizing element — reserves space for the widest word + underline padding */}
       {/* The widest word is drawn by CSS (::after reads data-word), not as text, so the heading's text is
-          "Performance creatives engineered to <current word>" for search engines and screen readers, and nothing else changes. */}
+          "Creatives designed to <current word>" for search engines and screen readers, and nothing else changes. */}
       {currentLocale() === 'ar' ? (
         /* Arabic: the slot is as wide as the widest word AS DRAWN. "Longest string" is the wrong measure for Arabic (marks and joins change the width), and a word wider than the slot was clipped. Every word is
            drawn (invisibly, by CSS, so the heading text is unchanged) in the same grid cell, so the cell takes the width of the widest one. */

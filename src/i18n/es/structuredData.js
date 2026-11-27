@@ -77,7 +77,7 @@ function caseStudyGraphEs(basePath, { title, description }) {
 export function localizedJsonLd(locale, basePath, seo = {}) {
   if (locale !== LOCALE) return undefined
   if (CASE_STUDY_SCHEMA[basePath]) return caseStudyGraphEs(basePath, seoFor(basePath, seo))
-  if (basePath === '/creative-growth-roadmap' || basePath === '/risk-free-trial') return undefined // like the English pages: noindex, no structured data
+  if (basePath === '/creative-growth-roadmap' || basePath === '/risk-free-trial' || basePath === '/project-application') return undefined // like the English pages: noindex, no structured data
   const url = absoluteUrl(LOCALE, basePath)
   const { title, description } = seoFor(basePath, seo)
   const isHome = basePath === '/'

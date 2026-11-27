@@ -269,10 +269,10 @@ test('indexing: no other route is noindexed by the blog rule', () => {
   const vercel = JSON.parse(fs.readFileSync(path.join(ROOT, 'vercel.json'), 'utf8'))
   const sources = (vercel.headers ?? []).map((h) => h.source)
   // The blog rule, plus the two header rules for the private creator pages (tests/creator-seo.test.mjs), plus the two long-cache rules for hashed
-  // build assets and fonts (SEO/GEO Batch 1). Nothing else, and only the first three may carry a robots directive.
+  // build assets and fonts (SEO/GEO Batch 1). Nothing else, and only the first three may carry a robots directive. (Since 2026-11: the two project-application rules, a noindex utility page in every language.)
   // The five trust pages (/about, /contact, /privacy, /terms, /legal-notice) carry a noindex header only while they are drafts: published, none remains (tests/trust-pages.test.mjs).
   const trust = TRUST_PAGES_PUBLISHED ? [] : ['/about', '/contact', '/privacy', '/terms', '/legal-notice']
-  assert.deepEqual(sources, ['/blog', '/creator-onboarding/:path*', '/creator-admin/:path*', ...trust, '/assets/(.*)', '/fonts/(.*)'])
+  assert.deepEqual(sources, ['/project-application', '/:lang(es|fr|ar)/project-application', '/blog', '/creator-onboarding/:path*', '/creator-admin/:path*', ...trust, '/assets/(.*)', '/fonts/(.*)'])
   for (const h of vercel.headers.filter((x) => x.source.startsWith('/assets') || x.source.startsWith('/fonts'))) assert.deepEqual(h.headers.map((x) => x.key), ['Cache-Control'], `${h.source} sets caching only`)
 })
 

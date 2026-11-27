@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import Hls from 'hls.js'
 import { streamPoster } from '../../content/posterFrames.js'
+import { streamHls } from '../../lib/streamHost.js'
 import { useTr } from '../../i18n/tr.js'
 import { GRASPO_VIDEOS as VIDEOS } from '../../caseStudies/data.js'
 import { stat } from '../caseStudies/format.js'
@@ -75,7 +76,7 @@ function ShowcasePhone({ video }) {
     if (!shouldLoad) return
     const el = videoRef.current
     if (!el) return
-    const src = `https://videodelivery.net/${video.id}/manifest/video.m3u8`
+    const src = streamHls(video.id)
     let hls
     // Prefer hls.js's JS demuxer whenever MSE is available — it's what actually
     // gets exercised and error-tested across Chrome/Firefox/Edge. Some Chromium
