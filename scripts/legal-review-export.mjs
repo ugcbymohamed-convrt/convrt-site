@@ -86,6 +86,21 @@ table{width:100%;border-collapse:collapse;table-layout:fixed}td{vertical-align:t
   summary[l] = counts
 }
 
+
+/* The revised ENGLISH documents (the source the translations follow), readable, for the owner's final review before anything is activated. */
+{
+  let en = `# English legal documents: REVISED (REVIEW DRAFT, not live)\n\nThe revised English Privacy Policy, Terms and Conditions and Legal Notice (src/content/trustPages.js). **Not live until you approve.** The effective date shown is unchanged ("${ctx.englishDate}") and must be set when the revision actually takes effect. Links are shown as \`label <target>\`.\n`
+  for (const d of DOCS) {
+    const page = TRUST_CONTENT[d]
+    en += `\n---\n\n## ${page.h1}\n\n${plain(page.intro)}\n`
+    for (const sec of page.sections) {
+      en += `\n### ${sec.heading}\n\n`
+      en += sec.body.map((b) => (typeof b === 'string' ? plain(b) : b.list.map((t) => `- ${plain(t)}`).join('\n'))).join('\n\n') + '\n'
+    }
+  }
+  fs.writeFileSync(path.join(out, 'legal-en-REVISED.md'), en)
+}
+
 const bySeverity = (l) => {
   const f = path.join(out, `notes-${l}.json`)
   if (!fs.existsSync(f)) return ''
@@ -100,10 +115,17 @@ Spanish, French and Arabic Privacy Policy, Terms and Conditions and Legal Notice
 ## Files
 | File | What it is |
 |---|---|
+| **legal-en-REVISED.md** | the revised English documents (the source of truth), for your final review before anything is activated |
+| english-changes.diff | exactly what changed in the English source compared with the live version |
 | legal-es.md · legal-fr.md · legal-ar.md | the complete translated documents |
 | comparison-es.html · comparison-fr.html · comparison-ar.html | clause-by-clause comparison (English | translation) with the review notes under each clause: **open these in a browser** (Arabic is right-to-left) |
 | comparison-*.md | the same comparison as Markdown |
 | notes-*.json | the raw review notes (doc, section, severity, whether a lawyer should look, English excerpt, translation choice) |
+
+## What the revision (27 Nov 2026) contains
+Only the owner's decisions of that date: payment terms (upfront / monthly in advance / seven calendar days / production paused if overdue, no late-payment penalty); commitments, cancellation and refunds (3-month Sprint and Sprint Plus, 6-month Organic Light and Growth, 30 calendar days' written notice, one-time packages, no automatic renewal, completed work not refundable for a change of mind); client responsibilities, timelines and delays; revisions (two per concept, extra at an agreed extra cost, no fixed price); individually agreed written agreements prevail subject to mandatory law; an application is not a binding purchase agreement or a payment authorisation; Privacy Policy: the general enquiry form, the project application, "some of our forms" for the marketing box, Resend for enquiries, retention including inbox copies, no open public booking calendar; Legal Notice: the general USD/EUR statement and no public booking link. Usage rights are unchanged.
+**The effective date is NOT updated** (still "21 November 2026"): set it when the revision takes effect.
+**Still for a lawyer or for you:** the Resend sending region is set to Ireland, which does not by itself mean all processing and storage is in the EU: the transfers section is unchanged; the 12-month retention needs an operational routine for the email inbox; "may be refunded" versus "will be refunded", "eligible balance" and "agreed non-recoverable costs" are not defined.
 
 ## Counts
 ${['es', 'fr', 'ar'].map((l) => `- ${NAME[l]}: ${summary[l].clauses} clauses compared; ${summary[l].notes} review notes (${summary[l].legal} flagged for professional legal review). ${bySeverity(l)}`).join('\n')}
