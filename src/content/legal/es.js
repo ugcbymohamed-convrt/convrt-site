@@ -28,7 +28,7 @@ export default function LEGAL_ES(c) {
     `Número de identificación fiscal (NIF): ${op.taxId}`,
     `Domicilio postal: ${address}`,
     `Correo electrónico: ${mail}`,
-    `Otras vías de contacto directo: [[reservar una llamada|${L.booking}]] y [[CONVRT Studio en LinkedIn|${L.companyLinkedin}]]`,
+    `Otras vías de contacto directo: [[CONVRT Studio en LinkedIn|${L.companyLinkedin}]]`,
   ]
 
   const privacy = {
@@ -58,6 +58,8 @@ export default function LEGAL_ES(c) {
             'Hooks publicitarios gratuitos. Recogemos tu dirección de correo electrónico y el sector que eliges, y los usamos para enviarte los hooks que has pedido. Base: tu solicitud. Podemos pedirte que confirmes antes tu correo electrónico. Recibir los hooks no te añade a nuestra lista de marketing.',
             'Solicitud de vídeo gratuito. Recogemos tu nombre, tu correo electrónico profesional, el sitio web de tu empresa, tus respuestas sobre tu negocio (tipo de negocio, rango de inversión mensual en publicidad, vídeos al mes, tipo de vídeo, plazos, interés en una producción continuada) y una descripción opcional, para revisar la solicitud y ponernos en contacto contigo al respecto. Base: las medidas que nos pides adoptar antes de un acuerdo y nuestro interés legítimo en gestionar la oferta. Recibimos un aviso por correo electrónico de cada solicitud a través de nuestro proveedor de envío de correo, Resend.',
             'Programa de socios recomendadores. Recogemos tu nombre, tu correo electrónico, el tipo de socio, el programa elegido y, opcionalmente, el nombre de tu empresa o agencia y tu sitio web o perfil de LinkedIn, para revisar tu solicitud y ponernos en contacto contigo al respecto. Base: la misma que en la solicitud de vídeo gratuito. El formulario incluye una casilla obligatoria que confirma que podemos usar estos datos con ese fin.',
+            'Formulario de consulta general. En la página de Contacto recogemos tu nombre, tu correo electrónico, el nombre de tu marca o empresa, el servicio que te interesa, tu mensaje y tu confirmación de que has leído esta política, y, opcionalmente, tu sitio web o perfil social y un rango de presupuesto estimado. Nos enviamos estos datos por correo electrónico y los usamos para responderte, para decidir si podemos ayudarte y cómo, y para preparar una propuesta si la pides. No se añaden a nuestra lista de marketing. Base: las medidas que nos pides adoptar antes de un acuerdo y nuestro interés legítimo en atender consultas profesionales.',
+            'Solicitud de proyecto. Cuando solicitas un paquete recogemos tu nombre, tu correo electrónico, el nombre de tu marca o empresa, tu sitio web o perfil social, el paquete que has seleccionado, tus respuestas sobre tu proyecto (una descripción y un objetivo, tu inversión en publicidad o tu actividad actual en redes sociales, en los proyectos a medida el tipo de producción y un presupuesto estimado, lo pronto que estás listo para empezar, la fecha de inicio que deseas y los idiomas de producción) y tu reconocimiento de las condiciones del paquete. También registramos el idioma de la página, la página desde la que llegas y, si llegaste a través de un enlace de campaña, sus datos de campaña (utm_source, utm_medium, utm_campaign, utm_content y utm_term) y, solo si aceptaste la analítica, la primera página de tu visita. Nos enviamos estos datos por correo electrónico para revisar tu solicitud y decidir personalmente el siguiente paso. El precio que se muestra procede de nuestros propios precios, nunca de tu navegador. La solicitud no es una compra y no autoriza ningún pago. No se añade a nuestra lista de marketing. Base: la misma que en el formulario de consulta general.',
             'Correo electrónico y llamadas. Si nos escribes o reservas una llamada, usamos lo que nos envías para responderte y trabajar contigo. Base: tu solicitud y nuestro interés legítimo en atender consultas profesionales.',
             'Datos técnicos. Nuestro proveedor de alojamiento, Vercel, trata tu dirección IP y los datos de la petición para servir el sitio web y mantenerlo seguro. Los vídeos del sitio se entregan a través de Cloudflare Stream. Base: nuestro interés legítimo en un sitio web seguro y que funcione.',
             'Formulario para creadores. El enlace para creadores freelance abre un Formulario de Google; lo que introduces allí se gestiona a través de Google Forms.',
@@ -68,7 +70,7 @@ export default function LEGAL_ES(c) {
       {
         heading: 'Correos de marketing (opcionales e independientes de todo lo demás)',
         body: [
-          'Enviamos correos promocionales (consejos creativos y ofertas) solo si marcas la casilla opcional que aparece junto a nuestros formularios. La casilla nunca está marcada de antemano y puedes enviar todos los formularios sin marcarla. No marcarla nunca afecta a tu solicitud, al recurso que has pedido ni a ninguna respuesta nuestra.',
+          'Enviamos correos promocionales (consejos creativos y ofertas) solo si marcas la casilla opcional que aparece junto a algunos de nuestros formularios (no el formulario de consulta general ni la solicitud de proyecto). La casilla nunca está marcada de antemano y puedes enviar todos los formularios sin marcarla. No marcarla nunca afecta a tu solicitud, al recurso que has pedido ni a ninguna respuesta nuestra.',
           `El texto que aceptas es (texto en inglés): "${c.marketingConsentText}" Mantenemos separadas las solicitudes y peticiones de nuestra lista de marketing. Cuando marcas la casilla registramos que has dado tu consentimiento, la fecha y la hora, el formulario que has utilizado y la versión del texto que has visto (actualmente ${c.marketingConsentVersion}), y añadimos tu dirección a la lista de marketing. Base: tu consentimiento.`,
           'Los correos sobre tu solicitud, el recurso que has pedido, una reserva o un proyecto que tengas con nosotros son mensajes de servicio, no de marketing, y no quedan cubiertos por esta elección.',
           'Puedes retirar tu consentimiento en cualquier momento y sin coste: usa el enlace para darte de baja que incluye cualquier correo de marketing (todos incluyen uno e indican quiénes somos) o escríbenos. Darte de baja detiene los correos promocionales; conservamos un registro mínimo de que te has dado de baja para no volver a escribirte. No afecta a ninguna solicitud que hayas hecho.',
@@ -77,7 +79,7 @@ export default function LEGAL_ES(c) {
       {
         heading: 'Reserva de una llamada',
         body: [
-          'El calendario de reservas lo proporciona Calendly, una empresa independiente. Solo se muestra después de que lo pidas; también puedes abrir Calendly en una pestaña nueva o escribirnos. Calendly recoge los datos que introduces allí (como tu nombre, tu correo electrónico y tus respuestas) conforme a su propio aviso de privacidad, y nosotros recibimos los datos de la reserva y los usamos para celebrar la llamada y hacer su seguimiento.',
+          'No ofrecemos un calendario de reservas abierto. Si te invitamos a reservar una llamada (por ejemplo, después de que completes nuestra Hoja de Ruta de Crecimiento Creativo gratuita y encajes, o después de que respondamos a tu consulta), el calendario de reservas lo proporciona Calendly, una empresa independiente. Solo se muestra después de que lo pidas; también puedes abrir Calendly en una pestaña nueva o escribirnos. Calendly recoge los datos que introduces allí (como tu nombre, tu correo electrónico y tus respuestas) conforme a su propio aviso de privacidad, y nosotros recibimos los datos de la reserva y los usamos para celebrar la llamada y hacer su seguimiento.',
           'Cuando se carga el calendario, Calendly y los servicios que utiliza (incluidos sus proveedores de pagos y de monitorización) pueden instalar cookies propias, y Calendly muestra su propio aviso de cookies. Algunas pueden instalarse antes de que hayas utilizado el aviso de Calendly. No las controlamos y no hemos evaluado de forma independiente cuáles son estrictamente necesarias. Si prefieres no cargar el calendario, usa el enlace de la pestaña nueva o escríbenos.',
         ],
       },
@@ -98,7 +100,7 @@ export default function LEGAL_ES(c) {
           { list: [
             'convrt_consent_v1 (se conserva hasta que lo cambies o borres los datos de tu navegador; solo se usa cuando se activa el banner de cookies): tu elección sobre las cookies.',
             'convrt_language (se conserva hasta que borres los datos de tu navegador): el idioma que has elegido a propósito (inglés, español, francés o árabe), o que has cerrado la sugerencia de idioma, para que no volvamos a preguntarte. Nunca se nos envía y nunca cambia lo que muestra una página. La propia sugerencia aparece solo a los visitantes cuya petición procede de España (español), de Francia o de otro país francófono (francés), o de un país de habla árabe (árabe): nuestro proveedor de alojamiento (Vercel) comunica a nuestro servidor el país de la petición, nuestro servidor responde únicamente sí o no y no almacena nada, y nunca se solicita la ubicación de tu navegador.',
-            'convrt_scale_attribution (solo esta pestaña del navegador): los datos de campaña del enlace por el que has llegado (utm_source, utm_medium, utm_campaign, utm_content y utm_term), para poder transmitirlos a nuestro enlace de reservas. No almacenamos identificadores de clics publicitarios (como gclid o fbclid).',
+            'convrt_scale_attribution (solo esta pestaña del navegador): los datos de campaña del enlace por el que has llegado (utm_source, utm_medium, utm_campaign, utm_content y utm_term), para poder transmitirlos a nuestro enlace de reservas o incluirlos en una solicitud que nos envíes. No almacenamos identificadores de clics publicitarios (como gclid o fbclid).',
             'convrt_calendly_requested (solo esta sesión del navegador): que has pedido ver el calendario de reservas.',
             'convrt_landing_page (solo esta sesión del navegador, y solo si aceptas la analítica): la primera página de tu visita, que se usa para ver qué páginas dan lugar a consultas.',
             'Cookies de Google Analytics _ga y _ga_<container ID>, solo si aceptas la analítica: Google documenta para ellas una duración de hasta dos años.',
@@ -118,7 +120,7 @@ export default function LEGAL_ES(c) {
       {
         heading: 'Con quién compartimos información',
         body: [
-          'Solo con proveedores de servicios que la tratan por nuestra cuenta, conforme a sus propios términos estándar y avisos de privacidad: MailerLite (registros de solicitudes, peticiones y lista de correo, y envío de nuestros correos), Resend (avisos por correo electrónico para nosotros cuando alguien presenta una solicitud), Calendly (reservas), Vercel (alojamiento), Cloudflare (entrega de vídeo) y, una vez activada la analítica y solo si la aceptas, Google (analítica). No tenemos ninguna otra base de datos de clientes ni CRM. No vendemos información personal.',
+          'Solo con proveedores de servicios que la tratan por nuestra cuenta, conforme a sus propios términos estándar y avisos de privacidad: MailerLite (registros de solicitudes, peticiones y lista de correo, y envío de nuestros correos), Resend (avisos por correo electrónico para nosotros cuando alguien presenta una solicitud o envía una consulta), Calendly (reservas), Vercel (alojamiento), Cloudflare (entrega de vídeo) y, una vez activada la analítica y solo si la aceptas, Google (analítica). No tenemos ninguna otra base de datos de clientes ni CRM. No vendemos información personal.',
         ],
       },
       {
@@ -133,7 +135,7 @@ export default function LEGAL_ES(c) {
         body: [
           'Estos son nuestros plazos de conservación. Los aplicamos revisando nuestros registros periódicamente:',
           { list: [
-            'Solicitudes y consultas que no dan lugar a un proyecto: 12 meses desde nuestro último contacto relevante contigo.',
+            'Solicitudes, consultas y solicitudes de proyecto (incluidas las copias conservadas en nuestra bandeja de correo electrónico) que no dan lugar a un proyecto: 12 meses desde nuestro último contacto relevante contigo.',
             'Registros de reservas: 12 meses, salvo que una relación comercial en curso justifique conservarlos más tiempo.',
             'Lista de correo de marketing: hasta que retires tu consentimiento o te des de baja, con una revisión periódica de las direcciones inactivas.',
             'Contratos, facturas y registros contables: el tiempo que exija la legislación española.',
@@ -162,7 +164,7 @@ export default function LEGAL_ES(c) {
 
   const terms = {
     h1: termsLabel,
-    intro: `Los términos para utilizar el sitio web de CONVRT Studio y sus ofertas gratuitas. Última actualización: ${updated}.`,
+    intro: `Los términos para utilizar el sitio web de CONVRT Studio y sus ofertas gratuitas, y nuestras condiciones comerciales generales para los paquetes de pago. Última actualización: ${updated}.`,
     sections: [
       {
         heading: 'Sobre estos términos',
@@ -179,7 +181,7 @@ export default function LEGAL_ES(c) {
       {
         heading: 'Consultas y solicitudes',
         body: [
-          `Enviar una consulta o una solicitud no crea ningún contrato ni obliga a ninguna de las partes. Revisamos las solicitudes nosotros mismos, podemos rechazar cualquiera de ellas o no responder, y no prometemos ningún plazo de respuesta. Facilita información veraz. La forma en que la utilizamos se describe en la [[${privacyLabel}|${L.privacy}]].`,
+          `Enviar una consulta o una solicitud no crea ningún contrato ni obliga a ninguna de las partes. Revisamos las solicitudes nosotros mismos, podemos rechazar cualquiera de ellas o no responder, y no prometemos ningún plazo de respuesta. Facilita información veraz. Presentar una solicitud, o confirmar que has leído la información sobre un paquete, no constituye un acuerdo de compra vinculante ni autoriza ningún pago. La forma en que la utilizamos se describe en la [[${privacyLabel}|${L.privacy}]].`,
         ],
       },
       {
@@ -203,6 +205,45 @@ export default function LEGAL_ES(c) {
         body: [
           `Los paquetes y precios de este sitio describen cómo trabajamos habitualmente. Un encargo de pago solo comienza cuando hemos acordado por escrito el alcance, el precio y las condiciones. ${taxStatement}`,
           'Los proyectos a medida, incluidas las demos y los vídeos explicativos para SaaS y aplicaciones, se definen de forma individual.',
+        ],
+      },
+      {
+        heading: 'Pago',
+        body: [
+          'Los paquetes de producción únicos se pagan íntegramente por adelantado, salvo que se acuerde otra cosa por escrito. Los paquetes mensuales se facturan mensualmente por adelantado. Las facturas deben pagarse en el plazo de siete días naturales desde la fecha de la factura, salvo que se acuerde otra cosa por escrito.',
+          'La producción no comienza hasta que se haya recibido el pago inicial requerido. Si un pago está vencido, podemos pausar la producción y ajustar los plazos de entrega. Nada de lo dispuesto en estos términos limita los derechos que tengamos conforme a la ley aplicable en relación con los pagos atrasados.',
+        ],
+      },
+      {
+        heading: 'Compromisos, cancelación y reembolsos',
+        body: [
+          'Los paquetes mensuales Creative Testing Sprint y Sprint Plus tienen un compromiso inicial de tres meses. Los paquetes Organic Light y Organic Growth tienen un compromiso inicial de seis meses. Transcurrido el compromiso inicial, los paquetes mensuales continúan mes a mes, salvo que se acuerde otra cosa por escrito.',
+          'Cancelar un paquete mensual exige un preaviso por escrito de al menos 30 días naturales antes de la fecha de renovación aplicable. La cancelación no puede surtir efecto antes de que se haya cumplido el compromiso inicial, salvo que se acuerde otra cosa por escrito, y no elimina ninguna obligación de pago que ya esté pendiente.',
+          'Los paquetes de producción únicos no se renuevan automáticamente. Si cancelas antes de que comience el trabajo, el pago podrá reembolsarse, descontando los costes no recuperables acordados en los que ya se haya incurrido. Si cancelas después de que haya comenzado el trabajo, tenemos derecho al pago del trabajo ya realizado y de los costes de producción no recuperables acordados, incluidas las contrataciones de creadores y otros gastos comprometidos, y se reembolsará cualquier saldo restante que proceda.',
+          'El trabajo finalizado y entregado no es reembolsable por el mero hecho de que cambies de opinión o de que el contenido no logre los resultados de marketing que querías. Estas disposiciones no limitan ningún derecho ni recurso legal imperativo.',
+        ],
+      },
+      {
+        heading: 'Tus responsabilidades, plazos y retrasos',
+        body: [
+          'Eres responsable de facilitar la información, los materiales y las aprobaciones razonablemente necesarios para completar tu proyecto. Según el proyecto, esto puede incluir:',
+          { list: [
+            'muestras de producto y envío puntual del producto;',
+            'directrices y recursos de marca;',
+            'información veraz sobre el producto o el servicio;',
+            'accesos, permisos y materiales de apoyo pertinentes;',
+            'comentarios y aprobaciones;',
+            'confirmación de que los materiales que facilitas y tus afirmaciones publicitarias pueden utilizarse legalmente.',
+          ] },
+          'Los plazos de producción de los paquetes Creative Testing comienzan una vez que se ha recibido el pago requerido, los materiales y productos necesarios están disponibles y se han aprobado los conceptos y guiones correspondientes. Los retrasos en la recepción de productos, información, comentarios o aprobaciones pueden ampliar los plazos de producción y de entrega, y CONVRT no es responsable de los retrasos en la entrega causados por no haber facilitado a tiempo los materiales o las aprobaciones necesarios.',
+          'Cualquier coste adicional derivado de cambios o retrasos significativos solicitados por el cliente se te comunicará y se acordará antes de incurrir en él.',
+        ],
+      },
+      {
+        heading: 'Revisiones',
+        body: [
+          'Cada paquete Creative Testing incluye dos rondas de revisión por concepto, tal como se indica en la página de tarifas. Las revisiones incluidas abarcan ajustes razonables dentro del briefing acordado originalmente. Se pueden contratar revisiones adicionales con un coste extra, acordado contigo antes de que comience el trabajo adicional.',
+          'Los cambios en conceptos, guiones o dirección creativa aprobados, o en el alcance del proyecto, que requieran una producción adicional sustancial o volver a rodar pueden presupuestarse por separado. Las correcciones necesarias porque CONVRT no siguió el briefing acordado no cuentan para tus revisiones incluidas.',
         ],
       },
       {
@@ -238,7 +279,7 @@ export default function LEGAL_ES(c) {
       {
         heading: 'Términos del sitio web y acuerdos de cliente firmados',
         body: [
-          'Estos términos regulan el uso del sitio web y nuestras ofertas gratuitas. No rigen un proyecto de pago. Un proyecto de pago se rige por el acuerdo, el pedido o la propuesta por escrito que ambas partes acepten para él. Si un acuerdo firmado entra en conflicto con estos términos, el acuerdo firmado prevalece para ese proyecto.',
+          'Estos términos regulan el uso del sitio web y nuestras ofertas gratuitas, y establecen nuestro marco comercial general para los paquetes de pago. No impiden acuerdos negociados individualmente: un proyecto de pago se rige por el acuerdo, el pedido o la propuesta por escrito que ambas partes acepten para él. Si un acuerdo por escrito pactado individualmente entra en conflicto con estos términos, prevalece para ese proyecto, sin perjuicio de la ley imperativa aplicable.',
         ],
       },
       {
@@ -264,7 +305,7 @@ export default function LEGAL_ES(c) {
       },
       {
         heading: 'Precios e impuestos',
-        body: [`Los precios que se muestran en el sitio web están en euros. ${taxStatement} Consulta la [[página de tarifas|${L.pricing}]].`],
+        body: [`Los precios que se muestran en este sitio web se expresan en dólares estadounidenses (USD) o en euros (EUR), según se indique en la página correspondiente. La moneda aplicable, los precios y las condiciones de pago se confirmarán en el acuerdo de proyecto por escrito. ${taxStatement} Consulta la [[página de tarifas|${L.pricing}]].`],
       },
       {
         heading: 'Propiedad intelectual',

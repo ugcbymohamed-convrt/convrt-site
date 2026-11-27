@@ -51,7 +51,8 @@ test('the legally required operator details (LSSI art. 10) are in the Legal Noti
   assert.match(lines, /Trading name: CONVRT Studio/)
   assert.match(lines, /Operator: Mohamed Doukkali Azizi, a self-employed professional/)
   assert.ok(lines.includes(CONTACT_EMAIL))
-  assert.ok(lines.includes(BOOKING_URL) && lines.includes(COMPANY_LINKEDIN_URL), 'a second means of direct contact')
+  assert.ok(lines.includes(COMPANY_LINKEDIN_URL), 'a second means of direct contact (the company LinkedIn page)')
+  assert.ok(!lines.includes(BOOKING_URL) && !/calendly/i.test(lines), 'no public booking link in the operator details (owner, 27 Nov 2026)')
   assert.equal(LEGAL_NOTICE_DETAILS_APPROVED, true, 'the owner approved showing the tax ID and address (21 Nov 2026)')
   assert.ok(lines.includes(OPERATOR.taxId) && lines.includes(OPERATOR.address))
   assert.ok(!/\[OWNER TO CONFIRM/.test(lines))
@@ -227,14 +228,24 @@ test('Terms of Service: every required topic, Spanish law stated, no invented co
   for (const topic of [
     'Using the website', 'Enquiries and applications', 'Free creative concepts offer', 'Free Video Production eligibility',
     'Website content and intellectual property', 'No guarantee of results', 'Liability', 'Governing law and disputes', 'Website terms and signed client agreements',
+    // the owner-decided commercial framework (27 Nov 2026)
+    'Payment', 'Commitments, cancellation and refunds', 'Your responsibilities, timelines and delays', 'Revisions',
   ]) assert.ok(h.includes(topic), topic)
   assert.equal(TRUST_CONTENT.terms.h1, 'Terms and Conditions') // the owner's approved name (26 Nov 2026); the clauses are unchanged
   const t = page('terms')
   assert.match(t, /Sending an enquiry or application does not create a contract/)
   assert.match(t, /governed by Spanish law/)
   assert.match(t, /competent Spanish courts/)
-  assert.match(t, /If a signed agreement conflicts with these terms, the signed agreement prevails for that project/)
-  assert.ok(!/(payment terms|net \d+|invoice(s)? (are|is) due|cancellation fee|revision(s)? (are|is) included|late fee|termination for)/i.test(t), 'no invented client-agreement provisions in the website terms')
+  assert.match(t, /it prevails for that project, subject to applicable mandatory law/)
+  assert.match(t, /is not a binding purchase agreement and does not authorise a payment/)
+  // exactly the owner's decisions, nothing more: no late-payment penalty, no cancellation fee, no fixed price for extra revisions
+  assert.match(t, /payable in full upfront/)
+  assert.match(t, /within seven calendar days of the invoice date/)
+  assert.match(t, /initial three-month commitment/)
+  assert.match(t, /initial six-month commitment/)
+  assert.match(t, /at least 30 calendar days' written notice/)
+  assert.match(t, /two revision rounds per concept/)
+  assert.ok(!/(late fee|late-payment (fee|penalt|interest)|cancellation fee|termination fee|interest on (late|overdue)|per additional revision|€|\$\d)/i.test(t), 'no invented penalty, fee or price in the website terms')
   assert.ok(!/(guarantee|promise)s? (sales|leads|roas|return|growth)/i.test(t.replace(/never guarantee[^.]*\./g, '')))
   assert.deepEqual(ownerMarkersIn(TRUST_CONTENT.terms), [])
 })

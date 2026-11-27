@@ -337,7 +337,7 @@ test('USD everywhere: no € / EUR / euro in pricing data, components, FAQ or JS
   // The Spanish site has its own EUR pricing (src/i18n/es/*): the USD rule is about the English business data, components, FAQ, JSON-LD and API.
   for (const f of [...walk(path.join(ROOT, 'src')), ...walk(path.join(ROOT, 'api')), path.join(ROOT, 'index.html')].filter((x) => /\.(jsx?|html|md)$/.test(x) && !x.includes(`${path.sep}i18n${path.sep}`) && !x.endsWith(`${path.sep}contactCopy.js`) && !x.endsWith(`${path.sep}contactInquiry.js`) && !/projectApplication\.js$/.test(x) && !x.includes(`${path.sep}content${path.sep}legal${path.sep}`))) { // content/legal/*: the Spanish and French Legal Notice states that prices are in euros (owner, 27 Nov 2026: everything in EUR on es/fr); // contactCopy.js: the Spanish and French contact form shows its budget bands in EUR (owner, 26 Nov 2026); proposed bands flagged for approval
     // (the project-application model and its server twin look prices up in each language's own currency: they hold the EUR code and symbol by design; tests/project-application.test.mjs pins the amounts)
-    const t = fs.readFileSync(f, 'utf8')
+    const t = fs.readFileSync(f, 'utf8').replace('US dollars (USD) or euros (EUR)', '') // the Legal Notice's general currency statement names both currencies (owner, 27 Nov 2026)
     assert.ok(!/€/.test(t), `${path.relative(ROOT, f)} contains €`)
     assert.ok(!/\bEUR\b|\beuros?\b/i.test(t.replace(/priceCurrency/g, '')), `${path.relative(ROOT, f)} mentions euros`)
   }

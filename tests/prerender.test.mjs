@@ -393,7 +393,8 @@ test('sitewide audit: no euro prices and no old $2,000 Organic Growth price in a
   const files = [...KNOWN_PATHS.map((p) => page(p)), fs.readFileSync(path.join(dist, '404.html'), 'utf8')]
   for (const [i, h] of files.entries()) {
     const label = KNOWN_PATHS[i] ?? '404'
-    assert.ok(!/€|&euro;|\bEUR\b/.test(h), `${label}: euro pricing`)
+    // The Legal Notice's general currency statement (owner, 27 Nov 2026) names both currencies in every language: that one sentence is allowed, nothing else.
+    assert.ok(!/€|&euro;|\bEUR\b/.test(h.replace('US dollars (USD) or euros (EUR)', '')), `${label}: euro pricing`)
     assert.ok(!/Organic Growth[^<]{0,300}\$2,000|\$2,000[^<]{0,300}Organic Growth/.test(h.replace(/<[^>]+>/g, ' ')), `${label}: old Organic Growth price`)
     assert.ok(!/"price":2000\b/.test(h), `${label}: old price in JSON-LD`)
   }
