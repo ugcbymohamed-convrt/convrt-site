@@ -16,7 +16,7 @@ import { frTypography } from './i18n/fr/typography.js'
 
 /* About (English), Privacy Policy, Terms and Conditions and Legal Notice: one reading template, one URL per language (PATHS.about / privacy / terms / legalNotice). The English words are in
    src/content/trustPages.js. The Spanish, French and Arabic legal documents are their own translations of the English ones (src/content/legal/es|fr|ar.js, same sections, same clauses, same
-   links); they are not run through the sentence dictionary. About in Spanish, French and Arabic is src/AboutPage.jsx and Contact is src/components/contact/ContactPage.jsx.
+   links); they are not run through the sentence dictionary. About (every language) is src/AboutPage.jsx + src/components/about/AboutLayout.jsx and Contact is src/components/contact/ContactPage.jsx.
    Head and JSON-LD come from the SEO manifest like every other page. While TRUST_PAGES_PUBLISHED is false (src/config.js) the pages are drafts: noindex, no footer or form links, and a banner says
    so; any "[OWNER TO CONFIRM: ...]" or "[LEGAL REVIEW: ...]" marker in the text is highlighted so nothing is overlooked. While LEGAL_TRANSLATIONS_APPROVED is false the translated legal documents
    carry a visible "translation under review" notice. A legal document has no entrance animation: it is for reading. */

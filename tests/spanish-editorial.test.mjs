@@ -9,7 +9,7 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { build } from 'vite'
 import { ES_HERO } from '../src/i18n/es/hero.js'
-import { ABOUT_COPY } from '../src/content/aboutCopy.js'
+import ABOUT_ES from '../src/content/about/es.js'
 import { ES_FAQ_TITLES, ES_STAGE_TITLES, ES_FINAL_CTA, ES_SECTION_INTROS } from '../src/i18n/es/labels.js'
 import { CONVRT_STATS } from '../src/lib/siteStats.js'
 import { ELYON_PROOF } from '../src/content/ugcProof.js'
@@ -100,13 +100,13 @@ test('Graspo and Elyon figures survive (Spanish notation, same values)', () => {
   assert.ok(!/It has 9 sales|Roas 5\.28/.test(ugc), 'the raw English client note is not on the Spanish page')
 })
 
-test('About (owner-approved copy, 26 Nov 2026): the four statistics are the founder\'s combined experience and the disclosure is visible; no invented claims', () => {
-  const flat = JSON.stringify(ABOUT_COPY.es)
+test('About (owner-supplied copy, 27 Nov 2026): the four statistics are the founder\'s combined experience and the disclosure is visible; no invented claims', () => {
+  const flat = JSON.stringify(ABOUT_ES)
   const html = page('about')
   const t = text(html)
   assert.equal(CONVRT_STATS.videos, '1,200+')
   for (const s of ['1.200+', '40 M+', '500+', '50%+', 'vídeos producidos', 'clientes recurrentes']) assert.ok(t.includes(s), s)
-  assert.ok(flat.includes('Estas cifras reflejan la experiencia profesional combinada de nuestro fundador, incluido el trabajo realizado a través de CONVRT Studio y en proyectos anteriores de producción creativa.') && t.includes('experiencia profesional combinada de nuestro fundador'))
+  assert.ok(flat.includes('Estas cifras reflejan la trayectoria profesional de nuestro fundador, incluidos los trabajos realizados a través de CONVRT Studio y sus proyectos anteriores de producción creativa.') && t.includes('trayectoria profesional de nuestro fundador'))
   assert.ok(!/oficina|sucursal|premio|valoraci|reseñas|equipo de \d+|fundad[oa] en \d{4}|calle |avenida /i.test(flat.replace(/valoración/g, '')), 'no offices, branches, awards, reviews, ratings, team size, founding date or street address')
   assert.equal((html.match(/<h1[ >]/g) ?? []).length, 1)
   assert.ok(!html.includes('LocalBusiness'), 'no LocalBusiness schema')
