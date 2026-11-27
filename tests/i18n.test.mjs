@@ -686,7 +686,8 @@ test('Spanish homepage: approved copy, one-line short CTA (hero and navigation),
     assert.ok(!/listos para rendir/i.test(x), `${p}: "listos para rendir"`)
     // /es/about: the owner's professionally localized About copy (supplied 27 Nov 2026, copied verbatim) says "creatividades" and "vídeos con presentador"; it conflicts with the 26 Nov terminology rule and is
     // FLAGGED for the owner in the About report (the rule stays enforced on every other Spanish page)
-    const suppliedAbout = p === '/es/about'
+    // the supplied Spanish legal documents (27 Nov 2026) also say "vídeos con presentador" (Legal Notice): same flag, same exemption
+    const suppliedAbout = p === '/es/about' || ['/es/privacy', '/es/terms', '/es/legal-notice'].includes(p)
     assert.ok(suppliedAbout || !/\bcreatividades\b/i.test(x), `${p}: "creatividades" (an ad asset is a "creativo"; owner rule 2026-11-26)`)
     assert.ok(!/\bganchos?\b/i.test(x), `${p}: "gancho" (an advertising hook is a "hook"; owner rule 2026-11-26)`)
     assert.ok(suppliedAbout || !/vídeos? con presentador(?!es)/i.test(x.replace(/Vídeos con presentadores/g, '')), `${p}: the service is "Spokesperson", not "con presentador"`)

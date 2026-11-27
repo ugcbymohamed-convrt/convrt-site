@@ -1,23 +1,5 @@
 [
  {
-  "level": "WARN",
-  "area": "live-duplicates",
-  "url": "/about/",
-  "msg": "trailing-slash URL answers 200 (duplicate of the canonical URL)"
- },
- {
-  "level": "WARN",
-  "area": "live-duplicates",
-  "url": "/pricing/",
-  "msg": "trailing-slash URL answers 200 (duplicate of the canonical URL)"
- },
- {
-  "level": "WARN",
-  "area": "live-duplicates",
-  "url": "/es/pricing/",
-  "msg": "trailing-slash URL answers 200 (duplicate of the canonical URL)"
- },
- {
   "level": "INFO",
   "area": "canonical",
   "url": "/ar/case-studies",
@@ -40,18 +22,6 @@
   "area": "canonical",
   "url": "/fr/case-studies",
   "msg": "declared duplicate of /fr/case-studies/graspo (canonical elsewhere)"
- },
- {
-  "level": "INFO",
-  "area": "live-ai",
-  "url": "/llms.txt",
-  "msg": "HTTP 404 (an optional convention; not required by any crawler)"
- },
- {
-  "level": "INFO",
-  "area": "live-redirects",
-  "url": "http://convrt.studio/about",
-  "msg": "apex http: 2 hops (308 -> https://convrt.studio/about | 308 -> https://www.convrt.studio/about | 200): the first is the platform's https upgrade"
  },
  {
   "level": "INFO",

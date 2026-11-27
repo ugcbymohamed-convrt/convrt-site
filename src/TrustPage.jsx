@@ -40,7 +40,12 @@ const linkClass = 'font-medium text-ink underline decoration-lime/60 underline-o
 
 function Latin({ text, rtl }) {
   if (!rtl) return text
-  return text.split(LATIN_RUN).map((part, i) => (i % 2 === 1 && HAS_LETTER.test(part) ? <bdi key={i} dir="ltr">{part}</bdi> : part))
+  /* A Latin run keeps its own direction, but the punctuation that ends a sentence belongs to the Arabic sentence: it stays OUTSIDE the isolate (the word, then the full stop), otherwise it renders on the wrong side. */
+  return text.split(LATIN_RUN).map((part, i) => {
+    if (!(i % 2 === 1 && HAS_LETTER.test(part))) return part
+    const m = part.match(/^(.*?)([.,:;]+)$/s)
+    return m && HAS_LETTER.test(m[1]) ? <span key={i}><bdi dir="ltr">{m[1]}</bdi>{m[2]}</span> : <bdi key={i} dir="ltr">{part}</bdi>
+  })
 }
 
 export function Inline({ text, rtl = false }) {

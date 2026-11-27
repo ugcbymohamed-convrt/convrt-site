@@ -123,7 +123,7 @@ test('every internal link in the About content points to the page\'s own languag
 test('Arabic: right-to-left page; Latin names, brands and identifiers are isolated (bdi), Western digits kept; French uses non-breaking spaces before ; : ? !', () => {
   const ar = page('/ar/about')
   assert.match(ar, /<html lang="ar" dir="rtl">/)
-  assert.ok(ar.includes('<bdi dir="ltr">Graspo:</bdi>') && ar.includes('<bdi dir="ltr">Elyon Dubai:</bdi>') && ar.includes('<bdi dir="ltr">ROAS</bdi>'), 'Latin brand names and ROAS are isolated runs')
+  assert.ok(ar.includes('<bdi dir="ltr">Graspo</bdi>:') && ar.includes('<bdi dir="ltr">Elyon Dubai</bdi>:') && ar.includes('<bdi dir="ltr">ROAS</bdi>'), 'Latin brand names and ROAS are isolated runs; the label colon stays outside the isolate, on the Arabic side of the word')
   assert.ok(/<bdi dir="ltr">[^<]*Mohamed Doukkali Azizi[^<]*<\/bdi>/.test(ar), 'the founder name is one isolated Latin run')
   assert.ok(!/[٠-٩]/.test(text(ar)), 'Western digits only (one notation for UAE and Saudi readers)')
   assert.ok(text(ar).includes('10.7') && text(ar).includes('5.28') && text(ar).includes('2026'))
