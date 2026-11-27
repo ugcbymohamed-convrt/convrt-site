@@ -40,6 +40,7 @@ const BREADCRUMB_NAMES = {
   '/privacy': 'Politique de confidentialité',
   '/terms': 'Conditions générales',
   '/legal-notice': 'Mentions légales',
+  '/referrals': 'Programme de parrainage',
 }
 
 // Case studies: like the English graph (src/seo/structuredData.js caseStudyGraph): a WebPage about the client, its breadcrumb and the service it is an example of. No Article, Review,

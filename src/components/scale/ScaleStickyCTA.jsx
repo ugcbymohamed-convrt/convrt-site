@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { OFFER_PATHS } from '../../config.js'
 import { SCALE_CTA_LABEL } from './ScaleCtaButton.jsx'
-import { trackEvent } from '../../lib/analytics.js'
+import { trackEvent, withUtm } from '../../lib/analytics.js'
 
 /* Mobile-only sticky bottom CTA. Appears once the visitor has scrolled
    past the hero, and hides again once the booking section or footer
@@ -35,7 +35,10 @@ export default function ScaleStickyCTA() {
 
   const show = pastHero && !bookingVisible && !nearBottom
 
-  const handleClick = () => trackEvent('primary_cta_click', { page: 'scale', location: 'sticky_mobile' })
+  const handleClick = (e) => {
+    trackEvent('primary_cta_click', { page: 'scale', location: 'sticky_mobile' })
+    e.currentTarget.href = withUtm(OFFER_PATHS.roadmap) // carries the campaign's utm_* into the Roadmap URL
+  }
 
   return (
     <div

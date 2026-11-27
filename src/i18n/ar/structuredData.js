@@ -37,6 +37,7 @@ const BREADCRUMB_NAMES = {
   '/privacy': 'سياسة الخصوصية',
   '/terms': 'الشروط والأحكام',
   '/legal-notice': 'الإشعار القانوني',
+  '/referrals': 'برنامج شركاء الإحالة',
 }
 
 const PAGE_TYPE = { '/about': 'AboutPage', '/contact': 'ContactPage', '/creator-showcase': 'CollectionPage' }

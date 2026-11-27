@@ -41,6 +41,7 @@ const BREADCRUMB_NAMES = {
   '/legal-notice': 'Aviso legal',
   '/creative-growth-roadmap': 'Hoja de ruta de crecimiento creativo',
   '/risk-free-trial': '1 vídeo gratis',
+  '/referrals': 'Programa de recomendación',
 }
 
 const PAGE_TYPE = { '/about': 'AboutPage', '/contact': 'ContactPage', '/creator-showcase': 'CollectionPage' }

@@ -1,5 +1,5 @@
 import { OFFER_PATHS } from '../../config.js'
-import { trackEvent } from '../../lib/analytics.js'
+import { trackEvent, withUtm } from '../../lib/analytics.js'
 
 /* ─────────────────────────────────────────────
    Single source of truth for every primary CTA on /scale: one label, one
@@ -32,7 +32,10 @@ export default function ScaleCtaButton({
   return (
     <a
       href={OFFER_PATHS.roadmap}
-      onClick={() => trackEvent('primary_cta_click', { page: 'scale', location })}
+      onClick={(e) => {
+        trackEvent('primary_cta_click', { page: 'scale', location })
+        e.currentTarget.href = withUtm(OFFER_PATHS.roadmap) // the campaign's utm_* (kept in this tab by captureAttribution) travel in the Roadmap URL; the markup stays the plain link for crawlers
+      }}
       className={`inline-flex items-center justify-center gap-2 rounded-full font-semibold transition-transform duration-150 active:scale-[0.98] ${VARIANTS[variant]} ${sizeClass} ${className}`}
     >
       {children ?? SCALE_CTA_LABEL}

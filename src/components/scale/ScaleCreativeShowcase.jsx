@@ -1,10 +1,13 @@
 import { useRef, useState } from 'react'
 import { useInView } from '../caseStudies/shared/useInView.js'
 import { trackEvent } from '../../lib/analytics.js'
+import { streamMp4 } from '../../lib/streamHost.js'
 
 /* ─────────────────────────────────────────────
-   Real creative, not a portfolio grid. Sources are the actual project
-   assets in public/videos/.
+   Real creative, not a portfolio grid. The four web-sized clips are played from Cloudflare
+   Stream as plain MP4 downloads (src/lib/streamHost.js, uploaded 2026-11-27 as
+   SCALE-showcase-<id>.mp4). Until then they pointed at /videos/*.mp4, a folder that is
+   git-ignored and was never deployed, so every tile was empty on the live page.
 
    Only elyon-3.mp4 (13.5MB) and the three graspo-*.mp4 files (2.3–
    6.5MB) are web-sized. adscale-1/2/3.mp4 and elyon-1/2.mp4 are
@@ -22,28 +25,28 @@ import { trackEvent } from '../../lib/analytics.js'
 const CREATIVES = [
   {
     id: 'elyon-3',
-    src: '/videos/elyon-3.mp4',
+    src: streamMp4('daa9db8b9fbe1f3f2fcc2c8d0c9a9222'),
     client: 'Elyon Dubai',
     category: 'Luxury Fragrance · Paid Social',
     format: 'Street-interview format',
   },
   {
     id: 'graspo-1',
-    src: '/videos/graspo-1.mp4',
+    src: streamMp4('c51fc81e13f188ae8497ab2b3f4723ec'),
     client: 'Graspo',
     category: 'Printing & Manufacturing · Organic',
     format: 'Arabic-first social content',
   },
   {
     id: 'graspo-2',
-    src: '/videos/graspo-2.mp4',
+    src: streamMp4('dd1434e663a4b2e53a5510e161f23d8e'),
     client: 'Graspo',
     category: 'Printing & Manufacturing · Organic',
     format: 'Arabic-first social content',
   },
   {
     id: 'graspo-3',
-    src: '/videos/graspo-3.mp4',
+    src: streamMp4('e5bf6b68ff43007124e8dfc817c4c985'),
     client: 'Graspo',
     category: 'Printing & Manufacturing · Organic',
     format: 'Arabic-first social content',
