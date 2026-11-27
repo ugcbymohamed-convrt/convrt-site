@@ -1,4 +1,4 @@
-/* SPANISH LEGAL DOCUMENTS (Política de privacidad, Condiciones generales, Aviso legal).
+/* SPANISH LEGAL DOCUMENTS (Política de privacidad, Términos y condiciones, Aviso legal).
    SOURCE (owner decision, 27 Nov 2026): the owner's professionally localized copy (CONVRT-ES.md), implemented VERBATIM. It replaces the previous translation. It is a translation of the English documents in
    src/content/trustPages.js; it is NOT legally certified or independently validated, and it is not a change to the approved commercial policies. Published only when the owner approves them
    (release gate in src/i18n/release.js, LEGAL_TRANSLATIONS_APPROVED in src/config.js).
@@ -21,7 +21,7 @@ export default function LEGAL_ES(c) {
   const address = op.address.replace(/, Spain$/, ', España')
   const L = c.links
   const privacyLabel = 'Política de privacidad'
-  const termsLabel = 'Condiciones generales' // the owner's supplied name for this document (the site's approved page name is «Términos y condiciones»: see the report)
+  const termsLabel = 'Términos y condiciones' // the owner's decision (27 Nov 2026): the approved page name, also used by the navigation, footer and SEO title; the supplied copy said «Condiciones generales»
   const noticeLabel = 'Aviso legal'
 
   /* Identical in the Privacy Policy and the Legal Notice (English: operatorDetails()). */
@@ -159,7 +159,7 @@ export default function LEGAL_ES(c) {
       },
       {
         heading: 'Cambios',
-        body: [`Podemos actualizar esta política y modificaremos la fecha cuando lo hagamos. Véanse también nuestras [[${termsLabel}|${L.terms}]] y [[${noticeLabel}|${L.legalNotice}]].`],
+        body: [`Podemos actualizar esta política y modificaremos la fecha cuando lo hagamos. Véanse también nuestros [[${termsLabel}|${L.terms}]] y [[${noticeLabel}|${L.legalNotice}]].`],
       },
     ],
   }
@@ -327,7 +327,7 @@ export default function LEGAL_ES(c) {
       },
       {
         heading: 'Condiciones, legislación aplicable y jurisdicción',
-        body: [`El uso del sitio y las ofertas gratuitas se rigen por nuestras [[${termsLabel}|${L.terms}]]. Se aplica la legislación española y los litigios entre CONVRT y un usuario profesional se someten a los juzgados y tribunales españoles competentes.`],
+        body: [`El uso del sitio y las ofertas gratuitas se rigen por nuestros [[${termsLabel}|${L.terms}]]. Se aplica la legislación española y los litigios entre CONVRT y un usuario profesional se someten a los juzgados y tribunales españoles competentes.`],
       },
     ],
   }
