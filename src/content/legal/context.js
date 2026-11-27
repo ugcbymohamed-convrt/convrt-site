@@ -9,12 +9,12 @@ import { OPERATOR } from '../operator.js'
 import { USAGE_RIGHTS } from '../../seo/businessKnowledge.js'
 import { CURRENT_MARKETING_CONSENT_VERSION, marketingConsentText } from '../marketingConsent.js'
 import { consentConfigured } from '../../lib/consent.js'
-import { DRAFT_DATE } from '../trustPages.js'
+import { LEGAL_DATES } from '../trustPages.js'
 
 export function legalContext() {
   return {
     /* The English effective date as written in the English documents ("21 November 2026"). Preserved: a translation writes the SAME date in its own language, never today's date. */
-    englishDate: DRAFT_DATE,
+    englishDates: LEGAL_DATES, // one date PER document: { privacy, terms, legalNotice }
     /* Inline-link token for the contact email: write it as `${c.mail}`. */
     mail: `[[${CONTACT_EMAIL}|mailto:${CONTACT_EMAIL}]]`,
     email: CONTACT_EMAIL,

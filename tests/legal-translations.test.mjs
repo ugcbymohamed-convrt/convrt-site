@@ -7,7 +7,7 @@ import assert from 'node:assert/strict'
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
-import { TRUST_CONTENT, plainText, ownerMarkersIn } from '../src/content/trustPages.js'
+import { TRUST_CONTENT, plainText, ownerMarkersIn, LEGAL_DATES } from '../src/content/trustPages.js'
 import { legalContext } from '../src/content/legal/context.js'
 import { compareStructure, DOCS } from '../src/content/legal/structure.js'
 import LEGAL_ES from '../src/content/legal/es.js'
@@ -158,4 +158,18 @@ test('review material exists: the repository note and the code that produces the
   assert.ok(fs.existsSync(path.join(ROOT, 'docs/contact-about-legal-localization.md')))
   for (const f of ['es', 'fr', 'ar']) assert.ok(fs.existsSync(path.join(ROOT, `src/content/legal/${f}.js`)))
   assert.ok(fs.existsSync(path.join(ROOT, 'scripts/legal-structure-check.mjs')))
+})
+
+test('each legal document has its OWN last-updated date, the translations carry the same date as their English document', () => {
+  assert.deepEqual(Object.keys(LEGAL_DATES).sort(), ['legalNotice', 'privacy', 'terms'])
+  const parts = (en) => en.match(/^(\d{1,2}) ([A-Za-z]+) (\d{4})$/).slice(1)
+  for (const doc of DOCS) {
+    assert.match(LEGAL_DATES[doc], /^\d{1,2} [A-Z][a-z]+ \d{4}$/, `${doc} date is a plain date`)
+    assert.ok(TRUST_CONTENT[doc].intro.includes(`Last updated ${LEGAL_DATES[doc]}.`), `${doc}: the English intro shows its own date`)
+    const [day, , year] = parts(LEGAL_DATES[doc])
+    for (const [l, build] of Object.entries(BUILDERS)) {
+      const intro = build({ ...ctx, analyticsActive: false })[doc].intro
+      assert.ok(intro.includes(day) && intro.includes(year), `${l}/${doc}: the translation shows the English document's own date (${day} … ${year})`)
+    }
+  }
 })

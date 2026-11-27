@@ -22,8 +22,9 @@ import { consentConfigured } from '../lib/consent.js'
 export const OWNER_MARKER = '[OWNER TO CONFIRM'
 export const LEGAL_MARKER = '[LEGAL REVIEW'
 export const MARKER_RE = /\[(?:OWNER TO CONFIRM|LEGAL REVIEW)[^\]]*\]/g
-export const DRAFT_DATE = '27 November 2026'
-const UPDATED = DRAFT_DATE
+/* Each legal document carries ITS OWN last-updated date: change a date only when that document's text changes (owner, 27 Nov 2026). The translations read the same values (src/content/legal/context.js). */
+export const LEGAL_DATES = { privacy: '27 November 2026', terms: '27 November 2026', legalNotice: '27 November 2026' }
+export const DRAFT_DATE = LEGAL_DATES.privacy // kept for older imports
 /* Whether Google Analytics is switched on in THIS build (VITE_GTM_ID set). The Privacy Policy describes the real state of the build it ships in. */
 const ANALYTICS_ACTIVE = consentConfigured()
 const LANGS = `${PRODUCTION_LANGUAGES.core.slice(0, -1).join(', ')} and ${PRODUCTION_LANGUAGES.core.at(-1)}`
@@ -133,7 +134,7 @@ export const TRUST_CONTENT = {
 
   privacy: {
     h1: 'Privacy Policy',
-    intro: `How CONVRT Studio handles personal information on www.convrt.studio. Last updated ${UPDATED}.`,
+    intro: `How CONVRT Studio handles personal information on www.convrt.studio. Last updated ${LEGAL_DATES.privacy}.`,
     sections: [
       {
         heading: 'Who is responsible for your information',
@@ -264,7 +265,7 @@ export const TRUST_CONTENT = {
 
   terms: {
     h1: 'Terms and Conditions',
-    intro: `The terms for using the CONVRT Studio website and its free offers, and our general commercial terms for paid packages. Last updated ${UPDATED}.`,
+    intro: `The terms for using the CONVRT Studio website and its free offers, and our general commercial terms for paid packages. Last updated ${LEGAL_DATES.terms}.`,
     sections: [
       {
         heading: 'About these terms',
@@ -319,7 +320,7 @@ export const TRUST_CONTENT = {
         body: [
           'Creative Testing Sprint and Sprint Plus monthly packages have an initial three-month commitment. Organic Light and Organic Growth packages have an initial six-month commitment. After the initial commitment, monthly packages continue on a month-to-month basis unless otherwise agreed in writing.',
           'Cancelling a monthly package requires at least 30 calendar days\' written notice before the applicable renewal date. Cancellation cannot take effect before the initial commitment has been fulfilled, unless otherwise agreed in writing, and does not remove any payment obligation that is already outstanding.',
-          'One-time production packages do not renew automatically. If you cancel before work begins, the payment may be refunded, less any agreed non-recoverable costs already incurred. If you cancel after work has begun, we are entitled to payment for the work already completed and for agreed non-recoverable production costs, including creator bookings and other committed expenses, and any remaining eligible balance will be refunded.',
+          'One-time production packages do not renew automatically. If you cancel before work begins, we will refund the amount paid, less any agreed non-recoverable costs already incurred. If you cancel after work has begun, we are entitled to payment for the work already completed and for agreed non-recoverable production costs, including creator bookings and other committed expenses, and any remaining eligible balance will be refunded.',
           'Completed and delivered work is not refundable merely because you change your mind or because the content does not achieve the marketing results you wanted. These provisions do not limit any mandatory legal rights or remedies.',
         ],
       },
@@ -391,7 +392,7 @@ export const TRUST_CONTENT = {
 
   legalNotice: {
     h1: 'Legal Notice',
-    intro: `The information about the operator of www.convrt.studio that Spanish law (Ley 34/2002, de servicios de la sociedad de la información, art. 10) requires a commercial website to make available. Last updated ${UPDATED}.`,
+    intro: `The information about the operator of www.convrt.studio that Spanish law (Ley 34/2002, de servicios de la sociedad de la información, art. 10) requires a commercial website to make available. Last updated ${LEGAL_DATES.legalNotice}.`,
     sections: [
       {
         heading: 'Website operator',

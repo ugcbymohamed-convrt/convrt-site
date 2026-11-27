@@ -89,7 +89,7 @@ table{width:100%;border-collapse:collapse;table-layout:fixed}td{vertical-align:t
 
 /* The revised ENGLISH documents (the source the translations follow), readable, for the owner's final review before anything is activated. */
 {
-  let en = `# English legal documents: REVISED (REVIEW DRAFT, not live)\n\nThe revised English Privacy Policy, Terms and Conditions and Legal Notice (src/content/trustPages.js). **Not live until you approve.** The effective date shown ("${ctx.englishDate}") is the shared date constant; confirm it on the day the revision is activated. Links are shown as \`label <target>\`.\n`
+  let en = `# English legal documents: REVISED (REVIEW DRAFT, not live)\n\nThe revised English Privacy Policy, Terms and Conditions and Legal Notice (src/content/trustPages.js). **Not live until you approve.** The effective date shown ("${ctx.englishDates.privacy}") is the shared date constant; confirm it on the day the revision is activated. Links are shown as \`label <target>\`.\n`
   for (const d of DOCS) {
     const page = TRUST_CONTENT[d]
     en += `\n---\n\n## ${page.h1}\n\n${plain(page.intro)}\n`

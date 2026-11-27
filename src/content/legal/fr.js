@@ -8,7 +8,9 @@
 export default function LEGAL_FR(c) {
   const { operator: o, links: L } = c
   const mail = c.mail
-  const date = '27 novembre 2026' // the English effective date ("27 November 2026"), preserved
+  const FR_MONTHS = { January: 'janvier', February: 'février', March: 'mars', April: 'avril', May: 'mai', June: 'juin', July: 'juillet', August: 'août', September: 'septembre', October: 'octobre', November: 'novembre', December: 'décembre' }
+  const frDate = (en) => en.replace(/^(\d{1,2}) ([A-Za-z]+) (\d{4})$/, (m, d, mo, y) => (FR_MONTHS[mo] ? `${d === '1' ? '1er' : d} ${FR_MONTHS[mo]} ${y}` : m))
+  const dates = { privacy: frDate(c.englishDates.privacy), terms: frDate(c.englishDates.terms), legalNotice: frDate(c.englishDates.legalNotice) } // each document's own English date, preserved
   const structure = 'un travailleur indépendant (autónomo) enregistré en Espagne' // = "a self-employed professional (autónomo) registered in Spain"
   const address = o.address.replace(/, Spain$/, ', Espagne') // street and postal code unchanged; only the country name is written in French
   const TAX_STATEMENT = 'Tous les prix sont hors TVA. Les taxes applicables sont calculées selon la localisation et le statut fiscal de votre entreprise.' // the site's approved French wording of the English tax statement
@@ -23,7 +25,7 @@ export default function LEGAL_FR(c) {
 
   const privacy = {
     h1: 'Politique de confidentialité',
-    intro: `Comment CONVRT Studio traite les informations personnelles sur www.convrt.studio. Dernière mise à jour : ${date}.`,
+    intro: `Comment CONVRT Studio traite les informations personnelles sur www.convrt.studio. Dernière mise à jour : ${dates.privacy}.`,
     sections: [
       {
         heading: 'Qui est responsable de vos informations',
@@ -154,7 +156,7 @@ export default function LEGAL_FR(c) {
 
   const terms = {
     h1: 'Conditions générales',
-    intro: `Les conditions d’utilisation du site de CONVRT Studio et de ses offres gratuites, ainsi que nos conditions commerciales générales applicables aux formules payantes. Dernière mise à jour : ${date}.`,
+    intro: `Les conditions d’utilisation du site de CONVRT Studio et de ses offres gratuites, ainsi que nos conditions commerciales générales applicables aux formules payantes. Dernière mise à jour : ${dates.terms}.`,
     sections: [
       {
         heading: 'À propos des présentes conditions',
@@ -209,7 +211,7 @@ export default function LEGAL_FR(c) {
         body: [
           'Les formules mensuelles Creative Testing Sprint et Sprint Plus comportent un engagement initial de trois mois. Les formules Organic Light et Organic Growth comportent un engagement initial de six mois. Après l’engagement initial, les formules mensuelles se poursuivent mois par mois, sauf accord écrit contraire.',
           'La résiliation d’une formule mensuelle exige un préavis écrit d’au moins 30 jours calendaires avant la date de renouvellement applicable. La résiliation ne peut prendre effet avant que l’engagement initial ait été rempli, sauf accord écrit contraire, et ne supprime aucune obligation de paiement restant due.',
-          'Les formules de production ponctuelles ne se renouvellent pas automatiquement. Si vous résiliez avant le début des travaux, le paiement peut être remboursé, déduction faite des coûts non récupérables convenus déjà engagés. Si vous résiliez après le début des travaux, nous avons droit au paiement des travaux déjà réalisés et des coûts de production non récupérables convenus, y compris les réservations de créateurs et les autres dépenses engagées, et tout solde éligible restant sera remboursé.',
+          'Les formules de production ponctuelles ne se renouvellent pas automatiquement. Si vous résiliez avant le début des travaux, nous vous rembourserons le montant payé, déduction faite des coûts non récupérables convenus déjà engagés. Si vous résiliez après le début des travaux, nous avons droit au paiement des travaux déjà réalisés et des coûts de production non récupérables convenus, y compris les réservations de créateurs et les autres dépenses engagées, et tout solde éligible restant sera remboursé.',
           'Les travaux réalisés et livrés ne sont pas remboursables du seul fait que vous changez d’avis ou que le contenu n’atteint pas les résultats marketing que vous souhaitiez. Ces dispositions ne limitent aucun droit ni recours légal impératif.',
         ],
       },
@@ -281,7 +283,7 @@ export default function LEGAL_FR(c) {
 
   const legalNotice = {
     h1: 'Mentions légales',
-    intro: `Les informations sur l’exploitant de www.convrt.studio que le droit espagnol (Ley 34/2002, de servicios de la sociedad de la información, art. 10) impose à un site commercial de mettre à disposition. Dernière mise à jour : ${date}.`,
+    intro: `Les informations sur l’exploitant de www.convrt.studio que le droit espagnol (Ley 34/2002, de servicios de la sociedad de la información, art. 10) impose à un site commercial de mettre à disposition. Dernière mise à jour : ${dates.legalNotice}.`,
     sections: [
       {
         heading: 'Exploitant du site',

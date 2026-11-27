@@ -10,7 +10,7 @@ const MONTHS = { January: 'enero', February: 'febrero', March: 'marzo', April: '
 const esDate = (en) => en.replace(/^(\d{1,2}) ([A-Za-z]+) (\d{4})$/, (m, d, mo, y) => (MONTHS[mo] ? `${d} de ${MONTHS[mo]} de ${y}` : m))
 
 export default function LEGAL_ES(c) {
-  const updated = esDate(c.englishDate)
+  const dates = { privacy: esDate(c.englishDates.privacy), terms: esDate(c.englishDates.terms), legalNotice: esDate(c.englishDates.legalNotice) }
   const mail = c.mail
   const op = c.operator
   const structure = 'profesional autónomo registrado en España' // "a self-employed professional (autónomo) registered in Spain"
@@ -33,7 +33,7 @@ export default function LEGAL_ES(c) {
 
   const privacy = {
     h1: privacyLabel,
-    intro: `Cómo trata CONVRT Studio la información personal en www.convrt.studio. Última actualización: ${updated}.`,
+    intro: `Cómo trata CONVRT Studio la información personal en www.convrt.studio. Última actualización: ${dates.privacy}.`,
     sections: [
       {
         heading: 'Quién es responsable de tu información',
@@ -164,7 +164,7 @@ export default function LEGAL_ES(c) {
 
   const terms = {
     h1: termsLabel,
-    intro: `Los términos para utilizar el sitio web de CONVRT Studio y sus ofertas gratuitas, y nuestras condiciones comerciales generales para los paquetes de pago. Última actualización: ${updated}.`,
+    intro: `Los términos para utilizar el sitio web de CONVRT Studio y sus ofertas gratuitas, y nuestras condiciones comerciales generales para los paquetes de pago. Última actualización: ${dates.terms}.`,
     sections: [
       {
         heading: 'Sobre estos términos',
@@ -219,7 +219,7 @@ export default function LEGAL_ES(c) {
         body: [
           'Los paquetes mensuales Creative Testing Sprint y Sprint Plus tienen un compromiso inicial de tres meses. Los paquetes Organic Light y Organic Growth tienen un compromiso inicial de seis meses. Transcurrido el compromiso inicial, los paquetes mensuales continúan mes a mes, salvo que se acuerde otra cosa por escrito.',
           'Cancelar un paquete mensual exige un preaviso por escrito de al menos 30 días naturales antes de la fecha de renovación aplicable. La cancelación no puede surtir efecto antes de que se haya cumplido el compromiso inicial, salvo que se acuerde otra cosa por escrito, y no elimina ninguna obligación de pago que ya esté pendiente.',
-          'Los paquetes de producción únicos no se renuevan automáticamente. Si cancelas antes de que comience el trabajo, el pago podrá reembolsarse, descontando los costes no recuperables acordados en los que ya se haya incurrido. Si cancelas después de que haya comenzado el trabajo, tenemos derecho al pago del trabajo ya realizado y de los costes de producción no recuperables acordados, incluidas las contrataciones de creadores y otros gastos comprometidos, y se reembolsará cualquier saldo restante que proceda.',
+          'Los paquetes de producción únicos no se renuevan automáticamente. Si cancelas antes de que comience el trabajo, te reembolsaremos el importe abonado, descontando los costes no recuperables acordados en los que ya se haya incurrido. Si cancelas después de que haya comenzado el trabajo, tenemos derecho al pago del trabajo ya realizado y de los costes de producción no recuperables acordados, incluidas las contrataciones de creadores y otros gastos comprometidos, y se reembolsará cualquier saldo restante que proceda.',
           'El trabajo finalizado y entregado no es reembolsable por el mero hecho de que cambies de opinión o de que el contenido no logre los resultados de marketing que querías. Estas disposiciones no limitan ningún derecho ni recurso legal imperativo.',
         ],
       },
@@ -291,7 +291,7 @@ export default function LEGAL_ES(c) {
 
   const legalNotice = {
     h1: noticeLabel,
-    intro: `La información sobre el titular de www.convrt.studio que la legislación española (Ley 34/2002, de servicios de la sociedad de la información, art. 10) exige que un sitio web comercial ponga a disposición de los usuarios. Última actualización: ${updated}.`,
+    intro: `La información sobre el titular de www.convrt.studio que la legislación española (Ley 34/2002, de servicios de la sociedad de la información, art. 10) exige que un sitio web comercial ponga a disposición de los usuarios. Última actualización: ${dates.legalNotice}.`,
     sections: [
       {
         heading: 'Titular del sitio web',
